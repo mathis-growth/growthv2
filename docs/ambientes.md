@@ -1,32 +1,42 @@
-# Ambientes: Teste, Homologação e Produção (proposta de 20/10/2026)
+# Ambientes: Teste, Homologação e um banco por cliente (decisão de 20/10/2026)
 
-Mapa visual: artefato "Ambientes do Growths", no Claude.
+**Decisão da Rebecka:** os dados de clientes diferentes não ficam no mesmo banco. Cada cliente tem o seu próprio projeto Supabase. Mapa visual: artefato "Ambientes do Growths", no Claude.
 
-| | Teste | Homologação | Produção (cliente) |
-|---|---|---|---|
-| Galho no GitHub | `dev` | `homologacao` | `main` (protegido) |
-| Tela (Cloudflare Pages) | `dev.growthv2.pages.dev` | `homologacao.growthv2.pages.dev` | endereço oficial |
-| Banco (Supabase) | projeto `growths-teste` (novo) | projeto `growths-homolog` (novo) | `yngyghlyonybvfvjcmxl` (atual) |
-| Dados | fictícios (seed), recriáveis | cópia anonimizada da produção ou workspace de validação | reais |
-| Faixa na tela | amarela "TESTE" | roxa "HOMOLOGAÇÃO" | nenhuma |
+| Etapa | Galho | Banco (Supabase) | Endereço | Dados |
+|---|---|---|---|---|
+| Teste (interno) | `dev` | `growths-teste` | `dev.growthv2.pages.dev` | fictícios, recriáveis |
+| Homologação (interno) | `homologacao` | `growths-homolog` | `homologacao.growthv2.pages.dev` | cópia anonimizada de um cliente |
+| Produção | `main` (protegido, tag `vX.YYY`) | **um projeto por cliente** | **um endereço por cliente** | só daquele cliente |
 
 **Como uma versão anda**
 1. Ela nasce em `dev`.
-2. Um pull request `dev → homologacao` só mescla se os testes automáticos passarem.
+2. Um pull request `dev → homologacao` só mescla se os testes passarem.
 3. A versão é validada em Homologação.
-4. Um pull request `homologacao → main`, com aprovação, publica a versão e cria a tag `vX.YYY`.
+4. Um pull request `homologacao → main` é aprovado.
+5. A publicação automática percorre o `clientes.json`, em ondas: a onda 1 é a Mathisa/Demo, depois vêm os demais. Em cada cliente, aplica as migrações, publica as funções e publica a tela apontando para o banco dele.
+6. Se um cliente falhar, a fila para. Esse cliente fica na versão anterior, com banco e tela juntos.
 
-Cada mesclagem publica sozinha, pelo GitHub Actions: aplica as migrações no projeto do ambiente, publica as funções e a tela.
+**`clientes.json`**: a lista de clientes, com o projeto, o endereço e a onda de cada um. As chaves ficam nos segredos do GitHub.
 
-**Como alternar**
-- Cada ambiente tem o seu endereço.
-- O mesmo `index.html` descobre o banco pelo endereço em que está aberto.
-- Os segredos são separados em cada projeto.
+**O que fica melhor**
+- Isolamento total dos dados.
+- Backup e exclusão por cliente (LGPD).
+- Um cliente não deixa os outros lentos.
+- Dá para liberar em ondas.
 
-**Como voltar atrás**
-- A tela volta com o rollback do Cloudflare Pages.
-- O banco só anda para frente, com uma migração de correção. No pior caso, usa-se o backup ou o PITR da produção.
+**O que exige cuidado**
+- Custo: um projeto pago por cliente, que entra no preço do contrato.
+- Login: a equipe da Mathisa precisa de acesso em cada banco. Trocar de cliente vira trocar de endereço.
+- A visão consolidada de todos os clientes vira um relatório que junta os bancos.
+- O endereço de retorno do Meta e do Google muda por cliente.
 
-**Por que três projetos**: o isolamento é total, e é simples. O Branching do Supabase fica como opção futura para o Teste. Um projeto só não protege os clientes de uma migração errada.
+Dentro do banco de um cliente, o workspace continua existindo, para um cliente com mais de um negócio.
 
-**Pendente**: criar os dois projetos (custo), os galhos, o Actions, a ligação no Cloudflare, o mapa no `index.html` e as cargas iniciais. Ver o checklist no mapa.
+**Para montar**
+1. Preço e plano: decisão da Rebecka.
+2. Criar Teste e Homologação: com o ok de custo.
+3. Separar o banco atual: cada workspace de cliente vira o projeto dele.
+4. Galhos, `clientes.json` e GitHub Actions por cliente.
+5. Domínios no Cloudflare.
+6. Script "cliente novo".
+7. README com a versão de cada cliente.
