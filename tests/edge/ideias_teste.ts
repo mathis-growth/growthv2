@@ -1,0 +1,12 @@
+const K = Deno.env.get('CHAVE') || '';
+const base = 'http://127.0.0.1:8787';
+const ok = (c: boolean, m: string, x?: unknown) => { console.log((c ? 'OK   ' : 'FALHA') + ' ' + m + (c ? '' : ' → ' + JSON.stringify(x))); if (!c) Deno.exitCode = 1; };
+let r = await fetch(base, { method: 'GET' }); ok(r.status === 401, 'sem chave: 401', r.status); await r.body?.cancel();
+r = await fetch(base, { headers: { Authorization: 'Bearer ' + K } }); let d = await r.json(); ok(r.status === 200 && d.workspace === 'Conteúdo A' && d.temas.length === 2, 'GET contexto com Bearer', d);
+r = await fetch(base, { method: 'POST', headers: { 'x-growths-chave': K, 'content-type': 'application/json' }, body: JSON.stringify({ titulo: "Bastidor: o dia em que o pixel caiu", descricao: "Contar o susto e o que aprendemos", formato: 'reel', tema: 'bastidores', canais: ['instagram'] }) });
+d = await r.json(); ok(r.status === 200 && d.quantidade === 1 && d.criadas[0].formato === 'reels' && d.criadas[0].tema === 'Bastidores da mentoria', 'POST uma ideia (com aspas)', d);
+r = await fetch(base, { method: 'POST', headers: { Authorization: 'Bearer ' + K, 'content-type': 'application/json' }, body: JSON.stringify({ ideias: [{ titulo: 'Ideia A' }, { titulo: 'Ideia B', canais: 'instagram, linkedin' }] }) });
+d = await r.json(); ok(r.status === 200 && d.quantidade === 2 && d.criadas[1].canais.length === 2, 'POST várias ideias e canais em texto', d);
+r = await fetch(base, { method: 'POST', headers: { Authorization: 'Bearer ' + K, 'content-type': 'application/json' }, body: JSON.stringify({ descricao: 'sem título' }) });
+d = await r.json(); ok(r.status === 400, 'POST sem título: 400', d);
+r = await fetch(base, { headers: { Authorization: 'Bearer gw_' + '1'.repeat(64) } }); d = await r.json(); ok(r.status === 401 && /inválida/.test(d.erro), 'chave inexistente: 401', d);

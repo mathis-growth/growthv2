@@ -1,0 +1,5 @@
+-- v0.38: reabrir_contrato(p_contrato). JÁ APLICADA no projeto.
+-- Volta um contrato assinado e ativo (ou cancelado) para "Pendente" (status interno 'rascunho'), para poder editar.
+-- Bloqueia se alguma parcela já foi recebida. Parcelas previstas são marcadas como canceladas e, se o contrato estava ativo,
+-- o reconhecimento é estornado na data original (origem 'cancelamento_contrato'); ao assinar de novo, as parcelas são geradas de novo.
+-- Retorna quantas parcelas foram canceladas. Ver a definição com pg_get_functiondef.

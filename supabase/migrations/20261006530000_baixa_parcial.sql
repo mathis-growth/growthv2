@@ -1,0 +1,6 @@
+-- v0.36: baixa parcial. JÁ APLICADA no projeto (duas funções).
+-- registrar_pagamento_parcial(p_conta, p_valor, p_data, p_conta_bancaria): paga p_valor e deixa o saldo numa conta nova "(saldo)".
+--   O lançamento da despesa é dividido sem editar o razão: um estorno parcial (origem 'cancelamento_pagar', mesma data) tira o saldo da conta original e o gatilho da conta nova lança o saldo.
+-- registrar_recebimento_parcial(p_conta_receber, p_valor, p_data, p_conta_bancaria): igual, para parcelas de contrato (origem 'cancelamento_contrato' + novo 'contrato_parcela').
+--   Venda avulsa não aceita recebimento parcial (uma conta a receber por venda).
+-- Ver as definições no banco com pg_get_functiondef.

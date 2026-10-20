@@ -1,0 +1,7 @@
+-- v0.47: pró-labore e retiradas de sócio com passivo próprio (JÁ APLICADA no projeto; arquivo é registro).
+-- 1) plano_contas.conta_passivo_id: conta de passivo usada quando a despesa/custo fica a pagar. Vazio = 2.1.01 Fornecedores a pagar.
+-- 2) Novas contas: 2.1.03 Pró-labore e retiradas a pagar (passivo); 3.1.02 Distribuição de lucros (patrimônio).
+-- 3) contas_pagar_depois: crédito = coalesce(conta_passivo_id da despesa, conta da regra).
+-- 4) registrar_pagamento: débito = passivo do lançamento de competência (fallback: regra).
+-- 5) cancelar_conta_pagar e cancelar_parcela_contrato: estornam só o saldo líquido restante (soma dos estornos por conta/centro/tipo).
+-- 6) Dados reais: 4 contas abertas do Rogério reclassificadas (cancelar na data de competência + reativar).

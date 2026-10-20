@@ -1,0 +1,499 @@
+{
+ "Dashboard (Administrativo)": {
+  "kpis": {
+   "Campanhas ativas": [
+    "2",
+    "de 2 cadastradas"
+   ],
+   "Pessoas no funil": [
+    "1.994",
+    "1.892 leads · 102 clientes"
+   ],
+   "Leads qualificados": [
+    "0",
+    "0,0% do total"
+   ],
+   "Clientes ativos": [
+    "100",
+    "2 inativos"
+   ],
+   "Vendas aprovadas": [
+    "111",
+    "4 canceladas ou reembolsadas"
+   ],
+   "Receita bruta": [
+    "R$ 98.317,00",
+    "taxas R$ 9.844,05 · impostos R$ 7.865,36"
+   ],
+   "Receita líquida": [
+    "R$ 80.607,59",
+    "depois de taxas e impostos"
+   ],
+   "Saldo em banco": [
+    "-R$ 71.074,62",
+    "dinheiro já movimentado · clique para o extrato"
+   ],
+   "A receber até 14/11/2026": [
+    "R$ 39.590,90",
+    "de hoje até a data final do período · R$ 0,00 em atraso"
+   ],
+   "A pagar até 14/11/2026": [
+    "R$ 6.052,47",
+    "de hoje até a data final do período · R$ 0,00 em atraso"
+   ],
+   "Lucro": [
+    "R$ 2.228,66",
+    "receitas − deduções, custos e despesas"
+   ],
+   "Margem": [
+    "2,9%",
+    "lucro ÷ receita"
+   ],
+   "ROI": [
+    "3,0%",
+    "lucro ÷ tudo o que saiu"
+   ],
+   "MRR": [
+    "R$ 0,00",
+    "receita recorrente mensal dos contratos ativos hoje"
+   ],
+   "ARR": [
+    "R$ 0,00",
+    "MRR × 12"
+   ],
+   "NRR": [
+    "—",
+    "precisa de contratos recorrentes ativos há 12 meses ou mais"
+   ],
+   "Retenção bruta (GRR)": [
+    "—",
+    "igual ao NRR, sem contar expansão"
+   ],
+   "Penetração de mercado": [
+    "—",
+    "informe o tamanho do mercado em Planejamento da empresa"
+   ]
+  },
+  "texto": "Dashboard\nAtualizar\nPeríodo das métricas, do CAC e do fluxo de caixa\nÚltimos 7 dias\nÚltimos 15 dias\nÚltimos 30 dias\nMês atual\nÚltimos 12 meses\nAno atual\nTodo o período\nPeríodo personalizado\nDe\nAté\nQualidade do dado: 1 aviso(s) de 16/09/2026 a 15/10/2026 · alguns números abaixo podem estar incompletos\nCampanhas ativas\n2\nde 2 cadastradas\nPessoas no funil\n1.994\n1.892 leads · 102 clientes\nLeads qualificados ⓘ\n0\n0,0% do total\nClientes ativos ⓘ\n100\n2 inativos\nVendas aprovadas\n111\n4 canceladas ou reembolsadas\nReceita bruta ⓘ\nR$ 98.317,00\ntaxas R$ 9.844,05 · impostos R$ 7.865,36\nReceita líquida ⓘ\nR$ 80.607,59\ndepois de taxas e impostos\nSaldo em banco ⓘ\n-R$ 71.074,62\ndinheiro já movimentado · clique para o extrato\nA receber até 14/11/2026\nR$ 39.590,90\nde hoje até a data final do período · R$ 0,00 em atraso\nA pagar até 14/11/2026\nR$ 6.052,47\nde hoje até a data final do período · R$ 0,00 em atraso\nCampanhas ativas\nCAMPANHA\tLEADS (META)\tVENDAS (META)\tINVESTIDO\tRECEITA\tCAC DE MÍDIA\tROAS\nPerpétuo Curso Base\nPerpétuo · 01/07/2026 · sem data final\t\n1.294 / —\n\t\n67 / —\n\tR$ 43.442,90\tR$ 54.449,00\tR$ 775,77\t1,25x\nLançamento Setembro\nLançamento · 01/09/2026 a 30/09/2026\t\n700 / 700 (100%)\n\t\n44 / 45 (98%)\n\tR$ 20.766,24\tR$ 43.868,00\tR$ 471,96\t2,11x\nTotais da campanha desde o início. O CAC por campanha com todos os custos está mais abaixo, no período escolhido.\nMétricas financeiras · 01/09/2026 a 30/09/2026\nLucro\nR$ 2.228,66\nreceitas − deduções, custos e despesas\nMargem\n2,9%\nlucro ÷ receita\nROI\n3,0%\nlucro ÷ tudo o que saiu\nMRR ⓘ\nR$ 0,00\nreceita recorrente mensal dos contratos ativos hoje\nARR\nR$ 0,00\nMRR × 12\nNRR\n—\nprecisa de contratos recorrentes ativos há 12 meses ou mais\nRetenção bruta (GRR)\n—\nigual ao NRR, sem contar expansão\nPenetração de mercado\n—\ninforme o tamanho do mercado em Planejamento da empresa\nCAC: o que é de mídia e o que é total · 01/09/2026 a 30/09/2026 · 61 cliente(s) novo(s)\nCAC de mídia\nR$ 538,88\nSó o que foi pago em anúncios (R$ 32.871,59) ÷ clientes novos. Mede a eficiência dos anúncios.\nCAC total\nR$ 538,88\nMídia + equipe, comissões e ferramentas marcadas como aquisição (R$ 32.871,59) ÷ clientes novos. Mede o custo real de conquistar cada cliente.\nPeso na margem\n43,3 p.p.\nO CAC total consome 43,3% da receita do período. Sem ele a margem iria de 2,9% para 46,2%.\nHoje só a mídia entra no CAC total. Em Cadastros → Plano de contas, marque em \"Entra no CAC\" as contas de equipe comercial, comissões e ferramentas que também são custo de aquisição.\nComo o CAC total é composto\nTIPO DE CUSTO\tVALOR\t% DO CAC\tPOR CLIENTE NOVO\nMídia paga\tR$ 32.871,59\t100,0%\tR$ 538,88\nTotal\tR$ 32.871,59\t100%\tR$ 538,88\nPara quem o dinheiro foi (fornecedor)\nFORNECEDOR\tVALOR\t% DO CAC\nSem fornecedor informado\tR$ 32.871,59\t100,0%\nPor campanha: quanto cada uma pesa na margem\nCAMPANHA\tCUSTO DE AQUISIÇÃO\tCLIENTES NOVOS\tCAC TOTAL\t% DO CAC TOTAL\tTIRA DA MARGEM\nLançamento Setembro\tR$ 20.766,24\t44\tR$ 471,96\t63,2%\t27,3 p.p.\nPerpétuo Curso Base\tR$ 12.105,35\t17\tR$ 712,08\t36,8%\t15,9 p.p.\nCustos pela competência da conta a pagar (ou vencimento, se não houver). Clientes novos: primeira compra aprovada ou primeiro contrato ativado dentro do período. Custo sem campanha entra no CAC total, mas não em nenhuma campanha.\nFunil\nPessoas\n1.994\nQualificados\n0\nClientes\n102\nAtivos\n100\nCampanhas: meta e realizado\nCAMPANHA\tLEADS\tVENDAS\tRECEITA BRUTA\nPerpétuo Curso Base\n0 qualificados\t\n1.294 / —\n\t\n67 / —\n\t\nR$ 54.449,00 / —\n\nLançamento Setembro\n0 qualificados\t\n700 / 700 (100%)\n\t\n44 / 45 (98%)\n\t\nR$ 43.868,00 / R$ 44.865,00\nDRE gerencial por mês\nClique em um valor para ver os lançamentos e a operação que o geraram.\nCONTA\t07/2026\t08/2026\t09/2026\t10/2026\t11/2026\n4.1.01 Receita de vendas de produtos digitais · Receitas\tR$ 13.290,00\tR$ 10.017,00\tR$ 61.955,00\tR$ 13.055,00\tR$ 0,00\n4.1.02 Receita de serviços · Receitas\tR$ 0,00\tR$ 6.000,00\tR$ 14.000,00\tR$ 14.000,00\tR$ 8.000,00\n5.1.01 Taxas de plataformas de venda · Deduções\tR$ 1.335,65\tR$ 1.002,65\tR$ 6.198,35\tR$ 1.307,40\tR$ 0,00\n5.1.02 Impostos sobre vendas · Deduções\tR$ 1.063,20\tR$ 801,36\tR$ 4.956,40\tR$ 1.044,40\tR$ 0,00\n6.1.01 Mídia paga – Google Ads · Despesas\tR$ 0,00\tR$ 0,00\tR$ 20.766,24\tR$ 0,00\tR$ 0,00\n6.1.02 Mídia paga – Meta Ads · Despesas\tR$ 12.485,97\tR$ 12.799,11\tR$ 12.105,35\tR$ 6.052,47\tR$ 0,00\n6.2.01 Ferramentas e software · Despesas\tR$ 2.200,00\tR$ 2.200,00\tR$ 2.200,00\tR$ 2.200,00\tR$ 0,00\n6.2.02 Equipe e prestadores · Despesas\tR$ 9.500,00\tR$ 9.500,00\tR$ 9.500,00\tR$ 9.500,00\tR$ 0,00\n6.2.04 Pró-labore · Despesas\tR$ 18.000,00\tR$ 18.000,00\tR$ 18.000,00\tR$ 18.000,00\tR$ 0,00\nResultado\t-R$ 31.294,82\t-R$ 28.286,12\tR$ 2.228,66\t-R$ 11.049,27\tR$ 8.000,00\nFluxo de caixa: previsto e realizado\nPrevisto até 14/11/2026 (46)\nDATA\tSITUAÇÃO\tTIPO\tCLIENTE / FORNECEDOR\tDESCRIÇÃO\tVALOR\t\n19/10/2026\tprevisto\tEntrada\tHeitor Rocha\ncliente\tContrato #4 – parcela 2/3\tR$ 1.000,00\tLançamentos\n21/10/2026\tprevisto\tEntrada\tJoão Pires\ncliente\tCurso Base\tR$ 897,30\tLançamentos\n21/10/2026\tprevisto\tEntrada\tOtávio Lima\ncliente\tCurso Base\tR$ 897,30\tLançamentos\n21/10/2026\tprevisto\tEntrada\tCarla Costa\ncliente\tCurso Base\tR$ 897,30\tLançamentos\n21/10/2026\tprevisto\tEntrada\tPaula Alves\ncliente\tContrato #1 – parcela 2/3\tR$ 1.000,00\tLançamentos\n21/10/2026\tprevisto\tEntrada\tFábio Dias\ncliente\tCurso Base\tR$ 897,30\tLançamentos\n22/10/2026\tprevisto\tEntrada\tNina Dias\ncliente\tCurso Base\tR$ 897,30\tLançamentos\n22/10/2026\tprevisto\tEntrada\tTéo Melo\ncliente\tContrato #10 – parcela 2/3\tR$ 1.000,00\tLançamentos\n22/10/2026\tprevisto\tEntrada\tAna Pires\ncliente\tCurso Base\tR$ 897,30\tLançamentos\n22/10/2026\tprevisto\tEntrada\tSofia Melo\ncliente\tCurso Base\tR$ 897,30\tLançamentos\n22/10/2026\tprevisto\tEntrada\tOtávio Dias\ncliente\tCurso Base\tR$ 897,30\tLançamentos\n23/10/2026\tprevisto\tEntrada\tJoão Pires\ncliente\tContrato #5 – parcela 3/3\tR$ 1.000,00\tLançamentos\n23/10/2026\tprevisto\tEntrada\tElisa Silva\ncliente\tContrato #12 – parcela 3/3\tR$ 1.000,00\tLançamentos\n23/10/2026\tprevisto\tEntrada\tLucas Costa\ncliente\tCurso Base\tR$ 897,30\tLançamentos\n23/10/2026\tprevisto\tEntrada\tTéo Silva\ncliente\tCurso Ba",
+  "erros": []
+ },
+ "Dashboard de marketing": {
+  "kpis": {
+   "Leads": [
+    "1.061",
+    "64 viraram alunos"
+   ],
+   "Investido": [
+    "R$ 32.871,59",
+    "anúncios no período"
+   ],
+   "CPL": [
+    "R$ 30,98",
+    "investimento ÷ leads"
+   ],
+   "Clientes": [
+    "64",
+    "6,0% dos leads"
+   ],
+   "CAC ⚠": [
+    "R$ 513,62",
+    "investimento ÷ clientes"
+   ],
+   "Receita": [
+    "R$ 52.397,74",
+    "vendas aprovadas até hoje"
+   ],
+   "ROAS": [
+    "1,59x",
+    "receita ÷ investimento"
+   ],
+   "ROI": [
+    "59,4%",
+    "(receita − custo) ÷ custo"
+   ],
+   "LTV": [
+    "R$ 818,71",
+    "receita por cliente"
+   ],
+   "Churn": [
+    "0,0%",
+    "alunos que saíram"
+   ]
+  },
+  "texto": "← Voltar para Dashboard\nDashboard de marketing\nTodas as campanhas juntas, no período que você escolher. Lead = pessoa cadastrada no período, seguida até hoje. Para ver uma campanha só, abra-a em Campanhas e planejamento.\nDe\nAté\nAtalho\nPeríodo\nÚltimos 7 dias\nÚltimos 30 dias\nÚltimos 90 dias\nÚltimos 12 meses\nCampanha\nTodas\nLançamento Setembro\nPerpétuo Curso Base\nVisão geral e cohorts\nFunil\nQualidade do dado: 1 aviso(s) de 16/09/2026 a 15/10/2026 · alguns números abaixo podem estar incompletos\nLeads ⓘ\n1.061\n64 viraram alunos\nInvestido\nR$ 32.871,59\nanúncios no período\nCPL ⓘ\nR$ 30,98\ninvestimento ÷ leads\nClientes ⓘ\n64\n6,0% dos leads\nCAC ⚠ ⓘ\nR$ 513,62\ninvestimento ÷ clientes\nReceita ⓘ\nR$ 52.397,74\nvendas aprovadas até hoje\nROAS ⓘ\n1,59x\nreceita ÷ investimento\nROI\n59,4%\n(receita − custo) ÷ custo\nLTV\nR$ 818,71\nreceita por cliente\nChurn ⓘ\n0,0%\nalunos que saíram\nAgrupar por\nSemana de entrada\nMês de entrada\nCampanha\nConversão\nRetorno (ROI, LTV, CAC)\nPós-compra (churn, retenção)\nCusto = gasto dos anúncios nas datas da coorte (dentro do período) ou da campanha. Receita = vendas aprovadas dessas pessoas até hoje, então o ROI de coortes novas ainda vai subir. LTV = receita ÷ clientes. ROI = (receita − custo) ÷ custo. Sem custo registrado, CAC, ROAS e ROI ficam em branco. Clique numa campanha para abrir o funil só dela.\nCOORTE\tLEADS\tCLIENTES\tCUSTO\tCPL\tCAC\tRECEITA\tLTV\tLTV ÷ CAC\tROAS\tROI\nLançamento Setembro\t700\t44\tR$ 20.766,24\tR$ 29,67\tR$ 471,96\tR$ 35.971,76\tR$ 817,54\t1,73x\t1,73x\t73%\nPerpétuo Curso Base\t361\t20\tR$ 12.105,35\tR$ 33,53\tR$ 605,27\tR$ 16.425,98\tR$ 821,30\t1,36x\t1,36x\t36%\nTotal\t1.061\t64\tR$ 32.871,59\tR$ 30,98\tR$ 513,62\tR$ 52.397,74\tR$ 818,71\t1,59x\t1,59x\t59%",
+  "erros": []
+ },
+ "Dashboard de mídia": {
+  "kpis": {
+   "Investimento ⚠": [
+    "R$ 32.871,59",
+    "↑ 166% vs. período anterior"
+   ],
+   "Impressões": [
+    "1.980.656",
+    "↑ 69% vs. período anterior"
+   ],
+   "Cliques": [
+    "49.977",
+    "↑ 434% vs. período anterior"
+   ],
+   "CTR": [
+    "2,52%",
+    "↑ 217% vs. período anterior"
+   ],
+   "CPL": [
+    "R$ 30,98",
+    "↓ 11% vs. período anterior"
+   ],
+   "Leads": [
+    "1.061",
+    "↑ 199% vs. período anterior"
+   ],
+   "Vendas": [
+    "65",
+    "↑ 491% vs. período anterior"
+   ],
+   "CAC ⚠": [
+    "R$ 505,72",
+    "↓ 55% vs. período anterior"
+   ],
+   "ROAS": [
+    "1,88x",
+    "↑ 133% vs. período anterior"
+   ]
+  },
+  "texto": "← Voltar para Dashboard\nDashboard de mídia\nSaúde dos anúncios pagos e oportunidades de escala. Compara com o período anterior de mesmo tamanho (02/08/2026 a 31/08/2026).\nDe\nAté\nAtalho\nPeríodo\n7 dias\n30 dias\n90 dias\nCampanha\nTodas\nLançamento Setembro\nPerpétuo Curso Base\nTodos os canais\nGoogle Ads\nMeta Ads\nQualidade do dado: 1 aviso(s) de 16/09/2026 a 15/10/2026 · alguns números abaixo podem estar incompletos\nInvestimento ⚠ ⓘ\nR$ 32.871,59\n↑ 166% vs. período anterior\nImpressões\n1.980.656\n↑ 69% vs. período anterior\nCliques\n49.977\n↑ 434% vs. período anterior\nCTR\n2,52%\n↑ 217% vs. período anterior\nCPL ⓘ\nR$ 30,98\n↓ 11% vs. período anterior\nLeads ⓘ\n1.061\n↑ 199% vs. período anterior\nVendas\n65\n↑ 491% vs. período anterior\nCAC ⚠ ⓘ\nR$ 505,72\n↓ 55% vs. período anterior\nROAS ⓘ\n1,88x\n↑ 133% vs. período anterior\nPerformance por dia\nCTR\nCPL (R$)\nImpressões\nVisão\nDiária\nSemanal\n0.0%\nR$ 0\n1.3%\nR$ 61\n2.7%\nR$ 122\n01/09\n04/09\n07/09\n10/09\n13/09\n16/09\n19/09\n22/09\n25/09\n28/09\nMatriz de fadiga criativa\nCada ponto é um anúncio ativo nos últimos 7 dias. Índice de CPL = CPL do anúncio ÷ CPL de referência (30 dias: R$ 30,98).\n0.0x\n1.0x\n2.0x\n3.0x\n4.0x\n1\n1.5\n2\n2.5\n3\n3.5\n4\nFrequência (7 dias)\nÁrea de saturação\n● Saudável (≤1,0x)\n● Atenção (1,0–2,0x)\n● Risco (2,0–2,5x)\n● Crítico (>2,5x)\nMapa de saturação de ângulos\nTamanho = investimento · cor = índice de CPL do ângulo.\noferta\n1,00x\nR$ 25.313,56\nprova\n1,08x\nR$ 4.028,02\ndor\n0,95x\nR$ 3.530,01\nAlertas de tráfego\nRegras fixas: Pausar (índice > 2,0x, ou frequência > 3 com CTR caindo 30%+) · Monitorar (índice > 1,2x, frequência > 2,2 ou CTR caindo 10%+) · Escalar (índice ≤ 1,0x com CTR estável ou subindo).\nANÚNCIO\tCANAL\tFREQ. (7D)\tQUEDA CTR\tÍNDICE CPL\tTENDÊNCIA CTR\tAÇÃO\nPesquisa lançamento\tGoogle Ads\t1,3\t↑ 0%\t4,00x\t\tPausar\nCriativo 3\tMeta Ads\t2,3\t↓ 2%\t1,23x\t\tMonitorar\nCriativo 2\tMeta Ads\t2,3\t↓ 2%\t1,07x\t\tMonitorar\nCriativo 1\tMeta Ads\t2,3\t↓ 2%\t0,97x\t\tMonitorar\nRelatório de mídia\nPeríodo 01/09/2026 a 30/09/2026. Clique numa linha de canal ou de campanha para filtrar o dashboard.\nBaixar CSV\nBaixar Excel\nImprimir\nPor canal\nPor campanha\nPor anúncio\nPor ângulo\nCANAL\tINVESTIMENTO\tIMPRESSÕES\tCLIQUES\tCTR\tCPC\tLEADS\tCPL\tVENDAS\tRECEITA\tCAC\tROAS\nGoogle Ads\tR$ 20.766,24\t830.648\t41.533\t5,00%\tR$ 0,50\t700\tR$ 29,67\t44\tR$ 43.868,00\tR$ 471,96\t2,11x\nMeta Ads\tR$ 12.105,35\t1.150.008\t8.444\t0,73%\tR$ 1,43\t361\tR$ 33,53\t21\tR$ 18.087,00\tR$ 576,45\t1,49x\nTotal\tR$ 32.871,59\t1.980.656\t49.977\t2,52%\tR$ 0,66\t1.061\tR$ 30,98\t65\tR$ 61.955,00\tR$ 505,72\t1,88x\nCTR = cliques ÷ impressões · CPC = investimento ÷ cliques · CPL = investimento ÷ leads · CAC = investimento ÷ vendas · ROAS = receita ÷ investimento. Leads e vendas são os rastreados pelo UTM do anúncio. Tudo por regra fixa.",
+  "erros": []
+ },
+ "Mídia paga": {
+  "kpis": {
+   "Investimento ⚠": [
+    "R$ 32.871,59",
+    "▲ 165,7% vs. 02/08–31/08"
+   ],
+   "Impressões": [
+    "1.980.656",
+    "▲ 68,5%"
+   ],
+   "Cliques": [
+    "49.977",
+    "▲ 433,6%"
+   ],
+   "CTR médio": [
+    "2,5%",
+    "▲ 216,6%"
+   ],
+   "CPC": [
+    "R$ 0,66",
+    "▼ 50,2%"
+   ],
+   "Connect rate": [
+    "87,2%",
+    "▼ 22,8%"
+   ],
+   "Leads": [
+    "1.061",
+    "▲ 198,9% conv. página 2,4%"
+   ],
+   "CPL médio": [
+    "R$ 30,98",
+    "▼ 11,1%"
+   ],
+   "Vendas": [
+    "65",
+    "▲ 490,9% R$ 61.955,00"
+   ],
+   "CAC ⚠": [
+    "R$ 513,62",
+    "▼ 54,3%"
+   ],
+   "ROAS": [
+    "1,88x",
+    "▲ 132,8%"
+   ]
+  },
+  "texto": "← Voltar para Dashboard\nDashboard de tráfego\nSaúde dos anúncios pagos e oportunidades de escala. Comparado ao período anterior de mesmo tamanho (02/08/2026 a 31/08/2026).\nImportar planilha (recuperação)\nDados importados por planilha neste período:\nR$ 32.871,59 (100,0% do investimento mostrado) em 120 linha(s). O restante veio da integração. Veja o histórico no fim da página.\nDe\nAté\nCanal\nTodos os canais\nGoogle Ads\nMeta Ads\nCampanha\nTodas\nPerpétuo Curso Base\nLançamento Setembro\nCPL limite (R$)\nCTR mínimo (%)\n7 dias\n14 dias\n30 dias\nQualidade do dado: 1 aviso(s) de 16/09/2026 a 15/10/2026 · alguns números abaixo podem estar incompletos\nInvestimento ⚠ ⓘ\nR$ 32.871,59\n▲ 165,7% vs. 02/08–31/08\nImpressões\n1.980.656\n▲ 68,5%\nCliques\n49.977\n▲ 433,6%\nCTR médio\n2,5%\n▲ 216,6%\nCPC\nR$ 0,66\n▼ 50,2%\nConnect rate\n87,2%\n▼ 22,8%\nLeads ⓘ\n1.061\n▲ 198,9% conv. página 2,4%\nCPL médio ⓘ\nR$ 30,98\n▼ 11,1%\nVendas\n65\n▲ 490,9% R$ 61.955,00\nCAC ⚠ ⓘ\nR$ 513,62\n▼ 54,3%\nROAS ⓘ\n1,88x\n▲ 132,8%\nCAC de mídia por canal\nInvestimento do canal ÷ clientes novos que vieram dos anúncios dele (pela UTM). Clique em um canal para filtrar o dashboard inteiro. O CAC total, com equipe e comissões, está no Painel gerencial.\nCANAL\tINVESTIDO\t% DO INVESTIMENTO\tLEADS\tCPL\tCLIENTES\tCAC DE MÍDIA\tVS. CAC GERAL\tRECEITA\tROAS\nGoogle Ads\tR$ 20.766,24\t63,2%\t700\tR$ 29,67\t44\tR$ 471,96\t0,92x\tR$ 43.868,00\t2,11x\nMeta Ads\tR$ 12.105,35\t36,8%\t361\tR$ 33,53\t20\tR$ 605,27\t1,18x\tR$ 18.087,00\t1,49x\nTodos os canais\tR$ 32.871,59\t100%\t1.061\tR$ 30,98\t64\tR$ 513,62\t1,00x\tR$ 61.955,00\t1,88x\n1. Matriz de fadiga criativa\nCada bolha é um criativo. Tamanho = investimento. Cor = índice de CPL (CPL do criativo ÷ CPL médio do período).\n0,0x\n0,5x\n1,0x\n1,5x\n2,0x\n2,5x\n3,0x\n0,0\n1,0\n2,0\n3,0\n4,0\nFrequência\n● Saudável ≤1,0x\n● Atenção 1,0–2,0x\n● Risco 2,0–2,5x\n● Crítico >2,5x\nFrequência = impressões ÷ alcance, somados por dia (aproximação: o alcance do período inteiro costuma ser menor). A área vermelha é frequência e índice acima de 2,5.\n2. CTR e CPL por dia\n0,0%\nR$ 0,0\n1,5%\nR$ 67\n2,9%\nR$ 134\n01/09\n04/09\n07/09\n10/09\n13/09\n16/09\n19/09\n22/09\n25/09\n28/09\nCTR (eixo esquerdo)\nCPL (eixo direito)\nImpressões por dia (até 69.979)\nLinhas tracejadas vermelha e azul são o CPL limite e o CTR mínimo que você informou acima. Dia sem lead não tem CPL.\n3. Mapa de saturação de ângulos\nTamanho = investimento. Cor = índice de CPL do ângulo. Defina o ângulo de cada criativo em Campanhas → (campanha) → Links e tracking.\noferta\níndice 1,00x\nR$ 25.313,56\nprova\níndice 1,08x\nR$ 4.028,02\ndor\níndice 0,95x\nR$ 3.530,01\n4. Alertas de tráfego\nCRIATIVO\tFREQ.\tCTR VS. ANTERIOR\tÍNDICE CPL\tTENDÊNCIA\tSUGESTÃO\nCriativo 3\noferta\t2,1x\t▼ 9%\t1,21x\t\tMonitorar\nCriativo 2\nprova\t2,1x\t▼ 7%\t1,08x\t\tMonitorar\nCriativo 1\ndor\t2,1x\t▼ 6%\t0,95x\t\tMonitorar\nPesquisa lançamento\noferta\t1,2x\t—\t0,96x\t\tEscalar\nComo a sugestão é calculada\nCriativos em ordem de performance (período inteiro)\nMelhor desempenho (ROAS, depois CPL)\nMenor CPL\nMenor CAC\nMaior CTR\nMaior conversão da página\nMais leads\nMais vendas\nMaior investimento\nPE\n#1 Pesquisa lançamento\ngoogle_ads · Lançamento Setembro · oferta\nInvestimento\nR$ 20.766,24\nImpressões\n830.648\nCTR\n5,0%\nCPC\nR$ 0,50\nConnect rate\n80,0%\nConversão da página\n2,1%\nLeads\n700\nCPL\nR$ 29,67\nVendas\n44\nCAC\nR$ 471,96\nROAS\n2,11x\nReceita\nR$ 43.868,00\nCR\n#2 Criativo 1\nmeta_ads · Perpétuo Curso Base · dor\nInvestimento\nR$ 3.530,01\nImpressões\n335.352\nCTR\n0,9%\nCPC\nR$ 1,17\nConnect rate\n100,4%\nConversão da página\n4,0%\nLeads\n120\nCPL\nR$ 29,42\nVendas\n6\nCAC\nR$ 588,34\nROAS\n1,69x\nReceita\nR$ 5.982,00\nCR\n#3 Criativo 3\nmeta_ads · Perpétuo Curso Base · oferta\nInvestimento\nR$ 4.547,32\nImpressões\n431.997\nCTR\n0,6%\nCPC\nR$ 1,76\nConnect rate\n150,7%\nConversão da página\n3,1%\nLeads\n121\nCPL\nR$ 37,58\nVendas\n9\nCAC\nR$ 568,42\nROAS\n1,56x\nReceita\nR$ 7.073,00\nCR\n#4 Criativo 2\nmeta_ads · Perpétuo Curso Base · prova\nInvestimento\nR$ 4.028,02\nImpressões\n382.659\nCTR\n0,7%\nCPC\nR$ 1,41\nConnect rate\n120,5%\nConversão da página\n3,5%\nLeads\n120\nCPL\nR$ 33,57\nVendas\n6\nCAC\nR$ 671,34\nROAS\n1,25x\nReceita\nR$ 5.032,00\nLeads e vendas de cada criativo vêm do utm_content do link. Vendas contam no dia da venda; leads no dia do cadastro. Custo, cliques, visualizações e alcance vêm do que você importa do Google ou do Meta.\nResumo diário\nClique em um dia para ver os criativos só daquele dia.\nDIA\tINVESTIMENTO\tIMPRESSÕES\tCLIQUES\tCTR\tCPC\tCONNECT RATE\tLEADS\tCPL\tVENDAS\tROAS\n30/09/2026\tR$ 1.004,00\t60.629\t1.514\t2,5%\tR$ 0,66\t87,8%\t14\tR$ 71,71\t0\t0,00x\n29/09/2026\tR$ 1.099,47\t66.196\t1.664\t2,5%\tR$ 0,66\t87,7%\t9\tR$ 122,16\t0\t0,00x\n28/09/2026\tR$ 1.052,44\t63.989\t1.574\t2,5%\tR$ 0,67\t88,2%\t12\tR$ 87,70\t1\t0,04x\n27/09/2026\tR$ 1.172,66\t69.903\t1.790\t2,6%\tR$ 0,66\t87,4%\t12\tR$ 97,72\t7\t5,95x\n26/09/2026\tR$ 1.178,46\t69.576\t1.817\t2,6%\tR$ 0,65\t87,0%\t13\tR$ 90,65\t10\t8,46x\n25/09/2026\tR$ 1.030,41\t62.620\t1.548\t2,5%\tR$ 0,67\t87,8%\t12\tR$ 85,87\t4\t3,87x\n24/09/2026\tR$ 1.109,81\t67.370\t1.669\t2,5%\tR$ 0,66\t87,7%\t11\tR$ 100,89\t8\t7,19x\n23/09/2026\tR$ 1.073,73\t65.162\t1.617\t2,5%\tR$ 0,66\t87,6%\t13\tR$ 82,59\t8\t7,43x\n22/09/2026\tR$ 1.184,19\t69.979\t1.827\t2,6%\tR$ 0,65\t86,9%\t11\tR$ 107,65\t8\t6,74x\n21/09/2026\tR$ 1.079,16\t65.301\t1.631\t2,5%\tR$ 0,66\t87,5%\t14\tR$ 77,08\t6\t5,54x\n20/09/2026\tR$ 1.034,51\t63.323\t1.546\t2,4%\tR$ 0,67\t87,8%\t48\tR$ 21,55\t2\t1,93x\n19/09/2026\tR$ 1.124,08\t67.062\t1.725\t2,6%\tR$ 0,65\t86,9%\t45\tR$ 24,98\t0\t0,00x\n18/09/2026\tR$ 1.114,88\t67.775\t1.679\t2,5%\tR$ 0,66\t87,6%\t45\tR$ 24,78\t0\t0,00x\n17/09/2026\tR$ 1.104,58\t65.674\t1.697\t2,6%\tR$ 0,65\t87,0%\t50\tR$ 22,09\t0\t0,00x\n16/09/2026\tR$ 1.168,23\t69.547\t1.795\t2,6%\tR$ 0,65\t86,9%\t48\tR$ 24,34\t0\t0,00x\n15/09/2026\tR$ 1.164,85\t68.277\t1.818\t2,7%\tR$ 0,64\t86,4%\t46\tR$ 25,32\t1\t0,86x\n14/09/2026\tR$ 1.073,60\t66.047\t1.602\t2,4%\tR$ 0,67\t87,7%\t50\tR$ 21,47\t0\t0,00x\n13/09/2026\tR$ 1.130,30\t67.199\t1.740\t2,6%\tR$ 0,65\t86,8%\t44\tR$ 25,69\t0\t0,00x\n12/09/2026\tR$ 1.105,88\t65.340\t1.715\t2,6%\tR$ 0,64\t86,5%\t44\tR$ 25,13\t2\t0,94x\n11/09/2026\tR$ 1.138,84\t66.751\t1.779\t2,7%\tR$ 0,64\t86,3%\t45\tR$ 25,31\t0\t0,00x\n10/09/2026\tR$ 1.003,36\t61.178\t1.513\t2,5%\tR$ 0,66\t87,2%\t47\tR$ 21,35\t0\t0,00x\n09/09/2026\tR$ 1.104,47\t67.457\t1.660\t2,5%\tR$ 0,67\t87,4%\t47\tR$ 23,50\t0\t0,00",
+  "erros": []
+ },
+ "Dashboard de vendas (hoje = 30/09)": {
+  "kpis": {
+   "Vendas no mês": [
+    "65",
+    "R$ 61.955,00 gerados"
+   ],
+   "Vendas sem campanha": [
+    "0",
+    "R$ 0,00 no mês"
+   ],
+   "Oportunidades em negociação": [
+    "0",
+    "R$ 0,00 estimados"
+   ],
+   "Oportunidades ganhas no mês": [
+    "0",
+    "R$ 0,00"
+   ],
+   "Pessoas": [
+    "1.994",
+    "1.892 leads · 102 clientes"
+   ],
+   "Novos em 30 dias": [
+    "1.246",
+    "251% vs. 30 dias antes"
+   ],
+   "Qualificados": [
+    "0",
+    "0,0% do total"
+   ],
+   "A qualificar": [
+    "1.994",
+    "pesquisa ainda não respondida"
+   ],
+   "Clientes ativos": [
+    "100",
+    "2 inativos"
+   ],
+   "Lead → cliente": [
+    "5,1%",
+    "102 de 1.994"
+   ],
+   "Ticket médio": [
+    "R$ 1.122,54",
+    "125 venda(s) aprovada(s)"
+   ]
+  },
+  "texto": "← Voltar para Dashboard\nDashboard de Vendas\nFunil comercial\nVendas\nAlunos\nClientes\n🔴 Contratos vencendo (8) — renegociar a renovação\n#2 · Ana Pires\ttermina em 06/10/2026\tVence em 6 dia(s)\tVer contratos\n#11 · Sofia Dias\ttermina em 06/10/2026\tVence em 6 dia(s)\tVer contratos\n#13 · Vera Dias\ttermina em 06/10/2026\tVence em 6 dia(s)\tVer contratos\n#8 · Carla Souza\ttermina em 12/10/2026\tVence em 12 dia(s)\tVer contratos\n#5 · João Pires\ttermina em 23/10/2026\tVence em 23 dia(s)\tVer contratos\n#12 · Elisa Silva\ttermina em 23/10/2026\tVence em 23 dia(s)\tVer contratos\n#6 · Marina Melo\ttermina em 05/11/2026\tVence em 36 dia(s)\tVer contratos\n#3 · Bruno Dias\ttermina em 06/11/2026\tVence em 37 dia(s)\tVer contratos\nAviso amarelo a 40 dias do fim, vermelho a 30 dias ou menos.\nMetas x vendas realizadas\nVendas aprovadas contra a meta de cada campanha ativa. Campanha de lançamento: meta da campanha toda e ritmo pelo tempo que já passou. Campanha recorrente: meta do mês atual.\nVendas no mês\n65\nR$ 61.955,00 gerados\nVendas sem campanha\n0\nR$ 0,00 no mês\nOportunidades em negociação\n0\nR$ 0,00 estimados\nOportunidades ganhas no mês\n0\nR$ 0,00\nCAMPANHA\tMETA DE VENDAS\tVENDEU\tESPERADO ATÉ HOJE\tRITMO\tMETA DE RECEITA\tRECEITA\nLançamento Setembro\ncampanha toda\t45\t44 (98%)\n\t45\tAtrás do ritmo\tR$ 44.865,00\tR$ 43.868,00 (98%)\n\nPerpétuo Curso Base\nmês atual\t—\t21\t—\t—\t—\tR$ 18.087,00\nPessoas\n1.994\n1.892 leads · 102 clientes\nNovos em 30 dias\n1.246\n251% vs. 30 dias antes\nQualificados\n0\n0,0% do total\nA qualificar\n1.994\npesquisa ainda não respondida\nClientes ativos ⓘ\n100\n2 inativos\nLead → cliente ⓘ\n5,1%\n102 de 1.994\nTicket médio ⓘ\nR$ 1.122,54\n125 venda(s) aprovada(s)\nNovos cadastros por dia, 30 dias\n0\n25\n50\n01/09\n04/09\n07/09\n10/09\n13/09\n16/09\n19/09\n22/09\n25/09\n28/09\nFunil\nPessoas\n1.994\nQualificados\n0\nClientes\n102\nAtivos\n100\nOrigem dos cadastros\nCANAL\tPESSOAS\tQUALIFICADAS\tCLIENTES\tCONVERSÃO\t\nmeta_ads\t1.294\t0\t58\t4,5%\tVer\ngoogle_ads\t700\t0\t44\t6,3%\tVer\nClientes por produto\nCurso Base\n98\nMentoria em grupo\n14\nE-book de bônus\n13\nÚltimos cadastros\nQUANDO\tNOME\tCANAL\tSITUAÇÃO\n15/10/2026, 18:15\tOtávio Rocha\nlead1294@aurora.test\tmeta_ads\tLead Pendente\n15/10/2026, 17:38\tNina Rocha\nlead1293@aurora.test\tmeta_ads\tLead Pendente\n15/10/2026, 17:01\tMarina Rocha\nlead1292@aurora.test\tmeta_ads\tLead Pendente\n15/10/2026, 16:24\tLucas Rocha\nlead1291@aurora.test\tmeta_ads\tLead Pendente\n15/10/2026, 15:47\tKaren Rocha\nlead1290@aurora.test\tmeta_ads\tLead Pendente\n15/10/2026, 15:10\tJoão Rocha\nlead1289@aurora.test\tmeta_ads\tLead Pendente\n15/10/2026, 14:33\tIara Rocha\nlead1288@aurora.test\tmeta_ads\tLead Pendente\n15/10/2026, 13:56\tHeitor Rocha\nlead1287@aurora.test\tmeta_ads\tLead Pendente\nVendas por canal\n01/09/2026 a 30/09/2026 · atribuição pelo último toque. ROAS bruto = receita bruta ÷ investimento.\nÚltimo toque (oficial)\nPrimeiro toque\nCANAL\tPÚBLICO\tVENDAS\tCLIENTES\tRECEITA BRUTA\tINVESTIMENTO\tCAC\tROAS\nGoogle Ads\t—\t44\t44\tR$ 43.868,00\tR$ 20.766,24\tR$ 471,96\t2,11x\nMeta Ads\t—\t21\t18\tR$ 18.087,00\tR$ 12.105,35\tR$ 672,52\t1,49x\nTotal\t65\t\tR$ 61.955,00\tR$ 32.871,59\t\t1,88x",
+  "erros": []
+ },
+ "Dashboard financeiro": {
+  "kpis": {
+   "Saldo em banco": [
+    "-R$ 71.074,62",
+    "1 conta(s) · clique para o extrato"
+   ],
+   "A receber no período": [
+    "R$ 0,00",
+    "0 parcela(s) · R$ 0,00 em atraso (total)"
+   ],
+   "A pagar no período": [
+    "R$ 0,00",
+    "0 conta(s) · R$ 0,00 em atraso (total)"
+   ],
+   "Caixa projetado em 30 dias": [
+    "-R$ 37.536,19",
+    "saldo + a receber − a pagar"
+   ],
+   "Receitas do mês": [
+    "R$ 27.055,00",
+    "pela DRE, regime de competência"
+   ],
+   "Despesas do mês": [
+    "R$ 38.104,27",
+    "custos, deduções e despesas"
+   ],
+   "Resultado do mês": [
+    "-R$ 11.049,27",
+    "-40,8% da receita"
+   ]
+  },
+  "texto": "← Voltar para Dashboard\nDashboard financeiro\nExtrato\nCustos e margens\nContas a receber\nContas a pagar\nLançamentos\nPeríodo de vencimento\nPróximos 7 dias\nPróximos 30 dias\nPróximos 90 dias\nPróximos 6 meses\nPróximos 12 meses\nEste mês\nMês passado\nJá vencidas\nTudo\nPersonalizado\nDe\nAté\nSaldo em banco ⓘ\n-R$ 71.074,62\n1 conta(s) · clique para o extrato\nA receber no período ⓘ\nR$ 0,00\n0 parcela(s) · R$ 0,00 em atraso (total)\nA pagar no período ⓘ\nR$ 0,00\n0 conta(s) · R$ 0,00 em atraso (total)\nCaixa projetado em 30 dias\n-R$ 37.536,19\nsaldo + a receber − a pagar\nReceitas do mês\nR$ 27.055,00\npela DRE, regime de competência\nDespesas do mês\nR$ 38.104,27\ncustos, deduções e despesas\nResultado do mês ⓘ\n-R$ 11.049,27\n-40,8% da receita\nCaixa projetado, próximos 30 dias\nR$ 0\nR$ 1\nR$ 1\n15/10\n18/10\n21/10\n24/10\n27/10\n30/10\n02/11\n05/11\n08/11\n11/11\n14/11\nParte do saldo de hoje e soma o que vence a receber e a pagar. Contas em atraso entram no dia de hoje. Esta curva é sempre de 30 dias; o período acima muda os cartões e as listas.\nResultado por mês\nR$ 0\nR$ 4,0 mil\nR$ 8,0 mil\n07/2026\n08/2026\n09/2026\n10/2026\n11/2026\nPróximos a receber\nNada a receber.\nPróximos a pagar\nNada a pagar.\nSaldo por conta bancária\nCONTA\tSALDO ATUAL\nConta principal\t-R$ 71.074,62\nTotal\t-R$ 71.074,62\nMaiores despesas do mês\nPró-labore\nR$ 18.000,00\nEquipe e prestadores\nR$ 9.500,00\nMídia paga – Meta Ads\nR$ 6.052,47\nFerramentas e software\nR$ 2.200,00\nTaxas de plataformas de venda\nR$ 1.307,40\nImpostos sobre vendas\nR$ 1.044,40",
+  "erros": []
+ },
+ "Custos e margens": {
+  "kpis": {
+   "Custo do mês": [
+    "R$ 62.571,59",
+    "5 itens · 09/2026"
+   ],
+   "Pró-labores": [
+    "R$ 18.000,00",
+    "o que vai para casa"
+   ],
+   "Operação (sem pró-labore)": [
+    "R$ 44.571,59",
+    "ferramentas, estrutura, cursos e serviços"
+   ],
+   "Fixo": [
+    "R$ 0,00",
+    "recorrente todo mês"
+   ],
+   "Variável": [
+    "R$ 0,00",
+    "recorrente que muda de valor"
+   ],
+   "Parcelado e pontual": [
+    "R$ 62.571,59",
+    "parcelas R$ 0,00 · pontual R$ 62.571,59"
+   ],
+   "Receita do mês": [
+    "R$ 46.344,15",
+    "3 produto(s)"
+   ],
+   "Margem de contribuição": [
+    "70,6%",
+    "R$ 32.727,41 depois de imposto, taxas e custo dos produtos"
+   ],
+   "Custos fixos do mês": [
+    "R$ 62.571,59",
+    "custo operacional contado"
+   ],
+   "Lucro líquido": [
+    "-R$ 29.844,18",
+    "contribuição − custos fixos"
+   ],
+   "Margem de lucro líquida": [
+    "-64,4%",
+    "Cenário: Abaixo do ruim"
+   ],
+   "Falta para o cenário ruim": [
+    "R$ 39.113,01",
+    "de lucro a mais no mês (20% de margem)"
+   ],
+   "Ponto de equilíbrio": [
+    "R$ 101.158,55/mês",
+    "vendas para o resultado dar zero"
+   ],
+   "Para a meta de 30% de lucro": [
+    "R$ 205.381,79/mês",
+    "lucro de R$ 61.614,54 por mês"
+   ],
+   "Imposto no equilíbrio": [
+    "R$ 19.312,50",
+    "alíquota efetiva 19,1% · anexo V"
+   ],
+   "A receber no mês": [
+    "R$ 46.344,15",
+    "faltam R$ 54.814,40 para empatar"
+   ]
+  },
+  "texto": "← Voltar para Dashboard\nCustos e margens\nContas a pagar\nDashboard financeiro\nMês\n05/2026\n06/2026\n07/2026\n08/2026\n09/2026\n10/2026\n11/2026\n12/2026\n01/2027\n02/2027\n03/2027\n04/2027\n05/2027\n06/2027\n07/2027\n08/2027\n09/2027\n10/2027\nTudo o que está no Contas a pagar com competência no mês, mais as recorrências ativas que ainda não foram lançadas. Desmarque o que não quer contar (ex.: um serviço pontual); a escolha fica salva neste navegador.\nCusto do mês\nR$ 62.571,59\n5 itens · 09/2026\nPró-labores\nR$ 18.000,00\no que vai para casa\nOperação (sem pró-labore)\nR$ 44.571,59\nferramentas, estrutura, cursos e serviços\nFixo\nR$ 0,00\nrecorrente todo mês\nVariável\nR$ 0,00\nrecorrente que muda de valor\nParcelado e pontual\nR$ 62.571,59\nparcelas R$ 0,00 · pontual R$ 62.571,59\nMargens e meta · 09/2026\nReceita = contas a receber do mês. Imposto pelo regime da simulação (Simples Nacional (anexo pelo fator R)).\nMargem de lucro líquida (%):\nRuim\nBom\nÓtimo\nReceita do mês ⓘ\nR$ 46.344,15\n3 produto(s)\nMargem de contribuição\n70,6%\nR$ 32.727,41 depois de imposto, taxas e custo dos produtos\nCustos fixos do mês\nR$ 62.571,59\ncusto operacional contado\nLucro líquido\n-R$ 29.844,18\ncontribuição − custos fixos\nMargem de lucro líquida\n-64,4%\nCenário: Abaixo do ruim\nFalta para o cenário ruim\nR$ 39.113,01\nde lucro a mais no mês (20% de margem)\nCENÁRIO\tMARGEM DE LUCRO\tVENDER NO MÊS\tLUCRO NO MÊS\tCOMPARADO COM O A RECEBER DE 09/2026\nRuim\t20%\tR$ 151.257,45\tR$ 30.251,49\tfaltam R$ 104.913,30\nBom\t30%\tR$ 205.381,79\tR$ 61.614,54\tfaltam R$ 159.037,64\nÓtimo\t40%\tR$ 312.860,51\tR$ 125.144,20\tfaltam R$ 266.516,36\n\nNão há plano ativo em Planejamento da empresa: a meta fica só neste navegador.\n\nPRODUTO\tCLIENTES\tRECEITA\tIMPOSTO\tTAXAS DA VENDA\tCUSTO DO PRODUTO (% DA RECEITA)\tCUSTO POR CLIENTE/MÊS (R$)\tMARGEM DE CONTRIBUIÇÃO\t%\nCurso Base\t36\tR$ 32.302,80\tR$ 3.336,26\tR$ 0,00\t\t\tR$ 25.736,26\t79,7%\nMentoria em grupo\t14\tR$ 14.000,00\tR$ 1.445,93\tR$ 0,00\t\t\tR$ 6.954,07\t49,7%\nE-book de bônus\t1\tR$ 41,35\tR$ 4,27\tR$ 0,00\t\t\tR$ 37,08\t89,7%\nTotal\t\tR$ 46.344,15\tR$ 4.786,46\tR$ 0,00\tR$ 8.830,28\tR$ 32.727,41\t70,6%\nCustos fixos do mês\t− R$ 62.571,59\t\nLucro líquido\t-R$ 29.844,18\t-64,4%\nCusto do produto: o que cada produto gasta só por existir uma venda (ex.: disparos, licença por cliente, terceirizado da entrega). Não repita aqui o que já está no Contas a pagar, senão conta duas vezes.\nPor área\nPor área\nPor conta\nPor tipo\nGeral\nR$ 29.700,00 47%\nAquisição – Google Ads\nR$ 20.766,24 33%\nAquisição – Meta Ads\nR$ 12.105,35 19%\nQuanto preciso vender\nRegime para o cálculo\nMEI\nSimples Nacional (anexo pelo fator R)\nSimples Nacional — anexo III\nSimples Nacional — anexo V\nAlíquota que eu informar\nCustos variáveis da venda (%)\n\nRegime no Cadastro da empresa: Simples Nacional. Este seletor é só simulação: não muda nada no cadastro nem nas vendas.\n\nPonto de equilíbrio\nR$ 101.158,55/mês\nvendas para o resultado dar zero\nPara a meta de 30% de lucro\nR$ 205.381,79/mês\nlucro de R$ 61.614,54 por mês\nImposto no equilíbrio\nR$ 19.312,50\nalíquota efetiva 19,1% · anexo V\nA receber no mês\nR$ 46.344,15\nfaltam R$ 54.814,40 para empatar\nFator R 17,8%: folha (pró-labores e salários) ÷ receita dos últimos 12 meses. A partir de 28% a atividade fica no anexo III; abaixo, no anexo V.\nFator R 8,8%: folha (pró-labores e salários) ÷ receita dos últimos 12 meses. A partir de 28% a atividade fica no anexo III; abaixo, no anexo V.\n\nConta: receita = (custo do mês) ÷ (1 − imposto − custos variáveis − margem). No Simples a alíquota depende do faturamento dos últimos 12 meses; aqui ele é estimado como 12 vezes a receita do mês. O INSS de 11% do pró-labore é descontado do valor do sócio (até o teto do INSS), não aumenta o custo da empresa. Confirme o enquadramento com a contabilidade.\n\nComparação entre regimes · 09/2026\nREGIME\tPONTO DE EQUILÍBRIO\tIMPOSTO POR MÊS\tALÍQUOTA EFETIVA\tPARA A META (30%)\tOBSERVAÇÃO\nMEI\tR$ 77.406,44\tR$ 86,05\tfixo\tR$ 122.987,64\tacima do limite do MEI\nSimples Nacional (anexo pelo fator R)\tR$ 101.158,55\tR$ 19.312,50\t19,1% (anexo V)\tR$ 205.381,79\tfator R 17,8%\nSimples Nacional — anexo III\tR$ 91.770,58\tR$ 11.713,29\t12,8%\tR$ 173.983,46\t\nSimples Nacional — anexo V\tR$ 101.158,55\tR$ 19.312,50\t19,1%\tR$ 205.381,79\t\nAlíquota que eu informar\tR$ 83.488,58\tR$ 5.009,31\t6,0%\tR$ 139.214,14\t\n\nO MEI tem um titular só e limite de R$ 81.000,00 por ano; DAS de R$ 86,05 (serviços, 2026).\n\nPróximos 12 meses\nMÊS\tCUSTO\tPRÓ-LABORES\tOPERAÇÃO\tA RECEBER\tDIFERENÇA\n09/2026\tR$ 62.571,59\tR$ 18.000,00\tR$ 44.571,59\tR$ 46.344,15\t-R$ 16.227,44\n10/2026\tR$ 35.752,47\tR$ 18.000,00\tR$ 17.752,47\tR$ 50.016,05\tR$ 14.263,58\n11/2026\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 12.527,85\tR$ 12.527,85\n12/2026\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\n01/2027\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\n02/2027\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\n03/2027\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\n04/2027\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\n05/2027\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\n06/2027\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\n07/2027\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\n08/2027\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\nA receber: contas a receber com vencimento no mês (contratos, vendas parceladas e avulsas). Custos sem conta lançada entram pelas recorrências ativas.\nItens de 09/2026\n\tITEM\tTIPO\tÁREA\tCONTA\tVALOR\n\tGoogle Ads\tPontual\tAquisição – Google Ads\t6.1.01 Mídia paga – Google Ads\tR$ 20.766,24\n\tPró-labore\tPontual\tGeral\t6.2.04 Pró-labore\tR$ 18.000,00\n\tMeta Ads\tPontual\tAquisição – Meta Ads\t6.1.02 Mídia paga – Meta Ads\tR$ 12.105,35\n\tEquipe (editor e social media)\tPontual\tGeral\t6.2.02 Equipe e prestadores\tR$ 9.500,00\n\tFerramentas\tPontual\tGeral\t6.2.01 Ferramentas e software\tR$ 2.200,00\n\tTotal contado\tR$ 62.571,59",
+  "erros": []
+ },
+ "Custos e margens (regime Simples III no navegador)": {
+  "kpis": {
+   "Custo do mês": [
+    "R$ 62.571,59",
+    "5 itens · 09/2026"
+   ],
+   "Pró-labores": [
+    "R$ 18.000,00",
+    "o que vai para casa"
+   ],
+   "Operação (sem pró-labore)": [
+    "R$ 44.571,59",
+    "ferramentas, estrutura, cursos e serviços"
+   ],
+   "Fixo": [
+    "R$ 0,00",
+    "recorrente todo mês"
+   ],
+   "Variável": [
+    "R$ 0,00",
+    "recorrente que muda de valor"
+   ],
+   "Parcelado e pontual": [
+    "R$ 62.571,59",
+    "parcelas R$ 0,00 · pontual R$ 62.571,59"
+   ],
+   "Receita do mês": [
+    "R$ 46.344,15",
+    "3 produto(s)"
+   ],
+   "Margem de contribuição": [
+    "70,6%",
+    "R$ 32.727,41 depois de imposto, taxas e custo dos produtos"
+   ],
+   "Custos fixos do mês": [
+    "R$ 62.571,59",
+    "custo operacional contado"
+   ],
+   "Lucro líquido": [
+    "-R$ 29.844,18",
+    "contribuição − custos fixos"
+   ],
+   "Margem de lucro líquida": [
+    "-64,4%",
+    "Cenário: Abaixo do ruim"
+   ],
+   "Falta para o cenário ruim": [
+    "R$ 39.113,01",
+    "de lucro a mais no mês (20% de margem)"
+   ],
+   "Ponto de equilíbrio": [
+    "R$ 91.770,58/mês",
+    "vendas para o resultado dar zero"
+   ],
+   "Para a meta de 30% de lucro": [
+    "R$ 173.983,46/mês",
+    "lucro de R$ 52.195,04 por mês"
+   ],
+   "Imposto no equilíbrio": [
+    "R$ 11.713,29",
+    "alíquota efetiva 12,8% · anexo III"
+   ],
+   "A receber no mês": [
+    "R$ 46.344,15",
+    "faltam R$ 45.426,43 para empatar"
+   ]
+  },
+  "texto": "← Voltar para Dashboard\nCustos e margens\nContas a pagar\nDashboard financeiro\nMês\n05/2026\n06/2026\n07/2026\n08/2026\n09/2026\n10/2026\n11/2026\n12/2026\n01/2027\n02/2027\n03/2027\n04/2027\n05/2027\n06/2027\n07/2027\n08/2027\n09/2027\n10/2027\nTudo o que está no Contas a pagar com competência no mês, mais as recorrências ativas que ainda não foram lançadas. Desmarque o que não quer contar (ex.: um serviço pontual); a escolha fica salva neste navegador.\nCusto do mês\nR$ 62.571,59\n5 itens · 09/2026\nPró-labores\nR$ 18.000,00\no que vai para casa\nOperação (sem pró-labore)\nR$ 44.571,59\nferramentas, estrutura, cursos e serviços\nFixo\nR$ 0,00\nrecorrente todo mês\nVariável\nR$ 0,00\nrecorrente que muda de valor\nParcelado e pontual\nR$ 62.571,59\nparcelas R$ 0,00 · pontual R$ 62.571,59\nMargens e meta · 09/2026\nReceita = contas a receber do mês. Imposto pelo regime da simulação (Simples Nacional — anexo III).\nMargem de lucro líquida (%):\nRuim\nBom\nÓtimo\nReceita do mês ⓘ\nR$ 46.344,15\n3 produto(s)\nMargem de contribuição\n70,6%\nR$ 32.727,41 depois de imposto, taxas e custo dos produtos\nCustos fixos do mês\nR$ 62.571,59\ncusto operacional contado\nLucro líquido\n-R$ 29.844,18\ncontribuição − custos fixos\nMargem de lucro líquida\n-64,4%\nCenário: Abaixo do ruim\nFalta para o cenário ruim\nR$ 39.113,01\nde lucro a mais no mês (20% de margem)\nCENÁRIO\tMARGEM DE LUCRO\tVENDER NO MÊS\tLUCRO NO MÊS\tCOMPARADO COM O A RECEBER DE 09/2026\nRuim\t20%\tR$ 132.606,25\tR$ 26.521,25\tfaltam R$ 86.262,10\nBom\t30%\tR$ 173.983,46\tR$ 52.195,04\tfaltam R$ 127.639,31\nÓtimo\t40%\tR$ 261.209,43\tR$ 104.483,77\tfaltam R$ 214.865,28\n\nNão há plano ativo em Planejamento da empresa: a meta fica só neste navegador.\n\nPRODUTO\tCLIENTES\tRECEITA\tIMPOSTO\tTAXAS DA VENDA\tCUSTO DO PRODUTO (% DA RECEITA)\tCUSTO POR CLIENTE/MÊS (R$)\tMARGEM DE CONTRIBUIÇÃO\t%\nCurso Base\t36\tR$ 32.302,80\tR$ 3.336,26\tR$ 0,00\t\t\tR$ 25.736,26\t79,7%\nMentoria em grupo\t14\tR$ 14.000,00\tR$ 1.445,93\tR$ 0,00\t\t\tR$ 6.954,07\t49,7%\nE-book de bônus\t1\tR$ 41,35\tR$ 4,27\tR$ 0,00\t\t\tR$ 37,08\t89,7%\nTotal\t\tR$ 46.344,15\tR$ 4.786,46\tR$ 0,00\tR$ 8.830,28\tR$ 32.727,41\t70,6%\nCustos fixos do mês\t− R$ 62.571,59\t\nLucro líquido\t-R$ 29.844,18\t-64,4%\nCusto do produto: o que cada produto gasta só por existir uma venda (ex.: disparos, licença por cliente, terceirizado da entrega). Não repita aqui o que já está no Contas a pagar, senão conta duas vezes.\nPor área\nPor área\nPor conta\nPor tipo\nGeral\nR$ 29.700,00 47%\nAquisição – Google Ads\nR$ 20.766,24 33%\nAquisição – Meta Ads\nR$ 12.105,35 19%\nQuanto preciso vender\nRegime para o cálculo\nMEI\nSimples Nacional (anexo pelo fator R)\nSimples Nacional — anexo III\nSimples Nacional — anexo V\nAlíquota que eu informar\nCustos variáveis da venda (%)\n\nRegime no Cadastro da empresa: Simples Nacional. Este seletor é só simulação: não muda nada no cadastro nem nas vendas.\n\nPonto de equilíbrio\nR$ 91.770,58/mês\nvendas para o resultado dar zero\nPara a meta de 30% de lucro\nR$ 173.983,46/mês\nlucro de R$ 52.195,04 por mês\nImposto no equilíbrio\nR$ 11.713,29\nalíquota efetiva 12,8% · anexo III\nA receber no mês\nR$ 46.344,15\nfaltam R$ 45.426,43 para empatar\n\nConta: receita = (custo do mês) ÷ (1 − imposto − custos variáveis − margem). No Simples a alíquota depende do faturamento dos últimos 12 meses; aqui ele é estimado como 12 vezes a receita do mês. O INSS de 11% do pró-labore é descontado do valor do sócio (até o teto do INSS), não aumenta o custo da empresa. Confirme o enquadramento com a contabilidade.\n\nComparação entre regimes · 09/2026\nREGIME\tPONTO DE EQUILÍBRIO\tIMPOSTO POR MÊS\tALÍQUOTA EFETIVA\tPARA A META (30%)\tOBSERVAÇÃO\nMEI\tR$ 77.406,44\tR$ 86,05\tfixo\tR$ 122.987,64\tacima do limite do MEI\nSimples Nacional (anexo pelo fator R)\tR$ 101.158,55\tR$ 19.312,50\t19,1% (anexo V)\tR$ 205.381,79\tfator R 17,8%\nSimples Nacional — anexo III\tR$ 91.770,58\tR$ 11.713,29\t12,8%\tR$ 173.983,46\t\nSimples Nacional — anexo V\tR$ 101.158,55\tR$ 19.312,50\t19,1%\tR$ 205.381,79\t\nAlíquota que eu informar\tR$ 83.488,58\tR$ 5.009,31\t6,0%\tR$ 139.214,14\t\n\nO MEI tem um titular só e limite de R$ 81.000,00 por ano; DAS de R$ 86,05 (serviços, 2026).\n\nPróximos 12 meses\nMÊS\tCUSTO\tPRÓ-LABORES\tOPERAÇÃO\tA RECEBER\tDIFERENÇA\n09/2026\tR$ 62.571,59\tR$ 18.000,00\tR$ 44.571,59\tR$ 46.344,15\t-R$ 16.227,44\n10/2026\tR$ 35.752,47\tR$ 18.000,00\tR$ 17.752,47\tR$ 50.016,05\tR$ 14.263,58\n11/2026\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 12.527,85\tR$ 12.527,85\n12/2026\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\n01/2027\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\n02/2027\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\n03/2027\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\n04/2027\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\n05/2027\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\n06/2027\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\n07/2027\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\n08/2027\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\tR$ 0,00\nA receber: contas a receber com vencimento no mês (contratos, vendas parceladas e avulsas). Custos sem conta lançada entram pelas recorrências ativas.\nItens de 09/2026\n\tITEM\tTIPO\tÁREA\tCONTA\tVALOR\n\tGoogle Ads\tPontual\tAquisição – Google Ads\t6.1.01 Mídia paga – Google Ads\tR$ 20.766,24\n\tPró-labore\tPontual\tGeral\t6.2.04 Pró-labore\tR$ 18.000,00\n\tMeta Ads\tPontual\tAquisição – Meta Ads\t6.1.02 Mídia paga – Meta Ads\tR$ 12.105,35\n\tEquipe (editor e social media)\tPontual\tGeral\t6.2.02 Equipe e prestadores\tR$ 9.500,00\n\tFerramentas\tPontual\tGeral\t6.2.01 Ferramentas e software\tR$ 2.200,00\n\tTotal contado\tR$ 62.571,59",
+  "erros": []
+ },
+ "RevOps dashboard (hoje = 30/09)": {
+  "kpis": {
+   "Alunos ativos": [
+    "100",
+    ""
+   ],
+   "Churn mensal": [
+    "—",
+    "meta até 6,0% · 0 de 0 saíram"
+   ],
+   "Retenção em 90 dias": [
+    "—",
+    "meta mínima 85,0%"
+   ],
+   "LTV médio": [
+    "R$ 806,08",
+    "meta mínima R$ 600,00 · 100 clientes"
+   ],
+   "Taxa de ascensão": [
+    "—",
+    "meta mínima 15,0% · 0 subiram"
+   ],
+   "Produto mais vendido": [
+    "Curso Base",
+    "66 vendas em 30 dias"
+   ],
+   "Mais ascensão recebida": [
+    "—",
+    ""
+   ],
+   "Melhor taxa de ascensão": [
+    "—",
+    ""
+   ],
+   "Melhor porta de entrada": [
+    "Curso Base",
+    "LTV médio R$ 820,34 · 94 clientes"
+   ]
+  },
+  "texto": "← Voltar para Dashboard\nRevOps\nOperação de alunos: quem está na base, quanto fica, quanto vale e para onde sobe.\nProdutos nos últimos\n30 dias\n90 dias\n180 dias\nMetas\nVer alunos\nOperação dentro da média\n1 de 1 indicadores dentro da meta. Tudo normal na base de alunos.\nAlunos ativos\n100\nChurn mensal ⓘ\n—\nmeta até 6,0% · 0 de 0 saíram\nRetenção em 90 dias\n—\nmeta mínima 85,0%\nLTV médio\nR$ 806,08\nmeta mínima R$ 600,00 · 100 clientes\nDentro da meta\nTaxa de ascensão\n—\nmeta mínima 15,0% · 0 subiram\nChurn mensal\nJanelas de 30 dias. Linha tracejada é a meta máxima.\n0%\n3%\n6%\n20/05\n19/06\n19/07\n18/08\n17/09\n17/10\nMeta\nRealizado\nCurva de retenção\nQuantos seguem ativos 30, 60, 90, 120 e 150 dias depois de entrar.\n0%\n1%\n1%\n30d\n60d\n90d\n120d\n150d\nAlunos ativos ao longo do tempo\nPessoas com pelo menos uma matrícula ativa no fim de cada janela.\n0\n50\n100\n20/05\n19/06\n19/07\n18/08\n17/09\n17/10\nEm que etapa os alunos estão\nMatrículas ativas no Kanban de alunos.\nNovo aluno\n125\nOnboarding\n0\nEm andamento\n0\nConcluído\n0\nProduto mais vendido\nCurso Base\n66 vendas em 30 dias\nMais ascensão recebida\n—\nMelhor taxa de ascensão\n—\nMelhor porta de entrada\nCurso Base\nLTV médio R$ 820,34 · 94 clientes\nProdutos: vendas e ascensão\nPRODUTO\tVENDAS (30 DIAS)\tVS PERÍODO ANTERIOR\tRECEITA LÍQUIDA\tCOMPRADORES\tASCENSÕES RECEBIDAS\tSOBEM DEPOIS\nCurso Base mais vendido\t66\t▲ 371%\tR$ 53.957,64\t98\t—\t—\nE-book de bônus\t3\t▲ 0%\tR$ 112,77\t13\t—\t—\nMentoria em grupo\t0\t—\tR$ 0,00\t0\t—\t—\nLTV por produto de entrada\nQuanto vale, em média, o cliente que começou por cada produto.\nPRIMEIRO PRODUTO\tCLIENTES\tLTV MÉDIO\nCurso Base\t94\tR$ 820,34\nE-book de bônus\t6\tR$ 582,62\nComo cada número é calculado. Tudo vem de código fixo no banco, sem IA. Churn mensal: pessoas ativas há 30 dias que hoje não têm nenhuma matrícula ativa, dividido pelas ativas há 30 dias. Retenção em 90 dias: das pessoas que entraram há pelo menos 90 dias, as que seguiam ativas 90 dias depois de entrar. LTV: receita líquida das vendas aprovadas dividida pelos clientes que compraram. Ascensão: clientes que compraram um produto de nível maior do que já tinham, dividido pelos clientes que entraram abaixo do topo da escada (o nível de cada produto é definido no cadastro de produtos). Cor: verde dentro da meta; amarelo até 15% pior que a meta; vermelho além disso. As metas são editáveis no botão Metas.",
+  "erros": []
+ },
+ "Growth Model (set/2026) topo": {
+  "kpis": {},
+  "texto": "Receita\nR$ 75.955\nImpostos\nR$ 86,05\nMargem de contribuição\nR$ 66.173\nLucro\nR$ 33.302\nMargem de lucro\n43,8%\nLucro por mês\nR$ 33.302",
+  "erros": []
+ },
+ "Growth Model (set/2026)": {
+  "kpis": {},
+  "texto": "← Voltar para Dashboard\nPlanilha\nCenários\nGrowth Model\nO real fica travado; na coluna Cenário você mexe e vê o efeito em tudo: por venda, por campanha e no resultado.\nDe\nAté\nProduto\nTodos os produtos\nCurso Base\nE-book de bônus\nMentoria em grupo\nCampanha\nTodas\nPerpétuo Curso Base\nLançamento Setembro\nCenário\n— novo ao digitar —\nNovo cenário\nComparar cenários salvos\nLimpar mudanças\nReceita\nR$ 75.955\nImpostos\nR$ 86,05\nMargem de contribuição\nR$ 66.173\nLucro\nR$ 33.302\nMargem de lucro\n43,8%\nLucro por mês\nR$ 33.302\nVocê mexeu\nMudou por consequência\nDá para mexer (igual ao real)\nset de 26 a set de 26 · real · custos fixos indisponíveis em algum mês\nResultado do período\nset de 26 a set de 26\nLucro R$ 33.301,86\nFechar\nLINHA\tREAL\ntravado\n\tCENÁRIO\nonde você mexe\n\tEFEITO\nReceita\tR$ 75.955,00\tR$ 75.955,00\t—\n− Impostos\tR$ 86,05\tR$ 86,05\t—\nRegime de imposto\tMEI\t\nMEI\nSimples Nacional (anexo pelo fator R)\nSimples Nacional — anexo III\nSimples Nacional — anexo V\nAlíquota que eu informar\n\t—\n− Taxas e custos variáveis\tR$ 0,00\tR$ 0,00\t—\n% da receita (taxas da plataforma, comissões)\t0%\t\t—\n− Custo de entrega (muda em cada produto)\tR$ 9.695,50\tR$ 9.695,50\t—\n= Margem de contribuição\tR$ 66.173,45\tR$ 66.173,45 · 87,12%\t—\n− Mídia (muda nos loops)\tR$ 32.871,59\tR$ 32.871,59\t—\n− Aquisição sem mídia\tR$ 0,00\tR$ 0,00\t—\n− Custos fixos do período\tR$ 0,00\tR$ 0,00\t—\n= Lucro\tR$ 33.301,86\tR$ 33.301,86\t—\nMargem de lucro\t43,84%\t43,84%\t—\nLucro por mês\tR$ 33.301,86\tR$ 33.301,86\t—\nPor venda · Curso Base\nMargem por venda R$ 856,76\nFechar\nLINHA\tREAL\ntravado\n\tCENÁRIO\nonde você mexe\n\tEFEITO\nVendas no período\t65\t65\t—\nPreço (ticket médio)\tR$ 953,15\t\t—\n− Imposto por venda\tR$ 1,08\tR$ 1,08\t—\n− Taxas e variáveis por venda\tR$ 0,00\tR$ 0,00\t—\nCusto de entrega (% do preço)\t10%\t\t—\nCusto de entrega por cliente (R$)\tR$ 0,00\t\t—\n− Custo de entrega por venda\tR$ 95,32\tR$ 95,32\t—\n= Margem de contribuição por venda\tR$ 856,76 · 89,89%\tR$ 856,76 · 89,89%\t—\nMargem de contribuição do produto no período\tR$ 55.689,31\tR$ 55.689,31\t—\nDe onde vêm as vendas\nLançamento Setembro\nCampanha\nCurso Base\nencerrada\nInvestido R$ 20.766,24\nVendas 44\nReceita R$ 43.868,00\nAbrir\nPerpétuo Curso Base\nCampanha\nCurso Base\nInvestido R$ 12.105,35\nVendas 21\nReceita R$ 18.087,00\nAbrir\nContratos de serviço (recorrência)\nContratos\nMentoria em grupo\nInvestido R$ 0,00\nVendas 0\nReceita R$ 14.000,00\nAbrir\nMais opções",
+  "erros": []
+ },
+ "Campanhas (lista)": {
+  "kpis": {},
+  "texto": "← Voltar para Dashboard\nCampanhas e planejamento\nCampanhas\nPlanejamento anual\nCada campanha é uma página com tudo dela: metas, funil, mídia, vídeos, leads, vendas, links e debriefing. Clique para abrir.\nNova campanha\nStatus\nTodos\nRascunho\nPlanejada\nAtiva\nPausada\nFinalizada\nModelo\nTodos\nLançamento\nRecorrente (perpétua)\nCAMPANHA\tSTATUS\tPERÍODO\tESTRATÉGIA\tLEADS (META)\tVENDAS (META)\tRECEITA\tCAC\nLançamento Setembro Lançamento\tAtiva\t01/09/2026 a 30/09/2026\t—\t\n700 / 700 (100%)\n\t\n44 / 45 (98%)\n\tR$ 43.868,00\tR$ 471,96\nPerpétuo Curso Base Recorrente (perpétua)\tAtiva\tPerpétuo, desde 01/07/2026, sem data de fim\t—\t\n1.294 / —\n\t\n67 / —\n\tR$ 54.449,00\tR$ 775,77",
+  "erros": []
+ }
+}

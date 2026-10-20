@@ -1,0 +1,28 @@
+# Teste da junção de baixa parcial (v0.83)
+
+Roda num Postgres local vazio, sem tocar no banco de produção:
+
+1. Crie um banco vazio e as roles `anon`, `authenticated`, `service_role`.
+2. `contas_pagar_base.sql`: tabelas mínimas, as funções contábeis de produção e a baixa parcial antiga.
+3. Crie uma conta de 10.000, faça `registrar_pagamento_parcial(conta, 700, ...)`.
+4. Rode `supabase/migrations/20261010220000_desfazer_parcial_junta_saldo.sql` (liga o saldo antigo pela regra de migração).
+5. `desfazer_pagamento(conta, ...)` e confira com `contas_pagar_saldos.sql`: uma conta de 10.000 em aberto; 6.2.04 = 10.000 em outubro; 2.1.03 = 10.000 a pagar; banco 0.
+
+Cenários conferidos em 10/10/2026: saldo já pago (não junta), duas baixas parciais em cadeia desfeitas de trás para frente (vira 9.300 e depois 10.000) e pagamento da conta juntada.
+
+## v0.107 — ciclo de vida dos cenários
+Sobre um banco com as migrações até a v0.105 (Growth Model, decisão e Kanban, guardrails), rode `supabase/migrations/20261012200000_cenarios_ciclo.sql` duas vezes (idempotente), depois `decisao_cenarios.sql` e `cenarios_ciclo.sql`. Deve terminar com "cenarios_ciclo: tudo OK".
+Confere: descartar com motivo e reabrir; descarte que não é objeto é recusado; cenário aprovado não é descartado nem excluído; link da documentação sem http é recusado.
+
+## v0.109 — ideias pelo ChatGPT
+Sobre um banco com `workspaces`: rode `ideias_base.sql` (papéis anon/authenticated, stubs de `auth.uid()` e `perm()` controlados por `t.uid`/`t.perm`, tabela `equipe` mínima e dois workspaces), depois `supabase/migrations/20261006200000_conteudo.sql`, `20261012300000_ideias_chatgpt.sql` (2x) e `ideias_cenarios.sql`. Deve terminar com "ideias_cenarios: tudo OK" e "ideias_cenarios (anon): tudo OK".
+Confere:
+- gerar chave exige login e permissão;
+- só o hash fica no banco;
+- formato, tema e canais são normalizados e o tema de outro workspace é ignorado;
+- título é obrigatório;
+- o contexto devolve os temas e as últimas ideias;
+- os usos são contados;
+- chave errada ou revogada é recusada;
+- anon não chama as funções internas.
+A edge function foi testada contra este banco com um stub do supabase-js (rpc via psql): GET contexto, POST de uma e de várias ideias, sem título (400), sem chave e com chave errada (401).

@@ -1,0 +1,16 @@
+# sistema
+.DS_Store
+Thumbs.db
+# Python e Node
+__pycache__/
+*.pyc
+node_modules/
+# saídas locais de testes e da auditoria (são geradas de novo ao rodar)
+tests/auditoria/audit.html
+tests/auditoria/tela_*.png
+tests/tela/*.png
+# variáveis de ambiente com segredos (nunca subir)
+.env
+.env.*
+!.env.example
+tests/auditoria/escola.html

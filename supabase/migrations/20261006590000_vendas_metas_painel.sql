@@ -1,0 +1,5 @@
+-- v0.45: vendas_metas_painel(p_ws, p_hoje). JÁ APLICADA no projeto.
+-- Painel de metas x vendas realizadas do Dashboard de Vendas. Cálculo 100% no banco, sem IA.
+-- Para cada campanha ativa (status 'ativa'): lançamento = meta_vendas/meta_receita da campanha toda x vendas aprovadas da campanha; ritmo esperado = meta x fração do prazo já decorrido;
+-- perpétua = meta do mês atual (campanha_metas_mensal) x vendas do mês. Também devolve vendas aprovadas do mês (total e sem campanha) e oportunidades (abertas, ganhas no mês).
+-- Ver a definição com pg_get_functiondef.

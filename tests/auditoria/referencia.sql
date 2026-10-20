@@ -1,0 +1,22 @@
+\set ws '''ac56e719-7325-4062-aa47-74bc2141f89d'''
+\pset footer off
+select 'vendas aprovadas set (data venda)' m, count(*) n, sum(valor_bruto) bruto, sum(valor_liquido) liq, sum(taxa_plataforma) taxa, sum(impostos) imp from vendas where workspace_id=:ws and status='aprovada' and (data_venda at time zone 'America/Sao_Paulo')::date between '2026-09-01' and '2026-09-30'
+union all select 'vendas set por produto curso', count(*), sum(valor_bruto),0,0,0 from vendas v join produtos p on p.id=v.produto_id where v.workspace_id=:ws and v.status='aprovada' and p.nome='Curso Base' and (data_venda at time zone 'America/Sao_Paulo')::date between '2026-09-01' and '2026-09-30'
+union all select 'vendas aprovadas total', count(*), sum(valor_bruto),0,0,0 from vendas where workspace_id=:ws and status='aprovada'
+union all select 'vendas estornadas total', count(*), sum(valor_bruto),0,0,0 from vendas where workspace_id=:ws and status<>'aprovada'
+union all select 'vendas set incl. estornadas', count(*), sum(valor_bruto),0,0,0 from vendas where workspace_id=:ws and (data_venda at time zone 'America/Sao_Paulo')::date between '2026-09-01' and '2026-09-30'
+union all select 'leads criados set', count(*),0,0,0,0 from pessoas where workspace_id=:ws and (criado_em at time zone 'America/Sao_Paulo')::date between '2026-09-01' and '2026-09-30'
+union all select 'clientes novos set (1a compra aprovada)', count(*),0,0,0,0 from (select pessoa_id, min(data_venda) d from vendas where workspace_id=:ws and status='aprovada' group by 1) x where (d at time zone 'America/Sao_Paulo')::date between '2026-09-01' and '2026-09-30'
+union all select 'custo anuncios set', 0, sum(custo),0,0,0 from metricas_anuncio_dia where workspace_id=:ws and data between '2026-09-01' and '2026-09-30'
+union all select 'contas pagar competencia set', count(*), sum(valor),0,0,0 from contas_pagar where workspace_id=:ws and competencia='2026-09-01' and status<>'cancelado'
+union all select 'contas pagar midia competencia set', count(*), sum(c.valor),0,0,0 from contas_pagar c join plano_contas p on p.id=c.conta_despesa_id where c.workspace_id=:ws and c.competencia='2026-09-01' and p.codigo like '6.1%'
+union all select 'parcelas contrato vencimento set', count(*), sum(valor),0,0,0 from contas_receber where workspace_id=:ws and contrato_id is not null and vencimento between '2026-09-01' and '2026-09-30' and status<>'cancelado'
+union all select 'receber (todas) vencimento set', count(*), sum(valor),0,0,0 from contas_receber where workspace_id=:ws and vencimento between '2026-09-01' and '2026-09-30' and status<>'cancelado'
+union all select 'DRE receita set', 0, sum(valor),0,0,0 from v_dre_mensal where workspace_id=:ws and mes='2026-09-01' and tipo='receita'
+union all select 'DRE deducoes+custos+despesas set', 0, sum(valor),0,0,0 from v_dre_mensal where workspace_id=:ws and mes='2026-09-01' and tipo<>'receita'
+union all select 'movimentos banco entradas', count(*), sum(valor),0,0,0 from movimentacoes_bancarias where workspace_id=:ws and tipo='entrada'
+union all select 'movimentos banco saidas', count(*), sum(valor),0,0,0 from movimentacoes_bancarias where workspace_id=:ws and tipo<>'entrada'
+union all select 'receber status recebido', count(*), sum(valor),0,0,0 from contas_receber where workspace_id=:ws and status='recebido'
+union all select 'pessoas status cliente ativo', count(*),0,0,0,0 from pessoas where workspace_id=:ws and status_cliente='ativo'
+union all select 'pessoas com compra aprovada', count(distinct pessoa_id),0,0,0,0 from vendas where workspace_id=:ws and status='aprovada';
+select tipo, codigo, conta, valor from v_dre_mensal where workspace_id=:ws and mes='2026-09-01' order by codigo;

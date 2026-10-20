@@ -1,0 +1,324 @@
+-- JÁ APLICADO em produção em 20/10/2026 (via Supabase). Guardado para registro / para outro projeto. Pode rodar de novo sem problema.
+-- v0.117 — Árvore dos números, parte 2
+-- Novos nós (em _arv_extra, para as próximas partes entrarem sem mexer no resto):
+--   fin.lancamento (as partidas de um lançamento e quem está por trás), mkt.ltv, mkt.churn e mkt.alunos (Dashboard de marketing),
+--   rec.nrr, rec.grr e rec.base (Dashboard), crm.penetracao, ctr.soma (tela Contratos).
+-- Mudanças: a linha de lançamento do razão agora abre o lançamento (antes ia direto para a pessoa);
+--   fin.receber e fin.pagar aceitam situacao (previsto, recebido/pago, atraso, todas), so_contratos e período em branco (Contas a receber, a pagar e Contratos).
+-- Rode depois de 20261020100000_arvore_numeros.sql.
+
+create or replace function public._arv_razao(p_ws uuid, p_par jsonb) returns jsonb
+language plpgsql stable security definer set search_path = public as $$
+declare
+  ini date := _arv_d(p_par, 'ini'); fim date := _arv_d(p_par, 'fim'); g text := p_par ->> 'grupo';
+  conta uuid := _arv_u(p_par, 'conta'); org text := nullif(p_par ->> 'origem', ''); cc uuid := _arv_u(p_par, 'centro');
+  tit text; r jsonb;
+begin
+  tit := case g when 'receita' then 'Receitas' when 'deducao' then 'Deduções da receita (taxas e impostos)' when 'custo' then 'Custos' when 'despesa' then 'Despesas' else 'Lançamentos' end;
+  with pt as (
+    select pa.id, l.id lanc, l.data_fato, l.descricao, l.origem_tipo, l.origem_id, pc.id conta_id, pc.codigo, pc.nome conta_nome, pa.centro_custo_id,
+           case when pc.tipo = 'receita' then case when pa.tipo = 'C' then pa.valor else -pa.valor end else case when pa.tipo = 'D' then pa.valor else -pa.valor end end v
+      from partidas pa join plano_contas pc on pc.id = pa.conta_id join lancamentos l on l.id = pa.lancamento_id
+     where pa.workspace_id = p_ws and l.data_fato between ini and fim and pc.tipo = g
+       and (conta is null or pc.id = conta) and (org is null or l.origem_tipo = org) and (cc is null or pa.centro_custo_id = cc)),
+  pes as (  -- pessoa por trás do lançamento (venda, estorno, parcela de contrato, recebimento)
+    select pt.id, coalesce(ve.pessoa_id, ct.pessoa_id, ve2.pessoa_id, ct2.pessoa_id) pessoa_id,
+           coalesce(fo.nome, fo2.nome) fornecedor
+      from pt left join vendas ve on pt.origem_tipo in ('venda', 'estorno') and ve.id = pt.origem_id
+      left join contas_receber cr on pt.origem_tipo in ('contrato_parcela', 'cancelamento_contrato', 'desconto', 'recebimento') and cr.id = pt.origem_id
+      left join contratos ct on ct.id = cr.contrato_id left join vendas ve2 on ve2.id = cr.venda_id left join contratos ct2 on false
+      left join contas_pagar cp on pt.origem_tipo in ('conta_pagar', 'pagamento') and cp.id = pt.origem_id left join fornecedores fo on fo.id = cp.fornecedor_id
+      left join fornecedores fo2 on false)
+  select jsonb_build_object(
+    'titulo', tit || case when conta is not null then ' · ' || (select codigo || ' ' || nome from plano_contas where id = conta) else '' end
+                  || case when org is not null then ' · origem: ' || org else '' end,
+    'valor', (select coalesce(sum(v), 0) from pt), 'un', 'brl',
+    'explica', 'Soma das partidas dos lançamentos contábeis com data entre ' || to_char(ini, 'DD/MM/YYYY') || ' e ' || to_char(fim, 'DD/MM/YYYY')
+               || ' nas contas do tipo "' || g || '" (a mesma regra da DRE).',
+    'quebras', jsonb_build_array(
+      case when conta is null then jsonb_build_object('titulo', 'Por conta contábil', 'itens', coalesce((select jsonb_agg(_arv_item(codigo || ' ' || conta_nome, s, 'fin.razao', p_par || jsonb_build_object('conta', conta_id)) order by s desc)
+        from (select conta_id, codigo, conta_nome, sum(v) s from pt group by 1, 2, 3) x), '[]'::jsonb)) end,
+      case when org is null then jsonb_build_object('titulo', 'Por origem', 'itens', coalesce((select jsonb_agg(_arv_item(case origem_tipo when 'venda' then 'Vendas' when 'estorno' then 'Estornos de venda'
+          when 'contrato_parcela' then 'Parcelas de contrato' when 'conta_pagar' then 'Contas a pagar' when 'pagamento' then 'Pagamentos' when 'recebimento' then 'Recebimentos'
+          when 'cancelamento_contrato' then 'Cancelamentos de contrato' when 'desconto' then 'Descontos' else coalesce(origem_tipo, 'Manual') end, s, 'fin.razao', p_par || jsonb_build_object('origem', origem_tipo)) order by s desc)
+        from (select origem_tipo, sum(v) s from pt group by 1) x), '[]'::jsonb)) end,
+      (select case when count(*) > 1 then jsonb_build_object('titulo', 'Por centro de custo', 'itens', jsonb_agg(_arv_item(coalesce(nome, 'Sem centro de custo'), s, 'fin.razao', p_par || jsonb_build_object('centro', centro_custo_id)) order by s desc)) end
+        from (select pt.centro_custo_id, c.nome, sum(v) s from pt left join centros_custo c on c.id = pt.centro_custo_id where cc is null group by 1, 2) x),
+      _arv_meses('fin.razao', p_par, ini, fim, (select jsonb_object_agg(k, s) from (select to_char(data_fato, 'YYYY-MM') k, sum(v) s from pt group by 1) x))),
+    'registros', jsonb_build_object('titulo', 'Lançamentos', 'total', (select count(*) from pt),
+      'cols', jsonb_build_array('Data', 'Histórico', 'Conta', 'Quem', 'Valor'), 'un', jsonb_build_array('d', 't', 't', 't', 'brl'),
+      'linhas', coalesce((select jsonb_agg(jsonb_build_object('c', jsonb_build_array(pt.data_fato, pt.descricao, pt.codigo || ' ' || pt.conta_nome, coalesce(p.nome, pes.fornecedor), pt.v),
+          'ir', jsonb_build_object('no', 'fin.lancamento', 'par', jsonb_build_object('lancamento', pt.lanc)), 'rotulo', coalesce(pt.descricao, 'Lançamento')) order by pt.data_fato desc, abs(pt.v) desc)
+        from (select * from pt order by data_fato desc, abs(v) desc limit 200) pt join pes on pes.id = pt.id left join pessoas p on p.id = pes.pessoa_id), '[]'::jsonb))
+  ) into r;
+  return r;
+end $$;
+
+create or replace function public._arv_caixa(p_ws uuid, p_no text, p_par jsonb) returns jsonb
+language plpgsql stable security definer set search_path = public as $$
+declare h date := _arv_d(p_par, 'hoje', (now() at time zone 'America/Sao_Paulo')::date); ini date := _arv_d(p_par, 'ini'); fim date := _arv_d(p_par, 'fim');
+  banco uuid := _arv_u(p_par, 'banco'); v_forn uuid := _arv_u(p_par, 'fornecedor'); atraso boolean := coalesce((p_par ->> 'atraso')::boolean, false); so_ctr boolean := coalesce((p_par ->> 'so_contratos')::boolean, false);
+  sit text := coalesce(nullif(p_par ->> 'situacao', ''), case when coalesce((p_par ->> 'atraso')::boolean, false) then 'atraso' end, 'previsto'); r jsonb;
+begin
+  if p_no = 'fin.saldo' then
+    if banco is null then
+      select jsonb_build_object('titulo', 'Saldo em banco', 'valor', coalesce(sum(saldo_atual), 0), 'un', 'brl', 'explica', 'Saldo inicial de cada conta bancária mais as entradas menos as saídas registradas.',
+        'quebras', jsonb_build_array(jsonb_build_object('titulo', 'Por conta bancária', 'itens', coalesce(jsonb_agg(_arv_item(nome, saldo_atual, 'fin.saldo', p_par || jsonb_build_object('banco', conta_bancaria_id)) order by saldo_atual desc), '[]'::jsonb))))
+        into r from v_saldo_contas_bancarias where workspace_id = p_ws;
+    else
+      with mv as (select * from movimentacoes_bancarias where workspace_id = p_ws and conta_bancaria_id = banco)
+      select jsonb_build_object('titulo', 'Saldo · ' || s.nome, 'valor', s.saldo_atual, 'un', 'brl', 'explica', 'Saldo inicial + entradas − saídas desta conta.',
+        'formula', jsonb_build_array(_arv_item('Saldo inicial', s.saldo_inicial, null, null),
+          _arv_item('+ Entradas', (select coalesce(sum(valor), 0) from mv where tipo = 'entrada'), null, null),
+          _arv_item('− Saídas', (select coalesce(sum(valor), 0) from mv where tipo = 'saida'), null, null)),
+        'registros', jsonb_build_object('titulo', 'Movimentações', 'total', (select count(*) from mv), 'cols', jsonb_build_array('Data', 'Descrição', 'Tipo', 'Valor'), 'un', jsonb_build_array('d', 't', 't', 'brl'),
+          'linhas', coalesce((select jsonb_agg(jsonb_build_object('c', jsonb_build_array(data, descricao, tipo, case when tipo = 'saida' then -valor else valor end)) order by data desc) from (select * from mv order by data desc limit 200) z), '[]'::jsonb)))
+        into r from v_saldo_contas_bancarias s where s.workspace_id = p_ws and s.conta_bancaria_id = banco;
+    end if;
+    return r;
+  end if;
+  if p_no = 'fin.receber' then
+    with cr as (select cr.*, coalesce(pv.id, pc.id) pessoa_id, coalesce(pv.nome, pc.nome, '—') nome, coalesce(nullif(cr.descricao, ''), pr.nome, '') descr
+                  from contas_receber cr left join vendas ve on ve.id = cr.venda_id left join pessoas pv on pv.id = ve.pessoa_id left join produtos pr on pr.id = ve.produto_id
+                  left join contratos ct on ct.id = cr.contrato_id left join pessoas pc on pc.id = ct.pessoa_id
+                 where cr.workspace_id = p_ws and (not so_ctr or cr.contrato_id is not null)
+                   and (case sit when 'recebido' then cr.status = 'recebido' when 'todas' then cr.status <> 'cancelado' when 'atraso' then cr.status = 'previsto' and cr.vencimento < h else cr.status = 'previsto' end)
+                   and (ini is null or sit = 'atraso' or (case when sit = 'recebido' then coalesce(cr.data_recebimento, cr.vencimento) else cr.vencimento end) between ini and fim))
+    select jsonb_build_object('titulo', case sit when 'atraso' then 'A receber em atraso' when 'recebido' then 'Recebido' when 'todas' then 'Parcelas' else 'A receber' end || case when so_ctr then ' (contratos)' else '' end,
+      'valor', (select coalesce(sum(valor), 0) from cr), 'un', 'brl',
+      'explica', case sit when 'atraso' then 'Parcelas previstas com vencimento antes de hoje.' when 'recebido' then 'Parcelas recebidas' || case when ini is null then '.' else ' entre ' || to_char(ini, 'DD/MM/YYYY') || ' e ' || to_char(fim, 'DD/MM/YYYY') || ' (pela data do recebimento).' end
+                      when 'todas' then 'Parcelas não canceladas' || case when ini is null then '.' else ' com vencimento entre ' || to_char(ini, 'DD/MM/YYYY') || ' e ' || to_char(fim, 'DD/MM/YYYY') || '.' end
+                      else 'Parcelas previstas' || case when ini is null then ' (todas em aberto).' else ' com vencimento entre ' || to_char(ini, 'DD/MM/YYYY') || ' e ' || to_char(fim, 'DD/MM/YYYY') || '.' end end,
+      'quebras', jsonb_build_array(
+        case when sit = 'todas' then jsonb_build_object('titulo', 'Por situação', 'itens', coalesce((select jsonb_agg(_arv_item(status, s, 'fin.receber', p_par || jsonb_build_object('situacao', case status when 'recebido' then 'recebido' else 'previsto' end)) order by s desc) from (select status, sum(valor) s from cr group by 1) z), '[]'::jsonb)) end,
+        jsonb_build_object('titulo', 'Por cliente', 'itens', coalesce((select jsonb_agg(_arv_item(nome, s, null, null, n || ' parcela(s)') order by s desc) from (select nome, sum(valor) s, count(*) n from cr group by 1 order by 2 desc limit 30) z), '[]'::jsonb)),
+        case when ini is not null and sit <> 'atraso' then _arv_meses('fin.receber', p_par, ini, fim, (select jsonb_object_agg(k, s) from (select to_char(vencimento, 'YYYY-MM') k, sum(valor) s from cr group by 1) z)) end),
+      'registros', jsonb_build_object('titulo', 'Parcelas', 'total', (select count(*) from cr), 'cols', jsonb_build_array('Vencimento', 'Cliente', 'Descrição', 'Situação', 'Valor'), 'un', jsonb_build_array('d', 't', 't', 't', 'brl'),
+        'linhas', coalesce((select jsonb_agg(jsonb_build_object('c', jsonb_build_array(vencimento, nome, descr, status, valor), 'abrir', case when pessoa_id is not null then jsonb_build_object('tipo', 'pessoa', 'id', pessoa_id) end) order by vencimento) from (select * from cr order by vencimento limit 200) z), '[]'::jsonb))) into r;
+    return r;
+  end if;
+  if p_no = 'fin.pagar' then
+    with cp as (select cp.*, coalesce(f.nome, 'Sem fornecedor') forn, pc.codigo || ' ' || pc.nome conta from contas_pagar cp left join fornecedores f on f.id = cp.fornecedor_id left join plano_contas pc on pc.id = cp.conta_despesa_id
+                 where cp.workspace_id = p_ws and (v_forn is null or cp.fornecedor_id = v_forn)
+                   and (case sit when 'pago' then cp.status = 'pago' when 'atraso' then cp.status = 'previsto' and cp.vencimento < h else cp.status = 'previsto' end)
+                   and (ini is null or sit = 'atraso' or (case when sit = 'pago' then coalesce(cp.data_pagamento, cp.vencimento) else cp.vencimento end) between ini and fim))
+    select jsonb_build_object('titulo', case sit when 'atraso' then 'A pagar em atraso' when 'pago' then 'Pago' else 'A pagar' end, 'valor', (select coalesce(sum(valor), 0) from cp), 'un', 'brl',
+      'explica', case sit when 'atraso' then 'Contas previstas com vencimento antes de hoje.' when 'pago' then 'Contas pagas entre ' || to_char(ini, 'DD/MM/YYYY') || ' e ' || to_char(fim, 'DD/MM/YYYY') || ' (pela data do pagamento).'
+                      else 'Contas previstas com vencimento entre ' || to_char(ini, 'DD/MM/YYYY') || ' e ' || to_char(fim, 'DD/MM/YYYY') || '.' end,
+      'quebras', jsonb_build_array(
+        case when v_forn is null then jsonb_build_object('titulo', 'Por fornecedor', 'itens', coalesce((select jsonb_agg(_arv_item(forn, s, 'fin.pagar', p_par || jsonb_build_object('fornecedor', fornecedor_id)) order by s desc) from (select fornecedor_id, forn, sum(valor) s from cp group by 1, 2) z), '[]'::jsonb)) end,
+        jsonb_build_object('titulo', 'Por conta de despesa', 'itens', coalesce((select jsonb_agg(_arv_item(coalesce(conta, 'Sem conta'), s, null, null) order by s desc) from (select conta, sum(valor) s from cp group by 1) z), '[]'::jsonb)),
+        case when ini is not null and sit <> 'atraso' then _arv_meses('fin.pagar', p_par, ini, fim, (select jsonb_object_agg(k, s) from (select to_char(vencimento, 'YYYY-MM') k, sum(valor) s from cp group by 1) z)) end),
+      'registros', jsonb_build_object('titulo', 'Contas', 'total', (select count(*) from cp), 'cols', jsonb_build_array('Vencimento', 'Descrição', 'Fornecedor', 'Conta', 'Situação', 'Valor'), 'un', jsonb_build_array('d', 't', 't', 't', 't', 'brl'),
+        'linhas', coalesce((select jsonb_agg(jsonb_build_object('c', jsonb_build_array(vencimento, descricao, forn, conta, status, valor)) order by vencimento) from (select * from cp order by vencimento limit 200) z), '[]'::jsonb))) into r;
+    return r;
+  end if;
+  if p_no = 'rec.mrr' then
+    with ct as (select c.*, p.nome, coalesce((select sum(coalesce(i.quantidade, 1) * coalesce(i.valor, 0)) from contrato_itens i where i.contrato_id = c.id), 0)
+                  / case c.periodicidade when 'mensal' then 1 when 'trimestral' then 3 when 'semestral' then 6 else 12 end mrr
+                  from contratos c left join pessoas p on p.id = c.pessoa_id
+                 where c.workspace_id = p_ws and c.recorrente and c.ativado_em is not null and c.data_inicio <= h and (c.data_fim is null or c.data_fim >= h)
+                   and not (c.cancelado_em is not null and (c.cancelado_em at time zone 'America/Sao_Paulo')::date <= h))
+    select jsonb_build_object('titulo', 'MRR (receita recorrente mensal)', 'valor', (select coalesce(sum(mrr), 0) from ct), 'un', 'brl',
+      'explica', 'Contratos recorrentes ativos hoje: valor dos itens ÷ meses do período de cobrança (mensal 1, trimestral 3, semestral 6, anual 12).',
+      'quebras', jsonb_build_array(jsonb_build_object('titulo', 'Por periodicidade', 'itens', coalesce((select jsonb_agg(_arv_item(periodicidade, s, null, null, n || ' contrato(s)') order by s desc) from (select periodicidade, sum(mrr) s, count(*) n from ct group by 1) z), '[]'::jsonb))),
+      'registros', jsonb_build_object('titulo', 'Contratos ativos', 'total', (select count(*) from ct), 'cols', jsonb_build_array('Início', 'Cliente', 'Contrato', 'Periodicidade', 'MRR'), 'un', jsonb_build_array('d', 't', 't', 't', 'brl'),
+        'linhas', coalesce((select jsonb_agg(jsonb_build_object('c', jsonb_build_array(data_inicio, nome, numero, periodicidade, mrr), 'abrir', jsonb_build_object('tipo', 'pessoa', 'id', pessoa_id)) order by mrr desc) from (select * from ct order by mrr desc limit 200) z), '[]'::jsonb))) into r;
+    return r;
+  end if;
+  return null;
+end $$;
+
+create or replace function public.arvore_no(p_ws uuid, p_no text, p_par jsonb default '{}'::jsonb) returns jsonb
+language plpgsql stable security definer set search_path = public as $$
+declare par jsonb := coalesce(p_par, '{}'::jsonb); modulo text; a jsonb; b jsonb; c jsonb; d jsonb; va numeric; vb numeric; r jsonb; camp uuid := _arv_u(par, 'campanha');
+  inv jsonb; lds jsonb; cli jsonb; rec jsonb;
+begin
+  if not pertence_ao_workspace(p_ws) then raise exception 'Sem acesso a este workspace'; end if;
+  if camp is not null and not exists (select 1 from campanhas where id = camp and workspace_id = p_ws) then raise exception 'Campanha não encontrada'; end if;
+  modulo := case split_part(p_no, '.', 1) when 'fin' then 'fin' when 'rec' then 'fin' when 'ctr' then 'vendas' when 'ven' then 'vendas' when 'crm' then 'vendas' else 'mkt' end;
+  if not perm(p_ws, 'ler', case modulo when 'vendas' then '{vendas,mkt,fin}' when 'fin' then '{fin}' else '{mkt,vendas}' end::text[]) then
+    raise exception 'Sem acesso a este número (módulo %)', modulo; end if;
+
+  case p_no
+  when 'fin.razao' then r := _arv_razao(p_ws, par);
+  when 'fin.lucro', 'fin.saidas', 'fin.margem', 'fin.roi' then
+    a := _arv_razao(p_ws, par || '{"grupo":"receita"}'); b := _arv_razao(p_ws, par || '{"grupo":"deducao"}');
+    c := _arv_razao(p_ws, par || '{"grupo":"custo"}'); d := _arv_razao(p_ws, par || '{"grupo":"despesa"}');
+    va := (a ->> 'valor')::numeric; vb := (b ->> 'valor')::numeric + (c ->> 'valor')::numeric + (d ->> 'valor')::numeric;
+    r := case p_no
+      when 'fin.lucro' then jsonb_build_object('titulo', 'Lucro (resultado)', 'valor', va - vb, 'un', 'brl', 'explica', 'Receitas menos deduções, custos e despesas lançados no período (DRE).',
+        'formula', jsonb_build_array(_arv_item('Receitas', va, 'fin.razao', par || '{"grupo":"receita"}'), _arv_item('− Deduções', (b ->> 'valor')::numeric, 'fin.razao', par || '{"grupo":"deducao"}'),
+          _arv_item('− Custos', (c ->> 'valor')::numeric, 'fin.razao', par || '{"grupo":"custo"}'), _arv_item('− Despesas', (d ->> 'valor')::numeric, 'fin.razao', par || '{"grupo":"despesa"}')))
+      when 'fin.saidas' then jsonb_build_object('titulo', 'Despesas no período', 'valor', vb, 'un', 'brl', 'explica', 'Deduções + custos + despesas lançados no período.',
+        'formula', jsonb_build_array(_arv_item('Deduções', (b ->> 'valor')::numeric, 'fin.razao', par || '{"grupo":"deducao"}'), _arv_item('+ Custos', (c ->> 'valor')::numeric, 'fin.razao', par || '{"grupo":"custo"}'),
+          _arv_item('+ Despesas', (d ->> 'valor')::numeric, 'fin.razao', par || '{"grupo":"despesa"}')))
+      when 'fin.margem' then jsonb_build_object('titulo', 'Margem', 'valor', case when va > 0 then (va - vb) / va end, 'un', 'pct', 'explica', 'Lucro ÷ receitas.',
+        'formula', jsonb_build_array(_arv_item('Lucro', va - vb, 'fin.lucro', par), _arv_item('÷ Receitas', va, 'fin.razao', par || '{"grupo":"receita"}')))
+      else jsonb_build_object('titulo', 'ROI', 'valor', case when vb > 0 then (va - vb) / vb end, 'un', 'pct', 'explica', 'Lucro ÷ tudo o que saiu (deduções, custos e despesas).',
+        'formula', jsonb_build_array(_arv_item('Lucro', va - vb, 'fin.lucro', par), _arv_item('÷ Saídas', vb, 'fin.saidas', par))) end;
+  when 'fin.saldo', 'fin.receber', 'fin.pagar', 'rec.mrr' then r := _arv_caixa(p_ws, p_no, par);
+  when 'rec.arr' then a := _arv_caixa(p_ws, 'rec.mrr', par);
+    r := jsonb_build_object('titulo', 'ARR', 'valor', (a ->> 'valor')::numeric * 12, 'un', 'brl', 'explica', 'MRR × 12.', 'formula', jsonb_build_array(_arv_item('MRR', (a ->> 'valor')::numeric, 'rec.mrr', par), _arv_item('× 12 meses', 12, null, null)));
+  when 'ven.soma' then r := _arv_vendas(p_ws, par);
+  when 'ven.ticket' then a := _arv_vendas(p_ws, par || '{"campo":"bruto"}'); b := _arv_vendas(p_ws, par || '{"campo":"qtd"}');
+    r := jsonb_build_object('titulo', 'Ticket médio', 'valor', case when (b ->> 'valor')::numeric > 0 then (a ->> 'valor')::numeric / (b ->> 'valor')::numeric end, 'un', 'brl', 'explica', 'Receita bruta ÷ número de vendas.',
+      'formula', jsonb_build_array(_arv_item('Receita bruta', (a ->> 'valor')::numeric, 'ven.soma', par || '{"campo":"bruto"}'), _arv_item('÷ Vendas', (b ->> 'valor')::numeric, 'ven.soma', par || '{"campo":"qtd"}')));
+  when 'crm.pessoas' then r := _arv_pessoas(p_ws, par);
+  when 'crm.conv' then a := _arv_pessoas(p_ws, par || '{"filtro":"clientes"}'); b := _arv_pessoas(p_ws, par || '{"filtro":"todos"}');
+    r := jsonb_build_object('titulo', 'Lead → cliente', 'valor', case when (b ->> 'valor')::numeric > 0 then (a ->> 'valor')::numeric / (b ->> 'valor')::numeric end, 'un', 'pct', 'explica', 'Clientes ÷ pessoas no funil.',
+      'formula', jsonb_build_array(_arv_item('Clientes', (a ->> 'valor')::numeric, 'crm.pessoas', par || '{"filtro":"clientes"}'), _arv_item('÷ Pessoas', (b ->> 'valor')::numeric, 'crm.pessoas', par || '{"filtro":"todos"}')));
+  when 'mkt.leads_campanha' then r := _arv_participacoes(p_ws, par);
+  when 'mkt.ads' then r := _arv_ads(p_ws, par);
+  when 'mkt.clientes' then r := _arv_clientes(p_ws, par);
+  when 'mkt.cpl', 'mkt.cac', 'mkt.roas', 'mkt.roi', 'mkt.conv', 'mkt.ctr', 'mkt.cpc', 'mkt.connect' then
+    -- campanha: leads novos (cadastro criado pela campanha), clientes e receita da campanha; período: coorte de leads do período (Dashboard de marketing)
+    inv := _arv_ads(p_ws, par || '{"campo":"custo"}');
+    lds := case when camp is not null and par ->> 'ini' is null then _arv_pessoas(p_ws, par || '{"filtro":"novos_campanha"}') else _arv_pessoas(p_ws, par || '{"filtro":"leads_periodo"}') end;
+    cli := _arv_clientes(p_ws, par || case when camp is not null and par ->> 'ini' is null then '{}' else '{"coorte":true}' end::jsonb);
+    rec := _arv_vendas(p_ws, par || case when camp is not null and par ->> 'ini' is null then '{"campo":"bruto"}' else '{"campo":"liquido","coorte":true}' end::jsonb);
+    va := (inv ->> 'valor')::numeric;
+    r := case p_no
+      when 'mkt.cpl' then jsonb_build_object('titulo', 'Custo por lead', 'valor', case when (lds ->> 'valor')::numeric > 0 then va / (lds ->> 'valor')::numeric end, 'un', 'brl', 'explica', 'Investimento ÷ leads.',
+        'formula', jsonb_build_array(_arv_item('Investimento', va, 'mkt.ads', par || '{"campo":"custo"}'), _arv_item('÷ ' || (lds ->> 'titulo'), (lds ->> 'valor')::numeric, 'crm.pessoas', par || jsonb_build_object('filtro', case when camp is not null and par ->> 'ini' is null then 'novos_campanha' else 'leads_periodo' end))))
+      when 'mkt.cac' then jsonb_build_object('titulo', 'CAC', 'valor', case when (cli ->> 'valor')::numeric > 0 then va / (cli ->> 'valor')::numeric end, 'un', 'brl', 'explica', 'Investimento ÷ clientes.',
+        'formula', jsonb_build_array(_arv_item('Investimento', va, 'mkt.ads', par || '{"campo":"custo"}'), _arv_item('÷ ' || (cli ->> 'titulo'), (cli ->> 'valor')::numeric, 'mkt.clientes', par || case when camp is not null and par ->> 'ini' is null then '{}' else '{"coorte":true}' end::jsonb)))
+      when 'mkt.roas' then jsonb_build_object('titulo', 'ROAS', 'valor', case when va > 0 then (rec ->> 'valor')::numeric / va end, 'un', 'x', 'explica', 'Receita ÷ investimento.',
+        'formula', jsonb_build_array(_arv_item(rec ->> 'titulo', (rec ->> 'valor')::numeric, 'ven.soma', par || case when camp is not null and par ->> 'ini' is null then '{"campo":"bruto"}' else '{"campo":"liquido","coorte":true}' end::jsonb), _arv_item('÷ Investimento', va, 'mkt.ads', par || '{"campo":"custo"}')))
+      when 'mkt.roi' then jsonb_build_object('titulo', 'ROI da mídia', 'valor', case when va > 0 then ((rec ->> 'valor')::numeric - va) / va end, 'un', 'pct', 'explica', '(Receita − investimento) ÷ investimento.',
+        'formula', jsonb_build_array(_arv_item(rec ->> 'titulo', (rec ->> 'valor')::numeric, 'ven.soma', par || '{"campo":"liquido","coorte":true}'), _arv_item('− Investimento', va, 'mkt.ads', par || '{"campo":"custo"}'), _arv_item('÷ Investimento', va, 'mkt.ads', par || '{"campo":"custo"}')))
+      when 'mkt.conv' then jsonb_build_object('titulo', 'Lead → venda', 'valor', case when (lds ->> 'valor')::numeric > 0 then (cli ->> 'valor')::numeric / (lds ->> 'valor')::numeric end, 'un', 'pct', 'explica', 'Clientes ÷ leads.',
+        'formula', jsonb_build_array(_arv_item(cli ->> 'titulo', (cli ->> 'valor')::numeric, 'mkt.clientes', par || case when camp is not null and par ->> 'ini' is null then '{}' else '{"coorte":true}' end::jsonb), _arv_item('÷ ' || (lds ->> 'titulo'), (lds ->> 'valor')::numeric, 'crm.pessoas', par || jsonb_build_object('filtro', case when camp is not null and par ->> 'ini' is null then 'novos_campanha' else 'leads_periodo' end))))
+      else (select jsonb_build_object('titulo', case p_no when 'mkt.ctr' then 'CTR' when 'mkt.cpc' then 'Custo por clique' else 'Connect rate' end,
+          'valor', case p_no when 'mkt.ctr' then case when ii > 0 then cq / ii end when 'mkt.cpc' then case when cq > 0 then va / cq end else case when cq > 0 then vv / cq end end,
+          'un', case p_no when 'mkt.cpc' then 'brl' else 'pct' end, 'explica', case p_no when 'mkt.ctr' then 'Cliques ÷ impressões.' when 'mkt.cpc' then 'Investimento ÷ cliques.' else 'Visitas à página ÷ cliques.' end,
+          'formula', case p_no when 'mkt.ctr' then jsonb_build_array(_arv_item('Cliques', cq, 'mkt.ads', par || '{"campo":"cliques"}'), _arv_item('÷ Impressões', ii, 'mkt.ads', par || '{"campo":"impressoes"}'))
+                               when 'mkt.cpc' then jsonb_build_array(_arv_item('Investimento', va, 'mkt.ads', par || '{"campo":"custo"}'), _arv_item('÷ Cliques', cq, 'mkt.ads', par || '{"campo":"cliques"}'))
+                               else jsonb_build_array(_arv_item('Visitas à página', vv, 'mkt.ads', par || '{"campo":"visualizacoes"}'), _arv_item('÷ Cliques', cq, 'mkt.ads', par || '{"campo":"cliques"}')) end)
+         from (select (_arv_ads(p_ws, par || '{"campo":"cliques"}') ->> 'valor')::numeric cq, (_arv_ads(p_ws, par || '{"campo":"impressoes"}') ->> 'valor')::numeric ii,
+                      (_arv_ads(p_ws, par || '{"campo":"visualizacoes"}') ->> 'valor')::numeric vv) z) end;
+  when 'mkt.trf_cpl', 'mkt.trf_cac', 'mkt.trf_roas' then  -- Mídia paga: tudo pelos números dos anúncios
+    a := _arv_ads(p_ws, par || '{"campo":"custo"}');
+    b := _arv_ads(p_ws, par || jsonb_build_object('campo', case p_no when 'mkt.trf_cpl' then 'leads' when 'mkt.trf_cac' then 'clientes' else 'receita' end));
+    va := (a ->> 'valor')::numeric; vb := (b ->> 'valor')::numeric;
+    r := jsonb_build_object('titulo', case p_no when 'mkt.trf_cpl' then 'CPL dos anúncios' when 'mkt.trf_cac' then 'CAC dos anúncios' else 'ROAS dos anúncios' end,
+      'valor', case when p_no = 'mkt.trf_roas' then case when va > 0 then vb / va end else case when vb > 0 then va / vb end end, 'un', case when p_no = 'mkt.trf_roas' then 'x' else 'brl' end,
+      'explica', 'Pelos números diários dos anúncios (Mídia paga).',
+      'formula', case when p_no = 'mkt.trf_roas' then jsonb_build_array(_arv_item(b ->> 'titulo', vb, 'mkt.ads', par || '{"campo":"receita"}'), _arv_item('÷ Investimento', va, 'mkt.ads', par || '{"campo":"custo"}'))
+                      else jsonb_build_array(_arv_item('Investimento', va, 'mkt.ads', par || '{"campo":"custo"}'), _arv_item('÷ ' || (b ->> 'titulo'), vb, 'mkt.ads', par || jsonb_build_object('campo', case p_no when 'mkt.trf_cpl' then 'leads' else 'clientes' end))) end);
+  else r := _arv_extra(p_ws, p_no, par); if r is null then raise exception 'Número sem árvore: %', p_no; end if;
+  end case;
+  if jsonb_typeof(r -> 'formula') = 'array' then
+    r := jsonb_set(r, '{formula}', (select jsonb_agg(e || jsonb_build_object('un', _arv_un(e ->> 'no', e -> 'par', e ->> 'rotulo')) order by i) from jsonb_array_elements(r -> 'formula') with ordinality x(e, i)));
+  end if;
+  return r || jsonb_build_object('no', p_no, 'par', par);
+end $$;
+
+-- ===================== Nós da v0.117 (lançamento, LTV, churn, NRR/GRR, penetração, contratos) =====================
+create or replace function public._arv_extra(p_ws uuid, p_no text, p_par jsonb) returns jsonb
+language plpgsql stable security definer set search_path = public as $$
+declare ini date := _arv_d(p_par, 'ini'); fim date := _arv_d(p_par, 'fim'); h date := _arv_d(p_par, 'hoje', (now() at time zone 'America/Sao_Paulo')::date);
+  camp uuid := _arv_u(p_par, 'campanha'); a jsonb; b jsonb; va numeric; vb numeric; r jsonb; l lancamentos; pid uuid; pnome text; f text;
+begin
+  if p_no = 'fin.lancamento' then
+    select * into l from lancamentos where id = _arv_u(p_par, 'lancamento') and workspace_id = p_ws;
+    if not found then raise exception 'Lançamento não encontrado'; end if;
+    select coalesce(ve.pessoa_id, ct.pessoa_id, ve2.pessoa_id) into pid
+      from (select 1) x left join vendas ve on l.origem_tipo in ('venda', 'estorno') and ve.id = l.origem_id
+      left join contas_receber cr on l.origem_tipo in ('contrato_parcela', 'cancelamento_contrato', 'desconto', 'recebimento') and cr.id = l.origem_id
+      left join contratos ct on ct.id = cr.contrato_id left join vendas ve2 on ve2.id = cr.venda_id;
+    select nome into pnome from pessoas where id = pid;
+    with pt as (select pa.tipo, pa.valor, pc.codigo, pc.nome, pc.tipo ptipo, cc.nome centro from partidas pa join plano_contas pc on pc.id = pa.conta_id left join centros_custo cc on cc.id = pa.centro_custo_id where pa.lancamento_id = l.id)
+    select jsonb_build_object('titulo', coalesce(nullif(l.descricao, ''), 'Lançamento'), 'valor', (select sum(valor) from pt where tipo = 'D'), 'un', 'brl',
+      'explica', 'Lançamento contábil de ' || to_char(l.data_fato, 'DD/MM/YYYY') || ', origem: ' || case l.origem_tipo when 'venda' then 'venda' when 'estorno' then 'estorno de venda' when 'contrato_parcela' then 'parcela de contrato'
+                 when 'conta_pagar' then 'conta a pagar' when 'pagamento' then 'pagamento' when 'recebimento' then 'recebimento' else coalesce(l.origem_tipo, 'manual') end
+                 || coalesce(' (' || (select coalesce(nullif(cp.descricao, ''), '') || coalesce(' · ' || fo.nome, '') from contas_pagar cp left join fornecedores fo on fo.id = cp.fornecedor_id where l.origem_tipo in ('conta_pagar', 'pagamento') and cp.id = l.origem_id) || ')', '')
+                 || '. Débitos e créditos somam o mesmo valor (partidas dobradas).',
+      'pessoa', case when pid is not null then jsonb_build_object('id', pid, 'nome', pnome) end,
+      'registros', jsonb_build_object('titulo', 'Partidas', 'total', (select count(*) from pt), 'cols', jsonb_build_array('Conta', 'Tipo da conta', 'Centro de custo', 'Débito', 'Crédito'), 'un', jsonb_build_array('t', 't', 't', 'brl', 'brl'),
+        'linhas', coalesce((select jsonb_agg(jsonb_build_object('c', jsonb_build_array(codigo || ' ' || nome, ptipo, centro, case when tipo = 'D' then valor end, case when tipo = 'C' then valor end)) order by tipo desc, valor desc) from pt), '[]'::jsonb)))
+      into r;
+    return r;
+  end if;
+  if p_no = 'mkt.alunos' then  -- leads do período que viraram alunos (Dashboard de marketing, pós-compra)
+    f := coalesce(p_par ->> 'filtro', 'todos');
+    with co as (select p.id, p.nome from pessoas p where p.workspace_id = p_ws and p.captada and p.criado_em >= (ini::timestamp at time zone 'America/Sao_Paulo')
+                  and p.criado_em < ((fim + 1)::timestamp at time zone 'America/Sao_Paulo') and (camp is null or p.campanha_id = camp)),
+         al as (select a.pessoa_id, bool_or(a.saiu_em is null) ativo, min(a.entrou_em) entrou, max(a.saiu_em) saiu from alunos a where a.workspace_id = p_ws and a.pessoa_id in (select id from co) group by 1),
+         x as (select al.*, co.nome from al join co on co.id = al.pessoa_id where f = 'todos' or (f = 'saiu' and not ativo) or (f = 'ativos' and ativo))
+    select jsonb_build_object('titulo', case f when 'saiu' then 'Saíram (alunos que deixaram de ser)' when 'ativos' then 'Alunos ainda ativos' else 'Entraram como aluno' end, 'valor', (select count(*) from x), 'un', 'n',
+      'explica', 'Pessoas que viraram lead entre ' || to_char(ini, 'DD/MM/YYYY') || ' e ' || to_char(fim, 'DD/MM/YYYY') || ' e entraram como aluno' || case f when 'saiu' then ', e já saíram de todos os cursos.' when 'ativos' then ', e seguem ativas.' else '.' end,
+      'quebras', case when f = 'todos' then jsonb_build_array(jsonb_build_object('titulo', 'Situação', 'itens', jsonb_build_array(
+          _arv_item('Ainda ativos', (select count(*) from x where ativo), 'mkt.alunos', p_par || '{"filtro":"ativos"}'), _arv_item('Saíram', (select count(*) from x where not ativo), 'mkt.alunos', p_par || '{"filtro":"saiu"}')))) end,
+      'registros', jsonb_build_object('titulo', 'Alunos', 'total', (select count(*) from x), 'cols', jsonb_build_array('Entrou', 'Nome', 'Situação', 'Saiu em'), 'un', jsonb_build_array('dt', 't', 't', 'dt'),
+        'linhas', coalesce((select jsonb_agg(jsonb_build_object('c', jsonb_build_array(entrou, nome, case when ativo then 'ativo' else 'saiu' end, case when not ativo then saiu end), 'abrir', jsonb_build_object('tipo', 'pessoa', 'id', pessoa_id)) order by entrou desc) from (select * from x order by entrou desc limit 200) z), '[]'::jsonb)))
+      into r;
+    return r;
+  end if;
+  if p_no = 'mkt.churn' then
+    a := _arv_extra(p_ws, 'mkt.alunos', p_par || '{"filtro":"saiu"}'); b := _arv_extra(p_ws, 'mkt.alunos', p_par || '{"filtro":"todos"}');
+    va := (a ->> 'valor')::numeric; vb := (b ->> 'valor')::numeric;
+    return jsonb_build_object('titulo', 'Churn', 'valor', case when vb > 0 then va / vb end, 'un', 'pct', 'explica', 'Dos leads do período que viraram alunos, quantos já saíram.',
+      'formula', jsonb_build_array(_arv_item('Saíram', va, 'mkt.alunos', p_par || '{"filtro":"saiu"}'), _arv_item('÷ Entraram como aluno', vb, 'mkt.alunos', p_par || '{"filtro":"todos"}')));
+  end if;
+  if p_no = 'mkt.ltv' then
+    a := _arv_vendas(p_ws, p_par || '{"campo":"liquido","coorte":true}'); b := _arv_clientes(p_ws, p_par || '{"coorte":true}');
+    va := (a ->> 'valor')::numeric; vb := (b ->> 'valor')::numeric;
+    return jsonb_build_object('titulo', 'LTV', 'valor', case when vb > 0 then va / vb end, 'un', 'brl', 'explica', 'Receita líquida dos leads do período ÷ quantos deles compraram.',
+      'formula', jsonb_build_array(_arv_item(a ->> 'titulo', va, 'ven.soma', p_par || '{"campo":"liquido","coorte":true}'), _arv_item('÷ ' || (b ->> 'titulo'), vb, 'mkt.clientes', p_par || '{"coorte":true}')));
+  end if;
+  if p_no in ('rec.nrr', 'rec.grr', 'rec.base') then  -- recorrência: MRR de hoje dos clientes que já pagavam há 1 ano
+    with ct as (select c.pessoa_id, c.data_inicio, c.data_fim, c.ativado_em, c.cancelado_em,
+                       coalesce((select sum(coalesce(i.quantidade, 1) * coalesce(i.valor, 0)) from contrato_itens i where i.contrato_id = c.id), 0)
+                         / case c.periodicidade when 'mensal' then 1 when 'trimestral' then 3 when 'semestral' then 6 else 12 end mrr
+                  from contratos c where c.workspace_id = p_ws and c.recorrente),
+         m1 as (select pessoa_id, sum(mrr) v from ct where ativado_em is not null and data_inicio <= h and (data_fim is null or data_fim >= h)
+                  and not (cancelado_em is not null and (cancelado_em at time zone 'America/Sao_Paulo')::date <= h) group by 1),
+         m0 as (select pessoa_id, sum(mrr) v from ct where ativado_em is not null and data_inicio <= h - 365 and (data_fim is null or data_fim >= h - 365)
+                  and not (cancelado_em is not null and (cancelado_em at time zone 'America/Sao_Paulo')::date <= h - 365) group by 1),
+         x as (select m0.pessoa_id, m0.v antes, coalesce(m1.v, 0) hoje, least(m0.v, coalesce(m1.v, 0)) bruto, p.nome from m0 left join m1 using (pessoa_id) left join pessoas p on p.id = m0.pessoa_id)
+    select case p_no when 'rec.base' then jsonb_build_object('titulo', 'MRR de 1 ano atrás', 'valor', (select coalesce(sum(antes), 0) from x), 'un', 'brl', 'explica', 'Contratos recorrentes ativos em ' || to_char(h - 365, 'DD/MM/YYYY') || '.')
+      else jsonb_build_object('titulo', case p_no when 'rec.nrr' then 'NRR (retenção líquida)' else 'GRR (retenção bruta)' end,
+        'valor', case when (select sum(antes) from x) > 0 then (select sum(case when p_no = 'rec.nrr' then hoje else bruto end) from x) / (select sum(antes) from x) end, 'un', 'pct',
+        'explica', case when p_no = 'rec.nrr' then 'MRR de hoje dos clientes que já pagavam há 1 ano (com expansões) ÷ o MRR deles na época.' else 'O mesmo, mas sem contar expansão: cada cliente vale no máximo o que pagava.' end,
+        'formula', jsonb_build_array(_arv_item(case when p_no = 'rec.nrr' then 'MRR de hoje desses clientes' else 'MRR mantido (sem expansão)' end, (select coalesce(sum(case when p_no = 'rec.nrr' then hoje else bruto end), 0) from x), null, null),
+          _arv_item('÷ MRR de 1 ano atrás', (select coalesce(sum(antes), 0) from x), null, null)),
+        'registros', jsonb_build_object('titulo', 'Clientes de 1 ano atrás', 'total', (select count(*) from x), 'cols', jsonb_build_array('Cliente', 'MRR antes', 'MRR hoje', 'Diferença'), 'un', jsonb_build_array('t', 'brl', 'brl', 'brl'),
+          'linhas', coalesce((select jsonb_agg(jsonb_build_object('c', jsonb_build_array(nome, antes, hoje, hoje - antes), 'abrir', jsonb_build_object('tipo', 'pessoa', 'id', pessoa_id)) order by hoje - antes) from x), '[]'::jsonb))) end
+      into r;
+    return r;
+  end if;
+  if p_no = 'fin.custos_despesas' then  -- Custos e margens: custos + despesas (sem as deduções, que lá aparecem como taxas e impostos)
+    a := _arv_razao(p_ws, p_par || '{"grupo":"custo"}'); b := _arv_razao(p_ws, p_par || '{"grupo":"despesa"}');
+    return jsonb_build_object('titulo', 'Custos e despesas', 'valor', (a ->> 'valor')::numeric + (b ->> 'valor')::numeric, 'un', 'brl', 'explica', 'Custos + despesas lançados no período (sem taxas e impostos, que são deduções da receita).',
+      'formula', jsonb_build_array(_arv_item('Custos', (a ->> 'valor')::numeric, 'fin.razao', p_par || '{"grupo":"custo"}'), _arv_item('+ Despesas', (b ->> 'valor')::numeric, 'fin.razao', p_par || '{"grupo":"despesa"}')));
+  end if;
+  if p_no = 'crm.penetracao' then
+    a := _arv_pessoas(p_ws, '{"filtro":"ativos"}'); va := (a ->> 'valor')::numeric;
+    select mercado_total into vb from planos where workspace_id = p_ws and mercado_total > 0 order by (status = 'ativo') desc, data_inicio desc limit 1;
+    return jsonb_build_object('titulo', 'Penetração de mercado', 'valor', case when vb > 0 then va / vb end, 'un', 'pct', 'explica', 'Clientes ativos ÷ tamanho do mercado informado no Planejamento da empresa.',
+      'formula', jsonb_build_array(_arv_item('Clientes ativos', va, 'crm.pessoas', '{"filtro":"ativos"}'::jsonb), _arv_item('÷ Mercado', vb, null, null)));
+  end if;
+  if p_no = 'ctr.soma' then  -- contratos (tela Contratos)
+    f := coalesce(p_par ->> 'campo', 'qtd');
+    with c as (select c.*, p.nome, coalesce((select sum(coalesce(i.quantidade, 1) * coalesce(i.valor, 0)) from contrato_itens i where i.contrato_id = c.id), 0) base,
+                      (select string_agg(distinct pr.nome, ', ') from contrato_itens i join produtos pr on pr.id = i.produto_id where i.contrato_id = c.id) produtos
+                 from contratos c left join pessoas p on p.id = c.pessoa_id where c.workspace_id = p_ws and c.status = coalesce(nullif(p_par ->> 'status', ''), 'ativo')),
+         v as (select c.*, case when recorrente then base * coalesce(num_parcelas, 1) else base end total,
+                      case when recorrente then base / case periodicidade when 'trimestral' then 3 when 'semestral' then 6 when 'anual' then 12 else 1 end else 0 end mrr from c)
+    select jsonb_build_object('titulo', case f when 'qtd' then 'Contratos' when 'total' then 'Total em contratos' else 'Receita recorrente (valor mensal)' end || ' · ' || coalesce(nullif(p_par ->> 'status', ''), 'ativo'),
+      'valor', (select coalesce(sum(case f when 'qtd' then 1 when 'total' then total else mrr end), 0) from v), 'un', case when f = 'qtd' then 'n' else 'brl' end,
+      'explica', case f when 'qtd' then 'Contratos com essa situação.' when 'total' then 'Valor cheio dos contratos: recorrente = valor da parcela × número de parcelas; avulso = soma dos itens.' else 'Contratos recorrentes: valor dos itens ÷ meses da periodicidade.' end,
+      'quebras', jsonb_build_array(jsonb_build_object('titulo', 'Por produto', 'itens', coalesce((select jsonb_agg(_arv_item(coalesce(produtos, 'Sem produto'), s, null, null, n || ' contrato(s)') order by s desc)
+        from (select produtos, sum(case f when 'qtd' then 1 when 'total' then total else mrr end) s, count(*) n from v group by 1) z), '[]'::jsonb)),
+        jsonb_build_object('titulo', 'Recorrente ou avulso', 'itens', coalesce((select jsonb_agg(_arv_item(case when recorrente then 'Recorrente' else 'Avulso' end, s, null, null) order by s desc)
+        from (select recorrente, sum(case f when 'qtd' then 1 when 'total' then total else mrr end) s from v group by 1) z), '[]'::jsonb))),
+      'registros', jsonb_build_object('titulo', 'Contratos', 'total', (select count(*) from v), 'cols', jsonb_build_array('Início', 'Cliente', 'Número', 'Produtos', 'Total', 'Mensal'), 'un', jsonb_build_array('d', 't', 't', 't', 'brl', 'brl'),
+        'linhas', coalesce((select jsonb_agg(jsonb_build_object('c', jsonb_build_array(data_inicio, nome, numero, produtos, total, mrr), 'abrir', jsonb_build_object('tipo', 'pessoa', 'id', pessoa_id)) order by data_inicio desc) from v), '[]'::jsonb)))
+      into r;
+    return r;
+  end if;
+  return null;
+end $$;
+
+revoke execute on function public._arv_extra(uuid, text, jsonb) from public, anon, authenticated;
