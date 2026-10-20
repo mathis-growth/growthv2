@@ -302,7 +302,7 @@ svg text{font-family:var(--font-mono);font-size:10px;fill:var(--muted)}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.118 · 20/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.120 · 20/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -327,7 +327,7 @@ const NAV = [
   { g: 'Growth Starter', flat: true, starter: true, items: [['st-dash', 'Dashboard'], ['mkt-dash', 'Aquisição'], ['mkt-midia', 'Mídia'], ['crm-vendas', 'Vendas'], ['ho-retencao', 'Retenção & Expansão'], ['cad-produtos', 'Produtos'], ['crm-alunos', 'Clientes / Alunos'], ['fin-dash', 'Financeiro'], ['st-relatorios', 'Relatórios'], ['ia-perguntar', 'Pergunte aos dados'], ['gro-ciclo', 'Experimentos']] },
   { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['adm-dash', 'Dashboard Growth'], ['ia-perguntar', 'Pergunte aos dados'], ['adm-plano', 'Planejamento da empresa'], ['adm-empresa', 'Cadastro da empresa']] },
   { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-midia', 'Dashboard de mídia'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários'], ['mkt-cont', 'Planejamento de conteúdo']] },
-  { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-abandonos', 'Abandono de checkout'], ['mkt-origem', 'Leads por origem']] },
+  { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['mkt-origem', 'Leads por origem']] },
   { g: 'RevOps', items: [['ho-dash', 'Dashboard'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
   { g: 'Financeiro', items: [['fin-dash', 'Dashboard'], ['fin-receber', 'Contas a receber'], ['fin-pagar', 'Contas a pagar'], ['fin-custo', 'Custos e margens'], ['fin-lanc', 'Lançamentos contábeis']] },
   { g: 'Casa', casa: true, items: [['casa-dash', 'Dashboard'], ['casa-receber', 'Contas a receber'], ['casa-pagar', 'Contas a pagar'], ['casa-custo', 'Custos do mês'], ['casa-lanc', 'Lançamentos contábeis'], ['casa-bancos', 'Contas bancárias e cartões'], ['casa-planocontas', 'Plano de contas'], ['casa-fornecedores', 'Fornecedores'], ['casa-formaspag', 'Formas de pagamento'], ['casa-centros', 'Centros de custo']] },
@@ -336,10 +336,10 @@ const NAV = [
   { g: 'Configurações', adm: true, items: [], subs: [
     { g: 'Dados e integrações', mod: 'cfg', items: [['cfg-importar', 'Importar e validar dados'], ['cfg-integracoes', 'Integrações'], ['cfg-uso', 'Uso da plataforma'], ['cfg-qualidade', 'Qualidade dos dados'], ['cfg-metricas', 'Dicionário de métricas']] },
     { g: 'Pessoas e acessos', mod: 'cad', items: [['cad-equipe', 'Equipe e acessos'], ['cad-funcoes', 'Funções e permissões'], ['cad-auditoria', 'Auditoria'], ['cfg-pacotes', 'Pacotes de acesso dos clientes']] },
-    { g: 'Comercial e produtos', mod: 'cad', items: [['cad-clientes', 'Clientes'], ['cad-duplicados', 'Cadastros repetidos'], ['cad-produtos', 'Produtos'], ['cad-plataformas', 'Plataformas'], ['cad-canais', 'Canais'], ['cad-funis', 'Estratégias e funis'], ['cad-motivos', 'Motivos de ganho e perda']] },
+    { g: 'Comercial e produtos', mod: 'cad', items: [['cad-clientes', 'Clientes'], ['cad-duplicados', 'Cadastros repetidos'], ['cad-produtos', 'Produtos'], ['cad-comissoes', 'Comissões'], ['cad-plataformas', 'Plataformas'], ['cad-canais', 'Canais'], ['cad-funis', 'Estratégias e funis'], ['cad-motivos', 'Motivos de ganho e perda']] },
     { g: 'Financeiro e contabilidade', mod: 'cad', items: [['cad-planocontas', 'Plano de contas'], ['cad-regras', 'Regras contábeis'], ['cad-impostos', 'Impostos'], ['cad-bancos', 'Contas bancárias'], ['cad-formaspag', 'Formas de pagamento'], ['cad-fornecedores', 'Fornecedores'], ['cad-centros', 'Centros de custo'], ['cad-rateio', 'Rateio de custos']] }] }
 ];
-const S = { user: null, workspaces: [], ws: null, view: 'adm-painel', abertos: {}, tabMkt: 'campanhas', ano: 2026, f: { busca: '', qual: '', tipo: '' } };
+const S = { user: null, workspaces: [], ws: null, view: (new URLSearchParams(location.search).get('v') || (new URLSearchParams(location.search).get('conexao') ? 'cfg-integracoes' : '')) || 'adm-painel', abertos: {}, tabMkt: 'campanhas', ano: 2026, f: { busca: '', qual: '', tipo: '' } };
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const brl = n => Number(n || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -599,6 +599,8 @@ const ICO = {
   'crm-vendas': P('<circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h2l2.5 11h11l2-8H6"/>'),
   'crm-oport': P('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="M12 12l6-6"/>'),
   'crm-contratos': P('<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h7M9 17h5"/>'),
+  'cad-comissoes': P('<circle cx="12" cy="12" r="9"/><path d="M9 15l6-6"/><circle cx="9.5" cy="9.5" r="1.2"/><circle cx="14.5" cy="14.5" r="1.2"/>'),
+  'crm-comissoes': P('<circle cx="12" cy="12" r="9"/><path d="M9 15l6-6"/><circle cx="9.5" cy="9.5" r="1.2"/><circle cx="14.5" cy="14.5" r="1.2"/>'),
   'crm-alunos': P('<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.5 3 3 6 3s6-1.500 6-3v-4.500"/>'),
   'fin-receber': P('<path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 20h16"/>'),
   'fin-pagar': P('<path d="M12 21V9"/><path d="M7 14l5-5 5 5"/><path d="M4 4h16"/>'),
@@ -722,7 +724,7 @@ $('#wsSel').onchange = e => { S.ws = S.wsBase = e.target.value; if (ehCasaV(S.vi
 
 const VIEWS = {
   'mkt-dash': vMktDash, 'mkt-midia': vMidia, 'ia-perguntar': vPerguntar, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': vDashGrowth, 'st-dash': vDashGrowth, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo,
-  'crm-leads': vCrmLeads, 'crm-oport': vCrmOport, 'crm-vendas': vVendas, 'crm-contratos': vContratos, 'crm-alunos': vCrmAlunos,
+  'crm-leads': vCrmLeads, 'crm-oport': vCrmOport, 'crm-vendas': vVendas, 'crm-contratos': vContratos, 'crm-comissoes': vComissoes, 'cad-comissoes': vComissoes, 'crm-alunos': vCrmAlunos,
   'fin-receber': vReceber,  'cfg-uso': vUso, 'fin-pagar': vPagar, 'fin-custo': vCustoOp, 'fin-lanc': vLanc, 'adm-painel': vPainel, 'adm-plano': vPlano,
   'cad-clientes': vClientes, 'cad-plataformas': vPlataformas, 'cad-funis': vFunis, 'cad-regras': vRegras,
   'cfg-qualidade': vQualidade, 'cfg-metricas': vMetricas, 'cad-auditoria': vAuditoria, 'cad-duplicados': vDuplicados, 'crm-abandonos': vAbandonos, 'prj-atividades': vTodasAtividades
@@ -2624,20 +2626,25 @@ async function vReceber(m) {
 
 async function modalVenda(pessoaId) {
   const w = S.ws;
-  const [pes, prod, plat, cmpV, canV] = await Promise.all([
+  const [pes, prod, plat, cmpV, canV, ofV, eqV] = await Promise.all([
     q(sb.from('pessoas').select('id,nome,email').eq('workspace_id', w).order('nome').limit(2000)),
     q(sb.from('produtos').select('id,nome,preco').eq('workspace_id', w).eq('ativo', true)),
     q(sb.from('plataformas_venda').select('id,nome').eq('workspace_id', w).eq('ativa', true)),
     q(sb.from('campanhas').select('id,nome').eq('workspace_id', w).order('data_inicio', { ascending: false, nullsFirst: false }).limit(200)).catch(() => []),
-    q(sb.from('canais').select('codigo,nome').eq('workspace_id', w).eq('ativo', true).order('nome')).catch(() => [])
+    q(sb.from('canais').select('codigo,nome').eq('workspace_id', w).eq('ativo', true).order('nome')).catch(() => []),
+    q(sb.from('ofertas').select('id,nome,produto_id,preco,ativo').eq('workspace_id', w).order('nome')).catch(() => []),
+    q(sb.from('equipe').select('id,nome,vinculo,equipe_comercial,ativo').eq('workspace_id', w).eq('ativo', true).order('nome')).catch(() => [])
   ]);
   if (!prod.length) { toast('Cadastre um produto antes de vender.', true); return; }
+  const vendV = eqV.filter(e => e.equipe_comercial || e.vinculo === 'vendedor');
   const f = modal('Nova venda', `
     <label>Pessoa<select name="pessoa_id" required>${opts(pes, 'id', p => p.nome + (p.email ? ' · ' + p.email : ''), pessoaId)}</select></label>
     <div class="grid2"><label>Produto<select name="produto_id" data-novo="produtos">${opts(prod, 'id', p => p.nome + ' (' + brl(p.preco) + ')')}<option value="__novo__">＋ Cadastrar novo…</option></select></label>
     <label>Plataforma<select name="plataforma_id" data-novo="plataformas"><option value="">Venda direta (sem plataforma)</option>${opts(plat, 'id', 'nome')}<option value="__novo__">＋ Cadastrar novo…</option></select></label></div>
     <div class="grid2"><label>Forma de pagamento<select name="forma_pagamento"><option value="pix">Pix</option><option value="cartao_credito">Cartão de crédito</option><option value="boleto">Boleto</option><option value="outro">Outro</option></select></label>
     <label>Valor bruto (R$)<input name="valor_bruto" type="number" step="0.01" min="0" required value="${prod[0].preco}"></label></div>
+    <div class="grid2"><label>Oferta<select name="oferta_id"><option value="">Sem oferta específica</option></select><span style="font-weight:400">Usada nas regras de comissão por oferta.</span></label>
+    <label>Quem vendeu<select name="vendedor_id"><option value="">Automático (o comercial responsável pela pessoa)</option>${opts(vendV, 'id', 'nome')}</select></label></div>
     <label>Data da venda (vazio = agora)<input name="data_venda" type="datetime-local"></label>
     <div class="grid2"><label>Campanha que fechou a venda<select name="campanha_id"><option value="">Sem campanha</option>${opts(cmpV, 'id', 'nome')}</select></label>
     <label>Canal que fechou (último clique)<select name="canal_fechamento"><option value="">Não informado</option>${opts(canV, 'codigo', 'nome')}<option value="comercial">Comercial</option></select></label></div>
@@ -2647,11 +2654,15 @@ async function modalVenda(pessoaId) {
         workspace_id: w, pessoa_id: d.pessoa_id, produto_id: d.produto_id, plataforma_id: nul(d.plataforma_id),
         forma_pagamento: d.forma_pagamento, valor_bruto: Number(d.valor_bruto), status: 'aprovada',
         ...(d.campanha_id ? { campanha_id: d.campanha_id } : {}), ...(d.canal_fechamento ? { canal_fechamento: d.canal_fechamento } : {}),
+        ...(d.oferta_id ? { oferta_id: d.oferta_id } : {}), ...(d.vendedor_id ? { vendedor_id: d.vendedor_id } : {}),
         ...(d.data_venda ? { data_venda: new Date(d.data_venda).toISOString() } : {})
       }));
       toast('Venda registrada');
     }, 'Registrar venda');
-  f.produto_id.onchange = () => { const p = prod.find(x => x.id === f.produto_id.value); if (p) f.valor_bruto.value = p.preco; };
+  const ofOpts = () => { const L = ofV.filter(o => o.produto_id === f.produto_id.value && o.ativo !== false); f.oferta_id.innerHTML = '<option value="">Sem oferta específica</option>' + opts(L, 'id', o => o.nome + (o.preco != null ? ' (' + brl(o.preco) + ')' : '')); f.oferta_id.closest('label').style.display = L.length ? '' : 'none'; };
+  f.produto_id.onchange = () => { const p = prod.find(x => x.id === f.produto_id.value); if (p) f.valor_bruto.value = p.preco; ofOpts(); };
+  f.oferta_id.onchange = () => { const o = ofV.find(x => x.id === f.oferta_id.value); if (o && o.preco != null) f.valor_bruto.value = o.preco; };
+  ofOpts();
 }
 
 /* soma n meses a uma data (AAAA-MM-DD) mantendo o dia; em mês curto vale o último dia */
@@ -4451,10 +4462,12 @@ async function vRelatorios(m) {
 }
 
 async function vIntegracoes(m) {
-  const reg = await q(sb.from('integracoes').select('*').eq('workspace_id', S.ws));
+  cxRetorno();
+  const [reg, CXD] = await Promise.all([q(sb.from('integracoes').select('*').eq('workspace_id', S.ws)), cxDados()]);
   const R = Object.fromEntries(reg.map(r => [r.provedor, r]));
   m.innerHTML = `<div class="head"><h1>Integrações</h1></div>
-  <div class="panel"><span>Aqui você registra as ferramentas que alimentam o Growths. <b>A conexão automática ainda está em desenvolvimento:</b> por enquanto o status serve como controle e os dados entram por lançamento ou planilha. Nunca cole senha, token ou chave de API nestes campos. Segredos ficam guardados no servidor, fora do navegador.</span></div>
+  ${cxHtml(CXD)}
+  <div class="panel"><span>Abaixo, as outras ferramentas que alimentam o Growths. <b>Meta e Google já conectam sozinhos (acima);</b> para as demais, o status serve como controle e os dados entram por lançamento, planilha ou webhook. Nunca cole senha, token ou chave de API nestes campos. Segredos ficam guardados no servidor, fora do navegador.</span></div>
   ${Object.entries(CAT_INTEG).map(([cat, nome]) => { const L = CATALOGO.filter(c => c[1] === cat); return L.length ? `<div class="panel"><h2>${nome}</h2><div class="adgrid">${L.map(([p, , desc]) => { const r = R[p], st = ST_INTEG[r ? r.status : 'desconectado']; return `<div class="ad" style="padding:12px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(p)}</b><span class="pill ${st[0]}">${st[1]}</span></div><span class="muted">${esc(desc)}</span>${r && r.conta_externa ? `<small class="muted">Conta: ${esc(r.conta_externa)}</small>` : ''}${r && r.ultima_sincronizacao ? `<small class="muted">Última sincronização: ${dtt(r.ultima_sincronizacao)}</small>` : ''}<div><button class="btn sm" data-i="${esc(p)}">${r ? 'Editar' : 'Configurar'}</button></div></div>`; }).join('')}</div></div>` : ''; }).join('')}`;
   m.onclick = e => {
     const b = e.target.closest('[data-i]'); if (!b) return;
@@ -4464,6 +4477,7 @@ async function vIntegracoes(m) {
       <label>Observação<textarea name="obs" rows="3">${esc(r.observacao || '')}</textarea></label>`,
       async d => { await q(sb.from('integracoes').upsert({ workspace_id: S.ws, provedor: p, categoria: cat, status: d.status, conta_externa: nul(d.conta), observacao: nul(d.obs) }, { onConflict: 'workspace_id,provedor' })); toast('Integração salva'); });
   };
+  cxLiga(m, CXD);
 }
 
 /* ================= DASHBOARDS POR ÁREA: Financeiro e CRM ================= */
@@ -4743,8 +4757,8 @@ async function coDados(meses) {
       const k = chaveDe(c), r = k[0] === 'r' ? RC[k.slice(2)] : null, p = parc(c.descricao);
       const x = it[k] = it[k] || { k, nome: r ? r.descricao : p ? p[1].trim() : baseDe(c.descricao) || c.descricao, valor: 0, n: 0,
         tipo: r ? (r.tipo === 'variavel' ? 'variavel' : 'fixo') : p ? 'temporario' : 'pontual', ate: p ? fimParc[k] : null, parcelas: p ? p[3] : null,
-        conta: PC[(r && r.conta_despesa_id) || c.conta_despesa_id], centro: CC[(r && r.centro_custo_id) || c.centro_custo_id], fornecedor: FO[c.fornecedor_id], estimativa: false, projetado: false };
-      x.valor += Number(c.valor || 0); x.n++; if (c.estimativa) x.estimativa = true;
+        conta: PC[(r && r.conta_despesa_id) || c.conta_despesa_id], centro: CC[(r && r.centro_custo_id) || c.centro_custo_id], fornecedor: FO[c.fornecedor_id], estimativa: false, projetado: false, ids: [] };
+      x.valor += Number(c.valor || 0); x.n++; if (c.estimativa) x.estimativa = true; x.ids.push({ id: c.id, valor: Number(c.valor || 0), descricao: c.descricao, vencimento: c.vencimento, status: c.status });
     });
     // recorrência ativa que ainda não virou conta a pagar neste mês: entra pelo valor da regra (projeção)
     recs.filter(r => r.ativo !== false && (r.data_inicio || '').slice(0, 7) <= mes && (!r.data_fim || r.data_fim.slice(0, 7) >= mes) && !it['r:' + r.id]).forEach(r => {
@@ -4862,6 +4876,7 @@ async function vCustoOp(m) {
   // comparação de regimes
   const comp = CO_REG.map(([k, l]) => { const a = coEquilibrio({ ...params, regime: k }), b = coEquilibrio({ ...params, regime: k, margemPct: meta }); return { k, l, a, b }; });
   const proj = meses.map(mes => { const c = tot(mes), r = D[mes].receita; return { mes, c, p: tot(mes, x => coEhProlabore(x.conta)), r, d: r - c }; });
+  ARV_CO = { mes: E.mes, its: its.filter(conta), fora: its.filter(x => !conta(x)), crs: dm.crs || [], receber: dm.receita, eq, alvo, meta, varEf, regime: regIni, total, pro };
   const optsM = Array.from({ length: 18 }, (_, i) => coMes(h.slice(0, 7), i - 5));
   m.innerHTML = `<div class="head"><h1>Custos e margens</h1><div class="acts">${ir(rotaCtx('fin-pagar'), 'Contas a pagar')}${ir(rotaCtx('fin-dash'), 'Dashboard financeiro')}</div></div>
   <div class="panel"><div class="filters" style="margin:0">
@@ -6789,12 +6804,12 @@ async function arvDesenha() {
     root.querySelectorAll('[data-arvi]').forEach(b => b.onclick = () => { ARV.pilha = ARV.pilha.slice(0, Number(b.dataset.arvi) + 1); arvDesenha(); });
   };
   liga();
-  let N; try { N = top.dados || (top.dados = await q(sb.rpc('arvore_no', { p_ws: S.ws, p_no: top.no, p_par: top.par }))); }
+  let N; try { N = top.dados || (top.dados = top.no.startsWith('loc.') ? arvLocal(top.no, top.par) : await q(sb.rpc('arvore_no', { p_ws: S.ws, p_no: top.no, p_par: top.par }))); }
   catch (e) { root.querySelector('.arv-body').innerHTML = `<div class="arv-aviso">${/Could not find the function|schema cache|function public\.arvore_no/i.test(e.message || '') ? 'Falta rodar supabase/RODAR_v0.116_arvore_numeros.sql no Supabase.' : esc(e.message || String(e))}</div>`; return; }
   top.titulo = N.titulo;
   root.querySelector('.arv-trilha').innerHTML = trilha(); liga();
   const linha = (it, un, tot) => { const pode = !!it.no, pct = tot > 0 && it.valor > 0 ? Math.min(100, it.valor / tot * 100) : 0;
-    return `<${pode ? 'button type="button"' : 'div'} class="arv-l"${pode ? ` data-arvno="${esc(it.no)}" data-arvpar="${esc(JSON.stringify(it.par || {}))}" data-arvrot="${esc(it.rotulo)}"` : ''}><span class="r">${esc(it.rotulo)}${it.sub ? `<small>${esc(it.sub)}</small>` : ''}</span><span class="n">${arvFmt(it.valor, un)}</span><span class="s">${pode ? '›' : ''}</span>${tot != null ? `<span class="b"><i style="width:${pct.toFixed(1)}%"></i></span>` : ''}</${pode ? 'button' : 'div'}>`; };
+    return `<${pode ? 'button type="button"' : 'div'} class="arv-l"${pode ? ` data-arvno="${esc(it.no)}" data-arvpar="${esc(JSON.stringify(it.par || {}))}" data-arvrot="${esc(it.rotulo)}"` : ''}><span class="r">${esc(it.rotulo)}${it.sub ? `<small>${esc(it.sub)}</small>` : ''}</span><span class="n">${arvFmt(it.valor, it.un || un)}</span><span class="s">${pode ? '›' : ''}</span>${tot != null ? `<span class="b"><i style="width:${pct.toFixed(1)}%"></i></span>` : ''}</${pode ? 'button' : 'div'}>`; };
   const quebra = (Q, un) => { if (!Q || !(Q.itens || []).length) return ''; const tot = Q.itens.reduce((s, x) => s + Math.max(0, Number(x.valor) || 0), 0), L = Q.itens;
     return `<section class="arv-q"><h3>${esc(Q.titulo)}</h3>${L.slice(0, 8).map(it => linha(it, un, tot)).join('')}${L.length > 8 ? `<div class="arv-resto" hidden>${L.slice(8).map(it => linha(it, un, tot)).join('')}</div><button type="button" class="arv-mais">Ver mais ${L.length - 8}</button>` : ''}</section>`; };
   const regs = N.registros && (N.registros.linhas || []).length ? `<section class="arv-q"><h3>${esc(N.registros.titulo)} · ${num(N.registros.total)}${N.registros.total > N.registros.linhas.length ? ' (mostrando ' + num(N.registros.linhas.length) + ')' : ''}</h3><div class="tw"><table class="arv-tab"><thead><tr>${N.registros.cols.map((c, i) => `<th class="${['brl', 'n'].includes(N.registros.un[i]) ? 'n' : ''}">${esc(c)}</th>`).join('')}</tr></thead><tbody>
@@ -6835,7 +6850,11 @@ function arvMapa(vk, el) {
   if (vk === 'fin-dash') { const PER = perGet(), P = { ini: PER.de || '2000-01-01', fim: PER.ate || '2100-12-31' };
     return { 'Receitas no período': ['fin.razao', { ...P, grupo: 'receita' }], 'Despesas no período': ['fin.saidas', P], 'Resultado no período': ['fin.lucro', P], 'Caixa projetado em 30 dias': ['fin.caixa30', { hoje: h }] }; }
   if (vk === 'fin-custo' && S.co && S.co.mes) { const P = { ini: S.co.mes + '-01', fim: arvFimMes(S.co.mes) };
-    return { 'Receita do mês': ['fin.razao', { ...P, grupo: 'receita' }], 'Lucro líquido': ['fin.lucro', P], 'Custos e despesas': ['fin.custos_despesas', P], 'Margem de lucro líquida': ['fin.margem', P] }; }
+    const L = { mes: S.co.mes }, metaRot = ARV_CO && ARV_CO.mes === S.co.mes ? 'Para a meta de ' + String(ARV_CO.meta).replace('.', ',') + '% de lucro' : '(sem meta)';
+    return { 'Receita do mês': ['fin.razao', { ...P, grupo: 'receita' }], 'Lucro líquido': ['fin.lucro', P], 'Custos e despesas': ['fin.custos_despesas', P], 'Margem de lucro líquida': ['fin.margem', P],
+      'Custo do mês': ['loc.co.custo', { ...L, f: 'todos' }], 'Pró-labores': ['loc.co.custo', { ...L, f: 'prolabore' }], 'Operação (sem pró-labore)': ['loc.co.custo', { ...L, f: 'operacao' }],
+      'Fixo': ['loc.co.custo', { ...L, f: 'fixo' }], 'Variável': ['loc.co.custo', { ...L, f: 'variavel' }], 'Parcelado e pontual': ['loc.co.custo', { ...L, f: 'parc_pontual' }],
+      'Ponto de equilíbrio': ['loc.co.eq', L], [metaRot]: ['loc.co.eq', { ...L, alvo: true }], 'Imposto no equilíbrio': ['loc.co.imposto', L], 'A receber no mês': ['loc.co.receber', L] }; }
   if (vk === 'mkt-dash' && S.mg) { const P = { ini: S.mg.ini, fim: S.mg.fim, ...(S.mg.camp ? { campanha: S.mg.camp } : {}) };
     return { 'Leads': ['crm.pessoas', { ...P, filtro: 'leads_periodo' }], 'Investido': ['mkt.ads', { ...P, campo: 'custo' }], 'CPL': ['mkt.cpl', P], 'Clientes': ['mkt.clientes', { ...P, coorte: true }],
       'CAC': ['mkt.cac', P], 'Receita': ['ven.soma', { ...P, campo: 'liquido', coorte: true }], 'ROAS': ['mkt.roas', P], 'ROI': ['mkt.roi', P], 'LTV': ['mkt.ltv', P], 'Churn': ['mkt.churn', P] }; }
@@ -6866,10 +6885,79 @@ function arvMapa(vk, el) {
   return {};
 }
 // colunas de tabela que abrem a árvore: { linha: seletor das linhas, par: parâmetros da linha, cols: cabeçalho → [nó, parâmetros] }
+/* v0.119 — nós da árvore montados no navegador, com a mesma conta da tela (Custos e margens usa premissas e
+   escolhas guardadas neste navegador; refazer a conta no banco daria outro número). */
+let ARV_CO = null;
+const ARV_COF = { todos: ['Custo do mês', () => true], prolabore: ['Pró-labores', x => coEhProlabore(x.conta)], operacao: ['Operação (sem pró-labore)', x => !coEhProlabore(x.conta)],
+  fixo: ['Fixo', x => x.tipo === 'fixo'], variavel: ['Variável', x => x.tipo === 'variavel'], parc_pontual: ['Parcelado e pontual', x => x.tipo === 'temporario' || x.tipo === 'pontual'],
+  temporario: ['Parcelado', x => x.tipo === 'temporario'], pontual: ['Pontual', x => x.tipo === 'pontual'] };
+const arvCoArea = x => x.centro ? x.centro.nome : 'Sem área (centro de custo)', arvCoConta = x => x.conta ? x.conta.codigo + ' ' + x.conta.nome : 'Sem conta';
+function arvLocal(no, par) {
+  const C = ARV_CO;
+  if (!C || C.mes !== par.mes) throw new Error('Este número vem da tela Custos e margens. Abra a tela no mês ' + mesFmt(par.mes || '') + ' e clique de novo.');
+  const grupo = (L, f) => { const g = {}; L.forEach(x => { const k = f(x); g[k] = (g[k] || 0) + x.valor; }); return Object.entries(g).sort((a, b) => b[1] - a[1]); };
+  if (no === 'loc.co.custo') {
+    const [tit, f] = ARV_COF[par.f || 'todos'] || ARV_COF.todos;
+    const L = C.its.filter(f).filter(x => (!par.area || arvCoArea(x) === par.area) && (!par.conta || arvCoConta(x) === par.conta));
+    const sub = par.area ? ' · ' + par.area : par.conta ? ' · ' + par.conta : '';
+    const Q = [];
+    if (!['fixo', 'variavel', 'temporario', 'pontual'].includes(par.f)) Q.push({ titulo: 'Por tipo', itens: grupo(L, x => x.tipo).map(([k, v]) => ({ rotulo: CO_TIPO[k][0], valor: v, no: 'loc.co.custo', par: { ...par, f: k } })) });
+    if (!par.area) Q.push({ titulo: 'Por área (centro de custo)', itens: grupo(L, arvCoArea).map(([k, v]) => ({ rotulo: k, valor: v, no: 'loc.co.custo', par: { ...par, area: k } })) });
+    if (!par.conta) Q.push({ titulo: 'Por conta contábil', itens: grupo(L, arvCoConta).map(([k, v]) => ({ rotulo: k, valor: v, no: 'loc.co.custo', par: { ...par, conta: k } })) });
+    const nFora = C.fora.filter(f).length;
+    return { titulo: tit + sub, valor: L.reduce((s, x) => s + x.valor, 0), un: 'brl', quebras: Q,
+      explica: 'Contas a pagar com competência em ' + mesFmt(C.mes) + ', agrupadas por item (a mesma despesa recorrente ou a mesma compra parcelada vira um item), mais as recorrências ativas que ainda não foram lançadas no mês, pelo valor da regra.'
+        + (nFora ? ' ' + nFora + ' item(ns) desmarcado(s) em "Contar no custo" ficaram de fora.' : ''),
+      registros: { titulo: 'Itens', total: L.length, cols: ['Item', 'Tipo', 'Área', 'Conta', 'Valor'], un: ['t', 't', 't', 't', 'brl'],
+        linhas: L.slice().sort((a, b) => b.valor - a.valor).map(x => ({ c: [x.nome + (x.projetado ? ' (projetado)' : x.estimativa ? ' (estimado)' : ''), CO_TIPO[x.tipo][0], arvCoArea(x), arvCoConta(x), x.valor], ir: { no: 'loc.co.item', par: { mes: C.mes, k: x.k } }, rotulo: x.nome })) } };
+  }
+  if (no === 'loc.co.item') {
+    const x = C.its.concat(C.fora).find(i => i.k === par.k); if (!x) throw new Error('Item não encontrado neste mês.');
+    return { titulo: x.nome, valor: x.valor, un: 'brl',
+      explica: CO_TIPO[x.tipo][0] + (x.fornecedor ? ' · ' + x.fornecedor.nome : '') + ' · ' + arvCoArea(x) + ' · ' + arvCoConta(x) + '. '
+        + (x.projetado ? 'Recorrência ativa ainda não lançada em ' + mesFmt(C.mes) + ': entra pelo valor da regra cadastrada em Despesas recorrentes.' : x.ids.length + ' conta(s) a pagar com competência em ' + mesFmt(C.mes) + '.')
+        + (x.estimativa && !x.projetado ? ' Valor estimado.' : '') + (C.fora.includes(x) ? ' Este item está desmarcado e não entra no custo.' : ''),
+      quebras: x.ids.length ? [{ titulo: 'Contas a pagar', itens: x.ids.map(c => ({ rotulo: (c.descricao || 'Conta') + ' · vence ' + dd(c.vencimento) + ' · ' + c.status, valor: c.valor, no: 'fin.conta_pagar', par: { conta: c.id } })) }] : [] };
+  }
+  if (no === 'loc.co.eq') {
+    const E = par.alvo ? C.alvo : C.eq, mg = par.alvo ? C.meta / 100 : 0, mei = C.regime === 'mei';
+    const F = [{ rotulo: 'Custos contados no mês', valor: C.total, no: 'loc.co.custo', par: { mes: C.mes, f: 'todos' } }];
+    if (mei) F.push({ rotulo: '+ DAS-MEI', valor: CO_MEI_DAS });
+    F.push({ rotulo: '÷ (1 − alíquota − % variável' + (par.alvo ? ' − margem' : '') + ')', valor: E.receita == null ? null : (C.total + (mei ? CO_MEI_DAS : 0)) / E.receita, un: 'pct' });
+    return { titulo: par.alvo ? 'Vender para ' + String(C.meta).replace('.', ',') + '% de lucro' : 'Ponto de equilíbrio', valor: E.receita, un: 'brl',
+      explica: (par.alvo ? 'Quanto vender por mês para sobrar ' + String(C.meta).replace('.', ',') + '% de lucro' : 'Quanto vender por mês para o resultado dar zero') + ': os custos contados divididos pelo que sobra de cada real vendido. '
+        + (mei ? 'No MEI o imposto é o DAS fixo.' : 'No Simples a alíquota depende da própria receita, então a conta é refeita até estabilizar.') + (E.avisos && E.avisos.length ? ' ' + E.avisos.join(' ') : ''),
+      formula: F,
+      quebras: [{ titulo: 'O que sai de cada real vendido', itens: [{ rotulo: mei ? 'Imposto (DAS fixo, não é %)' : 'Alíquota efetiva' + (E.anexo ? ' (anexo ' + E.anexo + ')' : ''), valor: mei ? 0 : E.aliq, un: 'pct', no: 'loc.co.imposto', par: { mes: C.mes, alvo: !!par.alvo } },
+        { rotulo: '% variável (taxas e custo de entrega)', valor: C.varEf / 100, un: 'pct' }].concat(par.alvo ? [{ rotulo: 'Margem de lucro desejada', valor: mg, un: 'pct' }] : []) }] };
+  }
+  if (no === 'loc.co.imposto') {
+    const E = par.alvo ? C.alvo : C.eq, mei = C.regime === 'mei';
+    return { titulo: 'Imposto no ' + (par.alvo ? 'cenário da meta' : 'equilíbrio'), valor: E.imposto, un: 'brl',
+      explica: mei ? 'MEI: o DAS é fixo por mês.' : 'Receita do ' + (par.alvo ? 'cenário' : 'equilíbrio') + ' × alíquota efetiva' + (E.anexo ? ' do anexo ' + E.anexo : '') + (E.fatorR != null ? ' (fator R ' + fP(E.fatorR) + ': pró-labores ÷ receita)' : '') + '.',
+      formula: mei ? [{ rotulo: 'DAS-MEI', valor: CO_MEI_DAS }] : [{ rotulo: 'Receita', valor: E.receita, no: 'loc.co.eq', par: { mes: C.mes, alvo: !!par.alvo } }, { rotulo: '× Alíquota efetiva', valor: E.aliq, un: 'pct' }] };
+  }
+  if (no === 'loc.co.receber') {
+    const L = C.crs, liq = c => Number(c.valor || 0) - Number(c.desconto || 0);
+    return { titulo: 'A receber no mês', valor: C.receber, un: 'brl', explica: 'Parcelas com vencimento em ' + mesFmt(C.mes) + ' (menos as canceladas), já descontado o desconto. Recebidas ou não.',
+      quebras: [{ titulo: 'Por situação', itens: grupo(L.map(c => ({ valor: liq(c), s: c.status })), x => x.s).map(([k, v]) => ({ rotulo: k, valor: v })) },
+        { titulo: 'Por origem', itens: grupo(L.map(c => ({ valor: liq(c), o: c.contrato_id ? 'Contratos' : c.venda_id ? 'Vendas' : 'Avulsas' })), x => x.o).map(([k, v]) => ({ rotulo: k, valor: v })) }],
+      registros: { titulo: 'Parcelas', total: L.length, cols: ['Vencimento', 'Situação', 'Valor', 'Desconto', 'A receber'], un: ['d', 't', 'brl', 'brl', 'brl'],
+        linhas: L.slice().sort((a, b) => (a.vencimento || '').localeCompare(b.vencimento || '')).map(c => ({ c: [c.vencimento, c.status, Number(c.valor || 0), Number(c.desconto || 0), liq(c)], ...(c.venda_id ? { ir: { no: 'ven.venda', par: { venda: c.venda_id } }, rotulo: 'Venda' } : {}) })) } };
+  }
+  throw new Error('Número desconhecido: ' + no);
+}
 function arvColunas(vk) {
   if (vk === 'adm-painel') return [{ linha: 'tr[data-ca]', par: r => ({ campanha: r.dataset.ca }),
     cols: { 'Leads (meta)': ['crm.pessoas', { filtro: 'novos_campanha' }], 'Vendas (meta)': ['ven.soma', { campo: 'qtd' }], 'Investido': ['mkt.camp_total', { campo: 'investimento' }],
       'Receita': ['ven.soma', { campo: 'bruto' }], 'CAC de mídia': ['mkt.camp_total', { campo: 'cac' }], 'ROAS': ['mkt.camp_total', { campo: 'roas' }] } }];
+  if (vk === 'mkt-trafego') { const ate = S.tAte || hoje(), B = { ini: S.tDe || diaMais(ate, -13), fim: ate, ...(S.tCamp ? { campanha: S.tCamp } : {}) };
+    const A = c => ['mkt.ads', { campo: c }];
+    return [{ linha: 'tr[data-canal]', par: r => ({ ...B, plataforma: r.dataset.canal }),
+        cols: { 'Investido': A('custo'), 'Leads': A('leads'), 'CPL': ['mkt.trf_cpl', {}], 'Clientes': A('clientes'), 'CAC de mídia': ['mkt.trf_cac', {}], 'Receita': A('receita'), 'ROAS': ['mkt.trf_roas', {}] } },
+      { linha: 'tr[data-d]', par: r => ({ ...B, ini: r.dataset.d, fim: r.dataset.d, ...(S.tCanal ? { plataforma: S.tCanal } : {}) }),
+        cols: { 'Investimento': A('custo'), 'Impressões': A('impressoes'), 'Cliques': A('cliques'), 'CTR': ['mkt.ctr', {}], 'CPC': ['mkt.cpc', {}], 'Connect rate': ['mkt.connect', {}],
+          'Leads': A('leads'), 'CPL': ['mkt.trf_cpl', {}], 'Vendas': A('vendas'), 'ROAS': ['mkt.trf_roas', {}] } }]; }
   if (vk === 'mkt-dash' && S.mg) { const B = { ini: S.mg.ini, fim: S.mg.fim, ...(S.mg.camp ? { campanha: S.mg.camp } : {}) };
     return [{ linha: 'tr[data-arvp], tr[data-camp]', par: r => r.dataset.arvp ? { ...B, ...JSON.parse(r.dataset.arvp) } : r.dataset.camp ? { ...B, campanha: r.dataset.camp } : null,
       cols: { 'Leads': ['crm.pessoas', { filtro: 'leads_periodo' }], 'Clientes': ['mkt.clientes', { coorte: true }], 'Custo': ['mkt.ads', { campo: 'custo' }], 'CPL': ['mkt.cpl', {}], 'CAC': ['mkt.cac', {}],
@@ -6899,7 +6987,7 @@ function arvLigaTela(el, vk) {
     const rot = ((k.querySelector('.l') || {}).innerText || '').replace(/[\sⓘ⚠›]+$/u, '').trim(), m = M[rot];
     if (!m) return;
     k.dataset.arv = 1; k.classList.add('arvk'); k.classList.remove('cdk'); k.setAttribute('role', 'button'); k.tabIndex = 0; k.title = 'De onde vem este número?';
-    const abre = e => { if (e && e.target.closest('a,button,select,input')) return; arvAbrir(m[0], m[1], { texto: (k.querySelector('.v') || {}).innerText, rotulo: rot }); };
+    const abre = e => { if (e && e.target.closest('a,button,select,input')) return; arvAbrir(m[0], m[1], { texto: ((k.querySelector('.v') || {}).innerText || '').replace(/\/mês$/, ''), rotulo: rot }); };
     k.onclick = abre; k.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abre(); } };
   });
 }
@@ -10713,13 +10801,15 @@ async function vEquipe(m) {
   const fn = id => (fs.find(x => x.id === id) || {}).nome;
   const acesso = r => !r.acesso_ativo ? '<span class="pill neutral">sem acesso</span>' : r.user_id ? `<span class="pill good">${esc(fn(r.funcao_id) || 'ativo')}</span>` : `<span class="pill warn" title="A pessoa ainda não entrou no sistema com este e-mail">convite pendente · ${esc(fn(r.funcao_id) || '')}</span>`;
   m.innerHTML = `<div class="head"><div><h1>Equipe e acessos</h1><span class="muted">Cadastre as pessoas, defina o cargo, como são avisadas e, se for o caso, a função de acesso ao sistema.</span></div><div class="acts"><button class="btn pri" data-new>Nova pessoa</button></div></div>
-  <div class="panel"><div class="tw"><table><thead><tr><th>Nome</th><th>Cargo</th><th>E-mail</th><th>WhatsApp</th><th>Avisos</th><th>Acesso ao sistema</th><th>Situação</th><th></th></tr></thead><tbody>
-  ${rows.map(r => `<tr><td><b>${esc(r.nome)}</b></td><td>${esc(r.funcao || '—')}</td><td>${esc(r.email || '—')}</td><td>${esc(r.telefone || '—')}</td><td>${[r.avisar_app && 'app', r.avisar_email && 'e-mail', r.avisar_whatsapp && 'WhatsApp'].filter(Boolean).join(', ') || '—'}</td><td>${acesso(r)}</td><td>${pillAtivo(r.ativo)}</td><td style="white-space:nowrap"><button class="btn sm" data-edit="${r.id}">Editar</button>${adm && r.acesso_ativo ? ` <button class="btn sm" data-perm="${r.id}" title="Ajustar o que só esta pessoa pode fazer">Permissões${Object.keys(r.permissoes_ind || {}).length || temAcoes(r.acoes_ind) ? ' ●' : ''}</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="8" class="empty">Ninguém cadastrado ainda.</td></tr>'}</tbody></table></div></div>
+  <div class="panel"><div class="tw"><table><thead><tr><th>Nome</th><th>Cargo</th><th>Vínculo</th><th>E-mail</th><th>WhatsApp</th><th>Avisos</th><th>Acesso ao sistema</th><th>Situação</th><th></th></tr></thead><tbody>
+  ${rows.map(r => `<tr><td><b>${esc(r.nome)}</b></td><td>${esc(r.funcao || '—')}</td><td>${r.vinculo ? pillVinc(r.vinculo, r.equipe_comercial) : '—'}</td><td>${esc(r.email || '—')}</td><td>${esc(r.telefone || '—')}</td><td>${[r.avisar_app && 'app', r.avisar_email && 'e-mail', r.avisar_whatsapp && 'WhatsApp'].filter(Boolean).join(', ') || '—'}</td><td>${acesso(r)}</td><td>${pillAtivo(r.ativo)}</td><td style="white-space:nowrap"><button class="btn sm" data-edit="${r.id}">Editar</button>${adm && r.acesso_ativo ? ` <button class="btn sm" data-perm="${r.id}" title="Ajustar o que só esta pessoa pode fazer">Permissões${Object.keys(r.permissoes_ind || {}).length || temAcoes(r.acoes_ind) ? ' ●' : ''}</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="8" class="empty">Ninguém cadastrado ainda.</td></tr>'}</tbody></table></div></div>
   ${adm ? `<div class="panel"><h2>Quem já entra no sistema</h2><span class="muted">Usuários com acesso a este workspace agora.</span><div class="tw"><table><thead><tr><th>E-mail</th><th>Nome na equipe</th><th>Tipo de acesso</th></tr></thead><tbody>
   ${acessos.map(a => `<tr><td>${esc(a.email)}</td><td>${esc(a.nome || '—')}</td><td>${a.papel === 'admin' ? '<span class="pill warn">Administrador</span>' : esc(a.funcao || (a.papel === 'editor' ? 'Editor (sem função definida)' : 'Leitor (sem função definida)'))}</td></tr>`).join('') || '<tr><td colspan="3" class="empty">—</td></tr>'}</tbody></table></div></div>` : ''}`;
   const abrir = row => {
     const campos = [{ k: 'nome', l: 'Nome', req: 1 }, { k: 'funcao', l: 'Cargo', ph: 'Designer', hint: 'É por ele que o modelo de projeto escolhe o responsável de cada atividade. Use o mesmo nome no modelo.' },
       { k: 'email', l: 'E-mail', t: 'email', hint: 'O mesmo e-mail que a pessoa usa para entrar. Também recebe os avisos no sino do app.' }, { k: 'telefone', l: 'WhatsApp', ph: '35 99999-9999', hint: 'Com DDD. O 55 é incluído sozinho.' },
+      { k: 'vinculo', l: 'Vínculo', t: 'select', req: 1, opts: [['equipe', 'Equipe'], ['vendedor', 'Vendedor'], ['coprodutor', 'Coprodutor'], ['estrategista', 'Estrategista'], ['parceiro', 'Parceiro']], def: 'equipe', hint: 'Vendedor, coprodutor, estrategista e parceiro podem receber comissão (Vendas → Comissões).' },
+      { k: 'equipe_comercial', l: 'Faz parte da equipe comercial', t: 'check' },
       { k: 'avisar_app', l: 'Avisar no app (sino)', t: 'check', def: true }, { k: 'avisar_email', l: 'Avisar por e-mail', t: 'check', def: true }, { k: 'avisar_whatsapp', l: 'Avisar por WhatsApp', t: 'check' }, { k: 'ativo', l: 'Ativo', t: 'check', def: true }]
       .concat(adm ? [{ secao: 'Acesso ao sistema' }, { k: 'acesso_ativo', l: 'Pode entrar no sistema', t: 'check' }, { k: 'funcao_id', l: 'Função de acesso', t: 'select', opts: sel(fs, 'id', 'nome'), hint: fs.length ? 'Define o que a pessoa vê e altera. Crie funções em Funções e permissões.' : 'Crie uma função antes em Funções e permissões.' }] : []);
     modal(row ? 'Editar pessoa' : 'Nova pessoa', `<div class="grid2">${campos.map(c => campoHtml(c, row && c.k ? row[c.k] : undefined)).join('')}</div>`, async (_d, f) => {
@@ -10751,6 +10841,250 @@ async function vEquipe(m) {
       }, 'Salvar', true);
   };
   m.querySelectorAll('[data-perm]').forEach(b => b.onclick = () => permInd(rows.find(r => r.id === b.dataset.perm)));
+}
+
+/* ================= v0.120 — Comissões =================
+   Quem recebe (Equipe com vínculo: vendedor da equipe comercial, coprodutor, estrategista, parceiro), regras por
+   projeto / campanha / produto / oferta, extrato e fechamento do mês. As comissões são calculadas pelo banco
+   (venda aprovada e parcela de contrato recebida); a tela só lê, cria regras e manda fechar o mês. */
+const VINC = { vendedor: ['Vendedor', 'info'], coprodutor: ['Coprodutor', 'good'], estrategista: ['Estrategista', 'warn'], parceiro: ['Parceiro', 'neutral'], equipe: ['Equipe', 'neutral'] };
+const pillVinc = (v, com) => `<span class="pill ${(VINC[v] || VINC.equipe)[1]}">${(VINC[v] || VINC.equipe)[0]}</span>${com ? ' <span class="pill info" title="Faz parte da equipe comercial">comercial</span>' : ''}`;
+const COM_ESC = { projeto: 'Projeto todo', campanha: 'Campanha', produto: 'Produto', oferta: 'Oferta' };
+const COM_PAG = { mensal: 'Conta a pagar mensal', por_venda: 'Conta a pagar por venda', relatorio: 'Só relatório' };
+const COM_SIT = { prevista: ['Prevista', 'info'], lancada: ['Lançada no Contas a pagar', 'warn'], paga: ['Paga', 'good'], paga_manual: ['Paga por fora', 'good'], cancelada: ['Cancelada', 'neutral'],
+  estorno_pendente: ['Estorno pendente', 'bad'], estornada: ['Estornada', 'neutral'], conta_cancelada: ['Conta cancelada', 'neutral'] };
+const pillComSit = s => `<span class="pill ${(COM_SIT[s] || ['', 'neutral'])[1]}">${(COM_SIT[s] || [s])[0]}</span>`;
+const comFalta = e => /comissao_regras|comissoes|v_comissoes|comissao_|vinculo|schema cache/i.test((e && e.message) || '');
+
+async function vComissoes(m) {
+  // Configurações → Comissões: Regras e Quem recebe (configuração). Vendas → Comissões: Resumo do mês e Extrato (acompanhamento).
+  const cfg = S.view === 'cad-comissoes', w = S.ws, h = hoje(), C = S.com = S.com || { aba: 'resumo', mes: h.slice(0, 7), pessoa: '', sit: '' };
+  if (cfg && !['regras', 'pessoas'].includes(C.aba)) C.aba = C.abaCfg || 'regras';
+  if (!cfg && !['resumo', 'extrato'].includes(C.aba)) C.aba = C.abaOp || 'resumo';
+  if (cfg) C.abaCfg = C.aba; else C.abaOp = C.aba;
+  const mesIni = C.mes + '-01', mesFim = arvFimMes(C.mes);
+  let eq, regras, linhas, camps, prods, ofs;
+  try {
+    [eq, regras, linhas, camps, prods, ofs] = await Promise.all([
+      q(sb.from('equipe').select('id,nome,email,telefone,funcao,ativo,vinculo,equipe_comercial').eq('workspace_id', w).order('nome')),
+      q(sb.from('comissao_regras').select('*').eq('workspace_id', w).order('criado_em')),
+      C.aba === 'extrato' || C.aba === 'resumo' ? q(sb.from('v_comissoes').select('*').eq('workspace_id', w).eq('competencia', mesIni).order('data_fato', { ascending: false }).limit(5000)) : Promise.resolve([]),
+      q(sb.from('campanhas').select('id,nome').eq('workspace_id', w).order('data_inicio', { ascending: false, nullsFirst: false }).limit(300)).catch(() => []),
+      q(sb.from('produtos').select('id,nome').eq('workspace_id', w).order('nome')).catch(() => []),
+      q(sb.from('ofertas').select('id,nome,produto_id').eq('workspace_id', w).order('nome')).catch(() => [])]);
+  } catch (e) {
+    if (comFalta(e)) { m.innerHTML = `<div class="head"><h1>Comissões</h1></div><div class="panel"><div class="empty">Falta rodar <b>supabase/RODAR_v0.120_comissoes_conexoes.sql</b> no Supabase.</div></div>`; return; }
+    throw e;
+  }
+  // estornos pendentes de meses anteriores entram no fechamento deste mês
+  const pend = C.aba === 'resumo' ? await q(sb.from('v_comissoes').select('*').eq('workspace_id', w).eq('status', 'estorno_pendente').lt('competencia', mesIni)).catch(() => []) : [];
+  const nomeEq = id => (eq.find(x => x.id === id) || {}).nome || '—';
+  const escNome = r => r.escopo === 'projeto' ? 'Projeto todo' : COM_ESC[r.escopo] + ': ' + ((r.escopo === 'campanha' ? camps : r.escopo === 'produto' ? prods : ofs).find(x => x.id === (r.campanha_id || r.produto_id || r.oferta_id)) || {}).nome;
+  const optsMes = Array.from({ length: 15 }, (_, i) => coMes(h.slice(0, 7), i - 12)).reverse();
+  const recebe = eq.filter(e => e.vinculo !== 'equipe' || e.equipe_comercial || regras.some(r => r.equipe_id === e.id));
+  const abas = cfg ? [['regras', 'Regras'], ['pessoas', 'Quem recebe']] : [['resumo', 'Resumo do mês'], ['extrato', 'Extrato']];
+  let corpo = '';
+  if (C.aba === 'resumo') {
+    const por = {}; [...linhas, ...pend].forEach(l => { const p = por[l.equipe_id] = por[l.equipe_id] || { id: l.equipe_id, nome: l.pessoa, vinc: l.vinculo, com: l.equipe_comercial, tot: 0, aLancar: 0, lanc: 0, paga: 0, est: 0, rel: 0, n: 0 };
+      const val = Number(l.valor), mesL = l.competencia === mesIni;
+      if (l.situacao === 'estorno_pendente') p.est += val;
+      if (!mesL) return;
+      if (['prevista', 'lancada', 'paga', 'paga_manual'].includes(l.situacao)) { p.tot += val; p.n++; }
+      if (l.situacao === 'prevista' && l.pagamento === 'mensal') p.aLancar += val;
+      if (l.situacao === 'prevista' && l.pagamento === 'relatorio') p.rel += val;
+      if (l.situacao === 'lancada') p.lanc += val;
+      if (l.situacao === 'paga' || l.situacao === 'paga_manual') p.paga += val; });
+    const P = Object.values(por).sort((a, b) => b.tot - a.tot), T = k => P.reduce((s, x) => s + x[k], 0);
+    corpo = `<div class="kpis">${kpi('Comissões do mês', brl(T('tot')), num(T('n')) + ' venda(s) e parcela(s) · ' + mesFmt(C.mes))}${kpi('A lançar no fechamento', brl(T('aLancar')), 'regras com conta a pagar mensal')}${kpi('Lançado e ainda não pago', brl(T('lanc')), 'está no Contas a pagar')}${kpi('Pago', brl(T('paga')), 'conta paga ou paga por fora')}${kpi('Estornos pendentes', brl(T('est')), 'venda devolvida depois de lançada: desconta no fechamento')}</div>
+    <div class="panel"><div class="head" style="margin:0 0 8px"><div><h2 style="margin:0">Por pessoa</h2><span class="muted">O fechamento cria uma conta a pagar por pessoa com as comissões mensais de ${mesFmt(C.mes)}, menos os estornos pendentes. Regras "por venda" já lançam sozinhas; "só relatório" não lança.</span></div>
+      <div class="acts"><button class="btn pri" id="comFechar"${T('aLancar') > 0 ? '' : ' disabled title="Nada a lançar neste mês"'}>Fechar ${mesFmt(C.mes)}</button></div></div>
+    <div class="tw"><table><thead><tr><th>Pessoa</th><th>Vínculo</th><th class="n">Vendas e parcelas</th><th class="n">Comissões do mês</th><th class="n">A lançar</th><th class="n">Só relatório</th><th class="n">Lançado</th><th class="n">Pago</th><th class="n">Estornos pendentes</th></tr></thead><tbody>
+    ${P.length ? P.map(p => `<tr class="clk" data-compes="${p.id}"><td><b>${esc(p.nome)}</b></td><td>${pillVinc(p.vinc, p.com)}</td><td class="n">${num(p.n)}</td><td class="n"><b>${brl(p.tot)}</b></td><td class="n">${brl(p.aLancar)}</td><td class="n">${brl(p.rel)}</td><td class="n">${brl(p.lanc)}</td><td class="n">${brl(p.paga)}</td><td class="n">${p.est ? '<span style="color:var(--bad)">− ' + brl(p.est) + '</span>' : brl(0)}</td></tr>`).join('')
+      : `<tr><td colspan="9" class="empty">${regras.length ? 'Nenhuma comissão em ' + mesFmt(C.mes) + '.' : 'Ainda não há regras. Cadastre quem recebe e as regras em Configurações → Comissões.'}</td></tr>`}
+    ${P.length ? `<tr class="tot"><td colspan="3">Total</td><td class="n">${brl(T('tot'))}</td><td class="n">${brl(T('aLancar'))}</td><td class="n">${brl(T('rel'))}</td><td class="n">${brl(T('lanc'))}</td><td class="n">${brl(T('paga'))}</td><td class="n">${T('est') ? '− ' + brl(T('est')) : brl(0)}</td></tr>` : ''}</tbody></table></div></div>`;
+  }
+  if (C.aba === 'extrato') {
+    const L = linhas.filter(l => (!C.pessoa || l.equipe_id === C.pessoa) && (!C.sit || l.situacao === C.sit));
+    const marcaveis = L.filter(l => l.situacao === 'prevista' && l.pagamento === 'relatorio');
+    corpo = `<div class="filters"><select id="comPes"><option value="">Todas as pessoas</option>${opts(recebe, 'id', 'nome', C.pessoa)}</select><select id="comSit"><option value="">Toda situação</option>${Object.entries(COM_SIT).map(([k, [l]]) => `<option value="${k}"${C.sit === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
+      ${marcaveis.length ? `<button class="btn" id="comPagaFora">Marcar ${marcaveis.length} de "só relatório" como pagas</button>` : ''}</div>
+    <div class="panel"><div class="tw"><table><thead><tr><th>Data</th><th>Pessoa</th><th>Origem</th><th>Cliente</th><th>Produto</th><th>Regra</th><th class="n">Base</th><th class="n">%</th><th class="n">Comissão</th><th>Pagamento</th><th>Situação</th></tr></thead><tbody>
+    ${L.length ? L.map(l => `<tr><td>${dd(l.data_fato)}</td><td><b>${esc(l.pessoa)}</b></td><td>${l.origem === 'venda' ? 'Venda' : 'Parcela de contrato'}</td><td>${esc(l.cliente || '—')}</td><td>${esc(l.produto || '—')}</td>
+      <td>${esc(l.escopo ? (l.escopo === 'projeto' ? 'Projeto todo' : COM_ESC[l.escopo] + ': ' + (l.escopo_nome || '')) : 'regra apagada')}</td><td class="n">${brl(l.base_valor)}<br><span class="muted">${l.base === 'bruto' ? 'bruto' : 'líquido'}</span></td><td class="n">${String(l.percentual).replace('.', ',')}%</td>
+      <td class="n"><b>${brl(l.valor)}</b></td><td>${esc(COM_PAG[l.pagamento] || l.pagamento)}${l.conta_vencimento ? '<br><span class="muted">vence ' + dd(l.conta_vencimento) + '</span>' : ''}</td><td>${pillComSit(l.situacao)}${l.situacao === 'paga_manual' ? ` <button class="btn sm" data-desfaz="${l.id}">Desfazer</button>` : ''}</td></tr>`).join('')
+      : '<tr><td colspan="11" class="empty">Nenhuma comissão neste filtro.</td></tr>'}
+    ${L.length ? `<tr class="tot"><td colspan="8">Total (${L.length})</td><td class="n">${brl(sum(L.filter(l => !['cancelada', 'estornada', 'conta_cancelada'].includes(l.situacao)), 'valor'))}</td><td colspan="2"><span class="muted">sem canceladas e estornadas</span></td></tr>` : ''}</tbody></table></div></div>`;
+  }
+  if (C.aba === 'regras') {
+    const grupos = recebe.filter(e => regras.some(r => r.equipe_id === e.id));
+    corpo = `<div class="panel"><span class="muted">Cada regra diz quanto a pessoa ganha e em quais vendas. Se a mesma pessoa tiver mais de uma regra para a venda, vale a mais específica: <b>oferta</b>, depois <b>produto</b>, depois <b>campanha</b>, depois <b>projeto todo</b>. Pessoas diferentes somam. Vendedor normalmente ganha só sobre as vendas dele; coprodutor e estrategista, sobre todas.</span></div>
+    ${grupos.length ? grupos.map(e => `<div class="panel"><div class="head" style="margin:0 0 6px"><h2 style="margin:0">${esc(e.nome)} ${pillVinc(e.vinculo, e.equipe_comercial)}</h2><div class="acts"><button class="btn sm" data-novareg="${e.id}">Nova regra para ${esc(e.nome.split(' ')[0])}</button></div></div>
+      <div class="tw"><table><thead><tr><th>Vale para</th><th class="n">%</th><th>Sobre</th><th>Base</th><th>Pagamento</th><th>Vigência</th><th>Contratos</th><th>Situação</th><th></th></tr></thead><tbody>
+      ${regras.filter(r => r.equipe_id === e.id).map(r => `<tr${r.ativo ? '' : ' style="opacity:.5"'}><td><b>${esc(escNome(r))}</b>${r.observacao ? '<br><span class="muted">' + esc(r.observacao) + '</span>' : ''}</td><td class="n"><b>${String(r.percentual).replace('.', ',')}%</b></td><td>${r.sobre === 'proprias' ? 'Só as vendas da pessoa' : 'Todas as vendas'}</td><td>${r.base === 'bruto' ? 'Bruto' : 'Líquido'}</td>
+        <td>${COM_PAG[r.pagamento]}${r.pagamento !== 'relatorio' ? '<br><span class="muted">vence dia ' + r.dia_pagamento + ' do mês seguinte</span>' : ''}</td><td>${r.vigencia_ini || r.vigencia_fim ? (r.vigencia_ini ? dd(r.vigencia_ini) : 'sempre') + ' a ' + (r.vigencia_fim ? dd(r.vigencia_fim) : 'sem fim') : 'Sempre'}</td><td>${r.escopo === 'oferta' ? '—' : r.inclui_contratos ? 'Sim' : 'Não'}</td><td>${pillAtivo(r.ativo)}</td>
+        <td style="white-space:nowrap"><button class="btn sm" data-edreg="${r.id}">Editar</button> <button class="btn sm bad" data-exreg="${r.id}">Excluir</button></td></tr>`).join('')}</tbody></table></div></div>`).join('')
+      : '<div class="panel"><div class="empty">Nenhuma regra ainda. Use "Nova regra".</div></div>'}`;
+  }
+  if (C.aba === 'pessoas') {
+    corpo = `<div class="panel"><span class="muted">As pessoas ficam na Equipe (Configurações → Equipe e acessos). Aqui aparecem as que recebem comissão: vendedores, coprodutores, estrategistas e parceiros. Quem é de fora não precisa ter acesso ao sistema. Para pagar, o sistema cria a pessoa também como fornecedor.</span></div>
+    <div class="panel"><div class="tw"><table><thead><tr><th>Nome</th><th>Vínculo</th><th>E-mail</th><th>WhatsApp</th><th class="n">Regras ativas</th><th>Situação</th><th></th></tr></thead><tbody>
+    ${recebe.length ? recebe.map(e => `<tr><td><b>${esc(e.nome)}</b>${e.funcao ? '<br><span class="muted">' + esc(e.funcao) + '</span>' : ''}</td><td>${pillVinc(e.vinculo, e.equipe_comercial)}</td><td>${esc(e.email || '—')}</td><td>${esc(e.telefone || '—')}</td><td class="n">${regras.filter(r => r.equipe_id === e.id && r.ativo).length}</td><td>${pillAtivo(e.ativo)}</td>
+      <td style="white-space:nowrap"><button class="btn sm" data-edpes="${e.id}">Editar</button> <button class="btn sm" data-novareg="${e.id}">Nova regra</button></td></tr>`).join('') : '<tr><td colspan="7" class="empty">Ninguém ainda. Use "Nova pessoa".</td></tr>'}</tbody></table></div></div>`;
+  }
+  m.innerHTML = `<div class="head"><div><h1>Comissões</h1><span class="muted">${cfg ? 'Configuração: quem recebe comissão (vendedor, coprodutor, estrategista, parceiro) e as regras de cada um.' : 'Quanto cada pessoa tem a receber no mês, o extrato e o fechamento. Quem recebe e as regras ficam em Configurações → Comissões.'}</span></div>
+    <div class="acts">${C.aba === 'resumo' || C.aba === 'extrato' ? `<label>Mês<select id="comMes">${optsMes.map(x => `<option value="${x}"${x === C.mes ? ' selected' : ''}>${mesFmt(x)}</option>`).join('')}</select></label>` : ''}
+    ${cfg ? '<button class="btn" id="comNovaPes">Nova pessoa</button><button class="btn pri" id="comNovaReg">Nova regra</button>' : `${ir('cad-comissoes', 'Configurar comissões')}`}</div></div>
+  <div class="tabs">${abas.map(([k, l]) => `<button data-comaba="${k}" class="${C.aba === k ? 'on' : ''}">${l}</button>`).join('')}</div>${corpo}`;
+
+  // ---- ações
+  m.querySelectorAll('[data-comaba]').forEach(b => b.onclick = () => { C.aba = b.dataset.comaba; render(); });
+  if ($('#comMes')) $('#comMes').onchange = e => { C.mes = e.target.value; render(); };
+  if ($('#comPes')) $('#comPes').onchange = e => { C.pessoa = e.target.value; render(); };
+  if ($('#comSit')) $('#comSit').onchange = e => { C.sit = e.target.value; render(); };
+  m.querySelectorAll('[data-compes]').forEach(r => r.onclick = () => { C.aba = 'extrato'; C.pessoa = r.dataset.compes; C.sit = ''; render(); });
+  const pessoaForm = row => {
+    const campos = [{ k: 'nome', l: 'Nome', req: 1 }, { k: 'vinculo', l: 'Vínculo', t: 'select', req: 1, opts: [['vendedor', 'Vendedor'], ['coprodutor', 'Coprodutor'], ['estrategista', 'Estrategista'], ['parceiro', 'Parceiro'], ['equipe', 'Equipe (outro cargo)']], def: 'vendedor' },
+      { k: 'equipe_comercial', l: 'Faz parte da equipe comercial', t: 'check', def: !row }, { k: 'funcao', l: 'Cargo', ph: 'Closer, SDR, coprodutor…' },
+      { k: 'email', l: 'E-mail', t: 'email' }, { k: 'telefone', l: 'WhatsApp', ph: '35 99999-9999' }, { k: 'ativo', l: 'Ativo', t: 'check', def: true }];
+    modal(row ? 'Editar ' + row.nome : 'Nova pessoa que recebe comissão', `<div class="grid2">${campos.map(c => campoHtml(c, row ? row[c.k] : undefined)).join('')}</div><p class="muted">Vendedor da equipe comercial aparece como "quem vendeu" nas vendas. Coprodutor e estrategista costumam ganhar sobre todas as vendas do escopo.</p>`, async (_d, f) => {
+      const v = lerCampos(campos, f); v.telefone = fone55(v.telefone); if (v.email) v.email = v.email.toLowerCase();
+      if (row) await q(sb.from('equipe').update(v).eq('id', row.id)); else await q(sb.from('equipe').insert({ ...v, workspace_id: w }));
+      toast('Pessoa salva');
+    });
+  };
+  if ($('#comNovaPes')) $('#comNovaPes').onclick = () => pessoaForm(null);
+  m.querySelectorAll('[data-edpes]').forEach(b => b.onclick = () => pessoaForm(eq.find(e => e.id === b.dataset.edpes)));
+  const regraForm = (row, eqId) => {
+    if (!recebe.length && !row) { toast('Cadastre primeiro quem recebe (Nova pessoa).', true); return; }
+    const r = row || { equipe_id: eqId || '', escopo: 'projeto', base: 'liquido', sobre: '', pagamento: 'mensal', dia_pagamento: 10, inclui_contratos: true, ativo: true };
+    const pesSel = eq.find(e => e.id === r.equipe_id), sobreDef = r.sobre || (pesSel && (pesSel.vinculo === 'vendedor' || pesSel.equipe_comercial) ? 'proprias' : 'todas');
+    const f = modal(row ? 'Editar regra' : 'Nova regra de comissão', `<div class="grid2">
+      <label>Pessoa<select name="equipe_id" required>${row ? '' : '<option value="">Escolha…</option>'}${opts(recebe.length ? recebe : eq, 'id', e => e.nome + ' · ' + (VINC[e.vinculo] || VINC.equipe)[0], r.equipe_id)}</select></label>
+      <label>Percentual (%)<input name="percentual" type="number" step="0.01" min="0.01" max="100" required value="${r.percentual ?? ''}"></label>
+      <label>Vale para<select name="escopo">${Object.entries(COM_ESC).map(([k, l]) => `<option value="${k}"${r.escopo === k ? ' selected' : ''}>${{ projeto: 'Projeto todo (qualquer venda)', campanha: 'Uma campanha', produto: 'Um produto', oferta: 'Uma oferta' }[k]}</option>`).join('')}</select></label>
+      <label data-esc="campanha">Campanha<select name="campanha_id"><option value="">Escolha…</option>${opts(camps, 'id', 'nome', r.campanha_id)}</select></label>
+      <label data-esc="produto">Produto<select name="produto_id"><option value="">Escolha…</option>${opts(prods, 'id', 'nome', r.produto_id)}</select></label>
+      <label data-esc="oferta">Oferta<select name="oferta_id"><option value="">Escolha…</option>${opts(ofs, 'id', o => o.nome + ' · ' + ((prods.find(p => p.id === o.produto_id) || {}).nome || ''), r.oferta_id)}</select></label>
+      <label>Sobre quais vendas<select name="sobre"><option value="todas"${sobreDef === 'todas' ? ' selected' : ''}>Todas as vendas do escopo</option><option value="proprias"${sobreDef === 'proprias' ? ' selected' : ''}>Só as vendas que a pessoa fez</option></select></label>
+      <label>Base de cálculo<select name="base"><option value="liquido"${r.base !== 'bruto' ? ' selected' : ''}>Líquido (depois de taxa e imposto)</option><option value="bruto"${r.base === 'bruto' ? ' selected' : ''}>Bruto (valor cheio)</option></select></label>
+      <label>Como paga<select name="pagamento">${Object.entries(COM_PAG).map(([k, l]) => `<option value="${k}"${r.pagamento === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+      <label data-pg>Vence no dia (do mês seguinte)<input name="dia_pagamento" type="number" min="1" max="28" value="${r.dia_pagamento || 10}"></label>
+      <label>Vale a partir de<input name="vigencia_ini" type="date" value="${r.vigencia_ini || ''}"></label>
+      <label>Até<input name="vigencia_fim" type="date" value="${r.vigencia_fim || ''}"></label>
+      <label style="grid-column:1/-1;flex-direction:row;align-items:center;gap:8px;color:var(--ink)" data-ctr><input type="checkbox" name="inclui_contratos" style="width:auto"${r.inclui_contratos !== false ? ' checked' : ''}> Contar também as parcelas de contrato recebidas</label>
+      <label style="grid-column:1/-1;flex-direction:row;align-items:center;gap:8px;color:var(--ink)"><input type="checkbox" name="ativo" style="width:auto"${r.ativo !== false ? ' checked' : ''}> Regra ativa</label>
+      <label style="grid-column:1/-1">Observação<input name="observacao" value="${esc(r.observacao || '')}"></label>
+      <label style="grid-column:1/-1">Aplicar às vendas desde<input name="desde" type="date" value="${r.vigencia_ini || mesIni}"><span style="font-weight:400">Ao salvar, o sistema refaz as comissões ainda não lançadas a partir desta data. As já lançadas no Contas a pagar não mudam.</span></label></div>
+      <p class="muted" id="comExplica"></p>`, async d => {
+      const v = { equipe_id: d.equipe_id, percentual: Number(String(d.percentual).replace(',', '.')), escopo: d.escopo, campanha_id: d.escopo === 'campanha' ? nul(d.campanha_id) : null, produto_id: d.escopo === 'produto' ? nul(d.produto_id) : null,
+        oferta_id: d.escopo === 'oferta' ? nul(d.oferta_id) : null, sobre: d.sobre, base: d.base, pagamento: d.pagamento, dia_pagamento: Number(d.dia_pagamento) || 10,
+        vigencia_ini: nul(d.vigencia_ini), vigencia_fim: nul(d.vigencia_fim), inclui_contratos: !!f.inclui_contratos.checked, ativo: !!f.ativo.checked, observacao: nul(d.observacao) };
+      if (!v.equipe_id) throw new Error('Escolha a pessoa.');
+      if (!(v.percentual > 0 && v.percentual <= 100)) throw new Error('Percentual entre 0,01 e 100.');
+      if (v.escopo !== 'projeto' && !(v.campanha_id || v.produto_id || v.oferta_id)) throw new Error('Escolha ' + (v.escopo === 'oferta' ? 'a oferta' : v.escopo === 'produto' ? 'o produto' : 'a campanha') + '.');
+      if (row) await q(sb.from('comissao_regras').update(v).eq('id', row.id)); else await q(sb.from('comissao_regras').insert({ ...v, workspace_id: w }));
+      const R = await q(sb.rpc('comissao_recalcular', { p_ws: w, p_desde: d.desde || mesIni }));
+      toast('Regra salva. Recalculadas ' + num(R.vendas) + ' venda(s) e ' + num(R.parcelas) + ' parcela(s) desde ' + dd(d.desde || mesIni) + '.');
+    }, 'Salvar e recalcular', true);
+    const atual = () => { const e = f.escopo.value; f.querySelectorAll('[data-esc]').forEach(x => x.style.display = x.dataset.esc === e ? '' : 'none'); f.querySelector('[data-ctr]').style.display = e === 'oferta' ? 'none' : '';
+      f.querySelector('[data-pg]').style.display = f.pagamento.value === 'relatorio' ? 'none' : '';
+      const p = Number(String(f.percentual.value).replace(',', '.')) || 0, nm = (eq.find(x => x.id === f.equipe_id.value) || {}).nome || 'A pessoa';
+      $('#comExplica').textContent = p ? `${nm} ganha ${String(p).replace('.', ',')}% do ${f.base.value === 'bruto' ? 'bruto' : 'líquido'} de ${f.sobre.value === 'proprias' ? 'cada venda que fizer' : 'cada venda'} ${e === 'projeto' ? 'do projeto' : e === 'campanha' ? 'da campanha escolhida' : e === 'produto' ? 'do produto escolhido' : 'da oferta escolhida'}. Ex.: venda de R$ 1.000 → ${brl(1000 * p / 100)} (sobre o ${f.base.value === 'bruto' ? 'bruto' : 'líquido'}).` : ''; };
+    f.onchange = atual; f.oninput = atual; atual();
+    f.equipe_id.addEventListener('change', () => { const e = eq.find(x => x.id === f.equipe_id.value); if (e && !row) f.sobre.value = e.vinculo === 'vendedor' || e.equipe_comercial ? 'proprias' : 'todas'; atual(); });
+  };
+  if ($('#comNovaReg')) $('#comNovaReg').onclick = () => regraForm(null, C.pessoa || '');
+  m.querySelectorAll('[data-novareg]').forEach(b => b.onclick = () => regraForm(null, b.dataset.novareg));
+  m.querySelectorAll('[data-edreg]').forEach(b => b.onclick = () => regraForm(regras.find(r => r.id === b.dataset.edreg)));
+  m.querySelectorAll('[data-exreg]').forEach(b => b.onclick = () => { const r = regras.find(x => x.id === b.dataset.exreg);
+    if (!confirm('Excluir a regra de ' + nomeEq(r.equipe_id) + ' (' + escNome(r) + ', ' + r.percentual + '%)? As comissões já lançadas continuam; as previstas são refeitas sem ela.')) return;
+    act(async () => { await q(sb.from('comissao_regras').delete().eq('id', r.id)); await q(sb.rpc('comissao_recalcular', { p_ws: w, p_desde: r.vigencia_ini || '2000-01-01' })); render(); }, 'Regra excluída e comissões refeitas'); });
+  if ($('#comFechar')) $('#comFechar').onclick = () => {
+    const por = {}; linhas.filter(l => l.situacao === 'prevista' && l.pagamento === 'mensal' && l.competencia === mesIni).forEach(l => por[l.equipe_id] = (por[l.equipe_id] || 0) + Number(l.valor));
+    const est = {}; pend.concat(linhas).filter(l => l.situacao === 'estorno_pendente').forEach(l => est[l.equipe_id] = (est[l.equipe_id] || 0) + Number(l.valor));
+    modal('Fechar as comissões de ' + mesFmt(C.mes), `<p>Cria no Contas a pagar uma conta por pessoa (conta de despesa "Comissões e afiliados"), com vencimento no dia escolhido na regra, no mês seguinte.</p>
+      <div class="tw"><table><thead><tr><th>Pessoa</th><th class="n">Comissões</th><th class="n">Estornos</th><th class="n">Conta a pagar</th></tr></thead><tbody>${Object.entries(por).map(([id, v]) => `<tr><td>${esc(nomeEq(id))}</td><td class="n">${brl(v)}</td><td class="n">${est[id] ? '− ' + brl(est[id]) : '—'}</td><td class="n"><b>${brl(Math.max(0, v - (est[id] || 0)))}</b></td></tr>`).join('')}</tbody></table></div>`,
+      async () => { const R = await q(sb.rpc('comissao_fechar_mes', { p_ws: w, p_mes: mesIni })); const ok = R.filter(x => x.conta_pagar_id);
+        toast(ok.length ? ok.length + ' conta(s) a pagar criada(s): ' + brl(ok.reduce((s, x) => s + Number(x.valor), 0)) : (R[0] && R[0].aviso) || 'Nada a lançar.'); }, 'Criar contas a pagar');
+  };
+  if ($('#comPagaFora')) $('#comPagaFora').onclick = () => { const ids = linhas.filter(l => (!C.pessoa || l.equipe_id === C.pessoa) && l.situacao === 'prevista' && l.pagamento === 'relatorio').map(l => l.id);
+    if (confirm('Marcar ' + ids.length + ' comissão(ões) "só relatório" como pagas por fora?')) act(async () => { await q(sb.rpc('comissao_marcar_paga', { p_ids: ids, p_paga: true })); render(); }, 'Marcadas como pagas'); };
+  m.querySelectorAll('[data-desfaz]').forEach(b => b.onclick = () => act(async () => { await q(sb.rpc('comissao_marcar_paga', { p_ids: [b.dataset.desfaz], p_paga: false })); render(); }, 'Voltou para prevista'));
+}
+
+/* ================= v0.120 — Conexões automáticas (Meta e Google) =================
+   O login é feito na própria plataforma (edge function "conexoes"); o token fica guardado no servidor e nunca passa
+   pelo navegador. Daqui a pessoa conecta, escolhe as contas, sincroniza e liga campanhas de anúncio aos canais. */
+const CX_PLAT = {
+  meta: { nome: 'Meta', sub: 'Facebook Ads e Instagram', traz: 'Custo, impressões, cliques e alcance por anúncio, por dia; no Instagram, seguidores, alcance por dia e os posts com alcance, salvamentos, compartilhamentos e visualizações.' },
+  google: { nome: 'Google', sub: 'Google Ads e YouTube', traz: 'Custo, impressões e cliques por anúncio do Google Ads; no YouTube, visualizações, minutos e inscritos por dia, os vídeos do canal e as métricas diárias dos vídeos cadastrados em Vídeos e webinários.' } };
+const CX_ST = { conectado: ['good', 'Conectado'], expirada: ['warn', 'Acesso expirado: conecte de novo'], erro: ['bad', 'Com erro'], desconectado: ['neutral', 'Não conectado'] };
+const CX_TIPO = { meta_ads: 'Conta de anúncios', instagram: 'Instagram', facebook_pagina: 'Página do Facebook', google_ads: 'Google Ads', youtube: 'Canal do YouTube' };
+async function cxChama(rota, body) {
+  const r = await sb.functions.invoke('conexoes/' + rota, { body });
+  if (r.error) { let msg = r.error.message || 'Não foi possível falar com a função de conexões.';
+    try { const j = await r.error.context.json(); if (j && j.erro) msg = j.erro; } catch (e) { /* mantém */ }
+    if (/Failed to send|not found|404|FunctionsFetchError/i.test(msg)) msg = 'A função "conexoes" ainda não está publicada no Supabase (veja docs/como-rodar-o-banco.md).';
+    throw new Error(msg); }
+  if (r.data && r.data.erro) throw new Error(r.data.erro);
+  return r.data;
+}
+async function cxDados() {
+  const w = S.ws;
+  try {
+    const [cx, contas, ex, vinc, canais] = await Promise.all([
+      q(sb.from('conexoes').select('*').eq('workspace_id', w)),
+      q(sb.from('conexao_contas').select('*').eq('workspace_id', w).order('tipo')),
+      q(sb.from('conexao_execucoes').select('*').eq('workspace_id', w).order('iniciado_em', { ascending: false }).limit(8)),
+      q(sb.from('ads_externo_vinculos').select('*').eq('workspace_id', w).is('campanha_canal_id', null).eq('ignorar', false)),
+      q(sb.from('campanha_canais').select('id,utm_campaign,canal,campanhas(nome)').eq('workspace_id', w).limit(500)).catch(() => [])]);
+    return { cx, contas, ex, vinc, canais };
+  } catch (e) { if (/conexoes|conexao_|schema cache|does not exist/i.test(e.message || '')) return null; throw e; }
+}
+function cxHtml(D) {
+  if (!D) return `<div class="panel"><h2>Conexões automáticas</h2><div class="empty">Falta rodar <b>supabase/RODAR_v0.120_comissoes_conexoes.sql</b> no Supabase.</div></div>`;
+  const card = p => { const c = D.cx.find(x => x.plataforma === p) || { status: 'desconectado' }, P = CX_PLAT[p], st = CX_ST[c.status] || CX_ST.desconectado, ks = D.contas.filter(k => k.conexao_id === c.id);
+    const lig = c.status !== 'desconectado';
+    return `<div class="ad" style="padding:14px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><div><b style="font-size:16px">${P.nome}</b> <span class="muted">· ${P.sub}</span></div><span class="pill ${st[0]}">${st[1]}</span></div>
+      <span class="muted" style="font-size:13px">${P.traz}</span>
+      ${lig ? `<div style="font-size:13px">Conectado como <b>${esc(c.conta_nome || '—')}</b>${c.conectado_em ? ' em ' + dtt(c.conectado_em) : ''}${c.expira_em && p === 'meta' ? ' · o acesso vale até ' + dd(String(c.expira_em).slice(0, 10)) : ''}<br>Última sincronização: ${c.ultima_sincronizacao ? dtt(c.ultima_sincronizacao) : 'ainda não'}${c.ultimo_erro ? `<br><span style="color:var(--bad)">${esc(c.ultimo_erro)}</span>` : ''}</div>
+        <div><b style="font-size:13px">Contas</b>${ks.length ? ks.map(k => `<label style="flex-direction:row;align-items:center;gap:8px;font-weight:400;color:var(--ink);margin:4px 0"><input type="checkbox" data-cxconta="${k.id}" style="width:auto"${k.sincronizar ? ' checked' : ''}${k.tipo === 'facebook_pagina' ? ' disabled title="Página do Facebook: ainda não sincroniza (o Instagram ligado a ela sim)"' : ''}><span>${esc(CX_TIPO[k.tipo] || k.tipo)}: <b>${esc(k.nome || k.id_externo)}</b>${k.tipo === 'facebook_pagina' ? ' <span class="muted">(só para chegar ao Instagram)</span>' : ''}</span></label>`).join('') : '<div class="muted">Nenhuma conta encontrada com este login.</div>'}</div>
+        <div class="filters" style="margin:0"><label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" data-cxauto="${c.id}" style="width:auto"${c.sincronizar_auto ? ' checked' : ''}> Sincronizar todo dia</label>
+          <label>Primeira carga<select data-cxdias="${c.id}">${[7, 30, 90, 180].map(n => `<option value="${n}"${Number(c.dias_retroativos) === n ? ' selected' : ''}>${n} dias</option>`).join('')}</select></label></div>` : ''}
+      <div style="display:flex;flex-direction:row;gap:6px;flex-wrap:wrap;align-items:center">${c.status === 'conectado' ? `<button class="btn pri sm" data-cxsync="${p}">Sincronizar agora</button><button class="btn sm" data-cxcon="${p}">Conectar outra conta</button>` : `<button class="btn pri sm" data-cxcon="${p}">${c.status === 'desconectado' ? 'Conectar' : 'Conectar de novo'}</button>`}${lig ? ` <button class="btn sm bad" data-cxdes="${p}">Desconectar</button>` : ''}</div></div>`; };
+  const canalNome = k => ((one(k.campanhas) || {}).nome || 'Campanha') + ' · ' + (k.canal || '') + (k.utm_campaign ? ' (' + k.utm_campaign + ')' : '');
+  return `<div class="panel"><div class="head" style="margin:0 0 8px"><div><h2 style="margin:0">Conexões automáticas</h2><span class="muted">Entre com a conta da plataforma e escolha o que sincronizar. O acesso fica guardado no servidor e nunca aparece aqui. Os dados entram em Mídia paga, no Planejamento de conteúdo e em Vídeos e webinários.</span></div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:12px">${card('meta')}${card('google')}</div>
+    ${D.vinc.length ? `<h3 style="margin:16px 0 4px">Campanhas de anúncio sem canal (${D.vinc.length})</h3><span class="muted">O Growths liga sozinho quando o nome da campanha na plataforma (ou o utm_campaign do anúncio) é igual ao utm_campaign de um canal. Estas não bateram: escolha o canal ou ignore.</span>
+      <div class="tw"><table><thead><tr><th>Plataforma</th><th>Campanha na plataforma</th><th>Canal no Growths</th><th></th></tr></thead><tbody>${D.vinc.map(v => `<tr><td>${v.provedor === 'meta_ads' ? 'Meta' : 'Google Ads'}</td><td><b>${esc(v.campanha_nome || v.campanha_ext)}</b></td>
+        <td><select data-cxvinc="${esc(v.provedor + '|' + v.campanha_ext)}"><option value="">Escolha o canal…</option>${D.canais.map(k => `<option value="${k.id}">${esc(canalNome(k))}</option>`).join('')}</select></td><td><button class="btn sm" data-cxign="${esc(v.provedor + '|' + v.campanha_ext)}">Ignorar</button></td></tr>`).join('')}</tbody></table></div>` : ''}
+    ${D.ex.length ? `<h3 style="margin:16px 0 4px">Últimas sincronizações</h3><div class="tw"><table><thead><tr><th>Quando</th><th>Plataforma</th><th>Quem</th><th>Situação</th><th class="n">Registros</th><th>Detalhe</th></tr></thead><tbody>${D.ex.map(e => { const c = D.cx.find(x => x.id === e.conexao_id) || {};
+      return `<tr><td>${dtt(e.iniciado_em)}</td><td>${esc((CX_PLAT[c.plataforma] || {}).nome || '—')}</td><td>${e.disparado_por === 'cron' ? 'Automático' : 'Manual'}</td><td><span class="pill ${{ ok: 'good', parcial: 'warn', erro: 'bad', rodando: 'info' }[e.status]}">${esc(e.status)}</span></td><td class="n">${num(e.registros)}</td>
+        <td><small>${esc(e.erro || Object.entries(e.detalhe || {}).filter(([k]) => k !== 'periodo' && k !== 'avisos').map(([k, v]) => k + ': ' + v).join(' · '))}</small></td></tr>`; }).join('')}</tbody></table></div>` : ''}</div>`;
+}
+function cxLiga(m, D) {
+  if (!D) return;
+  const w = S.ws, volta = location.origin + location.pathname + '?v=cfg-integracoes';
+  m.querySelectorAll('[data-cxcon]').forEach(b => b.onclick = () => act(async () => { b.disabled = true; const r = await cxChama('iniciar', { ws: w, plataforma: b.dataset.cxcon, volta }); location.href = r.url; }).finally(() => { b.disabled = false; }));
+  m.querySelectorAll('[data-cxsync]').forEach(b => b.onclick = () => act(async () => { b.disabled = true; b.textContent = 'Sincronizando…';
+    const r = await cxChama('sincronizar', { ws: w, plataforma: b.dataset.cxsync }); const c = (r.conexoes || [])[0] || {};
+    toast(c.status === 'erro' ? 'Erro: ' + c.erro : 'Sincronizado: ' + num(c.registros || 0) + ' registro(s)' + (c.avisos && c.avisos.length ? ' · ' + c.avisos.length + ' aviso(s)' : ''), c.status === 'erro'); render(); }));
+  m.querySelectorAll('[data-cxdes]').forEach(b => b.onclick = () => { if (!confirm('Desconectar ' + CX_PLAT[b.dataset.cxdes].nome + '? O acesso guardado é apagado. Os dados já sincronizados continuam.')) return;
+    act(async () => { await cxChama('desconectar', { ws: w, plataforma: b.dataset.cxdes }); render(); }, 'Desconectado'); });
+  m.querySelectorAll('[data-cxconta]').forEach(i => i.onchange = () => act(async () => { await q(sb.from('conexao_contas').update({ sincronizar: i.checked }).eq('id', i.dataset.cxconta)); }, i.checked ? 'Conta vai sincronizar' : 'Conta não sincroniza mais'));
+  m.querySelectorAll('[data-cxauto]').forEach(i => i.onchange = () => act(async () => { await q(sb.from('conexoes').update({ sincronizar_auto: i.checked }).eq('id', i.dataset.cxauto)); }, 'Salvo'));
+  m.querySelectorAll('[data-cxdias]').forEach(i => i.onchange = () => act(async () => { await q(sb.from('conexoes').update({ dias_retroativos: Number(i.value) }).eq('id', i.dataset.cxdias)); }, 'Salvo'));
+  const vinc = (chave, campos) => { const [prov, ext] = chave.split('|'); return act(async () => { await q(sb.from('ads_externo_vinculos').update(campos).eq('workspace_id', w).eq('provedor', prov).eq('campanha_ext', ext));
+    const r = await q(sb.rpc('ads_externo_religar', { p_ws: w })); render(); return r; }, campos.ignorar ? 'Campanha ignorada' : 'Campanha ligada ao canal'); };
+  m.querySelectorAll('[data-cxvinc]').forEach(s => s.onchange = () => { if (s.value) vinc(s.dataset.cxvinc, { campanha_canal_id: s.value }); });
+  m.querySelectorAll('[data-cxign]').forEach(b => b.onclick = () => vinc(b.dataset.cxign, { ignorar: true }));
+}
+// volta do login da plataforma (?conexao=ok|erro): avisa e limpa o endereço
+function cxRetorno() {
+  const u = new URLSearchParams(location.search), c = u.get('conexao'); if (!c) return;
+  const p = CX_PLAT[u.get('plataforma')] || { nome: 'A plataforma' };
+  setTimeout(() => toast(c === 'ok' ? p.nome + ' conectado. Escolha as contas e clique em Sincronizar agora.' : 'Não foi possível conectar: ' + (u.get('msg') || 'erro desconhecido'), c !== 'ok'), 300);
+  history.replaceState(null, '', location.pathname);
 }
 
 /* ---------- Projetos: apoio ---------- */
