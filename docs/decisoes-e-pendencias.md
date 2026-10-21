@@ -16,7 +16,7 @@
 - O painel entra no topo da aba Dashboard da campanha; o que já existia continua abaixo (nada saiu).
 - "Quanto estou postando por vídeo" foi lido como quanto foi investido em cada vídeo/criativo e o que ele trouxe.
 - Sem meta cadastrada, a cor compara com a média da própria campanha, e a tela diz isso em cada linha.
-- Não muda o banco. Continua pendente: autorizar `RODAR_v0.127_saldo_minimo.sql` em produção.
+- Não muda o banco.
 
 ## v0.127 — Onda 3
 **Pedido da Rebecka (21/10)**: fazer a Onda 3 depois da v0.126.
@@ -25,7 +25,7 @@
 - A árvore NSM → outputs → inputs já existia no Growth Model (Mapa de métricas e North Star), com a ligação "Fica abaixo de"; não foi refeita.
 - A projeção do plano vem só de cenário aprovado (regra da seção 7 do diagnóstico): nada de extrapolar o ritmo.
 **Pendente**
-- Autorizar e rodar `supabase/RODAR_v0.127_saldo_minimo.sql` em produção.
+- ~~Autorizar e rodar `supabase/RODAR_v0.127_saldo_minimo.sql` em produção~~ — feito em 21/10/2026.
 - Para os gráficos da Onda 3 terem conteúdo: cadastrar ofertas e ligar as vendas (ou trazer a coluna na importação), criar o plano da empresa e as metas mensais, ligar as métricas do Growth.
 
 ## v0.126 — Fecha a Onda 2 e a Onda 1
