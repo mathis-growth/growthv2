@@ -2,7 +2,7 @@
 
 ## v0.129
 - index.html: 0.128 → 0.129.
-- Novo: `20261026100000_qualificacao_pontos.sql` e `RODAR_v0.129_qualificacao.sql` (não aplicado em produção); teste `t129_multi_qualificacao.py`.
+- Novo: `20261026100000_qualificacao_pontos.sql` e `RODAR_v0.129_qualificacao.sql` (aplicado em produção em 21/10/2026); teste `t129_multi_qualificacao.py`.
 
 ## v0.128
 - index.html: 0.127 → 0.128.
@@ -10,7 +10,7 @@
 
 ## v0.127
 - index.html: 0.126 → 0.127.
-- Novo: migração `20261025100000_saldo_minimo.sql` e `RODAR_v0.127_saldo_minimo.sql` (não aplicado em produção); teste `t127_onda3.py`.
+- Novo: migração `20261025100000_saldo_minimo.sql` e `RODAR_v0.127_saldo_minimo.sql` (aplicado em produção em 21/10/2026); teste `t127_onda3.py`.
 
 ## v0.126
 - index.html: 0.125 → 0.126.

@@ -1,13 +1,13 @@
 
 
 ## v0.129 — Qualificação por pontos
-- `supabase/RODAR_v0.129_qualificacao.sql`: colunas da regra e dos pontos, funções de qualificação e a ligação com `pesquisa_responder`. Pode ser rodado de novo sem erro. **Ainda não aplicado em produção.** Continua pendente também o da v0.127.
+- `supabase/RODAR_v0.129_qualificacao.sql`: colunas da regra e dos pontos, funções de qualificação e a ligação com `pesquisa_responder`. Pode ser rodado de novo sem erro. Aplicado em produção em 21/10/2026.
 
 ## v0.128
-- Nada a rodar. Continua pendente o `RODAR_v0.127_saldo_minimo.sql`.
+- Nada a rodar.
 
 ## v0.127 — Saldo mínimo de caixa
-- `supabase/RODAR_v0.127_saldo_minimo.sql`: cria `empresa.saldo_minimo`. Pode ser rodado de novo sem erro. **Ainda não aplicado em produção.** Sem ele, a tela guarda o mínimo só no navegador.
+- `supabase/RODAR_v0.127_saldo_minimo.sql`: cria `empresa.saldo_minimo`. Pode ser rodado de novo sem erro. Aplicado em produção em 21/10/2026.
 
 ## v0.126
 - Nada a rodar no banco.

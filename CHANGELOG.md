@@ -108,7 +108,7 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
   - **faixas com tag** opcionais (ex.: a partir de 0 "frio", de 30 "morno", de 60 "quente"); a pessoa fica só com a tag da faixa dela;
   - **simulador**: antes de salvar, mostra com quem já respondeu quantas pessoas ficariam qualificadas e a distribuição dos pontos (verde = a partir do corte);
   - salva a pontuação na pessoa (campo "Pontuação" da ficha), qualificado / não qualificado e as tags; vale para quem responder pelo link (na hora) e para quem já respondeu (botão "Recalcular quem já respondeu").
-- Banco: `20261026100000_qualificacao_pontos.sql` / `RODAR_v0.129_qualificacao.sql` (colunas `pesquisas.qualif` e `pesquisa_perguntas.pontos`; funções `pesquisa_qualificar` e `pesquisa_requalificar`; `pesquisa_responder` passa a qualificar). **Não aplicado em produção**: aguardando autorização. Sem ele, a aba avisa e não salva.
+- Banco: `20261026100000_qualificacao_pontos.sql` / `RODAR_v0.129_qualificacao.sql` (colunas `pesquisas.qualif` e `pesquisa_perguntas.pontos`; funções `pesquisa_qualificar` e `pesquisa_requalificar`; `pesquisa_responder` passa a qualificar). Aplicado em produção em 21/10/2026.
 - Base do vídeo de demonstração (só nela): uma pesquisa de qualificação com 3 perguntas e 80 respostas.
 - Teste: `t129_multi_qualificacao.py` (e o `t128` ajustado para o gráfico único).
 
@@ -131,7 +131,7 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - **Financeiro → Saldo mínimo de caixa**: você informa o saldo que o caixa não pode furar e o sistema mostra a linha do mínimo contra o caixa projetado de 30 dias, avisando a data em que a projeção fica abaixo dele. No **Dashboard**, a observação "Caixa abaixo do mínimo" entra no bloco "O que mudou e merece atenção".
   - Com `supabase/RODAR_v0.127_saldo_minimo.sql` rodado, o mínimo fica no cadastro da empresa e vale para toda a equipe. Antes disso, fica salvo só no navegador de quem preencheu (a tela avisa).
 - **Árvore de métricas do Growth (NSM → outputs → inputs)**: já existia (Growth Model → Mapa de métricas e North Star), com "Fica abaixo de" para ligar uma métrica à outra e o botão de criar o modelo padrão. Nada mudou nela; só precisa ser preenchida.
-- Banco: `20261025100000_saldo_minimo.sql` / `RODAR_v0.127_saldo_minimo.sql` (coluna `empresa.saldo_minimo`). **Não aplicado em produção**: aguardando autorização.
+- Banco: `20261025100000_saldo_minimo.sql` / `RODAR_v0.127_saldo_minimo.sql` (coluna `empresa.saldo_minimo`). Aplicado em produção em 21/10/2026.
 - Base do vídeo de demonstração (só nela): ofertas, vendas ligadas às ofertas, um plano 2026 e metas mensais de julho a dezembro.
 - Teste: `t127_onda3.py`.
 
