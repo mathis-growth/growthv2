@@ -100,6 +100,23 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.123] - 2026-10-21 — Gráfico de linha no período da tela e cadastros dentro da nova campanha
+- **Gráfico do painel "De onde vem este número" passa a ser sempre de linha**, dentro do período escolhido na tela de onde você clicou:
+  - o agrupamento sai sozinho pelo tamanho do período (até 31 dias: por dia; até 4 meses: por semana; até ~2 anos: por mês; acima: por ano) e pode ser trocado nos botões **Dia / Semana / Mês / Ano**;
+  - números "na data" (MRR, a receber, caixa…) mostram o valor no fim de cada dia, semana, mês ou ano;
+  - mostra a variação do último ponto completo contra o anterior, o maior e o menor valor; o ponto de hoje ou do mês em andamento aparece tracejado como incompleto;
+  - clicar num ponto abre aquele dia, semana ou mês, já com o gráfico daquele trecho.
+  - Substitui os gráficos da v0.122 (rosca, cascata, barras e medidor). As listas de composição continuam abaixo do gráfico.
+  - Banco: função `arvore_serie` (migração `20261024100000_arvore_serie.sql`), que calcula o mesmo número ponto a ponto, numa chamada só.
+- **Nova campanha: cadastrar o que faltar sem sair dela**:
+  - **Produto**: "＋ Cadastrar novo produto…" abre o cadastro por cima e já escolhe o produto criado;
+  - **Estratégia**: "＋ Nova estratégia…" abre o cadastro da estratégia por cima, com as **etapas**: o modelo pronto marca as dele; você marca e desmarca as do catálogo por fase (Aquisição, Aquecimento, Conversão, Retenção) e escreve etapas novas em cada fase. A estratégia criada já fica escolhida;
+  - ao escolher uma estratégia, a nova campanha mostra as etapas que vai receber;
+  - **Canal**: "＋ Novo canal" na etapa 3 cria o canal e já marca na campanha.
+- **Nova estratégia** (Configurações → Estratégias e funis) ganhou a mesma escolha de etapas.
+- Banco em produção: aplicados `RODAR_v0.121_arvore_vendedor.sql` e `RODAR_v0.123_arvore_serie.sql` (a v0.120 já estava aplicada).
+- Testes: `t123_linha_cadastros.py` (20 verificações). O `t122_graficos_arvore.py` saiu (o gráfico mudou).
+
 ## [0.122] - 2026-10-21 — Mini gráfico em cada número da árvore
 - Ao clicar num número (em qualquer tela), o painel "De onde vem este número" abre com um **mini gráfico** no alto, escolhido sozinho pelo tipo do número:
   - **Evolução por mês** (linha): quando o número tem a quebra por mês. Mostra a variação do último mês fechado contra o anterior; o mês atual aparece como parcial.

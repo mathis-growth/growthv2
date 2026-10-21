@@ -1,7 +1,11 @@
 
 
-## v0.122 — Mini gráfico em cada número
-- Pedido da Rebecka (21/10): cada tela que abre ao clicar num número deve ter um mini gráfico resumindo aquele número.
-- O gráfico é escolhido pelo formato do dado (não um tipo fixo por tela), para cobrir todos os números de uma vez e os que surgirem depois.
-- A série dos últimos meses chama a função 4 vezes (em paralelo) só quando o número não tem outro resumo; fica guardada enquanto o painel está aberto.
-- Pendente: NRR, GRR e penetração só terão gráfico quando houver contratos recorrentes há 12 meses e o tamanho do mercado cadastrado.
+## v0.123 — Linha no período e cadastros na campanha
+**Pedidos da Rebecka (21/10)**
+- Gráficos de linha, dentro do período da tela anterior, por dia, semana, mês ou ano, com opção de trocar.
+- Cadastrar estratégia e etapas (e o que mais faltar) na hora de criar a campanha.
+**Decisões técnicas**
+- A série é calculada no banco (uma chamada), reaproveitando a conta do próprio número: o gráfico sempre bate com o número.
+- O cartão "Saldo em banco" do Dashboard abre o extrato (como antes), não a árvore.
+- A estratégia criada pela nova campanha guarda etapas (não blocos), mesmo com modelo pronto quando você mexe nas etapas.
+**Banco em produção**: v0.120 já estava aplicada; v0.121 e v0.123 aplicadas em 21/10. A função `conexoes` continua sem publicar até existirem os apps do Meta e do Google.

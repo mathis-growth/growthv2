@@ -1,4 +1,6 @@
 
 
-## v0.122
-**Mini gráfico em cada número.** Clicou num número, o painel que explica de onde ele vem abre com um gráfico que resume aquele número: a evolução por mês, a composição (rosca), a cascata de como se chega no valor ou as barras por dia. Vale em todos os níveis, e clicar no gráfico desce para o item.
+## v0.123
+**Linha no período.** O gráfico de cada número é uma linha dentro do período da tela, por dia, semana, mês ou ano (você troca ali mesmo). Clicar num ponto abre aquele trecho.
+
+**Tudo de dentro da nova campanha.** Produto, estratégia (com as etapas) e canal podem ser cadastrados sem sair da criação da campanha.

@@ -387,7 +387,17 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">
+<style id="v122">#arvRoot .arv-gh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}#arvRoot .arv-gh h3{margin:0;flex:1}
+#arvRoot .arv-gr{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+#arvRoot .arv-gr button{background:none;border:0;padding:4px 10px;font-size:12px;cursor:pointer;color:var(--muted)}#arvRoot .arv-gr button+button{border-left:1px solid var(--line)}
+#arvRoot .arv-gr button.on{background:var(--accent);color:#fff;font-weight:600}
+#arvRoot .arv-gk{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;font-size:12px;margin:2px 0 4px}
+#arvRoot .arv-pt{cursor:pointer}#arvRoot .arv-pt:hover circle,#arvRoot .arv-pt:focus circle{r:5.5;filter:drop-shadow(0 0 6px var(--accent))}#arvRoot .arv-pt:focus{outline:none}
+.wz .wz-etapas{font-size:12.5px;display:flex;flex-direction:column;gap:6px}.wz .wz-etapas:empty{display:none}
+.wz .wz-ch{display:flex;flex-wrap:wrap;gap:6px}.wz .wz-ch span{padding:3px 9px;border-radius:99px;background:var(--accent-soft);border:1px solid var(--line);font-size:12px}
+.est-pick{display:flex;flex-direction:column;gap:8px;font-size:12.5px;margin-top:4px;padding-top:10px;border-top:1px solid var(--line)}.est-pf{display:grid;grid-template-columns:96px 1fr;gap:8px;align-items:start}.est-pfn{font-weight:600;color:var(--muted);padding-top:4px}.est-pc{display:flex;flex-wrap:wrap;gap:6px}.est-pc label{display:inline-flex;flex-direction:row;align-items:center;gap:5px;padding:3px 9px;border:1px solid var(--line);border-radius:99px;color:var(--ink);font-weight:500;cursor:pointer}.est-pc label:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}.est-pc input[type=checkbox]{width:auto;accent-color:var(--accent)}.est-px{flex:1 1 220px;min-width:180px;padding:4px 9px!important;font-size:12.5px}
+.wz .cn span.novo{border-style:dashed;color:var(--accent)}
+
 #arvRoot .arv-g{border:1px solid var(--line);border-radius:12px;margin:0 0 14px;padding:10px 12px 6px;background:radial-gradient(120% 90% at 100% 0%,rgba(var(--accent-rgb),.08),transparent 60%),var(--surface)}
 #arvRoot .arv-g h3{font-size:12px;color:var(--muted);font-weight:600;margin:0 0 6px;display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}
 #arvRoot .arv-svg{width:100%;height:auto;display:block;overflow:visible}
@@ -429,7 +439,7 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.122 · 21/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.123 · 21/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -563,8 +573,8 @@ const sum = (a, k) => a.reduce((s, x) => s + Number(x[k] || 0), 0);
   const inicia = () => { let ag = false; varre(document); new MutationObserver(() => { if (ag) return; ag = true; requestAnimationFrame(() => { ag = false; varre(document); }); }).observe(document.body, { childList: true, subtree: true }); };
   if (document.body) inicia(); else document.addEventListener('DOMContentLoaded', inicia);
 })();
-function modal(title, body, onSubmit, okLabel = 'Salvar', largo = false) {
-  const root = $('#modalRoot');
+function modal(title, body, onSubmit, okLabel = 'Salvar', largo = false, raiz = '#modalRoot') {
+  const root = $(raiz);
   root.innerHTML = `<div class="ov"><div class="modal" style="${largo ? 'max-width:780px' : ''}" role="dialog" aria-label="${esc(title)}"><h2>${esc(title)}</h2><form>${body}<div class="acts"><button type="button" class="btn" data-x>${onSubmit ? 'Cancelar' : 'Fechar'}</button>${onSubmit ? `<button class="btn pri" type="submit">${esc(okLabel)}</button>` : ''}</div></form></div></div>`;
   const close = () => root.innerHTML = '';
   const tUso = String(title).split(/ · |: | #/)[0]; let feito = false;
@@ -580,7 +590,7 @@ function modal(title, body, onSubmit, okLabel = 'Salvar', largo = false) {
     const btn = form.querySelector('.pri'); btn.disabled = true;
     const ok = await act(async () => { const dados = Object.fromEntries(new FormData(form).entries()); form.querySelectorAll('[data-moeda-ok]').forEach(el => { if (el.name) dados[el.name] = el.value; }); await onSubmit(dados, form); return true; });
     btn.disabled = false;
-    if (ok) { feito = true; UT.ev('modal_salva', S.view, tUso); close(); render(); }
+    if (ok) { feito = true; UT.ev('modal_salva', S.view, tUso); close(); if (raiz === '#modalRoot') render(); }
   };
   return form;
 }
@@ -6950,15 +6960,14 @@ async function arvDesenha() {
   const card = ARV.pilha.length === 1 && top.card && top.card.texto ? top.card : null;
   const tv = arvNorm(arvFmt(N.valor, N.un).replace(/<[^>]+>/g, '')), difere = card && arvNorm(card.texto) !== tv && !(arvNorm(card.texto) === '—' && (!N.valor || tv === '—')) && !arvArred(card.texto, N.valor, N.un) && !(N.un === 'brl' && /mil|mi$/.test(card.texto) && arvNorm(brlK(N.valor)) === arvNorm(card.texto));
   const met = { 'mkt.leads_campanha': 'leads', 'mkt.cpl': 'cpl', 'mkt.cac': 'cac', 'mkt.roas': 'roas', 'mkt.conv': 'conv' }[top.no] || (top.no === 'mkt.ads' && (top.par.campo || 'custo') === 'custo' ? 'investimento' : top.no === 'ven.soma' ? ((top.par.campo || 'bruto') === 'qtd' ? 'vendas' : 'receita') : null);
-  root.querySelector('.arv-body').innerHTML = `<h2>${esc(N.titulo)}</h2><div class="arv-v">${arvFmt(N.valor, N.un)}</div><div class="arv-ex">${esc(N.explica || '')}</div>${arvGrafico(N)}${N.pessoa ? `<button type="button" class="btn sm" data-arvpes="${esc(N.pessoa.id)}" style="margin:-4px 0 12px">Abrir a ficha de ${esc(N.pessoa.nome || 'pessoa')}</button>` : ''}
+  root.querySelector('.arv-body').innerHTML = `<h2>${esc(N.titulo)}</h2><div class="arv-v">${arvFmt(N.valor, N.un)}</div><div class="arv-ex">${esc(N.explica || '')}</div>${N.pessoa ? `<button type="button" class="btn sm" data-arvpes="${esc(N.pessoa.id)}" style="margin:-4px 0 12px">Abrir a ficha de ${esc(N.pessoa.nome || 'pessoa')}</button>` : ''}
     ${difere ? `<div class="arv-aviso">Na tela aparece <b>${esc(card.texto)}</b>. A diferença vem do arredondamento ou de uma regra diferente naquela tela; esta é a conta feita com os registros.</div>` : ''}
     ${(N.formula || []).length ? `<section class="arv-f"><h3>Como foi calculado</h3>${N.formula.map(it => linha(it, it.un || N.un, null)).join('')}<div class="arv-l" style="font-weight:700"><span class="r">= ${esc(N.titulo)}</span><span class="n">${arvFmt(N.valor, N.un)}</span><span></span></div></section>` : ''}
     ${(N.quebras || []).filter(Boolean).map(Q => quebra(Q, N.un === 'pct' || N.un === 'x' ? 'n' : N.un)).join('')}${regs}
     ${met && top.par.campanha && typeof cdAbrir === 'function' ? `<button type="button" class="btn sm" data-arvcd="${met}">Ver o painel completo da campanha (gráficos por canal e por dia)</button>` : ''}
     ${!(N.formula || []).length && !(N.quebras || []).filter(Boolean).length && !regs ? '<div class="muted">Este número não tem mais níveis.</div>' : ''}`;
   root.querySelectorAll('[data-arvno]').forEach(b => b.onclick = () => arvVai(b.dataset.arvno, JSON.parse(b.dataset.arvpar), b.dataset.arvrot));
-  { const g = root.querySelector('.arv-g'), pode = !!(top.no && !top.no.startsWith('loc.') && top.par && ((top.par.ini && top.par.fim) || top.par.hoje) && N.valor != null);
-    if ((!g || /Proporção/.test(g.textContent)) && pode && !(N.quebras || []).some(Q => Q && Q.titulo === 'Por mês')) { const box = document.createElement('section'); box.className = 'arv-g'; box.innerHTML = '<h3>Evolução nos últimos meses</h3><div class="muted" style="padding:20px 0;font-size:12px">Calculando…</div>'; if (g) g.replaceWith(box); else root.querySelector('.arv-ex').after(box); arvSerie(top, box); } }
+  arvLinha(top, N, root);
   root.querySelectorAll('.arv-mais').forEach(b => b.onclick = () => { b.previousElementSibling.hidden = false; b.remove(); });
   root.querySelectorAll('[data-arvabre]').forEach(r => r.onclick = () => { const a = JSON.parse(r.dataset.arvabre); if (a.tipo === 'pessoa') fichaPessoa(a.id); });
   root.querySelectorAll('tr[data-arvir]').forEach(r => r.onclick = () => { const a = JSON.parse(r.dataset.arvir); arvVai(a.no, a.par, r.dataset.arvrot); });
@@ -8242,26 +8251,29 @@ async function vFunis(m) {
   await Promise.all([renderCad($('#c2'), 'etapas_funil'), renderCad($('#c3'), 'listas_funil')]);
   $('#c2 h2').insertAdjacentHTML('afterend', '<span class="muted" style="display:block;margin-bottom:6px">As colunas do Kanban por onde as pessoas andam. Uma etapa da estratégia pode contar quem chegou a uma delas.</span>');
 }
-function estNova(pr, dup) {
+function estNova(pr, dup, aoCriar) {
+  const raiz = aoCriar ? '#modalRoot2' : '#modalRoot', fim_ = (id, d) => { if (aoCriar) aoCriar({ id, nome: d.nome.trim(), tipo: d.tipo }); else S.estSel = id; };
   modal(dup ? 'Duplicar estratégia' : 'Nova estratégia', `<div class="grid2">
     <label class="full">Nome<input name="nome" required maxlength="120" value="${dup ? esc(dup.nome + ' (cópia)') : ''}" placeholder="Ex.: Lançamento com aulas"></label>
     ${dup ? '' : `<label class="full">Começar de<select name="modelo"><option value="">Em branco</option>${Object.entries(EST_MOD).map(([k, x]) => `<option value="${k}">Modelo pronto: ${esc(x.nome)}</option>`).join('')}</select></label>`}
     <label>Tipo<select name="tipo">${EST_TIPOS.map(([k, l]) => `<option value="${k}"${k === (dup ? dup.tipo : 'lancamento') ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
     <label>Produto<select name="produto_id"><option value="">Qualquer produto (escolhido na campanha)</option>${pr.map(p => `<option value="${p.id}"${dup && dup.produto_id === p.id ? ' selected' : ''}>${esc(p.nome)}</option>`).join('')}</select></label>
-    <label class="full">Descrição<textarea name="descricao">${dup ? esc(dup.descricao || '') : ''}</textarea></label></div>`, async d => {
-    const id = crypto.randomUUID(), mod = d.modelo ? EST_MOD[d.modelo] : null;
+    <label class="full">Descrição<textarea name="descricao">${dup ? esc(dup.descricao || '') : ''}</textarea></label>${dup ? '' : estPickHtml()}</div>`, async d => {
+    const id = crypto.randomUUID(), mod = d.modelo ? EST_MOD[d.modelo] : null, pick = dup ? null : estPickLer($(raiz + ' form'));
+    if (pick && !pick.length) throw new Error('Marque pelo menos uma etapa, ou escolha um modelo pronto.');
     await q(sb.from('funis').insert({ id, workspace_id: S.ws, nome: d.nome.trim(), tipo: d.tipo, produto_id: d.produto_id || null, descricao: d.descricao || null, modelo_pronto: mod ? d.modelo : dup ? dup.modelo_pronto || null : null, ativo: true }));
     const temBlocos = await (async () => { try { const r = await sb.from('estrategia_blocos').select('id').limit(1); return !r.error; } catch (e) { return false; } })();
-    if (temBlocos && dup) { await blkCopiaEstrategia(dup.id, id); S.estSel = id; toast('Estratégia duplicada'); return; }
-    if (temBlocos && mod && EST_MOD_BLOCOS[d.modelo]) { await blkDoModelo(id, d.modelo); S.estSel = id; toast('Estratégia criada com blocos'); return; }
-    let et = [];
-    if (dup) et = (await q(sb.from('estrategia_etapas').select('*').eq('funil_id', dup.id))).map(e => ({ ordem: e.ordem, fase: e.fase, chave: e.chave, nome: e.nome, unidade: e.unidade, origem: e.origem, metrica: e.metrica, origem_ref: null, conta_como: e.conta_como, taxa_esperada: e.taxa_esperada }));
+    if (temBlocos && dup) { await blkCopiaEstrategia(dup.id, id); fim_(id, d); toast('Estratégia duplicada'); return; }
+    if (temBlocos && mod && EST_MOD_BLOCOS[d.modelo] && !pick) { await blkDoModelo(id, d.modelo); fim_(id, d); toast('Estratégia criada com blocos'); return; }
+    let et = pick || [];
+    if (pick) { /* etapas escolhidas na tela */ } else if (dup) et = (await q(sb.from('estrategia_etapas').select('*').eq('funil_id', dup.id))).map(e => ({ ordem: e.ordem, fase: e.fase, chave: e.chave, nome: e.nome, unidade: e.unidade, origem: e.origem, metrica: e.metrica, origem_ref: null, conta_como: e.conta_como, taxa_esperada: e.taxa_esperada }));
     else if (mod) et = mod.etapas.map((k, i) => { const x = estEtapaDoCat(k); return { ordem: (i + 1) * 10, fase: x.fase, chave: k, nome: x.nome, unidade: x.unidade, origem: x.origem, metrica: x.metrica, origem_ref: null, conta_como: x.conta_como, taxa_esperada: null }; });
     if (et.length) await q(sb.from('estrategia_etapas').insert(et.map(e => ({ ...e, funil_id: id, workspace_id: S.ws }))));
-    S.estSel = id; toast(dup ? 'Estratégia duplicada' : 'Estratégia criada');
-  }, dup ? 'Duplicar' : 'Criar', true);
-  const f = $('#modalRoot form');
-  if (f && f.modelo) f.modelo.onchange = () => { const x = EST_MOD[f.modelo.value]; if (x) { f.tipo.value = x.tipo; if (!f.nome.value) f.nome.value = x.nome; } };
+    fim_(id, d); toast(dup ? 'Estratégia duplicada' : 'Estratégia criada');
+  }, dup ? 'Duplicar' : 'Criar', true, raiz);
+  const f = $(raiz + ' form');
+  if (f && f.modelo) f.modelo.onchange = () => { const x = EST_MOD[f.modelo.value]; if (x) { f.tipo.value = x.tipo; if (!f.nome.value) f.nome.value = x.nome; } estPickModelo(f, x); f.dataset.etMexeu = x ? '' : '1'; if (x) delete f.dataset.etMexeu; };
+  if (f) f.querySelectorAll('[data-etc],[data-etx]').forEach(c => c.addEventListener('input', () => { f.dataset.etMexeu = '1'; }));
 }
 async function vEstrategia(m) {
   const w = S.ws, id = S.estSel;
@@ -11350,11 +11362,12 @@ async function abrirWizard(id = null, passo = 1) {
       corpo = `<p class="lead">Só o essencial para a campanha existir. Ela é salva como rascunho e você pode terminar depois.</p>
       <label>Nome<input name="nome" required value="${esc(c ? c.nome : '')}" placeholder="Ex.: Black Friday · Curso"></label>
       <div class="grid2"><label>Modelo<select name="modelo">${opt(Object.entries(CAMP_MOD), mo)}</select></label>
-        <label>Produto<select name="produto_id" required><option value="">Escolha…</option>${opt(prods.map(p => [p.id, p.nome]), c && c.produto_id)}</select></label>
-        <label>Estratégia<select name="funil_id"><option value="">Sem estratégia</option>${opt(funis.map(f => [f.id, f.nome + ' (' + (EST_TIPO[f.tipo] || f.tipo) + ')']), c && c.funil_id)}</select></label>
+        <label>Produto<select name="produto_id" required data-novo="produtos"><option value="">Escolha…</option>${opt(prods.map(p => [p.id, p.nome]), c && c.produto_id)}<option value="__novo__">＋ Cadastrar novo produto…</option></select></label>
+        <label>Estratégia<select name="funil_id"><option value="">Sem estratégia</option>${opt(funis.map(f => [f.id, f.nome + ' (' + (EST_TIPO[f.tipo] || f.tipo) + ')']), c && c.funil_id)}<option value="__nova_est__">＋ Nova estratégia…</option></select></label>
         ${tmOk ? `<label>Tipo de mídia<select name="tipo_midia">${opt([['hibrida', 'Híbrida (paga e orgânica)'], ['paga', 'Só paga'], ['organica', 'Só orgânica']], c ? c.tipo_midia : 'hibrida')}</select></label>` : ''}
         <label>Início<input type="date" name="data_inicio" required value="${c && c.data_inicio || ''}"></label>
-        <label class="wz-fim">Fim<input type="date" name="data_fim" value="${c && c.data_fim || ''}"></label></div>`;
+        <label class="wz-fim">Fim<input type="date" name="data_fim" value="${c && c.data_fim || ''}"></label></div>
+      <div class="wz-etapas" id="wzEt"></div>`;
     } else if (passo === 2) {
       const per = c.modelo === 'perpetuo';
       corpo = `<p class="lead">Quanto vai investir e o que define sucesso. O resto o sistema calcula.${per ? ' No perpétuo, as metas por mês e o mix de produtos ficam na aba Metas mensais da campanha.' : ''}</p>
@@ -11367,7 +11380,7 @@ async function abrirWizard(id = null, passo = 1) {
       const tm = c.tipo_midia || 'hibrida', ok = cad.filter(x => tm === 'paga' ? pago(x.codigo) : tm === 'organica' ? !pago(x.codigo) : true);
       if (!sel) { sel = new Set(canais.map(x => x.canal)); canais.forEach(x => linhas[x.canal] = { pct: c.orcamento_total && x.orcamento != null ? Math.round(x.orcamento / c.orcamento_total * 1000) / 10 : '', leads: x.meta_leads ?? '' }); }
       corpo = `<p class="lead">Escolha os canais e divida o orçamento e a meta de leads. A meta por dia é sugerida pelo período (${dias()} dias${c.modelo === 'perpetuo' ? ', por mês' : ''}).</p>
-      <div class="cn">${ok.map(x => `<span data-cn="${esc(x.codigo)}" class="${sel.has(x.codigo) ? 'on' : ''}" role="button" tabindex="0">${esc(x.nome)}</span>`).join('')}</div>
+      <div class="cn">${ok.map(x => `<span data-cn="${esc(x.codigo)}" class="${sel.has(x.codigo) ? 'on' : ''}" role="button" tabindex="0">${esc(x.nome)}</span>`).join('')}<span class="novo" id="wzNovoCanal" role="button" tabindex="0">＋ Novo canal</span></div>
       <div id="wzTab"></div>`;
     }
     root.innerHTML = `<div class="ov"><div class="modal wz" role="dialog" aria-label="Nova campanha"><div class="wzh"><h2>${c && passo > 1 ? esc(c.nome) : 'Nova campanha'}</h2><div class="wzp">${passos}</div></div>
@@ -11381,7 +11394,22 @@ async function abrirWizard(id = null, passo = 1) {
       if (a === 'depois') { await salvar(f); abreCampanha(); }
     }));
     f.onsubmit = e => { e.preventDefault(); act(async () => { const btn = f.querySelector('.pri'); btn.disabled = true; try { await salvar(f); } finally { btn.disabled = false; } if (passo < 3) { passo++; tela(); } else abreCampanha(); }); };
-    if (passo === 1) { const mo = f.querySelector('[name=modelo]'), fim = f.querySelector('.wz-fim'); const ap = () => { fim.style.display = mo.value === 'perpetuo' ? 'none' : ''; }; mo.onchange = ap; ap(); f.querySelector('[name=nome]').focus(); }
+    if (passo === 1) { ligarNovo(f); const fe = f.querySelector('[name=funil_id]');
+      const prevEt = async () => { const box = $('#wzEt'), id_ = fe.value; if (!box) return; if (!id_ || id_ === '__nova_est__') { box.innerHTML = ''; return; }
+        box.innerHTML = '<span class="muted">Carregando as etapas…</span>';
+        const [et, bl] = await Promise.all([q(sb.from('estrategia_etapas').select('fase,nome,ordem').eq('funil_id', id_).order('ordem')).catch(() => []), q(sb.from('estrategia_blocos').select('nome,ordem').eq('funil_id', id_).order('ordem')).catch(() => [])]);
+        if (fe.value !== id_) return;
+        const itens = et.length ? et.map(e => e.nome) : bl.map(b => b.nome);
+        box.innerHTML = itens.length ? `<b>${et.length ? 'Etapas' : 'Blocos'} que a campanha vai receber (${itens.length})</b><div class="wz-ch">${itens.map((n, i) => `<span>${i + 1}. ${esc(n)}</span>`).join('')}</div><span class="muted">Ajuste as etapas desta estratégia em Configurações → Estratégias e funis, ou as da campanha na aba Estratégia e etapas.</span>`
+          : '<span class="muted">Esta estratégia ainda não tem etapas. Você pode criá-las em Configurações → Estratégias e funis.</span>'; };
+      fe.addEventListener('change', () => {
+        if (fe.value !== '__nova_est__') { fe.dataset.prev = fe.value; return prevEt(); }
+        fe.value = fe.dataset.prev || '';
+        estNova(prods, null, nf => { funis.push(nf); const o = document.createElement('option'); o.value = nf.id; o.textContent = nf.nome + ' (' + (EST_TIPO[nf.tipo] || nf.tipo) + ')';
+          fe.insertBefore(o, fe.querySelector('option[value="__nova_est__"]')); fe.value = nf.id; fe.dataset.prev = nf.id; prevEt(); });
+      });
+      fe.dataset.prev = fe.value; prevEt();
+      const mo = f.querySelector('[name=modelo]'), fim = f.querySelector('.wz-fim'); const ap = () => { fim.style.display = mo.value === 'perpetuo' ? 'none' : ''; }; mo.onchange = ap; ap(); f.querySelector('[name=nome]').focus(); }
     if (passo === 2) { const calc = () => { const g = n => { const i = f.querySelector(`[name=${n}]`); return i && i.value !== '' ? Number(i.value) : null; };
         const orc = g('orcamento_total'), ld = g('meta_leads') ?? g('meta_leads_mes'), vd = g('meta_vendas'), pr = (prods.find(p => p.id === c.produto_id) || {}).preco;
         const it = []; if (orc && ld) it.push(['CPL que cabe no orçamento', brl(orc / ld)]); if (ld && vd) it.push(['conversão lead → venda', (vd / ld * 100).toFixed(1).replace('.', ',') + '%']);
@@ -11404,6 +11432,7 @@ async function abrirWizard(id = null, passo = 1) {
         const mexido = L.some(k => linhas[k] && linhas[k].mexido); if (mexido) return;
         pg.forEach(k => linhas[k] = { pct: Math.round(1000 / pg.length) / 10, leads: meta ? Math.round(meta * (og.length ? .9 : 1) / pg.length) : '' });
         og.forEach(k => linhas[k] = { pct: '', leads: meta ? Math.round(meta * (pg.length ? .1 : 1) / og.length) : '' }); };
+      $('#wzNovoCanal').onclick = () => cadastroRapido(ENT.canais, ENT.canais.campos({}), row => { cad.push(row); sel.add(row.codigo); if (!canais.length) sugere(); tela(); });
       root.querySelectorAll('[data-cn]').forEach(s => s.onclick = () => { const k = s.dataset.cn; if (sel.has(k)) sel.delete(k); else sel.add(k); s.classList.toggle('on'); if (!canais.length) sugere(); tab(); });
       $('#wzTab').addEventListener('change', e => { const k = e.target.dataset.p || e.target.dataset.l; if (k && linhas[k]) linhas[k].mexido = true; });
       tab(); }
@@ -11467,109 +11496,88 @@ async function campRascunho(m, c, nProj) {
   });
 }
 
-/* ================= v0.122 — Mini gráfico em cada nível da árvore dos números =================
-   Escolhe sozinho o melhor resumo do nível que abriu:
-   1) tem "Por mês" com 3 meses ou mais → linha com área (evolução);
-   2) senão, tem uma quebra com 2 itens ou mais (por produto, canal, conta…) → rosca com a participação de cada um;
-   3) senão, tem a lista de registros com data e valor → barras por dia.
-   Clicar numa fatia, ponto ou barra desce para aquele item, igual à lista. */
+/* ================= v0.123 — Gráfico de linha em cada número da árvore, no período da tela =================
+   O painel "De onde vem este número" mostra a linha do número dentro do período escolhido na tela de origem.
+   O agrupamento (dia, semana, mês, ano) é escolhido pelo tamanho do período e pode ser trocado ali mesmo.
+   Números "na data" (saldo, MRR, a receber…) mostram o valor no fim de cada dia/semana/mês/ano.
+   A conta é a mesma do número (função arvore_no), feita ponto a ponto no banco (arvore_serie). */
 const ARV_MENOR = /^(mkt\.(cac|trf_cac|cpl|trf_cpl|cpc|churn)|fin\.(saidas|custos_despesas|pagar|custo)|rec\.churn)/;
-const ARV_CORES = ['#3b82f6', '#22d3ee', '#a78bfa', '#34d399', '#f59e0b', '#f472b6', '#94a3b8'];
-function arvGrafico(N) {
-  const Qs = (N.quebras || []).filter(Boolean), un0 = N.un === 'pct' || N.un === 'x' ? 'n' : N.un;
-  const attrs = it => it && it.no ? ` data-arvno="${esc(it.no)}" data-arvpar="${esc(JSON.stringify(it.par || {}))}" data-arvrot="${esc(it.rotulo)}" role="button" tabindex="0"` : '';
-  const mes = Qs.find(Q => Q.titulo === 'Por mês' && (Q.itens || []).length >= 3);
-  if (mes) {
-    const L = mes.itens.slice(-12), v = L.map(x => Number(x.valor) || 0), W = 520, H = 120, P = 18, mn = Math.min(0, ...v), mx = Math.max(...v, 0) || 1;
-    const x = i => P + i * (W - 2 * P) / Math.max(1, L.length - 1), y = n => H - 22 - (n - mn) / ((mx - mn) || 1) * (H - 40);
-    const pts = v.map((n, i) => `${x(i)},${y(n)}`).join(' '), ult = v.length - 1, mAt = (hoje() || '').slice(5, 7) + '/' + (hoje() || '').slice(0, 4), parc = L[ult].rotulo === mAt;
-    const k = parc ? ult - 1 : ult, d = k >= 1 && v[k - 1] ? (v[k] - v[k - 1]) / Math.abs(v[k - 1]) : null, mc = r => /^\d\d\/\d{4}$/.test(r) ? MES_CURTO[Number(r.slice(0, 2)) - 1] : r;
-    return `<section class="arv-g"><h3>Evolução por mês${d != null ? ` <span class="${(d >= 0) !== ARV_MENOR.test(N.no || '') ? 'vpos' : 'vneg'}">${d >= 0 ? '▲' : '▼'} ${Math.abs(d * 100).toFixed(1).replace('.', ',')}%</span> <span class="muted">${esc(mc(L[k].rotulo))} vs. ${esc(mc(L[k - 1].rotulo))}${parc ? ' · mês atual parcial' : ''}</span>` : ''}</h3>
-      <svg viewBox="0 0 ${W} ${H}" class="arv-svg" aria-label="Evolução por mês"><defs><linearGradient id="arvGa" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".35"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
-      ${mn < 0 ? `<line x1="${P}" x2="${W - P}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)" stroke-dasharray="3 3"/>` : ''}
-      <polygon points="${x(0)},${y(mn < 0 ? 0 : mn)} ${pts} ${x(ult)},${y(mn < 0 ? 0 : mn)}" fill="url(#arvGa)"/>
-      <polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linejoin="round"/>
-      ${L.map((it, i) => `<g class="arv-pt"${attrs(it)}><title>${esc(it.rotulo)}: ${arvFmt(it.valor, it.un || un0)}</title><circle cx="${x(i)}" cy="${y(v[i])}" r="${i === ult ? 5 : 3.5}" fill="${v[i] < 0 ? 'var(--bad)' : 'var(--accent)'}"/><rect x="${x(i) - 14}" y="0" width="28" height="${H}" fill="transparent"/>
-        <text x="${x(i)}" y="${H - 5}" text-anchor="middle">${esc((/^\d\d\/\d{4}$/.test(it.rotulo) ? MES_CURTO[Number(it.rotulo.slice(0, 2)) - 1] + "/" + it.rotulo.slice(5) : it.rotulo).slice(0, 8))}</text></g>`).join('')}
-      <text x="${W - P}" y="11" text-anchor="end" class="arv-gv">${esc(mc(L[ult].rotulo))}${parc ? ' (parcial)' : ''}: ${arvFmt(v[ult], L[ult].un || un0)}</text></svg></section>`;
-  }
-  /* fórmula de soma e subtração em reais (lucro, despesas, caixa projetado…) → cascata */
-  const F_ = (N.formula || []).filter(it => (it.un || N.un) === 'brl');
-  if (N.un === 'brl' && F_.length >= 2 && F_.length === (N.formula || []).length && F_.slice(1).every(it => /^[−+-]/.test(it.rotulo)) && F_.some(it => /^[−-]/.test(it.rotulo))) {
-    const passos = []; let acc = 0;
-    F_.forEach((it, i) => { const v = Number(it.valor) || 0; if (i > 0 && !v) return; const sub = i > 0 && /^[−-]/.test(it.rotulo), d = i === 0 ? v : sub ? -v : v;
-      passos.push({ it, de: acc, ate: acc + d, tipo: i === 0 ? 'base' : sub ? 'sai' : 'entra', rot: it.rotulo.replace(/^[−+-]\s*/, '') }); acc += d; });
-    passos.push({ it: null, de: 0, ate: Number(N.valor) || 0, tipo: 'tot', rot: N.titulo.replace(/\s*\(.*\)$/, '') });
-    const W = 520, H = 150, P = 8, top = Math.max(...passos.map(p => Math.max(p.de, p.ate)), 1), bot = Math.min(0, ...passos.map(p => Math.min(p.de, p.ate)));
-    const y = n => 16 + (top - n) / ((top - bot) || 1) * (H - 46), bw = (W - 2 * P) / passos.length;
-    const cor = p => p.tipo === 'base' ? 'var(--accent)' : p.tipo === 'sai' ? 'var(--bad)' : p.tipo === 'entra' ? 'var(--good)' : (p.ate >= 0 ? 'var(--good)' : 'var(--bad)');
-    return `<section class="arv-g"><h3>Como se chega em ${arvFmt(N.valor, 'brl')}</h3><svg viewBox="0 0 ${W} ${H}" class="arv-svg" aria-label="Cascata">
-      ${bot < 0 ? `<line x1="${P}" x2="${W - P}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)" stroke-dasharray="3 3"/>` : ''}
-      ${passos.map((p, i) => { const x = P + i * bw + bw * .18, w = bw * .64, y1 = y(Math.max(p.de, p.ate)), h = Math.max(2, Math.abs(y(p.de) - y(p.ate)));
-        return `<g class="arv-pt"${attrs(p.it)}><title>${esc(p.rot)}: ${arvFmt(Math.abs(p.ate - p.de), 'brl')}</title><rect x="${x}" y="${y1}" width="${w}" height="${h}" rx="3" fill="${cor(p)}" opacity="${p.tipo === 'tot' ? 1 : .85}"/>
-          ${i < passos.length - 1 ? `<line x1="${x + w}" x2="${x + bw}" y1="${y(p.ate)}" y2="${y(p.ate)}" stroke="var(--muted)" stroke-dasharray="2 2" opacity=".6"/>` : ''}
-          <text x="${x + w / 2}" y="${y1 - 4}" text-anchor="middle" class="arv-gv" style="font-size:10.5px">${p.tipo === 'sai' ? '−' : p.tipo === 'entra' ? '+' : ''}${brlK(Math.abs(p.ate - p.de))}</text>
-          <text x="${x + w / 2}" y="${H - 6}" text-anchor="middle">${esc(p.rot.slice(0, 16))}</text></g>`; }).join('')}</svg></section>`;
-  }
-  /* soma de partes (ex.: despesas = deduções + custos + despesas) → rosca da composição */
-  const soma = N.un === 'brl' && F_.length >= 2 && F_.length === (N.formula || []).length && F_.slice(1).every(it => /^\+/.test(it.rotulo))
-    ? { titulo: 'Composição', itens: F_.map(it => ({ ...it, rotulo: it.rotulo.replace(/^\+\s*/, '') })) } : null;
-  const Q = (soma && soma.itens.filter(x => Number(x.valor) > 0).length >= 2 ? soma : null) || Qs.find(Q => Q.titulo !== 'Por mês' && (Q.itens || []).filter(x => Number(x.valor) > 0).length >= 2);
-  if (Q) {
-    let L = Q.itens.filter(x => Number(x.valor) > 0).sort((a, b) => b.valor - a.valor); const tot = L.reduce((s, x) => s + Number(x.valor), 0);
-    if (L.length > 6) L = [...L.slice(0, 5), { rotulo: 'Outros (' + (L.length - 5) + ')', valor: L.slice(5).reduce((s, x) => s + Number(x.valor), 0) }];
-    const R = 52, r = 32, cx = 62, cy = 62; let a0 = -Math.PI / 2;
-    const arco = (f, cor, it) => { const a1 = a0 + f * 2 * Math.PI, g = f > .5 ? 1 : 0, p = (rr, a) => `${cx + rr * Math.cos(a)},${cy + rr * Math.sin(a)}`;
-      const dpath = f >= .9999 ? `M${p(R, 0)}A${R},${R} 0 1 1 ${p(R, Math.PI)}A${R},${R} 0 1 1 ${p(R, 0)}M${p(r, 0)}A${r},${r} 0 1 0 ${p(r, Math.PI)}A${r},${r} 0 1 0 ${p(r, 0)}Z`
-        : `M${p(R, a0)}A${R},${R} 0 ${g} 1 ${p(R, a1)}L${p(r, a1)}A${r},${r} 0 ${g} 0 ${p(r, a0)}Z`;
-      a0 = a1; return `<path d="${dpath}" fill="${cor}" fill-rule="evenodd" class="arv-fa"${attrs(it)}><title>${esc(it.rotulo)}: ${arvFmt(it.valor, it.un || un0)} (${(f * 100).toFixed(1).replace('.', ',')}%)</title></path>`; };
-    const fatias = L.map((it, i) => arco(Number(it.valor) / tot, ARV_CORES[i % ARV_CORES.length], it)).join('');
-    return `<section class="arv-g"><h3>${esc(Q.titulo)}: participação</h3><div class="arv-rosca"><svg viewBox="0 0 124 124" class="arv-svg" aria-label="${esc(Q.titulo)}">${fatias}<text x="${cx}" y="${cy + 5}" text-anchor="middle" class="arv-gv" style="font-size:15px">${(Number(L[0].valor) / tot * 100).toFixed(0)}%</text></svg>
-      <ul>${L.map((it, i) => `<li${attrs(it)}><i style="background:${ARV_CORES[i % ARV_CORES.length]}"></i><span>${esc(it.rotulo)}</span><b>${(Number(it.valor) / tot * 100).toFixed(1).replace('.', ',')}%</b></li>`).join('')}</ul></div></section>`;
-  }
-  const R_ = N.registros; if (R_ && (R_.linhas || []).length >= 3) {
-    const iD = R_.un.indexOf('d'), iV = R_.un.indexOf('brl') >= 0 ? R_.un.indexOf('brl') : R_.un.indexOf('n'); if (iD < 0) return '';
-    const por = {}; R_.linhas.forEach(l => { const k = String(l.c[iD] || '').slice(0, 10); if (k) por[k] = (por[k] || 0) + (iV < 0 ? 1 : Number(l.c[iV]) || 0); });
-    const K = Object.keys(por).sort().slice(-31); if (K.length < 2) return '';
-    const v = K.map(k => por[k]), W = 520, H = 110, P = 10, mx = Math.max(...v.map(Math.abs)) || 1, bw = (W - 2 * P) / K.length;
-    return `<section class="arv-g"><h3>${iV < 0 ? 'Quantidade' : esc(R_.cols[iV])} por dia${R_.total > R_.linhas.length ? ' <span class="muted">(dos registros mostrados)</span>' : ''}</h3><svg viewBox="0 0 ${W} ${H}" class="arv-svg" aria-label="Por dia">
-      ${K.map((k, i) => { const h = Math.abs(v[i]) / mx * (H - 26); return `<g><title>${dd(k)}: ${iV < 0 ? num(v[i]) : arvFmt(v[i], R_.un[iV])}</title><rect x="${P + i * bw + 1}" y="${H - 16 - h}" width="${Math.max(2, bw - 2)}" height="${h}" rx="2" fill="${v[i] < 0 ? 'var(--bad)' : 'var(--accent)'}" opacity=".85"/></g>`; }).join('')}
-      <text x="${P}" y="${H - 3}">${dd(K[0]).slice(0, 5)}</text><text x="${W - P}" y="${H - 3}" text-anchor="end">${dd(K[K.length - 1]).slice(0, 5)}</text></svg></section>`;
-  }
-  if (N.un === 'pct' && N.valor != null && isFinite(N.valor)) return arvMedidor(N);
-  return '';
+const ARV_GRAN = [['dia', 'Dia'], ['semana', 'Semana'], ['mes', 'Mês'], ['ano', 'Ano']];
+function arvGranAuto(par) {
+  if (!par.ini || !par.fim) return 'mes';
+  const dias = (new Date(par.fim) - new Date(par.ini)) / 864e5 + 1;
+  return dias <= 31 ? 'dia' : dias <= 120 ? 'semana' : dias <= 800 ? 'mes' : 'ano';
 }
-/* medidor para percentual (margem, ROI, retenção…) */
-function arvMedidor(N) {
-  const v = Number(N.valor), f = Math.max(0, Math.min(1, Math.abs(v) / (Math.abs(v) > 1 ? Math.abs(v) : 1))), R = 46, C = Math.PI * R;
-  const cor = v < 0 ? 'var(--bad)' : 'var(--good)', F_ = (N.formula || []).slice(0, 2);
-  return `<section class="arv-g"><h3>Proporção</h3><div class="arv-rosca"><svg viewBox="0 0 124 76" class="arv-svg" aria-label="Medidor">
-    <path d="M16,66 A${R},${R} 0 0 1 108,66" fill="none" stroke="var(--line)" stroke-width="12" stroke-linecap="round"/>
-    <path d="M16,66 A${R},${R} 0 0 1 108,66" fill="none" stroke="${cor}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(f * C).toFixed(1)} ${C.toFixed(1)}"/>
-    <text x="62" y="62" text-anchor="middle" class="arv-gv" style="font-size:15px">${arvFmt(v, 'pct')}</text></svg>
-    <ul>${F_.map(it => `<li><i style="background:var(--accent)"></i><span>${esc(it.rotulo.replace(/^[÷×−+]\s*/, ''))}</span><b>${arvFmt(it.valor, it.un || 'brl')}</b></li>`).join('')}</ul></div></section>`;
+function arvRotPonto(p, g) {
+  const d = String(p.ini).slice(0, 10);
+  if (g === 'dia') return d.slice(8, 10) + '/' + d.slice(5, 7);
+  if (g === 'semana') return d.slice(8, 10) + '/' + d.slice(5, 7);
+  if (g === 'mes') return MES_CURTO[Number(d.slice(5, 7)) - 1] + '/' + d.slice(2, 4);
+  return d.slice(0, 4);
 }
-/* sem resumo pronto: monta a evolução dos últimos 4 meses chamando o mesmo número mês a mês */
-async function arvSerie(top, alvo) {
-  try {
-    if (!top.serie && !top.par.fim && top.par.hoje) {
-      const h = top.par.hoje, m0 = new Date(h.slice(0, 7) + '-01T12:00:00');
-      const pts = [3, 2, 1].map(k => { const d = new Date(m0); d.setMonth(d.getMonth() - k + 1); d.setDate(0); return d.toISOString().slice(0, 10); }).concat([h]);
-      const res = await Promise.all(pts.map(d => q(sb.rpc('arvore_no', { p_ws: S.ws, p_no: top.no, p_par: { ...top.par, hoje: d } })).catch(() => null)));
-      top.serie = pts.map((d, i) => ({ rotulo: d.slice(5, 7) + '/' + d.slice(0, 4), valor: res[i] ? res[i].valor : null, un: res[i] ? res[i].un : null, no: top.no, par: { ...top.par, hoje: d } })).filter(x => x.valor != null && isFinite(x.valor));
+function arvLinha(top, N, root) {
+  const par = top.par || {};
+  if (!top.no || top.no.startsWith('loc.') || !((par.ini && par.fim) || par.hoje) || N.valor == null) return;
+  const box = document.createElement('section'); box.className = 'arv-g';
+  const ex = root.querySelector('.arv-ex'); if (!ex) return; ex.after(box);
+  top.gran = top.gran || arvGranAuto(par); top.series = top.series || {};
+  const desenha = async () => {
+    const g = top.gran;
+    box.innerHTML = `<div class="arv-gh"><h3>${par.ini ? 'No período ' + dd(par.ini) + ' a ' + dd(par.fim) : 'Valor no fim de cada ' + { dia: 'dia', semana: 'semana', mes: 'mês', ano: 'ano' }[g]}</h3>
+      <div class="arv-gr" role="group" aria-label="Agrupar por">${ARV_GRAN.map(([k, l]) => `<button type="button" data-gran="${k}" class="${k === g ? 'on' : ''}" aria-pressed="${k === g}">${l}</button>`).join('')}</div></div>
+      <div class="arv-gc"><div class="muted" style="padding:28px 0;font-size:12px">Calculando…</div></div>`;
+    box.querySelectorAll('[data-gran]').forEach(b => b.onclick = () => { top.gran = b.dataset.gran; desenha(); });
+    let S_ = top.series[g];
+    if (!S_) {
+      try { S_ = top.series[g] = (await q(sb.rpc('arvore_serie', { p_ws: S.ws, p_no: top.no, p_par: par, p_gran: g }))) || []; }
+      catch (e) { const c = box.querySelector('.arv-gc'); if (c) c.innerHTML = `<div class="muted" style="font-size:12px;padding:10px 0">${/arvore_serie|schema cache|Could not find/i.test(e.message || '') ? 'Falta rodar supabase/RODAR_v0.123_arvore_serie.sql no Supabase.' : esc(e.message || String(e))}</div>`; return; }
     }
-    if (!top.serie) {
-      const fim = top.par.fim, m0 = new Date(fim.slice(0, 7) + '-01T12:00:00');
-      const meses = [3, 2, 1, 0].map(k => { const d = new Date(m0); d.setMonth(d.getMonth() - k); const ini = d.toISOString().slice(0, 10), e = new Date(d); e.setMonth(e.getMonth() + 1); e.setDate(0);
-        const f = e.toISOString().slice(0, 10); return { ini, fim: f > fim ? fim : f, rot: ini.slice(5, 7) + '/' + ini.slice(0, 4) }; });
-      const res = await Promise.all(meses.map(m => q(sb.rpc('arvore_no', { p_ws: S.ws, p_no: top.no, p_par: { ...top.par, ini: m.ini, fim: m.fim } })).catch(() => null)));
-      top.serie = meses.map((m, i) => ({ rotulo: m.rot, valor: res[i] ? res[i].valor : null, un: res[i] ? res[i].un : null, no: top.no, par: { ...top.par, ini: m.ini, fim: m.fim } })).filter(x => x.valor != null && isFinite(x.valor));
-    }
-    if (top.serie.length < 2 || !alvo.isConnected) { alvo.remove(); return; }
-    const html = arvGrafico({ no: top.no, un: top.serie[0].un, quebras: [{ titulo: 'Por mês', itens: top.serie.length >= 3 ? top.serie : [...top.serie, ...top.serie.slice(-1)] }] });
-    alvo.outerHTML = html.replace('Evolução por mês', 'Evolução nos últimos meses');
-    const r = $('#arvRoot'); r.querySelectorAll('.arv-g [data-arvno]').forEach(b => b.onclick = () => arvVai(b.dataset.arvno, JSON.parse(b.dataset.arvpar), b.dataset.arvrot));
-  } catch (e) { alvo.remove(); }
+    if (!box.isConnected || top.gran !== g) return;
+    let P = S_.filter(p => p.valor != null && isFinite(p.valor));
+    while (P.length > 2 && !Number(P[0].valor) && !Number(P[1].valor)) P = P.slice(1);  // período "tudo": tira o começo vazio
+    const c = box.querySelector('.arv-gc');
+    if (P.length < 2) { c.innerHTML = '<div class="muted" style="font-size:12px;padding:10px 0">Só um ponto neste agrupamento. Escolha um agrupamento menor.</div>'; return; }
+    const un = P[0].un || N.un, v = P.map(p => Number(p.valor)), W = 540, H = 150, PL = 8, PR = 8, PT = 22, PB = 22;
+    const mn = Math.min(0, ...v), mx = Math.max(0, ...v) || 1, x = i => PL + i * (W - PL - PR) / (P.length - 1), y = n => PT + (mx - n) / ((mx - mn) || 1) * (H - PT - PB);
+    const ult = P.length - 1, parc = !!P[ult].parcial || (!!top.par.ini && String(P[ult].fim).slice(0, 10) >= hoje()), k = parc ? ult - 1 : ult;
+    const d = k >= 1 && v[k - 1] ? (v[k] - v[k - 1]) / Math.abs(v[k - 1]) : null, bom = d == null ? null : (d >= 0) !== ARV_MENOR.test(top.no);
+    const solidos = P.map((p, i) => `${x(i)},${y(v[i])}`), fimSol = parc ? ult : ult + 1;
+    const step = Math.ceil(P.length / 8), base = y(mn < 0 ? 0 : mn);
+    c.innerHTML = `<div class="arv-gk">${d != null ? `<span class="dl ${bom ? 'vpos' : 'vneg'}">${d >= 0 ? '▲' : '▼'} ${Math.abs(d * 100).toFixed(1).replace('.', ',')}%</span> <span class="muted">${esc(arvRotPonto(P[k], top.gran))} contra ${esc(arvRotPonto(P[k - 1], top.gran))}${parc ? ' · o último ponto está incompleto' : ''}</span>` : ''}
+      <span class="muted" style="margin-left:auto">maior: <b>${arvFmt(Math.max(...v), un)}</b> · menor: <b>${arvFmt(Math.min(...v), un)}</b></span></div>
+      <svg viewBox="0 0 ${W} ${H}" class="arv-svg" aria-label="Linha do número no período"><defs><linearGradient id="arvGa" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".32"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+      ${[0, .5, 1].map(f => `<line x1="${PL}" x2="${W - PR}" y1="${PT + f * (H - PT - PB)}" y2="${PT + f * (H - PT - PB)}" stroke="var(--line)" stroke-width="1"/>`).join('')}
+      ${mn < 0 ? `<line x1="${PL}" x2="${W - PR}" y1="${y(0)}" y2="${y(0)}" stroke="var(--muted)" stroke-dasharray="3 3"/>` : ''}
+      <polygon points="${x(0)},${base} ${solidos.join(' ')} ${x(ult)},${base}" fill="url(#arvGa)"/>
+      <polyline points="${solidos.slice(0, fimSol).join(' ')}" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+      ${parc ? `<polyline points="${solidos.slice(-2).join(' ')}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4" opacity=".75"/>` : ''}
+      ${P.map((p, i) => { const pp = top.par.ini ? { ...top.par, ini: p.ini, fim: p.fim } : { ...top.par, hoje: p.fim }, rot = arvRotPonto(p, top.gran);
+        return `<g class="arv-pt" data-arvno="${esc(top.no)}" data-arvpar="${esc(JSON.stringify(pp))}" data-arvrot="${esc(rot)}" role="button" tabindex="0"><title>${esc(top.gran === 'semana' ? 'semana de ' + dd(p.ini) : top.gran === 'dia' ? dd(p.ini) : rot)}${p.parcial ? ' (incompleto)' : ''}: ${arvFmt(v[i], un)}. Clique para abrir.</title>
+          <rect x="${x(i) - (W / P.length) / 2}" y="0" width="${W / P.length}" height="${H}" fill="transparent"/><circle cx="${x(i)}" cy="${y(v[i])}" r="${P.length > 40 ? 2 : 3.2}" fill="${v[i] < 0 ? 'var(--bad)' : 'var(--accent)'}"/>
+          ${(i % step === 0 && ult - i >= step / 2) || i === ult ? `<text x="${x(i)}" y="${H - 5}" text-anchor="${i === 0 ? 'start' : i === ult ? 'end' : 'middle'}">${esc(rot)}</text>` : ''}</g>`; }).join('')}
+      <text x="${W - PR}" y="12" text-anchor="end" class="arv-gv">${esc(arvRotPonto(P[ult], top.gran))}${parc ? ' (incompleto)' : ''}: ${arvFmt(v[ult], un)}</text></svg>`;
+    c.querySelectorAll('[data-arvno]').forEach(b => { const vai = () => arvVai(b.dataset.arvno, JSON.parse(b.dataset.arvpar), b.dataset.arvrot); b.onclick = vai; b.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); vai(); } }; });
+  };
+  desenha();
+}
+
+/* v0.123 — escolher as etapas na hora de criar a estratégia (do catálogo, por fase, ou etapas novas) */
+function estPickHtml() {
+  return `<div class="full est-pick" style="grid-column:1/-1"><b>Etapas</b> <span class="muted">marque as que a estratégia tem (o modelo pronto já marca as dele). Cada campanha recebe uma cópia e você pode ajustar depois.</span>
+    ${EST_FASES.map(([fk, fl]) => `<div class="est-pf"><span class="est-pfn">${fl}</span><div class="est-pc">${Object.entries(EST_CAT).filter(([, c]) => c.fase === fk).map(([k, c]) =>
+      `<label><input type="checkbox" data-etc="${k}"> ${esc(c.nome)}</label>`).join('')}<input class="est-px" data-etx="${fk}" placeholder="+ outra etapa (separe por vírgula)"></div></div>`).join('')}</div>`;
+}
+function estPickModelo(f, mod) { f.querySelectorAll('[data-etc]').forEach(c => { c.checked = !!mod && mod.etapas.includes(c.dataset.etc); }); }
+function estPickLer(f) {
+  if (!f || !f.dataset.etMexeu) return null;
+  const marc = [...f.querySelectorAll('[data-etc]:checked')].map(c => c.dataset.etc), et = [];
+  EST_FASES.forEach(([fk]) => {
+    marc.filter(k => (EST_CAT[k] || {}).fase === fk).forEach(k => { const x = estEtapaDoCat(k); et.push({ fase: fk, chave: k, nome: x.nome, unidade: x.unidade, origem: x.origem, metrica: x.metrica, origem_ref: null, conta_como: x.conta_como }); });
+    const t = (f.querySelector(`[data-etx="${fk}"]`) || {}).value || '';
+    t.split(',').map(x => x.trim()).filter(Boolean).forEach(n => et.push({ fase: fk, chave: estChave(n), nome: n, unidade: 'numero', origem: 'manual', metrica: null, origem_ref: null, conta_como: null }));
+  });
+  const vistos = {}; et.forEach(e => { let c = e.chave, i = 2; while (vistos[c]) c = e.chave + '_' + i++; vistos[c] = 1; e.chave = c; });
+  return et.map((e, i) => ({ ...e, ordem: (i + 1) * 10 }));
 }
 
 /* ---------- Projetos: apoio ---------- */

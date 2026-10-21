@@ -1,4 +1,4 @@
 
 
-## v0.122
-- Sem mudança no banco. A série mensal usa a mesma função `arvore_no` com o período de cada mês.
+## v0.123
+- `arvore_serie(p_ws uuid, p_no text, p_par jsonb, p_gran text)` → lista de pontos `{ini, fim, valor, un, parcial}`. Usa `arvore_no` para cada ponto (mesmas permissões; segurança do chamador).

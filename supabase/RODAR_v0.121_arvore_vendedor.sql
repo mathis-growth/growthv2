@@ -1,4 +1,4 @@
--- NÃO APLICADO em produção ainda. Rode no SQL Editor do Supabase depois do RODAR_v0.120.
+-- JÁ APLICADO em produção em 21/10/2026 (via Supabase). Pode rodar de novo sem problema.
 -- v0.121 — Árvore dos números: "Por vendedor" mostrava "Sem vendedor" para todas as vendas.
 -- vendas.vendedor_id aponta para equipe.id (o mesmo que pessoas.responsavel_comercial_id e as comissões usam), não para o usuário.
 -- Idempotente: pode rodar de novo (confere a marca de já aplicado e ignora quebras de linha do Windows).

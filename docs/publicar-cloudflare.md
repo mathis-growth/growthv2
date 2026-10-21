@@ -1,6 +1,6 @@
 # Publicar o Growths no Cloudflare Pages
 
-O Growths é um arquivo só (`frontend/index.html`) que conversa com o Supabase. O Cloudflare Pages publica a pasta `frontend` a cada atualização no GitHub. Não precisa compilar nada.
+O Growths é um arquivo só (`index.html`, na raiz do repositório `mathis-growth/growthv2`) que conversa com o Supabase. O Cloudflare Pages publica o repositório a cada atualização no GitHub. Não precisa compilar nada.
 
 ## 1. GitHub (uma vez)
 1. Em github.com, crie um repositório **privado** chamado `growths` (sem README, sem .gitignore).
@@ -13,7 +13,7 @@ O Growths é um arquivo só (`frontend/index.html`) que conversa com o Supabase.
    - Production branch: `main`
    - Framework preset: **None**
    - Build command: *(deixe vazio)*
-   - Build output directory: `frontend`
+   - Build output directory: *(deixe vazio: o `index.html` está na raiz)*
 4. **Save and Deploy**. Em cerca de 1 minuto o Growths fica no ar em `https://growths.pages.dev` (ou o nome que o Cloudflare der).
 5. Opcional: **Custom domains** → `app.mathisa.com.br` (ou outro). O Cloudflare mostra o registro DNS a criar.
 
