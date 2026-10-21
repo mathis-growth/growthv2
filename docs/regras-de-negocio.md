@@ -1,5 +1,12 @@
 
 
+## v0.129 — Gráfico único e qualificação por pontos
+- Movimento por dia: com uma métrica, eixo em valor real; com várias, cada linha de 0 até o maior valor dela no período (o tooltip mostra os valores reais). Metas tracejadas: leads (meta do dia) e custo por lead (meta de CPL), só com uma métrica.
+- Pontos por pergunta: escolha e sim/não = pontos da opção marcada; várias opções = soma das marcadas; NPS/escala = nota × peso; texto = não pontua. Opção marcada sem pontos conta como 0 (entra na média).
+- Total: soma = soma dos pontos; média = soma ÷ perguntas pontuadas respondidas (2 casas). Qualificado se total ≥ corte; sem corte, a qualificação não muda (só pontos e tags).
+- Faixas: vale a de maior "a partir de" que o total alcança; as tags das outras faixas saem da pessoa. Tags das opções são somadas às da pessoa (não removem as que ela já tinha).
+- Aplica na hora em que a pessoa responde (link único ou link aberto com e-mail que já existe) e no "Recalcular" (última resposta de cada pessoa). Grava `pontuacao_qualificacao` (até 9.999,99), `qualificacao` e `tags`.
+
 ## v0.128 — Painel da campanha
 - Período: perpétuo = últimos 30 dias até hoje (ou até o fim); lançamento = do início ao fim (ou hoje). Opções 14, 30, 60 dias e campanha toda.
 - Quadrinhos: leads (pessoas que entraram na campanha, a conta da meta de leads) contra a meta do dia de `campanha_meta_leads`; custo por lead = investimento do dia ÷ leads do dia, contra `meta_cpl`; vendas contra `meta_vendas ÷ dias do carrinho` (ou da campanha), só nos dias de carrinho aberto. Sem meta: contra a média do período (verde ≥ média; vermelho = 15% pior; amarelo no meio). Investimento e receita: intensidade da cor = tamanho do valor.

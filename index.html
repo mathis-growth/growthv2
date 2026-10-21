@@ -387,7 +387,15 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">.cp128{display:flex;flex-direction:column;gap:16px;margin:16px 0}
+<style id="v122">.cp-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.cp-chips button{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:none;border-radius:99px;padding:4px 11px;font-size:12.5px;cursor:pointer;color:var(--muted)}
+.cp-chips button i{width:10px;height:10px;border-radius:50%;background:var(--c);opacity:.35}.cp-chips button.on{color:var(--ink);border-color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);font-weight:600}.cp-chips button.on i{opacity:1}
+.cp-chips-a{margin-left:auto;display:inline-flex;gap:6px}.cp-chips-a button{border-style:dashed}
+.cp-mw{position:relative;margin-top:6px}.cp-mt{position:absolute;top:8px;z-index:3;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12px;box-shadow:0 6px 20px rgba(0,0,0,.12);display:flex;flex-direction:column;gap:3px;min-width:180px;pointer-events:none}
+.cp-mt span{display:flex;align-items:center;gap:6px}.cp-mt i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.pq-tab input{width:90px;padding:4px 8px}.pq-tab input.pq-tg{width:150px;margin-left:8px}.pq-in{display:inline-flex!important;flex-direction:row!important;align-items:center;gap:6px}
+.pq-fx{display:flex;gap:10px;align-items:flex-end;margin-bottom:6px}.pq-fx input{width:130px}
+.cp-mt[hidden]{display:none}
+.cp128{display:flex;flex-direction:column;gap:16px;margin:16px 0}
 .cp-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 18px}.cp-bar>b{font-size:16px}
 .cp-per{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}.cp-per button{background:none;border:0;padding:5px 12px;font-size:12.5px;cursor:pointer;color:var(--muted)}.cp-per button+button{border-left:1px solid var(--line)}.cp-per button.on{background:var(--accent);color:#fff;font-weight:600}
 .cp-grade{display:grid;grid-template-columns:150px repeat(var(--n),minmax(6px,1fr)) 52px;gap:3px;align-items:center;margin-top:8px;overflow-x:auto}
@@ -495,7 +503,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.128 · 21/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.129 · 21/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -12531,22 +12539,6 @@ function cpQueda(el, X) {
     ${GC.fonte('Etapas pelos números diários dos anúncios da campanha (leads e vendas pela UTM do anúncio, exceto Vendas e Ticket, que são as vendas aprovadas ligadas à campanha). Hoje fica fora porque o dia não terminou. Vermelho = piorou mais de 5%; em CPM e custo por lead, subir é piorar. Leads dos anúncios = investimento ÷ CPM × 1.000 × CTR × connect rate × conversão da página: no gráfico, cada fator mostra quanto ajudou (verde) ou atrapalhou (vermelho) contra a semana anterior; no CPM, subir atrapalha.')}`;
 }
 
-/* movimento por dia: um gráfico pequeno para cada número */
-function cpLinhas(el, X) {
-  const { dias, Z, VD, leadsDia, metaLeadDia, metaCpl, h } = X, rot = dias.map(d => dd(d).slice(0, 5)), parc = dias[dias.length - 1] === h;
-  const ml = dias.map(metaLeadDia), temML = ml.some(v => v != null);
-  const G = [
-    ['Investimento por dia', [{ nome: 'Investimento', valores: Z.map(z => z.custo || 0) }], 'brl', true],
-    ['CTR por dia', [{ nome: 'CTR', valores: Z.map(z => z.ctr) }], 'pct', false],
-    ['CPM por dia', [{ nome: 'CPM', valores: Z.map(z => z.cpm) }], 'brl', false],
-    ['Leads por dia', [{ nome: 'Leads', valores: dias.map(leadsDia) }, ...(temML ? [{ nome: 'Meta do dia', valores: ml, cor: 'var(--muted)' }] : [])], 'n', true],
-    ['Custo por lead por dia', [{ nome: 'CPL', valores: dias.map((d, i) => Z[i].custo && leadsDia(d) ? Z[i].custo / leadsDia(d) : null) }, ...(metaCpl ? [{ nome: 'Meta de CPL', valores: dias.map(() => metaCpl), cor: 'var(--muted)' }] : [])], 'brl', false],
-    ['Vendas por dia', [{ nome: 'Vendas', valores: dias.map(d => (VD[d] || {}).n || 0) }], 'n', true],
-    ['Receita por dia', [{ nome: 'Receita', valores: dias.map(d => (VD[d] || {}).r || 0) }], 'brl', true]];
-  el.innerHTML = `<h2>Movimento por dia</h2><div class="gc-mini">${G.map(([t, s, un, z]) => `<div><h3 style="margin:0;font-size:13px">${t}</h3>${gcLinhas({ series: s, rotulos: rot, un, parcial: parc, altura: 150, W: 380, zero: z })}</div>`).join('')}</div>
-    ${GC.fonte('Hoje aparece tracejado: o dia ainda não terminou. Dia sem lead fica sem custo por lead.')}`;
-}
-
 /* vídeos e criativos: quanto foi em cada um e o que trouxe */
 function cpCriativos(el, c, X) {
   const { R, dias } = X, ids = [...new Set(R.map(r => r.anuncio_id))];
@@ -12577,6 +12569,135 @@ function cpVendas(el, X) {
     <h3 style="margin:10px 0 0;font-size:13px">Por produto</h3>${gcBarrasH({ itens: L.map(([n, x]) => ({ rotulo: n + ' (' + x.q + ')', valor: x.r })), max: 6, total: tot })}
     ${Object.keys(PP).some(k => k) ? `<h3 style="margin:10px 0 0;font-size:13px">Por papel da oferta</h3>${gcBarrasH({ itens: GC_PAPEL.filter(([k]) => PP[k] > 0).map(([k, nome]) => ({ rotulo: nome, valor: PP[k] })), max: 6, total: tot, fixo: true })}` : '<p class="muted" style="font-size:12px">Para ver order bump, upsell e downsell, ligue a oferta em cada venda (ou traga a coluna da oferta na importação).</p>'}
     ${GC.fonte('Vendas aprovadas ligadas à campanha no período, pelo valor bruto.')}`;
+}
+
+/* ================= v0.129 — Movimento por dia num gráfico só, com as métricas que você escolhe =================
+   Cada métrica tem uma cor; os botões ligam e desligam cada linha ("Todas" e "Limpar" também).
+   Com uma métrica só, o eixo mostra o valor de verdade; com várias, cada linha fica na sua própria escala (0 até o maior valor dela)
+   para dar para comparar o movimento, e passar o mouse mostra o valor real de todas no dia. */
+const CP_MET = [['inv', 'Investimento', 'brl', '#2563eb'], ['imp', 'Impressões', 'n', '#94a3b8'], ['ctr', 'CTR', 'pct', '#f59e0b'], ['cpm', 'CPM', 'brl', '#a78bfa'], ['cpc', 'CPC', 'brl', '#ec4899'],
+  ['leads', 'Leads', 'n', '#10b981'], ['cpl', 'Custo por lead', 'brl', '#ef4444'], ['vendas', 'Vendas', 'n', '#0ea5e9'], ['rec', 'Receita', 'brl', '#16a34a']];
+function gcMulti(el, { rotulos, metricas, sel, parcial, aoMudar, metas = {} }) {
+  const desenha = () => {
+    const S_ = metricas.filter(m => sel.includes(m.k)), n = rotulos.length, W = 900, H = 300, L = S_.length === 1 ? 64 : 16, R = 16, T = 16, B = 28;
+    const x = i => L + (n > 1 ? i * (W - L - R) / (n - 1) : (W - L - R) / 2), passoR = Math.ceil(n / 14);
+    const esc1 = S_.length === 1 ? S_[0] : null, vals1 = esc1 ? [...esc1.valores, ...(metas[esc1.k] || [])].filter(v => v != null && isFinite(v)) : [];
+    const mx1 = esc1 ? Math.max(0, ...vals1) : 1, st = GC.passo((mx1 || 1) / 4), top1 = Math.ceil((mx1 || 1) / st) * st;
+    const y = (m, v) => { const mx = esc1 ? top1 : Math.max(1e-9, ...m.valores.filter(z => z != null && isFinite(z)).map(Number)); return T + (1 - Number(v) / mx) * (H - T - B); };
+    const linha = m => { const pts = m.valores.map((v, i) => v == null || !isFinite(v) ? null : [x(i), y(m, v)]), seg = []; let cur = [];
+      pts.forEach((p, i) => { if (!p || (parcial && i === n - 1)) { if (cur.length) seg.push(cur); cur = []; } else cur.push(p); }); if (cur.length) seg.push(cur);
+      const ult = parcial && pts[n - 1] && pts[n - 2] ? `<polyline points="${pts[n - 2].join(',')} ${pts[n - 1].join(',')}" fill="none" stroke="${m.cor}" stroke-width="2" stroke-dasharray="5 4" opacity=".7"/>` : '';
+      const meta = esc1 && metas[m.k] ? `<polyline points="${metas[m.k].map((v, i) => v == null ? null : x(i) + ',' + y(m, v)).filter(Boolean).join(' ')}" fill="none" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="6 4" opacity=".5"/>` : '';
+      return meta + seg.map(sg => `<polyline points="${sg.map(p => p.join(',')).join(' ')}" fill="none" stroke="${m.cor}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`).join('') + ult
+        + (n <= 45 ? pts.map(p => p ? `<circle cx="${p[0]}" cy="${p[1]}" r="2.4" fill="${m.cor}"/>` : '').join('') : ''); };
+    const ticks = []; if (esc1) for (let v = 0; v <= top1 + st / 2; v += st) ticks.push(v);
+    el.innerHTML = `<div class="cp-chips" role="group" aria-label="Métricas no gráfico">${metricas.map(m => `<button type="button" data-cpm="${m.k}" class="${sel.includes(m.k) ? 'on' : ''}" aria-pressed="${sel.includes(m.k)}" style="--c:${m.cor}"><i></i>${esc(m.nome)}</button>`).join('')}
+        <span class="cp-chips-a"><button type="button" data-cpmall="1">Todas</button><button type="button" data-cpmall="0">Limpar</button></span></div>
+      <p class="muted" style="font-size:12px;margin:4px 0 0">${!S_.length ? 'Escolha pelo menos uma métrica.' : esc1 ? 'Uma métrica: o eixo mostra o valor.' + (metas[esc1.k] ? ' Linha tracejada cinza = meta.' : '') : 'Várias métricas: cada linha está na sua própria escala (do zero até o maior valor dela no período), para comparar o movimento. Passe o mouse para ver os valores do dia.'}${parcial ? ' Hoje aparece tracejado: o dia não terminou.' : ''}</p>
+      <div class="cp-mw"><svg class="gc" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(S_.map(m => m.nome).join(', '))} por dia">
+        ${esc1 ? ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${y(esc1, v)}" y2="${y(esc1, v)}" stroke="var(--line)" ${v ? 'stroke-dasharray="2 4"' : ''}/><text x="${L - 8}" y="${y(esc1, v) + 3.5}" text-anchor="end">${GC.fmtK(v, esc1.un)}</text>`).join('') : [0, .25, .5, .75, 1].map(f => `<line x1="${L}" x2="${W - R}" y1="${T + f * (H - T - B)}" y2="${T + f * (H - T - B)}" stroke="var(--line)" ${f < 1 ? 'stroke-dasharray="2 4"' : ''}/>`).join('')}
+        ${S_.map(linha).join('')}
+        <line class="cp-mg" x1="0" x2="0" y1="${T}" y2="${H - B}" stroke="var(--ink)" opacity="0"/>
+        ${rotulos.map((r, i) => (i % passoR === 0 && n - 1 - i >= passoR / 2) || i === n - 1 ? `<text x="${x(i)}" y="${H - 8}" text-anchor="${i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle'}">${esc(r)}</text>` : '').join('')}
+        ${rotulos.map((r, i) => `<rect class="cp-mh" data-i="${i}" x="${x(i) - (W - L - R) / Math.max(1, n - 1) / 2}" y="0" width="${(W - L - R) / Math.max(1, n - 1)}" height="${H}" fill="transparent"/>`).join('')}</svg>
+        <div class="cp-mt" hidden></div></div>`;
+    el.querySelectorAll('[data-cpm]').forEach(b => b.onclick = () => { const k = b.dataset.cpm; const i = sel.indexOf(k); if (i >= 0) sel.splice(i, 1); else sel.push(k); aoMudar && aoMudar(sel); desenha(); });
+    el.querySelectorAll('[data-cpmall]').forEach(b => b.onclick = () => { sel.splice(0, sel.length, ...(b.dataset.cpmall === '1' ? metricas.map(m => m.k) : [])); aoMudar && aoMudar(sel); desenha(); });
+    const tip = el.querySelector('.cp-mt'), guia = el.querySelector('.cp-mg'), svg = el.querySelector('svg');
+    el.querySelectorAll('.cp-mh').forEach(r => { r.onmouseenter = () => { const i = Number(r.dataset.i), px = x(i);
+      guia.setAttribute('x1', px); guia.setAttribute('x2', px); guia.setAttribute('opacity', '.35');
+      tip.innerHTML = `<b>${esc(rotulos[i])}${parcial && i === n - 1 ? ' (hoje, incompleto)' : ''}</b>${S_.map(m => `<span><i style="background:${m.cor}"></i>${esc(m.nome)}: <b>${GC.fmt(m.valores[i], m.un)}</b>${metas[m.k] && metas[m.k][i] != null ? ` <small class="muted">meta ${GC.fmt(metas[m.k][i], m.un)}</small>` : ''}</span>`).join('')}`;
+      tip.hidden = !S_.length; const bw = svg.getBoundingClientRect().width, left = px / W * bw; tip.style.left = Math.min(Math.max(0, left + 12), bw - 220) + 'px'; };
+      r.onmouseleave = () => { tip.hidden = true; guia.setAttribute('opacity', '0'); }; });
+  };
+  desenha();
+}
+function cpLinhas(el, X) {
+  const { dias, Z, VD, leadsDia, metaLeadDia, metaCpl, h } = X, rot = dias.map(d => dd(d).slice(0, 5)), parc = dias[dias.length - 1] === h;
+  const C = S.cp128, sel = C.selM = C.selM || ['inv', 'leads', 'vendas', 'ctr'];
+  const v = { inv: Z.map(z => z.custo || 0), imp: Z.map(z => z.impressoes || 0), ctr: Z.map(z => z.ctr), cpm: Z.map(z => z.cpm), cpc: Z.map(z => z.cpc), leads: dias.map(leadsDia),
+    cpl: dias.map((d, i) => Z[i].custo && leadsDia(d) ? Z[i].custo / leadsDia(d) : null), vendas: dias.map(d => (VD[d] || {}).n || 0), rec: dias.map(d => (VD[d] || {}).r || 0) };
+  const ml = dias.map(metaLeadDia), metas = {}; if (ml.some(x => x != null)) metas.leads = ml; if (metaCpl) metas.cpl = dias.map(() => metaCpl);
+  el.innerHTML = '<h2>Movimento por dia</h2><div id="cpMulti"></div>' + GC.fonte('Investimento, impressões, CTR, CPM e CPC: números diários dos anúncios da campanha. Leads: pessoas que entraram na campanha. Vendas e receita: vendas aprovadas da campanha. Dia sem lead fica sem custo por lead.');
+  gcMulti(el.querySelector('#cpMulti'), { rotulos: rot, metricas: CP_MET.map(([k, nome, un, cor]) => ({ k, nome, un, cor, valores: v[k] })), sel, parcial: parc, metas });
+}
+
+/* ================= v0.129 — Qualificação por pontos nas pesquisas =================
+   Na pesquisa, aba "Qualificação e pontos": cada opção vale pontos e pode pôr uma tag; nota (NPS, escala) vale nota × peso.
+   A pesquisa soma (ou tira a média), compara com a nota de corte e grava na pessoa a pontuação, qualificado / não qualificado e as tags.
+   O simulador mostra, com as respostas que já existem, quantos ficariam qualificados antes de salvar. */
+const PQ_SN = [['sim', 'Sim'], ['nao', 'Não']];
+const pqOpcoes = x => x.tipo === 'sim_nao' ? PQ_SN.map(a => a[0]) : (x.opcoes || []);
+const pqOpRot = (x, o) => x.tipo === 'sim_nao' ? (PQ_SN.find(a => a[0] === o) || [o, o])[1] : o;
+/* a mesma conta da função pesquisa_qualificar do banco */
+function pqPontua(cfg, perg, itens) {
+  let pts = 0, n = 0; const tags = [];
+  perg.forEach(x => { const P = x.pontos; if (!P) return; const its = itens.filter(i => i.pergunta_id === x.id); let um = 0, cont = false;
+    its.forEach(i => { if (['nps', 'escala'].includes(x.tipo) && i.valor_num != null && P.peso != null) { um += Number(i.valor_num) * Number(P.peso || 0); cont = true; }
+      else if (['escolha', 'multipla', 'sim_nao'].includes(x.tipo) && i.valor_texto != null) { cont = true; const o = (P.opcoes || {})[i.valor_texto]; if (o) { um += Number(o.p || 0); if (o.tag) tags.push(o.tag); } } });
+    if (cont) { pts += um; n++; } });
+  const fin = cfg.modo === 'media' ? (n ? Math.round(pts / n * 100) / 100 : 0) : pts, corte = cfg.corte === '' || cfg.corte == null ? null : Number(cfg.corte);
+  const fx = (cfg.faixas || []).filter(f => f.tag).sort((a, b) => Number(a.min) - Number(b.min)).filter(f => fin >= Number(f.min || 0)).pop();
+  return { pts: fin, qual: corte == null ? null : fin >= corte ? 'qualificado' : 'nao_qualificado', tags, faixa: fx ? fx.tag : null };
+}
+async function pqQualif(el, p, perg) {
+  if (!(await temColuna('pesquisas', 'qualif'))) { el.innerHTML = '<div class="panel">' + GC.vazio('Para usar a qualificação por pontos, rode supabase/RODAR_v0.129_qualificacao.sql no Supabase.') + '</div>'; return; }
+  const cfg = JSON.parse(JSON.stringify(p.qualif || { ativa: false, modo: 'soma', corte: '', faixas: [] })); cfg.faixas = cfg.faixas || [];
+  const PT = Object.fromEntries(perg.map(x => [x.id, JSON.parse(JSON.stringify(x.pontos || (['nps', 'escala'].includes(x.tipo) ? { peso: '' } : { opcoes: {} })))]));
+  const [resp, itens] = await Promise.all([gcTodos(() => sb.from('pesquisa_respostas').select('id,pessoa_id,respondida_em').eq('pesquisa_id', p.id).order('id')),
+    gcTodos(() => sb.from('pesquisa_resposta_itens').select('id,resposta_id,pergunta_id,valor_num,valor_texto').eq('workspace_id', S.ws).in('pergunta_id', perg.map(x => x.id).length ? perg.map(x => x.id) : ['00000000-0000-0000-0000-000000000000']).order('id'))]);
+  const porR = {}; itens.forEach(i => (porR[i.resposta_id] = porR[i.resposta_id] || []).push(i));
+  const ult = Object.values(resp.reduce((o, r) => { const k = r.pessoa_id || r.id; if (!o[k] || String(r.respondida_em) > String(o[k].respondida_em)) o[k] = r; return o; }, {}));
+  const linhaP = x => { const P = PT[x.id];
+    if (['nps', 'escala'].includes(x.tipo)) return `<tr><td><b>${esc(x.texto)}</b><br><span class="muted">${x.tipo === 'nps' ? 'nota de 0 a 10' : 'nota de 1 a 5'}</span></td><td colspan="2"><label class="pq-in">Pontos = nota × <input type="number" step="any" data-peso="${x.id}" value="${esc(P.peso ?? '')}" placeholder="peso"></label> <span class="muted">vazio = não pontua</span></td></tr>`;
+    if (!['escolha', 'multipla', 'sim_nao'].includes(x.tipo)) return `<tr><td><b>${esc(x.texto)}</b></td><td colspan="2" class="muted">Resposta em texto: não pontua.</td></tr>`;
+    return pqOpcoes(x).map((o, i) => `<tr>${i ? '' : `<td rowspan="${pqOpcoes(x).length}"><b>${esc(x.texto)}</b><br><span class="muted">${x.tipo === 'multipla' ? 'várias opções: soma as marcadas' : 'uma opção'}</span></td>`}
+      <td>${esc(pqOpRot(x, o))}</td><td style="white-space:nowrap"><input type="number" step="any" class="pq-pt" data-pq="${x.id}" data-op="${esc(o)}" value="${esc(((P.opcoes || {})[o] || {}).p ?? '')}" placeholder="0" aria-label="Pontos de ${esc(pqOpRot(x, o))}"> pts
+        <input class="pq-tg" data-pqt="${x.id}" data-op="${esc(o)}" value="${esc(((P.opcoes || {})[o] || {}).tag || '')}" placeholder="tag (opcional)" aria-label="Tag de ${esc(pqOpRot(x, o))}"></td></tr>`).join(''); };
+  el.innerHTML = `<div class="panel"><h2>Regra de qualificação</h2>
+      <div class="filters" style="margin:6px 0 0;align-items:flex-end">
+        <label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="pqAtiva" ${cfg.ativa ? 'checked' : ''} style="width:auto"> Qualificar automaticamente quem responder</label>
+        <label>Como somar<select id="pqModo"><option value="soma"${cfg.modo !== 'media' ? ' selected' : ''}>Soma dos pontos</option><option value="media"${cfg.modo === 'media' ? ' selected' : ''}>Média dos pontos (por pergunta respondida)</option></select></label>
+        <label>Qualificado a partir de (pontos)<input type="number" step="any" id="pqCorte" value="${esc(cfg.corte ?? '')}" style="width:120px" placeholder="ex.: 30"></label></div>
+      <h3 style="margin:14px 0 4px;font-size:14px">Faixas com tag (opcional)</h3><p class="muted" style="margin:0 0 6px;font-size:12px">Ex.: a partir de 0 → "frio", de 30 → "morno", de 60 → "quente". A pessoa fica só com a tag da faixa dela.</p>
+      <div id="pqFx"></div><button class="btn sm" id="pqFxN" type="button" style="align-self:flex-start;width:auto">+ Faixa</button></div>
+    <div class="panel"><h2>Pontos de cada resposta</h2><div class="tw"><table class="pq-tab"><thead><tr><th>Pergunta</th><th>Resposta</th><th>Pontos e tag</th></tr></thead><tbody>${perg.map(linhaP).join('') || '<tr><td colspan="3" class="muted">Cadastre as perguntas primeiro.</td></tr>'}</tbody></table></div>
+      <p class="muted" id="pqMax" style="font-size:12.5px;margin:6px 0 0"></p></div>
+    <div class="panel" id="pqSim"></div>
+    <div class="acts" style="justify-content:flex-start"><button class="btn pri" id="pqSalva">Salvar regra</button><button class="btn" id="pqRecalc" title="Aplica a regra salva em quem já respondeu">Recalcular quem já respondeu</button></div>`;
+  const fxDesenha = () => { $('#pqFx').innerHTML = cfg.faixas.map((f, i) => `<div class="pq-fx"><label>A partir de<input type="number" step="any" data-fxm="${i}" value="${esc(f.min ?? '')}"></label><label>Tag<input data-fxt="${i}" value="${esc(f.tag || '')}" placeholder="ex.: quente"></label><button class="btn sm" type="button" data-fxx="${i}" aria-label="Remover faixa">Remover</button></div>`).join('') || '<p class="muted" style="font-size:12px;margin:0">Nenhuma faixa.</p>';
+    el.querySelectorAll('[data-fxm]').forEach(i => i.oninput = () => { cfg.faixas[i.dataset.fxm].min = i.value; sim(); });
+    el.querySelectorAll('[data-fxt]').forEach(i => i.oninput = () => { cfg.faixas[i.dataset.fxt].tag = i.value.trim(); sim(); });
+    el.querySelectorAll('[data-fxx]').forEach(b => b.onclick = () => { cfg.faixas.splice(Number(b.dataset.fxx), 1); fxDesenha(); sim(); }); };
+  const lePts = () => { perg.forEach(x => { if (['nps', 'escala'].includes(x.tipo)) { const v = el.querySelector(`[data-peso="${x.id}"]`).value; PT[x.id] = v === '' ? null : { peso: Number(v) }; return; }
+      if (!['escolha', 'multipla', 'sim_nao'].includes(x.tipo)) { PT[x.id] = null; return; }
+      const op = {}; pqOpcoes(x).forEach(o => { const p_ = el.querySelector(`.pq-pt[data-pq="${x.id}"][data-op="${CSS.escape(o)}"]`).value, t = el.querySelector(`.pq-tg[data-pqt="${x.id}"][data-op="${CSS.escape(o)}"]`).value.trim(); if (p_ !== '' || t) op[o] = { p: p_ === '' ? 0 : Number(p_), ...(t ? { tag: t } : {}) }; });
+      PT[x.id] = Object.keys(op).length ? { opcoes: op } : null; });
+    cfg.ativa = $('#pqAtiva').checked; cfg.modo = $('#pqModo').value; cfg.corte = $('#pqCorte').value; };
+  const sim = () => { lePts(); const pg = perg.map(x => ({ ...x, pontos: PT[x.id] }));
+    // faixa possível de pontos
+    let mn = 0, mx = 0, nq = 0; pg.forEach(x => { const P = x.pontos; if (!P) return; nq++; if (P.peso != null) { const a = x.tipo === 'nps' ? 0 : 1, b = x.tipo === 'nps' ? 10 : 5; mn += Math.min(a * P.peso, b * P.peso); mx += Math.max(a * P.peso, b * P.peso); }
+      else { const v = Object.values(P.opcoes || {}).map(o => Number(o.p || 0)), todos = pqOpcoes(x).map(o => ((P.opcoes || {})[o] || {}).p || 0); if (x.tipo === 'multipla') { mx += todos.filter(v_ => v_ > 0).reduce((t, v_) => t + v_, 0); mn += todos.filter(v_ => v_ < 0).reduce((t, v_) => t + v_, 0); } else { mx += Math.max(0, ...todos); mn += Math.min(0, ...todos); } } });
+    $('#pqMax').textContent = nq ? `Com estes pontos, ${cfg.modo === 'media' ? 'a média por pergunta' : 'a soma'} vai de ${cfg.modo === 'media' ? (mn / nq).toFixed(1).replace('.', ',') : num(mn)} a ${cfg.modo === 'media' ? (mx / nq).toFixed(1).replace('.', ',') : num(mx)} pontos (${nq} pergunta(s) pontuada(s)).` : 'Nenhuma pergunta pontua ainda.';
+    const R = ult.filter(r => r.pessoa_id).map(r => pqPontua(cfg, pg, porR[r.id] || [])), box = $('#pqSim');
+    if (!R.length) { box.innerHTML = '<h2>Simulador</h2>' + GC.vazio('Ninguém respondeu ainda. Quando houver respostas, aqui aparece quantos ficariam qualificados com esta regra.'); return; }
+    const corte = cfg.corte === '' ? null : Number(cfg.corte), vals = R.map(r => r.pts), hi = Math.ceil(Math.max(...vals)), lo0 = Math.floor(Math.min(...vals)), w = Math.max(1, Math.ceil((hi - lo0 + 1) / 12));
+    // as barras começam exatamente na nota de corte, para a cor bater com quem fica qualificado
+    const lo = corte != null && isFinite(corte) ? corte - Math.ceil((corte - lo0) / w) * w : lo0, nb = Math.max(1, Math.ceil((hi - lo + 1) / w));
+    const bk = Array.from({ length: nb }, (_, i) => lo + i * w), cnt = bk.map(b => vals.filter(v => v >= b && v < b + w).length); q_ = R.filter(r => r.qual === 'qualificado').length, fxC = {}; R.forEach(r => { if (r.faixa) fxC[r.faixa] = (fxC[r.faixa] || 0) + 1; });
+    box.innerHTML = `<h2>Simulador: o que esta regra faria com quem já respondeu</h2><p class="gc-lead">${num(R.length)} pessoa(s) responderam. ${corte == null ? 'Defina a nota de corte para ver quantos ficam qualificados.' : `Com corte em ${String(corte).replace('.', ',')} pontos: <b class="vpos">${num(q_)} qualificado(s)</b> (${(q_ / R.length * 100).toFixed(0)}%) e ${num(R.length - q_)} não qualificado(s).`}${Object.keys(fxC).length ? ' Faixas: ' + Object.entries(fxC).map(([t, n]) => `${esc(t)} ${num(n)}`).join(' · ') + '.' : ''}</p>
+      ${gcBarrasV({ rotulos: bk.map(b => w === 1 ? String(+b.toFixed(2)).replace('.', ',') : String(+b.toFixed(2)).replace('.', ',') + '–' + String(+(b + w).toFixed(2)).replace('.', ',')), series: [{ nome: 'Pessoas', valores: cnt, cor: (v, i) => corte != null && bk[i] >= corte ? 'var(--good)' : 'var(--muted)' }], un: 'n', altura: 170 })}
+      ${GC.fonte('Quantas pessoas em cada faixa de pontos (de X até antes de Y), pela última resposta de cada uma. Verde = a partir da nota de corte. É uma simulação: nada muda até você salvar e recalcular.')}`; };
+  fxDesenha(); sim();
+  el.querySelectorAll('input,select').forEach(i => i.addEventListener('input', sim));
+  $('#pqFxN').onclick = () => { cfg.faixas.push({ min: '', tag: '' }); fxDesenha(); };
+  $('#pqSalva').onclick = () => act(async () => { lePts();
+    if (cfg.ativa && (cfg.corte === '' || cfg.corte == null)) throw new Error('Informe a partir de quantos pontos a pessoa fica qualificada.');
+    const fx = cfg.faixas.filter(f => f.tag && f.min !== '').map(f => ({ min: Number(f.min), tag: f.tag }));
+    await q(sb.from('pesquisas').update({ qualif: { ativa: !!cfg.ativa, modo: cfg.modo, corte: cfg.corte === '' ? null : Number(cfg.corte), faixas: fx } }).eq('id', p.id));
+    for (const x of perg) await q(sb.from('pesquisa_perguntas').update({ pontos: PT[x.id] }).eq('id', x.id));
+    toast('Regra salva. Quem responder daqui em diante já é qualificado por ela.'); render(); });
+  $('#pqRecalc').onclick = () => act(async () => { const r = await q(sb.rpc('pesquisa_requalificar', { p_pesquisa: p.id })); toast(`${num(r.pessoas)} pessoa(s) recalculada(s): ${num(r.qualificados)} qualificada(s).`); });
 }
 
 /* ---------- Projetos: apoio ---------- */
@@ -13492,11 +13613,11 @@ async function vPesquisaDet(m) {
   const [ps, perg] = await Promise.all([q(sb.from('pesquisas').select('*').eq('id', id)), q(sb.from('pesquisa_perguntas').select('*').eq('pesquisa_id', id).order('ordem').order('criado_em'))]);
   const p = ps[0]; if (!p) { S.pqSel = null; return vPesquisas(m); }
   m.innerHTML = `<div class="head"><div><button class="btn sm" id="pqVolta">← Pesquisas</button><h1 style="margin-top:8px">${esc(p.nome)} ${pillAtivo(p.ativa)}</h1><span class="muted">${PQ_TIPO[p.tipo]} · ${esc(PQ_GAT[p.gatilho])}${p.gatilho === 'etapa' ? ': ' + esc(p.gatilho_etapa) : ''}</span></div><div class="acts"><button class="btn" id="pqEd">Configurar</button></div></div>
-  <div class="tabs">${[['perguntas', 'Perguntas'], ['envios', 'Fila de envio'], ['res', 'Resultados'], ['ins', 'Insights']].map(([k, l]) => `<button data-t="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="pqBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
+  <div class="tabs">${[['perguntas', 'Perguntas'], ['qual', 'Qualificação e pontos'], ['envios', 'Fila de envio'], ['res', 'Resultados'], ['ins', 'Insights']].map(([k, l]) => `<button data-t="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="pqBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
   $('#pqVolta').onclick = () => { S.pqSel = null; render(); }; $('#pqEd').onclick = () => modalPesquisa(p);
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { S.pqTab = b.dataset.t; render(); });
   const body = $('#pqBody');
-  if (T === 'envios') return pqEnvios(body, p); if (T === 'res') return pqResultados(body, p, perg); if (T === 'ins') return pqInsights(body, p, perg);
+  if (T === 'envios') return pqEnvios(body, p); if (T === 'res') return pqResultados(body, p, perg); if (T === 'ins') return pqInsights(body, p, perg); if (T === 'qual') return pqQualif(body, p, perg);
   pqPerguntas(body, p, perg);
 }
 function modalPergunta(p, row, n) {

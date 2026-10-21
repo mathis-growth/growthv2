@@ -40,7 +40,7 @@ with sync_playwright() as p:
     # vendas
     nV = sql(f"select count(*) from vendas where campanha_id = '{PERP}' and status = 'aprovada' and (data_venda at time zone 'America/Sao_Paulo')::date between '2026-09-16' and '2026-10-15'")
     chk(pg.inner_text('#cpVend').startswith('Vendas da campanha') and (nV + ' venda(s)') in pg.inner_text('#cpVend'), 'vendas da campanha: %s venda(s) no período' % nV)
-    chk(pg.locator('#cpLinhas svg.gc').count() == 7, 'movimento por dia: 7 gráficos')
+    chk(pg.locator('#cpLinhas svg.gc').count() == 1 and pg.locator('#cpLinhas [data-cpm]').count() == 9, 'movimento por dia: um gráfico com 9 métricas para escolher')
     # trocar o período
     pg.click('[data-cpper="14"]'); pg.wait_for_timeout(9000)
     chk(pg.locator('#cpGrade .cp-c').count() == 7 * 14, 'trocar para 14 dias redesenha os quadrinhos')

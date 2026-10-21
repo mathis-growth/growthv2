@@ -1,5 +1,12 @@
 
 
+## Gráfico único e qualificação por pontos (v0.129)
+- `gcMulti(el, {rotulos, metricas, sel, parcial, metas})` e o novo `cpLinhas` (a versão da v0.128 saiu); seleção em `S.cp128.selM`. `CP_MET` lista as métricas e cores.
+- Pesquisa: aba `qual` em `vPesquisaDet` → `pqQualif(el, p, perg)`; `pqPontua(cfg, perg, itens)` repete a conta do banco para o simulador.
+- Banco: `pesquisa_qualificar(p_resposta)` (interna, sem permissão para o cliente), `pesquisa_requalificar(p_pesquisa)` (autenticado, confere o workspace), `pesquisa_responder` chama a qualificação no fim (alterada por substituição no texto da função, sem reescrever o resto).
+- Montagem: `integra129.py` (roda o `integra128.py`) com `g129.js` e `g129.css`.
+- Teste: `t129_multi_qualificacao.py`.
+
 ## Painel da campanha (v0.128)
 - `campPainel128(el, c)` na aba Dashboard da campanha (depois de `vMktDashCampanha`): `cpGrade`, `cpQueda`, `cpLinhas`, `cpCriativos`, `cpVendas`; estado em `S.cp128` (período).
 - `gcLinhas`: rótulos de data pela largura; escala com folga quando a variação é muito pequena. `GC.fmtK`: mais casas em valores pequenos e porcentagens abaixo de 5%. `gcDivergente` aceita a legenda.

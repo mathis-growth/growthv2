@@ -1,5 +1,10 @@
 
 
+## v0.129
+**Um gráfico, as métricas que você quiser.** O movimento por dia da campanha é um gráfico só, com botões para ligar e desligar cada métrica.
+
+**Qualificação por pontos.** Na pesquisa, cada resposta vale pontos e pode pôr tags; soma ou média contra a nota de corte decide quem é qualificado, na hora em que a pessoa responde.
+
 ## v0.128
 **Campanha dia a dia.** No Dashboard da campanha: quadrinhos verde/vermelho de cada dia contra a meta, onde caiu na última semana, o movimento por dia, as vendas (produto e oferta) e o que cada vídeo ou criativo custou e trouxe.
 

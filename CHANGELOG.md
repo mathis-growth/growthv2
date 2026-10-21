@@ -100,6 +100,18 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.129] - 2026-10-21 — Movimento por dia num gráfico só e qualificação por pontos
+- **Campanha → Movimento por dia**: virou **um gráfico só**, uma cor por métrica (investimento, impressões, CTR, CPM, CPC, leads, custo por lead, vendas, receita). Os botões ligam e desligam cada linha; "Todas" e "Limpar" também. Com uma métrica, o eixo mostra o valor de verdade e a meta tracejada (leads e custo por lead); com várias, cada linha fica na sua escala para comparar o movimento, e passar o mouse mostra o valor de todas no dia. A escolha fica guardada enquanto você navega.
+- **Pesquisas → aba "Qualificação e pontos"** (nova):
+  - cada opção de resposta (escolha, várias opções, sim/não) vale pontos e pode colocar uma **tag** na pessoa; nota (NPS e escala) vale **nota × peso**; texto não pontua;
+  - a pesquisa **soma** os pontos ou tira a **média** (por pergunta respondida) e compara com a **nota de corte**: igual ou acima = qualificado, abaixo = não qualificado;
+  - **faixas com tag** opcionais (ex.: a partir de 0 "frio", de 30 "morno", de 60 "quente"); a pessoa fica só com a tag da faixa dela;
+  - **simulador**: antes de salvar, mostra com quem já respondeu quantas pessoas ficariam qualificadas e a distribuição dos pontos (verde = a partir do corte);
+  - salva a pontuação na pessoa (campo "Pontuação" da ficha), qualificado / não qualificado e as tags; vale para quem responder pelo link (na hora) e para quem já respondeu (botão "Recalcular quem já respondeu").
+- Banco: `20261026100000_qualificacao_pontos.sql` / `RODAR_v0.129_qualificacao.sql` (colunas `pesquisas.qualif` e `pesquisa_perguntas.pontos`; funções `pesquisa_qualificar` e `pesquisa_requalificar`; `pesquisa_responder` passa a qualificar). **Não aplicado em produção**: aguardando autorização. Sem ele, a aba avisa e não salva.
+- Base do vídeo de demonstração (só nela): uma pesquisa de qualificação com 3 perguntas e 80 respostas.
+- Teste: `t129_multi_qualificacao.py` (e o `t128` ajustado para o gráfico único).
+
 ## [0.128] - 2026-10-21 — Painel da campanha, dia a dia
 - **Campanha → aba Dashboard**, logo abaixo dos cartões, um painel novo com período **14 dias / 30 dias / 60 dias / campanha toda** (perpétuo abre em 30 dias; lançamento, na campanha toda):
   - **Dentro ou fora da meta, dia a dia**: quadrinhos por dia (verde = dentro da meta, amarelo = perto, vermelho = fora, cinza = sem dado) para investimento, CTR, CPC, leads, custo por lead, vendas e receita. Leads contra a meta do dia; custo por lead contra a meta de CPL; vendas contra a meta do dia só com o carrinho aberto; sem meta, contra a média da própria campanha. Clicar num dia abre a Mídia paga da campanha só naquele dia.

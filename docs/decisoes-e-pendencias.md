@@ -1,5 +1,15 @@
 
 
+## v0.129 — Gráfico único e qualificação por pontos
+**Pedidos da Rebecka (21/10)**
+- Cada dia num gráfico só, uma cor por métrica, escolhendo quais ver (todas juntas ou só algumas).
+- Regra de qualificação: no questionário que ela monta, colocar tags, qualificar, pontuar (pergunta tal vale tanto) e decidir por soma ou média.
+**Decisões técnicas**
+- Várias métricas com unidades diferentes no mesmo gráfico: cada linha na sua escala (para comparar o movimento) e o valor real no tooltip; com uma só, eixo real.
+- A pontuação roda no banco (mesma conta no simulador da tela), para valer também para quem responde pelo link sem ninguém com o sistema aberto.
+- As respostas que chegam por formulários de fora (Respondi, Meta Lead Ads) ainda não passam por esta regra: próximo passo, se ela quiser.
+**Pendente (autorização para rodar em produção)**: `RODAR_v0.127_saldo_minimo.sql` e `RODAR_v0.129_qualificacao.sql`.
+
 ## v0.128 — Painel da campanha
 **Pedido da Rebecka (21/10)**: a campanha precisa mostrar, por dia, o movimento do tráfego com verde/vermelho de dentro ou fora da meta; quanto está indo em cada vídeo; vendas por dia; o produto que mais vende; order bump; o melhor criativo; o CTR por dia; e, quando cair, onde caiu.
 **Decisões técnicas**

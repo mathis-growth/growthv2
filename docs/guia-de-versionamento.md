@@ -1,5 +1,9 @@
 
 
+## v0.129
+- index.html: 0.128 → 0.129.
+- Novo: `20261026100000_qualificacao_pontos.sql` e `RODAR_v0.129_qualificacao.sql` (não aplicado em produção); teste `t129_multi_qualificacao.py`.
+
 ## v0.128
 - index.html: 0.127 → 0.128.
 - Não muda o banco. Novo teste `t128_painel_campanha.py`.
