@@ -1,0 +1,28 @@
+\set ON_ERROR_STOP 1
+\set ws '''5467097a-99b4-44eb-a981-8c9e1e7a41e5'''
+select set_config('request.jwt.claims','{"sub":"981ecb82-d432-4ee5-a0c7-1b6ca85bdf33","role":"authenticated"}',false);
+-- Growth: cenários
+insert into gm_cenarios (id, workspace_id, nome, hipotese, escopo, status, versao, financeiro, impacto, confianca, facilidade, aprovado_em, criado_em, atualizado_em, descarte) values
+ ('11111111-0000-0000-0000-000000000001', :ws, 'Webinar semanal no perpétuo', 'Um webinar por semana converte o lead frio melhor que a página de vendas', '{}', 'aprovado', 1, '{}', 7, 6, 6, '2026-09-01', '2026-08-25', '2026-09-01', null),
+ ('11111111-0000-0000-0000-000000000002', :ws, 'Order bump do Kit de Conversação', 'O kit de R$ 67 no checkout sobe o ticket sem perder venda', '{}', 'aprovado', 1, '{}', 6, 8, 9, '2026-06-20', '2026-06-15', '2026-06-20', null),
+ ('11111111-0000-0000-0000-000000000003', :ws, 'Mentoria a R$ 3.600', 'Subir 20% o preço da Mentoria de Conversação não derruba as vendas', '{}', 'rascunho', 1, '{}', 6, 8, 9, null, '2026-10-09', '2026-10-09', null),
+ ('11111111-0000-0000-0000-000000000004', :ws, 'CTR 1,5% no perpétuo', 'Criativos novos sobem o CTR do perpétuo', '{}', 'rascunho', 1, '{}', 8, 5, 6, null, '2026-10-08', '2026-10-08', null),
+ ('11111111-0000-0000-0000-000000000005', :ws, 'Live diária no Instagram', 'Live todo dia aumenta os leads do orgânico', '{}', 'arquivado', 1, '{}', 4, 3, 2, null, '2026-09-05', '2026-09-12', '{"motivo":"ice_baixo","obs":"Custo de tempo alto para a equipe.","em":"2026-09-12T10:00:00Z"}') on conflict do nothing;
+-- Growth: experimentos no ciclo
+insert into growth_experimentos (workspace_id, titulo, hipotese, etapa, tipo, impacto, confianca, facilidade, inicio, fim_previsto, concluido_em, resultado, decisao, aprendizado, valor_base, valor_resultado, criterio_sucesso, responsavel, cenario_id, metrica_alvo, criado_em, atualizado_em) values
+ (:ws, 'Webinar semanal no perpétuo', 'Um webinar por semana converte o lead frio melhor que a página', 'rodando', 'experimento', 7, 6, 6, '2026-09-08', '2026-11-08', null, null, null, null, null, null, 'conversão lead → venda acima de 3%', 'Bia', '11111111-0000-0000-0000-000000000001', 'conversão', '2026-09-01', '2026-09-08'),
+ (:ws, 'Order bump do Kit de Conversação', 'O kit de R$ 67 no checkout sobe o ticket sem perder venda', 'concluido', 'experimento', 6, 8, 9, '2026-07-01', null, '2026-08-05', 'venceu', 'escalar', '31% aceitaram o bump. Ticket médio subiu R$ 21. Virou padrão no checkout.', 997, 1018, 'ticket médio acima de R$ 1.005', 'Rebecka', '11111111-0000-0000-0000-000000000002', 'ticket médio', '2026-06-20', '2026-08-05'),
+ (:ws, 'Depoimentos em vídeo na página', 'Prova social em vídeo sobe a conversão visita → lead', 'priorizado', 'experimento', 6, 6, 8, null, null, null, null, null, null, null, null, null, null, null, null, '2026-10-05', '2026-10-05'),
+ (:ws, 'Quiz de nível de inglês', 'Um quiz qualifica o lead e aumenta a venda do curso', 'avaliacao', 'experimento', 7, 4, 5, null, null, null, null, null, null, null, null, null, null, null, null, '2026-10-06', '2026-10-06'),
+ (:ws, 'E-mail de carrinho em 1 hora', 'Lembrar em 1 hora recupera mais checkout abandonado', 'ideia', 'experimento', 5, 7, 9, null, null, null, null, null, null, null, null, null, null, null, null, '2026-10-13', '2026-10-13'),
+ (:ws, 'Garantia de 15 dias no lançamento', 'Mais prazo de garantia reduz a objeção', 'ideia', 'experimento', 4, 5, 9, null, null, null, null, null, null, null, null, null, null, null, null, '2026-10-14', '2026-10-14'),
+ (:ws, 'Upsell da Formação no obrigado', 'Oferta da Formação logo após a compra do curso', 'preparacao', 'experimento', 7, 5, 7, null, null, null, null, null, null, null, null, null, 'Rebecka', null, null, '2026-10-12', '2026-10-12'),
+ (:ws, 'Carrossel de bastidores', 'Bastidores no Instagram geram mais DMs da mentoria', 'analise', 'experimento', 5, 6, 8, '2026-08-15', null, null, null, null, null, null, null, null, 'Bia', null, null, '2026-08-10', '2026-10-01');
+-- Comissões
+insert into equipe (workspace_id, nome, funcao, vinculo, equipe_comercial) values (:ws, 'Bruno Alves', 'Closer', 'vendedor', true), (:ws, 'Carla Mendes', 'Coprodutora', 'coprodutor', false), (:ws, 'Diego Ramos', 'Estrategista de tráfego', 'estrategista', false);
+update vendas set vendedor_id = (select id from equipe where nome = 'Bruno Alves' and workspace_id = :ws) where id in (select id from vendas where workspace_id = :ws and status = 'aprovada' and data_venda >= '2026-09-01' order by data_venda limit 12);
+insert into comissao_regras (workspace_id, equipe_id, escopo, percentual, sobre, base, pagamento, observacao) select :ws, id, 'projeto', 8, 'proprias', 'liquido', 'mensal', 'Closer: 8% das vendas que ele fecha' from equipe where nome = 'Bruno Alves' and workspace_id = :ws;
+insert into comissao_regras (workspace_id, equipe_id, escopo, produto_id, percentual, sobre, base, pagamento, observacao) select :ws, id, 'produto', '4990be40-ecc6-4cdc-baf9-4176255c52de', 30, 'todas', 'liquido', 'mensal', 'Coprodução da Mentoria' from equipe where nome = 'Carla Mendes' and workspace_id = :ws;
+insert into comissao_regras (workspace_id, equipe_id, escopo, campanha_id, percentual, sobre, base, pagamento, observacao) select :ws, id, 'campanha', '5f2f826e-ad48-4026-a51e-420e5bd4b469', 5, 'todas', 'bruto', 'relatorio', 'Bônus do lançamento de setembro' from equipe where nome = 'Diego Ramos' and workspace_id = :ws;
+select comissao_recalcular(:ws, '2026-08-01');
+select e.nome, count(*), sum(c.valor) from comissoes c join equipe e on e.id = c.equipe_id group by 1;
