@@ -1,5 +1,14 @@
 
 
+## v0.126 — Fecha a Onda 2 e a Onda 1
+**Pedido da Rebecka (21/10)**: terminar a v0.126 (fim da Onda 2 e o que faltou da Onda 1) e depois fazer a Onda 3.
+**Decisões técnicas**
+- A sensibilidade do Growth Model é uma conta direta sobre o resultado real (régua para escolher o que testar), não uma nova simulação; a coluna Cenário continua sendo o lugar de simular. A tabela de sensibilidade antiga ficava no simulador antigo, que não aparece mais no menu.
+- Burn-up só de vendas: o de leads (Leads acumulados) já existia no painel de meta de leads da campanha.
+- O gráfico de investimento, CPL e CAC do marketing usa a árvore, que hoje não filtra por campanha; a tela avisa quando há filtro de campanha.
+- Não muda o banco.
+**Próximo (v0.127, Onda 3)**: order bump, upsell e downsell (ofertas nas vendas, inclusive nas importações das plataformas); árvore NSM → outputs → inputs com a tela para ligar as métricas; meta × projetado × realizado no Planejamento; saldo mínimo de caixa (único item que muda o banco: precisa da autorização da Rebecka para aplicar em produção).
+
 ## v0.125 — Onda 2, parte 1
 **Pedido da Rebecka (21/10)**: "onda 2".
 **Decisões técnicas**

@@ -1,5 +1,18 @@
 
 
+## v0.126 — Onda 2 (fim) e Onda 1 (resto)
+- Agrupamento no tempo (abandono, mídia, marketing): até 31 dias por dia, até 200 dias por semana (segunda a domingo), acima por mês. O último ponto incompleto aparece mais claro ou tracejado.
+- Abandono: conta na data do abandono; recuperado = tem venda de recuperação; taxa = recuperados ÷ abandonos do ponto.
+- LTV por coorte: "Receita acumulada por cliente" da matriz de coortes, só nos pontos já completos; média ponderada pelo número de clientes de cada coorte.
+- O que mais mexe no lucro (Growth Model): ±10% sobre o real do período da planilha, uma alavanca por vez. Preço: receita − impostos − taxas; conversão: margem de contribuição (receita − impostos − taxas − entrega), com a mesma mídia; custos (mídia, fixos, entrega, taxas): só o próprio custo. Imposto proporcional à receita (MEI fixo); entrega tratada como por cliente.
+- Prioridade ICE: só experimentos não concluídos com impacto e facilidade; corte dos quadrantes em 5,5; a fila é ordenada por impacto × confiança × facilidade.
+- Antes × depois: valor_base → valor_resultado do experimento, nas etapas "análise" e "concluído"; cada linha na sua escala.
+- Desvio da meta: (realizado − meta) ÷ meta; em CAC e investimento, abaixo da meta é bom.
+- Vendas acumuladas × meta: vendas aprovadas da campanha por dia; ritmo = meta × (dias passados ÷ dias da campanha); sem data final, só a linha da meta.
+- CPM = investimento ÷ impressões × 1.000; CTR = cliques ÷ impressões; CPC = investimento ÷ cliques; frequência = impressões ÷ alcance (aproximação). CAC de mídia por canal = investimento ÷ clientes pela UTM.
+- Marketing no tempo: série da árvore (`arvore_serie`) dos nós investimento em anúncios, custo por lead e CAC; não segue o filtro de campanha.
+- Novos × existentes: vendas aprovadas (bruto) por mês; venda no dia da primeira compra do cliente (venda ou contrato) = novo, depois = existente.
+
 ## v0.125 — Onda 2, parte 1
 - Observações (Dashboard): período anterior = mesmo número de dias, logo antes (sem observações em "todo o período"). Gatilhos: receita bruta ±10%; margem ±3 pontos percentuais; CAC total ±15%; atraso a receber ≥10% de (a receber + atraso); produto com >60% da receita. Máximo 4, ordenadas pelo tamanho da variação. A hipótese da margem só aparece quando o peso do CAC na receita andou ≥2 pontos no sentido contrário da margem.
 - Resultado × banco: resultado = DRE por competência do mês; banco = entradas − saídas das contas bancárias do tipo conta (cartões fora), pela data do movimento.

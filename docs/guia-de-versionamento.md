@@ -1,5 +1,9 @@
 
 
+## v0.126
+- index.html: 0.125 → 0.126.
+- Não muda o banco. Novo teste `t126_onda2_parte2.py`.
+
 ## v0.125
 - index.html: 0.124 → 0.125.
 - Não muda o banco. Novo teste `t125_onda2_parte1.py`.

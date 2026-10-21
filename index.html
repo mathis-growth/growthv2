@@ -387,7 +387,20 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">.gc-emp{display:flex;height:18px;border-radius:5px;overflow:hidden;background:var(--line)}.gc-emp i{display:flex;align-items:center;justify-content:center;font-size:10.5px;font-style:normal;color:var(--ink);font-weight:600;min-width:0;overflow:hidden}
+<style id="v122">.gc-tor{display:flex;flex-direction:column;gap:7px;margin-top:6px}.gc-torl{display:grid;grid-template-columns:minmax(110px,30%) 1fr 150px;gap:10px;align-items:center;font-size:13px}
+.gc-tort{position:relative;height:16px}.gc-tor0{position:absolute;left:50%;top:-3px;bottom:-3px;width:1.5px;background:var(--ink);opacity:.45}
+.gc-tort i{position:absolute;top:0;bottom:0;border-radius:3px}.gc-tort i.pos{background:var(--good)}.gc-tort i.neg{background:var(--bad)}
+.gc-torv{font-size:12px;text-align:right;white-space:nowrap}
+.gc-hal{position:relative;height:16px;background:transparent;border-bottom:1px dashed var(--line)}.gc-hal b{position:absolute;top:6px;height:4px;border-radius:2px;opacity:.6}
+.gc-hal i{position:absolute;top:2px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--muted);border:2px solid var(--bg)}
+.gc-fun{display:flex;flex-direction:column;gap:2px;margin:8px 0}.gc-funl{display:grid;grid-template-columns:minmax(110px,28%) 1fr 90px;gap:10px;align-items:center;font-size:13px}
+.gc-funb{height:22px;background:transparent}.gc-funb i{display:block;height:100%;background:var(--accent);border-radius:4px;opacity:.85}
+.gc-funp{font-size:11.5px;color:var(--muted);padding-left:calc(28% + 10px)}.gc-funp.pior{color:var(--bad)}.gc-funp b{color:var(--ink)}
+.gc-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+@media (max-width:640px){.gc-torl,.gc-funl{grid-template-columns:1fr 90px}.gc-tort,.gc-funb{grid-column:1/-1;order:3}.gc-funp{padding-left:0}}
+.gc-2x2l{columns:2 260px;font-size:12.5px;margin:6px 0 0;padding-left:0;list-style:none}.gc-2x2l li{break-inside:avoid;margin:2px 0}.gc-2x2l b{display:inline-block;min-width:20px;height:20px;line-height:20px;text-align:center;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;margin-right:4px}
+.gc-pilha2{display:flex;flex-direction:column;gap:16px}.gc-pilha2 .gc-mini{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.gc-emp{display:flex;height:18px;border-radius:5px;overflow:hidden;background:var(--line)}.gc-emp i{display:flex;align-items:center;justify-content:center;font-size:10.5px;font-style:normal;color:var(--ink);font-weight:600;min-width:0;overflow:hidden}
 .gc-obsl{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:8px}
 .gc-ob{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:13px}.gc-ob b{font-size:14px}.gc-ob p{margin:6px 0 0;line-height:1.45;font-weight:400!important;color:var(--ink)!important;text-shadow:none!important}
 .gc-tag{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:99px;background:var(--accent-soft);color:var(--ink);margin-right:6px}.gc-tag.hip{background:var(--warn-soft,#fff4d6)}.gc-tag.inv{background:transparent;border:1px solid var(--line)}
@@ -468,7 +481,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.125 · 21/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.126 · 21/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -1048,6 +1061,7 @@ async function vMktDash(m) {
   ${graf}<div id="mgCoh" style="display:flex;flex-direction:column;gap:16px"></div>`;
   corpoCohorts($('#mgCoh'), C, A);
   mktV125(m, A);
+  mktSerie126(m, A);
   abrir(); // as linhas por campanha abrem a página da campanha
 }
 
@@ -1311,6 +1325,7 @@ async function vTrafego(m) {
   if ($('#tTodo')) $('#tTodo').onclick = () => { S.tDia = ''; nav(); };
   $('#bImp').onclick = modalImportarTrafego;
   avisoImportado($('#impAviso'), de, ate, tot.custo).catch(() => {});
+  midiaV126(m, todas, de, ate, cs, cp);
   { const rel = document.createElement('div'); rel.className = 'panel'; rel.id = 'mdRel'; const ref = [...m.querySelectorAll(':scope > .panel')].find(p => /Resumo diário/.test(p.textContent)); if (ref) ref.before(rel); else m.appendChild(rel); midiaRelatorio(rel, R, de, ate, cs, cp); }
   if (cp) { const c = camps.find(x => x[0] === cp); const k = m.querySelector('.filters'); if (k && c) k.insertAdjacentHTML('beforebegin', `<div class="panel" style="margin:0 0 10px;border-left:4px solid var(--accent);display:flex;flex-direction:row;justify-content:flex-start;gap:12px;align-items:center;flex-wrap:wrap;text-align:left"><span>Olhando só a campanha <b>${esc(c[1])}</b>. Todos os números e o relatório abaixo são dela.</span><button class="btn sm" id="tTodasCamp">Ver todas as campanhas</button></div>`);
     if ($('#tTodasCamp')) $('#tTodasCamp').onclick = () => { S.tCamp = ''; S.tDia = ''; render(); }; }
@@ -1595,7 +1610,7 @@ async function vCampanha(m) {
   $('#cSt').onchange = e => act(async () => { await q(sb.from('campanhas').update({ status: e.target.value }).eq('id', id)); render(); }, 'Status atualizado');
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { S.campTab = b.dataset.t; render(); });
   const el = $('#cBody');
-  try { await ({ dash: async (el, c) => { await vMktDashCampanha(el, c.id); await estAnexaFunil(el, c); }, etapas: tcEtapas, metas: tcMetas, resumo: tcResumo, crm: (el, c) => vJornada(el, c), funil: tcFunil, midia: tcMidia, videos: tcVideos, leads: tcLeads, links: tcLinks, debrief: tcFechamento, ofertas: tcOfertas, captacao: tcCaptacao }[T])(el, c, r, { funis, p }); cdLigaKpis(el, c.id); }
+  try { await ({ dash: async (el, c) => { await vMktDashCampanha(el, c.id); await estAnexaFunil(el, c); await campBurnup(el, c); }, etapas: tcEtapas, metas: tcMetas, resumo: tcResumo, crm: (el, c) => vJornada(el, c), funil: tcFunil, midia: tcMidia, videos: tcVideos, leads: tcLeads, links: tcLinks, debrief: tcFechamento, ofertas: tcOfertas, captacao: tcCaptacao }[T])(el, c, r, { funis, p }); cdLigaKpis(el, c.id); }
   catch (e) { el.innerHTML = `<div class="panel"><b>Não foi possível carregar esta aba.</b> <span class="muted">${esc(e.message || String(e))}</span></div>`; }
 }
 const periodoPadrao = c => { const h = hoje(), fim = c.modelo === 'perpetuo' || !c.data_fim || c.data_fim > h ? h : c.data_fim; let ini = c.data_inicio || diaMais(fim, -89); if (ini > fim) ini = diaMais(fim, -89); return { ini: ini < diaMais(fim, -399) ? diaMais(fim, -399) : ini, fim }; };
@@ -1772,10 +1787,11 @@ function htmlComparativo(D) {
   return `<div class="panel"><h2>Planejado x realizado</h2><div class="tw"><table><thead><tr><th></th><th class="n">Planejado</th><th class="n">Realizado</th><th class="n">Diferença</th><th class="n">% da meta</th><th></th></tr></thead><tbody>
     ${D.metas.map(x => `<tr><td>${esc(x.nome)}</td><td class="n">${f(x, x.meta)}</td><td class="n">${f(x, x.real)}</td><td class="n">${gap(x)}</td><td class="n">${pc(x)}</td><td>${sit(x)}</td></tr>`).join('')}</tbody></table></div>
     <small class="muted">Período analisado: ${dd(D.periodo.ini)} a ${dd(D.periodo.fim)}${D.modelo === 'lancamento' && dp.carrinho_abre ? ` · carrinho planejado de ${dd(dp.carrinho_abre)} a ${dd(dp.carrinho_fecha)}` : ''}. Números calculados por regra fixa a partir de leads, vendas e anúncios.</small></div>
+  ${debriefDesvio(D)}
   <div class="panel"><h2>Por canal</h2><div class="tw"><table><thead><tr><th>Canal</th><th class="n">Leads (meta)</th><th class="n">Vendas (meta)</th><th class="n">Investido (orçamento)</th><th class="n">CAC (meta)</th></tr></thead><tbody>
     ${D.canais.map(x => `<tr><td>${esc(x.canal)}<br><small class="muted mono">${esc(x.utm_campaign)}</small></td><td class="n">${num(x.leads)} <span class="muted">(${x.meta_leads ? num(x.meta_leads) : '—'})</span></td><td class="n">${num(x.vendas)} <span class="muted">(${x.meta_vendas ? num(x.meta_vendas) : '—'})</span></td><td class="n">${brl(x.investimento)} <span class="muted">(${x.orcamento ? brl(x.orcamento) : '—'})</span></td><td class="n">${x.cac == null ? '—' : `<span class="${x.meta_cac && x.cac > x.meta_cac ? 'neg' : ''}">${brl(x.cac)}</span>`} <span class="muted">(${x.meta_cac ? brl(x.meta_cac) : '—'})</span></td></tr>`).join('') || '<tr><td colspan="5" class="empty">Sem canais cadastrados na campanha.</td></tr>'}</tbody></table></div></div>
   <div class="panel"><h2>Funil da campanha</h2>${D.diag && D.diag.gargalo ? `<p><b>Gargalo:</b> ${esc(D.diag.gargalo.nome)} caiu de ${fP(D.diag.gargalo.conv_ant)} para ${fP(D.diag.gargalo.conv)} contra o período anterior.</p>` : '<p class="muted">Sem piora relevante contra o período anterior.</p>'}${D.diag && D.diag.maior_perda ? `<p><b>Maior perda de pessoas:</b> ${esc(D.diag.maior_perda.nome)}, ${num(D.diag.maior_perda.perdidos)} de ${num(D.diag.maior_perda.base)} não passaram.</p>` : ''}
-    <div class="tw"><table><thead><tr><th>Passo</th><th class="n">Pessoas</th><th class="n">Do passo anterior</th></tr></thead><tbody>${(D.passos || []).map(p => `<tr><td>${esc(p.nome)}</td><td class="n">${num(p.n)}</td><td class="n">${p.conv == null ? '—' : fP(p.conv)}</td></tr>`).join('') || '<tr><td colspan="3" class="empty">Sem pessoas no funil.</td></tr>'}</tbody></table></div></div>`;
+    ${gcFunil(D.passos || [])}<details><summary>Ver tabela</summary><div class="tw"><table><thead><tr><th>Passo</th><th class="n">Pessoas</th><th class="n">Do passo anterior</th></tr></thead><tbody>${(D.passos || []).map(p => `<tr><td>${esc(p.nome)}</td><td class="n">${num(p.n)}</td><td class="n">${p.conv == null ? '—' : fP(p.conv)}</td></tr>`).join('') || '<tr><td colspan="3" class="empty">Sem pessoas no funil.</td></tr>'}</tbody></table></div></details></div>`;
 }
 
 // Sugestões de melhoria por regra fixa. Quem decide o que entra no sprint é você.
@@ -3080,7 +3096,7 @@ async function vPainel(m) {
   <details class="panel gc-det"><summary>Fluxo de caixa: previsto e realizado <span class="muted">· entrou ${brl(FX.entrou)}, saiu ${brl(FX.saiu)} em ${perRot}</span></summary>${fxHtml}</details>`;
   painelPos(m);
   painelV124(m, { h, ini, fim, perRot, dre, P }).catch(e => console.warn('painel v0.124', e));
-  { const bx = m.querySelector('.gc-sec'); if (bx) painelObs(bx, { h, ini, fim, P }).catch(e => console.warn('obs v0.125', e)); }
+  { const bx = m.querySelector('.gc-sec'); if (bx) painelObs(bx, { h, ini, fim, P }).catch(e => console.warn('obs v0.125', e)); painelNovosExist(bx); }
   $('#pgPer').onchange = e => { PG.per = e.target.value; if (PG.per === 'custom' && !PG.de) { PG.de = diaMais(h, -29); PG.ate = h; } render(); };
   if ($('#pgDe')) { $('#pgDe').onchange = e => { PG.de = e.target.value; render(); }; $('#pgAte').onchange = e => { PG.ate = e.target.value; render(); }; }
   m.onclick = e => {
@@ -5990,6 +6006,7 @@ async function vResultados(m) {
     ${cards.join('') || '<div class="empty">Nada concluído ainda. Quando um card do Kanban chegar em Análise ou Concluídas, ele aparece aqui com a projeção e o realizado.</div>'}`;
   m.querySelectorAll('[data-rcen]').forEach(b => b.onclick = () => { S.gmCen = b.dataset.rcen; if (S.gl) { S.gl.cenId = b.dataset.rcen; S.gl.vista = 'sim'; } S.view = 'gro-modelo'; S.gTab = 'loop'; render(); });
   m.querySelectorAll('[data-rexp]').forEach(b => b.onclick = async () => { const mets = await q(sb.from('growth_metricas').select('id,nome').eq('workspace_id', w)).catch(() => []); modalExperimento(exps.find(x => x.id === b.dataset.rexp), null, mets); });
+  resultadosV126(m, exps, []);
 }
 
 /* ================= v0.103 — Growth Model simplificado =================
@@ -6374,6 +6391,7 @@ async function rxCoortes(el, X, f, PN) {
     ${C.map(c => `<tr><td><input type="checkbox" data-cmp="${esc(c.gk || '')}"${X.comparar.includes(c.gk || '') ? ' checked' : ''} aria-label="Comparar ${esc(rot(c))}"></td><td><b>${esc(rot(c))}</b><br><span class="muted">${c.obs_dias} dias de observação mínima</span></td><td class="n">${num(c.n)}</td>${[30, 60, 90, 180, 365].map(h => `<td class="n">${txTxt(tx(c, h))}</td>`).join('')}
       <td class="n">${c.d2_mediana != null ? rxDias(c.d2_mediana) : '—'}</td><td class="n">${brl(c.receita)}</td><td class="n">${brl(c.receita_cli)}</td><td class="n">${rxPct(c.receita ? c.receita_exist / c.receita * 100 : null)}</td><td class="n">${cob(c.mc, c.com_custo, c.receita)}</td><td class="n">${rxPct(c.dois_mais / c.n * 100)}</td></tr>`).join('')}</tbody></table></div></div>
   ${rxRegras()}`;
+  rxLtvPainel(el, C, cmp, rot, R);
   $('#rxGran').onchange = e => { X.gran = e.target.value; X.comparar = null; render(); };
   $('#rxMet').onchange = e => { X.met = e.target.value; render(); };
   $('#rxHz').onchange = e => { X.hz = Number(e.target.value); render(); };
@@ -6721,6 +6739,7 @@ async function gpDesenha(m) {
     gpDesenha(m);
   };
   if (G.gpCmp) gpComparar($('#gpCmpBox'), G, m);
+  gmTornado(m, B, n);
 }
 
 /* ---------- comparar cenários salvos: real + até 3 cenários, ICE e aprovação ---------- */
@@ -7933,6 +7952,7 @@ async function vAbandonos(m) {
     async d => { if (!d.telefone && !d.email) throw new Error('Informe telefone ou e-mail.');
       await q(sb.rpc('abandono_registrar', { p_ws: S.ws, p_campanha: nul(d.camp), p_nome: nul(d.nome), p_email: nul(d.email), p_telefone: nul(d.telefone), p_produto: nul(d.produto), p_valor: d.valor === '' ? null : Number(d.valor),
         p_em: d.em ? new Date(d.em).toISOString() : null, p_id_externo: nul(d.ext), p_origem: 'manual' })); toast('Abandono registrado'); }, 'Registrar');
+  abandonoV126(m, AF);
 }
 
 /* ================= v0.90: projetos com tags, filtros, painel, modelos e vínculo com campanha ================= */
@@ -10758,6 +10778,7 @@ async function vGrowthCiclo(m) {
   <div class="kpis">${kpi('Rodando agora', num(rod.length), 'experimentos no ar')}${kpi('Concluídos em 30 dias', num(ult30.length), 'velocidade do ciclo')}${kpi('Taxa de vitória', conc.length ? fP(div(venc.length, conc.length)) : '—', venc.length + ' de ' + conc.length + ' concluídos')}${kpi('Na fila', num(E.filter(e => e.etapa === 'ideia' || e.etapa === 'priorizado').length), 'ideias e priorizados')}</div>
   <div class="board" style="grid-auto-columns:minmax(240px,1fr)">${etapasG().map(([k, nome, sub]) => { const L = E.filter(e => e.etapa === k || (k === 'concluido' && e.etapa === 'arquivado')); return `<div class="colk" data-col="${k}"><h3><span>${nome} <small class="muted">${esc(sub)}</small></span><span class="mono">${L.length}</span></h3>${L.map(card).join('') || '<small class="muted">Vazio</small>'}</div>`; }).join('')}</div>`;
   $('#gNovoE').onclick = () => modalExperimento(null, GF.met ? { metrica_id: GF.met } : null, mets);
+  cicloV126(m, E);
   $('#gModelo').onclick = () => { S.view = 'gro-modelo'; render(); };
   $('#gfMet').onchange = e => { GF.met = e.target.value; render(); };
   const mover = async (id, etapa) => {
@@ -11634,19 +11655,20 @@ const GC = {
     if (v == null || !isFinite(v)) return '—';
     if (un === 'pct') return (v * 100).toFixed(1).replace('.', ',') + '%';
     if (un === 'n') return num(Math.round(v));
+    if (un === 'n2') return v.toFixed(2).replace('.', ',');
     const a = Math.abs(v), s = v < 0 ? '−' : '';
-    return a >= 1e6 ? s + 'R$ ' + (a / 1e6).toFixed(1).replace('.', ',') + ' mi' : a >= 1e3 ? s + 'R$ ' + (a / 1e3).toFixed(a >= 1e4 ? 0 : 1).replace('.', ',') + ' mil' : s + 'R$ ' + Math.round(a);
+    return a >= 1e6 ? s + 'R$ ' + (a / 1e6).toFixed(1).replace('.', ',') + ' mi' : a >= 1e3 ? s + 'R$ ' + (a / 1e3).toFixed(a >= 1e4 ? 0 : 1).replace('.', ',') + ' mil' : s + 'R$ ' + (a < 10 ? a.toFixed(2).replace('.', ',') : a < 100 ? a.toFixed(1).replace('.', ',').replace(',0', '') : Math.round(a));
   },
-  fmt(v, un) { if (v == null || !isFinite(v)) return '—'; return un === 'pct' ? (v * 100).toFixed(1).replace('.', ',') + '%' : un === 'n' ? num(Math.round(v)) : brl(v); },
+  fmt(v, un) { if (v == null || !isFinite(v)) return '—'; if (un === 'n2') return v.toFixed(2).replace('.', ','); return un === 'pct' ? (v * 100).toFixed(1).replace('.', ',') + '%' : un === 'n' ? num(Math.round(v)) : brl(v); },
   passo(mx) { const e = Math.pow(10, Math.floor(Math.log10(mx || 1))), f = mx / e; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * e; },
   vazio(msg, acao) { return `<div class="gc-vazio">${esc(msg)}${acao || ''}</div>`; },
   fonte(txt) { return `<div class="gc-fonte">${txt}</div>`; }
 };
 /* linhas no tempo: series [{nome, valores, destaque?, cor?}], rotulos [], un, parcial (último ponto incompleto), meta? (valor fixo) */
-function gcLinhas({ series, rotulos, un = 'brl', parcial = false, altura = 190, zero = true }) {
+function gcLinhas({ series, rotulos, un = 'brl', parcial = false, altura = 190, zero = true, W = 640 }) {
   const vals = series.flatMap(s => s.valores).filter(v => v != null && isFinite(v));
   if (!vals.length || rotulos.length < 2) return GC.vazio('Sem dados suficientes no período para desenhar a linha.');
-  const W = 640, H = altura, L = 64, R = 16, T = 14, B = 26;
+  const H = altura, L = W < 500 ? 52 : 64, R = 16, T = 14, B = 26;
   let mn = Math.min(...vals), mx = Math.max(...vals); if (zero) { mn = Math.min(0, mn); mx = Math.max(0, mx); }
   const st = GC.passo((mx - mn) / 4 || Math.abs(mx) || 1), y0v = Math.floor(mn / st) * st, y1v = Math.ceil(mx / st) * st || st;
   const n = rotulos.length, x = i => L + i * (W - L - R) / (n - 1), y = v => T + (y1v - v) / ((y1v - y0v) || 1) * (H - T - B);
@@ -12056,6 +12078,250 @@ function origemV125(m, P, rec, O) {
     ${gcEmpilhada({ itens, partes: [{ nome: 'Não qualificado', cor: 'var(--line)' }, { nome: 'Qualificado, ainda não comprou', cor: 'var(--gc-c3)' }, { nome: 'Comprou', cor: 'var(--good)' }] })}
     ${GC.fonte('Cada lead conta uma vez, na faixa mais adiante: comprou (tem venda aprovada), qualificado ou não qualificado. Mesmos filtros da tabela abaixo; mostra as 10 origens com mais leads.')}`;
   const t = m.querySelector(':scope > .panel'); if (t) t.before(el);
+}
+
+/* ================= v0.126 — Fecha a Onda 2 e completa a Onda 1 =================
+   Novos: tornado, matriz 2x2, halteres, barras divergentes, funil com perdas e barras empilhadas.
+   Telas: abandono por semana; LTV por coorte; sensibilidade do Growth Model; prioridade ICE; antes × depois dos experimentos;
+   desvio por canal e funil com perdas no fechamento; vendas acumuladas × meta na campanha; mídia por semana e CAC por canal;
+   investimento, CPL e CAC por semana no marketing; receita de clientes novos × existentes no Dashboard. */
+const gcSemana = d => { const x = new Date(d + 'T12:00:00Z'); return diaMais(d, -((x.getUTCDay() + 6) % 7)); };
+const gcGranDe = (de, ate) => { const n = Math.round((new Date(ate) - new Date(de)) / 864e5) + 1; return n <= 31 ? 'dia' : n <= 200 ? 'semana' : 'mes'; };
+const gcChave = (d, g) => g === 'dia' ? d : g === 'semana' ? gcSemana(d) : d.slice(0, 7) + '-01';
+function gcBaldes(de, ate, g) { const r = []; for (let d = gcChave(de, g); d <= ate; d = g === 'dia' ? diaMais(d, 1) : g === 'semana' ? diaMais(d, 7) : coMes(d.slice(0, 7), 1) + '-01') r.push(d); return r; }
+const gcRotB = (k, g) => g === 'mes' ? gcMesRot(k) : dd(k).slice(0, 5);
+const gcParcB = (k, g, h) => g === 'dia' ? k >= h : g === 'semana' ? diaMais(k, 6) >= h : coFimMes(k) >= h;
+const GC_GN = { dia: 'dia', semana: 'semana', mes: 'mês' };
+
+/* barras empilhadas por período (só positivos) */
+function gcPilha({ rotulos, series, un = 'brl', altura = 200, parcial = false, W = 640 }) {
+  const tot = rotulos.map((_, i) => series.reduce((t, s) => t + (Number(s.valores[i]) || 0), 0)), mx = Math.max(0, ...tot);
+  if (!mx) return GC.vazio('Sem dados no período.');
+  const H = altura, L = 64, R = 10, T = 16, B = 26, st = GC.passo(mx / 4), y1 = Math.ceil(mx / st) * st, y = v => T + (1 - v / y1) * (H - T - B), n = rotulos.length, gw = (W - L - R) / n, bw = Math.min(34, gw * .7);
+  const ticks = []; for (let v = 0; v <= y1 + st / 2; v += st) ticks.push(v); const passoR = Math.ceil(n / 12);
+  return `<div class="gc-leg">${series.map(s => `<span><i style="background:${s.cor};height:9px"></i>${esc(s.nome)}</span>`).join('')}${parcial ? '<span class="muted">mais claro = período incompleto</span>' : ''}</div>
+  <svg class="gc" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(series.map(s => s.nome).join(' e '))} por período">
+    ${ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" ${v ? 'stroke-dasharray="2 4"' : ''}/><text x="${L - 8}" y="${y(v) + 3.5}" text-anchor="end">${GC.fmtK(v, un)}</text>`).join('')}
+    ${rotulos.map((r, i) => { let acc = 0; const x0 = L + i * gw + (gw - bw) / 2, inc = parcial && i === n - 1;
+      return series.map(s => { const v = Number(s.valores[i]) || 0; if (!v) return ''; const y0 = y(acc), y1_ = y(acc + v); acc += v;
+        return `<rect x="${x0}" y="${y1_}" width="${bw}" height="${Math.max(1, y0 - y1_)}" fill="${s.cor}" opacity="${inc ? .45 : .92}"><title>${esc(s.nome)} · ${esc(r)}${inc ? ' (incompleto)' : ''}: ${GC.fmt(v, un)} (${tot[i] ? Math.round(v / tot[i] * 100) : 0}%)</title></rect>`; }).join('')
+        + ((i % passoR === 0) || i === n - 1 ? `<text x="${L + i * gw + gw / 2}" y="${H - 7}" text-anchor="middle">${esc(r)}</text>` : ''); }).join('')}</svg>`;
+}
+/* tornado: itens [{nome, menos, mais, passo}] — variação do resultado para cada alavanca */
+function gcTornado(itens, un = 'brl') {
+  if (!itens.length) return '';
+  const mx = Math.max(1, ...itens.flatMap(x => [Math.abs(x.mais), Math.abs(x.menos)]));
+  return `<div class="gc-tor">${itens.map(x => { const lo = Math.min(x.mais, x.menos), hi = Math.max(x.mais, x.menos);
+    return `<div class="gc-torl"><span class="gc-bhr" title="${esc(x.nome)}">${esc(x.nome)} <small class="muted">±${esc(x.passo)}</small></span>
+      <span class="gc-tort"><b class="gc-tor0"></b>${lo < 0 ? `<i class="neg" style="right:50%;width:${(Math.abs(lo) / mx * 50).toFixed(1)}%" title="Se piorar: ${GC.fmt(lo, un)}"></i>` : ''}${hi > 0 ? `<i class="pos" style="left:50%;width:${(hi / mx * 50).toFixed(1)}%" title="Se melhorar: +${GC.fmt(hi, un)}"></i>` : ''}</span>
+      <span class="gc-torv"><span class="vneg">${GC.fmtK(lo, un)}</span> <span class="vpos">+${GC.fmtK(Math.max(0, hi), un)}</span></span></div>`; }).join('')}
+    <div class="gc-leg"><span class="muted">barra à esquerda = quanto o resultado cai se a alavanca piorar; à direita = quanto sobe se melhorar. A mais comprida no topo é a que mais mexe no lucro.</span></div></div>`;
+}
+/* matriz 2x2: pontos [{x, y, r, rotulo, id}] numa escala de 1 a 10 */
+function gcMatriz2x2({ pontos, xRot, yRot, quad }) {
+  if (!pontos.length) return GC.vazio('Nenhuma ideia com impacto, confiança e facilidade preenchidos.');
+  const W = 900, H = 340, L = 44, R = 14, T = 14, B = 40, x = v => L + (v - 1) / 9 * (W - L - R), y = v => T + (1 - (v - 1) / 9) * (H - T - B), mx = 5.5;
+  const jit = {}; const P = pontos.slice().sort((a, b) => (b.y * b.r * b.x) - (a.y * a.r * a.x)).map((p, i) => { const k = p.x + ':' + p.y, n = jit[k] = (jit[k] || 0) + 1; return { ...p, num: i + 1, dx: (n - 1) * 16, dy: 0 }; });
+  return `<svg class="gc" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(yRot)} por ${esc(xRot)}">
+    <rect x="${x(mx)}" y="${T}" width="${x(10) - x(mx)}" height="${y(mx) - T}" fill="var(--good)" opacity=".07"/>
+    <line x1="${x(mx)}" x2="${x(mx)}" y1="${T}" y2="${H - B}" stroke="var(--muted)" stroke-dasharray="4 4"/><line x1="${L}" x2="${W - R}" y1="${y(mx)}" y2="${y(mx)}" stroke="var(--muted)" stroke-dasharray="4 4"/>
+    ${[1, 4, 7, 10].map(v => `<text x="${x(v)}" y="${H - 24}" text-anchor="middle">${v}</text><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`).join('')}
+    <text x="${(L + W - R) / 2}" y="${H - 6}" text-anchor="middle">${esc(xRot)} →</text><text x="12" y="${(T + H - B) / 2}" transform="rotate(-90 12 ${(T + H - B) / 2})" text-anchor="middle">${esc(yRot)} →</text>
+    ${quad.map(([q, rot]) => { const [cx, cy] = { tl: [x(1) + 6, T + 14], tr: [x(10) - 6, T + 14], bl: [x(1) + 6, y(1) - 8], br: [x(10) - 6, y(1) - 8] }[q]; return `<text x="${cx}" y="${cy}" text-anchor="${q[1] === 'l' ? 'start' : 'end'}" class="gc-v">${esc(rot)}</text>`; }).join('')}
+    ${P.map(p => { const r = 6 + p.r * 1.6; return `<g${p.id ? ` class="gc-clk" data-gcexp="${esc(p.id)}" role="button" tabindex="0"` : ''}><title>${esc(p.rotulo)} · ${esc(xRot)} ${p.x} · ${esc(yRot)} ${p.y} · confiança ${p.r}${p.dica ? ' · ' + esc(p.dica) : ''}</title>
+      <circle cx="${x(p.x) + p.dx}" cy="${y(p.y) + p.dy}" r="${r}" fill="${p.cor || 'var(--accent)'}" fill-opacity=".75" stroke="var(--bg)" stroke-width="1.5"/><text x="${x(p.x) + p.dx}" y="${y(p.y) + p.dy + 4}" text-anchor="middle" style="fill:#fff;font-weight:700">${p.num}</text></g>`; }).join('')}</svg>
+    <ol class="gc-2x2l">${P.slice().sort((a, b) => a.num - b.num).map(p => `<li><b>${p.num}</b> ${esc(p.rotulo)} <span class="muted">· I ${p.y} · C ${p.r} · F ${p.x}</span></li>`).join('')}</ol>`;
+}
+/* halteres: itens [{rotulo, de, para, cor, un}] — cada linha na sua própria escala */
+function gcHalteres(itens) {
+  if (!itens.length) return GC.vazio('Nenhum experimento concluído com o valor de antes e o de depois.');
+  return `<div class="gc-bh">${itens.map(x => { const a = Number(x.de), b = Number(x.para), lo = Math.min(a, b), hi = Math.max(a, b), pad = (hi - lo) * .25 || Math.abs(hi) * .1 || 1, m0 = lo - pad, m1 = hi + pad, p = v => ((v - m0) / (m1 - m0) * 100).toFixed(1), d = a ? (b - a) / Math.abs(a) : null;
+    return `<div class="gc-bhl"><span class="gc-bhr" title="${esc(x.rotulo)}">${esc(x.rotulo)}${x.met ? `<small class="muted" style="display:block">${esc(x.met)}</small>` : ''}</span>
+      <span class="gc-hal"><b style="left:${p(Math.min(a, b))}%;width:${(p(Math.max(a, b)) - p(Math.min(a, b))).toFixed(1)}%;background:${x.cor}"></b><i style="left:${p(a)}%" class="de" title="Antes: ${GC.fmt(a, x.un)}"></i><i style="left:${p(b)}%;background:${x.cor}" title="Depois: ${GC.fmt(b, x.un)}"></i></span>
+      <span class="gc-bhv">${GC.fmt(a, x.un)} → ${GC.fmt(b, x.un)}<small>${d == null ? '' : `<em class="${x.cor === 'var(--good)' ? 'vpos' : x.cor === 'var(--bad)' ? 'vneg' : 'muted'}">${d >= 0 ? '+' : '−'}${Math.abs(d * 100).toFixed(1).replace('.', ',')}%</em>`} · ${esc(x.res || '')}</small></span></div>`; }).join('')}
+    <div class="gc-leg"><span><i style="background:var(--muted);height:9px;width:9px;border-radius:50%"></i>antes</span><span><i style="background:var(--good);height:9px;width:9px;border-radius:50%"></i>depois (venceu)</span><span><i style="background:var(--bad);height:9px;width:9px;border-radius:50%"></i>depois (perdeu)</span></div></div>`;
+}
+/* barras divergentes: desvio % contra a meta (positivo = acima) */
+function gcDivergente(itens) {
+  const L = itens.filter(x => x.desvio != null && isFinite(x.desvio)); if (!L.length) return GC.vazio('Sem metas cadastradas para comparar.');
+  const mx = Math.max(.1, ...L.map(x => Math.abs(x.desvio)));
+  return `<div class="gc-tor">${L.map(x => { const bom = x.menor ? x.desvio <= 0 : x.desvio >= 0, w = (Math.abs(x.desvio) / mx * 50).toFixed(1);
+    return `<div class="gc-torl"><span class="gc-bhr" title="${esc(x.rotulo)}">${esc(x.rotulo)}</span><span class="gc-tort"><b class="gc-tor0"></b><i class="${bom ? 'pos' : 'neg'}" style="${x.desvio < 0 ? 'right' : 'left'}:50%;width:${w}%" title="${esc(x.dica || '')}"></i></span>
+      <span class="gc-torv"><span class="${bom ? 'vpos' : 'vneg'}">${x.desvio >= 0 ? '+' : '−'}${Math.abs(x.desvio * 100).toFixed(0)}%</span> <small class="muted">${esc(x.dica || '')}</small></span></div>`; }).join('')}
+    <div class="gc-leg"><span class="muted">0 = exatamente na meta · verde = melhor que a meta (em CAC e investimento, abaixo é melhor)</span></div></div>`;
+}
+/* funil com perdas: passos [{nome, n}] */
+function gcFunil(passos) {
+  const P = passos.filter(p => p.n != null); if (P.length < 2) return '';
+  const mx = Math.max(...P.map(p => Number(p.n))) || 1, perdas = P.slice(1).map((p, i) => ({ i: i + 1, perdidos: Number(P[i].n) - Number(p.n) })), pior = perdas.slice().sort((a, b) => b.perdidos - a.perdidos)[0];
+  return `<div class="gc-fun">${P.map((p, i) => { const n = Number(p.n), ant = i ? Number(P[i - 1].n) : null, perd = ant != null ? ant - n : 0, w = n / mx * 100;
+    return `${i ? `<div class="gc-funp${pior && pior.i === i && perd > 0 ? ' pior' : ''}">↓ ${ant ? (n / ant * 100).toFixed(1).replace('.', ',') + '% passaram' : '—'}${perd > 0 ? ` · <b>${num(perd)} ficaram</b>` : ''}${pior && pior.i === i && perd > 0 ? ' · maior perda' : ''}</div>` : ''}
+      <div class="gc-funl"><span class="gc-bhr">${esc(p.nome)}</span><span class="gc-funb"><i style="width:${w.toFixed(1)}%;margin-left:${((100 - w) / 2).toFixed(1)}%"></i></span><span class="gc-bhv">${num(n)}</span></div>`; }).join('')}</div>`;
+}
+
+/* ---------- Abandono de checkout: abandonos e recuperação por semana ---------- */
+async function abandonoV126(m, AF) {
+  const el = document.createElement('div'); el.className = 'panel'; el.innerHTML = '<h2>Abandonos e recuperação no tempo</h2><div class="muted">Calculando…</div>';
+  const k = m.querySelector('.kpis'); if (!k) return; k.after(el);
+  try {
+    const L = await gcTodos(() => { let x = sb.from('checkout_abandonos').select('id,abandonado_em,recuperado_venda_id,valor').eq('workspace_id', S.ws).gte('abandonado_em', AF.de + 'T00:00:00-03:00').lte('abandonado_em', AF.ate + 'T23:59:59-03:00').order('id'); return AF.camp ? x.eq('campanha_id', AF.camp) : x; });
+    const g = gcGranDe(AF.de, AF.ate), ks = gcBaldes(AF.de, AF.ate, g), h = hoje(), B = {};
+    L.forEach(a => { const b = B[gcChave(gcDia(a.abandonado_em), g)] = B[gcChave(gcDia(a.abandonado_em), g)] || { n: 0, r: 0 }; b.n++; if (a.recuperado_venda_id) b.r++; });
+    const parc = ks.length && gcParcB(ks[ks.length - 1], g, h), rot = ks.map(x => gcRotB(x, g));
+    el.innerHTML = `<h2>Abandonos e recuperação por ${GC_GN[g]}</h2>${L.length ? `<p class="gc-lead">${num(L.length)} abandono(s), ${num(L.filter(a => a.recuperado_venda_id).length)} recuperado(s) no período.</p>
+      <div class="cols"><div>${gcPilha({ rotulos: rot, series: [{ nome: 'Recuperados', valores: ks.map(x => (B[x] || {}).r || 0), cor: 'var(--good)' }, { nome: 'Em aberto', valores: ks.map(x => B[x] ? B[x].n - B[x].r : 0), cor: 'var(--warn)' }], un: 'n', altura: 180, parcial: parc })}</div>
+      <div>${gcLinhas({ series: [{ nome: 'Taxa de recuperação', valores: ks.map(x => B[x] && B[x].n ? B[x].r / B[x].n : null) }], rotulos: rot, un: 'pct', parcial: parc, altura: 180 })}</div></div>` : GC.vazio('Nenhum abandono no período.')}
+      ${GC.fonte('Abandono conta na data em que aconteceu; recuperado = a mesma pessoa comprou o mesmo produto em até 30 dias. Os mais recentes ainda podem ser recuperados, então a taxa do fim do período tende a subir.')}`;
+  } catch (e) { el.innerHTML = '<h2>Abandonos e recuperação</h2>' + GC.vazio(e.message || String(e)); }
+}
+
+/* ---------- Retenção: LTV (receita acumulada por cliente) por coorte ---------- */
+function rxLtvPainel(el, C, cmp, rot, R) {
+  const ref = [...el.querySelectorAll(':scope > .panel')][0]; if (!ref) return;
+  const hz0 = R.hz || 12, kMax = Math.max(1, ...C.flatMap(c => (c.matriz || []).filter(z => z.completo).map(z => z.k))) , hz = Math.min(hz0, kMax + 1), ks = Array.from({ length: hz + 1 }, (_, i) => i), un = R.gran === 'ano' ? 'Ano' : R.gran === 'trimestre' ? 'Tri' : 'Mês';
+  const val = (c, k) => { const x = (c.matriz || []).find(z => z.k === k); return x && x.completo ? Number(x.receita_cli) || 0 : null; };
+  const comp = C.filter(c => (c.matriz || []).some(z => z.completo && z.k > 0));
+  const media = ks.map(k => { const v = comp.map(c => [val(c, k), c.n]).filter(([v]) => v != null); const n = v.reduce((t, [, w]) => t + w, 0); return n ? v.reduce((t, [x, w]) => t + x * w, 0) / n : null; });
+  const cores = DG_CORES, series = cmp.map((c, i) => ({ nome: rot(c) + ' (' + num(c.n) + ')', valores: ks.map(k => val(c, k)), cor: cores[i % cores.length] }));
+  const ult = cmp[cmp.length - 1], kU = ult ? Math.max(-1, ...ks.filter(k => val(ult, k) != null)) : -1, dif = kU >= 0 && media[kU] ? (val(ult, kU) - media[kU]) / media[kU] : null;
+  const d = document.createElement('div'); d.className = 'panel';
+  d.innerHTML = `<h2>O LTV está subindo? Receita acumulada por cliente, por coorte</h2>
+    ${dif != null ? `<p class="gc-lead">A coorte ${esc(rot(ult))}, no ${un.toLowerCase()} ${kU}, tem ${GC.fmtK(val(ult, kU))} por cliente: <b class="${dif >= 0 ? 'vpos' : 'vneg'}">${dif >= 0 ? '+' : '−'}${Math.abs(dif * 100).toFixed(0)}%</b> contra a média das coortes no mesmo ponto (${GC.fmtK(media[kU])}).</p>` : ''}
+    ${series.length ? gcLinhas({ series: [...series, { nome: 'Média ponderada das coortes', valores: media, cor: 'var(--muted)' }], rotulos: ks.map(k => un + ' ' + k), altura: 220 }) : GC.vazio('Marque as coortes para comparar na tabela abaixo.')}
+    ${GC.fonte('Receita acumulada por cliente desde a primeira compra (a medida "Receita acumulada por cliente" da matriz), só nos pontos que a coorte já completou. As coortes do gráfico são as marcadas em "Comparar". Quanto se pode pagar de CAC depende deste número e da margem.')}`;
+  ref.after(d);
+}
+
+/* ---------- Ciclo de Growth: prioridade por ICE (impacto × facilidade, tamanho = confiança) ---------- */
+function cicloV126(m, E) {
+  const k = m.querySelector('.kpis'); if (!k) return;
+  const P = E.filter(e => !['concluido', 'arquivado'].includes(e.etapa) && e.impacto && e.facilidade).map(e => ({ x: Number(e.facilidade), y: Number(e.impacto), r: Number(e.confianca) || 1, rotulo: e.titulo, id: e.id,
+    cor: e.etapa === 'rodando' ? 'var(--good)' : 'var(--accent)', dica: 'ICE ' + String(e.score ?? '—').replace('.', ',') + ' · ' + (e.etapa || '') }));
+  const d = document.createElement('div'); d.className = 'panel';
+  const top = P.filter(p => p.x > 5.5 && p.y > 5.5).sort((a, b) => b.r - a.r);
+  d.innerHTML = `<h2>O que testar primeiro</h2><p class="gc-lead">${top.length ? `${top.length} ideia(s) no quadrante de alto impacto e fácil de fazer${top.length ? ': ' + top.slice(0, 3).map(p => '<b>' + esc(p.rotulo) + '</b>').join(', ') : ''}.` : 'Nenhuma ideia no quadrante de alto impacto e fácil de fazer.'} Bolha maior = mais confiança; verde = já rodando.</p>
+    ${gcMatriz2x2({ pontos: P, xRot: 'Facilidade', yRot: 'Impacto', quad: [['tl', 'Apostas grandes'], ['tr', 'Fazer primeiro'], ['bl', 'Evitar'], ['br', 'Ganhos rápidos']] })}
+    ${GC.fonte('Notas de 1 a 10 dadas em cada experimento (ICE = impacto × confiança × facilidade). Só ideias que ainda não foram concluídas. O número de cada bolha é a posição na fila pelo ICE (lista abaixo do gráfico). Clique numa bolha para abrir.')}`;
+  k.after(d);
+  d.querySelectorAll('[data-gcexp]').forEach(g => g.onclick = () => { const b = m.querySelector(`[data-edit="${g.dataset.gcexp}"]`); if (b) b.click(); });
+}
+
+/* ---------- Resultados: antes × depois de cada experimento concluído ---------- */
+function resultadosV126(m, exps, mets) {
+  const M = Object.fromEntries((mets || []).map(x => [x.id, x.nome]));
+  const L = exps.filter(e => ['analise', 'concluido'].includes(e.etapa) && e.valor_base != null && e.valor_resultado != null).sort((a, b) => String(b.concluido_em || '').localeCompare(String(a.concluido_em || '')));
+  const ven = L.filter(e => e.resultado === 'venceu').length, conc = L.filter(e => e.resultado).length;
+  const d = document.createElement('div'); d.className = 'panel';
+  d.innerHTML = `<h2>Os experimentos dão certo? Antes × depois</h2>${conc ? `<p class="gc-lead">${ven} de ${conc} experimento(s) com resultado venceram (${(ven / conc * 100).toFixed(0)}%).</p>` : ''}
+    ${gcHalteres(L.slice(0, 12).map(e => ({ rotulo: e.titulo, met: e.metrica_alvo || M[e.metrica_id] || '', de: e.valor_base, para: e.valor_resultado, un: 'n', res: { venceu: 'venceu', perdeu: 'perdeu', inconclusivo: 'inconclusivo' }[e.resultado] || 'em análise', cor: e.resultado === 'venceu' ? 'var(--good)' : e.resultado === 'perdeu' ? 'var(--bad)' : 'var(--muted)' })))}
+    ${GC.fonte('Valor de base e valor de resultado informados em cada experimento (na métrica que ele quer mexer). Cada linha tem a sua escala. A decisão (venceu, perdeu, inconclusivo) é a registrada no experimento.')}`;
+  const ref = m.querySelector('.kpis') || m.querySelector('.head'); if (ref) ref.after(d);
+}
+
+/* ---------- Fechamento da campanha: desvio por canal e funil com perdas ---------- */
+function debriefDesvio(D) {
+  const it = [];
+  (D.metas || []).forEach(x => { if (x.meta && x.real != null) it.push({ rotulo: x.nome, desvio: (x.real - x.meta) / Math.abs(x.meta), menor: x.menor, dica: FMT_K[x.f](x.real) + ' de ' + FMT_K[x.f](x.meta) }); });
+  const can = [];
+  (D.canais || []).forEach(x => { if (x.meta_leads) can.push({ rotulo: x.canal + ' · leads', desvio: (x.leads - x.meta_leads) / x.meta_leads, dica: num(x.leads) + ' de ' + num(x.meta_leads) });
+    if (x.meta_vendas) can.push({ rotulo: x.canal + ' · vendas', desvio: (x.vendas - x.meta_vendas) / x.meta_vendas, dica: num(x.vendas) + ' de ' + num(x.meta_vendas) });
+    if (x.meta_cac && x.cac != null) can.push({ rotulo: x.canal + ' · CAC', desvio: (x.cac - x.meta_cac) / x.meta_cac, menor: true, dica: brl(x.cac) + ' contra ' + brl(x.meta_cac) }); });
+  if (!it.length && !can.length) return '';
+  return `<div class="panel"><h2>Onde a campanha ficou longe da meta</h2><div class="cols"><div><h3 style="margin:0 0 6px;font-size:13px">Campanha</h3>${gcDivergente(it)}</div><div><h3 style="margin:0 0 6px;font-size:13px">Por canal</h3>${gcDivergente(can)}</div></div>
+    ${GC.fonte('Desvio = (realizado − meta) ÷ meta, com os mesmos números da tabela "Planejado x realizado" e "Por canal". Só aparece o que tem meta.')}</div>`;
+}
+
+/* ---------- Campanha: vendas acumuladas contra a meta (burn-up) ---------- */
+async function campBurnup(el, c) {
+  const h = hoje(), ini = c.data_inicio; if (!ini || ini > h || !c.meta_vendas) return;
+  const fim = c.data_fim && c.data_fim < h ? c.data_fim : h, fimP = c.data_fim || null;
+  try {
+    const V = await gcTodos(() => sb.from('vendas').select('id,data_venda').eq('campanha_id', c.id).eq('status', 'aprovada').gte('data_venda', ini + 'T00:00:00-03:00').lte('data_venda', fim + 'T23:59:59-03:00').order('id'));
+    const dias = gcBaldes(ini, fim, 'dia'); if (dias.length < 2) return;
+    const por = {}; V.forEach(v => { const d = gcDia(v.data_venda); por[d] = (por[d] || 0) + 1; }); let a = 0; const acum = dias.map(d => (a += por[d] || 0));
+    const meta = Number(c.meta_vendas), tot = fimP ? Math.round((new Date(fimP) - new Date(ini)) / 864e5) + 1 : null, ideal = tot ? dias.map((_, i) => meta * Math.min(1, (i + 1) / tot)) : null;
+    const ritmo = tot ? acum[acum.length - 1] / (meta * Math.min(1, dias.length / tot)) : null;
+    const d = document.createElement('div'); d.className = 'panel';
+    d.innerHTML = `<h2>Vendas acumuladas contra a meta</h2><p class="gc-lead">${num(acum[acum.length - 1])} de ${num(meta)} vendas (${(acum[acum.length - 1] / meta * 100).toFixed(0)}%)${ritmo != null ? ` · <b class="${ritmo >= 1 ? 'vpos' : 'vneg'}">${ritmo >= 1 ? 'no ritmo' : 'abaixo do ritmo'}</b> para chegar à meta em ${dd(fimP)}` : ' · campanha sem data final: a linha da meta é o total'}.</p>
+      ${gcLinhas({ series: [{ nome: 'Vendas acumuladas', valores: acum }, ...(ideal ? [{ nome: 'Ritmo para bater a meta', valores: ideal, cor: 'var(--muted)' }] : []), { nome: 'Meta', valores: dias.map(() => meta), cor: 'var(--gc-c3)' }], rotulos: dias.map(x => dd(x).slice(0, 5)), un: 'n', altura: 200 })}
+      ${GC.fonte('Vendas aprovadas ligadas à campanha, pela data da venda. Ritmo = meta dividida igualmente pelos dias da campanha (referência, não previsão).')}`;
+    const g = el.querySelector('#mlGrid'); if (g) g.after(d); else el.appendChild(d);
+  } catch (e) { console.warn('burn-up', e); }
+}
+
+/* ---------- Mídia paga: CPM, CTR, CPC e frequência por semana; CAC por canal ---------- */
+function midiaV126(m, todas, de, ate, cs, cp) {
+  const R = todas.filter(r => r.data >= de && r.data <= ate && (!cs || r.canal === cs) && (!cp || r.campanha_id === cp));
+  const g = gcGranDe(de, ate), ks = gcBaldes(de, ate, g), h = hoje(), B = {};
+  R.forEach(r => { (B[gcChave(r.data, g)] = B[gcChave(r.data, g)] || []).push(r); });
+  const z = ks.map(k => { const t = somaT(B[k] || []); return { cpm: t.impressoes ? t.custo / t.impressoes * 1000 : null, ctr: div(t.cliques, t.impressoes), cpc: div(t.custo, t.cliques), freq: t.alcance ? t.impressoes / t.alcance : null }; });
+  const rot = ks.map(k => gcRotB(k, g)), parc = ks.length && gcParcB(ks[ks.length - 1], g, h);
+  const mini = (t, k, un, menor) => { const v = z.map(x => x[k]); const ok = v.filter(x => x != null); const a = ok.length > 1 ? (ok[ok.length - (parc ? 2 : 1)] - ok[0]) / (ok[0] || 1) : null;
+    return `<div><h3 style="margin:0;font-size:13px">${t}${a != null && isFinite(a) ? ` <span class="${(a >= 0) !== !!menor ? 'vpos' : 'vneg'}" style="font-weight:600">${a >= 0 ? '▲' : '▼'}${Math.abs(a * 100).toFixed(0)}%</span>` : ''}</h3>${gcLinhas({ series: [{ nome: t, valores: v }], rotulos: rot, un, parcial: parc, altura: 150, W: 380, zero: false })}</div>`; };
+  const tot = somaT(R), fAlc = tot.alcance > 0;
+  const porC = [...new Set(todas.filter(r => r.data >= de && r.data <= ate && (!cp || r.campanha_id === cp)).map(r => r.canal))].map(c => { const t = somaT(todas.filter(r => r.canal === c && r.data >= de && r.data <= ate && (!cp || r.campanha_id === cp))); return { rotulo: CANAL_NOME_G[c] || c, valor: t.clientes ? t.custo / t.clientes : null, inv: t.custo, cli: t.clientes }; });
+  const d = document.createElement('div'); d.className = 'gc-pilha2';
+  d.innerHTML = `<div class="panel"><h2>Custo e atenção por ${GC_GN[g]}</h2><div class="gc-mini">${mini('CPM (custo por mil impressões)', 'cpm', 'brl', true)}${mini('CTR', 'ctr', 'pct')}${mini('CPC', 'cpc', 'brl', true)}${fAlc ? mini('Frequência', 'freq', 'n2', true) : ''}</div>
+      ${GC.fonte('Somas dos números diários dos anúncios no período e nos filtros acima. CPM = investimento ÷ impressões × 1.000; CTR = cliques ÷ impressões; CPC = investimento ÷ cliques; frequência = impressões ÷ alcance (aproximação). A seta compara ' + { dia: 'o último dia completo com o primeiro', semana: 'a última semana completa com a primeira', mes: 'o último mês completo com o primeiro' }[g] + '. ' + (fAlc ? '' : 'Sem alcance importado, a frequência não aparece.'))}</div>
+    <div class="panel"><h2>CAC de mídia por canal</h2>${gcBarrasH({ itens: porC.filter(x => x.valor != null).map(x => ({ rotulo: x.rotulo + ' (' + num(x.cli) + ' cliente(s))', valor: x.valor })), max: 8, total: 0 })}
+      ${porC.some(x => x.valor == null && x.inv > 0) ? `<span class="muted" style="font-size:12px">Sem cliente no período: ${porC.filter(x => x.valor == null && x.inv > 0).map(x => esc(x.rotulo) + ' (' + GC.fmtK(x.inv) + ' investidos)').join(', ')}.</span>` : ''}
+      ${GC.fonte('Investimento do canal ÷ clientes novos que vieram dos anúncios dele (pela UTM), no período. Barra maior = cliente mais caro. É a mesma conta da tabela "CAC de mídia por canal".')}</div>`;
+  const ref = [...m.querySelectorAll(':scope > .panel')].find(p => /CAC de mídia por canal/.test((p.querySelector('h2') || {}).textContent || '')); if (ref) ref.before(d);
+}
+const CANAL_NOME_G = { google_ads: 'Google Ads', meta_ads: 'Meta Ads', tiktok_ads: 'TikTok Ads', linkedin_ads: 'LinkedIn Ads', gpt_ads: 'GPT Ads (ChatGPT)', whatsapp_api: 'WhatsApp API oficial' };
+
+/* ---------- Dashboard de marketing: investimento, CPL e CAC no tempo (mesma conta da árvore) ---------- */
+async function mktSerie126(m, A) {
+  const body = $('#mgBody'); if (!body || A.tab !== 'visao') return;
+  const g = gcGranDe(A.ini, A.fim), d = document.createElement('div'); d.className = 'panel'; d.innerHTML = `<h2>Investimento, CPL e CAC por ${GC_GN[g]}</h2><div class="muted">Calculando…</div>`;
+  const k = body.querySelector('.kpis'); if (k) k.after(d); else body.prepend(d);
+  try {
+    const par = { ini: A.ini, fim: A.fim }, [I, L, C] = await Promise.all(['mkt.ads', 'mkt.cpl', 'mkt.cac'].map(no => q(sb.rpc('arvore_serie', { p_ws: S.ws, p_no: no, p_par: par, p_gran: g }))));
+    const rot = I.map(p => gcRotB(String(p.ini).slice(0, 10), g)), parc = I.length && (!!I[I.length - 1].parcial || String(I[I.length - 1].fim).slice(0, 10) >= hoje());
+    const v = S_ => S_.map(p => p.valor == null ? null : Number(p.valor));
+    d.innerHTML = `<h2>Investimento, CPL e CAC por ${GC_GN[g]}</h2>${A.camp ? '<p class="muted" style="margin:0">Estes três gráficos são de todas as campanhas (o filtro de campanha vale para os números abaixo).</p>' : ''}
+      <div class="gc-mini">${[['Investimento em anúncios', v(I)], ['Custo por lead', v(L)], ['CAC', v(C)]].map(([t, s]) => `<div><h3 style="margin:0;font-size:13px">${t}</h3>${gcLinhas({ series: [{ nome: t, valores: s }], rotulos: rot, parcial: parc, altura: 150, W: 380, zero: t === 'Investimento em anúncios' })}</div>`).join('')}</div>
+      ${GC.fonte('Mesma conta do painel "De onde vem este número": investimento = soma dos anúncios; CPL = investimento ÷ leads; CAC = investimento ÷ clientes, ' + GC_GN[g] + ' a ' + GC_GN[g] + '. ' + GC_GN[g][0].toUpperCase() + GC_GN[g].slice(1) + ' sem lead ou cliente fica sem ponto.')}`;
+  } catch (e) { d.innerHTML = '<h2>Investimento, CPL e CAC</h2>' + GC.vazio(/arvore_serie|schema cache/i.test(e.message || '') ? 'Falta rodar a série da árvore no banco.' : (e.message || String(e))); }
+}
+
+/* ---------- Dashboard: receita de clientes novos × existentes ---------- */
+async function painelNovosExist(box) {
+  const el = document.createElement('div'); el.className = 'panel'; el.id = 'pgNovEx'; el.innerHTML = '<h2>Receita de clientes novos × existentes</h2><div class="muted">Calculando…</div>';
+  const evo = box.querySelector('#pgEvo'); if (evo && evo.parentElement) evo.parentElement.after(el); else box.appendChild(el);
+  try {
+    const h = hoje(), ms = gcMeses(h, 12), ini = ms[0] + '-01';
+    const [V, C] = await Promise.all([gcTodos(() => sb.from('vendas').select('id,pessoa_id,data_venda,valor_bruto').eq('workspace_id', S.ws).eq('status', 'aprovada').order('id')),
+      gcTodos(() => sb.from('contratos').select('id,pessoa_id,ativado_em').eq('workspace_id', S.ws).not('ativado_em', 'is', null).order('id'))]);
+    const prim = {}; [...V.map(v => [v.pessoa_id, gcDia(v.data_venda)]), ...C.map(c => [c.pessoa_id, gcDia(c.ativado_em)])].forEach(([p, d]) => { if (p && d && (!prim[p] || d < prim[p])) prim[p] = d; });
+    const nov = {}, ex = {}; V.forEach(v => { const d = gcDia(v.data_venda); if (d < ini || d > h) return; const k = d.slice(0, 7); (prim[v.pessoa_id] && prim[v.pessoa_id] < d ? ex : nov)[k] = ((prim[v.pessoa_id] && prim[v.pessoa_id] < d ? ex : nov)[k] || 0) + Number(v.valor_bruto || 0); });
+    const p0 = ms.findIndex(k => nov[k] || ex[k]), mz = p0 > 0 ? ms.slice(p0) : ms, n = mz.map(k => nov[k] || 0), e = mz.map(k => ex[k] || 0), i = mz.length - 2, tot = i >= 0 ? n[i] + e[i] : 0;
+    el.innerHTML = `<h2>Receita de clientes novos × existentes</h2>${tot ? `<p class="gc-lead">Em ${gcMesRot(mz[i])}, ${(e[i] / tot * 100).toFixed(0)}% da receita das vendas veio de quem já era cliente.</p>` : ''}
+      ${gcPilha({ rotulos: mz.map(gcMesRot), series: [{ nome: 'Clientes novos (primeira compra)', valores: n, cor: 'var(--accent)' }, { nome: 'Clientes existentes (recompra)', valores: e, cor: 'var(--good)' }], parcial: true, altura: 200, W: 900 })}
+      ${GC.fonte('Vendas aprovadas pelo valor bruto. Venda no dia da primeira compra do cliente (venda ou contrato) = novo; depois disso = existente. Parcelas de contrato não entram aqui.')}`;
+  } catch (e) { el.innerHTML = '<h2>Receita de clientes novos × existentes</h2>' + GC.vazio(e.message || String(e)); }
+}
+
+/* ---------- Growth Model: o que mais mexe no lucro (sensibilidade de ±10%, uma alavanca por vez) ---------- */
+function gmTornado(m, B, n) {
+  if (!B || !(B.rec > 0)) return;
+  const impP = B.prem && B.prem.regime === 'mei' ? 0 : B.imp, mcV = B.rec - impP - B.vari - B.ent, p = .1;
+  const it = [
+    { nome: 'Preço (ticket)', mais: p * (B.rec - impP - B.vari), passo: '10%' },
+    { nome: 'Conversão (mais clientes, mesma mídia)', mais: p * mcV, passo: '10%' },
+    { nome: 'Custo da mídia', mais: p * B.inv, passo: '10%' },
+    { nome: 'Custos fixos', mais: p * B.fix, passo: '10%' },
+    { nome: 'Custo de entrega', mais: p * B.ent, passo: '10%' },
+    { nome: 'Taxas variáveis', mais: p * B.vari, passo: '10%' }
+  ].filter(x => Math.abs(x.mais) >= 1).map(x => ({ ...x, menos: -x.mais })).sort((a, b) => Math.abs(b.mais) - Math.abs(a.mais));
+  if (!it.length) return;
+  const d = document.createElement('div'); d.className = 'panel'; d.id = 'gmTor';
+  d.innerHTML = `<h2>O que mais mexe no lucro</h2><p class="gc-lead">Com o real do período (${GC.fmtK(B.lucro)} de lucro), melhorar <b>${esc(it[0].nome.toLowerCase())}</b> em 10% muda o lucro em <b class="vpos">+${GC.fmtK(Math.abs(it[0].mais))}</b>${it[1] ? `; ${esc(it[1].nome.toLowerCase())}, em ${GC.fmtK(Math.abs(it[1].mais))}` : ''}.</p>
+    ${gcTornado(it)}
+    ${GC.fonte('Conta direta sobre o resultado real da planilha, uma alavanca por vez e o resto parado: preço mexe na receita, nos impostos e nas taxas; conversão traz 10% mais clientes com a mesma mídia (receita, impostos, taxas e entrega sobem juntos); custos mexem só neles. Imposto proporcional à receita (no MEI, fixo); custo de entrega tratado como por cliente. É uma régua para escolher o que testar, não uma previsão — para simular de verdade, use a coluna Cenário.')}`;
+  const sec = [...m.querySelectorAll('h2, h3, summary, .gs-h, b')].find(e => /^Resultado do período/.test((e.textContent || '').trim()));
+  const blk = sec ? sec.closest('.panel, details, section') : null;
+  if (blk) blk.after(d); else m.appendChild(d);
 }
 
 /* ---------- Projetos: apoio ---------- */

@@ -1,5 +1,11 @@
 
 
+## Fim da Onda 2 e da Onda 1 (v0.126)
+- Componentes: `gcPilha`, `gcTornado`, `gcMatriz2x2`, `gcHalteres`, `gcDivergente`, `gcFunil`; `gcLinhas` ganhou `W` (largura) e `GC` o formato `n2`. Agrupamento: `gcGranDe`, `gcBaldes`, `gcChave`, `gcSemana`.
+- Telas: `abandonoV126`, `rxLtvPainel` (em `rxCoortes`), `gmTornado` (fim do `gpDesenha`), `cicloV126`, `resultadosV126`, `debriefDesvio` e `gcFunil` (em `htmlComparativo`), `campBurnup` (aba Dashboard da campanha), `midiaV126` (Mídia paga), `mktSerie126` (Dashboard de marketing), `painelNovosExist` (Dashboard).
+- Montagem: `integra126.py` (roda o `integra125.py`) com `g126.js` e `g126.css`.
+- Teste: `t126_onda2_parte2.py`.
+
 ## Onda 2, parte 1 (v0.125)
 - Componentes: `gcBarrasV`, `gcEmpilhada`, `gcDispersao`, `gcTodos` (paginação de 1.000 linhas); `gcBarrasH` ganhou `fixo` (mantém ordem e zeros).
 - Telas: `painelObs` (Dashboard), `finResBanco` (Financeiro), `finVencimentos(m, 'receber'|'pagar')`, `mrrEm` e `contratosV125` (Contratos), `vendasV125` (Vendas), `mktV125` (Dashboard de marketing), `origemV125` (Leads por origem).

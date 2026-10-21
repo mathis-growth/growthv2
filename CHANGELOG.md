@@ -100,6 +100,23 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.126] - 2026-10-21 — Fecha a Onda 2 e completa a Onda 1
+**Onda 2 (o resto)**
+- **Abandono de checkout → abandonos e recuperação no tempo**: barras de recuperados e em aberto por dia, semana ou mês (pelo tamanho do período) e a linha da taxa de recuperação.
+- **Retenção & Expansão → "O LTV está subindo?"**: receita acumulada por cliente de cada coorte marcada em "Comparar", contra a média ponderada das coortes, com a diferença da coorte mais recente no mesmo ponto.
+- **Growth Model → "O que mais mexe no lucro"**: quanto o lucro do período muda com ±10% em preço, conversão, custo da mídia, custos fixos, custo de entrega e taxas, da alavanca que mais mexe para a que menos mexe.
+- **Ciclo de Growth → "O que testar primeiro"**: matriz impacto × facilidade (bolha = confiança; verde = já rodando), com os quadrantes e a fila numerada pelo ICE; clicar abre o experimento.
+- **Resultados e aprendizados → "Antes × depois"**: valor de base → valor de resultado de cada experimento, verde se venceu e vermelho se perdeu, com a taxa de vitória.
+- **Fechamento da campanha → "Onde a campanha ficou longe da meta"**: desvio % de cada meta da campanha e de cada canal (leads, vendas, CAC). O **funil da campanha** virou gráfico com quantos passaram e quantos ficaram em cada passo, com a maior perda destacada; a tabela continua em "Ver tabela".
+**Onda 1 (o que faltava)**
+- **Mídia paga → "Custo e atenção"**: CPM, CTR, CPC e frequência por dia, semana ou mês, e **CAC de mídia por canal** em barras.
+- **Campanha (Dashboard) → "Vendas acumuladas contra a meta"**: vendas acumuladas, a meta e o ritmo para chegar nela até a data final (aparece quando a campanha tem meta de vendas).
+- **Dashboard de marketing → investimento, CPL e CAC no tempo**, com a mesma conta do painel "De onde vem este número".
+- **Dashboard → receita de clientes novos × existentes** por mês.
+- Componentes novos: barras empilhadas, tornado, matriz 2x2, halteres, barras divergentes e funil com perdas.
+- Não muda o banco.
+- Teste: `t126_onda2_parte2.py` (cria abandonos e experimentos de mentira na base de teste e apaga no fim).
+
 ## [0.125] - 2026-10-21 — Onda 2, parte 1: observações, caixa × resultado, vencimentos, MRR, margem por produto, CAC por campanha e origem até a compra
 - **Dashboard → "O que mudou e merece atenção"**: até 4 observações contra o período anterior de mesmo tamanho, cada uma separada em **Fato** (o número), **Conta** (a composição: quantidade × ticket, custo × clientes novos), **Hipótese** (só quando há relação possível, escrita como "possível fator associado") e **Investigar** (onde olhar, com atalho). Regras fixas, sem IA: receita ±10%, margem ±3 pontos, CAC total ±15%, atraso ≥10% do a receber, um produto com mais de 60% da receita.
 - **Financeiro → Resultado × dinheiro no banco**: últimos 6 meses, o resultado da DRE (competência) ao lado da variação do saldo das contas bancárias (sem cartões), com a diferença do último mês completo.

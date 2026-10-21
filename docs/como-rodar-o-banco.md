@@ -1,5 +1,8 @@
 
 
+## v0.126
+- Nada a rodar no banco.
+
 ## v0.125
 - Nada a rodar no banco.
 

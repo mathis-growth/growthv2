@@ -1,5 +1,8 @@
 
 
+## v0.126
+**Onda 2 completa e Onda 1 fechada.** Abandono e recuperação no tempo; LTV por coorte; o que mais mexe no lucro; o que testar primeiro; antes × depois dos experimentos; onde a campanha ficou longe da meta e o funil com perdas; custo e atenção da mídia e CAC por canal; vendas acumuladas × meta; investimento, CPL e CAC no tempo; receita de novos × existentes.
+
 ## v0.125
 **Observações no Dashboard.** Até 4 avisos do que mudou contra o período anterior, separando o fato, a conta, a hipótese e onde investigar.
 
