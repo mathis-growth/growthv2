@@ -587,3 +587,8 @@ Sem tabela nova.
   - `ctr.soma` {campo: qtd|total|mrr, status}.
 - `fin.receber` e `fin.pagar` ganharam {situacao: previsto|recebido|pago|atraso|todas, so_contratos}. O período é opcional.
 - Uma linha de registro pode trazer `ir` {no, par}, que abre outro nó da árvore. Exemplo: lançamento.
+
+## v0.121
+- Sem tabela nova. A nova campanha grava em `campanhas` (status `rascunho`, depois `orcamento_total`, `meta_leads` ou `meta_leads_mes`, `meta_vendas`, `meta_cac`, `meta_cpl`, `meta_taxa_lead_venda`) e em `campanha_canais` (`canal`, `utm_campaign` automática e única, `orcamento`, `meta_leads`, `meta_cpl`, `percentual_meta_leads`, `tipo`).
+- `_arv_vendas(uuid, jsonb)`: o agrupamento "Por vendedor" passa a ligar `vendas.vendedor_id` a `equipe.id` (antes `equipe.user_id`). Migração `20261023100000_arvore_vendedor.sql`.
+- Preferência de tema: `localStorage.growths_tema` = `dark` para o escuro; sem valor ou `light` = claro.

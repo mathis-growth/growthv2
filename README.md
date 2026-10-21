@@ -15,9 +15,9 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.120 · 20/10/2026 (`index.html`) |
+| **Versão da tela** | 0.121 · 21/10/2026 (`index.html`) |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.119** |
-| **Falta aplicar em produção** | `supabase/RODAR_v0.120_comissoes_conexoes.sql` e publicar a função `conexoes` (sem verificação de JWT) |
+| **Falta aplicar em produção** | `supabase/RODAR_v0.120_comissoes_conexoes.sql`, publicar a função `conexoes` (sem verificação de JWT) e depois `supabase/RODAR_v0.121_arvore_vendedor.sql` |
 | **Falta configurar** | app do Meta, projeto do Google e os segredos no Supabase: [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
 
 ## Registro de versões
@@ -26,6 +26,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.121 | 21/10/2026 | **Visual**: claro como padrão (escuro como opção), verde no que é bom e vermelho no negativo com brilho neon, cartões em 3D, uma ação principal por tela. **Dashboard em camadas** (4 cartões grandes com tendência + cartões menores com números compactos). **Nova campanha em 3 etapas** (o básico; orçamento e metas; canais), faixa de rascunho com o que falta, "começa em" para campanha que não começou, Editar campanha em blocos com Ctrl+S, Growth Model com "Mais ações". Correção: "Por vendedor" na árvore. | `RODAR_v0.121_arvore_vendedor.sql`, **ainda não aplicado** |
 | 0.120 | 20/10/2026 | **Comissões**: vendedor, coprodutor, estrategista e parceiro; regras por projeto, campanha, produto ou oferta; base líquida ou bruta; pagamento mensal, por venda ou só relatório; fechamento do mês em contas a pagar; estornos. A configuração fica em Configurações → Comissões e o acompanhamento em Vendas → Comissões. **Conexões** com Meta (Facebook Ads + Instagram) e Google (Google Ads + YouTube) por login oficial. | `RODAR_v0.120_comissoes_conexoes.sql`, **ainda não aplicado** |
 | 0.119 | 20/10/2026 | Árvore, parte 4: cards de Custos e margens (montados no navegador), tabelas de Mídia paga, origem do recebimento; MRR de Contas a receber no horário de São Paulo. Scripts RODAR que podem ser colados de novo sem erro. | aplicado |
 | 0.118 | 20/10/2026 | Árvore, parte 3: números das tabelas (Campanhas ativas e coortes); venda e conta a pagar como passos da árvore; caixa projetado em 30 dias, novos em 30 dias e a qualificar. | aplicado |

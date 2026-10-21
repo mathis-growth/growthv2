@@ -690,3 +690,22 @@ Sem mudança de regra.
 - **Contratos** (situação ativo):
   - total = parcela × número de parcelas (recorrente) ou soma dos itens (avulso);
   - valor mensal = itens ÷ meses da periodicidade.
+
+## v0.121 — Visual e campanha em etapas
+- **Cor do valor**: começa com "−" → vermelho. Cartões cujo nome começa com Lucro, Resultado, Margem ou ROI e com valor diferente de zero → verde se positivo, vermelho se negativo. Variações (▲▼ e Efeito) seguem o "bom ou ruim" de cada métrica (CAC e custo subir é ruim).
+- **Dashboard**:
+  - tendência de receita: soma das contas de receita da DRE por mês (competência); de lucro: o resultado da DRE por mês (o mesmo de "DRE gerencial por mês"). Últimos 4 meses até o mês atual; o mês atual é parcial;
+  - variação: último mês fechado contra o anterior;
+  - saldo projetado = saldo em banco + a receber − a pagar até a data final do período;
+  - número compacto a partir de R$ 10 mil (R$ 147,8 mil; R$ 1,2 mi).
+- **Nova campanha, etapa 2**:
+  - CPL da meta = orçamento ÷ meta de leads; conversão = vendas ÷ leads; CAC previsto = orçamento ÷ vendas; receita prevista = vendas × preço do produto;
+  - grava `meta_cpl` e `meta_taxa_lead_venda` calculados (podem ser mudados depois em Editar campanha).
+  - No perpétuo, a etapa pede orçamento por mês e meta de leads por mês; as metas mensais e o mix ficam na aba Metas mensais.
+- **Nova campanha, etapa 3**:
+  - orçamento do canal = % × orçamento da campanha; CPL do canal = orçamento ÷ meta de leads; % da meta de leads = leads do canal ÷ meta;
+  - leads por dia = meta do canal ÷ dias da campanha (perpétuo: ÷ 30);
+  - sugestão ao marcar canais: os pagos dividem o orçamento em partes iguais e 90% da meta de leads; os orgânicos dividem 10% (100% se não houver pagos). Depois de você mexer, a sugestão para.
+  - Canal de anúncio (código terminado em `_ads`) é "pago"; os outros, "orgânico". Campanha "só paga" ou "só orgânica" só mostra os canais do seu tipo.
+- **Rascunho**: "o básico" = nome, produto e início; "orçamento e metas" = orçamento e meta de leads (total ou por mês); "canais" = pelo menos um canal; "projeto" = um projeto ligado. "Continuar" abre a primeira etapa que falta.
+- **Não começou**: se o início da campanha é depois de hoje, a meta não atingida aparece como "começa em".

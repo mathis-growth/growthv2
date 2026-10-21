@@ -222,8 +222,7 @@ Sem mudança de tela (o index.html continua na v0.111): só dados de teste, no a
 - Script de montagem: `integra117.py`, que roda o `integra116.py` e aplica as trocas direto no index.
 - Novo: migração `20261020200000_arvore_numeros_2.sql`, `RODAR_v0.117_arvore_numeros_2.sql` e `tests/auditoria/t117_arvore2.py`.
 
-## Repositório no GitHub (a partir de 20/10/2026)
-- O lugar padrão das mudanças é o repositório `mathis-growth/growthv2` (branch `main`).
-- A tela fica em `index.html`, na raiz, e é o arquivo que vai para o ar. Nas versões antigas ela ficava em `frontend/index.html`.
-- Cada entrega é um commit com a mensagem `vX.YYY — título`. Ele leva o `index.html`, as migrações e os RODAR, as funções, os testes, o CHANGELOG e os docs.
-- O **README** é o registro: a tabela "Registro de versões" ganha uma linha por entrega, e o "Estado atual" diz até onde o banco de produção está aplicado.
+## v0.121
+- index.html: 0.120 → 0.121.
+- Script de montagem: `integra121.py` (roda o `integra120.py`) com `v121.css` e `v121.js`.
+- Novo: migração `20261023100000_arvore_vendedor.sql` e `RODAR_v0.121_arvore_vendedor.sql`; teste `t121_visual_campanha.py`.

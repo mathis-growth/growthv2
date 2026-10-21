@@ -748,3 +748,19 @@ Ainda pendente na árvore:
 - RevOps (Retenção & Expansão) e Growth Model;
 - números dentro das tabelas (hoje só os cards abrem a árvore);
 - abrir a conta a pagar e a venda como registro próprio.
+
+## v0.121 — Visual e campanha em etapas
+**Decisões (Rebecka, 21/10)**
+- Manter o azul de hoje, nos modos claro e escuro, com destaque de cor: verde no que é bom, vermelho no negativo, brilho neon. A proposta com as cores da Mathisa (vinho) e a seta dourada do SAP B1 foi vista e descartada.
+- Manter o efeito 3D ao passar o mouse; o clique no número continua abrindo a origem como antes (sem seta).
+- Modo claro como padrão; escuro como opção.
+- Dashboard com a hierarquia da prévia aprovada ("O que importa agora" + cartões menores).
+- Nova campanha em etapas (salvar e continuar), com as metas detalhadas na página da campanha para não virar uma lista longa.
+**Escolhas técnicas**
+- A cor por sinal é aplicada depois de desenhar a tela (um observador olha o conteúdo novo), então vale para todas as telas sem mexer em cada uma.
+- CAC total ficou sem tendência mensal: calcular o CAC de cada mês exigiria uma consulta por mês. Fica para quando houver uma função de série no banco.
+- A etapa 3 não apaga canais desmarcados que já existiam (evita perder metas e links); para tirar um canal, use a seção Canais da campanha.
+- "Editar campanha" continua com o formulário único (agora em blocos); só a criação virou etapas.
+**Pendências**
+- Aplicar em produção `RODAR_v0.120_comissoes_conexoes.sql` e depois `RODAR_v0.121_arvore_vendedor.sql`.
+- Próximas melhorias propostas: tela simples do cliente (só leitura, celular), busca rápida (Ctrl+K) e caminho "de onde vim" no alto das telas.

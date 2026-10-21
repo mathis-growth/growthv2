@@ -280,3 +280,7 @@ Não precisa rodar nada em produção. As duas migrações novas só copiam para
 ## v0.117 — Árvore, parte 2
 1. Banco: `supabase/RODAR_v0.117_arvore_numeros_2.sql`, depois do da v0.116. Em produção já foi aplicado em 20/10/2026.
 2. Teste local: `tests/auditoria/t117_arvore2.py` (54 verificações, banco `fa`).
+
+## v0.121 — Árvore: vendedor
+1. Rode `supabase/RODAR_v0.121_arvore_vendedor.sql` no SQL Editor, depois do da v0.120. Pode rodar de novo.
+2. A tela (`index.html` 0.121) funciona com ou sem esse script; sem ele, "Por vendedor" continua mostrando "Sem vendedor".

@@ -245,3 +245,10 @@ Também ganharam árvore:
 - LTV e churn do marketing;
 - NRR, GRR e penetração do Dashboard;
 - mais cards de Custos e margens.
+
+## v0.121
+**Visual.** O modo claro passa a ser o padrão (o escuro continua como opção). As cores ganharam significado: verde para o que é bom, vermelho para o que é ruim, com brilho no escuro. Os cartões inclinam e acendem ao passar o mouse, e cada tela tem uma ação principal em destaque.
+
+**Dashboard em camadas.** No alto, "O que importa agora": receita, lucro, saldo e CAC em cartões grandes, com a tendência dos últimos meses. Embaixo, os outros indicadores em cartões menores, com números compactos.
+
+**Campanha em etapas.** A nova campanha é criada em 3 passos curtos (o básico; orçamento e metas; canais), cada um salvo na hora. Enquanto estiver em rascunho, a campanha mostra o que falta e um botão para continuar de onde parou.

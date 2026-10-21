@@ -100,6 +100,32 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.121] - 2026-10-21 — Visual com destaque de cores, Dashboard em camadas e campanha em etapas
+- **Modo claro passa a ser o padrão.** O escuro continua no botão "Modo escuro" do menu e a escolha fica guardada no navegador.
+- **Cores com significado (azul de sempre, com destaque neon):**
+  - valor negativo em vermelho e variação boa em verde, com brilho no escuro e cor mais fechada no claro;
+  - cartões de lucro, resultado, margem e ROI ficam com o valor e a borda verdes quando positivos e vermelhos quando negativos;
+  - ▲▼ de Mídia paga e a coluna "Efeito" do Growth Model em verde ou vermelho conforme for bom ou ruim.
+- **Efeito 3D**: ao passar o mouse, o cartão sobe, inclina para o lado do mouse e uma luz acompanha o cursor. Desligado para quem pediu menos movimento no computador.
+- **Botões com hierarquia**: uma ação principal por tela (cheia, em degradê), secundárias com contorno e perigosas em vermelho.
+- **Dashboard em camadas**:
+  - "O que importa agora": Receita bruta, Lucro, Saldo em banco e CAC total em cartões grandes; receita e lucro com a tendência dos últimos meses (o mês atual aparece pontilhado e marcado "parcial") e a variação do último mês fechado contra o anterior;
+  - Saldo mostra o projetado até o fim do período e o que entra e sai; o CAC mostra o só mídia e quanto consome da receita, e o clique leva ao painel do CAC;
+  - "Funil, vendas e contas": os demais indicadores em cartões menores; valores de 10 mil para cima ficam compactos (R$ 147,8 mil) e o valor exato aparece no mouse;
+  - Lucro e Margem saíram de "Métricas financeiras" porque já estão no alto.
+- **Nova campanha em 3 etapas** (Campanhas → Nova campanha):
+  1. O básico (nome, modelo, produto, estratégia, tipo de mídia e datas): já cria a campanha como rascunho;
+  2. Orçamento e metas, com a conta na hora: CPL que cabe no orçamento, conversão necessária, CAC previsto e receita prevista; avisa se o CAC passa do máximo aceito;
+  3. Canais: escolhe os canais e divide o orçamento e a meta de leads (o sistema sugere a divisão e a meta por dia); confere o total e avisa se sobrar ou passar de 100%. Grava na seção Canais da campanha (a mesma de antes), com a utm_campaign automática.
+  - Cada etapa salva; "Terminar depois" volta para a campanha.
+- **Campanha em rascunho**: faixa no alto com o que já foi feito e o que falta (o básico, orçamento e metas, canais, projeto da equipe), com "Continuar de onde parei" (abre a etapa que falta) e "Ativar campanha". Em rascunho, "Fechar a campanha" deixa de ser o botão em destaque.
+- **Campanha que ainda não começou** mostra "começa em dd/mm" no lugar de "abaixo da meta".
+- **Editar campanha** em 4 blocos (Sobre, Datas e orçamento, Metas, Projeto), só com os campos do modelo escolhido, explicações no ⓘ, botões fixos no rodapé e Ctrl+S para salvar.
+- **Growth Model**: "Novo cenário" em destaque e "Comparar cenários" ao lado; Duplicar, Nome e hipótese, Limpar mudanças e Descartar foram para "Mais ações".
+- **Tabelas mais limpas**: o pontilhado de "clique para ver de onde vem" aparece só na linha sob o mouse.
+- **Correção — árvore dos números**: em Receita bruta → "Por vendedor", todas as vendas apareciam como "Sem vendedor". A venda guarda a pessoa da Equipe e a árvore procurava pelo usuário. Migração `20261023100000_arvore_vendedor.sql` (`RODAR_v0.121_arvore_vendedor.sql`).
+- Testes: `t121_visual_campanha.py` (37 verificações).
+
 ## [0.120] - 2026-10-20 — Comissões e conexões com Meta e Google
 - **Comissões**: a configuração (Quem recebe e Regras) fica em **Configurações → Comercial e produtos → Comissões**; o acompanhamento (Resumo do mês, Extrato e Fechar o mês) fica em **Vendas → Comissões**:
   - **Quem recebe**: as pessoas da Equipe ganharam **vínculo** (vendedor, coprodutor, estrategista, parceiro ou equipe) e a marca **"faz parte da equipe comercial"**. Quem é de fora não precisa ter acesso ao sistema.

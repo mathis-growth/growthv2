@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="pt-BR" data-estilo="azul">
 <head>
-<script>/* v0.102: aplica o modo (claro ou escuro) antes de desenhar, sem piscar */ try { if (localStorage.getItem('growths_tema') === 'light') document.documentElement.setAttribute('data-theme', 'light'); } catch (e) {}</script>
+<script>/* v0.102: aplica o modo (claro ou escuro) antes de desenhar, sem piscar */ try { if (localStorage.getItem('growths_tema') !== 'dark') document.documentElement.setAttribute('data-theme', 'light'); } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }</script>
 <meta name="robots" content="noindex">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -274,6 +274,119 @@ svg text{font-family:var(--font-mono);font-size:10px;fill:var(--muted)}
   :root[data-estilo="azul"] *,:root[data-estilo="azul"] *::before,:root[data-estilo="azul"] *::after{transition-duration:.01ms!important}
 }
 </style>
+<style id="v121">
+/* ===== Proposta: azul de sempre + destaque neon para o que é bom e o que é ruim ===== */
+:root[data-estilo="azul"]{
+  --good:#2ff58f; --good-soft:rgba(47,245,143,.10); --bad:#ff4d6d; --bad-soft:rgba(255,77,109,.12); --warn:#ffc53d; --warn-soft:rgba(255,197,61,.12);
+  --neon-good:0 0 10px rgba(47,245,143,.55),0 0 2px rgba(47,245,143,.9); --neon-bad:0 0 10px rgba(255,77,109,.55),0 0 2px rgba(255,77,109,.9);
+}
+:root[data-estilo="azul"][data-theme="light"]{
+  --good:#0a9a52; --good-soft:#dcf7e8; --bad:#e11d48; --bad-soft:#ffe1e7; --warn:#b26b00; --warn-soft:#fff1d1;
+  --neon-good:0 0 12px rgba(10,154,82,.25); --neon-bad:0 0 12px rgba(225,29,72,.25);
+}
+/* valores bons em verde e ruins em vermelho, com brilho */
+:root[data-estilo="azul"] .pos,:root[data-estilo="azul"] .gs-up,:root[data-estilo="azul"] .vpos{color:var(--good)!important;text-shadow:var(--neon-good);font-weight:700}
+:root[data-estilo="azul"] .neg,:root[data-estilo="azul"] .gs-dn,:root[data-estilo="azul"] .vneg{color:var(--bad)!important;text-shadow:var(--neon-bad);font-weight:700}
+:root[data-estilo="azul"] [style*="color:var(--good)"]{text-shadow:var(--neon-good);font-weight:700}
+:root[data-estilo="azul"] [style*="color:var(--bad)"]{text-shadow:var(--neon-bad);font-weight:700}
+/* cartão de resultado ganha a cor inteira: borda e brilho verde se positivo, vermelho se negativo */
+:root[data-estilo="azul"] .kpi.kpos{box-shadow:inset 0 0 0 1px rgba(47,245,143,.45),0 0 22px rgba(47,245,143,.12)}
+:root[data-estilo="azul"] .kpi.kneg{box-shadow:inset 0 0 0 1px rgba(255,77,109,.5),0 0 22px rgba(255,77,109,.14)}
+:root[data-estilo="azul"][data-theme="light"] .kpi.kpos{box-shadow:inset 0 0 0 1px rgba(10,154,82,.45),0 6px 18px rgba(10,154,82,.10)}
+:root[data-estilo="azul"][data-theme="light"] .kpi.kneg{box-shadow:inset 0 0 0 1px rgba(225,29,72,.45),0 6px 18px rgba(225,29,72,.10)}
+/* pílulas de situação com contorno neon */
+:root[data-estilo="azul"] .pill.good{box-shadow:inset 0 0 0 1px rgba(47,245,143,.5);font-weight:700}
+:root[data-estilo="azul"] .pill.bad{box-shadow:inset 0 0 0 1px rgba(255,77,109,.55);font-weight:700}
+:root[data-estilo="azul"] .pill.warn{box-shadow:inset 0 0 0 1px rgba(255,197,61,.5);font-weight:700}
+:root[data-estilo="azul"][data-theme="light"] .pill.good,:root[data-estilo="azul"][data-theme="light"] .pill.bad,:root[data-estilo="azul"][data-theme="light"] .pill.warn{box-shadow:none}
+/* botões: principal (azul em degradê com brilho), secundário (contorno), perigo (vermelho neon) */
+:root[data-estilo="azul"] .btn.pri{box-shadow:0 0 0 1px rgba(96,165,250,.35),0 6px 20px rgba(37,99,235,.45)}
+:root[data-estilo="azul"] .main .btn:not(.pri){background:transparent;border-color:rgba(96,165,250,.35)}
+:root[data-estilo="azul"][data-theme="light"] .main .btn:not(.pri){background:#fff;border-color:#c7d4ea}
+:root[data-estilo="azul"] .btn.bad{color:var(--bad);border-color:rgba(255,77,109,.55);text-shadow:var(--neon-bad)}
+/* 3D ao passar o mouse: o cartão inclina para o lado do mouse e uma luz segue o cursor */
+:root[data-estilo="azul"] .kpis{perspective:900px}
+:root[data-estilo="azul"] .kpi{transform-style:preserve-3d;transition:transform .18s ease,box-shadow .25s ease}
+:root[data-estilo="azul"] .kpi::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .2s ease;background:radial-gradient(220px circle at var(--mx,50%) var(--my,50%),rgba(56,189,248,.18),transparent 65%)}
+:root[data-estilo="azul"] .kpi:hover{transform:translateY(-4px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
+:root[data-estilo="azul"] .kpi:hover::after{opacity:1}
+@media (prefers-reduced-motion:reduce){:root[data-estilo="azul"] .kpi:hover{transform:none}}
+/* 1. Dashboard: linha de destaque com 4 cartões grandes e mini tendência */
+.kpis.hero{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.kpis.hero .kpi{padding:20px 22px 16px;gap:6px;min-height:178px}
+.kpis.hero .kpi .l{font-size:13px;font-weight:600;letter-spacing:.01em}
+.kpis.hero .kpi .v{font-size:34px;letter-spacing:-.02em;line-height:1.1}
+.kpis.hero .kpi .s{font-size:12.5px}
+.kpis.hero .kpi .dl{font-weight:700;font-size:13px}
+.kpis.hero svg.spk{width:100%;height:46px;margin-top:auto;overflow:visible}
+.kpis.hero svg.spk text{font-size:10px;fill:var(--muted)}
+.kpis.mini{grid-template-columns:repeat(8,minmax(0,1fr));gap:10px}
+.kpis.mini .kpi{padding:11px 13px;min-height:0;gap:1px}
+.kpis.mini .kpi .v{font-size:17px}
+.kpis.mini .kpi .l{font-size:11.5px}
+.kpis.mini .kpi .s{display:none}
+.secl{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.04em;margin:4px 0 -8px}
+/* 6. tabelas limpas: o pontilhado aparece só na linha sob o mouse */
+.arvc{text-decoration-color:transparent!important}
+tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
+/* 3. formulário em blocos, botões fixos no rodapé */
+.modal .fsec{grid-column:1/-1;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;color:var(--ink);margin:10px 0 0;padding-top:12px;border-top:1px solid var(--line)}
+.modal .fsec:first-child{border-top:0;padding-top:0;margin-top:0}
+.modal .fsec b{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--grad);color:#fff;font-size:12px}
+.modal .fsec span{font-weight:400;color:var(--muted);font-size:12px}
+.modal .dica{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;border:1px solid var(--muted);font-size:10px;margin-left:5px;cursor:help;color:var(--muted)}
+.modal.compacto{max-height:calc(100vh - 40px);overflow:auto}
+.modal.compacto .acts{position:sticky;bottom:-20px;background:var(--surface);margin:0 -20px -20px;padding:14px 20px;border-top:1px solid var(--line);box-shadow:0 -10px 24px rgba(0,0,0,.25);justify-content:flex-start;flex-direction:row}
+.modal.compacto .acts .pri{order:-1}
+.modal .chips{display:flex;gap:8px;margin-top:4px}
+/* 5. Mais ações */
+.maisw{position:relative;display:inline-block;z-index:40}
+.maism{position:absolute;top:calc(100% + 6px);left:0;z-index:5;min-width:240px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.maism button{display:flex;width:100%;gap:10px;align-items:center;background:none;border:0;padding:9px 12px;border-radius:8px;cursor:pointer;color:var(--ink);text-align:left;font-size:13.5px}
+.maism button:hover,.maism button.foco{background:var(--accent-soft)}
+.maism button small{margin-left:auto;color:var(--muted);font-size:11px}
+.maism hr{border:0;border-top:1px solid var(--line);margin:5px 4px}
+.maism button.perigo{color:var(--bad)}
+.wz{max-width:760px!important;padding:0!important;overflow:hidden}
+.wz .wzh{padding:20px 24px 14px;border-bottom:1px solid var(--line)}
+.wz .wzh h2{margin:0 0 14px;font-size:20px}
+.wz .wzp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.wz .wzp div{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--muted);font-weight:600}
+.wz .wzp div i{height:5px;border-radius:9px;background:var(--line)}
+.wz .wzp div.ok{color:var(--good)} .wz .wzp div.ok i{background:var(--good);box-shadow:0 0 10px rgba(47,245,143,.45)}
+.wz .wzp div.at{color:var(--ink)} .wz .wzp div.at i{background:var(--grad);box-shadow:0 0 12px var(--brilho)}
+.wz .wzb{padding:20px 24px;display:flex;flex-direction:column;gap:14px}
+.wz .wzb .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.wz .wzb p.lead{margin:0;color:var(--muted);font-size:13.5px}
+.wz .wzf{display:flex;gap:10px;align-items:center;padding:14px 24px;border-top:1px solid var(--line);background:var(--surface-2)}
+.wz .wzf .sp{flex:1}
+.wz .salvo{font-size:12.5px;color:var(--good);font-weight:600}
+.wz .calc{display:flex;gap:18px;flex-wrap:wrap;padding:12px 14px;border:1px dashed var(--line);border-radius:12px;font-size:13px;color:var(--muted)}
+.wz .calc b{color:var(--ink);font-size:15px;display:block}
+.wz .cn{display:flex;gap:8px;flex-wrap:wrap}
+.wz .cn span{padding:7px 12px;border:1px solid var(--line);border-radius:99px;font-size:13px;cursor:pointer}
+.wz .cn span.on{border-color:var(--accent);background:var(--accent-soft);color:var(--ink);box-shadow:0 0 0 1px rgba(var(--accent-rgb),.4)}
+.wz table td input{width:110px}
+.wz .soma td{font-weight:700}
+.rasc{display:flex;gap:16px;align-items:center;padding:16px 18px;border-radius:14px;border:1px solid rgba(255,197,61,.45);background:linear-gradient(90deg,rgba(255,197,61,.10),transparent 70%);box-shadow:0 0 22px rgba(255,197,61,.08)}
+.rasc .tx{flex:1;display:flex;flex-direction:column;gap:6px}
+.rasc ul{list-style:none;display:flex;gap:18px;margin:0;padding:0;font-size:13px;flex-wrap:wrap}
+.rasc li.f{color:var(--good)} .rasc li.f::before{content:'✓ ';font-weight:700}
+.rasc li.p{color:var(--warn)} .rasc li.p::before{content:'○ ';font-weight:700}
+/* v0.121: menu Mais ações; dashboard; responsivo */
+.maism.hide{display:none}
+.maism .btn{display:flex;width:100%;background:none!important;border:0!important;box-shadow:none!important;padding:9px 12px;border-radius:8px;text-align:left;font-size:13.5px;transform:none!important}
+.maism .btn:hover{background:var(--accent-soft)!important}
+.maism .btn:disabled{opacity:.45}
+.maism .btn.perigo{color:var(--bad)}
+.kpi.clic{cursor:pointer}
+.wz .wzb label{display:flex;flex-direction:column;gap:4px}
+.wz .wzb .grid2 label.wz-fim[style*="none"]{display:none}
+@media (max-width:1100px){.kpis.hero{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis.mini{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:640px){.kpis.hero,.kpis.mini{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis.hero .kpi .v{font-size:26px}.wz .wzb .grid2{grid-template-columns:1fr}.rasc{flex-wrap:wrap}}
+.modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
+
+</style>
 </head>
 <body>
 
@@ -302,7 +415,7 @@ svg text{font-family:var(--font-mono);font-size:10px;fill:var(--muted)}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.120 · 20/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.121 · 21/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -1367,7 +1480,7 @@ async function formCampanha(row, pre = {}) {
     ...(pjAuto ? [{ k: 'projeto_auto', l: 'Criar o projeto da campanha agora', t: 'check', def: pre.projeto_auto !== false, hint: 'Desmarcado, nenhum projeto é criado. Depois você cria pelo botão Projeto da campanha, com o modelo que quiser, ou vincula um projeto que já existe.' },
       { k: 'projeto_modelo_id', l: 'Modelo do projeto', t: 'select', opts: sel(pjMods, 'id', x => x.nome + (x.padrao_campanha ? ' (padrão)' : '')), def: (pjMods.find(x => x.padrao_campanha) || {}).id || '', hint: 'As atividades do modelo e as dos blocos da estratégia entram no projeto.' }] : [])];
   let salvo = null;
-  return abrirForm(row ? 'Editar campanha' : 'Nova campanha', 'campanhas', campos, row, {
+  const pr = abrirForm(row ? 'Editar campanha' : 'Nova campanha', 'campanhas', campos, row, {
     ok: row ? 'Campanha salva' : 'Campanha criada',
     depois: async () => { if (!salvo || !salvo.funil_id) return; if (row && row.funil_id === salvo.funil_id) return;
       try { const n = await q(sb.rpc('campanha_aplicar_estrategia', { p_campanha: salvo.id, p_funil: salvo.funil_id, p_substituir: false })); if (n) toast(n + ' etapa(s) da estratégia copiada(s)'); } catch (e) { toast('Campanha salva, mas as etapas não foram copiadas: ' + (e.message || e), true); } },
@@ -1379,6 +1492,8 @@ async function formCampanha(row, pre = {}) {
       return v;
     }
   });
+  campFormCompacto();
+  return pr;
 }
 
 async function tabCampanhas(el) {
@@ -1395,7 +1510,7 @@ async function tabCampanhas(el) {
   <div class="panel"><div class="tw"><table><thead><tr><th>Campanha</th><th>Status</th><th>Período</th><th>Estratégia</th><th>Leads (meta)</th><th>Vendas (meta)</th><th class="n">Receita</th><th class="n">CAC</th></tr></thead><tbody>
   ${L.map(c => { const r = mkc[c.id] || {}, f = fn[c.funil_id]; return `<tr class="clk" data-c="${c.id}"><td><b>${esc(c.nome)}</b> ${pillModelo(c)}</td><td>${pillCamp(c)}</td><td><small>${periodoCamp(c)}</small></td><td>${f ? esc(f.nome) + ' <small class="muted">' + esc(f.tipo) + '</small>' : '<span class="muted">—</span>'}</td><td>${bar(r.leads || 0, c.meta_leads || 0)}</td><td>${bar(r.vendas || 0, c.meta_vendas || 0)}</td><td class="n">${brl(r.receita_bruta || 0)}</td><td class="n">${r.cac != null ? `<span class="${c.meta_cac && Number(r.cac) > Number(c.meta_cac) ? 'neg' : ''}">${brl(r.cac)}</span>` : '—'}</td></tr>`; }).join('') || `<tr><td colspan="8" class="empty">${camp.length ? 'Nenhuma campanha com esses filtros.' : 'Nenhuma campanha ainda. Crie a primeira.'}</td></tr>`}
   </tbody></table></div></div>`;
-  $('#novaCamp').onclick = () => formCampanha(null);
+  $('#novaCamp').onclick = () => abrirWizard();
   $('#clSt').onchange = e => { F.st = e.target.value; render(); }; $('#clMod').onchange = e => { F.mod = e.target.value; render(); };
   el.querySelectorAll('tr[data-c]').forEach(tr => tr.onclick = () => { S.campSel = tr.dataset.c; S.campTab = 'dash'; S.cfn = null; render(); });
 }
@@ -1411,9 +1526,10 @@ async function vCampanha(m) {
   const TABS = CAMP_TABS.filter(t => t[0] !== 'metas' || c.modelo === 'perpetuo'); if (!TABS.some(t => t[0] === T)) T = 'dash';
   m.innerHTML = `<div class="head"><div><button class="btn sm" id="cVoltar">← Todas as campanhas</button><h1 style="margin-top:8px">${esc(c.nome)}</h1>
     <span class="muted">${pillModelo(c)} ${pillCamp(c)} · ${periodoCamp(c)} · estratégia: ${f ? esc(f.nome) + ' (' + esc(f.tipo) + ')' : '—'}${p ? ' · produto: ' + esc(p.nome) : ''}</span></div>
-    <div class="acts"><label style="flex-direction:row;align-items:center;gap:6px">Status<select id="cSt">${Object.entries(CAMP_ST).map(([k, v]) => `<option value="${k}"${c.status === k ? ' selected' : ''}>${v[1]}</option>`).join('')}</select></label><button class="btn" id="cPj">Projeto${pjs.length ? ' (' + pjs.length + ')' : ''}</button><button class="btn" id="cEd">Editar campanha</button><button class="btn pri" id="cFechar">${c.modelo === 'perpetuo' ? 'Fechar o ciclo' : 'Fechar a campanha'}</button></div></div>
+    <div class="acts"><label style="flex-direction:row;align-items:center;gap:6px">Status<select id="cSt">${Object.entries(CAMP_ST).map(([k, v]) => `<option value="${k}"${c.status === k ? ' selected' : ''}>${v[1]}</option>`).join('')}</select></label><button class="btn" id="cPj">Projeto${pjs.length ? ' (' + pjs.length + ')' : ''}</button><button class="btn" id="cEd">Editar campanha</button><button class="btn${c.status === 'rascunho' ? '' : ' pri'}" id="cFechar">${c.modelo === 'perpetuo' ? 'Fechar o ciclo' : 'Fechar a campanha'}</button></div></div>
     <div class="tabs">${TABS.map(([k, l]) => `<button data-t="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="cBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
   $('#cVoltar').onclick = () => { S.campSel = null; render(); };
+  campRascunho(m, c, pjs.length);
   $('#cEd').onclick = () => formCampanha(c);
   $('#cFechar').onclick = () => fecharCampanha(c, r);
   $('#cPj').onclick = () => modalProjetoCampanha(c);
@@ -1470,7 +1586,8 @@ async function tcResumo(el, c, r) {
   const CR = Object.fromEntries((await q(sb.rpc('campanha_canais_resultado', { p_campanha: c.id })).catch(() => []) || []).map(x => [x.id, x]));
   const lc = {}; pes.forEach(x => { lc[x.utm_campaign] = (lc[x.utm_campaign] || 0) + 1; });
   const leads = Number(r.leads || 0), vendas = Number(r.vendas || 0), taxa = r.taxa_lead_venda == null ? null : Number(r.taxa_lead_venda);
-  const linhaMeta = (nome, real, meta, fmt, menorMelhor) => { const ok = meta == null || meta === '' || Number(meta) === 0 || real == null ? null : (menorMelhor ? real <= Number(meta) : real >= Number(meta)); return `<tr><td>${nome}</td><td class="n">${real == null ? '—' : fmt(real)}</td><td class="n">${meta ? fmt(Number(meta)) : '—'}</td><td>${ok == null ? '' : `<span class="pill ${ok ? 'good' : (menorMelhor ? 'bad' : 'warn')}">${ok ? (menorMelhor ? 'dentro da meta' : 'meta atingida') : (menorMelhor ? 'acima da meta' : 'abaixo da meta')}</span>`}</td></tr>`; };
+  const naoComecou = c.data_inicio && c.data_inicio > hoje();
+  const linhaMeta = (nome, real, meta, fmt, menorMelhor) => { const ok = meta == null || meta === '' || Number(meta) === 0 || real == null ? null : (menorMelhor ? real <= Number(meta) : real >= Number(meta)); return `<tr><td>${nome}</td><td class="n">${real == null ? '—' : fmt(real)}</td><td class="n">${meta ? fmt(Number(meta)) : '—'}</td><td>${ok == null ? '' : naoComecou && !ok ? `<span class="pill info">começa em ${dd(c.data_inicio)}</span>` : `<span class="pill ${ok ? 'good' : (menorMelhor ? 'bad' : 'warn')}">${ok ? (menorMelhor ? 'dentro da meta' : 'meta atingida') : (menorMelhor ? 'acima da meta' : 'abaixo da meta')}</span>`}</td></tr>`; };
   const cCanal = row => [{ k: 'canal', l: 'Canal', t: 'select', req: 1, novo: 'canais', opts: sel(cad, 'codigo', 'nome') }, { k: 'utm_campaign', l: 'utm_campaign (única)', full: 1, ph: 'Automática', hint: 'Deixe vazia: o sistema cria a partir da campanha e do canal. É por ela que cada lead é ligado à campanha e ao canal.' },
     { k: 'orcamento', l: 'Orçamento (R$)', t: 'number', step: '0.01' }, { k: 'meta_leads', l: 'Meta de leads do canal', t: 'number' }, { k: 'meta_cpl', l: 'Meta de CPL do canal (R$)', t: 'number', step: '0.01' }, { k: 'meta_cac', l: 'Meta de CAC (R$)', t: 'number', step: '0.01' }, { k: 'percentual_meta_leads', l: '% da meta de leads', t: 'number', step: '0.01' }, { k: 'meta_vendas', l: 'Meta de vendas', t: 'number' },
     ...(temTemp ? [{ k: 'temperatura', l: 'Público', t: 'select', opts: [['', 'Sem classificação'], ['frio', 'Frio (ainda não conhece)'], ['quente', 'Quente (já conhece)']], hint: 'Meta Ads frio e quente viram dois canais, cada um com a sua utm_campaign. Sem classificação o Growths não adivinha.' }] : []), ...EXC.campos];
@@ -2824,7 +2941,6 @@ async function vPainel(m) {
   const seletor = `<div class="filters" style="margin:0"><select id="pgPer">${optPer.map(([k, l]) => `<option value="${k}"${PG.per === k ? ' selected' : ''}>${l}</option>`).join('')}</select>${PG.per === 'custom' ? `<label>De<input type="date" id="pgDe" value="${ini}" max="${h}"></label><label>Até<input type="date" id="pgAte" value="${fim}" max="${h}"></label>` : ''}</div>`;
   const finHtml = `<div class="panel"><h2 style="margin:0 0 4px">Métricas financeiras <span class="muted" style="font-weight:400">· ${perRot}</span></h2>
     <div class="kpis" style="margin-top:8px">
-      ${kpi('Lucro', brl(RS.lucro), 'receitas − deduções, custos e despesas')}
       ${kpi('Margem', pc(RS.margem), 'lucro ÷ receita')}
       ${kpi('ROI', pc(RS.roi), 'lucro ÷ tudo o que saiu')}
       ${kpi('MRR', brl(RC.mrr), 'receita recorrente mensal dos contratos ativos hoje')}
@@ -2838,7 +2954,7 @@ async function vPainel(m) {
   const cacMidia = CA.cac_midia, cacTotal = CA.cac_total;
   const GR_CAC = { midia: 'Mídia paga', equipe: 'Equipe comercial e de marketing', ferramentas: 'Ferramentas', comissao: 'Comissões e afiliados', outros: 'Outros custos de aquisição' };
   const campNome = id => (cps.find(x => x.id === id) || {}).nome || 'Sem campanha (custo geral)';
-  const cacHtml = `<div class="panel"><h2 style="margin:0 0 4px">CAC: o que é de mídia e o que é total <span class="muted" style="font-weight:400">· ${perRot} · ${num(nN)} cliente(s) novo(s)</span></h2>
+  const cacHtml = `<div class="panel" id="pgCac"><h2 style="margin:0 0 4px">CAC: o que é de mídia e o que é total <span class="muted" style="font-weight:400">· ${perRot} · ${num(nN)} cliente(s) novo(s)</span></h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin:8px 0">
       <div class="panel" style="margin:0;border-left:4px solid var(--accent)"><b>CAC de mídia</b><div style="font-size:26px;font-weight:700">${cacMidia == null ? '—' : brl(cacMidia)}</div><span class="muted">Só o que foi pago em anúncios (${brl(cMidia)}) ÷ clientes novos. Mede a eficiência dos anúncios.</span></div>
       <div class="panel" style="margin:0;border-left:4px solid var(--risk)"><b>CAC total</b><div style="font-size:26px;font-weight:700">${cacTotal == null ? '—' : brl(cacTotal)}</div><span class="muted">Mídia + equipe, comissões e ferramentas marcadas como aquisição (${brl(cTotal)}) ÷ clientes novos. Mede o custo real de conquistar cada cliente.</span></div>
@@ -2869,17 +2985,19 @@ async function vPainel(m) {
   if (meses.length) dreHtml = `<div class="tw"><table><thead><tr><th>Conta</th>${meses.map(x => `<th class="n">${mesFmt(x.slice(0, 7))}</th>`).join('')}</tr></thead><tbody>` +
     contas.map(c => `<tr><td>${esc(c.codigo)} ${esc(c.conta)} <span class="muted">· ${rot[c.tipo]}</span></td>${meses.map(x => `<td class="n clk" style="cursor:pointer;text-decoration:underline dotted" data-dre="${esc(c.codigo)}|${x}|${esc(c.conta)}" title="Ver os lançamentos que formam este valor">${brl(val(c.codigo, x))}</td>`).join('')}</tr>`).join('') +
     `<tr class="tot"><td>Resultado</td>${meses.map(x => `<td class="n">${brl(res(x))}</td>`).join('')}</tr></tbody></table></div>`;
+  const recMes = {}, resMes = {}; dre.forEach(d => { if (d.tipo === 'receita') recMes[d.mes] = (recMes[d.mes] || 0) + Number(d.valor || 0); }); (P.dre_resultado || []).forEach(x => { resMes[x.mes] = Number(x.resultado || 0); });
+  const hero = painelHero({ h, meses, recMes, resMes, perRot, rec: VE.bruto, lucro: RS.lucro, margem: pc(RS.margem), cacT: CA.cac_total, cacM: CA.cac_midia, novos: CA.novos, peso: CA.peso_margem,
+    saldoHtml: kpiClic(saldoHero(CX, FX.ate), 'extrato', 'Ver o extrato da conta bancária') });
   m.innerHTML = `<div class="head"><h1>Dashboard</h1><div class="acts"><button class="btn" onclick="render()">Atualizar</button></div></div>
   <div class="panel" style="margin-bottom:12px"><b>Período das métricas, do CAC e do fluxo de caixa</b>${seletor}</div>
-  <div class="kpis">
+  ${hero}
+  <div class="kpis mini">
     ${kpi('Campanhas ativas', num(ativasC.length), 'de ' + num(cps.length) + ' cadastradas')}
     ${kpi('Pessoas no funil', num(total), num(FU.leads) + ' leads · ' + num(FU.clientes) + ' clientes')}
     ${kpi('Leads qualificados', num(quals), pc(FU.pct_qualificados) + ' do total')}
     ${kpi('Clientes ativos', num(cliAt), num(FU.inativos) + ' inativos')}
     ${kpi('Vendas aprovadas', num(VE.aprovadas), num(VE.nao_aprovadas) + ' canceladas ou reembolsadas')}
-    ${kpi('Receita bruta das vendas', brl(VE.bruto), 'vendas aprovadas no período · taxas ' + brl(VE.taxas) + ' · impostos ' + brl(VE.impostos))}
     ${kpi('Receita líquida das vendas', brl(VE.liquido), 'depois de taxas e impostos; parcelas de contrato entram no Lucro')}
-    ${kpiClic(kpi('Saldo em banco', brl(CX.saldo), 'dinheiro já movimentado · clique para o extrato'), 'extrato', 'Ver o extrato da conta bancária')}
     ${kpiClic(kpi('A receber até ' + dd(FX.ate), brl(CX.a_receber), 'de hoje até a data final do período · ' + brl(CX.atraso_receber || 0) + ' em atraso'), 'receber', 'Ver todas as contas a receber', { de: hoje(), ate: FX.ate })}
     ${kpiClic(kpi('A pagar até ' + dd(FX.ate), brl(CX.a_pagar), 'de hoje até a data final do período · ' + brl(CX.atraso_pagar || 0) + ' em atraso'), 'pagar', 'Ver todas as contas a pagar', { de: hoje(), ate: FX.ate })}
   </div>
@@ -2896,6 +3014,7 @@ async function vPainel(m) {
   </div>
   <div class="panel"><h2>DRE gerencial por mês</h2><span class="muted">Clique em um valor para ver os lançamentos e a operação que o geraram.</span>${dreHtml}</div>
   <div class="panel"><h2>Fluxo de caixa: previsto e realizado</h2>${fxHtml}</div>`;
+  painelPos(m);
   $('#pgPer').onchange = e => { PG.per = e.target.value; if (PG.per === 'custom' && !PG.de) { PG.de = diaMais(h, -29); PG.ate = h; } render(); };
   if ($('#pgDe')) { $('#pgDe').onchange = e => { PG.de = e.target.value; render(); }; $('#pgAte').onchange = e => { PG.ate = e.target.value; render(); }; }
   m.onclick = e => {
@@ -6470,8 +6589,8 @@ async function gpDesenha(m) {
     <label>Produto<select id="gsProd"><option value="">Todos os produtos</option>${opts(G.prods, 'id', 'nome', G.prod)}</select></label>
     <label>Campanha<select id="gsCamp"><option value="">Todas</option>${opts(campsP, 'id', 'nome', G.camp)}</select></label>
     ${G.temCen ? `<label>Cenário<select id="gsCen">${vivos.length ? '' : '<option value="">— novo ao digitar —</option>'}${vivos.map(c => { const st = cnStatus(c, G.cnExps); return `<option value="${c.id}"${c.id === G.cenId ? ' selected' : ''}>${esc(c.nome)}${st.k !== 'estudo' ? ' · ' + CN_ST[st.k][0].toLowerCase() + (st.k === 'ativo' && st.de ? ' desde ' + dd(st.de) : '') : ''}</option>`; }).join('')}</select></label>
-      <button class="btn sm" id="gsNovo" type="button">Novo cenário</button>${cen ? '<button class="btn sm" id="gpDup" type="button">Duplicar</button><button class="btn sm" id="gpDet" type="button">Nome e hipótese</button>' : ''}${cen && cen.status === 'rascunho' ? '<button class="btn sm" id="gpDesc" type="button">Descartar</button>' : ''}<button class="btn sm${G.gpCmp ? '' : ' pri'}" id="gpCmp" type="button">${G.gpCmp ? 'Voltar para a planilha' : 'Comparar cenários salvos'}</button>` : ''}
-    <button class="btn sm" id="gsLimpa" type="button"${K.mudou && ed ? '' : ' disabled'}>Limpar mudanças</button>
+      <button class="btn sm pri" id="gsNovo" type="button">Novo cenário</button><button class="btn sm" id="gpCmp" type="button">${G.gpCmp ? 'Voltar para a planilha' : 'Comparar cenários'}</button>` : ''}
+    <span class="maisw"><button class="btn sm" type="button" data-mais>Mais ações ▾</button><div class="maism hide">${G.temCen && cen ? '<button class="btn sm" id="gpDup" type="button">Duplicar cenário</button><button class="btn sm" id="gpDet" type="button">Nome e hipótese</button>' : ''}<button class="btn sm" id="gsLimpa" type="button"${K.mudou && ed ? '' : ' disabled'}>Limpar mudanças</button>${G.temCen && cen && cen.status === 'rascunho' ? '<hr><button class="btn sm perigo" id="gpDesc" type="button">Descartar cenário</button>' : ''}</div></span>
   </div>
   ${cen && cen.status !== 'rascunho' ? `<div class="panel" style="background:var(--info-soft);padding:10px 14px">O cenário <b>${esc(cen.nome)}</b> está ${GM_ST[cen.status][0].toLowerCase()} e não muda. Para simular a partir dele, use Duplicar.</div>` : ''}
   ${G.gpCmp ? '<div id="gpCmpBox"><div class="panel muted">Calculando…</div></div>' : `${topo}
@@ -7545,7 +7664,7 @@ async function qualidadeFaixa(m, v) {
   box.innerHTML = `<details><summary><b>${alertas ? '⚠ ' : ''}Qualidade do dado: ${A.length} aviso(s)</b> <span class="muted">de ${dd(ini)} a ${dd(fim)} · alguns números abaixo podem estar incompletos</span></summary>
     <div class="tw" style="margin-top:8px"><table><thead><tr><th>Aviso</th><th>O que aconteceu</th><th>Afeta</th><th></th></tr></thead><tbody>${A.map(a => `<tr><td><span class="pill ${(QUAL_SEV[a.severidade] || QUAL_SEV.atencao)[0]}">${(QUAL_SEV[a.severidade] || QUAL_SEV.atencao)[1]}</span> ${esc(a.titulo)}</td><td>${esc(a.texto)}</td><td>${esc((a.afeta || []).join(', '))}</td><td>${a.tela ? `<button class="btn sm" data-dqgo="${esc(a.tela)}">Ver</button>` : ''}</td></tr>`).join('')}</tbody></table></div>
     <p class="muted" style="margin-top:6px">Os avisos não mudam os números: mostram onde o dado está faltando ou não bate. Ajuste tolerâncias em Configurações → Qualidade dos dados.</p></details>`;
-  const ref = m.querySelector('.kpis'); if (ref) ref.parentNode.insertBefore(box, ref); else m.appendChild(box);
+  const ref = m.querySelector('.secl') || m.querySelector('.kpis'); if (ref) ref.parentNode.insertBefore(box, ref); else m.appendChild(box);
   box.querySelectorAll('[data-dqgo]').forEach(b => b.onclick = () => { S.view = rotaCtx(b.dataset.dqgo); render(); });
   // marca os cartões afetados
   const termos = {}; A.forEach(a => (a.afeta || []).forEach(t => { (termos[semAcento(t)] = termos[semAcento(t)] || []).push(a.titulo); }));
@@ -11085,6 +11204,251 @@ function cxRetorno() {
   const p = CX_PLAT[u.get('plataforma')] || { nome: 'A plataforma' };
   setTimeout(() => toast(c === 'ok' ? p.nome + ' conectado. Escolha as contas e clique em Sincronizar agora.' : 'Não foi possível conectar: ' + (u.get('msg') || 'erro desconhecido'), c !== 'ok'), 300);
   history.replaceState(null, '', location.pathname);
+}
+
+/* ================= v0.121 — Visual (destaque de cores, 3D), Dashboard em camadas, campanha em etapas ================= */
+
+/* ---------- Cores com significado: valor negativo em vermelho; lucro, resultado, margem e ROI positivos em verde ---------- */
+const SIN_RES = /^(lucro|resultado|margem|roi\b)/i;
+function marcaSinais(raiz) {
+  (raiz || document).querySelectorAll('.main .kpi').forEach(k => {
+    const l = ((k.querySelector('.l') || {}).textContent || '').trim(), v = k.querySelector('.v'); if (!v) return;
+    const t = v.textContent.trim(), neg = /^[-−]\s?(R\$\s?)?\d/.test(t), tem = /\d/.test(t) && !/^(R\$\s?)?0(,0+)?%?$/.test(t), res = SIN_RES.test(l);
+    v.classList.toggle('vneg', neg); v.classList.toggle('vpos', res && tem && !neg);
+    k.classList.toggle('kneg', neg); k.classList.toggle('kpos', res && tem && !neg);
+  });
+  (raiz || document).querySelectorAll('.main td.n').forEach(td => { if (!td.querySelector('input,select') && /^[-−]\s?(R\$\s?)?\d/.test(td.textContent.trim())) td.classList.add('vneg'); });
+}
+let sinFila = 0;
+new MutationObserver(() => { if (sinFila) return; sinFila = requestAnimationFrame(() => { sinFila = 0; marcaSinais(); }); }).observe(document.documentElement, { childList: true, subtree: true });
+/* 3D: o cartão inclina na direção do mouse e uma luz acompanha o cursor */
+document.addEventListener('mousemove', e => {
+  const k = e.target.closest && e.target.closest('.kpi'); if (!k) return; const r = k.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+  k.style.setProperty('--mx', (x * 100) + '%'); k.style.setProperty('--my', (y * 100) + '%'); k.style.setProperty('--ry', ((x - .5) * 10) + 'deg'); k.style.setProperty('--rx', ((.5 - y) * 10) + 'deg');
+}, { passive: true });
+/* menus "Mais ações" */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-mais]'), alvo = b ? b.nextElementSibling : null;
+  document.querySelectorAll('.maism').forEach(m => { if (m !== alvo && !m.contains(e.target)) m.classList.add('hide'); });
+  if (b && alvo) alvo.classList.toggle('hide'); else if (e.target.closest('.maism button')) e.target.closest('.maism').classList.add('hide');
+});
+
+/* ---------- Números compactos (R$ 147,8 mil) com o valor exato no mouse ---------- */
+function brlK(v) {
+  const n = Number(v || 0), a = Math.abs(n), s = n < 0 ? '−' : '';
+  if (a >= 1e6) return s + 'R$ ' + (a / 1e6).toFixed(1).replace('.', ',') + ' mi';
+  if (a >= 1e4) return s + 'R$ ' + (a / 1e3).toFixed(1).replace('.', ',') + ' mil';
+  return brl(n);
+}
+function compactaKpis(el) {
+  el.querySelectorAll('.kpis.mini .kpi').forEach(k => {
+    const v = k.querySelector('.v'), s = k.querySelector('.s'); if (!v) return;
+    const t = v.textContent.trim(), n = /^-?R\$/.test(t) ? Number(t.replace(/[^\d,-]/g, '').replace(',', '.')) : null;
+    if (n != null && isFinite(n) && Math.abs(n) >= 1e4) { v.textContent = brlK(n); v.title = t; }
+    if (s && s.textContent.trim()) k.title = (k.title ? k.title + ' · ' : '') + s.textContent.trim();
+  });
+}
+
+/* ---------- Dashboard: o que importa agora (4 cartões grandes com tendência por mês) ---------- */
+function sparkMes(serie, rot, bom, parcial) {
+  if (!serie.length) return '';
+  const W = 300, H = 40, v = serie.map(Number), mn = Math.min(...v), mx = Math.max(...v), y = x => H - 4 - (x - mn) / ((mx - mn) || 1) * (H - 8), dx = v.length > 1 ? W / (v.length - 1) : W;
+  const p = v.map((x, i) => [i * dx, y(x)]), cor = bom ? 'var(--good)' : 'var(--accent)', nS = parcial && p.length > 1 ? p.length - 1 : p.length;
+  const solida = p.slice(0, nS).map(q => q.join(',')).join(' '), gid = 'spk' + Math.random().toString(36).slice(2, 8);
+  return `<svg class="spk" viewBox="0 0 ${W} ${H + 12}" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${cor}" stop-opacity=".28"/><stop offset="1" stop-color="${cor}" stop-opacity="0"/></linearGradient></defs>
+    ${nS > 1 ? `<polygon points="0,${H} ${solida} ${p[nS - 1][0]},${H}" fill="url(#${gid})"/><polyline points="${solida}" fill="none" stroke="${cor}" stroke-width="2.2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>` : ''}
+    ${parcial && p.length > 1 ? `<polyline points="${p.slice(-2).map(q => q.join(',')).join(' ')}" fill="none" stroke="${cor}" stroke-width="2" stroke-dasharray="4 4" opacity=".7" vector-effect="non-scaling-stroke"/>` : ''}
+    ${p.map((q, i) => `<circle cx="${q[0]}" cy="${q[1]}" r="${i === nS - 1 ? 3.6 : 2.2}" fill="${cor}"${i >= nS ? ' opacity=".6"' : ''}/>`).join('')}
+    ${rot.map((m, i) => `<text x="${i * dx}" y="${H + 11}" text-anchor="${i === 0 ? 'start' : i === rot.length - 1 ? 'end' : 'middle'}">${m}${parcial && i === rot.length - 1 ? ' (parcial)' : ''}</text>`).join('')}</svg>`;
+}
+const MES_CURTO = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+/* variação do último mês fechado contra o anterior */
+function varMes(serie, meses, parcial, menorMelhor) {
+  const k = parcial ? serie.length - 2 : serie.length - 1; if (k < 1) return '';
+  const a = Number(serie[k - 1]), b = Number(serie[k]); if (!a) return '';
+  const d = (b - a) / Math.abs(a), bom = menorMelhor ? d < 0 : d > 0, ml = i => MES_CURTO[Number(meses[i].slice(5, 7)) - 1];
+  return `<span class="dl ${bom ? 'vpos' : 'vneg'}">${d >= 0 ? '▲' : '▼'} ${Math.abs(d * 100).toFixed(1).replace('.', ',')}%</span> <span class="muted">${ml(k)} vs. ${ml(k - 1)}</span>`;
+}
+function painelHero(o) {
+  const ult = o.meses.filter(x => x <= o.h.slice(0, 7) + '-01').slice(-4), parcial = ult.length && ult[ult.length - 1] === o.h.slice(0, 7) + '-01', rot = ult.map(m => MES_CURTO[Number(m.slice(5, 7)) - 1]);
+  const sR = ult.map(m => o.recMes[m] || 0), sL = ult.map(m => o.resMes[m] || 0);
+  const card = (l, v, exato, sub, linha2, graf, extra = '') => `<div class="kpi${extra}" title="${esc(exato)}"><span class="l">${l}</span><span class="v">${v}</span><span class="s">${sub}</span>${linha2 ? `<span class="s">${linha2}</span>` : ''}${graf}</div>`;
+  return `<div class="secl">O que importa agora</div><div class="kpis hero">
+    ${card('Receita bruta das vendas', brlK(o.rec), brl(o.rec), o.perRot, varMes(sR, ult, parcial), sparkMes(sR, rot, true, parcial))}
+    ${card('Lucro', brlK(o.lucro), brl(o.lucro), 'margem ' + o.margem + ' · ' + o.perRot, varMes(sL, ult, parcial), sparkMes(sL, rot, Number(o.lucro) >= 0, parcial))}
+    ${o.saldoHtml}
+    ${card('CAC total', o.cacT == null ? '—' : brl(o.cacT), o.cacT == null ? '' : brl(o.cacT), 'custo para conquistar cada cliente · ' + num(o.novos) + ' cliente(s) novo(s)', o.cacM == null ? '' : 'só mídia: <b>' + brl(o.cacM) + '</b>' + (o.peso == null ? '' : ' · consome ' + (o.peso * 100).toFixed(1).replace('.', ',') + '% da receita'), '<span class="s muted" style="margin-top:auto">clique para ver como é composto ›</span>', ' clic" id="pgCacK" role="button" tabindex="0')}
+  </div><div class="secl">Funil, vendas e contas</div>`;
+}
+function saldoHero(CX, ate) {
+  const proj = Number(CX.saldo || 0) + Number(CX.a_receber || 0) - Number(CX.a_pagar || 0);
+  return `<div class="kpi"><span class="l">Saldo em banco</span><span class="v" title="${brl(CX.saldo)}">${brlK(CX.saldo)}</span><span class="s">projetado até ${dd(ate)}: <b>${brlK(proj)}</b></span><span class="s"><span class="dl vpos">▲ entra ${brlK(CX.a_receber)}</span> <span class="muted">· sai ${brlK(CX.a_pagar)}</span></span><span class="s muted" style="margin-top:auto">clique para o extrato ›</span></div>`;
+}
+function painelPos(m) {
+  compactaKpis(m);
+  const k = $('#pgCacK'); if (k) { const vai = () => { const p = $('#pgCac'); if (p) p.scrollIntoView({ behavior: 'smooth', block: 'start' }); }; k.onclick = vai; k.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); vai(); } }; }
+}
+
+/* ---------- Formulário de campanha (editar): blocos, campos só do modelo escolhido, dicas no ⓘ, botões fixos e Ctrl+S ---------- */
+function campFormCompacto() {
+  const md = document.querySelector('#modalRoot .modal'), g = md && md.querySelector('.grid2'); if (!g || !g.querySelector('[name=modelo]')) return;
+  md.classList.add('compacto');
+  const lab = n => { const i = g.querySelector(`[name=${n}]`); return i ? i.closest('label') : null; };
+  g.querySelectorAll('label > span[style*="font-weight:400"]').forEach(x => {
+    const l = x.closest('label'), t = x.textContent.trim(); x.remove(); if (!t || !l.firstChild || l.firstChild.nodeType !== 3) return;
+    const w = document.createElement('span'); w.textContent = l.firstChild.textContent; const i = document.createElement('span'); i.className = 'dica'; i.textContent = 'i'; i.title = t; w.appendChild(i); l.replaceChild(w, l.firstChild);
+  });
+  const sec = (n, num_, t, s) => { const l = lab(n); if (!l) return; const d = document.createElement('div'); d.className = 'fsec'; d.innerHTML = `<b>${num_}</b>${t}<span>${s}</span>`; g.insertBefore(d, l); };
+  sec('nome', 1, 'Sobre a campanha', 'nome, modelo e produto'); sec('data_inicio', 2, 'Datas e orçamento', 'só os campos do modelo escolhido'); sec('meta_cpl', 3, 'Metas', 'o que define sucesso'); sec('meta_id', 4, 'Projeto e observações', 'opcional');
+  const so = { lancamento: ['data_fim', 'data_carrinho_abre', 'data_carrinho_fecha', 'meta_leads', 'meta_vendas'], perpetuo: ['meta_leads_mes'] };
+  const aplica = () => { const mo = g.querySelector('[name=modelo]').value; Object.entries(so).forEach(([k, ns]) => ns.forEach(n => { const l = lab(n); if (l) l.style.display = k === mo ? '' : 'none'; })); };
+  g.querySelector('[name=modelo]').addEventListener('change', aplica); aplica();
+  const ac = md.querySelector('.acts'); if (ac && !ac.querySelector('.atalho')) { const t = document.createElement('span'); t.className = 'muted atalho'; t.textContent = 'Ctrl+S salva'; ac.appendChild(t); }
+  md.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); const f = md.querySelector('form'); if (f) f.requestSubmit(); } });
+}
+
+/* ---------- Nova campanha em 3 etapas: cada etapa salva; dá para terminar depois ---------- */
+const WZ_ETAPAS = [[1, 'O básico'], [2, 'Orçamento e metas'], [3, 'Canais']];
+async function abrirWizard(id = null, passo = 1) {
+  const w = S.ws, root = $('#modalRoot');
+  const [prods, funis, cad] = await Promise.all([
+    q(sb.from('produtos').select('id,nome,preco').eq('workspace_id', w).order('nome')),
+    q(sb.from('funis').select('id,nome,tipo').eq('workspace_id', w).eq('ativo', true).order('nome')),
+    q(sb.from('canais').select('codigo,nome').eq('workspace_id', w).eq('ativo', true).order('nome'))]);
+  const tmOk = await temColuna('campanhas', 'tipo_midia'), pjAuto = await temColuna('campanhas', 'projeto_auto');
+  let c = id ? (await q(sb.from('campanhas').select('*').eq('id', id)))[0] : null;
+  let canais = id ? await q(sb.from('campanha_canais').select('*').eq('campanha_id', id)) : [];
+  const fecha = () => { root.innerHTML = ''; document.removeEventListener('keydown', tecla); };
+  const abreCampanha = () => { fecha(); S.view = 'mkt-camp'; S.tabMkt = 'campanhas'; S.campSel = c.id; S.campTab = 'resumo'; render(); };
+  const tecla = e => { if (e.key === 'Escape') fecha(); };
+  document.addEventListener('keydown', tecla);
+  const opt = (l, v, cur) => l.map(([k, t]) => `<option value="${esc(k)}"${String(cur ?? '') === String(k) ? ' selected' : ''}>${esc(t)}</option>`).join('');
+  const dias = () => { if (!c || !c.data_inicio) return 30; if (c.modelo === 'perpetuo' || !c.data_fim) return 30; return Math.max(1, Math.round((new Date(c.data_fim) - new Date(c.data_inicio)) / 864e5) + 1); };
+  const pago = cod => String(cod).endsWith('_ads');
+  let sel = null, linhas = {};
+  const tela = () => {
+    const passos = WZ_ETAPAS.map(([n, t]) => `<div class="${n < passo ? 'ok' : n === passo ? 'at' : ''}"><i></i>${n}. ${t}${n < passo ? ' ✓' : ''}</div>`).join('');
+    let corpo = '';
+    if (passo === 1) {
+      const mo = c ? c.modelo : 'lancamento';
+      corpo = `<p class="lead">Só o essencial para a campanha existir. Ela é salva como rascunho e você pode terminar depois.</p>
+      <label>Nome<input name="nome" required value="${esc(c ? c.nome : '')}" placeholder="Ex.: Black Friday · Curso"></label>
+      <div class="grid2"><label>Modelo<select name="modelo">${opt(Object.entries(CAMP_MOD), mo)}</select></label>
+        <label>Produto<select name="produto_id" required><option value="">Escolha…</option>${opt(prods.map(p => [p.id, p.nome]), c && c.produto_id)}</select></label>
+        <label>Estratégia<select name="funil_id"><option value="">Sem estratégia</option>${opt(funis.map(f => [f.id, f.nome + ' (' + (EST_TIPO[f.tipo] || f.tipo) + ')']), c && c.funil_id)}</select></label>
+        ${tmOk ? `<label>Tipo de mídia<select name="tipo_midia">${opt([['hibrida', 'Híbrida (paga e orgânica)'], ['paga', 'Só paga'], ['organica', 'Só orgânica']], c ? c.tipo_midia : 'hibrida')}</select></label>` : ''}
+        <label>Início<input type="date" name="data_inicio" required value="${c && c.data_inicio || ''}"></label>
+        <label class="wz-fim">Fim<input type="date" name="data_fim" value="${c && c.data_fim || ''}"></label></div>`;
+    } else if (passo === 2) {
+      const per = c.modelo === 'perpetuo';
+      corpo = `<p class="lead">Quanto vai investir e o que define sucesso. O resto o sistema calcula.${per ? ' No perpétuo, as metas por mês e o mix de produtos ficam na aba Metas mensais da campanha.' : ''}</p>
+      <div class="grid2"><label>${per ? 'Orçamento por mês (R$)' : 'Orçamento total (R$)'}<input type="number" step="0.01" min="0" name="orcamento_total" value="${c.orcamento_total ?? ''}"></label>
+        ${per ? '' : `<label>Meta de vendas<input type="number" min="0" name="meta_vendas" value="${c.meta_vendas ?? ''}"></label>`}
+        <label>${per ? 'Meta de leads por mês' : 'Meta de leads'}<input type="number" min="0" name="${per ? 'meta_leads_mes' : 'meta_leads'}" value="${(per ? c.meta_leads_mes : c.meta_leads) ?? ''}"></label>
+        <label>CAC máximo aceito (R$)<input type="number" step="0.01" min="0" name="meta_cac" value="${c.meta_cac ?? ''}"></label></div>
+      <div class="calc" id="wzCalc"></div>`;
+    } else {
+      const tm = c.tipo_midia || 'hibrida', ok = cad.filter(x => tm === 'paga' ? pago(x.codigo) : tm === 'organica' ? !pago(x.codigo) : true);
+      if (!sel) { sel = new Set(canais.map(x => x.canal)); canais.forEach(x => linhas[x.canal] = { pct: c.orcamento_total && x.orcamento != null ? Math.round(x.orcamento / c.orcamento_total * 1000) / 10 : '', leads: x.meta_leads ?? '' }); }
+      corpo = `<p class="lead">Escolha os canais e divida o orçamento e a meta de leads. A meta por dia é sugerida pelo período (${dias()} dias${c.modelo === 'perpetuo' ? ', por mês' : ''}).</p>
+      <div class="cn">${ok.map(x => `<span data-cn="${esc(x.codigo)}" class="${sel.has(x.codigo) ? 'on' : ''}" role="button" tabindex="0">${esc(x.nome)}</span>`).join('')}</div>
+      <div id="wzTab"></div>`;
+    }
+    root.innerHTML = `<div class="ov"><div class="modal wz" role="dialog" aria-label="Nova campanha"><div class="wzh"><h2>${c && passo > 1 ? esc(c.nome) : 'Nova campanha'}</h2><div class="wzp">${passos}</div></div>
+      <form><div class="wzb">${corpo}</div><div class="wzf">${passo > 1 ? '<button type="button" class="btn" data-w="volta">Voltar</button>' : '<button type="button" class="btn" data-w="x">Cancelar</button>'}<span class="sp"></span>
+      ${c ? '<span class="salvo">✓ Rascunho salvo</span>' : ''}${c ? '<button type="button" class="btn" data-w="depois">Terminar depois</button>' : ''}<button type="submit" class="btn pri">${passo < 3 ? 'Salvar e continuar' : 'Concluir e abrir a campanha'}</button></div></form></div></div>`;
+    const f = root.querySelector('form');
+    root.querySelector('.ov').onmousedown = e => { if (e.target.classList.contains('ov')) fecha(); };
+    root.querySelectorAll('[data-w]').forEach(b => b.onclick = () => act(async () => {
+      const a = b.dataset.w; if (a === 'x') return fecha();
+      if (a === 'volta') { passo--; return tela(); }
+      if (a === 'depois') { await salvar(f); abreCampanha(); }
+    }));
+    f.onsubmit = e => { e.preventDefault(); act(async () => { const btn = f.querySelector('.pri'); btn.disabled = true; try { await salvar(f); } finally { btn.disabled = false; } if (passo < 3) { passo++; tela(); } else abreCampanha(); }); };
+    if (passo === 1) { const mo = f.querySelector('[name=modelo]'), fim = f.querySelector('.wz-fim'); const ap = () => { fim.style.display = mo.value === 'perpetuo' ? 'none' : ''; }; mo.onchange = ap; ap(); f.querySelector('[name=nome]').focus(); }
+    if (passo === 2) { const calc = () => { const g = n => { const i = f.querySelector(`[name=${n}]`); return i && i.value !== '' ? Number(i.value) : null; };
+        const orc = g('orcamento_total'), ld = g('meta_leads') ?? g('meta_leads_mes'), vd = g('meta_vendas'), pr = (prods.find(p => p.id === c.produto_id) || {}).preco;
+        const it = []; if (orc && ld) it.push(['CPL que cabe no orçamento', brl(orc / ld)]); if (ld && vd) it.push(['conversão lead → venda', (vd / ld * 100).toFixed(1).replace('.', ',') + '%']);
+        if (orc && vd) it.push(['CAC de mídia previsto', brl(orc / vd)]); if (vd && pr) it.push([`receita prevista (${num(vd)} × ${brl(pr)})`, brl(vd * pr), 'vpos']);
+        const cm = g('meta_cac'); if (cm && orc && vd && orc / vd > cm) it.push(['acima do CAC máximo aceito', brl(orc / vd), 'vneg']);
+        $('#wzCalc').innerHTML = it.length ? it.map(([t, v, cl]) => `<span><b class="${cl || ''}">${v}</b>${t}</span>`).join('') : '<span>Preencha orçamento e metas para ver o CPL, a conversão e o CAC previstos.</span>'; };
+      f.oninput = calc; calc(); }
+    if (passo === 3) { const tab = () => {
+        const L = [...sel], orc = Number(c.orcamento_total || 0), meta = Number((c.modelo === 'perpetuo' ? c.meta_leads_mes : c.meta_leads) || 0), D = dias();
+        const tp = L.reduce((s, k) => s + Number((linhas[k] || {}).pct || 0), 0), tl = L.reduce((s, k) => s + Number((linhas[k] || {}).leads || 0), 0);
+        $('#wzTab').innerHTML = L.length ? `<div class="tw"><table><thead><tr><th>Canal</th><th class="n">% do orçamento</th><th class="n">Orçamento</th><th class="n">Meta de leads</th><th class="n">Leads por dia</th></tr></thead><tbody>
+          ${L.map(k => { const r = linhas[k] || {}, nm = (cad.find(x => x.codigo === k) || {}).nome || k, o = r.pct !== '' && r.pct != null ? orc * r.pct / 100 : null;
+            return `<tr><td><b>${esc(nm)}</b></td><td class="n">${pago(k) || r.pct ? `<input type="number" step="0.1" min="0" data-p="${esc(k)}" value="${r.pct ?? ''}">` : '<span class="muted">—</span>'}</td><td class="n">${o != null ? brl(o) : '—'}</td><td class="n"><input type="number" min="0" data-l="${esc(k)}" value="${r.leads ?? ''}"></td><td class="n">${r.leads ? num(Math.round(r.leads / D)) : '—'}</td></tr>`; }).join('')}
+          <tr class="tot"><td>Total</td><td class="n ${tp > 100.05 ? 'vneg' : tp >= 99.95 ? 'vpos' : ''}">${tp.toFixed(1).replace('.', ',').replace(',0', '')}%</td><td class="n">${brl(orc * tp / 100)}</td><td class="n ${meta && tl === meta ? 'vpos' : meta && tl > meta ? 'vneg' : ''}">${num(tl)}${meta && tl === meta ? ' ✓' : meta ? ' de ' + num(meta) : ''}</td><td class="n">${num(Math.round(tl / D))}</td></tr></tbody></table></div>
+          ${tp > 100.05 ? '<p class="lead"><span class="pill bad">Acima</span> Os canais somam mais de 100% do orçamento.</p>' : tp > 0 && tp < 99.95 && orc ? `<p class="lead"><span class="pill warn">Atenção</span> Sobram ${(100 - tp).toFixed(1).replace('.', ',').replace(',0', '')}% do orçamento (${brl(orc * (100 - tp) / 100)}) sem canal. Pode deixar como reserva.</p>` : ''}`
+          : '<div class="empty">Escolha pelo menos um canal acima. Também dá para adicionar canais depois, na aba Planejamento e metas da campanha.</div>';
+        $('#wzTab').querySelectorAll('input').forEach(i => i.onchange = () => { const k = i.dataset.p || i.dataset.l; linhas[k] = linhas[k] || {}; linhas[k][i.dataset.p ? 'pct' : 'leads'] = i.value === '' ? '' : Number(i.value); tab(); }); };
+      /* sugestão ao marcar um canal: orçamento dividido entre os pagos e a meta de leads proporcional (orgânicos ficam com 10%) */
+      const sugere = () => { const L = [...sel], pg = L.filter(pago), og = L.filter(k => !pago(k)), meta = Number((c.modelo === 'perpetuo' ? c.meta_leads_mes : c.meta_leads) || 0);
+        const mexido = L.some(k => linhas[k] && linhas[k].mexido); if (mexido) return;
+        pg.forEach(k => linhas[k] = { pct: Math.round(1000 / pg.length) / 10, leads: meta ? Math.round(meta * (og.length ? .9 : 1) / pg.length) : '' });
+        og.forEach(k => linhas[k] = { pct: '', leads: meta ? Math.round(meta * (pg.length ? .1 : 1) / og.length) : '' }); };
+      root.querySelectorAll('[data-cn]').forEach(s => s.onclick = () => { const k = s.dataset.cn; if (sel.has(k)) sel.delete(k); else sel.add(k); s.classList.toggle('on'); if (!canais.length) sugere(); tab(); });
+      $('#wzTab').addEventListener('change', e => { const k = e.target.dataset.p || e.target.dataset.l; if (k && linhas[k]) linhas[k].mexido = true; });
+      tab(); }
+  };
+  const salvar = async f => {
+    const val = n => { const i = f.querySelector(`[name=${n}]`); return !i ? undefined : i.value === '' ? null : i.type === 'number' ? Number(i.value) : i.value; };
+    if (passo === 1) {
+      const v = { nome: (val('nome') || '').trim(), modelo: val('modelo'), produto_id: val('produto_id'), funil_id: val('funil_id'), data_inicio: val('data_inicio'), data_fim: val('data_fim') };
+      if (tmOk) v.tipo_midia = val('tipo_midia');
+      if (!v.nome) throw new Error('Dê um nome para a campanha.'); if (!v.produto_id) throw new Error('Escolha o produto.'); if (!v.data_inicio) throw new Error('Informe a data de início.');
+      if (v.modelo === 'perpetuo') { v.data_fim = null; v.data_carrinho_abre = null; v.data_carrinho_fecha = null; }
+      else if (!v.data_fim) throw new Error('Informe a data de fim do lançamento. Para uma campanha sem fim, escolha o modelo Perpétuo.');
+      if (v.data_fim && v.data_fim < v.data_inicio) throw new Error('O fim não pode ser antes do início.');
+      const trocouEst = !c || c.funil_id !== v.funil_id;
+      if (c) await q(sb.from('campanhas').update(v).eq('id', c.id));
+      else {
+        v.id = crypto.randomUUID(); v.status = 'rascunho'; v.workspace_id = w;
+        if (pjAuto) { const pm = await q(sb.from('projeto_modelos').select('id').eq('workspace_id', w).eq('ativo', true).eq('padrao_campanha', true)).catch(() => []); v.projeto_auto = true; if (pm[0]) v.projeto_modelo_id = pm[0].id; }
+        await q(sb.from('campanhas').insert(v));
+      }
+      c = (await q(sb.from('campanhas').select('*').eq('id', c ? c.id : v.id)))[0];
+      if (trocouEst && c.funil_id) { try { await q(sb.rpc('campanha_aplicar_estrategia', { p_campanha: c.id, p_funil: c.funil_id, p_substituir: false })); } catch (e) { toast('Campanha salva, mas as etapas da estratégia não foram copiadas: ' + (e.message || e), true); } }
+    } else if (passo === 2) {
+      const v = {}; ['orcamento_total', 'meta_vendas', 'meta_leads', 'meta_leads_mes', 'meta_cac'].forEach(n => { const x = val(n); if (x !== undefined) v[n] = x; });
+      const ld = v.meta_leads ?? v.meta_leads_mes; if (v.orcamento_total && ld) v.meta_cpl = Math.round(v.orcamento_total / ld * 100) / 100;
+      if (v.meta_vendas && v.meta_leads) v.meta_taxa_lead_venda = Math.round(v.meta_vendas / v.meta_leads * 10000) / 100;
+      await q(sb.from('campanhas').update(v).eq('id', c.id)); c = { ...c, ...v };
+    } else {
+      const orc = Number(c.orcamento_total || 0), meta = Number((c.modelo === 'perpetuo' ? c.meta_leads_mes : c.meta_leads) || 0);
+      const ja = (await q(sb.from('campanha_canais').select('utm_campaign').eq('workspace_id', w).limit(5000))).map(x => x.utm_campaign);
+      for (const k of sel) {
+        const r = linhas[k] || {}, o = r.pct !== '' && r.pct != null && orc ? Math.round(orc * r.pct) / 100 : null, l = r.leads === '' || r.leads == null ? null : Number(r.leads);
+        const v = { orcamento: o, meta_leads: l, meta_cpl: o && l ? Math.round(o / l * 100) / 100 : null, percentual_meta_leads: meta && l ? Math.round(l / meta * 1000) / 10 : null };
+        const ex = canais.find(x => x.canal === k);
+        if (ex) await q(sb.from('campanha_canais').update(v).eq('id', ex.id));
+        else { const base = slug(c.nome) + '_' + slug(k); let t = base, n = 2; while (ja.includes(t)) t = base + '_' + n++; ja.push(t);
+          await q(sb.from('campanha_canais').insert({ ...v, workspace_id: w, campanha_id: c.id, canal: k, utm_campaign: t, tipo: pago(k) ? 'pago' : 'organico' })); }
+      }
+      canais = await q(sb.from('campanha_canais').select('*').eq('campanha_id', c.id));
+    }
+  };
+  tela();
+}
+
+/* ---------- Campanha em rascunho: o que falta e onde continuar ---------- */
+async function campRascunho(m, c, nProj) {
+  if (c.status !== 'rascunho') return;
+  const nCan = (await q(sb.from('campanha_canais').select('id').eq('campanha_id', c.id))).length;
+  const metas = !!(c.orcamento_total && (c.meta_leads || c.meta_leads_mes));
+  const itens = [['O básico', !!(c.nome && c.produto_id && c.data_inicio)], ['Orçamento e metas', metas], ['Canais e metas por canal', nCan > 0], ['Projeto da equipe', nProj > 0]];
+  const passo = !metas ? 2 : !nCan ? 3 : 0, falta = itens.filter(x => !x[1]).length;
+  const d = document.createElement('div'); d.className = 'rasc';
+  d.innerHTML = `<span class="pill warn">Rascunho</span><div class="tx"><b>${falta ? 'Falta pouco para essa campanha ficar pronta' : 'Tudo pronto. Quando quiser, ative a campanha.'}</b>
+    <ul>${itens.map(([t, ok]) => `<li class="${ok ? 'f' : 'p'}">${t}</li>`).join('')}</ul></div>
+    ${passo ? '<button class="btn pri" data-r="seg">Continuar de onde parei</button>' : nProj ? '' : '<button class="btn pri" data-r="pj">Criar o projeto</button>'}<button class="btn${falta ? '' : ' pri'}" data-r="ativa">${falta ? 'Ativar mesmo assim' : 'Ativar campanha'}</button>`;
+  const tabs = m.querySelector('.tabs'); if (tabs) tabs.before(d);
+  d.querySelectorAll('[data-r]').forEach(b => b.onclick = () => {
+    if (b.dataset.r === 'seg') return abrirWizard(c.id, passo);
+    if (b.dataset.r === 'pj') return modalProjetoCampanha(c);
+    act(async () => { await q(sb.from('campanhas').update({ status: 'ativa' }).eq('id', c.id)); render(); }, 'Campanha ativada');
+  });
 }
 
 /* ---------- Projetos: apoio ---------- */

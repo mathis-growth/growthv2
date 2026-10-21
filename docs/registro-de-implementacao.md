@@ -706,3 +706,14 @@ O patch dinâmico de `registrar_recebimento` usava `replace` com texto de vária
   - `t117_arvore2.py`, com 54 verificações: cards de 6 telas conferidos; Lucro › Receitas › conta › lançamento com débitos = créditos, a trilha de 4 níveis e o botão da ficha; sem erro de JavaScript;
   - regressão: t116 (80), t115 e t114 OK.
 - Em produção (Escola Aurora): lançamento de venda R$ 1.176,46, LTV de setembro R$ 818,71, pago em setembro R$ 42.499,11 e 14 contratos ativos. A linha do razão já leva ao lançamento.
+
+## Visual, Dashboard em camadas e campanha em etapas (v0.121)
+- Montagem: `integra121.py` roda o `integra120.py` e junta `v121.css` (tema e componentes) e `v121.js` (comportamento).
+- Visual: bloco `<style id="v121">` com os tokens neon sob `:root[data-estilo="azul"]` (escuro e claro), 3D (`--rx`, `--ry`, `--mx`, `--my` definidos pelo `mousemove`), hierarquia de botões e o menu `.maism`.
+- `marcaSinais()`: chamado por um `MutationObserver` (uma vez por quadro) e marca `.vneg/.vpos` nos valores e `.kneg/.kpos` nos cartões.
+- Dashboard: `painelHero()` monta os 4 cartões com `sparkMes()` e `varMes()`; `saldoHero()`; `painelPos()` compacta os cartões menores (`brlK`) e liga o cartão do CAC ao painel `#pgCac`. A faixa "Qualidade do dado" é inserida antes do rótulo da seção.
+- Nova campanha: `abrirWizard(id, passo)` no `#modalRoot`; cada etapa grava (insert/update em `campanhas`, insert/update em `campanha_canais`) e aplica a estratégia (`campanha_aplicar_estrategia`) quando ela muda. Novo projeto da campanha segue o padrão anterior (`projeto_auto` com o modelo padrão).
+- Rascunho: `campRascunho(m, c, nProjetos)` no topo da campanha.
+- Editar campanha: `campFormCompacto()` depois do `abrirForm`.
+- Growth Model: botões reorganizados no próprio template; os ids (`gpDup`, `gpDet`, `gsLimpa`, `gpDesc`) foram mantidos, então os eventos não mudaram.
+- Testes: `t121_visual_campanha.py` (banco fa): tema, Dashboard, cores, as 3 etapas com conferência no banco, rascunho, "começa em", formulário em blocos, Ctrl+S, Mais ações e a árvore do vendedor. t118 a t120 rodados de novo.
