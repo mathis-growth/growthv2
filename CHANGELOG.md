@@ -100,6 +100,20 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.122] - 2026-10-21 — Mini gráfico em cada número da árvore
+- Ao clicar num número (em qualquer tela), o painel "De onde vem este número" abre com um **mini gráfico** no alto, escolhido sozinho pelo tipo do número:
+  - **Evolução por mês** (linha): quando o número tem a quebra por mês. Mostra a variação do último mês fechado contra o anterior; o mês atual aparece como parcial.
+  - **Cascata** ("Como se chega em…"): quando o número é uma conta de somar e subtrair em reais, como o Lucro (receitas − deduções − despesas).
+  - **Composição** (rosca): quando é uma soma de partes (ex.: Despesas = deduções + custos + despesas) ou tem uma quebra (por produto, canal, conta, campanha). Até 5 fatias e "Outros".
+  - **Por dia** (barras): quando só há a lista de registros com data (soma o valor, ou conta os registros).
+  - **Evolução nos últimos meses**: para os indicadores de razão (CAC, CPL, CPC, CTR, ROAS, ROI, margem, LTV, churn, MRR…), o sistema calcula o mesmo número mês a mês (4 meses) e desenha a linha.
+  - **Medidor**: percentual sem histórico.
+- Vale para todos os níveis: ao descer, o nível de baixo também tem o seu gráfico. Clicar numa fatia, ponto ou barra desce para aquele item, igual à lista.
+- Cores: subir é verde e cair é vermelho, exceto em custo, CAC, CPL, CPC e churn, em que subir é vermelho.
+- Correção: o aviso "Na tela aparece…" não aparece mais quando o cartão mostra o valor compacto (R$ 147,8 mil).
+- Cobertura conferida: 53 dos 60 números clicáveis das telas principais abrem com gráfico; os 7 restantes não têm dado (NRR, GRR e penetração sem base; Fixo e Variável zerados; Pró-labores com um único item; Imposto no equilíbrio).
+- Testes: `t122_graficos_arvore.py`.
+
 ## [0.121] - 2026-10-21 — Visual com destaque de cores, Dashboard em camadas e campanha em etapas
 - **Modo claro passa a ser o padrão.** O escuro continua no botão "Modo escuro" do menu e a escolha fica guardada no navegador.
 - **Cores com significado (azul de sempre, com destaque neon):**

@@ -387,6 +387,20 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
+<style id="v122">
+#arvRoot .arv-g{border:1px solid var(--line);border-radius:12px;margin:0 0 14px;padding:10px 12px 6px;background:radial-gradient(120% 90% at 100% 0%,rgba(var(--accent-rgb),.08),transparent 60%),var(--surface)}
+#arvRoot .arv-g h3{font-size:12px;color:var(--muted);font-weight:600;margin:0 0 6px;display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}
+#arvRoot .arv-svg{width:100%;height:auto;display:block;overflow:visible}
+#arvRoot .arv-svg text{font-size:10px;fill:var(--muted);pointer-events:none} #arvRoot .arv-svg .arv-gv{font-size:12px;font-weight:700;fill:var(--ink)}
+#arvRoot .arv-pt[data-arvno],#arvRoot .arv-fa[data-arvno],#arvRoot .arv-rosca li[data-arvno]{cursor:pointer}
+#arvRoot .arv-pt:hover circle{r:6;filter:drop-shadow(0 0 6px var(--accent))}
+#arvRoot .arv-fa{transition:transform .15s ease,opacity .15s;transform-origin:62px 62px} #arvRoot .arv-fa:hover{transform:scale(1.05);filter:drop-shadow(0 0 6px rgba(var(--accent-rgb),.6))}
+#arvRoot .arv-rosca{display:grid;grid-template-columns:124px 1fr;gap:14px;align-items:center}
+#arvRoot .arv-rosca ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;font-size:12.5px;min-width:0}
+#arvRoot .arv-rosca li{display:grid;grid-template-columns:10px 1fr auto;gap:8px;align-items:center;padding:3px 6px;border-radius:6px}
+#arvRoot .arv-rosca li:hover{background:var(--accent-soft)} #arvRoot .arv-rosca li i{width:10px;height:10px;border-radius:3px}
+#arvRoot .arv-rosca li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+</style>
 </head>
 <body>
 
@@ -415,7 +429,7 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.121 · 21/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.122 · 21/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -6934,15 +6948,17 @@ async function arvDesenha() {
   const regs = N.registros && (N.registros.linhas || []).length ? `<section class="arv-q"><h3>${esc(N.registros.titulo)} · ${num(N.registros.total)}${N.registros.total > N.registros.linhas.length ? ' (mostrando ' + num(N.registros.linhas.length) + ')' : ''}</h3><div class="tw"><table class="arv-tab"><thead><tr>${N.registros.cols.map((c, i) => `<th class="${['brl', 'n'].includes(N.registros.un[i]) ? 'n' : ''}">${esc(c)}</th>`).join('')}</tr></thead><tbody>
     ${N.registros.linhas.map(l => `<tr${l.ir ? ` class="clk" data-arvir="${esc(JSON.stringify(l.ir))}" data-arvrot="${esc(l.rotulo || '')}" title="Abrir este lançamento"` : l.abrir ? ` class="clk" data-arvabre="${esc(JSON.stringify(l.abrir))}" title="Abrir a ficha"` : ''}>${l.c.map((v, i) => `<td class="${['brl', 'n'].includes(N.registros.un[i]) ? 'n' : ''}">${arvFmt(v, N.registros.un[i])}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>` : '';
   const card = ARV.pilha.length === 1 && top.card && top.card.texto ? top.card : null;
-  const tv = arvNorm(arvFmt(N.valor, N.un).replace(/<[^>]+>/g, '')), difere = card && arvNorm(card.texto) !== tv && !(arvNorm(card.texto) === '—' && (!N.valor || tv === '—')) && !arvArred(card.texto, N.valor, N.un);
+  const tv = arvNorm(arvFmt(N.valor, N.un).replace(/<[^>]+>/g, '')), difere = card && arvNorm(card.texto) !== tv && !(arvNorm(card.texto) === '—' && (!N.valor || tv === '—')) && !arvArred(card.texto, N.valor, N.un) && !(N.un === 'brl' && /mil|mi$/.test(card.texto) && arvNorm(brlK(N.valor)) === arvNorm(card.texto));
   const met = { 'mkt.leads_campanha': 'leads', 'mkt.cpl': 'cpl', 'mkt.cac': 'cac', 'mkt.roas': 'roas', 'mkt.conv': 'conv' }[top.no] || (top.no === 'mkt.ads' && (top.par.campo || 'custo') === 'custo' ? 'investimento' : top.no === 'ven.soma' ? ((top.par.campo || 'bruto') === 'qtd' ? 'vendas' : 'receita') : null);
-  root.querySelector('.arv-body').innerHTML = `<h2>${esc(N.titulo)}</h2><div class="arv-v">${arvFmt(N.valor, N.un)}</div><div class="arv-ex">${esc(N.explica || '')}</div>${N.pessoa ? `<button type="button" class="btn sm" data-arvpes="${esc(N.pessoa.id)}" style="margin:-4px 0 12px">Abrir a ficha de ${esc(N.pessoa.nome || 'pessoa')}</button>` : ''}
+  root.querySelector('.arv-body').innerHTML = `<h2>${esc(N.titulo)}</h2><div class="arv-v">${arvFmt(N.valor, N.un)}</div><div class="arv-ex">${esc(N.explica || '')}</div>${arvGrafico(N)}${N.pessoa ? `<button type="button" class="btn sm" data-arvpes="${esc(N.pessoa.id)}" style="margin:-4px 0 12px">Abrir a ficha de ${esc(N.pessoa.nome || 'pessoa')}</button>` : ''}
     ${difere ? `<div class="arv-aviso">Na tela aparece <b>${esc(card.texto)}</b>. A diferença vem do arredondamento ou de uma regra diferente naquela tela; esta é a conta feita com os registros.</div>` : ''}
     ${(N.formula || []).length ? `<section class="arv-f"><h3>Como foi calculado</h3>${N.formula.map(it => linha(it, it.un || N.un, null)).join('')}<div class="arv-l" style="font-weight:700"><span class="r">= ${esc(N.titulo)}</span><span class="n">${arvFmt(N.valor, N.un)}</span><span></span></div></section>` : ''}
     ${(N.quebras || []).filter(Boolean).map(Q => quebra(Q, N.un === 'pct' || N.un === 'x' ? 'n' : N.un)).join('')}${regs}
     ${met && top.par.campanha && typeof cdAbrir === 'function' ? `<button type="button" class="btn sm" data-arvcd="${met}">Ver o painel completo da campanha (gráficos por canal e por dia)</button>` : ''}
     ${!(N.formula || []).length && !(N.quebras || []).filter(Boolean).length && !regs ? '<div class="muted">Este número não tem mais níveis.</div>' : ''}`;
   root.querySelectorAll('[data-arvno]').forEach(b => b.onclick = () => arvVai(b.dataset.arvno, JSON.parse(b.dataset.arvpar), b.dataset.arvrot));
+  { const g = root.querySelector('.arv-g'), pode = !!(top.no && !top.no.startsWith('loc.') && top.par && ((top.par.ini && top.par.fim) || top.par.hoje) && N.valor != null);
+    if ((!g || /Proporção/.test(g.textContent)) && pode && !(N.quebras || []).some(Q => Q && Q.titulo === 'Por mês')) { const box = document.createElement('section'); box.className = 'arv-g'; box.innerHTML = '<h3>Evolução nos últimos meses</h3><div class="muted" style="padding:20px 0;font-size:12px">Calculando…</div>'; if (g) g.replaceWith(box); else root.querySelector('.arv-ex').after(box); arvSerie(top, box); } }
   root.querySelectorAll('.arv-mais').forEach(b => b.onclick = () => { b.previousElementSibling.hidden = false; b.remove(); });
   root.querySelectorAll('[data-arvabre]').forEach(r => r.onclick = () => { const a = JSON.parse(r.dataset.arvabre); if (a.tipo === 'pessoa') fichaPessoa(a.id); });
   root.querySelectorAll('tr[data-arvir]').forEach(r => r.onclick = () => { const a = JSON.parse(r.dataset.arvir); arvVai(a.no, a.par, r.dataset.arvrot); });
@@ -11449,6 +11465,111 @@ async function campRascunho(m, c, nProj) {
     if (b.dataset.r === 'pj') return modalProjetoCampanha(c);
     act(async () => { await q(sb.from('campanhas').update({ status: 'ativa' }).eq('id', c.id)); render(); }, 'Campanha ativada');
   });
+}
+
+/* ================= v0.122 — Mini gráfico em cada nível da árvore dos números =================
+   Escolhe sozinho o melhor resumo do nível que abriu:
+   1) tem "Por mês" com 3 meses ou mais → linha com área (evolução);
+   2) senão, tem uma quebra com 2 itens ou mais (por produto, canal, conta…) → rosca com a participação de cada um;
+   3) senão, tem a lista de registros com data e valor → barras por dia.
+   Clicar numa fatia, ponto ou barra desce para aquele item, igual à lista. */
+const ARV_MENOR = /^(mkt\.(cac|trf_cac|cpl|trf_cpl|cpc|churn)|fin\.(saidas|custos_despesas|pagar|custo)|rec\.churn)/;
+const ARV_CORES = ['#3b82f6', '#22d3ee', '#a78bfa', '#34d399', '#f59e0b', '#f472b6', '#94a3b8'];
+function arvGrafico(N) {
+  const Qs = (N.quebras || []).filter(Boolean), un0 = N.un === 'pct' || N.un === 'x' ? 'n' : N.un;
+  const attrs = it => it && it.no ? ` data-arvno="${esc(it.no)}" data-arvpar="${esc(JSON.stringify(it.par || {}))}" data-arvrot="${esc(it.rotulo)}" role="button" tabindex="0"` : '';
+  const mes = Qs.find(Q => Q.titulo === 'Por mês' && (Q.itens || []).length >= 3);
+  if (mes) {
+    const L = mes.itens.slice(-12), v = L.map(x => Number(x.valor) || 0), W = 520, H = 120, P = 18, mn = Math.min(0, ...v), mx = Math.max(...v, 0) || 1;
+    const x = i => P + i * (W - 2 * P) / Math.max(1, L.length - 1), y = n => H - 22 - (n - mn) / ((mx - mn) || 1) * (H - 40);
+    const pts = v.map((n, i) => `${x(i)},${y(n)}`).join(' '), ult = v.length - 1, mAt = (hoje() || '').slice(5, 7) + '/' + (hoje() || '').slice(0, 4), parc = L[ult].rotulo === mAt;
+    const k = parc ? ult - 1 : ult, d = k >= 1 && v[k - 1] ? (v[k] - v[k - 1]) / Math.abs(v[k - 1]) : null, mc = r => /^\d\d\/\d{4}$/.test(r) ? MES_CURTO[Number(r.slice(0, 2)) - 1] : r;
+    return `<section class="arv-g"><h3>Evolução por mês${d != null ? ` <span class="${(d >= 0) !== ARV_MENOR.test(N.no || '') ? 'vpos' : 'vneg'}">${d >= 0 ? '▲' : '▼'} ${Math.abs(d * 100).toFixed(1).replace('.', ',')}%</span> <span class="muted">${esc(mc(L[k].rotulo))} vs. ${esc(mc(L[k - 1].rotulo))}${parc ? ' · mês atual parcial' : ''}</span>` : ''}</h3>
+      <svg viewBox="0 0 ${W} ${H}" class="arv-svg" aria-label="Evolução por mês"><defs><linearGradient id="arvGa" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".35"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+      ${mn < 0 ? `<line x1="${P}" x2="${W - P}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)" stroke-dasharray="3 3"/>` : ''}
+      <polygon points="${x(0)},${y(mn < 0 ? 0 : mn)} ${pts} ${x(ult)},${y(mn < 0 ? 0 : mn)}" fill="url(#arvGa)"/>
+      <polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linejoin="round"/>
+      ${L.map((it, i) => `<g class="arv-pt"${attrs(it)}><title>${esc(it.rotulo)}: ${arvFmt(it.valor, it.un || un0)}</title><circle cx="${x(i)}" cy="${y(v[i])}" r="${i === ult ? 5 : 3.5}" fill="${v[i] < 0 ? 'var(--bad)' : 'var(--accent)'}"/><rect x="${x(i) - 14}" y="0" width="28" height="${H}" fill="transparent"/>
+        <text x="${x(i)}" y="${H - 5}" text-anchor="middle">${esc((/^\d\d\/\d{4}$/.test(it.rotulo) ? MES_CURTO[Number(it.rotulo.slice(0, 2)) - 1] + "/" + it.rotulo.slice(5) : it.rotulo).slice(0, 8))}</text></g>`).join('')}
+      <text x="${W - P}" y="11" text-anchor="end" class="arv-gv">${esc(mc(L[ult].rotulo))}${parc ? ' (parcial)' : ''}: ${arvFmt(v[ult], L[ult].un || un0)}</text></svg></section>`;
+  }
+  /* fórmula de soma e subtração em reais (lucro, despesas, caixa projetado…) → cascata */
+  const F_ = (N.formula || []).filter(it => (it.un || N.un) === 'brl');
+  if (N.un === 'brl' && F_.length >= 2 && F_.length === (N.formula || []).length && F_.slice(1).every(it => /^[−+-]/.test(it.rotulo)) && F_.some(it => /^[−-]/.test(it.rotulo))) {
+    const passos = []; let acc = 0;
+    F_.forEach((it, i) => { const v = Number(it.valor) || 0; if (i > 0 && !v) return; const sub = i > 0 && /^[−-]/.test(it.rotulo), d = i === 0 ? v : sub ? -v : v;
+      passos.push({ it, de: acc, ate: acc + d, tipo: i === 0 ? 'base' : sub ? 'sai' : 'entra', rot: it.rotulo.replace(/^[−+-]\s*/, '') }); acc += d; });
+    passos.push({ it: null, de: 0, ate: Number(N.valor) || 0, tipo: 'tot', rot: N.titulo.replace(/\s*\(.*\)$/, '') });
+    const W = 520, H = 150, P = 8, top = Math.max(...passos.map(p => Math.max(p.de, p.ate)), 1), bot = Math.min(0, ...passos.map(p => Math.min(p.de, p.ate)));
+    const y = n => 16 + (top - n) / ((top - bot) || 1) * (H - 46), bw = (W - 2 * P) / passos.length;
+    const cor = p => p.tipo === 'base' ? 'var(--accent)' : p.tipo === 'sai' ? 'var(--bad)' : p.tipo === 'entra' ? 'var(--good)' : (p.ate >= 0 ? 'var(--good)' : 'var(--bad)');
+    return `<section class="arv-g"><h3>Como se chega em ${arvFmt(N.valor, 'brl')}</h3><svg viewBox="0 0 ${W} ${H}" class="arv-svg" aria-label="Cascata">
+      ${bot < 0 ? `<line x1="${P}" x2="${W - P}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)" stroke-dasharray="3 3"/>` : ''}
+      ${passos.map((p, i) => { const x = P + i * bw + bw * .18, w = bw * .64, y1 = y(Math.max(p.de, p.ate)), h = Math.max(2, Math.abs(y(p.de) - y(p.ate)));
+        return `<g class="arv-pt"${attrs(p.it)}><title>${esc(p.rot)}: ${arvFmt(Math.abs(p.ate - p.de), 'brl')}</title><rect x="${x}" y="${y1}" width="${w}" height="${h}" rx="3" fill="${cor(p)}" opacity="${p.tipo === 'tot' ? 1 : .85}"/>
+          ${i < passos.length - 1 ? `<line x1="${x + w}" x2="${x + bw}" y1="${y(p.ate)}" y2="${y(p.ate)}" stroke="var(--muted)" stroke-dasharray="2 2" opacity=".6"/>` : ''}
+          <text x="${x + w / 2}" y="${y1 - 4}" text-anchor="middle" class="arv-gv" style="font-size:10.5px">${p.tipo === 'sai' ? '−' : p.tipo === 'entra' ? '+' : ''}${brlK(Math.abs(p.ate - p.de))}</text>
+          <text x="${x + w / 2}" y="${H - 6}" text-anchor="middle">${esc(p.rot.slice(0, 16))}</text></g>`; }).join('')}</svg></section>`;
+  }
+  /* soma de partes (ex.: despesas = deduções + custos + despesas) → rosca da composição */
+  const soma = N.un === 'brl' && F_.length >= 2 && F_.length === (N.formula || []).length && F_.slice(1).every(it => /^\+/.test(it.rotulo))
+    ? { titulo: 'Composição', itens: F_.map(it => ({ ...it, rotulo: it.rotulo.replace(/^\+\s*/, '') })) } : null;
+  const Q = (soma && soma.itens.filter(x => Number(x.valor) > 0).length >= 2 ? soma : null) || Qs.find(Q => Q.titulo !== 'Por mês' && (Q.itens || []).filter(x => Number(x.valor) > 0).length >= 2);
+  if (Q) {
+    let L = Q.itens.filter(x => Number(x.valor) > 0).sort((a, b) => b.valor - a.valor); const tot = L.reduce((s, x) => s + Number(x.valor), 0);
+    if (L.length > 6) L = [...L.slice(0, 5), { rotulo: 'Outros (' + (L.length - 5) + ')', valor: L.slice(5).reduce((s, x) => s + Number(x.valor), 0) }];
+    const R = 52, r = 32, cx = 62, cy = 62; let a0 = -Math.PI / 2;
+    const arco = (f, cor, it) => { const a1 = a0 + f * 2 * Math.PI, g = f > .5 ? 1 : 0, p = (rr, a) => `${cx + rr * Math.cos(a)},${cy + rr * Math.sin(a)}`;
+      const dpath = f >= .9999 ? `M${p(R, 0)}A${R},${R} 0 1 1 ${p(R, Math.PI)}A${R},${R} 0 1 1 ${p(R, 0)}M${p(r, 0)}A${r},${r} 0 1 0 ${p(r, Math.PI)}A${r},${r} 0 1 0 ${p(r, 0)}Z`
+        : `M${p(R, a0)}A${R},${R} 0 ${g} 1 ${p(R, a1)}L${p(r, a1)}A${r},${r} 0 ${g} 0 ${p(r, a0)}Z`;
+      a0 = a1; return `<path d="${dpath}" fill="${cor}" fill-rule="evenodd" class="arv-fa"${attrs(it)}><title>${esc(it.rotulo)}: ${arvFmt(it.valor, it.un || un0)} (${(f * 100).toFixed(1).replace('.', ',')}%)</title></path>`; };
+    const fatias = L.map((it, i) => arco(Number(it.valor) / tot, ARV_CORES[i % ARV_CORES.length], it)).join('');
+    return `<section class="arv-g"><h3>${esc(Q.titulo)}: participação</h3><div class="arv-rosca"><svg viewBox="0 0 124 124" class="arv-svg" aria-label="${esc(Q.titulo)}">${fatias}<text x="${cx}" y="${cy + 5}" text-anchor="middle" class="arv-gv" style="font-size:15px">${(Number(L[0].valor) / tot * 100).toFixed(0)}%</text></svg>
+      <ul>${L.map((it, i) => `<li${attrs(it)}><i style="background:${ARV_CORES[i % ARV_CORES.length]}"></i><span>${esc(it.rotulo)}</span><b>${(Number(it.valor) / tot * 100).toFixed(1).replace('.', ',')}%</b></li>`).join('')}</ul></div></section>`;
+  }
+  const R_ = N.registros; if (R_ && (R_.linhas || []).length >= 3) {
+    const iD = R_.un.indexOf('d'), iV = R_.un.indexOf('brl') >= 0 ? R_.un.indexOf('brl') : R_.un.indexOf('n'); if (iD < 0) return '';
+    const por = {}; R_.linhas.forEach(l => { const k = String(l.c[iD] || '').slice(0, 10); if (k) por[k] = (por[k] || 0) + (iV < 0 ? 1 : Number(l.c[iV]) || 0); });
+    const K = Object.keys(por).sort().slice(-31); if (K.length < 2) return '';
+    const v = K.map(k => por[k]), W = 520, H = 110, P = 10, mx = Math.max(...v.map(Math.abs)) || 1, bw = (W - 2 * P) / K.length;
+    return `<section class="arv-g"><h3>${iV < 0 ? 'Quantidade' : esc(R_.cols[iV])} por dia${R_.total > R_.linhas.length ? ' <span class="muted">(dos registros mostrados)</span>' : ''}</h3><svg viewBox="0 0 ${W} ${H}" class="arv-svg" aria-label="Por dia">
+      ${K.map((k, i) => { const h = Math.abs(v[i]) / mx * (H - 26); return `<g><title>${dd(k)}: ${iV < 0 ? num(v[i]) : arvFmt(v[i], R_.un[iV])}</title><rect x="${P + i * bw + 1}" y="${H - 16 - h}" width="${Math.max(2, bw - 2)}" height="${h}" rx="2" fill="${v[i] < 0 ? 'var(--bad)' : 'var(--accent)'}" opacity=".85"/></g>`; }).join('')}
+      <text x="${P}" y="${H - 3}">${dd(K[0]).slice(0, 5)}</text><text x="${W - P}" y="${H - 3}" text-anchor="end">${dd(K[K.length - 1]).slice(0, 5)}</text></svg></section>`;
+  }
+  if (N.un === 'pct' && N.valor != null && isFinite(N.valor)) return arvMedidor(N);
+  return '';
+}
+/* medidor para percentual (margem, ROI, retenção…) */
+function arvMedidor(N) {
+  const v = Number(N.valor), f = Math.max(0, Math.min(1, Math.abs(v) / (Math.abs(v) > 1 ? Math.abs(v) : 1))), R = 46, C = Math.PI * R;
+  const cor = v < 0 ? 'var(--bad)' : 'var(--good)', F_ = (N.formula || []).slice(0, 2);
+  return `<section class="arv-g"><h3>Proporção</h3><div class="arv-rosca"><svg viewBox="0 0 124 76" class="arv-svg" aria-label="Medidor">
+    <path d="M16,66 A${R},${R} 0 0 1 108,66" fill="none" stroke="var(--line)" stroke-width="12" stroke-linecap="round"/>
+    <path d="M16,66 A${R},${R} 0 0 1 108,66" fill="none" stroke="${cor}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(f * C).toFixed(1)} ${C.toFixed(1)}"/>
+    <text x="62" y="62" text-anchor="middle" class="arv-gv" style="font-size:15px">${arvFmt(v, 'pct')}</text></svg>
+    <ul>${F_.map(it => `<li><i style="background:var(--accent)"></i><span>${esc(it.rotulo.replace(/^[÷×−+]\s*/, ''))}</span><b>${arvFmt(it.valor, it.un || 'brl')}</b></li>`).join('')}</ul></div></section>`;
+}
+/* sem resumo pronto: monta a evolução dos últimos 4 meses chamando o mesmo número mês a mês */
+async function arvSerie(top, alvo) {
+  try {
+    if (!top.serie && !top.par.fim && top.par.hoje) {
+      const h = top.par.hoje, m0 = new Date(h.slice(0, 7) + '-01T12:00:00');
+      const pts = [3, 2, 1].map(k => { const d = new Date(m0); d.setMonth(d.getMonth() - k + 1); d.setDate(0); return d.toISOString().slice(0, 10); }).concat([h]);
+      const res = await Promise.all(pts.map(d => q(sb.rpc('arvore_no', { p_ws: S.ws, p_no: top.no, p_par: { ...top.par, hoje: d } })).catch(() => null)));
+      top.serie = pts.map((d, i) => ({ rotulo: d.slice(5, 7) + '/' + d.slice(0, 4), valor: res[i] ? res[i].valor : null, un: res[i] ? res[i].un : null, no: top.no, par: { ...top.par, hoje: d } })).filter(x => x.valor != null && isFinite(x.valor));
+    }
+    if (!top.serie) {
+      const fim = top.par.fim, m0 = new Date(fim.slice(0, 7) + '-01T12:00:00');
+      const meses = [3, 2, 1, 0].map(k => { const d = new Date(m0); d.setMonth(d.getMonth() - k); const ini = d.toISOString().slice(0, 10), e = new Date(d); e.setMonth(e.getMonth() + 1); e.setDate(0);
+        const f = e.toISOString().slice(0, 10); return { ini, fim: f > fim ? fim : f, rot: ini.slice(5, 7) + '/' + ini.slice(0, 4) }; });
+      const res = await Promise.all(meses.map(m => q(sb.rpc('arvore_no', { p_ws: S.ws, p_no: top.no, p_par: { ...top.par, ini: m.ini, fim: m.fim } })).catch(() => null)));
+      top.serie = meses.map((m, i) => ({ rotulo: m.rot, valor: res[i] ? res[i].valor : null, un: res[i] ? res[i].un : null, no: top.no, par: { ...top.par, ini: m.ini, fim: m.fim } })).filter(x => x.valor != null && isFinite(x.valor));
+    }
+    if (top.serie.length < 2 || !alvo.isConnected) { alvo.remove(); return; }
+    const html = arvGrafico({ no: top.no, un: top.serie[0].un, quebras: [{ titulo: 'Por mês', itens: top.serie.length >= 3 ? top.serie : [...top.serie, ...top.serie.slice(-1)] }] });
+    alvo.outerHTML = html.replace('Evolução por mês', 'Evolução nos últimos meses');
+    const r = $('#arvRoot'); r.querySelectorAll('.arv-g [data-arvno]').forEach(b => b.onclick = () => arvVai(b.dataset.arvno, JSON.parse(b.dataset.arvpar), b.dataset.arvrot));
+  } catch (e) { alvo.remove(); }
 }
 
 /* ---------- Projetos: apoio ---------- */
