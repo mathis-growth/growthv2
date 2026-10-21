@@ -387,7 +387,31 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">#arvRoot .arv-gh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}#arvRoot .arv-gh h3{margin:0;flex:1}
+<style id="v122">:root{--gc-c3:#a78bfa}
+svg.gc{width:100%;height:auto;display:block;overflow:visible}svg.gc text{font-size:11px;fill:var(--muted)}svg.gc text.gc-v{fill:var(--ink);font-weight:600}
+svg.gc .gc-clk{cursor:pointer}svg.gc .gc-clk:hover rect,svg.gc .gc-clk:focus rect{filter:drop-shadow(0 0 6px var(--accent));opacity:1}svg.gc .gc-clk:focus{outline:none}
+.gc-leg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;margin:2px 0 6px;color:var(--ink)}.gc-leg span{display:inline-flex;align-items:center;gap:5px}.gc-leg i{width:14px;height:3px;border-radius:2px;display:inline-block}
+.gc-lead{margin:2px 0 8px;font-size:13.5px;line-height:1.45}
+.gc-fonte{font-size:11.5px;color:var(--muted);margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}
+.gc-vazio{padding:18px 4px;color:var(--muted);font-size:13px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.gc-bh{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.gc-bhl{display:grid;grid-template-columns:minmax(90px,34%) 1fr 104px;gap:10px;align-items:center;background:none;border:0;padding:3px 4px;border-radius:7px;text-align:left;font:inherit;color:inherit;width:100%}
+button.gc-bhl{cursor:pointer}button.gc-bhl:hover,button.gc-bhl:focus-visible{background:var(--accent-soft)}
+.gc-bhr{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gc-bht{position:relative;height:14px;background:var(--line);border-radius:4px;overflow:visible}.gc-bht i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);border-radius:4px}
+.gc-ant{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);opacity:.55;border-radius:1px}.gc-ant-l{position:static;display:inline-block;height:12px}
+.gc-bhv{font-size:13px;font-weight:600;text-align:right;white-space:nowrap}.gc-bhv small{display:block;font-weight:400;font-size:11px;color:var(--muted)}.gc-bhv em{font-style:normal}
+.gc-bul,.gc-rit{margin:8px 0 14px}.gc-bulr,.gc-ritr{display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-bottom:5px;flex-wrap:wrap}
+.gc-bult,.gc-ritt{position:relative;height:16px;background:var(--line);border-radius:5px}.gc-bult i,.gc-ritt i{position:absolute;left:0;top:0;bottom:0;border-radius:5px}
+.gc-mk{position:absolute;top:-4px;bottom:-4px;width:3px;margin-left:-1px;background:var(--ink);border-radius:2px}.gc-mk.meta{background:var(--ink);box-shadow:0 0 0 2px var(--bg)}.gc-mk.ref{opacity:.55}
+.gc-bulm{position:relative;height:34px;font-size:11px;color:var(--muted)}.gc-bulm span{position:absolute;transform:translateX(-50%);text-align:center;white-space:nowrap;top:4px}
+.gc-bulm span:first-child{transform:translateX(-50%)}.gc-bulm b{color:var(--ink);font-weight:600}
+.gc-rits{font-size:12px;margin-top:5px}
+details.gc-det{margin-bottom:12px}details.gc-det>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px}details.gc-det>summary::before{content:'▸';color:var(--muted)}details.gc-det[open]>summary::before{content:'▾'}
+details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
+@media (max-width:640px){.gc-bhl{grid-template-columns:1fr 84px}.gc-bht{grid-column:1/-1;order:3}}
+.gc-sec>.secl{margin:22px 0 8px}
+#arvRoot .arv-gh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}#arvRoot .arv-gh h3{margin:0;flex:1}
 #arvRoot .arv-gr{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
 #arvRoot .arv-gr button{background:none;border:0;padding:4px 10px;font-size:12px;cursor:pointer;color:var(--muted)}#arvRoot .arv-gr button+button{border-left:1px solid var(--line)}
 #arvRoot .arv-gr button.on{background:var(--accent);color:#fff;font-weight:600}
@@ -439,7 +463,7 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.123 · 21/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.124 · 21/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -462,8 +486,8 @@ setTimeout(() => { if ($('#login').classList.contains('hide') && $('#app').class
 
 const NAV = [
   { g: 'Growth Starter', flat: true, starter: true, items: [['st-dash', 'Dashboard'], ['mkt-dash', 'Aquisição'], ['mkt-midia', 'Mídia'], ['crm-vendas', 'Vendas'], ['ho-retencao', 'Retenção & Expansão'], ['cad-produtos', 'Produtos'], ['crm-alunos', 'Clientes / Alunos'], ['fin-dash', 'Financeiro'], ['st-relatorios', 'Relatórios'], ['ia-perguntar', 'Pergunte aos dados'], ['gro-ciclo', 'Experimentos']] },
-  { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['adm-dash', 'Dashboard Growth'], ['ia-perguntar', 'Pergunte aos dados'], ['adm-plano', 'Planejamento da empresa'], ['adm-empresa', 'Cadastro da empresa']] },
-  { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-midia', 'Dashboard de mídia'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários'], ['mkt-cont', 'Planejamento de conteúdo']] },
+  { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte aos dados'], ['adm-plano', 'Planejamento da empresa'], ['adm-empresa', 'Cadastro da empresa']] },
+  { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários'], ['mkt-cont', 'Planejamento de conteúdo']] },
   { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['mkt-origem', 'Leads por origem']] },
   { g: 'RevOps', items: [['ho-dash', 'Dashboard'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
   { g: 'Financeiro', items: [['fin-dash', 'Dashboard'], ['fin-receber', 'Contas a receber'], ['fin-pagar', 'Contas a pagar'], ['fin-custo', 'Custos e margens'], ['fin-lanc', 'Lançamentos contábeis']] },
@@ -860,7 +884,7 @@ $('#novoCli').onclick = () => { modal('Novo cliente', `<label>Nome do cliente<in
 $('#wsSel').onchange = e => { S.ws = S.wsBase = e.target.value; if (ehCasaV(S.view)) S.view = 'fin-dash'; S.perm = null; S.permWs = null; render(); };
 
 const VIEWS = {
-  'mkt-dash': vMktDash, 'mkt-midia': vMidia, 'ia-perguntar': vPerguntar, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': vDashGrowth, 'st-dash': vDashGrowth, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo,
+  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo,
   'crm-leads': vCrmLeads, 'crm-oport': vCrmOport, 'crm-vendas': vVendas, 'crm-contratos': vContratos, 'crm-comissoes': vComissoes, 'cad-comissoes': vComissoes, 'crm-alunos': vCrmAlunos,
   'fin-receber': vReceber,  'cfg-uso': vUso, 'fin-pagar': vPagar, 'fin-custo': vCustoOp, 'fin-lanc': vLanc, 'adm-painel': vPainel, 'adm-plano': vPlano,
   'cad-clientes': vClientes, 'cad-plataformas': vPlataformas, 'cad-funis': vFunis, 'cad-regras': vRegras,
@@ -1229,7 +1253,7 @@ async function vTrafego(m) {
     ${porCanal.map(x => `<tr class="clk${x.c === cs ? ' sel' : ''}" data-canal="${esc(x.c)}"><td><b>${esc(nomeCanal(x.c))}</b></td><td class="n">${brl(x.t.custo)}</td><td class="n">${fP(div(x.t.custo, totC.custo))}</td><td class="n">${num(x.t.leads)}</td><td class="n">${fB(x.z.cpl)}</td><td class="n">${num(x.t.clientes)}</td><td class="n"><b>${fB(x.z.cac)}</b></td><td class="n">${x.z.cac != null && rzC.cac ? '<span class="pill ' + (x.z.cac / rzC.cac > 1.2 ? 'bad' : x.z.cac / rzC.cac < 0.9 ? 'good' : 'neutral') + '">' + (x.z.cac / rzC.cac).toFixed(2).replace('.', ',') + 'x</span>' : '—'}</td><td class="n">${brl(x.t.receita)}</td><td class="n">${fX(x.z.roas)}</td></tr>`).join('')}
     <tr class="tot"><td>Todos os canais</td><td class="n">${brl(totC.custo)}</td><td class="n">100%</td><td class="n">${num(totC.leads)}</td><td class="n">${fB(rzC.cpl)}</td><td class="n">${num(totC.clientes)}</td><td class="n">${fB(rzC.cac)}</td><td class="n">1,00x</td><td class="n">${brl(totC.receita)}</td><td class="n">${fX(rzC.roas)}</td></tr></tbody></table></div>` : '<div class="empty">Sem dados de mídia no período.</div>'}</div>`;
   const sp = `vs. ${dd(pDe).slice(0, 5)}–${dd(pAte).slice(0, 5)}`;
-  m.innerHTML = `<div class="head"><div><h1>Dashboard de tráfego</h1><span class="muted">Saúde dos anúncios pagos e oportunidades de escala. Comparado ao período anterior de mesmo tamanho (${dd(pDe)} a ${dd(pAte)}).</span></div><div class="acts"><button class="btn" id="bImp">Importar planilha (recuperação)</button></div></div>
+  m.innerHTML = `<div class="head"><div><h1>Mídia paga</h1><span class="muted">Saúde dos anúncios pagos e oportunidades de escala. Comparado ao período anterior de mesmo tamanho (${dd(pDe)} a ${dd(pAte)}).</span></div><div class="acts"><button class="btn" id="bImp">Importar planilha (recuperação)</button></div></div>
   <div id="impAviso"></div><div class="filters">
     <label>De<input id="tDe" type="date" value="${de}"></label><label>Até<input id="tAte" type="date" value="${ate}"></label>
     <label>Canal<select id="tCanal"><option value="">Todos os canais</option>${canais.map(c => `<option value="${esc(c)}"${c === cs ? ' selected' : ''}>${esc(nomeCanal(c))}</option>`).join('')}</select></label>
@@ -1281,6 +1305,9 @@ async function vTrafego(m) {
   if ($('#tTodo')) $('#tTodo').onclick = () => { S.tDia = ''; nav(); };
   $('#bImp').onclick = modalImportarTrafego;
   avisoImportado($('#impAviso'), de, ate, tot.custo).catch(() => {});
+  { const rel = document.createElement('div'); rel.className = 'panel'; rel.id = 'mdRel'; const ref = [...m.querySelectorAll(':scope > .panel')].find(p => /Resumo diário/.test(p.textContent)); if (ref) ref.before(rel); else m.appendChild(rel); midiaRelatorio(rel, R, de, ate, cs, cp); }
+  if (cp) { const c = camps.find(x => x[0] === cp); const k = m.querySelector('.filters'); if (k && c) k.insertAdjacentHTML('beforebegin', `<div class="panel" style="margin:0 0 10px;border-left:4px solid var(--accent);display:flex;flex-direction:row;justify-content:flex-start;gap:12px;align-items:center;flex-wrap:wrap;text-align:left"><span>Olhando só a campanha <b>${esc(c[1])}</b>. Todos os números e o relatório abaixo são dela.</span><button class="btn sm" id="tTodasCamp">Ver todas as campanhas</button></div>`);
+    if ($('#tTodasCamp')) $('#tTodasCamp').onclick = () => { S.tCamp = ''; S.tDia = ''; render(); }; }
   m.insertAdjacentHTML('beforeend', '<div id="impHist"></div>'); painelImportacoes($('#impHist'), ['trafego']).catch(() => {});
 }
 
@@ -1550,11 +1577,12 @@ async function vCampanha(m) {
   const TABS = CAMP_TABS.filter(t => t[0] !== 'metas' || c.modelo === 'perpetuo'); if (!TABS.some(t => t[0] === T)) T = 'dash';
   m.innerHTML = `<div class="head"><div><button class="btn sm" id="cVoltar">← Todas as campanhas</button><h1 style="margin-top:8px">${esc(c.nome)}</h1>
     <span class="muted">${pillModelo(c)} ${pillCamp(c)} · ${periodoCamp(c)} · estratégia: ${f ? esc(f.nome) + ' (' + esc(f.tipo) + ')' : '—'}${p ? ' · produto: ' + esc(p.nome) : ''}</span></div>
-    <div class="acts"><label style="flex-direction:row;align-items:center;gap:6px">Status<select id="cSt">${Object.entries(CAMP_ST).map(([k, v]) => `<option value="${k}"${c.status === k ? ' selected' : ''}>${v[1]}</option>`).join('')}</select></label><button class="btn" id="cPj">Projeto${pjs.length ? ' (' + pjs.length + ')' : ''}</button><button class="btn" id="cEd">Editar campanha</button><button class="btn${c.status === 'rascunho' ? '' : ' pri'}" id="cFechar">${c.modelo === 'perpetuo' ? 'Fechar o ciclo' : 'Fechar a campanha'}</button></div></div>
+    <div class="acts"><label style="flex-direction:row;align-items:center;gap:6px">Status<select id="cSt">${Object.entries(CAMP_ST).map(([k, v]) => `<option value="${k}"${c.status === k ? ' selected' : ''}>${v[1]}</option>`).join('')}</select></label><button class="btn" id="cPj">Projeto${pjs.length ? ' (' + pjs.length + ')' : ''}</button><button class="btn" id="cMidia" title="Abre a Mídia paga filtrada nesta campanha, no período dela">Ver na Mídia paga</button><button class="btn" id="cEd">Editar campanha</button><button class="btn${c.status === 'rascunho' ? '' : ' pri'}" id="cFechar">${c.modelo === 'perpetuo' ? 'Fechar o ciclo' : 'Fechar a campanha'}</button></div></div>
     <div class="tabs">${TABS.map(([k, l]) => `<button data-t="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="cBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
   $('#cVoltar').onclick = () => { S.campSel = null; render(); };
   campRascunho(m, c, pjs.length);
   $('#cEd').onclick = () => formCampanha(c);
+  $('#cMidia').onclick = () => irMidiaCampanha(c);
   $('#cFechar').onclick = () => fecharCampanha(c, r);
   $('#cPj').onclick = () => modalProjetoCampanha(c);
   $('#cSt').onchange = e => act(async () => { await q(sb.from('campanhas').update({ status: e.target.value }).eq('id', id)); render(); }, 'Status atualizado');
@@ -3036,9 +3064,11 @@ async function vPainel(m) {
       ${fun.length ? `<div class="tw"><table><thead><tr><th>Campanha</th><th>Leads</th><th>Vendas</th><th>Receita bruta</th></tr></thead><tbody>${fun.map(c => `<tr><td>${esc(c.nome)}<br><span class="muted">${num(c.leads_qualificados)} qualificados</span></td><td>${bar(c.leads, c.meta_leads)}</td><td>${bar(c.vendas, c.meta_vendas)}</td><td>${barBRL(Number(c.receita_bruta), Number(c.meta_receita || 0))}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">Nenhuma campanha.</div>'}
     </div>
   </div>
-  <div class="panel"><h2>DRE gerencial por mês</h2><span class="muted">Clique em um valor para ver os lançamentos e a operação que o geraram.</span>${dreHtml}</div>
-  <div class="panel"><h2>Fluxo de caixa: previsto e realizado</h2>${fxHtml}</div>`;
+  <div class="secl">Tabelas completas</div>
+  <details class="panel gc-det"><summary>DRE gerencial por mês <span class="muted">· ${meses.length} mês(es) · clique para abrir a tabela</span></summary><span class="muted">Clique em um valor para ver os lançamentos e a operação que o geraram.</span>${dreHtml}</details>
+  <details class="panel gc-det"><summary>Fluxo de caixa: previsto e realizado <span class="muted">· entrou ${brl(FX.entrou)}, saiu ${brl(FX.saiu)} em ${perRot}</span></summary>${fxHtml}</details>`;
   painelPos(m);
+  painelV124(m, { h, ini, fim, perRot, dre, P }).catch(e => console.warn('painel v0.124', e));
   $('#pgPer').onchange = e => { PG.per = e.target.value; if (PG.per === 'custom' && !PG.de) { PG.de = diaMais(h, -29); PG.ate = h; } render(); };
   if ($('#pgDe')) { $('#pgDe').onchange = e => { PG.de = e.target.value; render(); }; $('#pgAte').onchange = e => { PG.ate = e.target.value; render(); }; }
   m.onclick = e => {
@@ -4483,7 +4513,7 @@ function dgDetalhe(D) {
     const prim = {}; D.vendas.slice().sort((a, b) => new Date(a.data_venda) - new Date(b.data_venda)).forEach(v => { if (!prim[v.pessoa_id]) prim[v.pessoa_id] = v.id; });
     corpo = `<div class="panel"><h2 style="margin:0">Vendas</h2>${tabVendas(vP.filter(v => (prim[v.pessoa_id] === v.id) === (tipo === 'f_cli')))}</div>`;
   } else if (tipo === 'inv') {
-    titulo = 'Investimento em mídia'; ir = ['mkt-midia', 'Abrir Dashboard de mídia'];
+    titulo = 'Investimento em mídia'; ir = ['mkt-trafego', 'Abrir Mídia paga'];
     corpo = `<div class="panel"><h2 style="margin:0">Por canal</h2>${dgTab([['Canal'], ['Investimento', 1]], D.canais.filter(x => x.custo > 0).sort((a, b) => b.custo - a.custo).map(x => `<tr><td><b>${esc(D.canalNome[x.canal] || x.canal)}</b></td><td class="n">${brl(x.custo)}</td></tr>`), 'Sem custo de mídia por canal no período (o investimento pode ter vindo de contas a pagar ligadas à campanha).')}</div>
       <div class="panel"><h2 style="margin:0">Por campanha</h2>${dgTab([['Campanha'], ['Investimento', 1], ['Novos clientes', 1], ['CAC', 1]], loops('inv', r => r.tipo === 'campanha' && r.inv > 0).map(([n, x]) => `<tr><td>${esc(n)}</td><td class="n">${brl(x.inv)}</td><td class="n">${num(x.cli)}</td><td class="n">${x.cli > 0 ? brl(x.inv / x.cli) : '—'}</td></tr>`))}</div>`;
   } else if (tipo === 'cac' || tipo === 'conv') {
@@ -5129,6 +5159,7 @@ async function vCustoOp(m) {
     const p = (MG ? MG.prods : prods).find(x => x.id === inp.dataset.mcp); if (!p) return; const v = Number(String(inp.value).replace(',', '.')) || 0;
     const ex = { ...(p.extras || {}), [inp.dataset.k]: v }; await q(sb.from('produtos').update({ extras: ex }).eq('id', p.id)); toast('Custo do produto salvo'); render(); }));
   m.querySelectorAll('[data-cok]').forEach(c => c.onchange = () => { if (c.checked) delete P.fora[c.dataset.cok]; else P.fora[c.dataset.cok] = 1; salva(); });
+  custoV124(m, { E, recM, eq, grp, conta, its, cenarios: CEN.map(([k, l, v]) => ({ nome: l + ' (' + String(v).replace('.', ',') + '%)', receita: coEquilibrio({ ...params, regime: regIni, margemPct: v }).receita, meta: k === 'bom' })) }).catch(e => console.warn('custos v0.124', e));
 }
 
 /* simulador de lucro: traz os custos do mês (sem os desmarcados no Custo operacional) como custos fixos, agrupados por conta */
@@ -7995,7 +8026,7 @@ async function vFinDash(m) {
   const PER = perGet();
   const F = await q(sb.rpc('fin_dashboard_periodo', { p_ws: w, p_hoje: h, p_ini: PER.de || '2000-01-01', p_fim: PER.ate || '2100-12-31' }));
   const dias = F.projecao.map(x => x.d), proj = F.projecao.map(x => Number(x.saldo));
-  const meses = F.resultado_por_mes.map(x => x.mes), resPorMes = Object.fromEntries(F.resultado_por_mes.map(x => [x.mes, Number(x.resultado)]));
+  const meses = F.resultado_por_mes.map(x => x.mes).filter(x => String(x).slice(0, 7) <= h.slice(0, 7)), resPorMes = Object.fromEntries(F.resultado_por_mes.map(x => [x.mes, Number(x.resultado)]));
   const despCont = F.maiores_despesas, CART = await finCartoesHtml();
   m.innerHTML = `<div class="head"><h1>Dashboard financeiro</h1><div class="acts"><button class="btn" data-fin="extrato">Extrato</button>${ir(rotaCtx('fin-custo'), 'Custos e margens')}${ir('fin-receber', 'Contas a receber')}${ir('fin-pagar', 'Contas a pagar')}${ir('fin-lanc', 'Lançamentos')}</div></div>
   <div class="filters">${perHtml()}</div>
@@ -8010,7 +8041,7 @@ async function vFinDash(m) {
   </div>
   <div class="cols">
     <div class="panel"><h2>Caixa projetado, próximos 30 dias</h2>${linhas(dias.map(d => dd(d).slice(0, 5)), null, proj, fK, true)}<span class="muted">Parte do saldo de hoje e soma o que vence a receber e a pagar. Contas em atraso entram no dia de hoje. Esta curva é sempre de 30 dias; o período acima muda os cartões e as listas.</span></div>
-    <div class="panel"><h2>Resultado por mês</h2>${meses.length ? linhas(meses.map(x => mesFmt(x.slice(0, 7))), null, meses.map(x => resPorMes[x]), fK, true) : '<div class="empty">Sem lançamentos ainda.</div>'}</div>
+    <div class="panel"><h2>Resultado por mês</h2><span class="muted">Até o mês atual (${mesFmt(h.slice(0, 7))}, ainda incompleto). Meses futuros com lançamentos já feitos ficam fora da linha.</span>${meses.length ? linhas(meses.map(x => mesFmt(x.slice(0, 7))), null, meses.map(x => resPorMes[x]), fK, true) : '<div class="empty">Sem lançamentos ainda.</div>'}</div>
   </div>
   <div class="cols">
     <div class="panel"><h2>Próximos a receber</h2>${F.proximos_receber.length ? `<div class="tw"><table><thead><tr><th>Vence</th><th>Venda</th><th class="n">Valor</th></tr></thead><tbody>${F.proximos_receber.map(r => `<tr><td>${dd(r.vencimento)}${r.atr ? ' <span class="pill bad">atraso</span>' : ''}</td><td>${esc(r.nome)}<br><span class="muted">${esc(r.descr || '')}</span></td><td class="n">${brl(r.valor)}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">Nada a receber.</div>'}</div>
@@ -8022,6 +8053,7 @@ async function vFinDash(m) {
   </div>${CART}`;
   perLigar();
   finDashLigar(m);
+  finCascata(m, PER);
 }
 
 async function vCrmDash(m) {
@@ -11578,6 +11610,214 @@ function estPickLer(f) {
   });
   const vistos = {}; et.forEach(e => { let c = e.chave, i = 2; while (vistos[c]) c = e.chave + '_' + i++; vistos[c] = 1; e.chave = c; });
   return et.map((e, i) => ({ ...e, ordem: (i + 1) * 10 }));
+}
+
+/* ================= v0.124 — Componente único de gráficos (Data Storytelling, Onda 1) =================
+   Um jeito só de desenhar: linhas, barras horizontais com o período anterior, cascata, bullet e ritmo da meta.
+   Regras: uma cor de destaque; verde e vermelho só para melhorou/piorou; anterior em cinza; meta tracejada;
+   ponto incompleto tracejado; barras começam em zero; unidade sempre visível; dado ausente = lacuna. */
+const GC = {
+  fmtK(v, un) {
+    if (v == null || !isFinite(v)) return '—';
+    if (un === 'pct') return (v * 100).toFixed(1).replace('.', ',') + '%';
+    if (un === 'n') return num(Math.round(v));
+    const a = Math.abs(v), s = v < 0 ? '−' : '';
+    return a >= 1e6 ? s + 'R$ ' + (a / 1e6).toFixed(1).replace('.', ',') + ' mi' : a >= 1e3 ? s + 'R$ ' + (a / 1e3).toFixed(a >= 1e4 ? 0 : 1).replace('.', ',') + ' mil' : s + 'R$ ' + Math.round(a);
+  },
+  fmt(v, un) { if (v == null || !isFinite(v)) return '—'; return un === 'pct' ? (v * 100).toFixed(1).replace('.', ',') + '%' : un === 'n' ? num(Math.round(v)) : brl(v); },
+  passo(mx) { const e = Math.pow(10, Math.floor(Math.log10(mx || 1))), f = mx / e; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * e; },
+  vazio(msg, acao) { return `<div class="gc-vazio">${esc(msg)}${acao || ''}</div>`; },
+  fonte(txt) { return `<div class="gc-fonte">${txt}</div>`; }
+};
+/* linhas no tempo: series [{nome, valores, destaque?, cor?}], rotulos [], un, parcial (último ponto incompleto), meta? (valor fixo) */
+function gcLinhas({ series, rotulos, un = 'brl', parcial = false, altura = 190, zero = true }) {
+  const vals = series.flatMap(s => s.valores).filter(v => v != null && isFinite(v));
+  if (!vals.length || rotulos.length < 2) return GC.vazio('Sem dados suficientes no período para desenhar a linha.');
+  const W = 640, H = altura, L = 64, R = 16, T = 14, B = 26;
+  let mn = Math.min(...vals), mx = Math.max(...vals); if (zero) { mn = Math.min(0, mn); mx = Math.max(0, mx); }
+  const st = GC.passo((mx - mn) / 4 || Math.abs(mx) || 1), y0v = Math.floor(mn / st) * st, y1v = Math.ceil(mx / st) * st || st;
+  const n = rotulos.length, x = i => L + i * (W - L - R) / (n - 1), y = v => T + (y1v - v) / ((y1v - y0v) || 1) * (H - T - B);
+  const ticks = []; for (let v = y0v; v <= y1v + st / 2; v += st) ticks.push(v);
+  const cores = ['var(--accent)', 'var(--muted)', 'var(--gc-c3)'], passoR = Math.ceil(n / 8);
+  const linha = (s, k) => { const c = s.cor || cores[k % 3], pts = s.valores.map((v, i) => v == null ? null : [x(i), y(v)]);
+    const seg = []; let cur = []; pts.forEach((p, i) => { if (!p || (parcial && i === n - 1)) { if (cur.length) seg.push(cur); cur = []; if (p) cur = []; } else cur.push(p); }); if (cur.length) seg.push(cur);
+    const ult = parcial && pts[n - 1] && pts[n - 2] ? `<polyline points="${pts[n - 2].join(',')} ${pts[n - 1].join(',')}" fill="none" stroke="${c}" stroke-width="2" stroke-dasharray="5 4" opacity=".8"/>` : '';
+    return seg.map(sg => `<polyline points="${sg.map(p => p.join(',')).join(' ')}" fill="none" stroke="${c}" stroke-width="${k === 0 ? 2.6 : 2}" stroke-linejoin="round" stroke-linecap="round"/>`).join('') + ult
+      + pts.map((p, i) => p ? `<circle cx="${p[0]}" cy="${p[1]}" r="${i === n - 1 ? 4 : 2.6}" fill="${s.valores[i] < 0 ? 'var(--bad)' : c}"${parcial && i === n - 1 ? ' opacity=".7"' : ''}><title>${esc(s.nome)} · ${esc(rotulos[i])}${parcial && i === n - 1 ? ' (incompleto)' : ''}: ${GC.fmt(s.valores[i], un)}</title></circle>` : '').join(''); };
+  const leg = series.length > 1 ? `<div class="gc-leg">${series.map((s, k) => `<span><i style="background:${s.cor || cores[k % 3]}"></i>${esc(s.nome)}</span>`).join('')}${parcial ? '<span class="muted">tracejado = período incompleto</span>' : ''}</div>` : (parcial ? '<div class="gc-leg"><span class="muted">tracejado = período incompleto</span></div>' : '');
+  return `${leg}<svg class="gc" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(series.map(s => s.nome).join(', '))} ao longo do tempo">
+    ${ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" ${v === 0 ? '' : 'stroke-dasharray="2 4"'}/><text x="${L - 8}" y="${y(v) + 3.5}" text-anchor="end">${GC.fmtK(v, un)}</text>`).join('')}
+    ${series.map(linha).join('')}
+    ${rotulos.map((r, i) => (i % passoR === 0 && n - 1 - i >= passoR / 2) || i === n - 1 ? `<text x="${x(i)}" y="${H - 7}" text-anchor="${i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle'}">${esc(r)}</text>` : '').join('')}</svg>`;
+}
+/* barras horizontais ordenadas, com o período anterior como marcador: itens [{rotulo, valor, anterior?, no?, par?}] */
+function gcBarrasH({ itens, un = 'brl', max = 6, total }) {
+  let L = itens.filter(x => Number(x.valor) > 0 || Number(x.anterior) > 0).sort((a, b) => b.valor - a.valor);
+  if (!L.length) return GC.vazio('Nada neste período.');
+  if (L.length > max) { const r = L.slice(max - 1); L = [...L.slice(0, max - 1), { rotulo: 'Outros (' + r.length + ')', valor: r.reduce((s, x) => s + Number(x.valor || 0), 0), anterior: r.some(x => x.anterior != null) ? r.reduce((s, x) => s + Number(x.anterior || 0), 0) : null }]; }
+  const mx = Math.max(...L.map(x => Math.max(Number(x.valor) || 0, Number(x.anterior) || 0))) || 1, tot = total ?? L.reduce((s, x) => s + Number(x.valor || 0), 0);
+  return `<div class="gc-bh">${L.map(x => { const v = Number(x.valor) || 0, a = x.anterior == null ? null : Number(x.anterior), d = a ? (v - a) / a : null, pode = !!x.no;
+    return `<${pode ? 'button type="button"' : 'div'} class="gc-bhl"${pode ? ` data-arvno="${esc(x.no)}" data-arvpar="${esc(JSON.stringify(x.par || {}))}" data-arvrot="${esc(x.rotulo)}"` : ''}>
+      <span class="gc-bhr" title="${esc(x.rotulo)}">${esc(x.rotulo)}</span>
+      <span class="gc-bht"><i style="width:${(v / mx * 100).toFixed(1)}%"></i>${a != null ? `<b class="gc-ant" style="left:${(a / mx * 100).toFixed(1)}%" title="Período anterior: ${GC.fmt(a, un)}"></b>` : ''}</span>
+      <span class="gc-bhv">${GC.fmtK(v, un)}<small>${tot ? (v / tot * 100).toFixed(0) + '%' : ''}${d != null ? (Math.abs(d) < 0.005 ? ' <em class="muted">= 0%</em>' : ` <em class="${d > 0 ? 'vpos' : 'vneg'}">${d > 0 ? '▲' : '▼'}${Math.abs(d * 100).toFixed(0)}%</em>`) : ''}</small></span></${pode ? 'button' : 'div'}>`; }).join('')}
+    ${L.some(x => x.anterior != null) ? '<div class="gc-leg"><span><b class="gc-ant gc-ant-l"></b>período anterior</span><span class="muted">% = participação no total</span></div>' : ''}</div>`;
+}
+/* cascata: passos [{rotulo, valor, tipo:'base'|'entra'|'sai'|'total', no?, par?}] */
+function gcCascata({ passos, un = 'brl' }) {
+  const P = passos.filter((p, i) => p.tipo === 'base' || p.tipo === 'total' || Number(p.valor));
+  if (P.length < 2) return GC.vazio('Sem lançamentos no período.');
+  let acc = 0; const B = P.map(p => { const v = Number(p.valor) || 0; let de, ate; if (p.tipo === 'base') { de = 0; ate = v; acc = v; } else if (p.tipo === 'total') { de = 0; ate = v; } else { de = acc; ate = acc + (p.tipo === 'sai' ? -Math.abs(v) : Math.abs(v)); acc = ate; } return { ...p, de, ate }; });
+  const W = 900, H = 230, L = 64, R = 12, T = 22, Bm = 34, mx = Math.max(0, ...B.map(b => Math.max(b.de, b.ate))), mn = Math.min(0, ...B.map(b => Math.min(b.de, b.ate)));
+  const st = GC.passo((mx - mn) / 4 || 1), y0v = Math.floor(mn / st) * st, y1v = Math.ceil(mx / st) * st || st, y = v => T + (y1v - v) / ((y1v - y0v) || 1) * (H - T - Bm), bw = (W - L - R) / B.length;
+  const ticks = []; for (let v = y0v; v <= y1v + st / 2; v += st) ticks.push(v);
+  const cor = b => b.tipo === 'base' ? 'var(--accent)' : b.tipo === 'sai' ? 'var(--bad)' : b.tipo === 'entra' ? 'var(--good)' : (b.ate >= 0 ? 'var(--good)' : 'var(--bad)');
+  return `<svg class="gc" viewBox="0 0 ${W} ${H}" role="img" aria-label="Como se chega no resultado">
+    ${ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" ${v === 0 ? '' : 'stroke-dasharray="2 4"'}/><text x="${L - 8}" y="${y(v) + 3.5}" text-anchor="end">${GC.fmtK(v, un)}</text>`).join('')}
+    ${B.map((b, i) => { const x0 = L + i * bw + bw * .16, w = bw * .68, yt = y(Math.max(b.de, b.ate)), h = Math.max(2, Math.abs(y(b.de) - y(b.ate))), pode = !!b.no;
+      return `<g${pode ? ` class="gc-clk" data-arvno="${esc(b.no)}" data-arvpar="${esc(JSON.stringify(b.par || {}))}" data-arvrot="${esc(b.rotulo)}" role="button" tabindex="0"` : ''}><title>${esc(b.rotulo)}: ${GC.fmt(b.tipo === 'sai' ? -Math.abs(b.valor) : b.valor, un)}</title>
+        <rect x="${x0}" y="${yt}" width="${w}" height="${h}" rx="3" fill="${cor(b)}" opacity="${b.tipo === 'total' ? 1 : .85}"/>
+        ${i < B.length - 1 ? `<line x1="${x0 + w}" x2="${x0 + bw}" y1="${y(b.ate)}" y2="${y(b.ate)}" stroke="var(--muted)" stroke-dasharray="2 2"/>` : ''}
+        <text x="${x0 + w / 2}" y="${yt - 6}" text-anchor="middle" class="gc-v">${b.tipo === 'sai' ? '−' : b.tipo === 'entra' ? '+' : ''}${GC.fmtK(Math.abs(b.tipo === 'total' || b.tipo === 'base' ? b.ate : b.valor), un)}</text>
+        <text x="${x0 + w / 2}" y="${H - 14}" text-anchor="middle">${esc(b.rotulo)}</text></g>`; }).join('')}</svg>`;
+}
+/* bullet: onde o valor está contra marcos (ex.: equilíbrio, meta). marcos [{rotulo, valor, tipo:'ref'|'meta'}] */
+function gcBullet({ rotulo, valor, marcos, un = 'brl' }) {
+  const M = marcos.filter(m => m.valor != null && isFinite(m.valor)), mx = Math.max(Number(valor) || 0, ...M.map(m => m.valor)) * 1.08 || 1, p = v => Math.max(0, Math.min(100, v / mx * 100));
+  const ok = M.filter(m => m.tipo === 'meta').every(m => valor >= m.valor);
+  return `<div class="gc-bul"><div class="gc-bulr"><b>${esc(rotulo)}</b> <span class="${ok ? 'vpos' : ''}">${GC.fmt(valor, un)}</span></div>
+    <div class="gc-bult"><i style="width:${p(valor).toFixed(1)}%;background:${ok ? 'var(--good)' : 'var(--accent)'}"></i>
+      ${M.map(m => `<b class="gc-mk ${m.tipo}" style="left:${p(m.valor).toFixed(1)}%" title="${esc(m.rotulo)}: ${GC.fmt(m.valor, un)}"></b>`).join('')}</div>
+    <div class="gc-bulm">${M.map(m => `<span style="left:${p(m.valor).toFixed(1)}%">${esc(m.rotulo)}<br><b>${GC.fmtK(m.valor, un)}</b></span>`).join('')}</div></div>`;
+}
+/* ritmo da meta: realizado até hoje × meta do período, com o marcador de onde deveria estar (fração do período que passou) */
+function gcRitmo({ rotulo, real, meta, frac, un = 'brl' }) {
+  if (!meta) return '';
+  const r = Number(real) || 0, esp = meta * frac, pct = r / meta, ritmo = esp ? r / esp : null, ok = ritmo != null && ritmo >= 1;
+  const proj = frac > 0 ? r / frac : null;
+  return `<div class="gc-rit"><div class="gc-ritr"><b>${esc(rotulo)}</b><span>${GC.fmt(r, un)} <span class="muted">de ${GC.fmt(meta, un)} (${(pct * 100).toFixed(0)}%)</span></span></div>
+    <div class="gc-ritt"><i style="width:${Math.min(100, pct * 100).toFixed(1)}%;background:${ok ? 'var(--good)' : 'var(--warn)'}"></i><b class="gc-mk meta" style="left:${Math.min(100, frac * 100).toFixed(1)}%" title="Onde deveria estar hoje: ${GC.fmt(esp, un)}"></b></div>
+    <div class="gc-rits"><span class="${ok ? 'vpos' : 'vneg'}">${ok ? 'No ritmo' : 'Abaixo do ritmo'}</span> · deveria estar em ${GC.fmtK(esp, un)} hoje${proj != null ? ` · <span class="muted">se seguir assim, fecha em ${GC.fmtK(proj, un)} (projeção linear)</span>` : ''}</div></div>`;
+}
+/* liga cliques de detalhamento (abre a árvore no item) */
+function gcLiga(el) {
+  if (!el) return; el.querySelectorAll('[data-arvno]').forEach(b => { if (b.dataset.gcl) return; b.dataset.gcl = 1;
+    const vai = e => { if (e) e.stopPropagation(); arvAbrir(b.dataset.arvno, JSON.parse(b.dataset.arvpar || '{}'), { rotulo: b.dataset.arvrot }); };
+    b.onclick = vai; b.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); vai(e); } }; });
+}
+const mesRot = m => MES_CURTO[Number(String(m).slice(5, 7)) - 1] + '/' + String(m).slice(2, 4);
+
+/* ---------- Dashboard: evolução, ritmo da meta e de onde vem a receita ---------- */
+async function painelV124(m, ctx) {
+  const { h, ini, fim, perRot, dre, P } = ctx, w = S.ws;
+  const box = document.createElement('div'); box.className = 'gc-sec';
+  box.innerHTML = '<div class="secl">Evolução e meta</div><div class="cols"><div class="panel" id="pgEvo"><h2>Receita, lucro e margem por mês</h2><div class="muted">Calculando…</div></div><div class="panel" id="pgRit"><h2>Ritmo da meta do mês</h2><div class="muted">Calculando…</div></div></div><div class="secl">De onde vem a receita · ' + esc(perRot) + '</div><div class="cols"><div class="panel" id="pgProd"><h2>Por produto</h2><div class="muted">Calculando…</div></div><div class="panel" id="pgCampR"><h2>Por campanha</h2><div class="muted">Calculando…</div></div></div>';
+  const ref = m.querySelector('.kpis.mini'); if (ref) ref.after(box); else m.appendChild(box);
+  // 1) evolução: receita (contas de receita da DRE) e lucro (resultado da DRE), 12 meses até o mês atual
+  const mesAt = h.slice(0, 7) + '-01', recMes = {}, resMes = {};
+  dre.forEach(d => { if (d.tipo === 'receita') recMes[d.mes] = (recMes[d.mes] || 0) + Number(d.valor || 0); });
+  (P.dre_resultado || []).forEach(x => { resMes[x.mes] = Number(x.resultado || 0); });
+  const ms = [...new Set([...Object.keys(recMes), ...Object.keys(resMes)])].filter(x => x <= mesAt).sort().slice(-12);
+  const evo = $('#pgEvo');
+  if (ms.length < 2) evo.innerHTML = '<h2>Receita, lucro e margem por mês</h2>' + GC.vazio('São precisos pelo menos 2 meses de lançamentos.');
+  else {
+    const rot = ms.map(mesRot), parc = ms[ms.length - 1] === mesAt, rec = ms.map(k => recMes[k] || 0), luc = ms.map(k => resMes[k] ?? null), mg = ms.map((k, i) => rec[i] ? (luc[i] ?? 0) / rec[i] : null);
+    const k = parc ? ms.length - 2 : ms.length - 1, dR = k >= 1 && rec[k - 1] ? (rec[k] - rec[k - 1]) / rec[k - 1] : null, dM = k >= 1 && mg[k] != null && mg[k - 1] != null ? (mg[k] - mg[k - 1]) * 100 : null;
+    evo.innerHTML = `<h2>Receita, lucro e margem por mês</h2><p class="gc-lead">${dR != null ? `Em ${MES_CURTO[Number(ms[k].slice(5, 7)) - 1]}, a receita ${dR >= 0 ? 'subiu' : 'caiu'} <b class="${dR >= 0 ? 'vpos' : 'vneg'}">${Math.abs(dR * 100).toFixed(0)}%</b> contra o mês anterior${dM != null ? ` e a margem ${dM >= 0 ? 'subiu' : 'caiu'} <b class="${dM >= 0 ? 'vpos' : 'vneg'}">${Math.abs(dM).toFixed(1).replace('.', ',')} pontos percentuais</b>` : ''}.` : ''}</p>
+      ${gcLinhas({ series: [{ nome: 'Receita', valores: rec }, { nome: 'Lucro', valores: luc, cor: 'var(--good)' }], rotulos: rot, parcial: parc })}
+      <h3 style="margin:10px 0 0;font-size:13px">Margem de lucro</h3>${gcLinhas({ series: [{ nome: 'Margem', valores: mg }], rotulos: rot, un: 'pct', parcial: parc, altura: 120 })}
+      ${GC.fonte('Fonte: DRE gerencial (competência), a mesma do quadro "DRE gerencial por mês". Margem = lucro ÷ receita.')}`;
+  }
+  // 2) ritmo da meta do mês: metas mensais da empresa (Campanhas → Planejamento anual) × realizado até hoje
+  const rit = $('#pgRit'), a = Number(h.slice(0, 4)), mn = Number(h.slice(5, 7)), dIni = h.slice(0, 7) + '-01', dFim = coFimMes(h.slice(0, 7));
+  const diasMes = Number(dFim.slice(8, 10)), frac = Number(h.slice(8, 10)) / diasMes;
+  try {
+    const [pl, ven, pes] = await Promise.all([q(sb.from('planejamento_mensal').select('*').eq('workspace_id', w).eq('ano', a).eq('mes', mn)),
+      q(sb.from('vendas').select('valor_bruto').eq('workspace_id', w).eq('status', 'aprovada').gte('data_venda', dIni + 'T00:00:00-03:00').lte('data_venda', h + 'T23:59:59-03:00').limit(20000)),
+      sb.from('pessoas').select('id', { count: 'exact', head: true }).eq('workspace_id', w).gte('criado_em', dIni + 'T00:00:00-03:00').lte('criado_em', h + 'T23:59:59-03:00').then(r => r.error ? null : r.count, () => null)]);
+    const M = pl[0] || {}, recR = ven.reduce((s, v) => s + Number(v.valor_bruto || 0), 0), nV = ven.length;
+    const nL = pes;
+    const itens = [gcRitmo({ rotulo: 'Receita bruta', real: recR, meta: Number(M.meta_receita) || 0, frac }), gcRitmo({ rotulo: 'Vendas', real: nV, meta: Number(M.meta_vendas) || 0, frac, un: 'n' }), nL != null ? gcRitmo({ rotulo: 'Leads', real: nL, meta: Number(M.meta_leads) || 0, frac, un: 'n' }) : ''].filter(Boolean);
+    rit.innerHTML = `<h2>Ritmo da meta do mês · ${MES_CURTO[mn - 1]}/${String(a).slice(2)}</h2>${itens.length ? `<p class="gc-lead">Passaram ${Math.round(frac * 100)}% dos dias do mês. A marca mostra onde o realizado deveria estar hoje.</p>${itens.join('')}`
+      : GC.vazio('Sem meta cadastrada para este mês.', ' <button class="btn sm" id="pgMetaIr">Cadastrar metas mensais</button>')}${GC.fonte('Fonte: metas mensais da empresa (Campanhas → Planejamento anual) e vendas aprovadas e cadastros do mês até hoje. A projeção supõe o mesmo ritmo até o fim do mês; é só uma referência.')}`;
+    const ir = $('#pgMetaIr'); if (ir) ir.onclick = () => { S.view = 'mkt-camp'; S.tabMkt = 'plan'; S.campSel = null; render(); };
+  } catch (e) { rit.innerHTML = '<h2>Ritmo da meta do mês</h2>' + GC.vazio('Não foi possível ler as metas: ' + (e.message || e)); }
+  // 3) de onde vem a receita: a mesma conta do cartão (árvore ven.soma), período atual × anterior de mesmo tamanho
+  const len = Math.round((new Date(fim) - new Date(ini)) / 864e5) + 1, pFim = diaMais(ini, -1), pIni = diaMais(ini, -len);
+  try {
+    const [Nc, Np] = await Promise.all([q(sb.rpc('arvore_no', { p_ws: w, p_no: 'ven.soma', p_par: { ini, fim, campo: 'bruto' } })), q(sb.rpc('arvore_no', { p_ws: w, p_no: 'ven.soma', p_par: { ini: pIni, fim: pFim, campo: 'bruto' } }))]);
+    const qb = (N, t) => ((N.quebras || []).find(x => x && x.titulo === t) || { itens: [] }).itens;
+    const junta = t => { const ant = Object.fromEntries(qb(Np, t).map(x => [x.rotulo, Number(x.valor)])); return qb(Nc, t).map(x => ({ rotulo: x.rotulo, valor: Number(x.valor), anterior: ant[x.rotulo] ?? 0, no: x.no, par: x.par })); };
+    const sub = `<span class="muted">Período anterior: ${dd(pIni)} a ${dd(pFim)}. Clique numa barra para ver as vendas.</span>`;
+    $('#pgProd').innerHTML = `<h2>Por produto</h2>${sub}${gcBarrasH({ itens: junta('Por produto'), total: Number(Nc.valor) })}`;
+    $('#pgCampR').innerHTML = `<h2>Por campanha</h2>${sub}${gcBarrasH({ itens: junta('Por campanha'), total: Number(Nc.valor) })}`;
+    gcLiga(box);
+  } catch (e) { $('#pgProd').innerHTML = '<h2>Por produto</h2>' + GC.vazio(/arvore_no|schema cache/i.test(e.message || '') ? 'Falta rodar a árvore dos números no banco.' : (e.message || String(e))); $('#pgCampR').innerHTML = ''; }
+}
+
+/* ---------- Financeiro: cascata do resultado ---------- */
+async function finCascata(m, PER) {
+  // o mesmo período do cartão "Resultado no período" (fin_dashboard_periodo): sem data = tudo
+  const ini = PER.de || '2000-01-01', fim = PER.ate || '2100-12-31', perR = PER.de || PER.ate ? (PER.de ? dd(PER.de) : 'o início') + ' a ' + (PER.ate ? dd(PER.ate) : 'hoje em diante') : 'todo o período';
+  const el = document.createElement('div'); el.className = 'panel'; el.innerHTML = '<h2>Como se formou o resultado</h2><div class="muted">Calculando…</div>';
+  const ref = m.querySelector('.kpis'); if (ref) ref.after(el);
+  try {
+    const N = await q(sb.rpc('arvore_no', { p_ws: S.ws, p_no: 'fin.lucro', p_par: { ini, fim } }));
+    const F = N.formula || [], passos = F.map((it, i) => ({ rotulo: it.rotulo.replace(/^[−+-]\s*/, ''), valor: Number(it.valor) || 0, tipo: i === 0 ? 'base' : /^[−-]/.test(it.rotulo) ? 'sai' : 'entra', no: it.no, par: it.par }));
+    passos.push({ rotulo: 'Resultado', valor: Number(N.valor) || 0, tipo: 'total', no: 'fin.lucro', par: { ini, fim } });
+    el.innerHTML = `<h2>Como se formou o resultado · ${perR}</h2><p class="gc-lead">Da receita de ${GC.fmtK(F[0] ? Number(F[0].valor) : 0)}, sobraram <b class="${Number(N.valor) >= 0 ? 'vpos' : 'vneg'}">${GC.fmtK(Number(N.valor))}</b> de resultado${F[0] && Number(F[0].valor) ? ` (${(Number(N.valor) / Number(F[0].valor) * 100).toFixed(1).replace('.', ',')}% da receita)` : ''}. Clique numa barra para ver os lançamentos.</p>${gcCascata({ passos })}${GC.fonte('Fonte: DRE gerencial (competência), a mesma conta do cartão "Resultado no período".')}`;
+    gcLiga(el);
+  } catch (e) { el.innerHTML = '<h2>Como se formou o resultado</h2>' + GC.vazio(e.message || String(e)); }
+}
+
+/* ---------- Custos e margens: receita × equilíbrio × cenários e custo por área contra o mês anterior ---------- */
+async function custoV124(m, ctx) {
+  const { E, recM, eq, cenarios, grp, conta, its } = ctx;
+  const painel = [...m.querySelectorAll('.panel')].find(p => /Margens e meta/.test((p.querySelector('h2') || {}).textContent || ''));
+  if (painel && eq && eq.receita != null) {
+    const b = document.createElement('div'); b.className = 'gc-sec';
+    b.innerHTML = `<h3 style="margin:12px 0 4px">Receita do mês contra o que é preciso vender</h3>${gcBullet({ rotulo: 'Receita de ' + mesFmt(E.mes), valor: recM, marcos: [{ rotulo: 'Equilíbrio', valor: eq.receita, tipo: 'ref' }, ...cenarios.filter(c => c.receita != null).map(c => ({ rotulo: c.nome, valor: c.receita, tipo: c.meta ? 'meta' : 'ref' }))] })}
+      <span class="muted" style="font-size:12px">Equilíbrio = vender o suficiente para lucro zero. Cada marca é quanto vender no mês para chegar àquele cenário de margem (a mesma conta da tabela acima).</span>`;
+    const tab = painel.querySelector('.tw'); if (tab) tab.before(b); else painel.appendChild(b);
+  }
+  // custo por área: este mês × mês anterior
+  try {
+    const ant = coMes(E.mes, -1), D = await coDados([ant]), itA = (D[ant] || { itens: [] }).itens;
+    const soma = L => { const g = {}; L.filter(conta).forEach(x => { const k = grp.area(x); g[k] = (g[k] || 0) + x.valor; }); return g; };
+    const gA = soma(its), gP = soma(itA), chaves = [...new Set([...Object.keys(gA), ...Object.keys(gP)])];
+    const totA = Object.values(gA).reduce((s, v) => s + v, 0), totP = Object.values(gP).reduce((s, v) => s + v, 0), d = totP ? (totA - totP) / totP : null;
+    const el = document.createElement('div'); el.className = 'panel';
+    el.innerHTML = `<h2>Custo por área · ${mesFmt(E.mes)} contra ${mesFmt(ant)}</h2><p class="gc-lead">O custo do mês ${d == null ? 'não tem mês anterior para comparar' : `${d >= 0 ? 'subiu' : 'caiu'} <b class="${d > 0 ? 'vneg' : 'vpos'}">${Math.abs(d * 100).toFixed(1).replace('.', ',')}%</b> (${GC.fmtK(totP)} → ${GC.fmtK(totA)})`}.</p>
+      ${gcBarrasH({ itens: chaves.map(k => ({ rotulo: k, valor: gA[k] || 0, anterior: gP[k] || 0 })), max: 8, total: totA }).replace(/class="vpos"/g, 'class="__x"').replace(/class="vneg"/g, 'class="vpos"').replace(/class="__x"/g, 'class="vneg"')}
+      ${GC.fonte('Fonte: contas a pagar com competência no mês e recorrências ativas ainda não lançadas, as mesmas da lista de itens. Custo subindo aparece em vermelho.')}`;
+    const kp = m.querySelector('.kpis'); if (kp) kp.after(el);
+  } catch (e) { /* sem comparação, a tela segue como antes */ }
+}
+
+/* ---------- Mídia: o relatório por canal, campanha, anúncio e ângulo dentro da Mídia paga ---------- */
+function midiaRelatorio(el, R, de, ate, cs, cp) {
+  const A = S.mdRel = S.mdRel || { rel: 'canal' };
+  const rel = mdRelatorio(R, A.rel), tot = mdAgg(R);
+  const linhaRel = x => `<tr><td><b>${esc(x.nome)}</b></td>${MD_COLS.map(([, k, fm]) => `<td class="n">${fm(x.a[k])}</td>`).join('')}</tr>`;
+  el.innerHTML = `<div class="head"><div><h2 style="margin:0">Relatório de mídia</h2><span class="muted">Período ${dd(de)} a ${dd(ate)}${cs ? ' · canal filtrado' : ''}${cp ? ' · campanha filtrada' : ''}.</span></div>
+    <div class="acts"><button class="btn sm" id="mdCsv">Baixar CSV</button><button class="btn sm" id="mdXlsx">Baixar Excel</button><button class="btn sm" id="mdPrint">Imprimir</button></div></div>
+    <div class="tabs">${Object.entries(MD_REL).map(([k, l]) => `<button data-rel="${k}" class="${A.rel === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+    <div class="tw"><table><thead><tr><th>${MD_REL[A.rel].replace('Por ', '')}</th>${MD_COLS.map(c => `<th class="n">${c[0]}</th>`).join('')}</tr></thead><tbody>${rel.length ? rel.map(linhaRel).join('') + `<tr class="tot"><td><b>Total</b></td>${MD_COLS.map(([, k, fm]) => `<td class="n">${fm(tot[k])}</td>`).join('')}</tr>` : `<tr><td colspan="${MD_COLS.length + 1}" class="muted">Sem dados no período.</td></tr>`}</tbody></table></div>
+    <span class="muted" style="font-size:12px">CTR = cliques ÷ impressões · CPC = investimento ÷ cliques · CPL = investimento ÷ leads · CAC = investimento ÷ vendas · ROAS = receita ÷ investimento. Leads e vendas são os rastreados pelo UTM do anúncio.</span>`;
+  el.querySelectorAll('[data-rel]').forEach(b => b.onclick = () => { A.rel = b.dataset.rel; midiaRelatorio(el, R, de, ate, cs, cp); });
+  const aoa = () => [[MD_REL[A.rel].replace('Por ', ''), ...MD_COLS.map(c => c[0])], ...rel.map(x => [x.nome, ...MD_COLS.map(([, k]) => x.a[k] == null ? '' : Number(x.a[k]))]), ['Total', ...MD_COLS.map(([, k]) => tot[k] == null ? '' : Number(tot[k]))]];
+  const nomeArq = 'midia-' + A.rel + '-' + de + '-a-' + ate;
+  el.querySelector('#mdCsv').onclick = () => { const csv = aoa().map(l => l.map(c => '"' + String(c).replace(/"/g, '""').replace('.', typeof c === 'number' ? ',' : '.') + '"').join(';')).join('\n'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' })); a.download = nomeArq + '.csv'; a.click(); };
+  el.querySelector('#mdXlsx').onclick = () => act(async () => { const X = await pcXlsx(), wb = X.utils.book_new(); X.utils.book_append_sheet(wb, X.utils.aoa_to_sheet(aoa()), 'Relatório'); X.writeFile(wb, nomeArq + '.xlsx'); });
+  el.querySelector('#mdPrint').onclick = () => window.print();
+}
+/* campanha → Mídia paga já filtrada nela */
+function irMidiaCampanha(c) {
+  const h = hoje();
+  S.tCamp = c.id; S.tCanal = ''; S.tDia = '';
+  S.tDe = c.data_inicio && c.data_inicio <= h ? c.data_inicio : diaMais(h, -29);
+  S.tAte = c.data_fim && c.data_fim < h ? c.data_fim : h;
+  S.view = ehStarter() ? 'mkt-midia' : 'mkt-trafego'; S.campSel = null; render();
 }
 
 /* ---------- Projetos: apoio ---------- */

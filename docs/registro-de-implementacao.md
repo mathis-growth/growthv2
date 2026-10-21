@@ -1,5 +1,14 @@
 
 
+## Gráficos da onda 1 (v0.124)
+- Componente: `gcLinhas`, `gcBarrasH`, `gcCascata`, `gcBullet`, `gcRitmo`, `gcLiga` (cliques que abrem a árvore) e o objeto `GC` (formatos, vazio, fonte). CSS com prefixo `gc-`. (O prefixo `gx` já era usado pelo Growth Model.)
+- Dashboard: `painelV124(m, ctx)` chamado no fim do `vPainel`; DRE e fluxo em `<details class="gc-det">`.
+- Financeiro: `finCascata(m, PER)` no fim do `vFinDash`; filtro de meses ≤ mês atual em "Resultado por mês".
+- Custos e margens: `custoV124(m, ctx)` no fim do `vCustoOp`.
+- Mídia: `midiaRelatorio(el, R, de, ate, cs, cp)` no fim do `vTrafego`; `irMidiaCampanha(c)` no botão `#cMidia` da campanha. Rotas: `adm-dash` → `vPainel` (troca a view para `adm-painel`), `st-dash` → `vPainel`, `mkt-midia` → `vTrafego` (fora do Starter troca para `mkt-trafego`). `vMidia` e `vDashGrowth` ficaram no código, sem rota.
+- Montagem: `integra124.py` (roda o `integra123.py`) com `g124.js` e `g124.css`.
+- Teste: `t124_graficos_onda1.py`.
+
 ## Linha no período e cadastros na campanha (v0.123)
 - `arvLinha(top, N, root)` (no `arvDesenha`): caixa com os botões de agrupamento, chama `arvore_serie` e guarda por agrupamento em `top.series`. `arvGranAuto`, `arvRotPonto`.
 - `estNova(pr, dup, aoCriar)`: com `aoCriar` abre em `#modalRoot2` (o `modal()` ganhou o parâmetro `raiz` e só redesenha a tela quando é o modal principal). Etapas: `estPickHtml`, `estPickModelo`, `estPickLer`.

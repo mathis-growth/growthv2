@@ -100,6 +100,20 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.124] - 2026-10-21 — Gráficos com função (Data Storytelling, onda 1): Dashboard novo e uma tela só de mídia
+- **Um jeito só de desenhar gráficos** em todo o sistema: linhas no tempo, barras horizontais com o período anterior, cascata, "bullet" (valor contra marcos) e ritmo da meta. Regras: uma cor de destaque; verde e vermelho só para melhorou/piorou; período anterior em cinza; meta e ponto incompleto tracejados; barras começam no zero; unidade sempre visível; mês sem dado fica sem ponto. Cada gráfico traz uma frase com o que mudou (só fatos calculados) e a fonte do número.
+- **Dashboard (o dashboard geral do negócio) substitui o Dashboard Growth**. O item saiu do menu; quem abrir o endereço antigo cai no Dashboard. O Growth Starter também usa este Dashboard. Novos blocos:
+  - **Receita, lucro e margem por mês** (12 meses até o mês atual; o mês em andamento tracejado), com a variação do último mês completo;
+  - **Ritmo da meta do mês**: receita, vendas e leads do mês até hoje contra as metas mensais de Campanhas → Planejamento anual, com a marca de onde deveriam estar hoje e a projeção linear (marcada como projeção). Sem meta cadastrada, mostra o atalho para cadastrar;
+  - **De onde vem a receita**: por produto e por campanha, em barras, contra o período anterior de mesmo tamanho; clicar numa barra abre as vendas na árvore;
+  - **DRE e fluxo de caixa** continuam inteiros, mas recolhidos ("Tabelas completas"): abrem com um clique.
+- **Mídia: uma tela só (Mídia paga)**. O "Dashboard de mídia" saiu do menu; o endereço antigo abre a Mídia paga. O **Relatório de mídia** (por canal, campanha, anúncio e ângulo, com CSV, Excel e Imprimir) foi para dentro da Mídia paga. Nenhum número ou filtro foi perdido.
+  - **Campanha → "Ver na Mídia paga"**: abre a Mídia paga já filtrada na campanha, do início dela até hoje (ou até o fim, se já acabou), com o aviso "Olhando só a campanha…" e o botão "Ver todas as campanhas".
+- **Financeiro**: **Como se formou o resultado** (cascata: receitas − deduções − custos − despesas = resultado), no mesmo período e com a mesma conta do cartão "Resultado no período"; clicar numa barra abre os lançamentos. **Resultado por mês** deixa de mostrar meses futuros (a linha "caía" por causa de lançamentos já feitos para meses que não chegaram).
+- **Custos e margens**: **Receita do mês contra o que é preciso vender** (equilíbrio e os cenários ruim, bom e ótimo, a mesma conta da tabela) e **Custo por área contra o mês anterior** (custo subindo em vermelho).
+- Não muda o banco. Na base do vídeo de demonstração (só nela) entraram metas mensais de setembro e outubro para o ritmo da meta aparecer.
+- Teste: `t124_graficos_onda1.py`.
+
 ## [0.123] - 2026-10-21 — Gráfico de linha no período da tela e cadastros dentro da nova campanha
 - **Gráfico do painel "De onde vem este número" passa a ser sempre de linha**, dentro do período escolhido na tela de onde você clicou:
   - o agrupamento sai sozinho pelo tamanho do período (até 31 dias: por dia; até 4 meses: por semana; até ~2 anos: por mês; acima: por ano) e pode ser trocado nos botões **Dia / Semana / Mês / Ano**;
