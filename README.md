@@ -15,8 +15,9 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.126 · 21/10/2026 (`index.html`) |
-| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.123** (aplicado em 21/10/2026); as v0.124 a v0.126 não mudam o banco |
+| **Versão da tela** | 0.127 · 21/10/2026 (`index.html`) |
+| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.123** (aplicado em 21/10/2026); as v0.124 a v0.126 não mudam o banco; **a v0.127 tem `RODAR_v0.127_saldo_minimo.sql` ainda não aplicado** |
+| **Falta rodar no banco** | `supabase/RODAR_v0.127_saldo_minimo.sql` (saldo mínimo de caixa), aguardando autorização |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta, projeto do Google e os segredos no Supabase: [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
 
@@ -26,6 +27,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.127 | 21/10/2026 | **Onda 3**: receita por papel da oferta (order bump, upsell, downsell) em Vendas e a oferta na importação; meta × realizado acumulado do plano e a projeção dos cenários aprovados; saldo mínimo de caixa no Financeiro e aviso no Dashboard. | `RODAR_v0.127_saldo_minimo.sql`, **não aplicado** |
 | 0.126 | 21/10/2026 | **Fecha a Onda 2 e completa a Onda 1**: abandono e recuperação no tempo; LTV por coorte; o que mais mexe no lucro (Growth Model); o que testar primeiro (ICE 2x2); antes × depois dos experimentos; desvio da meta e funil com perdas no fechamento; vendas acumuladas × meta; CPM, CTR, CPC, frequência e CAC por canal na Mídia paga; investimento, CPL e CAC no tempo; receita de novos × existentes. | não muda o banco |
 | 0.125 | 21/10/2026 | **Onda 2, parte 1**: observações no Dashboard (fato, conta, hipótese, investigar); resultado × dinheiro no banco; vencimentos por semana e faixas de atraso em Contas a receber e a pagar; MRR mês a mês com novos, expansão, redução e cancelados; vendas, ticket e margem por produto; CAC × clientes por campanha; leads por origem até a compra. | não muda o banco |
 | 0.124 | 21/10/2026 | **Gráficos com função (onda 1)**: componente único de gráficos; **Dashboard** vira o dashboard geral do negócio (receita, lucro e margem por mês; ritmo da meta do mês; receita por produto e campanha contra o período anterior; DRE e fluxo recolhidos) e **substitui o Dashboard Growth**; **uma tela só de mídia** (Mídia paga, com o Relatório de mídia) e **campanha → Ver na Mídia paga** já filtrada; Financeiro com **cascata do resultado** e linha mensal sem meses futuros; Custos e margens com **receita × equilíbrio × cenários** e **custo por área × mês anterior**. | não muda o banco |

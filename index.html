@@ -481,7 +481,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.126 · 21/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.127 · 21/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -2412,6 +2412,7 @@ async function vPlano(m) {
     if (g('data-cc')) return formCampanha(null, { meta_id: g('data-cc').dataset.cc });
     const cr = g('data-camp'); if (cr) { S.campSel = cr.dataset.camp; S.campTab = 'resumo'; S.view = 'mkt-camp'; render(); }
   };
+  planoV127(m, plano);
 }
 
 /* ================= Contratos de prestação de serviço ================= */
@@ -2752,6 +2753,7 @@ async function vVendas(m) {
   $('#vfSt').onchange = e => { VF.st = e.target.value; render(); };
   $('#novaVenda').onclick = () => modalVenda();
   vendasV125(m, { apr, VP, h });
+  vendasOfertas127(m, { apr, VP, h });
   m.onclick = e => {
     const s = e.target.closest('[data-e]'), rx = e.target.closest('[data-rastro]');
     if (rx) return rastroDe(rx, ven, []);
@@ -4081,6 +4083,7 @@ const IMP_ALVOS = {
     { k: 'parcelas', l: 'Parcelas', t: 'int', al: ['parcelas', 'qtd parcelas', 'numero de parcelas'] },
     { k: 'status', l: 'Status', t: 'enum', opts: { aprovada: ['aprovada', 'aprovado', 'paga', 'pago', 'concluida', 'concluída', 'ok'], pendente: ['pendente', 'aguardando'], cancelada: ['cancelada', 'cancelado'], reembolsada: ['reembolsada', 'reembolsado', 'reembolso'], chargeback: ['chargeback'] }, def: 'aprovada', al: ['status', 'situacao', 'situação'], info: 'Se não vier, a venda entra como aprovada.' },
     { k: 'campanha_id', l: 'Campanha', t: 'ref', ref: 'campanhas', al: ['campanha', 'utm_campaign'], info: 'Sem campanha, a venda conta como orgânica/direta.' },
+    { k: 'oferta_id', l: 'Oferta (nome cadastrado)', t: 'ref', ref: 'ofertas', al: ['nome da oferta', 'oferta (nome)', 'codigo da oferta', 'código da oferta', 'offer', 'nome do plano', 'plano'], info: 'Opcional. O nome precisa ser igual ao da oferta cadastrada na campanha; é o que separa principal, order bump, upsell e downsell nos relatórios.' },
     { k: 'id_externo', l: 'ID da venda na plataforma', t: 'text', al: ['id', 'id externo', 'id da venda', 'transacao', 'transação', 'codigo da transacao', 'pedido id'], info: 'Serve para não duplicar a venda se você importar o mesmo arquivo de novo.' }] }
 };
 const impNum = v => { let s = String(v).trim().replace(/R\$|\s/g, ''); if (!s) return null; if (/,/.test(s) && /\./.test(s)) s = s.replace(/\./g, '').replace(',', '.'); else if (/,/.test(s)) s = s.replace(',', '.'); const n = Number(s); return isFinite(n) ? n : null; };
@@ -4105,7 +4108,7 @@ function impConv(c, bruto, refs) {
     case 'date': { const d = impData(s); return d ? { v: d.d } : bad('data inválida (use dd/mm/aaaa)'); }
     case 'datetime': { const d = impData(s); return d ? { v: `${d.d}T${d.h || '12:00'}${d.h && d.h.length === 5 ? ':00' : ''}-03:00` } : bad('data inválida (use dd/mm/aaaa)'); }
     case 'enum': { const n = pcNorm(s); for (const [val, sin] of Object.entries(c.opts)) if (val === n || sin.some(x => pcNorm(x) === n)) return { v: val }; return bad('valor não reconhecido (aceitos: ' + Object.keys(c.opts).join(', ') + ')'); }
-    case 'ref': { const id = (refs[c.ref] || {})[pcNorm(s)]; return id ? { v: id } : bad('não encontrado em ' + (IMP_ALVOS[c.ref] || {}).nome); }
+    case 'ref': { const id = (refs[c.ref] || {})[pcNorm(s)]; return id ? { v: id } : bad('não encontrado em ' + ((IMP_ALVOS[c.ref] || {}).nome || c.ref)); }
   }
   return { v: s };
 }
@@ -4153,7 +4156,8 @@ function impValida() {
   return { campos, semDestino, prontas, problemas, ignoradas, bloqueio };
 }
 async function impCarregaRefs() {
-  const w = S.ws, refs = { produtos: {}, pessoas: {}, campanhas: {} };
+  const w = S.ws, refs = { produtos: {}, pessoas: {}, campanhas: {}, ofertas: {} };
+  (await q(sb.from('ofertas').select('id,nome').eq('workspace_id', w).limit(5000)).catch(() => [])).forEach(x => { refs.ofertas[pcNorm(x.nome)] = x.id; });
   const [pr, pe, ca] = await Promise.all([q(sb.from('produtos').select('id,nome,tag').eq('workspace_id', w).limit(5000)), q(sb.from('pessoas').select('id,nome,email,telefone').eq('workspace_id', w).limit(50000)), q(sb.from('campanhas').select('id,nome').eq('workspace_id', w).limit(5000))]);
   pr.forEach(x => { refs.produtos[pcNorm(x.nome)] = x.id; if (x.tag) refs.produtos[pcNorm(x.tag)] = x.id; });
   pe.forEach(x => { if (x.email) refs.pessoas[pcNorm(x.email)] = x.id; if (x.nome && !refs.pessoas[pcNorm(x.nome)]) refs.pessoas[pcNorm(x.nome)] = x.id; });
@@ -8087,6 +8091,7 @@ async function vFinDash(m) {
   finDashLigar(m);
   finCascata(m, PER);
   finResBanco(m, F);
+  finSaldoMin(m, F);
 }
 
 async function vCrmDash(m) {
@@ -11949,6 +11954,9 @@ async function painelObs(box, ctx) {
   try { const N = await q(sb.rpc('arvore_no', { p_ws: w, p_no: 'ven.soma', p_par: { ini, fim, campo: 'bruto' } }));
     const it = ((N.quebras || []).find(x => x && x.titulo === 'Por produto') || { itens: [] }).itens.map(x => ({ ...x, valor: Number(x.valor) })).sort((a, b) => b.valor - a.valor), tot = Number(N.valor) || 0;
     if (it[0] && tot && it[0].valor / tot > .6 && it.length > 1) O.push({ peso: .1, t: 'warn', ti: 'Receita concentrada', fato: `${it[0].rotulo} responde por ${f0(it[0].valor / tot)} da receita do período.`, fator: '', inv: 'Avaliar a dependência desse produto e o que os outros precisam para crescer.' }); } catch (e) { /* sem árvore, segue sem esta */ }
+  try { const SM = typeof saldoMinLer === 'function' ? await saldoMinLer() : { v: null };
+    if (SM.v != null) { const FD = await q(sb.rpc('fin_dashboard_periodo', { p_ws: w, p_hoje: h, p_ini: '2000-01-01', p_fim: '2100-12-31' })), pj = (FD.projecao || []).map(x => ({ d: x.d, v: Number(x.saldo) })), ab = pj.find(x => x.v < SM.v);
+      if (ab) O.push({ peso: 9, t: 'bad', ti: 'Caixa abaixo do mínimo', fato: `Pela projeção de 30 dias, o caixa fica em ${GC.fmtK(ab.v)} em ${dd(ab.d)}, abaixo do mínimo de ${GC.fmtK(SM.v)}.`, fator: '', inv: 'Ver o que vence a pagar e a receber nos próximos dias.', ir: ['fin-dash', 'Abrir Financeiro'] }); } } catch (e) { /* sem projeção, segue */ }
   O.sort((a, b) => b.peso - a.peso);
   const cor = { good: 'var(--good)', bad: 'var(--bad)', warn: 'var(--warn)' };
   el.innerHTML = `<h2>O que mudou e merece atenção <span class="muted" style="font-weight:400;font-size:13px">· contra ${dd(pIni)} a ${dd(pFim)}</span></h2>
@@ -11956,7 +11964,7 @@ async function painelObs(box, ctx) {
       <p><span class="gc-tag">Fato</span>${esc(o.fato)}</p>${o.fator ? `<p><span class="gc-tag ${/^Possível/.test(o.fator) ? 'hip' : ''}">${/^Possível/.test(o.fator) ? 'Hipótese' : 'Conta'}</span>${esc(o.fator.replace(/^Possível fator associado: /, 'Possível fator associado: '))}</p>` : ''}
       <p><span class="gc-tag inv">Investigar</span>${esc(o.inv)}${o.ir ? ` <a class="lk" data-gcir="${o.ir[0]}">${esc(o.ir[1])}</a>` : ''}</p></div>`).join('')}</div>`
       : '<div class="gc-vazio">Nada fora do normal: receita, margem e CAC variaram pouco contra o período anterior e não há atraso relevante.</div>'}
-    ${GC.fonte('Regras fixas, sem IA: receita ±10%, margem ±3 pontos, CAC total ±15%, atraso ≥10% do a receber, um produto com mais de 60% da receita. "Fato" e "Conta" são calculados; "Hipótese" é só uma relação possível, não uma causa comprovada.')}`;
+    ${GC.fonte('Regras fixas, sem IA: receita ±10%, margem ±3 pontos, CAC total ±15%, atraso ≥10% do a receber, um produto com mais de 60% da receita, caixa projetado abaixo do saldo mínimo. "Fato" e "Conta" são calculados; "Hipótese" é só uma relação possível, não uma causa comprovada.')}`;
   el.querySelectorAll('[data-gcir]').forEach(a => a.onclick = () => { S.view = rotaCtx(a.dataset.gcir); render(); });
 }
 
@@ -12322,6 +12330,93 @@ function gmTornado(m, B, n) {
   const sec = [...m.querySelectorAll('h2, h3, summary, .gs-h, b')].find(e => /^Resultado do período/.test((e.textContent || '').trim()));
   const blk = sec ? sec.closest('.panel, details, section') : null;
   if (blk) blk.after(d); else m.appendChild(d);
+}
+
+/* ================= v0.127 — Onda 3: ofertas, plano no tempo e saldo mínimo de caixa =================
+   Vendas: receita por papel da oferta (principal, order bump, upsell, downsell, cross-sell) e a oferta na importação.
+   Planejamento: meta × realizado acumulado do plano (receita, vendas, leads) e o que os cenários aprovados projetam.
+   Financeiro: saldo mínimo de caixa contra o caixa projetado de 30 dias (e aviso no Dashboard). */
+const GC_PAPEL = [['principal', 'Oferta principal', 'var(--accent)'], ['order_bump', 'Order bump', 'var(--good)'], ['upsell', 'Upsell', 'var(--gc-c3)'], ['cross_sell', 'Cross-sell', 'var(--warn)'], ['downsell', 'Downsell', 'var(--bad)'], ['', 'Sem oferta ligada', 'var(--line)']];
+
+/* ---------- Vendas: quanto vem de cada papel da oferta ---------- */
+async function vendasOfertas127(m, { apr, VP, h }) {
+  const ref = [...m.querySelectorAll(':scope > .panel')].pop(); if (!ref) return;
+  const el = document.createElement('div'); el.className = 'panel'; el.innerHTML = '<h2>Quanto vem de order bump, upsell e downsell</h2><div class="muted">Calculando…</div>'; ref.before(el);
+  try {
+    const ofs = await q(sb.from('ofertas').select('id,nome,papel').eq('workspace_id', S.ws)).catch(() => []), OF = Object.fromEntries(ofs.map(o => [o.id, o]));
+    const de = VP.de || (apr.length ? gcDia(apr[apr.length - 1].data_venda) : h), ate = VP.ate || h, g = gcGranDe(de, ate), ks = gcBaldes(de, ate, g);
+    const B = {}, T = {}; apr.forEach(v => { const o = v.oferta_id ? OF[v.oferta_id] : null, p = o ? (o.papel || 'principal') : '', k = gcChave(gcDia(v.data_venda), g), r = Number(v.valor_bruto || 0);
+      (B[k] = B[k] || {})[p] = (B[k][p] || 0) + r; T[p] = (T[p] || 0) + r; });
+    const tot = Object.values(T).reduce((t, v) => t + v, 0), lig = tot - (T[''] || 0), extra = ['order_bump', 'upsell', 'cross_sell', 'downsell'].reduce((t, k) => t + (T[k] || 0), 0);
+    const ser = GC_PAPEL.filter(([k]) => T[k] > 0).map(([k, nome, cor]) => ({ nome, cor, valores: ks.map(x => (B[x] || {})[k] || 0) }));
+    el.innerHTML = `<h2>Quanto vem de order bump, upsell e downsell</h2>${!ofs.length ? GC.vazio('Nenhuma oferta cadastrada.', ' <button class="btn sm" id="vdOfIr">Cadastrar ofertas</button>')
+      : !lig ? GC.vazio('Nenhuma venda do período está ligada a uma oferta. Escolha a oferta ao lançar a venda ou traga a coluna da oferta na importação de vendas.', ' <button class="btn sm" id="vdOfIr">Ver ofertas</button>')
+      : `<p class="gc-lead">${GC.fmtK(extra)} (${(extra / tot * 100).toFixed(1).replace('.', ',')}% da receita) vieram de ofertas extras: order bump, upsell, cross-sell e downsell.${T[''] ? ` ${(T[''] / tot * 100).toFixed(0)}% da receita é de vendas sem oferta ligada.` : ''}</p>
+        ${gcPilha({ rotulos: ks.map(k => gcRotB(k, g)), series: ser, altura: 200, parcial: ks.length && gcParcB(ks[ks.length - 1], g, h), W: 900 })}
+        ${gcBarrasH({ itens: GC_PAPEL.filter(([k]) => T[k] > 0).map(([k, nome]) => ({ rotulo: nome, valor: T[k] })), max: 6, total: tot, fixo: true })}`}
+      ${GC.fonte('Vendas aprovadas do período (valor bruto), pelo papel da oferta escolhida em cada venda (Campanhas → ofertas). Venda sem oferta ligada aparece separada, em cinza.')}`;
+    const ir = el.querySelector('#vdOfIr'); if (ir) ir.onclick = () => { S.view = 'mkt-camp'; S.campSel = null; render(); };
+  } catch (e) { el.innerHTML = '<h2>Ofertas</h2>' + GC.vazio(e.message || String(e)); }
+}
+
+/* ---------- Planejamento: meta × realizado acumulado do plano e a projeção dos cenários aprovados ---------- */
+async function planoV127(m, plano) {
+  const h = hoje(), ini = plano.data_inicio, fim = plano.data_fim; if (!ini || !fim) return;
+  const el = document.createElement('div'); el.className = 'panel'; el.id = 'plTempo'; el.innerHTML = '<h2>Meta × realizado no plano</h2><div class="muted">Calculando…</div>';
+  const hd = m.querySelector('.head'); if (!hd) return; hd.after(el);
+  try {
+    const ms = []; for (let x = ini.slice(0, 7); x <= fim.slice(0, 7); x = coMes(x, 1)) ms.push(x);
+    const ate = fim < h ? fim : h, anos = [...new Set(ms.map(x => Number(x.slice(0, 4))))];
+    const [pm, V, Pp, cens] = await Promise.all([q(sb.from('planejamento_mensal').select('ano,mes,meta_receita,meta_vendas,meta_leads').eq('workspace_id', S.ws).in('ano', anos)).catch(() => []),
+      gcTodos(() => sb.from('vendas').select('id,data_venda,valor_bruto').eq('workspace_id', S.ws).eq('status', 'aprovada').gte('data_venda', ini + 'T00:00:00-03:00').lte('data_venda', ate + 'T23:59:59-03:00').order('id')),
+      gcTodos(() => sb.from('pessoas').select('id,criado_em').eq('workspace_id', S.ws).gte('criado_em', ini + 'T00:00:00-03:00').lte('criado_em', ate + 'T23:59:59-03:00').order('id')),
+      q(sb.from('gm_cenarios').select('nome,status,resultados,escopo').eq('workspace_id', S.ws).eq('status', 'aprovado')).catch(() => [])]);
+    const MT = Object.fromEntries(pm.map(x => [x.ano + '-' + String(x.mes).padStart(2, '0'), x]));
+    const R = {}; V.forEach(v => { const k = gcDia(v.data_venda).slice(0, 7), o = R[k] = R[k] || { r: 0, n: 0, l: 0 }; o.r += Number(v.valor_bruto || 0); o.n++; }); Pp.forEach(p => { const k = gcDia(p.criado_em).slice(0, 7); (R[k] = R[k] || { r: 0, n: 0, l: 0 }).l++; });
+    const acum = (f, ateM) => { let a = 0; return ms.map(k => k > ateM ? null : (a += f(k))); };
+    const mAt = ate.slice(0, 7), temMeta = k => pm.some(x => Number(x[k]) > 0), rot = ms.map(k => gcMesRot(k + '-01'));
+    const bloco = (titulo, km, kr, un) => { if (!temMeta(km)) return ''; const meta = acum(k => Number((MT[k] || {})[km]) || 0, '9999'), real = acum(k => (R[k] || {})[kr] || 0, mAt), i = ms.indexOf(mAt), pr = i >= 0 && meta[i] ? real[i] / meta[i] : null;
+      return `<div><h3 style="margin:0;font-size:13px">${titulo}${pr != null ? ` <span class="${pr >= 1 ? 'vpos' : 'vneg'}">${(pr * 100).toFixed(0)}% da meta até ${gcMesRot(mAt + '-01')}</span>` : ''}</h3>${gcLinhas({ series: [{ nome: 'Realizado acumulado', valores: real }, { nome: 'Meta acumulada', valores: meta, cor: 'var(--muted)' }], rotulos: rot, un, altura: 170, W: 380 })}</div>`; };
+    const bl = [bloco('Receita', 'meta_receita', 'r', 'brl'), bloco('Vendas', 'meta_vendas', 'n', 'n'), bloco('Leads', 'meta_leads', 'l', 'n')].filter(Boolean);
+    const cenL = cens.filter(c => c.resultados && (c.resultados.projetado_consolidado || {}).receita != null);
+    el.innerHTML = `<h2>Meta × realizado no plano · ${dd(ini)} a ${dd(fim)}</h2>
+      ${bl.length ? `<div class="gc-mini">${bl.join('')}</div>` : GC.vazio('Sem metas mensais cadastradas para o período do plano.', ' <button class="btn sm" id="plMetaIr">Cadastrar metas mensais</button>')}
+      ${cenL.length ? `<h3 style="margin:12px 0 4px;font-size:13px">Projeção dos cenários aprovados (Growth Model)</h3><div class="tw"><table><thead><tr><th>Cenário</th><th class="n">Receita na base</th><th class="n">Receita projetada</th><th class="n">Lucro projetado</th></tr></thead><tbody>${cenL.map(c => { const B = c.resultados.baseline_consolidado || {}, P = c.resultados.projetado_consolidado || {};
+        return `<tr><td>${esc(c.nome)}</td><td class="n">${B.receita == null ? '—' : brl(B.receita)}</td><td class="n">${brl(P.receita)}${B.receita ? ` <span class="${P.receita >= B.receita ? 'vpos' : 'vneg'}">(${P.receita >= B.receita ? '+' : '−'}${Math.abs((P.receita - B.receita) / B.receita * 100).toFixed(1).replace('.', ',')}%)</span>` : ''}</td><td class="n">${P.lucro == null ? '—' : brl(P.lucro)}</td></tr>`; }).join('')}</tbody></table></div>`
+        : '<p class="muted" style="font-size:12px;margin:8px 0 0">Projeção: aparece quando houver cenário aprovado no Growth Model com o resultado salvo. Sem cenário, o sistema não projeta.</p>'}
+      ${GC.fonte('Meta: metas mensais da empresa (Campanhas → Planejamento anual), somadas mês a mês. Realizado: vendas aprovadas (valor bruto e quantidade) e pessoas cadastradas, do início do plano até hoje. A projeção vem só de cenário aprovado, nunca de extrapolação.')}`;
+    const ir = el.querySelector('#plMetaIr'); if (ir) ir.onclick = () => { S.view = 'mkt-camp'; S.tabMkt = 'plan'; S.campSel = null; render(); };
+  } catch (e) { el.innerHTML = '<h2>Meta × realizado no plano</h2>' + GC.vazio(e.message || String(e)); }
+}
+
+/* ---------- Financeiro: saldo mínimo de caixa ---------- */
+async function saldoMinLer() {
+  if (await temColuna('empresa', 'saldo_minimo')) { const e = await q(sb.from('empresa').select('saldo_minimo').eq('workspace_id', S.ws).maybeSingle()).catch(() => null); return { v: e && e.saldo_minimo != null ? Number(e.saldo_minimo) : null, banco: true }; }
+  let v = null; try { const x = localStorage.getItem('growths_saldo_min_' + S.ws); v = x == null || x === '' ? null : Number(x); } catch (e) { v = null; }
+  return { v, banco: false };
+}
+async function saldoMinGrava(v) {
+  if (await temColuna('empresa', 'saldo_minimo')) {
+    const e = await q(sb.from('empresa').select('workspace_id').eq('workspace_id', S.ws).maybeSingle()).catch(() => null);
+    if (e) await q(sb.from('empresa').update({ saldo_minimo: v }).eq('workspace_id', S.ws));
+    else { const ws = (S.workspaces || []).find(x => x.id === S.ws) || {}; await q(sb.from('empresa').insert({ workspace_id: S.ws, nome: ws.nome || 'Empresa', saldo_minimo: v })); }
+    return true;
+  }
+  try { if (v == null) localStorage.removeItem('growths_saldo_min_' + S.ws); else localStorage.setItem('growths_saldo_min_' + S.ws, String(v)); } catch (e) { /* sem armazenamento */ }
+  return false;
+}
+async function finSaldoMin(m, F) {
+  const SM = await saldoMinLer(), dias = F.projecao.map(x => x.d), proj = F.projecao.map(x => Number(x.saldo));
+  const el = document.createElement('div'); el.className = 'panel'; el.id = 'finSmin';
+  const abaixo = SM.v != null ? dias.findIndex((d, i) => proj[i] < SM.v) : -1, minV = Math.min(...proj), minD = dias[proj.indexOf(minV)];
+  el.innerHTML = `<div class="head" style="margin:0"><h2 style="margin:0">Saldo mínimo de caixa</h2><div class="acts"><label style="flex-direction:row;align-items:center;gap:6px">Mínimo (R$)<input id="smV" type="number" min="0" step="100" value="${SM.v ?? ''}" style="width:130px" placeholder="ex.: 20000"></label><button class="btn sm" id="smSalva">Salvar</button></div></div>
+    ${SM.v == null ? '<p class="gc-lead">Informe o saldo que o caixa não pode furar (reserva para folha, impostos e imprevistos). O sistema avisa quando a projeção de 30 dias ficar abaixo dele.</p>'
+      : abaixo >= 0 ? `<p class="gc-lead"><b class="vneg">Atenção:</b> pela projeção, o caixa fica abaixo do mínimo de ${GC.fmtK(SM.v)} em <b>${dd(dias[abaixo])}</b>; o ponto mais baixo é ${GC.fmtK(minV)} em ${dd(minD)}.</p>`
+      : `<p class="gc-lead"><span class="vpos">Dentro do mínimo</span> nos próximos 30 dias: o ponto mais baixo da projeção é ${GC.fmtK(minV)} em ${dd(minD)} (mínimo ${GC.fmtK(SM.v)}).</p>`}
+    ${gcLinhas({ series: [{ nome: 'Caixa projetado', valores: proj }, ...(SM.v != null ? [{ nome: 'Saldo mínimo', valores: dias.map(() => SM.v), cor: 'var(--bad)' }] : [])], rotulos: dias.map(d => dd(d).slice(0, 5)), altura: 200, W: 900, zero: true })}
+    ${GC.fonte('Caixa projetado: o mesmo da curva "Caixa projetado, próximos 30 dias" (saldo de hoje + a receber − a pagar, dia a dia). ' + (SM.banco ? 'O mínimo fica salvo no cadastro da empresa e vale para toda a equipe.' : 'O mínimo está salvo só neste navegador até rodar a atualização do banco (supabase/RODAR_v0.127_saldo_minimo.sql); depois disso vale para toda a equipe.'))}`;
+  const ref = [...m.querySelectorAll('.cols')][0]; if (ref) ref.after(el); else m.appendChild(el);
+  el.querySelector('#smSalva').onclick = () => act(async () => { const x = el.querySelector('#smV').value.trim(), v = x === '' ? null : Number(x); if (v != null && (!isFinite(v) || v < 0)) throw new Error('Informe um valor em reais, zero ou maior.'); const b = await saldoMinGrava(v); toast(b ? 'Saldo mínimo salvo' : 'Saldo mínimo salvo neste navegador'); render(); });
 }
 
 /* ---------- Projetos: apoio ---------- */

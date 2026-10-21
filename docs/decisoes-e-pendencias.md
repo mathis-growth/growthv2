@@ -1,5 +1,15 @@
 
 
+## v0.127 — Onda 3
+**Pedido da Rebecka (21/10)**: fazer a Onda 3 depois da v0.126.
+**Decisões técnicas**
+- O saldo mínimo é o único item que precisa de banco. Como a autorização para mudar produção ainda não veio, a tela funciona sem a coluna (guarda no navegador e avisa) e passa a usar o cadastro da empresa sozinha quando `RODAR_v0.127_saldo_minimo.sql` for rodado.
+- A árvore NSM → outputs → inputs já existia no Growth Model (Mapa de métricas e North Star), com a ligação "Fica abaixo de"; não foi refeita.
+- A projeção do plano vem só de cenário aprovado (regra da seção 7 do diagnóstico): nada de extrapolar o ritmo.
+**Pendente**
+- Autorizar e rodar `supabase/RODAR_v0.127_saldo_minimo.sql` em produção.
+- Para os gráficos da Onda 3 terem conteúdo: cadastrar ofertas e ligar as vendas (ou trazer a coluna na importação), criar o plano da empresa e as metas mensais, ligar as métricas do Growth.
+
 ## v0.126 — Fecha a Onda 2 e a Onda 1
 **Pedido da Rebecka (21/10)**: terminar a v0.126 (fim da Onda 2 e o que faltou da Onda 1) e depois fazer a Onda 3.
 **Decisões técnicas**

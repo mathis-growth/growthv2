@@ -1,5 +1,11 @@
 
 
+## v0.127 — Onda 3
+- Receita por papel da oferta: vendas aprovadas (bruto) do período, pelo papel da oferta ligada à venda (`vendas.oferta_id` → `ofertas.papel`); sem oferta = "Sem oferta ligada". Ofertas extras = order bump + upsell + cross-sell + downsell.
+- Importação de vendas: coluna opcional da oferta; casa pelo nome da oferta (normalizado); sem par, a célula vira aviso e a venda entra sem oferta.
+- Meta × realizado no plano: meses do início ao fim do plano; meta = soma das metas mensais (`planejamento_mensal`); realizado = vendas aprovadas (bruto e quantidade) e pessoas cadastradas, do início do plano até hoje; % = realizado acumulado ÷ meta acumulada até o mês atual. Projeção só de cenário aprovado com `resultados.projetado_consolidado`.
+- Saldo mínimo: comparado dia a dia com o caixa projetado de 30 dias (`fin_dashboard_periodo.projecao`). Aviso na primeira data abaixo do mínimo. Vazio = sem aviso. Valor ≥ 0.
+
 ## v0.126 — Onda 2 (fim) e Onda 1 (resto)
 - Agrupamento no tempo (abandono, mídia, marketing): até 31 dias por dia, até 200 dias por semana (segunda a domingo), acima por mês. O último ponto incompleto aparece mais claro ou tracejado.
 - Abandono: conta na data do abandono; recuperado = tem venda de recuperação; taxa = recuperados ÷ abandonos do ponto.

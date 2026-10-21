@@ -1,5 +1,11 @@
 
 
+## Onda 3 (v0.127)
+- `vendasOfertas127` (Vendas), `planoV127` (fim do `vPlano`), `saldoMinLer`/`saldoMinGrava`/`finSaldoMin` (Financeiro); `painelObs` ganhou a regra do saldo mínimo.
+- Importação: campo `oferta_id` (ref `ofertas`) em `IMP_ALVOS.vendas`; `impCarregaRefs` carrega as ofertas pelo nome; a mensagem de "não encontrado" usa o nome da referência quando ela não é um alvo de importação.
+- Montagem: `integra127.py` (roda o `integra126.py`) com `g127.js`.
+- Teste: `t127_onda3.py` (cria e apaga dados de teste; roda o RODAR na base de teste e remove a coluna no fim).
+
 ## Fim da Onda 2 e da Onda 1 (v0.126)
 - Componentes: `gcPilha`, `gcTornado`, `gcMatriz2x2`, `gcHalteres`, `gcDivergente`, `gcFunil`; `gcLinhas` ganhou `W` (largura) e `GC` o formato `n2`. Agrupamento: `gcGranDe`, `gcBaldes`, `gcChave`, `gcSemana`.
 - Telas: `abandonoV126`, `rxLtvPainel` (em `rxCoortes`), `gmTornado` (fim do `gpDesenha`), `cicloV126`, `resultadosV126`, `debriefDesvio` e `gcFunil` (em `htmlComparativo`), `campBurnup` (aba Dashboard da campanha), `midiaV126` (Mídia paga), `mktSerie126` (Dashboard de marketing), `painelNovosExist` (Dashboard).

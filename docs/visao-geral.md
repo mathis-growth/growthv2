@@ -1,5 +1,8 @@
 
 
+## v0.127
+**Onda 3.** Vendas mostram quanto vem de order bump, upsell e downsell (e a importação traz a oferta). O Planejamento mostra meta × realizado acumulado do plano e a projeção dos cenários aprovados. O Financeiro tem o saldo mínimo de caixa, com aviso também no Dashboard.
+
 ## v0.126
 **Onda 2 completa e Onda 1 fechada.** Abandono e recuperação no tempo; LTV por coorte; o que mais mexe no lucro; o que testar primeiro; antes × depois dos experimentos; onde a campanha ficou longe da meta e o funil com perdas; custo e atenção da mídia e CAC por canal; vendas acumuladas × meta; investimento, CPL e CAC no tempo; receita de novos × existentes.
 

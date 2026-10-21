@@ -100,6 +100,17 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.127] - 2026-10-21 — Onda 3: ofertas, plano no tempo e saldo mínimo de caixa
+- **Vendas → "Quanto vem de order bump, upsell e downsell"**: receita por papel da oferta (principal, order bump, upsell, cross-sell, downsell) por dia, semana ou mês, e o total de cada papel; quanto da receita veio de ofertas extras e quanto é de vendas sem oferta ligada.
+- **Importação de vendas**: nova coluna opcional **Oferta (nome cadastrado)**. A oferta é reconhecida pelo nome (sem diferenciar maiúsculas); nome desconhecido vira aviso na linha, sem travar a importação.
+- **Planejamento da empresa → "Meta × realizado no plano"**: receita, vendas e leads acumulados do início do plano até hoje contra as metas mensais somadas, com o % da meta até o mês atual. A projeção aparece só quando há cenário aprovado no Growth Model com o resultado salvo (receita na base, projetada e lucro projetado); sem cenário, o sistema não projeta.
+- **Financeiro → Saldo mínimo de caixa**: você informa o saldo que o caixa não pode furar e o sistema mostra a linha do mínimo contra o caixa projetado de 30 dias, avisando a data em que a projeção fica abaixo dele. No **Dashboard**, a observação "Caixa abaixo do mínimo" entra no bloco "O que mudou e merece atenção".
+  - Com `supabase/RODAR_v0.127_saldo_minimo.sql` rodado, o mínimo fica no cadastro da empresa e vale para toda a equipe. Antes disso, fica salvo só no navegador de quem preencheu (a tela avisa).
+- **Árvore de métricas do Growth (NSM → outputs → inputs)**: já existia (Growth Model → Mapa de métricas e North Star), com "Fica abaixo de" para ligar uma métrica à outra e o botão de criar o modelo padrão. Nada mudou nela; só precisa ser preenchida.
+- Banco: `20261025100000_saldo_minimo.sql` / `RODAR_v0.127_saldo_minimo.sql` (coluna `empresa.saldo_minimo`). **Não aplicado em produção**: aguardando autorização.
+- Base do vídeo de demonstração (só nela): ofertas, vendas ligadas às ofertas, um plano 2026 e metas mensais de julho a dezembro.
+- Teste: `t127_onda3.py`.
+
 ## [0.126] - 2026-10-21 — Fecha a Onda 2 e completa a Onda 1
 **Onda 2 (o resto)**
 - **Abandono de checkout → abandonos e recuperação no tempo**: barras de recuperados e em aberto por dia, semana ou mês (pelo tamanho do período) e a linha da taxa de recuperação.
