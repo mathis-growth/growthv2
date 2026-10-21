@@ -180,11 +180,12 @@ def c07(b):
     c.cap('Growth Model', 'o real fica travado, o cenário é onde você mexe', 2500)
     c.aponta('#gsTopo', ms=1500)
     c.clica('#gsNovo', ms=900)
-    c.pg.fill('#modalRoot [name=nome]', ''); c.clica('#modalRoot [name=nome]', ms=150); c.pg.keyboard.type('Curso a R$ 1.197', delay=55)
+    c.pg.fill('#modalRoot [name=nome]', ''); c.clica('#modalRoot [name=nome]', ms=150); c.pg.keyboard.type('Curso a R$ 1.497', delay=55)
     c.clica('#modalRoot button[type=submit]', ms=2500)
     sel = '.gp-in[data-gp=preco][data-p="%s"]' % CURSO
+    c.pg.wait_for_selector(sel, timeout=10000)
     if c.pg.locator(sel).count():
-        c.digita(sel, '1197', ms=300)
+        c.digita(sel, '1497', ms=300)
         c.pg.evaluate("s => { const i = document.querySelector(s); i.dispatchEvent(new Event('change', { bubbles: true })); }", sel); c.espera(2500)
     c.aponta('#gsTopo', ms=3500)
     c.tela('gro-cenarios', '', 3500); c.espera(2500)

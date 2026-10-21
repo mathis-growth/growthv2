@@ -83,7 +83,7 @@ Quando me mandar os áudios, eu junto a voz ao vídeo, coloco as legendas e, se 
 
 ### 07 · Growth
 
-**No vídeo:** 5:52 a 6:52 (60 s) · **Na tela:** Growth Model, cenários, Ciclo de Growth e Resultados · **Fala:** cerca de 31 s
+**No vídeo:** 5:52 a 6:55 (63 s) · **Na tela:** Growth Model, cenários, Ciclo de Growth e Resultados · **Fala:** cerca de 31 s
 
 > E a parte que eu mais gosto: o Growth. O real fica travado, e no cenário eu mexo. Se eu subo o preço do curso, receita, imposto, margem e lucro recalculam na hora.
 
@@ -93,10 +93,10 @@ Quando me mandar os áudios, eu junto a voz ao vídeo, coloco as legendas e, se 
 
 ### 08 · Encerramento
 
-**No vídeo:** 6:52 a 7:06 (14 s) · **Na tela:** Cartão final · **Fala:** cerca de 13 s
+**No vídeo:** 6:55 a 7:09 (14 s) · **Na tela:** Cartão final · **Fala:** cerca de 13 s
 
 > Esse é o Growths. Dados à vista, de onde vem cada número e o que fazer com ele. Se você quer enxergar o seu crescimento assim, fala com a gente.
 
 ---
 
-Duração total do vídeo: 7:06. Fala total: cerca de 4:13.
+Duração total do vídeo: 7:09. Fala total: cerca de 4:13.
