@@ -100,6 +100,18 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.125] - 2026-10-21 — Onda 2, parte 1: observações, caixa × resultado, vencimentos, MRR, margem por produto, CAC por campanha e origem até a compra
+- **Dashboard → "O que mudou e merece atenção"**: até 4 observações contra o período anterior de mesmo tamanho, cada uma separada em **Fato** (o número), **Conta** (a composição: quantidade × ticket, custo × clientes novos), **Hipótese** (só quando há relação possível, escrita como "possível fator associado") e **Investigar** (onde olhar, com atalho). Regras fixas, sem IA: receita ±10%, margem ±3 pontos, CAC total ±15%, atraso ≥10% do a receber, um produto com mais de 60% da receita.
+- **Financeiro → Resultado × dinheiro no banco**: últimos 6 meses, o resultado da DRE (competência) ao lado da variação do saldo das contas bancárias (sem cartões), com a diferença do último mês completo.
+- **Contas a receber e Contas a pagar → vencimentos e atrasos**: o que vence em cada uma das próximas 8 semanas e o atrasado por faixa (1–15, 16–30, 31–60, 61–90 e mais de 90 dias).
+- **Contratos → MRR mês a mês**: linha do MRR dos últimos 12 meses e barras do que mudou em cada mês: novos, expansão, redução e cancelados. Mesma regra do MRR do Dashboard (o teste confere que o valor de hoje é igual).
+- **Vendas → vendas e ticket médio por dia, semana ou mês** (pelo tamanho do período) e **receita e margem por produto** (líquido ÷ bruto das vendas aprovadas, depois de taxa e impostos de cada venda).
+- **Dashboard de marketing → Qual campanha dá mais retorno**: dispersão CAC × clientes por campanha, bolha do tamanho do investimento, linha do CAC médio das campanhas; campanha acima da própria meta de CAC em vermelho; clicar abre a campanha.
+- **Leads por origem → Qual origem traz lead que compra**: barras 100% por origem (não qualificado, qualificado que ainda não comprou, comprou).
+- Componentes novos no conjunto de gráficos: barras verticais agrupadas, barras 100% empilhadas e dispersão. Leituras longas buscam de 1.000 em 1.000 linhas (limite do Supabase).
+- Não muda o banco.
+- Teste: `t125_onda2_parte1.py` (liga 3 contratos recorrentes de mentira na base de teste e desliga no fim).
+
 ## [0.124] - 2026-10-21 — Gráficos com função (Data Storytelling, onda 1): Dashboard novo e uma tela só de mídia
 - **Um jeito só de desenhar gráficos** em todo o sistema: linhas no tempo, barras horizontais com o período anterior, cascata, "bullet" (valor contra marcos) e ritmo da meta. Regras: uma cor de destaque; verde e vermelho só para melhorou/piorou; período anterior em cinza; meta e ponto incompleto tracejados; barras começam no zero; unidade sempre visível; mês sem dado fica sem ponto. Cada gráfico traz uma frase com o que mudou (só fatos calculados) e a fonte do número.
 - **Dashboard (o dashboard geral do negócio) substitui o Dashboard Growth**. O item saiu do menu; quem abrir o endereço antigo cai no Dashboard. O Growth Starter também usa este Dashboard. Novos blocos:

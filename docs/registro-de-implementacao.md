@@ -1,5 +1,11 @@
 
 
+## Onda 2, parte 1 (v0.125)
+- Componentes: `gcBarrasV`, `gcEmpilhada`, `gcDispersao`, `gcTodos` (paginação de 1.000 linhas); `gcBarrasH` ganhou `fixo` (mantém ordem e zeros).
+- Telas: `painelObs` (Dashboard), `finResBanco` (Financeiro), `finVencimentos(m, 'receber'|'pagar')`, `mrrEm` e `contratosV125` (Contratos), `vendasV125` (Vendas), `mktV125` (Dashboard de marketing), `origemV125` (Leads por origem).
+- Montagem: `integra125.py` (roda o `integra124.py`) com `g125.js` e `g125.css`.
+- Teste: `t125_onda2_parte1.py`.
+
 ## Gráficos da onda 1 (v0.124)
 - Componente: `gcLinhas`, `gcBarrasH`, `gcCascata`, `gcBullet`, `gcRitmo`, `gcLiga` (cliques que abrem a árvore) e o objeto `GC` (formatos, vazio, fonte). CSS com prefixo `gc-`. (O prefixo `gx` já era usado pelo Growth Model.)
 - Dashboard: `painelV124(m, ctx)` chamado no fim do `vPainel`; DRE e fluxo em `<details class="gc-det">`.

@@ -15,8 +15,8 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.124 · 21/10/2026 (`index.html`) |
-| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.123** (aplicado em 21/10/2026); a v0.124 não muda o banco |
+| **Versão da tela** | 0.125 · 21/10/2026 (`index.html`) |
+| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.123** (aplicado em 21/10/2026); a v0.124 e a v0.125 não mudam o banco |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta, projeto do Google e os segredos no Supabase: [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
 
@@ -26,6 +26,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.125 | 21/10/2026 | **Onda 2, parte 1**: observações no Dashboard (fato, conta, hipótese, investigar); resultado × dinheiro no banco; vencimentos por semana e faixas de atraso em Contas a receber e a pagar; MRR mês a mês com novos, expansão, redução e cancelados; vendas, ticket e margem por produto; CAC × clientes por campanha; leads por origem até a compra. | não muda o banco |
 | 0.124 | 21/10/2026 | **Gráficos com função (onda 1)**: componente único de gráficos; **Dashboard** vira o dashboard geral do negócio (receita, lucro e margem por mês; ritmo da meta do mês; receita por produto e campanha contra o período anterior; DRE e fluxo recolhidos) e **substitui o Dashboard Growth**; **uma tela só de mídia** (Mídia paga, com o Relatório de mídia) e **campanha → Ver na Mídia paga** já filtrada; Financeiro com **cascata do resultado** e linha mensal sem meses futuros; Custos e margens com **receita × equilíbrio × cenários** e **custo por área × mês anterior**. | não muda o banco |
 | 0.123 | 21/10/2026 | **Gráfico de linha** no painel de cada número, dentro do período da tela, com Dia/Semana/Mês/Ano (substitui o da 0.122). **Nova campanha**: cadastrar produto, estratégia (com as etapas) e canal sem sair dela; Nova estratégia com escolha das etapas por fase. | `RODAR_v0.123_arvore_serie.sql`, aplicado |
 | 0.122 | 21/10/2026 | **Mini gráfico em cada número da árvore**: evolução por mês, cascata, composição (rosca), barras por dia ou medidor, escolhido pelo tipo do número; série dos últimos meses para CAC, CPL, ROAS, margem e outros; clicar no gráfico desce o nível. | não muda o banco |

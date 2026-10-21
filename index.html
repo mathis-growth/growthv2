@@ -387,7 +387,12 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">:root{--gc-c3:#a78bfa}
+<style id="v122">.gc-emp{display:flex;height:18px;border-radius:5px;overflow:hidden;background:var(--line)}.gc-emp i{display:flex;align-items:center;justify-content:center;font-size:10.5px;font-style:normal;color:var(--ink);font-weight:600;min-width:0;overflow:hidden}
+.gc-obsl{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:8px}
+.gc-ob{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:13px}.gc-ob b{font-size:14px}.gc-ob p{margin:6px 0 0;line-height:1.45;font-weight:400!important;color:var(--ink)!important;text-shadow:none!important}
+.gc-tag{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:99px;background:var(--accent-soft);color:var(--ink);margin-right:6px}.gc-tag.hip{background:var(--warn-soft,#fff4d6)}.gc-tag.inv{background:transparent;border:1px solid var(--line)}
+.gc-ob .lk{cursor:pointer;color:var(--accent);text-decoration:underline}
+:root{--gc-c3:#a78bfa}
 svg.gc{width:100%;height:auto;display:block;overflow:visible}svg.gc text{font-size:11px;fill:var(--muted)}svg.gc text.gc-v{fill:var(--ink);font-weight:600}
 svg.gc .gc-clk{cursor:pointer}svg.gc .gc-clk:hover rect,svg.gc .gc-clk:focus rect{filter:drop-shadow(0 0 6px var(--accent));opacity:1}svg.gc .gc-clk:focus{outline:none}
 .gc-leg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;margin:2px 0 6px;color:var(--ink)}.gc-leg span{display:inline-flex;align-items:center;gap:5px}.gc-leg i{width:14px;height:3px;border-radius:2px;display:inline-block}
@@ -463,7 +468,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.124 · 21/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.125 · 21/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -1042,6 +1047,7 @@ async function vMktDash(m) {
   body.innerHTML = `<div class="kpis">${kpi('Leads', num(P.leads), num(P.alunos) + ' viraram alunos')}${kpi('Investido', brl(P.custo || 0), 'anúncios no período')}${kpi('CPL', fB(cpl), 'investimento ÷ leads')}${kpi('Clientes', num(P.clientes), fP(div(P.clientes, P.leads)) + ' dos leads')}${kpi('CAC', fB(P.cac), 'investimento ÷ clientes')}${kpi('Receita', brl(P.receita || 0), 'vendas aprovadas até hoje')}${kpi('ROAS', P.roas == null ? '—' : fX(P.roas), 'receita ÷ investimento')}${kpi('ROI', P.roi == null ? '—' : fP(P.roi), '(receita − custo) ÷ custo')}${kpi('LTV', fB(P.ltv), 'receita por cliente')}${kpi('Churn', fP(P.churn), 'alunos que saíram')}</div>
   ${graf}<div id="mgCoh" style="display:flex;flex-direction:column;gap:16px"></div>`;
   corpoCohorts($('#mgCoh'), C, A);
+  mktV125(m, A);
   abrir(); // as linhas por campanha abrem a página da campanha
 }
 
@@ -1485,6 +1491,7 @@ async function vOrigem(m) {
   $('#oCamp').onchange = e => { O.camp = e.target.value; render(); };
   $('#oDe').onchange = e => { O.de = e.target.value; render(); };
   $('#oAte').onchange = e => { O.ate = e.target.value; render(); };
+  origemV125(m, P, rec, O);
   m.querySelectorAll('[data-v]').forEach(b => b.onclick = () => {
     S.f = { busca: '', qual: '', tipo: '', campanha_id: O.camp, de: O.de, ate: O.ate };
     if (b.dataset.v) S.f[O.dim] = b.dataset.v; else S.f['vazio_' + O.dim] = true;
@@ -2598,6 +2605,7 @@ async function vContratos(m) {
       async d => { const n = await q(sb.rpc('cancelar_contrato', { p_contrato: cc.dataset.cc, p_data: nul(d.data) })); toast('Contrato cancelado: ' + n + ' parcela(s) revertida(s)'); }, 'Cancelar contrato');
     if (r) detalheContrato(r.dataset.ct);
   };
+  contratosV125(m, cts);
 }
 
 
@@ -2727,6 +2735,7 @@ async function vVendas(m) {
   $('#vpAte').onchange = e => { VP.ate = e.target.value; VP.pre = 'pers'; render(); };
   $('#vfSt').onchange = e => { VF.st = e.target.value; render(); };
   $('#novaVenda').onclick = () => modalVenda();
+  vendasV125(m, { apr, VP, h });
   m.onclick = e => {
     const s = e.target.closest('[data-e]'), rx = e.target.closest('[data-rastro]');
     if (rx) return rastroDe(rx, ven, []);
@@ -2791,6 +2800,7 @@ async function vReceber(m) {
     if (rp) return modal('Reativar parcela', '<p>Cria uma nova parcela igual a esta (mesmo valor e vencimento) e lança a receita prevista de novo. A cancelada continua no histórico. Só vale com o contrato assinado e ativo.</p>',
       async () => { await q(sb.rpc('reativar_parcela_contrato', { p_conta_receber: rp.dataset.rp })); toast('Parcela reativada'); }, 'Reativar parcela');
   };
+  finVencimentos(m, 'receber');
 }
 
 async function modalVenda(pessoaId) {
@@ -2955,6 +2965,7 @@ async function vPagar(m) {
     if (c) modal('Cancelar conta a pagar', '<p>A despesa será revertida na contabilidade. O registro continua no histórico.</p>',
       async () => { await q(sb.rpc('cancelar_conta_pagar', { p_conta: c.dataset.c, p_data: null })); toast('Conta cancelada'); }, 'Cancelar conta');
   };
+  finVencimentos(m, 'pagar');
 }
 
 /* ================= ADMINISTRATIVO: painel gerencial ================= */
@@ -3069,6 +3080,7 @@ async function vPainel(m) {
   <details class="panel gc-det"><summary>Fluxo de caixa: previsto e realizado <span class="muted">· entrou ${brl(FX.entrou)}, saiu ${brl(FX.saiu)} em ${perRot}</span></summary>${fxHtml}</details>`;
   painelPos(m);
   painelV124(m, { h, ini, fim, perRot, dre, P }).catch(e => console.warn('painel v0.124', e));
+  { const bx = m.querySelector('.gc-sec'); if (bx) painelObs(bx, { h, ini, fim, P }).catch(e => console.warn('obs v0.125', e)); }
   $('#pgPer').onchange = e => { PG.per = e.target.value; if (PG.per === 'custom' && !PG.de) { PG.de = diaMais(h, -29); PG.ate = h; } render(); };
   if ($('#pgDe')) { $('#pgDe').onchange = e => { PG.de = e.target.value; render(); }; $('#pgAte').onchange = e => { PG.ate = e.target.value; render(); }; }
   m.onclick = e => {
@@ -8054,6 +8066,7 @@ async function vFinDash(m) {
   perLigar();
   finDashLigar(m);
   finCascata(m, PER);
+  finResBanco(m, F);
 }
 
 async function vCrmDash(m) {
@@ -11651,8 +11664,8 @@ function gcLinhas({ series, rotulos, un = 'brl', parcial = false, altura = 190, 
     ${rotulos.map((r, i) => (i % passoR === 0 && n - 1 - i >= passoR / 2) || i === n - 1 ? `<text x="${x(i)}" y="${H - 7}" text-anchor="${i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle'}">${esc(r)}</text>` : '').join('')}</svg>`;
 }
 /* barras horizontais ordenadas, com o período anterior como marcador: itens [{rotulo, valor, anterior?, no?, par?}] */
-function gcBarrasH({ itens, un = 'brl', max = 6, total }) {
-  let L = itens.filter(x => Number(x.valor) > 0 || Number(x.anterior) > 0).sort((a, b) => b.valor - a.valor);
+function gcBarrasH({ itens, un = 'brl', max = 6, total, fixo = false }) {
+  let L = fixo ? itens.slice() : itens.filter(x => Number(x.valor) > 0 || Number(x.anterior) > 0).sort((a, b) => b.valor - a.valor);
   if (!L.length) return GC.vazio('Nada neste período.');
   if (L.length > max) { const r = L.slice(max - 1); L = [...L.slice(0, max - 1), { rotulo: 'Outros (' + r.length + ')', valor: r.reduce((s, x) => s + Number(x.valor || 0), 0), anterior: r.some(x => x.anterior != null) ? r.reduce((s, x) => s + Number(x.anterior || 0), 0) : null }]; }
   const mx = Math.max(...L.map(x => Math.max(Number(x.valor) || 0, Number(x.anterior) || 0))) || 1, tot = total ?? L.reduce((s, x) => s + Number(x.valor || 0), 0);
@@ -11818,6 +11831,231 @@ function irMidiaCampanha(c) {
   S.tDe = c.data_inicio && c.data_inicio <= h ? c.data_inicio : diaMais(h, -29);
   S.tAte = c.data_fim && c.data_fim < h ? c.data_fim : h;
   S.view = ehStarter() ? 'mkt-midia' : 'mkt-trafego'; S.campSel = null; render();
+}
+
+/* ================= v0.125 — Onda 2 (parte 1): consultas novas sobre dados que já existem =================
+   Componentes novos: barras verticais agrupadas, barras 100% empilhadas, dispersão e ponte do MRR.
+   Telas: observações no Dashboard, resultado × banco no Financeiro, vencimentos e atrasos em Contas a receber e a pagar,
+   MRR com novos/expansão/cancelados em Contratos, receita e margem por produto em Vendas, CAC × clientes no Dashboard de marketing,
+   leads até a compra em Leads por origem. */
+/* busca todas as linhas, de 1.000 em 1.000 (o Supabase limita cada resposta) */
+async function gcTodos(mk) { let r = [], i = 0; for (;;) { const p = await q(mk().range(i, i + 999)); r = r.concat(p); if (p.length < 1000 || i > 200000) return r; i += 1000; } }
+const GC_COR = { a: 'var(--accent)', b: 'var(--muted)', bom: 'var(--good)', ruim: 'var(--bad)', alerta: 'var(--warn)', c3: 'var(--gc-c3)' };
+const gcAno = d => String(d).slice(0, 7);
+const gcDia = d => String(d).length <= 10 ? String(d) : diaLocal(d);
+const gcMesRot = m => MES_CURTO[Number(String(m).slice(5, 7)) - 1] + '/' + String(m).slice(2, 4);
+const gcFimMes = m => coFimMes(String(m).slice(0, 7));
+const gcMeses = (h, n) => Array.from({ length: n }, (_, i) => coMes(h.slice(0, 7), i - n + 1));   // 'YYYY-MM', do mais antigo ao atual
+
+/* barras verticais agrupadas (aceitam negativo): grupos [rótulo], series [{nome, valores, cor}] */
+function gcBarrasV({ rotulos, series, un = 'brl', altura = 210, parcial = false, destaque = null, W = 640 }) {
+  const vals = series.flatMap(s => s.valores).filter(v => v != null && isFinite(v));
+  if (!vals.length) return GC.vazio('Sem dados no período.');
+  const H = altura, L = 64, R = 10, T = 16, B = 26, mx = Math.max(0, ...vals), mn = Math.min(0, ...vals);
+  const st = GC.passo((mx - mn) / 4 || 1), y0v = Math.floor(mn / st) * st, y1v = Math.ceil(mx / st) * st || st, y = v => T + (y1v - v) / ((y1v - y0v) || 1) * (H - T - B);
+  const n = rotulos.length, gw = (W - L - R) / n, bw = Math.min(26, gw * .78 / series.length), ticks = []; for (let v = y0v; v <= y1v + st / 2; v += st) ticks.push(v);
+  const passoR = Math.ceil(n / 12);
+  const leg = series.length > 1 || parcial ? `<div class="gc-leg">${series.length > 1 ? series.map(s => `<span><i style="background:${s.cor}"></i>${esc(s.nome)}</span>`).join('') : ''}${parcial ? '<span class="muted">mais claro = período incompleto</span>' : ''}</div>` : '';
+  return `${leg}<svg class="gc" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(series.map(s => s.nome).join(', '))}">
+    ${ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" ${v === 0 ? 'stroke-width="1.4"' : 'stroke-dasharray="2 4"'}/><text x="${L - 8}" y="${y(v) + 3.5}" text-anchor="end">${GC.fmtK(v, un)}</text>`).join('')}
+    ${rotulos.map((r, i) => { const x0 = L + i * gw + (gw - bw * series.length) / 2, inc = parcial && i === n - 1;
+      return series.map((s, k) => { const v = s.valores[i]; if (v == null || !isFinite(v)) return ''; const yt = y(Math.max(0, v)), h = Math.max(1, Math.abs(y(0) - y(v)));
+        const cor = typeof s.cor === 'function' ? s.cor(v, i) : s.cor;
+        return `<rect x="${x0 + k * bw}" y="${yt}" width="${bw - 2}" height="${h}" rx="2" fill="${cor}" opacity="${inc ? .45 : (destaque != null && destaque !== i ? .55 : .92)}"><title>${esc(s.nome)} · ${esc(r)}${inc ? ' (incompleto)' : ''}: ${GC.fmt(v, un)}</title></rect>`; }).join('')
+        + ((i % passoR === 0) || i === n - 1 ? `<text x="${L + i * gw + gw / 2}" y="${H - 7}" text-anchor="middle">${esc(r)}</text>` : ''); }).join('')}</svg>`;
+}
+/* barras horizontais 100% empilhadas: itens [{rotulo, partes:[n...], total}], partes [{nome, cor}] */
+function gcEmpilhada({ itens, partes, max = 10, un = 'n' }) {
+  const L = itens.filter(x => x.total > 0).sort((a, b) => b.total - a.total).slice(0, max);
+  if (!L.length) return GC.vazio('Nada no período.');
+  return `<div class="gc-leg">${partes.map(p => `<span><i style="background:${p.cor};height:9px"></i>${esc(p.nome)}</span>`).join('')}<span class="muted">largura = % de cada origem · número à direita = total</span></div>
+  <div class="gc-bh">${L.map(x => `<div class="gc-bhl"><span class="gc-bhr" title="${esc(x.rotulo)}">${esc(x.rotulo)}</span>
+    <span class="gc-emp">${x.partes.map((v, k) => v > 0 ? `<i style="width:${(v / x.total * 100).toFixed(2)}%;background:${partes[k].cor}" title="${esc(partes[k].nome)}: ${GC.fmt(v, un)} (${(v / x.total * 100).toFixed(1).replace('.', ',')}%)">${v / x.total >= .09 ? Math.round(v / x.total * 100) + '%' : ''}</i>` : '').join('')}</span>
+    <span class="gc-bhv">${GC.fmt(x.total, un)}</span></div>`).join('')}</div>`;
+}
+/* dispersão: pontos [{x, y, r?, rotulo, cor?, id?}], linha de referência em y */
+function gcDispersao({ pontos, xun = 'n', yun = 'brl', xRot, yRot, refY, refRot, altura = 300 }) {
+  const P = pontos.filter(p => p.x != null && p.y != null && isFinite(p.x) && isFinite(p.y));
+  if (!P.length) return GC.vazio('Nenhuma campanha com clientes e investimento no período.');
+  const W = 900, H = altura, L = 64, R = 16, T = 14, B = 36;
+  const mxX = Math.max(...P.map(p => p.x)) * 1.12 || 1, mxY = Math.max(refY || 0, ...P.map(p => p.y)) * 1.15 || 1;
+  const sx = GC.passo(mxX / 4), sy = GC.passo(mxY / 4), x1 = Math.ceil(mxX / sx) * sx, y1 = Math.ceil(mxY / sy) * sy;
+  const x = v => L + v / x1 * (W - L - R), y = v => T + (1 - v / y1) * (H - T - B), mr = Math.max(...P.map(p => p.r || 1));
+  const tx = []; for (let v = 0; v <= x1 + sx / 2; v += sx) tx.push(v); const ty = []; for (let v = 0; v <= y1 + sy / 2; v += sy) ty.push(v);
+  return `<svg class="gc" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(yRot)} por ${esc(xRot)}">
+    ${ty.map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" ${v ? 'stroke-dasharray="2 4"' : ''}/><text x="${L - 8}" y="${y(v) + 3.5}" text-anchor="end">${GC.fmtK(v, yun)}</text>`).join('')}
+    ${tx.map(v => `<text x="${x(v)}" y="${H - 20}" text-anchor="middle">${GC.fmtK(v, xun)}</text>`).join('')}
+    <text x="${(L + W - R) / 2}" y="${H - 4}" text-anchor="middle">${esc(xRot)}</text>
+    ${refY ? `<line x1="${L}" x2="${W - R}" y1="${y(refY)}" y2="${y(refY)}" stroke="var(--ink)" stroke-dasharray="6 4" opacity=".55"/><text x="${W - R}" y="${y(refY) - 5}" text-anchor="end" class="gc-v">${esc(refRot)}: ${GC.fmtK(refY, yun)}</text>` : ''}
+    ${P.map(p => { const r = 6 + 16 * Math.sqrt((p.r || 1) / mr); return `<g${p.id ? ` class="gc-clk" data-gccamp="${esc(p.id)}" role="button" tabindex="0"` : ''}><title>${esc(p.rotulo)}: ${GC.fmt(p.y, yun)} · ${GC.fmt(p.x, xun)} ${esc(xRot.toLowerCase())}${p.dica ? ' · ' + esc(p.dica) : ''}</title>
+      <circle cx="${x(p.x)}" cy="${y(p.y)}" r="${r.toFixed(1)}" fill="${p.cor || 'var(--accent)'}" fill-opacity=".72" stroke="${p.cor || 'var(--accent)'}"/>
+      <text x="${x(p.x) + r + 4}" y="${y(p.y) + 4}" class="gc-v" style="font-weight:500">${esc(String(p.rotulo).slice(0, 40))}</text></g>`; }).join('')}</svg>`;
+}
+
+/* ---------- Dashboard: observações (fato, possível fator e onde investigar) ---------- */
+async function painelObs(box, ctx) {
+  const { h, ini, fim, P } = ctx, w = S.ws, len = Math.round((new Date(fim) - new Date(ini)) / 864e5) + 1;
+  if (len > 3000) return;   // "todo o período" não tem período anterior
+  const pFim = diaMais(ini, -1), pIni = diaMais(ini, -len);
+  const el = document.createElement('div'); el.className = 'panel gc-obs'; el.innerHTML = '<h2>O que mudou e merece atenção</h2><div class="muted">Comparando com o período anterior…</div>';
+  box.prepend(el);
+  let A; try { A = await q(sb.rpc('painel_gerencial', { p_ws: w, p_ini: pIni, p_fim: pFim, p_hoje: h })); } catch (e) { el.remove(); return; }
+  const pct = (a, b) => b ? (a - b) / Math.abs(b) : null, f0 = v => Math.abs(v * 100).toFixed(0) + '%', fp = v => (v * 100).toFixed(1).replace('.', ',') + '%';
+  const O = [], rec = Number(P.vendas.bruto) || 0, recA = Number(A.vendas.bruto) || 0;
+  const mg = P.resultado.margem, mgA = A.resultado.margem, cac = P.cac.cac_total, cacA = A.cac.cac_total;
+  const dr = pct(rec, recA);
+  if (dr != null && Math.abs(dr) >= .1) O.push({ peso: Math.abs(dr), t: dr > 0 ? 'good' : 'bad', ti: dr > 0 ? 'Receita em alta' : 'Receita em queda',
+    fato: `A receita bruta das vendas ${dr > 0 ? 'subiu' : 'caiu'} ${f0(dr)}: ${GC.fmtK(recA)} → ${GC.fmtK(rec)}.`,
+    fator: (() => { const n = Number(P.vendas.aprovadas) || 0, nA = Number(A.vendas.aprovadas) || 0; if (!n || !nA) return ''; const dn = pct(n, nA), dt = pct(rec / n, recA / nA);
+      return `Composição: quantidade de vendas ${dn >= 0 ? '+' : '−'}${f0(dn)} (${num(nA)} → ${num(n)}) e ticket médio ${dt >= 0 ? '+' : '−'}${f0(dt)}.`; })(),
+    inv: 'Ver de onde vem a receita (produto e campanha) logo abaixo.' });
+  if (mg != null && mgA != null && Math.abs(mg - mgA) >= .03) { const pA = A.cac.peso_margem, p1 = P.cac.peso_margem, cacPesa = pA != null && p1 != null && (p1 - pA) * (mg - mgA) < 0 && Math.abs(p1 - pA) >= .02;
+    O.push({ peso: Math.abs(mg - mgA) * 3, t: mg > mgA ? 'good' : 'bad', ti: mg > mgA ? 'Margem subiu' : 'Margem caiu',
+      fato: `A margem foi de ${fp(mgA)} para ${fp(mg)} (${mg > mgA ? '+' : '−'}${(Math.abs(mg - mgA) * 100).toFixed(1).replace('.', ',')} pontos percentuais).`,
+      fator: cacPesa ? `Possível fator associado: o CAC total passou a consumir ${fp(p1)} da receita (antes ${fp(pA)}).` : '',
+      inv: 'Verificar custos de aquisição, mix de produtos e despesas do período.', ir: ['fin-custo', 'Abrir Custos e margens'] }); }
+  const dc = cac != null && cacA != null ? pct(cac, cacA) : null;
+  if (dc != null && Math.abs(dc) >= .15) { const dCu = pct(Number(P.cac.custo_total) || 0, Number(A.cac.custo_total) || 0), dNo = pct(Number(P.cac.novos) || 0, Number(A.cac.novos) || 0);
+    O.push({ peso: Math.abs(dc), t: dc > 0 ? 'bad' : 'good', ti: dc > 0 ? 'CAC total subiu' : 'CAC total caiu',
+      fato: `O CAC total ${dc > 0 ? 'subiu' : 'caiu'} ${f0(dc)}: ${GC.fmtK(cacA)} → ${GC.fmtK(cac)} por cliente novo.`,
+      fator: dCu != null && dNo != null ? `Composição: custo de aquisição ${dCu >= 0 ? '+' : '−'}${f0(dCu)} e clientes novos ${dNo >= 0 ? '+' : '−'}${f0(dNo)} (${num(A.cac.novos)} → ${num(P.cac.novos)}).` : '',
+      inv: 'Ver o CAC por campanha e por canal na Mídia paga.', ir: ['mkt-trafego', 'Abrir Mídia paga'] }); }
+  const atr = Number(P.caixa.atraso_receber) || 0, aRec = Number(P.caixa.a_receber) || 0;
+  if (atr > 0 && atr / (atr + aRec) >= .1) O.push({ peso: atr / (atr + aRec), t: 'warn', ti: 'Recebimentos em atraso',
+    fato: `${GC.fmtK(atr)} vencidos e não recebidos: ${f0(atr / (atr + aRec))} do que há para receber.`, fator: '',
+    inv: 'Ver as faixas de atraso em Contas a receber.', ir: ['fin-receber', 'Abrir Contas a receber'] });
+  try { const N = await q(sb.rpc('arvore_no', { p_ws: w, p_no: 'ven.soma', p_par: { ini, fim, campo: 'bruto' } }));
+    const it = ((N.quebras || []).find(x => x && x.titulo === 'Por produto') || { itens: [] }).itens.map(x => ({ ...x, valor: Number(x.valor) })).sort((a, b) => b.valor - a.valor), tot = Number(N.valor) || 0;
+    if (it[0] && tot && it[0].valor / tot > .6 && it.length > 1) O.push({ peso: .1, t: 'warn', ti: 'Receita concentrada', fato: `${it[0].rotulo} responde por ${f0(it[0].valor / tot)} da receita do período.`, fator: '', inv: 'Avaliar a dependência desse produto e o que os outros precisam para crescer.' }); } catch (e) { /* sem árvore, segue sem esta */ }
+  O.sort((a, b) => b.peso - a.peso);
+  const cor = { good: 'var(--good)', bad: 'var(--bad)', warn: 'var(--warn)' };
+  el.innerHTML = `<h2>O que mudou e merece atenção <span class="muted" style="font-weight:400;font-size:13px">· contra ${dd(pIni)} a ${dd(pFim)}</span></h2>
+    ${O.length ? `<div class="gc-obsl">${O.slice(0, 4).map(o => `<div class="gc-ob" style="border-left-color:${cor[o.t]}"><b>${esc(o.ti)}</b>
+      <p><span class="gc-tag">Fato</span>${esc(o.fato)}</p>${o.fator ? `<p><span class="gc-tag ${/^Possível/.test(o.fator) ? 'hip' : ''}">${/^Possível/.test(o.fator) ? 'Hipótese' : 'Conta'}</span>${esc(o.fator.replace(/^Possível fator associado: /, 'Possível fator associado: '))}</p>` : ''}
+      <p><span class="gc-tag inv">Investigar</span>${esc(o.inv)}${o.ir ? ` <a class="lk" data-gcir="${o.ir[0]}">${esc(o.ir[1])}</a>` : ''}</p></div>`).join('')}</div>`
+      : '<div class="gc-vazio">Nada fora do normal: receita, margem e CAC variaram pouco contra o período anterior e não há atraso relevante.</div>'}
+    ${GC.fonte('Regras fixas, sem IA: receita ±10%, margem ±3 pontos, CAC total ±15%, atraso ≥10% do a receber, um produto com mais de 60% da receita. "Fato" e "Conta" são calculados; "Hipótese" é só uma relação possível, não uma causa comprovada.')}`;
+  el.querySelectorAll('[data-gcir]').forEach(a => a.onclick = () => { S.view = rotaCtx(a.dataset.gcir); render(); });
+}
+
+/* ---------- Financeiro: resultado (competência) × dinheiro no banco, por mês ---------- */
+async function finResBanco(m, F) {
+  const h = hoje(), ms = gcMeses(h, 6), ini = ms[0] + '-01';
+  const el = document.createElement('div'); el.className = 'panel'; el.innerHTML = '<h2>Resultado × dinheiro no banco</h2><div class="muted">Calculando…</div>';
+  const ref = [...m.querySelectorAll('.cols')][0]; if (ref) ref.after(el); else m.appendChild(el);
+  try {
+    const [cbs, mv] = await Promise.all([q(sb.from('contas_bancarias').select('id,tipo').eq('workspace_id', S.ws)), gcTodos(() => sb.from('movimentacoes_bancarias').select('conta_bancaria_id,data,tipo,valor').eq('workspace_id', S.ws).gte('data', ini).lte('data', h).order('id'))]);
+    const conta = new Set(cbs.filter(b => b.tipo === 'conta').map(b => b.id)), cx = {};
+    mv.filter(x => conta.has(x.conta_bancaria_id)).forEach(x => { const k = gcAno(x.data); cx[k] = (cx[k] || 0) + (x.tipo === 'entrada' ? 1 : -1) * Number(x.valor); });
+    const res = Object.fromEntries((F.resultado_por_mes || []).map(x => [gcAno(x.mes), Number(x.resultado)]));
+    const R = ms.map(k => res[k] ?? 0), C = ms.map(k => cx[k] ?? 0), k = ms.length - 2, dif = R[k] - C[k];
+    el.innerHTML = `<h2>Resultado × dinheiro no banco · últimos 6 meses</h2>
+      <p class="gc-lead">Em ${gcMesRot(ms[k])}, o resultado foi ${GC.fmtK(R[k])} e o saldo das contas ${C[k] >= 0 ? 'aumentou' : 'diminuiu'} ${GC.fmtK(Math.abs(C[k]))}${Math.abs(dif) >= 1 ? ` — ${GC.fmtK(Math.abs(dif))} de diferença` : ''}.</p>
+      ${gcBarrasV({ rotulos: ms.map(gcMesRot), series: [{ nome: 'Resultado (competência)', valores: R, cor: 'var(--accent)' }, { nome: 'Variação do saldo no banco', valores: C, cor: 'var(--gc-c3)' }], parcial: true, W: 900, altura: 240 })}
+      <span class="muted" style="font-size:12px">A diferença costuma vir de vendas parceladas ainda a receber, contas pagas em mês diferente do da competência, transferências e retiradas. Para achar a de um mês, compare o extrato com a DRE daquele mês.</span>
+      ${GC.fonte('Resultado: DRE gerencial por competência (a mesma de "Resultado por mês"). Banco: entradas − saídas das contas bancárias no mês, sem cartões de crédito.')}`;
+  } catch (e) { el.innerHTML = '<h2>Resultado × dinheiro no banco</h2>' + GC.vazio(e.message || String(e)); }
+}
+
+/* ---------- Contas a receber e a pagar: vencimentos por semana e faixas de atraso ---------- */
+async function finVencimentos(m, tipo) {
+  const h = hoje(), tab = tipo === 'receber' ? 'contas_receber' : 'contas_pagar';
+  const el = document.createElement('div'); el.className = 'cols gc-venc';
+  el.innerHTML = '<div class="panel"><h2>O que vence nas próximas 8 semanas</h2><div class="muted">Calculando…</div></div><div class="panel"><h2>Atrasado, por tempo de atraso</h2></div>';
+  const ref = m.querySelector('.kpis'); if (ref) ref.after(el); else return;
+  try {
+    const L = await gcTodos(() => sb.from(tab).select('id,valor,vencimento,status').eq('workspace_id', S.ws).eq('status', 'previsto').is('substituida_por', null).order('id'));
+    const seg = d => { const x = new Date(d + 'T12:00:00Z'); return diaMais(d, -((x.getUTCDay() + 6) % 7)); }, s0 = seg(h), sem = Array.from({ length: 8 }, (_, i) => diaMais(s0, i * 7));
+    const atr = L.filter(x => x.vencimento < h), aV = sem.map((s, i) => L.filter(x => x.vencimento >= h && x.vencimento >= s && x.vencimento <= diaMais(s, 6)).reduce((t, x) => t + Number(x.valor), 0));
+    const tAtr = atr.reduce((t, x) => t + Number(x.valor), 0), depois = L.filter(x => x.vencimento > diaMais(sem[7], 6)).reduce((t, x) => t + Number(x.valor), 0);
+    const FX = [['1 a 15 dias', 1, 15], ['16 a 30 dias', 16, 30], ['31 a 60 dias', 31, 60], ['61 a 90 dias', 61, 90], ['Mais de 90 dias', 91, 1e9]];
+    const dias = d => Math.round((new Date(h) - new Date(d)) / 864e5);
+    const fx = FX.map(([r, a, b]) => ({ rotulo: r, valor: atr.filter(x => dias(x.vencimento) >= a && dias(x.vencimento) <= b).reduce((t, x) => t + Number(x.valor), 0), n: atr.filter(x => dias(x.vencimento) >= a && dias(x.vencimento) <= b).length }));
+    const verbo = tipo === 'receber' ? 'receber' : 'pagar';
+    el.children[0].innerHTML = `<h2>O que vence nas próximas 8 semanas</h2><p class="gc-lead">${GC.fmtK(aV.reduce((t, v) => t + v, 0))} a ${verbo} até ${dd(diaMais(sem[7], 6))}${depois ? ` (e mais ${GC.fmtK(depois)} depois disso)` : ''}. Semana mais pesada: ${(() => { const i = aV.indexOf(Math.max(...aV)); return Math.max(...aV) ? 'a de ' + dd(sem[i]).slice(0, 5) + ', com ' + GC.fmtK(aV[i]) : '—'; })()}.</p>
+      ${gcBarrasV({ rotulos: sem.map((s, i) => i ? dd(s).slice(0, 5) : 'esta'), series: [{ nome: 'A ' + verbo, valores: aV, cor: 'var(--accent)' }], altura: 180 })}
+      ${GC.fonte('Contas com situação "previsto", pela data de vencimento; semanas de segunda a domingo. Não inclui o que já venceu (ao lado).')}`;
+    el.children[1].innerHTML = `<h2>Atrasado, por tempo de atraso</h2><p class="gc-lead">${tAtr ? `<b class="${tipo === 'receber' ? 'vneg' : 'vneg'}">${GC.fmtK(tAtr)}</b> vencidos e não ${tipo === 'receber' ? 'recebidos' : 'pagos'} (${num(atr.length)} conta(s)).` : `Nada em atraso. <span class="vpos">✔</span>`}</p>
+      ${tAtr ? gcBarrasH({ itens: fx.map(x => ({ rotulo: x.rotulo + ' (' + x.n + ')', valor: x.valor })), max: 5, total: tAtr, fixo: true }).replace(/<i style="width/g, '<i style="background:var(--bad);width') : ''}
+      ${GC.fonte('Dias de atraso contados do vencimento até hoje. É o mesmo total do cartão "Em atraso".')}`;
+  } catch (e) { el.children[0].innerHTML = '<h2>Vencimentos</h2>' + GC.vazio(e.message || String(e)); el.children[1].remove(); }
+}
+
+/* ---------- Contratos: MRR no fim de cada mês e o que mudou (novos, expansão, redução, cancelados) ---------- */
+function mrrEm(cts, d) {   // a mesma regra do painel: contrato recorrente ativado, vigente na data e não cancelado até ela; soma por cliente
+  const div_ = { mensal: 1, trimestral: 3, semestral: 6 }, por = {};
+  cts.filter(c => c.recorrente && c.ativado_em && c.data_inicio && c.data_inicio <= d && (!c.data_fim || c.data_fim >= d) && !(c.cancelado_em && diaLocal(c.cancelado_em) <= d))
+    .forEach(c => { const v = (c.contrato_itens || []).reduce((t, i) => t + (i.quantidade == null ? 1 : Number(i.quantidade)) * Number(i.valor || 0), 0) / (div_[c.periodicidade] || 12); por[c.pessoa_id] = (por[c.pessoa_id] || 0) + v; });
+  return por;
+}
+function contratosV125(m, cts) {
+  const h = hoje(), ms = gcMeses(h, 12), datas = ms.map(k => { const f = gcFimMes(k); return f < h ? f : h; });
+  const rec = cts.filter(c => c.recorrente);
+  const el = document.createElement('div'); el.className = 'panel';
+  const ref = m.querySelector('.kpis') || m.querySelector('.head'); if (!ref) return; ref.after(el);
+  if (!rec.length) { el.innerHTML = '<h2>Receita recorrente (MRR)</h2>' + GC.vazio('Nenhum contrato recorrente cadastrado.'); return; }
+  const base = mrrEm(rec, diaMais(ms[0] + '-01', -1)), por = datas.map(d => mrrEm(rec, d)), soma = o => Object.values(o).reduce((t, v) => t + v, 0);
+  const mrr = por.map(soma), mov = por.map((o, i) => { const a = i ? por[i - 1] : base, r = { novo: 0, exp: 0, red: 0, can: 0 };
+    new Set([...Object.keys(a), ...Object.keys(o)]).forEach(p => { const x = a[p] || 0, y = o[p] || 0; if (!x && y) r.novo += y; else if (x && !y) r.can -= x; else if (y > x) r.exp += y - x; else if (y < x) r.red += y - x; }); return r; });
+  const k = ms.length - 1, M = mov[k], liq = M.novo + M.exp + M.red + M.can;
+  el.innerHTML = `<h2>Receita recorrente (MRR) mês a mês</h2>
+    <p class="gc-lead">MRR hoje: <b>${GC.fmtK(mrr[k])}</b>. Neste mês: novos ${GC.fmtK(M.novo)}, expansão ${GC.fmtK(M.exp)}, redução ${GC.fmtK(-M.red)}, cancelados ${GC.fmtK(-M.can)} — <b class="${liq >= 0 ? 'vpos' : 'vneg'}">${liq >= 0 ? '+' : '−'}${GC.fmtK(Math.abs(liq))}</b> no mês.</p>
+    <div class="cols"><div>${gcLinhas({ series: [{ nome: 'MRR', valores: mrr }], rotulos: ms.map(gcMesRot), parcial: true, altura: 180 })}</div>
+    <div>${gcBarrasV({ rotulos: ms.map(gcMesRot), series: [{ nome: 'Novos', valores: mov.map(x => x.novo), cor: 'var(--good)' }, { nome: 'Expansão', valores: mov.map(x => x.exp), cor: 'var(--accent)' }, { nome: 'Redução', valores: mov.map(x => x.red), cor: 'var(--warn)' }, { nome: 'Cancelados', valores: mov.map(x => x.can), cor: 'var(--bad)' }], altura: 180, parcial: true })}</div></div>
+    ${GC.fonte('Mesma regra do MRR do Dashboard: contratos recorrentes ativados, vigentes na data e não cancelados, valor dos itens ÷ meses da periodicidade, somado por cliente. Cada mês compara o fim do mês com o fim do anterior (o mês atual, até hoje): cliente que entrou = novo; saiu = cancelado; subiu ou desceu = expansão ou redução.')}`;
+}
+
+/* ---------- Vendas: por semana (quantidade e ticket) e receita × margem por produto ---------- */
+function vendasV125(m, { apr, VP, h }) {
+  const ref = [...m.querySelectorAll(':scope > .panel')].pop(); if (!ref) return;
+  const el = document.createElement('div'); el.className = 'cols'; ref.before(el);
+  const de = VP.de || (apr.length ? String(apr[apr.length - 1].data_venda).slice(0, 10) : h), ate = VP.ate || h, dias = Math.round((new Date(ate) - new Date(de)) / 864e5) + 1;
+  const g = dias <= 31 ? 'dia' : dias <= 200 ? 'semana' : 'mes', chave = d => { d = gcDia(d); if (g === 'dia') return d; if (g === 'mes') return d.slice(0, 7) + '-01'; const x = new Date(d + 'T12:00:00Z'); return diaMais(d, -((x.getUTCDay() + 6) % 7)); };
+  const B = {}; apr.forEach(v => { const k = chave(v.data_venda); const b = B[k] = B[k] || { n: 0, r: 0 }; b.n++; b.r += Number(v.valor_bruto || 0); });
+  const ks = []; for (let d = chave(de); d <= ate; d = g === 'dia' ? diaMais(d, 1) : g === 'semana' ? diaMais(d, 7) : coMes(d.slice(0, 7), 1) + '-01') ks.push(d);
+  const rot = ks.map(k => g === 'mes' ? gcMesRot(k) : dd(k).slice(0, 5)), nm = { dia: 'dia', semana: 'semana', mes: 'mês' }[g];
+  const parc = ks.length && (g === 'dia' ? ks[ks.length - 1] === h : (g === 'semana' ? diaMais(ks[ks.length - 1], 6) >= h : coFimMes(ks[ks.length - 1]) >= h));
+  el.innerHTML = `<div class="panel"><h2>Vendas e ticket médio por ${nm}</h2>${ks.length >= 2 ? gcBarrasV({ rotulos: rot, series: [{ nome: 'Vendas aprovadas', valores: ks.map(k => (B[k] || {}).n || 0), cor: 'var(--accent)' }], un: 'n', altura: 150, parcial: parc })
+      + `<h3 style="margin:8px 0 0;font-size:13px">Ticket médio</h3>` + gcLinhas({ series: [{ nome: 'Ticket médio', valores: ks.map(k => B[k] ? B[k].r / B[k].n : null) }], rotulos: rot, parcial: parc, altura: 130, zero: false }) : GC.vazio('Escolha um período maior para ver a evolução.')}
+      ${GC.fonte('Vendas aprovadas do período escolhido acima, incluindo contratos fechados. Ticket médio = receita bruta ÷ vendas; sem venda ' + { dia: 'no dia', semana: 'na semana', mes: 'no mês' }[g] + ', fica sem ponto.')}</div>
+    <div class="panel"><h2>Receita e margem por produto</h2><div id="vdProd"></div></div>`;
+  const P = {}; apr.forEach(v => { const n = (one(v.produtos) || v.produtos || {}).nome || 'Sem produto', x = P[n] = P[n] || { b: 0, l: 0, q: 0 }; x.q++; x.b += Number(v.valor_bruto || 0); x.l += Number(v.valor_liquido ?? v.valor_bruto ?? 0); });
+  const L = Object.entries(P).map(([n, x]) => ({ n, ...x })).sort((a, b) => b.b - a.b), mx = Math.max(1, ...L.map(x => x.b)), tot = L.reduce((t, x) => t + x.b, 0), totL = L.reduce((t, x) => t + x.l, 0);
+  $('#vdProd').innerHTML = L.length ? `<p class="gc-lead">Fica ${tot ? (totL / tot * 100).toFixed(1).replace('.', ',') + '%' : '—'} da receita depois de taxas e impostos.${L.length > 1 ? ` ${esc(L[0].n)} traz ${(L[0].b / tot * 100).toFixed(0)}% da receita${(() => { const b = L.filter(x => x.b > 0).sort((a, z) => z.l / z.b - a.l / a.b)[0]; return b && b.n !== L[0].n ? `; a maior margem é de ${esc(b.n)} (${(b.l / b.b * 100).toFixed(1).replace('.', ',')}%)` : ''; })()}.` : ''}</p>
+    <div class="gc-leg"><span><i style="background:var(--accent);opacity:.35;height:9px"></i>receita bruta</span><span><i style="background:var(--good);height:9px"></i>o que fica (líquido)</span></div>
+    <div class="gc-bh">${L.slice(0, 8).map(x => `<div class="gc-bhl"><span class="gc-bhr" title="${esc(x.n)}">${esc(x.n)}</span><span class="gc-bht"><i style="width:${(x.b / mx * 100).toFixed(1)}%;opacity:.3"></i><i style="width:${(x.l / mx * 100).toFixed(1)}%;background:var(--good)"></i></span>
+      <span class="gc-bhv">${GC.fmtK(x.b)}<small>margem ${x.b ? (x.l / x.b * 100).toFixed(1).replace('.', ',') + '%' : '—'} · ${num(x.q)} venda(s)</small></span></div>`).join('')}</div>
+    ${GC.fonte('Margem = líquido ÷ bruto das vendas aprovadas do período (bruto − taxa da plataforma − impostos de cada venda). Custos de entrega e despesas do mês não são separados por produto aqui; o resultado completo está em Custos e margens.')}` : GC.vazio('Nenhuma venda aprovada no período.');
+}
+
+/* ---------- Dashboard de marketing: CAC × clientes por campanha ---------- */
+async function mktV125(m, A) {
+  const body = $('#mgBody'); if (!body || A.tab !== 'visao') return;
+  const el = document.createElement('div'); el.className = 'panel'; el.innerHTML = '<h2>Qual campanha dá mais retorno</h2><div class="muted">Calculando…</div>';
+  const k = body.querySelector('.kpis'); if (k) k.after(el); else body.prepend(el);
+  try {
+    const [C, cps] = await Promise.all([q(sb.rpc('funil_cohorts', { p_ws: S.ws, p_ini: A.ini, p_fim: A.fim, p_campanha: nul(A.camp), p_gran: 'campanha' })), q(sb.from('campanhas').select('id,meta_cac').eq('workspace_id', S.ws))]);
+    const meta = Object.fromEntries(cps.map(c => [c.id, Number(c.meta_cac) || null]));
+    const pts = (C || []).filter(c => Number(c.clientes) > 0 && Number(c.custo) > 0).map(c => { const mt = meta[c.coorte], acima = mt && Number(c.cac) > mt;
+      return { x: Number(c.clientes), y: Number(c.cac), r: Number(c.custo), rotulo: c.rotulo || 'Sem campanha', id: c.coorte && meta[c.coorte] !== undefined ? c.coorte : null, cor: acima ? 'var(--bad)' : 'var(--accent)', dica: (mt ? 'meta de CAC ' + GC.fmt(mt) : 'sem meta de CAC') + ' · investido ' + GC.fmt(Number(c.custo)) }; });
+    const cT = pts.reduce((t, p) => t + p.r, 0), nT = pts.reduce((t, p) => t + p.x, 0), med = nT ? cT / nT : null, ac = pts.filter(p => p.cor === 'var(--bad)');
+    el.innerHTML = `<h2>Qual campanha dá mais retorno</h2><p class="gc-lead">${pts.length ? `CAC médio das campanhas: ${GC.fmtK(med)} por cliente.${ac.length ? ` <b class="vneg">${ac.length} campanha(s) acima da própria meta de CAC</b> (em vermelho).` : ''} Abaixo e à direita = mais clientes por menos.` : ''}</p>
+      ${gcDispersao({ pontos: pts, xRot: 'Clientes', yRot: 'CAC', refY: med, refRot: 'CAC médio' })}
+      ${GC.fonte('Leads que entraram no período, seguidos até hoje (a mesma conta da tabela de cohorts por campanha). CAC = investimento em anúncios ÷ clientes. Tamanho da bolha = investimento. Clique numa bolha para abrir a campanha.')}`;
+    el.querySelectorAll('[data-gccamp]').forEach(g => g.onclick = () => { S.campSel = g.dataset.gccamp; S.campTab = 'dash'; S.view = 'mkt-camp'; render(); });
+  } catch (e) { el.innerHTML = '<h2>Qual campanha dá mais retorno</h2>' + GC.vazio(e.message || String(e)); }
+}
+
+/* ---------- Leads por origem: até onde cada origem chega ---------- */
+function origemV125(m, P, rec, O) {
+  const g = {}; P.forEach(p => { const k = p[O.dim] || '(vazio)', x = g[k] = g[k] || [0, 0, 0]; if (rec[p.id]) x[2]++; else if (p.qualificacao === 'qualificado') x[1]++; else x[0]++; });
+  const itens = Object.entries(g).map(([k, v]) => ({ rotulo: k, partes: v, total: v[0] + v[1] + v[2] }));
+  const el = document.createElement('div'); el.className = 'panel';
+  const top = itens.filter(x => x.total >= 20).sort((a, b) => b.partes[2] / b.total - a.partes[2] / a.total)[0];
+  el.innerHTML = `<h2>Qual origem traz lead que compra</h2>${top ? `<p class="gc-lead">Entre as origens com 20 leads ou mais, <b>${esc(top.rotulo)}</b> tem a maior parte de compradores: ${(top.partes[2] / top.total * 100).toFixed(1).replace('.', ',')}% dos leads.</p>` : ''}
+    ${gcEmpilhada({ itens, partes: [{ nome: 'Não qualificado', cor: 'var(--line)' }, { nome: 'Qualificado, ainda não comprou', cor: 'var(--gc-c3)' }, { nome: 'Comprou', cor: 'var(--good)' }] })}
+    ${GC.fonte('Cada lead conta uma vez, na faixa mais adiante: comprou (tem venda aprovada), qualificado ou não qualificado. Mesmos filtros da tabela abaixo; mostra as 10 origens com mais leads.')}`;
+  const t = m.querySelector(':scope > .panel'); if (t) t.before(el);
 }
 
 /* ---------- Projetos: apoio ---------- */

@@ -1,5 +1,8 @@
 
 
+## v0.125
+- Nada a rodar no banco.
+
 ## v0.124
 - Nada a rodar no banco. Para ver o ritmo da meta, cadastre as metas mensais em Campanhas → Planejamento anual.
 

@@ -1,5 +1,10 @@
 
 
+## v0.125
+**Observações no Dashboard.** Até 4 avisos do que mudou contra o período anterior, separando o fato, a conta, a hipótese e onde investigar.
+
+**Mais perguntas respondidas com gráfico.** Resultado × dinheiro no banco (Financeiro); o que vence e o que está atrasado (Contas a receber e a pagar); MRR com novos, expansão e cancelados (Contratos); vendas, ticket e margem por produto (Vendas); qual campanha dá mais retorno (Marketing); qual origem traz lead que compra (Leads por origem).
+
 ## v0.124
 **Gráficos que respondem perguntas.** O Dashboard virou o dashboard geral do negócio: receita, lucro e margem por mês, ritmo da meta do mês e de onde vem a receita (produto e campanha). O Dashboard Growth saiu.
 
