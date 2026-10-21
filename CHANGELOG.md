@@ -100,6 +100,18 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.128] - 2026-10-21 — Painel da campanha, dia a dia
+- **Campanha → aba Dashboard**, logo abaixo dos cartões, um painel novo com período **14 dias / 30 dias / 60 dias / campanha toda** (perpétuo abre em 30 dias; lançamento, na campanha toda):
+  - **Dentro ou fora da meta, dia a dia**: quadrinhos por dia (verde = dentro da meta, amarelo = perto, vermelho = fora, cinza = sem dado) para investimento, CTR, CPC, leads, custo por lead, vendas e receita. Leads contra a meta do dia; custo por lead contra a meta de CPL; vendas contra a meta do dia só com o carrinho aberto; sem meta, contra a média da própria campanha. Clicar num dia abre a Mídia paga da campanha só naquele dia.
+  - **Deu uma queda? Onde caiu**: últimos 7 dias completos contra os 7 anteriores, etapa por etapa (investimento, impressões, CPM, CTR, cliques, connect rate, conversão da página, leads, custo por lead, vendas, ticket), com o que mais puxou os leads para baixo (investimento, CPM, CTR, connect rate ou conversão da página) e os criativos que mais perderam CTR.
+  - **Movimento por dia**: investimento, CTR, CPM, leads (com a meta do dia), custo por lead (com a meta), vendas e receita.
+  - **Vendas da campanha**: vendas por dia, mais vendido, por produto e por papel da oferta (order bump, upsell, downsell).
+  - **Vídeos e criativos**: quanto foi investido em cada um, CTR no período (mini linha), leads, custo por lead, vendas e ROAS; melhor e pior custo por lead destacados.
+- Os gráficos que já existiam na aba (meta de leads, custos por canal, funil etapa por etapa) continuam abaixo.
+- Gráficos: escala do eixo não repete rótulos quando os valores quase não mudam; menos rótulos de data nos gráficos pequenos.
+- Não muda o banco.
+- Teste: `t128_painel_campanha.py`.
+
 ## [0.127] - 2026-10-21 — Onda 3: ofertas, plano no tempo e saldo mínimo de caixa
 - **Vendas → "Quanto vem de order bump, upsell e downsell"**: receita por papel da oferta (principal, order bump, upsell, cross-sell, downsell) por dia, semana ou mês, e o total de cada papel; quanto da receita veio de ofertas extras e quanto é de vendas sem oferta ligada.
 - **Importação de vendas**: nova coluna opcional **Oferta (nome cadastrado)**. A oferta é reconhecida pelo nome (sem diferenciar maiúsculas); nome desconhecido vira aviso na linha, sem travar a importação.

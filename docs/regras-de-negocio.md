@@ -1,5 +1,11 @@
 
 
+## v0.128 — Painel da campanha
+- Período: perpétuo = últimos 30 dias até hoje (ou até o fim); lançamento = do início ao fim (ou hoje). Opções 14, 30, 60 dias e campanha toda.
+- Quadrinhos: leads (pessoas que entraram na campanha, a conta da meta de leads) contra a meta do dia de `campanha_meta_leads`; custo por lead = investimento do dia ÷ leads do dia, contra `meta_cpl`; vendas contra `meta_vendas ÷ dias do carrinho` (ou da campanha), só nos dias de carrinho aberto. Sem meta: contra a média do período (verde ≥ média; vermelho = 15% pior; amarelo no meio). Investimento e receita: intensidade da cor = tamanho do valor.
+- Onde caiu: últimos 7 dias completos (sem hoje) × 7 anteriores. Leads dos anúncios = investimento ÷ CPM × 1.000 × CTR × connect rate × conversão da página; o fator com a maior piora é o que mais puxou para baixo. Criativos com 1.000+ impressões que perderam 10%+ de CTR.
+- Criativos: "melhor" = menor custo por lead entre os que trouxeram 5+ leads.
+
 ## v0.127 — Onda 3
 - Receita por papel da oferta: vendas aprovadas (bruto) do período, pelo papel da oferta ligada à venda (`vendas.oferta_id` → `ofertas.papel`); sem oferta = "Sem oferta ligada". Ofertas extras = order bump + upsell + cross-sell + downsell.
 - Importação de vendas: coluna opcional da oferta; casa pelo nome da oferta (normalizado); sem par, a célula vira aviso e a venda entra sem oferta.

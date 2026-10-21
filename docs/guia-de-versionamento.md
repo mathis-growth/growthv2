@@ -1,5 +1,9 @@
 
 
+## v0.128
+- index.html: 0.127 → 0.128.
+- Não muda o banco. Novo teste `t128_painel_campanha.py`.
+
 ## v0.127
 - index.html: 0.126 → 0.127.
 - Novo: migração `20261025100000_saldo_minimo.sql` e `RODAR_v0.127_saldo_minimo.sql` (não aplicado em produção); teste `t127_onda3.py`.

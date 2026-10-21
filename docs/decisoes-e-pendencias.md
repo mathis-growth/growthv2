@@ -1,5 +1,13 @@
 
 
+## v0.128 — Painel da campanha
+**Pedido da Rebecka (21/10)**: a campanha precisa mostrar, por dia, o movimento do tráfego com verde/vermelho de dentro ou fora da meta; quanto está indo em cada vídeo; vendas por dia; o produto que mais vende; order bump; o melhor criativo; o CTR por dia; e, quando cair, onde caiu.
+**Decisões técnicas**
+- O painel entra no topo da aba Dashboard da campanha; o que já existia continua abaixo (nada saiu).
+- "Quanto estou postando por vídeo" foi lido como quanto foi investido em cada vídeo/criativo e o que ele trouxe.
+- Sem meta cadastrada, a cor compara com a média da própria campanha, e a tela diz isso em cada linha.
+- Não muda o banco. Continua pendente: autorizar `RODAR_v0.127_saldo_minimo.sql` em produção.
+
 ## v0.127 — Onda 3
 **Pedido da Rebecka (21/10)**: fazer a Onda 3 depois da v0.126.
 **Decisões técnicas**

@@ -1,5 +1,8 @@
 
 
+## v0.128
+**Campanha dia a dia.** No Dashboard da campanha: quadrinhos verde/vermelho de cada dia contra a meta, onde caiu na última semana, o movimento por dia, as vendas (produto e oferta) e o que cada vídeo ou criativo custou e trouxe.
+
 ## v0.127
 **Onda 3.** Vendas mostram quanto vem de order bump, upsell e downsell (e a importação traz a oferta). O Planejamento mostra meta × realizado acumulado do plano e a projeção dos cenários aprovados. O Financeiro tem o saldo mínimo de caixa, com aviso também no Dashboard.
 

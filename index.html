@@ -387,7 +387,21 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">.gc-tor{display:flex;flex-direction:column;gap:7px;margin-top:6px}.gc-torl{display:grid;grid-template-columns:minmax(110px,30%) 1fr 150px;gap:10px;align-items:center;font-size:13px}
+<style id="v122">.cp128{display:flex;flex-direction:column;gap:16px;margin:16px 0}
+.cp-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 18px}.cp-bar>b{font-size:16px}
+.cp-per{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}.cp-per button{background:none;border:0;padding:5px 12px;font-size:12.5px;cursor:pointer;color:var(--muted)}.cp-per button+button{border-left:1px solid var(--line)}.cp-per button.on{background:var(--accent);color:#fff;font-weight:600}
+.cp-grade{display:grid;grid-template-columns:150px repeat(var(--n),minmax(6px,1fr)) 52px;gap:3px;align-items:center;margin-top:8px;overflow-x:auto}
+.cp-gl{font-size:12.5px;line-height:1.2;padding-right:6px}.cp-gl small{display:block;color:var(--muted);font-size:10.5px}
+.cp-gd{font-size:10px;color:var(--muted);text-align:center;white-space:nowrap;overflow:visible;height:14px}.cp-gd.hoje{color:var(--accent);font-weight:700}
+.cp-gs{font-size:11.5px;text-align:right;white-space:nowrap}
+.cp-c{height:24px;border:0;border-radius:4px;padding:0;cursor:pointer;background:var(--line)}.cp-c:hover,.cp-c:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.cp-c.bom{background:var(--good)}.cp-c.ruim{background:var(--bad)}.cp-c.meio{background:var(--warn)}.cp-c.nd{background:var(--line);opacity:.6}.cp-c.neutro{background:var(--accent)}.cp-c.hoje{box-shadow:inset 0 0 0 2px var(--bg)}
+.cp-q{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:-1px;margin:0 3px 0 8px}.cp-q.bom{background:var(--good)}.cp-q.ruim{background:var(--bad)}.cp-q.meio{background:var(--warn)}.cp-q.nd{background:var(--line)}
+.cp-q7{display:flex;flex-direction:column;gap:2px;max-width:720px}.cp-q7l{display:grid;grid-template-columns:1fr 110px 120px 80px;gap:8px;font-size:13px;padding:5px 8px;border-radius:6px}.cp-q7l:nth-child(odd){background:var(--accent-soft)}.cp-q7l .n{text-align:right}
+.cp-q7l.alvo{outline:2px solid var(--bad);background:transparent}
+tr.cp-best td{background:color-mix(in srgb,var(--good) 10%,transparent)}
+@media (max-width:640px){.cp-grade{grid-template-columns:100px repeat(var(--n),minmax(8px,1fr)) 40px}.cp-q7l{grid-template-columns:1fr 80px 80px 60px}}
+.gc-tor{display:flex;flex-direction:column;gap:7px;margin-top:6px}.gc-torl{display:grid;grid-template-columns:minmax(110px,30%) 1fr 150px;gap:10px;align-items:center;font-size:13px}
 .gc-tort{position:relative;height:16px}.gc-tor0{position:absolute;left:50%;top:-3px;bottom:-3px;width:1.5px;background:var(--ink);opacity:.45}
 .gc-tort i{position:absolute;top:0;bottom:0;border-radius:3px}.gc-tort i.pos{background:var(--good)}.gc-tort i.neg{background:var(--bad)}
 .gc-torv{font-size:12px;text-align:right;white-space:nowrap}
@@ -481,7 +495,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.127 · 21/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.128 · 21/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -1610,7 +1624,7 @@ async function vCampanha(m) {
   $('#cSt').onchange = e => act(async () => { await q(sb.from('campanhas').update({ status: e.target.value }).eq('id', id)); render(); }, 'Status atualizado');
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { S.campTab = b.dataset.t; render(); });
   const el = $('#cBody');
-  try { await ({ dash: async (el, c) => { await vMktDashCampanha(el, c.id); await estAnexaFunil(el, c); await campBurnup(el, c); }, etapas: tcEtapas, metas: tcMetas, resumo: tcResumo, crm: (el, c) => vJornada(el, c), funil: tcFunil, midia: tcMidia, videos: tcVideos, leads: tcLeads, links: tcLinks, debrief: tcFechamento, ofertas: tcOfertas, captacao: tcCaptacao }[T])(el, c, r, { funis, p }); cdLigaKpis(el, c.id); }
+  try { await ({ dash: async (el, c) => { await vMktDashCampanha(el, c.id); await campPainel128(el, c); await estAnexaFunil(el, c); await campBurnup(el, c); }, etapas: tcEtapas, metas: tcMetas, resumo: tcResumo, crm: (el, c) => vJornada(el, c), funil: tcFunil, midia: tcMidia, videos: tcVideos, leads: tcLeads, links: tcLinks, debrief: tcFechamento, ofertas: tcOfertas, captacao: tcCaptacao }[T])(el, c, r, { funis, p }); cdLigaKpis(el, c.id); }
   catch (e) { el.innerHTML = `<div class="panel"><b>Não foi possível carregar esta aba.</b> <span class="muted">${esc(e.message || String(e))}</span></div>`; }
 }
 const periodoPadrao = c => { const h = hoje(), fim = c.modelo === 'perpetuo' || !c.data_fim || c.data_fim > h ? h : c.data_fim; let ini = c.data_inicio || diaMais(fim, -89); if (ini > fim) ini = diaMais(fim, -89); return { ini: ini < diaMais(fim, -399) ? diaMais(fim, -399) : ini, fim }; };
@@ -11658,11 +11672,11 @@ function estPickLer(f) {
 const GC = {
   fmtK(v, un) {
     if (v == null || !isFinite(v)) return '—';
-    if (un === 'pct') return (v * 100).toFixed(1).replace('.', ',') + '%';
+    if (un === 'pct') return (v * 100).toFixed(Math.abs(v) < .05 ? 2 : 1).replace('.', ',') + '%';
     if (un === 'n') return num(Math.round(v));
     if (un === 'n2') return v.toFixed(2).replace('.', ',');
     const a = Math.abs(v), s = v < 0 ? '−' : '';
-    return a >= 1e6 ? s + 'R$ ' + (a / 1e6).toFixed(1).replace('.', ',') + ' mi' : a >= 1e3 ? s + 'R$ ' + (a / 1e3).toFixed(a >= 1e4 ? 0 : 1).replace('.', ',') + ' mil' : s + 'R$ ' + (a < 10 ? a.toFixed(2).replace('.', ',') : a < 100 ? a.toFixed(1).replace('.', ',').replace(',0', '') : Math.round(a));
+    return a >= 1e6 ? s + 'R$ ' + (a / 1e6).toFixed(1).replace('.', ',') + ' mi' : a >= 1e3 ? s + 'R$ ' + (a / 1e3).toFixed(a >= 1e4 ? 0 : 1).replace('.', ',') + ' mil' : s + 'R$ ' + (a < 10 ? a.toFixed(2).replace('.', ',') : a < 100 ? a.toFixed(a < 20 ? 2 : 1).replace('.', ',') : Math.round(a));
   },
   fmt(v, un) { if (v == null || !isFinite(v)) return '—'; if (un === 'n2') return v.toFixed(2).replace('.', ','); return un === 'pct' ? (v * 100).toFixed(1).replace('.', ',') + '%' : un === 'n' ? num(Math.round(v)) : brl(v); },
   passo(mx) { const e = Math.pow(10, Math.floor(Math.log10(mx || 1))), f = mx / e; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * e; },
@@ -11674,11 +11688,11 @@ function gcLinhas({ series, rotulos, un = 'brl', parcial = false, altura = 190, 
   const vals = series.flatMap(s => s.valores).filter(v => v != null && isFinite(v));
   if (!vals.length || rotulos.length < 2) return GC.vazio('Sem dados suficientes no período para desenhar a linha.');
   const H = altura, L = W < 500 ? 52 : 64, R = 16, T = 14, B = 26;
-  let mn = Math.min(...vals), mx = Math.max(...vals); if (zero) { mn = Math.min(0, mn); mx = Math.max(0, mx); }
+  let mn = Math.min(...vals), mx = Math.max(...vals); if (zero) { mn = Math.min(0, mn); mx = Math.max(0, mx); } if (mx - mn < Math.abs(mx) * .04) { const pad = Math.abs(mx) * .05 || 1; mn -= pad; mx += pad; if (zero) mn = Math.min(0, mn); }
   const st = GC.passo((mx - mn) / 4 || Math.abs(mx) || 1), y0v = Math.floor(mn / st) * st, y1v = Math.ceil(mx / st) * st || st;
   const n = rotulos.length, x = i => L + i * (W - L - R) / (n - 1), y = v => T + (y1v - v) / ((y1v - y0v) || 1) * (H - T - B);
   const ticks = []; for (let v = y0v; v <= y1v + st / 2; v += st) ticks.push(v);
-  const cores = ['var(--accent)', 'var(--muted)', 'var(--gc-c3)'], passoR = Math.ceil(n / 8);
+  const cores = ['var(--accent)', 'var(--muted)', 'var(--gc-c3)'], passoR = Math.ceil(n / Math.max(3, Math.floor((W - 80) / 62)));
   const linha = (s, k) => { const c = s.cor || cores[k % 3], pts = s.valores.map((v, i) => v == null ? null : [x(i), y(v)]);
     const seg = []; let cur = []; pts.forEach((p, i) => { if (!p || (parcial && i === n - 1)) { if (cur.length) seg.push(cur); cur = []; if (p) cur = []; } else cur.push(p); }); if (cur.length) seg.push(cur);
     const ult = parcial && pts[n - 1] && pts[n - 2] ? `<polyline points="${pts[n - 2].join(',')} ${pts[n - 1].join(',')}" fill="none" stroke="${c}" stroke-width="2" stroke-dasharray="5 4" opacity=".8"/>` : '';
@@ -12150,13 +12164,13 @@ function gcHalteres(itens) {
     <div class="gc-leg"><span><i style="background:var(--muted);height:9px;width:9px;border-radius:50%"></i>antes</span><span><i style="background:var(--good);height:9px;width:9px;border-radius:50%"></i>depois (venceu)</span><span><i style="background:var(--bad);height:9px;width:9px;border-radius:50%"></i>depois (perdeu)</span></div></div>`;
 }
 /* barras divergentes: desvio % contra a meta (positivo = acima) */
-function gcDivergente(itens) {
+function gcDivergente(itens, legenda = '0 = exatamente na meta · verde = melhor que a meta (em CAC e investimento, abaixo é melhor)') {
   const L = itens.filter(x => x.desvio != null && isFinite(x.desvio)); if (!L.length) return GC.vazio('Sem metas cadastradas para comparar.');
   const mx = Math.max(.1, ...L.map(x => Math.abs(x.desvio)));
   return `<div class="gc-tor">${L.map(x => { const bom = x.menor ? x.desvio <= 0 : x.desvio >= 0, w = (Math.abs(x.desvio) / mx * 50).toFixed(1);
     return `<div class="gc-torl"><span class="gc-bhr" title="${esc(x.rotulo)}">${esc(x.rotulo)}</span><span class="gc-tort"><b class="gc-tor0"></b><i class="${bom ? 'pos' : 'neg'}" style="${x.desvio < 0 ? 'right' : 'left'}:50%;width:${w}%" title="${esc(x.dica || '')}"></i></span>
       <span class="gc-torv"><span class="${bom ? 'vpos' : 'vneg'}">${x.desvio >= 0 ? '+' : '−'}${Math.abs(x.desvio * 100).toFixed(0)}%</span> <small class="muted">${esc(x.dica || '')}</small></span></div>`; }).join('')}
-    <div class="gc-leg"><span class="muted">0 = exatamente na meta · verde = melhor que a meta (em CAC e investimento, abaixo é melhor)</span></div></div>`;
+    <div class="gc-leg"><span class="muted">${esc(legenda)}</span></div></div>`;
 }
 /* funil com perdas: passos [{nome, n}] */
 function gcFunil(passos) {
@@ -12417,6 +12431,152 @@ async function finSaldoMin(m, F) {
     ${GC.fonte('Caixa projetado: o mesmo da curva "Caixa projetado, próximos 30 dias" (saldo de hoje + a receber − a pagar, dia a dia). ' + (SM.banco ? 'O mínimo fica salvo no cadastro da empresa e vale para toda a equipe.' : 'O mínimo está salvo só neste navegador até rodar a atualização do banco (supabase/RODAR_v0.127_saldo_minimo.sql); depois disso vale para toda a equipe.'))}`;
   const ref = [...m.querySelectorAll('.cols')][0]; if (ref) ref.after(el); else m.appendChild(el);
   el.querySelector('#smSalva').onclick = () => act(async () => { const x = el.querySelector('#smV').value.trim(), v = x === '' ? null : Number(x); if (v != null && (!isFinite(v) || v < 0)) throw new Error('Informe um valor em reais, zero ou maior.'); const b = await saldoMinGrava(v); toast(b ? 'Saldo mínimo salvo' : 'Saldo mínimo salvo neste navegador'); render(); });
+}
+
+/* ================= v0.128 — Painel da campanha (dia a dia) =================
+   No Dashboard da campanha, logo abaixo dos cartões: os quadrinhos do dia a dia (verde = dentro da meta, vermelho = fora),
+   o movimento por dia (investimento, CTR, CPM, leads, CPL, vendas, receita), onde caiu (últimos 7 dias × 7 anteriores),
+   os vídeos e criativos (quanto foi em cada um e o que trouxe) e as vendas (por dia, por produto e por papel da oferta). */
+const CP_PER = [['14', '14 dias'], ['30', '30 dias'], ['60', '60 dias'], ['tudo', 'Campanha toda']];
+function cpJanela(c, P) {
+  const h = hoje(), fimC = c.data_fim && c.data_fim < h ? c.data_fim : h, iniC = c.data_inicio && c.data_inicio <= fimC ? c.data_inicio : diaMais(fimC, -29);
+  const ini = P === 'tudo' ? iniC : [diaMais(fimC, -(Number(P) - 1)), iniC].sort().pop();
+  return { ini, fim: fimC };
+}
+const cpZ = rows => { const t = somaT(rows); return { ...t, ctr: div(t.cliques, t.impressoes), cpc: div(t.custo, t.cliques), cpm: t.impressoes ? t.custo / t.impressoes * 1000 : null, cpl: div(t.custo, t.leads), cac: div(t.custo, t.clientes || t.vendas), roas: div(t.receita, t.custo), con: div(t.visualizacoes_pagina, t.cliques), cvp: div(t.leads, t.visualizacoes_pagina), freq: t.alcance ? t.impressoes / t.alcance : null }; };
+
+async function campPainel128(el, c) {
+  const C = S.cp128 = S.cp128 && S.cp128.id === c.id ? S.cp128 : { id: c.id, per: c.modelo === 'lancamento' ? 'tudo' : '30', vis: 'invest' };
+  const k = el.querySelector('.kpis'); if (!k) return;
+  const box = document.createElement('div'); box.className = 'cp128'; box.innerHTML = '<div class="panel"><div class="muted">Montando o dia a dia da campanha…</div></div>'; k.after(box);
+  const { ini, fim } = cpJanela(c, C.per), h = hoje();
+  try {
+    const [T, V, ofs, ML] = await Promise.all([
+      gcTodos(() => sb.from('v_trafego_anuncio_dia').select('*').eq('campanha_id', c.id).gte('data', diaMais(ini, -14)).lte('data', fim).order('data').order('anuncio_id')),
+      gcTodos(() => sb.from('vendas').select('id,data_venda,valor_bruto,status,oferta_id,produtos(nome)').eq('campanha_id', c.id).eq('status', 'aprovada').gte('data_venda', ini + 'T00:00:00-03:00').lte('data_venda', fim + 'T23:59:59-03:00').order('id')),
+      q(sb.from('ofertas').select('id,papel').eq('workspace_id', S.ws)).catch(() => []),
+      q(sb.rpc('campanha_meta_leads', { p_campanha: c.id, p_hoje: h })).catch(() => null)]);
+    const dias = gcBaldes(ini, fim, 'dia'), R = T.filter(r => r.data >= ini && r.data <= fim), porDia = {}; R.forEach(r => (porDia[r.data] = porDia[r.data] || []).push(r));
+    const Z = dias.map(d => cpZ(porDia[d] || [])), tot = cpZ(R);
+    const VD = {}; V.forEach(v => { const d = gcDia(v.data_venda), o = VD[d] = VD[d] || { n: 0, r: 0 }; o.n++; o.r += Number(v.valor_bruto || 0); });
+    // leads do dia: a mesma conta da meta de leads (pessoas que entraram na campanha); sem ela, os leads dos anúncios
+    const mlI = ML && ML.dias ? Object.fromEntries(ML.dias.map((d, i) => [d, i])) : {}, leadsDia = d => mlI[d] != null ? Number(ML.leads[mlI[d]]) : ((porDia[d] ? cpZ(porDia[d]).leads : 0));
+    const metaLeadDia = d => mlI[d] != null && ML.metas ? (ML.metas[mlI[d]] == null ? null : Number(ML.metas[mlI[d]])) : null;
+    const nDiasC = c.data_inicio && c.data_fim ? Math.round((new Date(c.data_fim) - new Date(c.data_inicio)) / 864e5) + 1 : null;
+    const cIni = c.data_carrinho_abre || c.data_inicio, cFim = c.data_carrinho_fecha || c.data_fim, nCar = cIni && cFim ? Math.round((new Date(cFim) - new Date(cIni)) / 864e5) + 1 : nDiasC;
+    const metaVendDia = c.meta_vendas && nCar ? Number(c.meta_vendas) / nCar : null, noCarrinho = d => !cIni || !cFim || (d >= cIni && d <= cFim), metaCpl = c.meta_cpl ? Number(c.meta_cpl) : null, metaCac = c.meta_cac ? Number(c.meta_cac) : null;
+    const box_ = { ini, fim, dias, Z, tot, VD, leadsDia, metaLeadDia, metaVendDia, noCarrinho, carrinho: c.data_carrinho_abre && c.data_carrinho_fecha ? [c.data_carrinho_abre, c.data_carrinho_fecha] : null, metaCpl, metaCac, T, R, V, ofs, h };
+    box.innerHTML = `<div class="panel cp-bar"><b>Dia a dia da campanha</b><div class="cp-per" role="group" aria-label="Período">${CP_PER.map(([k, l]) => `<button type="button" data-cpper="${k}" class="${C.per === k ? 'on' : ''}">${l}</button>`).join('')}</div><span class="muted">${dd(ini)} a ${dd(fim)} · ${dias.length} dia(s)</span></div>
+      <div class="panel" id="cpGrade"></div><div class="panel" id="cpQueda"></div><div class="panel" id="cpLinhas"></div><div class="panel" id="cpVend"></div><div class="panel" id="cpCriat"></div>`;
+    box.querySelectorAll('[data-cpper]').forEach(b => b.onclick = () => { C.per = b.dataset.cpper; render(); });
+    cpGrade($('#cpGrade'), c, box_); cpQueda($('#cpQueda'), box_); cpLinhas($('#cpLinhas'), box_); cpCriativos($('#cpCriat'), c, box_); cpVendas($('#cpVend'), box_);
+    // os gráficos antigos da aba continuam logo abaixo, com um título para separar
+    const g = el.querySelector('#mlGrid'); if (g && !el.querySelector('.cp-sep')) g.insertAdjacentHTML('beforebegin', '<div class="secl cp-sep">Meta de leads e custos por canal</div>');
+  } catch (e) { box.innerHTML = '<div class="panel">' + GC.vazio('Não foi possível montar o dia a dia: ' + (e.message || String(e))) + '</div>'; }
+}
+
+/* quadrinhos: uma linha por número, uma coluna por dia; verde = dentro da meta, vermelho = fora; sem meta, compara com a média da própria campanha */
+function cpGrade(el, c, X) {
+  const { dias, Z, VD, leadsDia, metaLeadDia, metaVendDia, noCarrinho, carrinho, metaCpl, tot, h } = X, med = k => tot[k];
+  const regra = (v, ref, menor, tol = .15) => v == null || ref == null ? 'nd' : (menor ? (v <= ref ? 'bom' : v > ref * (1 + tol) ? 'ruim' : 'meio') : (v >= ref ? 'bom' : v < ref * (1 - tol) ? 'ruim' : 'meio'));
+  const L = [
+    { nome: 'Investimento', fmt: v => GC.fmtK(v), v: i => Z[i].custo || null, cls: () => 'neutro', ref: 'gasto do dia' },
+    { nome: 'CTR', fmt: v => GC.fmt(v, 'pct'), v: i => Z[i].ctr, cls: i => regra(Z[i].ctr, med('ctr'), false), ref: 'contra a média do período (' + GC.fmt(med('ctr'), 'pct') + ')' },
+    { nome: 'CPC', fmt: v => GC.fmt(v), v: i => Z[i].cpc, cls: i => regra(Z[i].cpc, med('cpc'), true), ref: 'contra a média do período (' + GC.fmt(med('cpc')) + ')' },
+    { nome: 'Leads', fmt: v => num(v), v: i => leadsDia(dias[i]), cls: i => { const m = metaLeadDia(dias[i]); return m != null ? regra(leadsDia(dias[i]), m, false, .0001) : regra(leadsDia(dias[i]), dias.reduce((t, d) => t + leadsDia(d), 0) / dias.length, false); }, ref: metaLeadDia(dias[dias.length - 1]) != null ? 'contra a meta do dia' : 'contra a média do período' },
+    { nome: 'Custo por lead', fmt: v => GC.fmt(v), v: i => Z[i].custo && leadsDia(dias[i]) ? Z[i].custo / leadsDia(dias[i]) : null, cls: i => { const v = Z[i].custo && leadsDia(dias[i]) ? Z[i].custo / leadsDia(dias[i]) : null; return regra(v, metaCpl ?? (tot.custo && dias.reduce((t, d) => t + leadsDia(d), 0) ? tot.custo / dias.reduce((t, d) => t + leadsDia(d), 0) : null), true, metaCpl ? .0001 : .15); }, ref: metaCpl ? 'contra a meta de CPL (' + GC.fmt(metaCpl) + ')' : 'contra a média do período' },
+    { nome: 'Vendas', fmt: v => num(v), v: i => (VD[dias[i]] || {}).n || 0, cls: i => metaVendDia && noCarrinho(dias[i]) ? regra((VD[dias[i]] || {}).n || 0, metaVendDia, false, .0001) : ((VD[dias[i]] || {}).n ? 'bom' : 'nd'), ref: metaVendDia ? 'contra a meta do dia (' + metaVendDia.toFixed(1).replace('.', ',') + ')' + (carrinho ? ', só com o carrinho aberto (' + dd(carrinho[0]).slice(0, 5) + ' a ' + dd(carrinho[1]).slice(0, 5) + ')' : '') : 'verde = teve venda' },
+    { nome: 'Receita', fmt: v => GC.fmtK(v), v: i => (VD[dias[i]] || {}).r || 0, cls: i => (VD[dias[i]] || {}).r ? 'neutro' : 'nd', ref: 'vendas aprovadas do dia' }];
+  const n = dias.length, passo = Math.ceil(n / 15);
+  el.innerHTML = `<h2>Dentro ou fora da meta, dia a dia</h2><p class="gc-lead">Cada quadrinho é um dia. <span class="cp-q bom"></span> dentro da meta <span class="cp-q meio"></span> perto <span class="cp-q ruim"></span> fora <span class="cp-q nd"></span> sem dado. Passe o mouse para ver o número; clique no dia para abrir a Mídia paga só dele.</p>
+    <div class="cp-grade" style="--n:${n}">
+      <div class="cp-gl"></div>${dias.map((d, i) => `<div class="cp-gd${d === h ? ' hoje' : ''}">${i % passo === 0 || i === n - 1 ? dd(d).slice(0, 5) : ''}</div>`).join('')}<div class="cp-gs"></div>
+      ${L.map(l => { const cl = dias.map((d, i) => l.cls(i)), b = cl.filter(x => x === 'bom').length, r = cl.filter(x => x === 'ruim').length, aval = cl.filter(x => ['bom', 'ruim', 'meio'].includes(x)).length;
+        const vs = dias.map((_, i) => l.v(i)), mx = Math.max(1e-9, ...vs.filter(v => v != null).map(Math.abs));
+        return `<div class="cp-gl"><b>${l.nome}</b><small>${esc(l.ref)}</small></div>${dias.map((d, i) => { const v = vs[i], k = cl[i], alfa = k === 'neutro' && v != null ? (.15 + .75 * Math.abs(v) / mx).toFixed(2) : null;
+          return `<button type="button" class="cp-c ${k}${dias[i] === h ? ' hoje' : ''}" data-cpdia="${d}" ${alfa ? `style="opacity:${alfa}"` : ''} title="${esc(l.nome)} · ${dd(d)}${d === h ? ' (hoje, incompleto)' : ''}: ${v == null ? 'sem dado' : l.fmt(v)}"></button>`; }).join('')}
+          <div class="cp-gs">${aval ? `<span class="vpos">${b}</span>/<span class="vneg">${r}</span>` : ''}</div>`; }).join('')}</div>
+    ${GC.fonte('Leads: pessoas que entraram na campanha (a mesma conta da meta de leads). Investimento, CTR e CPC: números diários dos anúncios da campanha. Vendas e receita: vendas aprovadas ligadas à campanha. Sem meta cadastrada, o dia é comparado com a média da própria campanha no período (verde = melhor que a média; vermelho = 15% pior). A última coluna conta dias verdes / vermelhos.')}`;
+  el.querySelectorAll('[data-cpdia]').forEach(b => b.onclick = () => { S.tCamp = c.id; S.tCanal = ''; S.tDia = ''; S.tDe = b.dataset.cpdia; S.tAte = b.dataset.cpdia; S.view = ehStarter() ? 'mkt-midia' : 'mkt-trafego'; S.campSel = null; render(); });
+}
+
+/* onde caiu: últimos 7 dias completos × os 7 anteriores, etapa por etapa */
+function cpQueda(el, X) {
+  const { T, h, V, R } = X, ult = diaMais(h, -1), aDe = diaMais(ult, -6), bAte = diaMais(aDe, -1), bDe = diaMais(bAte, -6);
+  const A = cpZ(T.filter(r => r.data >= aDe && r.data <= ult)), B = cpZ(T.filter(r => r.data >= bDe && r.data <= bAte));
+  const vA = V.filter(v => gcDia(v.data_venda) >= aDe && gcDia(v.data_venda) <= ult), vB = V.filter(v => gcDia(v.data_venda) >= bDe && gcDia(v.data_venda) <= bAte);
+  const pc = (a, b) => a == null || b == null || !b ? null : (a - b) / Math.abs(b);
+  const E = [['Investimento', 'custo', 'brl', null], ['Impressões', 'impressoes', 'n', false], ['CPM', 'cpm', 'brl', true], ['CTR (clicou no anúncio)', 'ctr', 'pct', false], ['Cliques', 'cliques', 'n', false],
+    ['Connect rate (a página abriu)', 'con', 'pct', false], ['Conversão da página (virou lead)', 'cvp', 'pct', false], ['Leads', 'leads', 'n', false], ['Custo por lead', 'cpl', 'brl', true]];
+  const linhas = E.map(([nome, k, un, menor]) => ({ nome, un, menor, a: A[k], b: B[k], d: pc(A[k], B[k]) }));
+  const nVA = vA.length, nVB = vB.length, rA = vA.reduce((t, v) => t + Number(v.valor_bruto || 0), 0), rB = vB.reduce((t, v) => t + Number(v.valor_bruto || 0), 0);
+  linhas.push({ nome: 'Vendas', un: 'n', menor: false, a: nVA, b: nVB, d: pc(nVA, nVB) }, { nome: 'Ticket médio', un: 'brl', menor: false, a: nVA ? rA / nVA : null, b: nVB ? rB / nVB : null, d: pc(nVA ? rA / nVA : null, nVB ? rB / nVB : null) });
+  if (!A.impressoes && !B.impressoes && !nVA && !nVB) { el.innerHTML = '<h2>Deu uma queda? Onde caiu</h2>' + GC.vazio('Sem movimento nos últimos 14 dias.'); return; }
+  const piora = x => x.d == null || x.menor == null ? 0 : (x.menor ? x.d : -x.d);
+  // leads dos anúncios = investimento ÷ CPM × 1.000 × CTR × connect rate × conversão da página (conta exata): cada fator mostra quanto puxou
+  const F = [['Investimento', A.custo, B.custo, false], ['CPM (custo da impressão)', A.cpm, B.cpm, true], ['CTR (clique no anúncio)', A.ctr, B.ctr, false], ['Connect rate (página abriu)', A.con, B.con, false], ['Conversão da página', A.cvp, B.cvp, false]]
+    .filter(([, a, b]) => a > 0 && b > 0).map(([nome, a, b, inv]) => ({ nome, f: inv ? b / a : a / b })).map(x => ({ ...x, lg: Math.log(x.f) }));
+  const cand = F.filter(x => x.f < .95).sort((p, q) => p.lg - q.lg).map(x => ({ nome: x.nome, d: x.f - 1 }));
+  const ld = linhas.find(x => x.nome === 'Leads'), vd = linhas.find(x => x.nome === 'Vendas');
+  // criativos que mais perderam CTR
+  const ads = [...new Set(T.map(r => r.anuncio_id))].map(id => { const rs = T.filter(r => r.anuncio_id === id), a = cpZ(rs.filter(r => r.data >= aDe && r.data <= ult)), b = cpZ(rs.filter(r => r.data >= bDe && r.data <= bAte)); return { nome: rs[0].anuncio, a, b, d: pc(a.ctr, b.ctr) }; }).filter(x => x.a.impressoes >= 1000 && x.d != null && x.d < -.1).sort((p, q) => p.d - q.d).slice(0, 3);
+  const f = (v, un) => v == null ? '—' : un === 'pct' ? GC.fmt(v, 'pct') : un === 'n' ? num(Math.round(v)) : GC.fmt(v);
+  el.innerHTML = `<h2>Deu uma queda? Onde caiu</h2>
+    <p class="gc-lead">Últimos 7 dias (${dd(aDe).slice(0, 5)} a ${dd(ult).slice(0, 5)}) contra os 7 anteriores. ${ld && ld.d != null ? `Leads <b class="${ld.d >= 0 ? 'vpos' : 'vneg'}">${ld.d >= 0 ? '+' : '−'}${Math.abs(ld.d * 100).toFixed(0)}%</b>` : ''}${vd && vd.d != null ? `, vendas <b class="${vd.d >= 0 ? 'vpos' : 'vneg'}">${vd.d >= 0 ? '+' : '−'}${Math.abs(vd.d * 100).toFixed(0)}%</b>` : ''}.
+      ${cand.length ? `O que mais puxou os leads para baixo: <b class="vneg">${esc(cand[0].nome.replace(/ \(.*/, ''))}</b> (−${Math.abs(cand[0].d * 100).toFixed(0)}%)${cand[1] ? `, depois ${esc(cand[1].nome.replace(/ \(.*/, '').toLowerCase())} (−${Math.abs(cand[1].d * 100).toFixed(0)}%)` : ''}.` : 'Nenhum fator do caminho piorou mais de 5%.'}</p>
+    ${F.length >= 2 ? `<h3 style="margin:6px 0 2px;font-size:13px">O que mexeu nos leads dos anúncios</h3>${gcDivergente(F.map(x => ({ rotulo: x.nome, desvio: x.f - 1, dica: x.f >= 1 ? 'ajudou' : 'atrapalhou' })), '0 = igual aos 7 dias anteriores · verde = ajudou a trazer mais leads · vermelho = atrapalhou')}` : ''}
+    <div class="cp-q7">${linhas.map(x => { const p = piora(x), cls = x.d == null || x.menor == null ? '' : p > .05 ? 'vneg' : p < -.05 ? 'vpos' : 'muted', alvo = cand[0] && x.nome.split(' ')[0] === cand[0].nome.split(' ')[0];
+      return `<div class="cp-q7l${alvo ? ' alvo' : ''}"><span>${esc(x.nome)}</span><span class="n">${f(x.b, x.un)}</span><span class="n">→ ${f(x.a, x.un)}</span><span class="n ${cls}">${x.d == null ? '—' : (x.d >= 0 ? '▲ ' : '▼ ') + Math.abs(x.d * 100).toFixed(0) + '%'}</span></div>`; }).join('')}</div>
+    ${ads.length ? `<p style="margin:10px 0 0;font-size:13px"><b>Criativos que mais perderam CTR:</b> ${ads.map(x => `${esc(x.nome)} (${GC.fmt(x.b.ctr, 'pct')} → ${GC.fmt(x.a.ctr, 'pct')})`).join('; ')}.</p>` : ''}
+    ${GC.fonte('Etapas pelos números diários dos anúncios da campanha (leads e vendas pela UTM do anúncio, exceto Vendas e Ticket, que são as vendas aprovadas ligadas à campanha). Hoje fica fora porque o dia não terminou. Vermelho = piorou mais de 5%; em CPM e custo por lead, subir é piorar. Leads dos anúncios = investimento ÷ CPM × 1.000 × CTR × connect rate × conversão da página: no gráfico, cada fator mostra quanto ajudou (verde) ou atrapalhou (vermelho) contra a semana anterior; no CPM, subir atrapalha.')}`;
+}
+
+/* movimento por dia: um gráfico pequeno para cada número */
+function cpLinhas(el, X) {
+  const { dias, Z, VD, leadsDia, metaLeadDia, metaCpl, h } = X, rot = dias.map(d => dd(d).slice(0, 5)), parc = dias[dias.length - 1] === h;
+  const ml = dias.map(metaLeadDia), temML = ml.some(v => v != null);
+  const G = [
+    ['Investimento por dia', [{ nome: 'Investimento', valores: Z.map(z => z.custo || 0) }], 'brl', true],
+    ['CTR por dia', [{ nome: 'CTR', valores: Z.map(z => z.ctr) }], 'pct', false],
+    ['CPM por dia', [{ nome: 'CPM', valores: Z.map(z => z.cpm) }], 'brl', false],
+    ['Leads por dia', [{ nome: 'Leads', valores: dias.map(leadsDia) }, ...(temML ? [{ nome: 'Meta do dia', valores: ml, cor: 'var(--muted)' }] : [])], 'n', true],
+    ['Custo por lead por dia', [{ nome: 'CPL', valores: dias.map((d, i) => Z[i].custo && leadsDia(d) ? Z[i].custo / leadsDia(d) : null) }, ...(metaCpl ? [{ nome: 'Meta de CPL', valores: dias.map(() => metaCpl), cor: 'var(--muted)' }] : [])], 'brl', false],
+    ['Vendas por dia', [{ nome: 'Vendas', valores: dias.map(d => (VD[d] || {}).n || 0) }], 'n', true],
+    ['Receita por dia', [{ nome: 'Receita', valores: dias.map(d => (VD[d] || {}).r || 0) }], 'brl', true]];
+  el.innerHTML = `<h2>Movimento por dia</h2><div class="gc-mini">${G.map(([t, s, un, z]) => `<div><h3 style="margin:0;font-size:13px">${t}</h3>${gcLinhas({ series: s, rotulos: rot, un, parcial: parc, altura: 150, W: 380, zero: z })}</div>`).join('')}</div>
+    ${GC.fonte('Hoje aparece tracejado: o dia ainda não terminou. Dia sem lead fica sem custo por lead.')}`;
+}
+
+/* vídeos e criativos: quanto foi em cada um e o que trouxe */
+function cpCriativos(el, c, X) {
+  const { R, dias } = X, ids = [...new Set(R.map(r => r.anuncio_id))];
+  if (!ids.length) { el.innerHTML = '<h2>Vídeos e criativos</h2>' + GC.vazio('Sem números de anúncios no período. Importe as métricas em Mídia paga.'); return; }
+  const tot = cpZ(R), A = ids.map(id => { const rs = R.filter(r => r.anuncio_id === id), z = cpZ(rs); return { id, nome: rs[0].anuncio || '(sem nome)', canal: rs[0].canal, img: rs[0].imagem_url, z, spark: dias.map(d => cpZ(rs.filter(r => r.data === d)).ctr) }; }).sort((a, b) => b.z.custo - a.z.custo);
+  const comVol = A.filter(a => a.z.leads >= 5 && a.z.cpl != null), melhor = comVol.slice().sort((a, b) => a.z.cpl - b.z.cpl)[0], pior = comVol.length > 1 ? comVol.slice().sort((a, b) => b.z.cpl - a.z.cpl)[0] : null;
+  const sp = v => { const ok = v.filter(x => x != null); if (ok.length < 2) return ''; const mx = Math.max(...ok), mn = Math.min(...ok), W = 80, H = 22, x = i => 2 + i * (W - 4) / (v.length - 1), y = t => H - 3 - (mx === mn ? .5 : (t - mn) / (mx - mn)) * (H - 6);
+    return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true"><polyline points="${v.map((t, i) => t == null ? null : x(i).toFixed(1) + ',' + y(t).toFixed(1)).filter(Boolean).join(' ')}" fill="none" stroke="var(--accent)" stroke-width="1.6"/></svg>`; };
+  el.innerHTML = `<h2>Vídeos e criativos: quanto foi em cada um e o que trouxe</h2>
+    <p class="gc-lead">${melhor ? `Melhor custo por lead: <b class="vpos">${esc(melhor.nome)}</b> (${GC.fmt(melhor.z.cpl)} por lead, ${num(melhor.z.leads)} leads).` : ''}${pior && pior.id !== melhor.id ? ` Mais caro: <b class="vneg">${esc(pior.nome)}</b> (${GC.fmt(pior.z.cpl)}).` : ''}</p>
+    ${gcBarrasH({ itens: A.map(a => ({ rotulo: a.nome, valor: a.z.custo })), max: 8, total: tot.custo })}
+    <div class="tw" style="margin-top:10px"><table><thead><tr><th>Criativo</th><th>CTR no período</th><th class="n">Investido</th><th class="n">CTR</th><th class="n">Leads</th><th class="n">CPL</th><th class="n">Vendas</th><th class="n">ROAS</th></tr></thead><tbody>
+      ${A.slice(0, 10).map(a => `<tr${melhor && a.id === melhor.id ? ' class="cp-best"' : ''}><td><b>${esc(a.nome)}</b><br><span class="muted">${esc(mdCanal(a.canal))}</span></td><td>${sp(a.spark)}</td><td class="n">${GC.fmt(a.z.custo)}</td><td class="n">${GC.fmt(a.z.ctr, 'pct')}</td><td class="n">${num(a.z.leads)}</td><td class="n">${GC.fmt(a.z.cpl)}</td><td class="n">${num(a.z.vendas)}</td><td class="n">${a.z.roas == null ? '—' : a.z.roas.toFixed(2).replace('.', ',') + 'x'}</td></tr>`).join('')}</tbody></table></div>
+    ${A.length > 10 ? `<details style="margin-top:6px"><summary>Ver todos os ${A.length} criativos</summary><div class="tw"><table><thead><tr><th>Criativo</th><th class="n">Investido</th><th class="n">CTR</th><th class="n">Leads</th><th class="n">CPL</th><th class="n">Vendas</th><th class="n">ROAS</th></tr></thead><tbody>${A.slice(10).map(a => `<tr><td>${esc(a.nome)}</td><td class="n">${GC.fmt(a.z.custo)}</td><td class="n">${GC.fmt(a.z.ctr, 'pct')}</td><td class="n">${num(a.z.leads)}</td><td class="n">${GC.fmt(a.z.cpl)}</td><td class="n">${num(a.z.vendas)}</td><td class="n">${a.z.roas == null ? '—' : a.z.roas.toFixed(2).replace('.', ',') + 'x'}</td></tr>`).join('')}</tbody></table></div></details>` : ''}
+    ${GC.fonte('A barra é quanto foi investido em cada vídeo ou criativo (% do total da campanha no período). Leads e vendas de cada criativo vêm do utm_content do link. "Melhor" = menor custo por lead entre os que trouxeram 5 leads ou mais.')}`;
+}
+
+/* vendas da campanha: por dia, por produto e por papel da oferta */
+function cpVendas(el, X) {
+  const { V, ofs, dias, VD, h } = X;
+  if (!V.length) { el.innerHTML = '<h2>Vendas da campanha</h2>' + GC.vazio('Nenhuma venda aprovada ligada à campanha no período.'); return; }
+  const OF = Object.fromEntries(ofs.map(o => [o.id, o.papel])), P = {}, PP = {}; let tot = 0;
+  V.forEach(v => { const r = Number(v.valor_bruto || 0), n = (one(v.produtos) || {}).nome || 'Sem produto', pa = v.oferta_id && OF[v.oferta_id] ? OF[v.oferta_id] : ''; tot += r;
+    const x = P[n] = P[n] || { r: 0, q: 0 }; x.r += r; x.q++; PP[pa] = (PP[pa] || 0) + r; });
+  const L = Object.entries(P).sort((a, b) => b[1].r - a[1].r), extra = ['order_bump', 'upsell', 'cross_sell', 'downsell'].reduce((t, k) => t + (PP[k] || 0), 0);
+  el.innerHTML = `<h2>Vendas da campanha</h2><p class="gc-lead">${num(V.length)} venda(s), ${GC.fmtK(tot)} · ticket médio ${GC.fmt(tot / V.length)}. Mais vendido: <b>${esc(L[0][0])}</b> (${(L[0][1].r / tot * 100).toFixed(0)}% da receita).${extra ? ` Order bump, upsell e downsell: ${GC.fmtK(extra)} (${(extra / tot * 100).toFixed(1).replace('.', ',')}%).` : ''}</p>
+    ${gcBarrasV({ rotulos: dias.map(d => dd(d).slice(0, 5)), series: [{ nome: 'Vendas', valores: dias.map(d => (VD[d] || {}).n || 0), cor: 'var(--accent)' }], un: 'n', altura: 140, parcial: dias[dias.length - 1] === h })}
+    <h3 style="margin:10px 0 0;font-size:13px">Por produto</h3>${gcBarrasH({ itens: L.map(([n, x]) => ({ rotulo: n + ' (' + x.q + ')', valor: x.r })), max: 6, total: tot })}
+    ${Object.keys(PP).some(k => k) ? `<h3 style="margin:10px 0 0;font-size:13px">Por papel da oferta</h3>${gcBarrasH({ itens: GC_PAPEL.filter(([k]) => PP[k] > 0).map(([k, nome]) => ({ rotulo: nome, valor: PP[k] })), max: 6, total: tot, fixo: true })}` : '<p class="muted" style="font-size:12px">Para ver order bump, upsell e downsell, ligue a oferta em cada venda (ou traga a coluna da oferta na importação).</p>'}
+    ${GC.fonte('Vendas aprovadas ligadas à campanha no período, pelo valor bruto.')}`;
 }
 
 /* ---------- Projetos: apoio ---------- */

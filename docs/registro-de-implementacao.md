@@ -1,5 +1,11 @@
 
 
+## Painel da campanha (v0.128)
+- `campPainel128(el, c)` na aba Dashboard da campanha (depois de `vMktDashCampanha`): `cpGrade`, `cpQueda`, `cpLinhas`, `cpCriativos`, `cpVendas`; estado em `S.cp128` (período).
+- `gcLinhas`: rótulos de data pela largura; escala com folga quando a variação é muito pequena. `GC.fmtK`: mais casas em valores pequenos e porcentagens abaixo de 5%. `gcDivergente` aceita a legenda.
+- Montagem: `integra128.py` (roda o `integra127.py`) com `g128.js` e `g128.css`.
+- Teste: `t128_painel_campanha.py`.
+
 ## Onda 3 (v0.127)
 - `vendasOfertas127` (Vendas), `planoV127` (fim do `vPlano`), `saldoMinLer`/`saldoMinGrava`/`finSaldoMin` (Financeiro); `painelObs` ganhou a regra do saldo mínimo.
 - Importação: campo `oferta_id` (ref `ofertas`) em `IMP_ALVOS.vendas`; `impCarregaRefs` carrega as ofertas pelo nome; a mensagem de "não encontrado" usa o nome da referência quando ela não é um alvo de importação.
