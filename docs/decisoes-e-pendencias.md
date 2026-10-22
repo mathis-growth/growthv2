@@ -10,7 +10,7 @@
 - **Limitação**: os alertas que dependem de duas respostas juntas (ex.: implementação + sem plano → "Brain pode exigir Strategy antes") não cabem na regra de pontos por opção; ficam para a revisão humana.
 - Fontes: só pelo nome do Google Fonts (letras, números e espaços); cores só no formato #rrggbb; logo só https. Tudo é conferido de novo na página pública antes de virar estilo.
 - O site tem `X-Frame-Options: DENY`: o formulário abre pelo link, não dentro de um iframe no site do cliente.
-**Pendente**: aplicar `RODAR_v0.130_formulario.sql` em produção (precisa da autorização da Rebecka).
+**Banco em produção**: `RODAR_v0.130_formulario.sql` aplicado em 21/10/2026, com autorização da Rebecka.
 
 ## v0.129 — Gráfico único e qualificação por pontos
 **Pedidos da Rebecka (21/10)**

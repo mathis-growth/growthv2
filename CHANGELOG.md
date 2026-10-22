@@ -111,7 +111,7 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - **Página pública** refeita: passos com barra de progresso, validação passo a passo, botões grandes, funciona no celular; vale também para as pesquisas comuns (link único e link aberto), que passam a usar a aparência escolhida.
 - Proteções: campo-armadilha contra robôs, mesmo e-mail só de novo depois de 2 minutos, limite de 500 respostas por hora por formulário, etapa/tags/responsável não aparecem para quem responde.
 - Ficha do lead mostra o **Instagram**.
-- Banco: `20261027100000_formulario_captacao.sql` / `RODAR_v0.130_formulario.sql` (colunas `pesquisas.visual`, `pesquisas.captacao`, `pesquisa_perguntas.secao`, `pesquisa_respostas.contato/consentimentos/utm/novo_contato`; funções `pesquisa_captar` e `pesquisa_registrar`; `pesquisa_responder` e `pesquisa_publica` reescritas com o mesmo comportamento). **Ainda não aplicado em produção.**
+- Banco: `20261027100000_formulario_captacao.sql` / `RODAR_v0.130_formulario.sql` (colunas `pesquisas.visual`, `pesquisas.captacao`, `pesquisa_perguntas.secao`, `pesquisa_respostas.contato/consentimentos/utm/novo_contato`; funções `pesquisa_captar` e `pesquisa_registrar`; `pesquisa_responder` e `pesquisa_publica` reescritas com o mesmo comportamento). Aplicado em produção em 21/10/2026.
 - Teste: `t130_formulario_captacao.py`.
 
 ## [0.129] - 2026-10-21 — Movimento por dia num gráfico só e qualificação por pontos
