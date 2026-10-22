@@ -1,5 +1,13 @@
 
 
+## Formulário de captação (v0.130)
+- Página pública: `vPesquisaPublica(token)` → `pfDesenha(el, d, token, {previa})`; passos por `pfPassos(d)`; campos por `pfCampo`; aparência saneada por `pfVis` (fonte, cor, logo) e aplicada como variáveis CSS (`pfEstilo`); fontes carregadas por `pfCarregaFontes` (dois links por família, um sem pesos que sempre existe).
+- Editor: aba `form` em `vPesquisaDet` → `pqForm(el, p, perg)` (configuração em `C`/`V`, pré-visualização com `pfDesenha(..., {previa: true})`, temas `PF_TEMAS`, contraste por `pfContraste`). `modalPergunta` ganhou `secao` (se a coluna existir: `S.pqSecao`).
+- Modelo `PQ_MODELOS.captacao_mathisa` com `extra` (visual, captação, qualif) e perguntas com passo e pontos; `criarDeModelo` grava esses campos.
+- Banco: `pesquisa_registrar` concentra a gravação (antes dentro de `pesquisa_responder`); `pesquisa_captar` valida, deduplica, cria/atualiza a pessoa e chama `pesquisa_registrar`.
+- Montagem: `integra130.py` (roda o `integra129.py`) com `g130.js` e `g130.css`; o `g130.js` substitui a página pública antiga e fica no fim do script (depois de `PQ_MODELOS`).
+- Teste: `t130_formulario_captacao.py` (41 verificações: editor, página pública no celular, CRM, deduplicação, bloqueios e o fluxo antigo).
+
 ## Gráfico único e qualificação por pontos (v0.129)
 - `gcMulti(el, {rotulos, metricas, sel, parcial, metas})` e o novo `cpLinhas` (a versão da v0.128 saiu); seleção em `S.cp128.selM`. `CP_MET` lista as métricas e cores.
 - Pesquisa: aba `qual` em `vPesquisaDet` → `pqQualif(el, p, perg)`; `pqPontua(cfg, perg, itens)` repete a conta do banco para o simulador.

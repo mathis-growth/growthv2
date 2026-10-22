@@ -387,7 +387,77 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">.cp-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.cp-chips button{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:none;border-radius:99px;padding:4px 11px;font-size:12.5px;cursor:pointer;color:var(--muted)}
+<style id="v122">.pf{background:var(--bg);color:var(--tx);font-family:var(--ftx);font-size:16px;line-height:1.5;padding:36px 18px 56px;min-height:100%;box-sizing:border-box}
+.pf *{box-sizing:border-box}
+.pf-in{max-width:680px;margin:0 auto}
+.pf-logo{display:block;max-height:52px;max-width:220px;object-fit:contain;margin-bottom:14px}
+.pf-marca{font-size:13px;letter-spacing:2.5px;font-weight:700;color:var(--pc)}
+.pf h1{font-family:var(--ftt);font-weight:500;font-size:clamp(28px,5vw,42px);line-height:1.12;margin:14px 0 10px;color:var(--tx)}
+.pf-sub{margin:0;opacity:.82}
+.pf-bar{height:6px;border-radius:9px;background:color-mix(in srgb,var(--pc) 16%,transparent);overflow:hidden;margin:24px 0 18px}
+.pf-bar>i{display:block;height:100%;background:var(--pc);transition:width .2s}
+.pf-card{background:var(--card);border:1px solid color-mix(in srgb,var(--tx) 13%,transparent);border-radius:var(--rd);padding:clamp(20px,4vw,32px);box-shadow:0 10px 32px color-mix(in srgb,var(--tx) 6%,transparent)}
+.pf-card[hidden]{display:none}
+.pf-de{font-size:13px;opacity:.7;margin-bottom:4px}
+.pf h2{font-family:var(--ftt);font-weight:500;font-size:24px;line-height:1.2;margin:0 0 18px;color:var(--tx)}
+.pf-l{display:block;font-weight:600;margin:16px 0 6px;font-size:15px}
+.pf input[type=text],.pf input[type=email],.pf input[type=tel],.pf textarea{width:100%;padding:13px 14px;border:1px solid color-mix(in srgb,var(--tx) 32%,transparent);border-radius:calc(var(--rd)*.6);font:inherit;color:var(--tx);background:var(--card)}
+.pf input:focus-visible,.pf textarea:focus-visible,.pf-b:focus-visible,.pf-op:focus-within,.pf-n:focus-within{outline:3px solid color-mix(in srgb,var(--pc) 45%,transparent);outline-offset:2px}
+.pf-q{border:0;padding:0;margin:0 0 26px}.pf-q:last-child{margin-bottom:4px}
+.pf-q legend{font-weight:600;margin-bottom:12px;line-height:1.45;padding:0}
+.pf-opc{font-weight:400;opacity:.7;font-size:.92em}
+.pf-op{display:flex;align-items:flex-start;gap:11px;border:1px solid color-mix(in srgb,var(--tx) 16%,transparent);border-radius:calc(var(--rd)*.6);padding:13px 14px;margin:8px 0;cursor:pointer;font-weight:400}
+.pf-op:has(input:checked){border-color:var(--pc);background:color-mix(in srgb,var(--pc) 8%,var(--card))}
+.pf-op input,.pf-ck input{accent-color:var(--pc);margin-top:4px;flex:0 0 auto;width:auto}
+.pf-esc{display:flex;flex-wrap:wrap;gap:6px}
+.pf-n{position:relative;cursor:pointer}.pf-n input{position:absolute;opacity:0;inset:0}
+.pf-n span{display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:44px;border:1px solid color-mix(in srgb,var(--tx) 22%,transparent);border-radius:calc(var(--rd)*.5);font-weight:600}
+.pf-n input:checked+span{background:var(--pc);color:var(--pcx);border-color:var(--pc)}
+.pf-dica{display:block;opacity:.7;font-size:13px;margin-top:6px}
+.pf-aviso{padding:16px 18px;background:color-mix(in srgb,var(--pc) 7%,var(--card));border-left:3px solid var(--pc);border-radius:calc(var(--rd)*.5);margin-bottom:8px}
+.pf-aviso p{margin:6px 0 0}
+.pf-ck{display:flex;gap:10px;align-items:flex-start;margin:16px 0;cursor:pointer}
+.pf-nota{font-size:13px;opacity:.75;margin:18px 0 0}
+.pf-acts{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px}
+.pf-acts span{flex:1}
+.pf-b{padding:14px 24px;min-height:48px;border-radius:calc(var(--rd)*.6);border:1px solid var(--pc);background:var(--pc);color:var(--pcx);font:600 15px var(--ftx);cursor:pointer}
+.pf-b[hidden]{display:none}
+.pf-b2{background:transparent;color:var(--tx);border-color:color-mix(in srgb,var(--tx) 30%,transparent)}
+.pf-b:disabled{opacity:.5;cursor:wait}
+.pf-msg{min-height:24px;font-weight:600;margin:12px 0 0;color:var(--tx)}
+.pf-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.pf-ok h2{margin-bottom:8px}.pf-ok p{margin:0}
+@media (max-width:520px){.pf{padding:24px 14px 40px}.pf-acts{flex-wrap:wrap}.pf-b{flex:1}}
+/* editor */
+.pf-ed{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:1100px){.pf-ed{grid-template-columns:1fr}}
+.pf-cfg{display:flex;flex-direction:column;gap:16px}
+.pf-cfg .panel{display:flex;flex-direction:column;gap:10px}
+.pf-cfg h2{margin:0}
+.pf-g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:600px){.pf-g2{grid-template-columns:1fr}}
+.pf-rl{display:flex!important;flex-direction:row!important;align-items:center;gap:8px;font-weight:400!important}
+.pf-rl input{width:auto}
+.pf-cons{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}
+.pf-cores{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pf-cor{display:flex;gap:8px;align-items:center}.pf-cor input[type=color]{width:44px;height:38px;padding:2px;border-radius:8px;flex:0 0 auto}.pf-cor input[type=text]{width:110px}
+.pf-temas{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pf-temas button{display:inline-flex;align-items:center;gap:4px}.pf-temas i{width:12px;height:12px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.15)}
+.pf-prev{position:sticky;top:12px;display:flex;flex-direction:column;gap:8px}
+.pf-prevh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pf-dev{display:inline-flex;gap:4px}.pf-dev .on{outline:2px solid var(--accent,#521F32)}
+.pf-prevbox{border:1px solid var(--line);border-radius:12px;overflow:auto;max-height:78vh;margin:0 auto;width:100%;transition:max-width .2s}
+.pf-prevbox.cel{max-width:390px}
+.pf-link{display:flex;flex-direction:column;gap:10px}.pf-link h2{margin:0}
+.pf-lk{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.pf-lk code{word-break:break-all;flex:1 1 320px;padding:8px 10px;border:1px solid var(--line);border-radius:8px}
+.pf-utm{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0}
+@media (max-width:700px){.pf-utm{grid-template-columns:1fr}}
+.pf label{font-size:inherit;color:var(--tx);font-weight:inherit;gap:0}
+.pf .pf-op,.pf .pf-ck{flex-direction:row;gap:11px}
+.pf .pf-l{display:block;font-weight:600;font-size:15px}
+.pf .pf-n{display:inline-block}
+.pf .pf-hp label{display:block}
+.cp-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.cp-chips button{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:none;border-radius:99px;padding:4px 11px;font-size:12.5px;cursor:pointer;color:var(--muted)}
 .cp-chips button i{width:10px;height:10px;border-radius:50%;background:var(--c);opacity:.35}.cp-chips button.on{color:var(--ink);border-color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);font-weight:600}.cp-chips button.on i{opacity:1}
 .cp-chips-a{margin-left:auto;display:inline-flex;gap:6px}.cp-chips-a button{border-style:dashed}
 .cp-mw{position:relative;margin-top:6px}.cp-mt{position:absolute;top:8px;z-index:3;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12px;box-shadow:0 6px 20px rgba(0,0,0,.12);display:flex;flex-direction:column;gap:3px;min-width:180px;pointer-events:none}
@@ -503,7 +573,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.129 · 21/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.130 · 21/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -3235,6 +3305,7 @@ async function fichaPessoa(id) {
     ${tit('Contato')}
     <div class="infog">${p.email ? `<div><span class="muted" style="font-size:11px">E-mail</span><br><a href="mailto:${esc(p.email)}">${esc(p.email)}</a></div>` : campo('E-mail', '')}
       ${p.telefone ? `<div><span class="muted" style="font-size:11px">Telefone / WhatsApp</span><br>${esc(p.telefone)}${zap.length >= 10 ? ` · <a href="https://wa.me/${zap.length <= 11 ? '55' + zap : zap}" target="_blank" rel="noopener">abrir WhatsApp</a>` : ''}</div>` : campo('Telefone / WhatsApp', '')}
+      ${(p.extras || {}).instagram ? (() => { const ig = String(p.extras.instagram).trim(), u = ig.replace(/^@/, '').replace(/^https?:\/\/(www\.)?instagram\.com\//, '').replace(/\/.*$/, ''); return `<div><span class="muted" style="font-size:11px">Instagram</span><br>${/^[A-Za-z0-9._]{1,30}$/.test(u) ? `<a href="https://instagram.com/${u}" target="_blank" rel="noopener">@${esc(u)}</a>` : esc(ig)}</div>`; })() : ''}
       ${campo('Cadastrado em', p.criado_em ? dtt(p.criado_em) : '')}${campo('Virou cliente em', p.convertido_em ? dtt(p.convertido_em) : '')}</div>
     ${tit('Responsáveis')}
     <div class="infog"><div><span class="muted" style="font-size:11px">Comercial responsável</span><br>${eqN(p.responsavel_comercial_id) ? '<b>' + esc(eqN(p.responsavel_comercial_id)) + '</b>' : '<span class="muted">sem responsável</span>'} <button type="button" class="btn sm" data-rc>Alterar</button></div>
@@ -13590,9 +13661,9 @@ async function vPesquisas(m) {
 function criarDeModelo(k) {
   const md = PQ_MODELOS[k];
   modal('Criar pesquisa do modelo', `<p>Vai criar <b>${esc(md.nome)}</b> com ${md.perguntas.length} perguntas. Depois você edita tudo.</p>`, async () => {
-    const p = one(await q(sb.from('pesquisas').insert({ workspace_id: S.ws, nome: md.nome, tipo: md.tipo, gatilho: md.gatilho, descricao: md.descricao, dispensa_qualificado: !!md.dispensa_qualificado, ativa: false }).select('id').single()));
-    await q(sb.from('pesquisa_perguntas').insert(md.perguntas.map((x, i) => ({ workspace_id: S.ws, pesquisa_id: p.id, ordem: i + 1, texto: x[0], tipo: x[1], opcoes: x[2], papel: x[3], obrigatoria: x[4] !== false }))));
-    S.pqSel = p.id; S.pqTab = 'perguntas'; toast('Pesquisa criada, desativada. Revise e ative.');
+    const p = one(await q(sb.from('pesquisas').insert({ workspace_id: S.ws, nome: md.nome, tipo: md.tipo, gatilho: md.gatilho, descricao: md.descricao, dispensa_qualificado: !!md.dispensa_qualificado, ativa: false, ...(md.extra || {}) }).select('id').single()));
+    await q(sb.from('pesquisa_perguntas').insert(md.perguntas.map((x, i) => ({ workspace_id: S.ws, pesquisa_id: p.id, ordem: i + 1, texto: x[0], tipo: x[1], opcoes: x[2], papel: x[3], obrigatoria: x[4] !== false, ...(x[5] ? { secao: x[5] } : {}), ...(x[6] ? { pontos: x[6] } : {}) }))));
+    S.pqSel = p.id; S.pqTab = md.extra && md.extra.captacao ? 'form' : 'perguntas'; toast('Pesquisa criada, desativada. Revise e ative.');
   }, 'Criar');
 }
 async function modalPesquisa(row) {
@@ -13612,17 +13683,19 @@ async function vPesquisaDet(m) {
   const w = S.ws, id = S.pqSel, T = S.pqTab = S.pqTab || 'perguntas';
   const [ps, perg] = await Promise.all([q(sb.from('pesquisas').select('*').eq('id', id)), q(sb.from('pesquisa_perguntas').select('*').eq('pesquisa_id', id).order('ordem').order('criado_em'))]);
   const p = ps[0]; if (!p) { S.pqSel = null; return vPesquisas(m); }
+  S.pqSecao = await temColuna('pesquisa_perguntas', 'secao');
   m.innerHTML = `<div class="head"><div><button class="btn sm" id="pqVolta">← Pesquisas</button><h1 style="margin-top:8px">${esc(p.nome)} ${pillAtivo(p.ativa)}</h1><span class="muted">${PQ_TIPO[p.tipo]} · ${esc(PQ_GAT[p.gatilho])}${p.gatilho === 'etapa' ? ': ' + esc(p.gatilho_etapa) : ''}</span></div><div class="acts"><button class="btn" id="pqEd">Configurar</button></div></div>
-  <div class="tabs">${[['perguntas', 'Perguntas'], ['qual', 'Qualificação e pontos'], ['envios', 'Fila de envio'], ['res', 'Resultados'], ['ins', 'Insights']].map(([k, l]) => `<button data-t="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="pqBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
+  <div class="tabs">${[['perguntas', 'Perguntas'], ['form', 'Formulário e aparência'], ['qual', 'Qualificação e pontos'], ['envios', 'Fila de envio'], ['res', 'Resultados'], ['ins', 'Insights']].map(([k, l]) => `<button data-t="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="pqBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
   $('#pqVolta').onclick = () => { S.pqSel = null; render(); }; $('#pqEd').onclick = () => modalPesquisa(p);
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { S.pqTab = b.dataset.t; render(); });
   const body = $('#pqBody');
-  if (T === 'envios') return pqEnvios(body, p); if (T === 'res') return pqResultados(body, p, perg); if (T === 'ins') return pqInsights(body, p, perg); if (T === 'qual') return pqQualif(body, p, perg);
+  if (T === 'envios') return pqEnvios(body, p); if (T === 'res') return pqResultados(body, p, perg); if (T === 'ins') return pqInsights(body, p, perg); if (T === 'qual') return pqQualif(body, p, perg); if (T === 'form') return pqForm(body, p, perg);
   pqPerguntas(body, p, perg);
 }
 function modalPergunta(p, row, n) {
   const campos = [{ k: 'texto', l: 'Pergunta', req: 1, full: 1 }, { k: 'tipo', l: 'Tipo de resposta', t: 'select', req: 1, def: 'texto', opts: Object.entries(PQ_TP) }, { k: 'opcoes_txt', l: 'Opções (uma por linha, só para escolha)', t: 'textarea', hint: 'Na pergunta de PMF, a primeira opção é a que conta (por exemplo "Muito desapontado").' },
     { k: 'papel', l: 'Papel na análise', t: 'select', req: 1, def: 'livre', opts: Object.entries(PQ_PAPEL) }, { k: 'ordem', l: 'Ordem', t: 'number', def: n }, { k: 'obrigatoria', l: 'Obrigatória', t: 'check', def: true }];
+  if (S.pqSecao) campos.splice(4, 0, { k: 'secao', l: 'Passo do formulário', hint: 'Perguntas com o mesmo nome de passo aparecem juntas, na ordem. Vazio = passo "Perguntas".' });
   const f = abrirForm(row ? 'Editar pergunta' : 'Nova pergunta', 'pesquisa_perguntas', campos, row ? { ...row, opcoes_txt: (row.opcoes || []).join('\n') } : null, { extra: { pesquisa_id: p.id }, antes: v => {
     v.opcoes = (v.opcoes_txt || '').split(/\r?\n/).map(x => x.trim()).filter(Boolean); delete v.opcoes_txt;
     if (['escolha', 'multipla'].includes(v.tipo) && v.opcoes.length < 2) throw new Error('Informe pelo menos 2 opções.');
@@ -13632,7 +13705,7 @@ function modalPergunta(p, row, n) {
 }
 function pqPerguntas(el, p, perg) {
   el.innerHTML = `<div class="acts"><button class="btn pri" id="qNova">Nova pergunta</button></div>${p.aceita_link_aberto ? `<div class="panel"><b>Link aberto (para a página de obrigado):</b> <code style="word-break:break-all">${esc(linkPesquisa(p.token_aberto))}</code> <button class="btn sm" id="cpAberto">Copiar</button></div>` : ''}${fonteLink()}
-  <div class="panel"><div class="tw"><table><thead><tr><th class="n">#</th><th>Pergunta</th><th>Tipo</th><th>Papel</th><th></th></tr></thead><tbody>${perg.map(x => `<tr><td class="n">${x.ordem}</td><td><b>${esc(x.texto)}</b>${x.opcoes.length ? `<br><small class="muted">${x.opcoes.map(esc).join(' · ')}</small>` : ''}${x.obrigatoria ? '' : ' <span class="pill neutral">opcional</span>'}</td><td>${PQ_TP[x.tipo]}</td><td>${PQ_PAPEL[x.papel]}</td><td><button class="btn sm" data-q="${x.id}">Editar</button></td></tr>`).join('') || '<tr><td colspan="5" class="empty">Sem perguntas.</td></tr>'}</tbody></table></div></div>`;
+  <div class="panel"><div class="tw"><table><thead><tr><th class="n">#</th><th>Pergunta</th><th>Tipo</th><th>Papel</th><th></th></tr></thead><tbody>${perg.map(x => `<tr><td class="n">${x.ordem}</td><td><b>${esc(x.texto)}</b>${x.opcoes.length ? `<br><small class="muted">${x.opcoes.map(esc).join(' · ')}</small>` : ''}${x.obrigatoria ? '' : ' <span class="pill neutral">opcional</span>'}</td><td>${PQ_TP[x.tipo]}${x.secao ? '<br><small class="muted">Passo: ' + esc(x.secao) + '</small>' : ''}</td><td>${PQ_PAPEL[x.papel]}</td><td><button class="btn sm" data-q="${x.id}">Editar</button></td></tr>`).join('') || '<tr><td colspan="5" class="empty">Sem perguntas.</td></tr>'}</tbody></table></div></div>`;
   $('#qNova').onclick = () => modalPergunta(p, null, perg.length + 1);
   el.querySelectorAll('[data-q]').forEach(b => b.onclick = () => modalPergunta(p, perg.find(x => x.id === b.dataset.q), perg.length + 1));
   if ($('#cpAberto')) $('#cpAberto').onclick = () => navigator.clipboard.writeText(linkPesquisa(p.token_aberto)).then(() => toast('Link copiado'), () => toast('Não consegui copiar. Selecione e copie o link.', true));
@@ -13696,30 +13769,127 @@ async function pqInsights(el, p, perg) {
   el.querySelectorAll('[data-xp]').forEach(b => b.onclick = () => { const i = ins.find(x => x.id === b.dataset.xp); modalExperimento(null, { titulo: 'Testar: ' + i.texto.slice(0, 80), insight: i.texto, pesquisa_id: p.id, metrica_id: i.metrica_id }, mets); });
 }
 
-/* ---------- página pública de resposta (sem login) ---------- */
-async function vPesquisaPublica(token) {
-  document.title = 'Pesquisa';
-  const box = document.createElement('div'); box.id = 'pubPesq'; box.style.cssText = 'position:fixed;inset:0;z-index:999;overflow:auto;background:var(--bg);padding:20px 16px';
-  document.body.appendChild(box);
-  const wrap = h => `<div style="max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:16px">${h}</div>`;
-  let d = null;
-  try { d = await q(sb.rpc('pesquisa_publica', { p_token: token })); } catch (e) { d = null; }
-  if (!d) { box.innerHTML = wrap('<div class="panel"><h2>Pesquisa indisponível</h2><span class="muted">O link está incorreto ou a pesquisa foi encerrada.</span></div>'); return; }
-  if (d.ja_respondida) { box.innerHTML = wrap('<div class="panel"><h2>Obrigado!</h2><span class="muted">Você já respondeu esta pesquisa.</span></div>'); return; }
-  const campo = x => {
-    const n = 'q_' + x.id, req = x.obrigatoria ? ' required' : '';
-    let inp = '';
-    if (x.tipo === 'nps') inp = `<div style="display:flex;gap:6px;flex-wrap:wrap">${Array.from({ length: 11 }, (_, i) => `<label style="flex-direction:row;gap:4px;align-items:center;font-weight:400;color:var(--ink)"><input type="radio" name="${n}" value="${i}" style="width:auto"${req}> ${i}</label>`).join('')}</div><small class="muted">0 = nada provável · 10 = muito provável</small>`;
-    else if (x.tipo === 'escala') inp = `<div style="display:flex;gap:10px;flex-wrap:wrap">${[1, 2, 3, 4, 5].map(i => `<label style="flex-direction:row;gap:4px;align-items:center;font-weight:400;color:var(--ink)"><input type="radio" name="${n}" value="${i}" style="width:auto"${req}> ${i}</label>`).join('')}</div><small class="muted">1 = muito ruim · 5 = excelente</small>`;
-    else if (x.tipo === 'sim_nao') inp = `<div style="display:flex;gap:14px">${[['sim', 'Sim'], ['nao', 'Não']].map(([v, l]) => `<label style="flex-direction:row;gap:4px;align-items:center;font-weight:400;color:var(--ink)"><input type="radio" name="${n}" value="${v}" style="width:auto"${req}> ${l}</label>`).join('')}</div>`;
-    else if (x.tipo === 'escolha') inp = `<div style="display:flex;flex-direction:column;gap:6px">${x.opcoes.map(o => `<label style="flex-direction:row;gap:6px;align-items:center;font-weight:400;color:var(--ink)"><input type="radio" name="${n}" value="${esc(o)}" style="width:auto"${req}> ${esc(o)}</label>`).join('')}</div>`;
-    else if (x.tipo === 'multipla') inp = `<div style="display:flex;flex-direction:column;gap:6px">${x.opcoes.map(o => `<label style="flex-direction:row;gap:6px;align-items:center;font-weight:400;color:var(--ink)"><input type="checkbox" name="${n}" value="${esc(o)}" style="width:auto"> ${esc(o)}</label>`).join('')}</div>`;
-    else inp = `<textarea name="${n}" rows="3" maxlength="2000"${req}></textarea>`;
-    return `<fieldset style="border:0;padding:0;margin:0"><legend style="font-weight:600;margin-bottom:6px">${esc(x.texto)}${x.obrigatoria ? '' : ' <span class="muted" style="font-weight:400">(opcional)</span>'}</legend>${inp}</fieldset>`;
+/* ================= v0.130: formulário de captação nas Pesquisas ================= */
+/* Uma pesquisa vira um formulário público em passos, com as fontes e cores do cliente,
+   que cria ou atualiza o contato no Funil de leads (pesquisa_captar no banco). */
+const PF_FONTES = ['Poppins', 'Inter', 'Montserrat', 'Lato', 'Open Sans', 'Raleway', 'Nunito', 'DM Sans', 'Work Sans', 'Manrope', 'Josefin Sans', 'Quicksand', 'Space Grotesk',
+  'Playfair Display', 'Bodoni Moda', 'Cormorant Garamond', 'Lora', 'Merriweather', 'Libre Baskerville', 'DM Serif Display', 'Fraunces', 'Prata', 'Abril Fatface', 'Caveat', 'Dancing Script'];
+const PF_PADRAO = { marca: '', titulo: '', logo_url: '', fonte_titulo: 'Playfair Display', fonte_texto: 'Inter', cor_primaria: '#3B4A6B', cor_fundo: '#F6F5F2', cor_cartao: '#FFFFFF', cor_texto: '#24262B', raio: 14, botao: 'Continuar', enviar: 'Enviar' };
+const PF_TEMAS = {
+  neutro: { nome: 'Neutro', v: { fonte_titulo: 'Playfair Display', fonte_texto: 'Inter', cor_primaria: '#3B4A6B', cor_fundo: '#F6F5F2', cor_cartao: '#FFFFFF', cor_texto: '#24262B', raio: 14 } },
+  mathisa: { nome: 'Mathisa', v: { fonte_titulo: 'Bodoni Moda', fonte_texto: 'Poppins', cor_primaria: '#521F32', cor_fundo: '#F8F5EF', cor_cartao: '#FFFFFF', cor_texto: '#35241F', raio: 16 } },
+  escuro: { nome: 'Escuro', v: { fonte_titulo: 'DM Serif Display', fonte_texto: 'DM Sans', cor_primaria: '#E8C27A', cor_fundo: '#15171C', cor_cartao: '#1F232B', cor_texto: '#F1EFEA', raio: 12 } },
+  moderno: { nome: 'Moderno', v: { fonte_titulo: 'Space Grotesk', fonte_texto: 'Manrope', cor_primaria: '#2F6FED', cor_fundo: '#FFFFFF', cor_cartao: '#F5F7FB', cor_texto: '#151B2B', raio: 10 } }
+};
+const PF_CAP_PADRAO = () => ({ ativa: true, campos: { telefone: { mostrar: true, obrig: true, rotulo: 'WhatsApp' }, instagram: { mostrar: false, obrig: false, rotulo: 'Instagram' } }, etapa_id: '', tags: [], responsavel_id: '',
+  passo_contato: 'Seus dados', passo_final: 'Confirmação', aviso_titulo: '', aviso_texto: '', consentimentos: [{ texto: 'Autorizo o uso dos meus dados e respostas para análise da solicitação e contato comercial.', obrig: true }], nota_final: '',
+  sucesso_titulo: 'Recebemos suas respostas!', sucesso_texto: 'Obrigado por compartilhar. Nossa equipe vai analisar e entrar em contato.' });
+
+/* o que vem do banco passa por aqui antes de virar estilo: só nomes de fonte, cores #rrggbb e logo https */
+const pfCor = (c, d) => /^#[0-9a-fA-F]{6}$/.test(String(c || '')) ? c : d;
+const pfFonte = (f, d) => /^[A-Za-z0-9 ]{2,40}$/.test(String(f || '').trim()) ? String(f).trim() : d;
+function pfVis(v) {
+  v = v || {}; const P = PF_PADRAO;
+  return { marca: String(v.marca || '').slice(0, 60), titulo: String(v.titulo || '').slice(0, 160), logo_url: /^https:\/\/[^\s"'<>()]+$/.test(v.logo_url || '') ? v.logo_url : '',
+    fonte_titulo: pfFonte(v.fonte_titulo, P.fonte_titulo), fonte_texto: pfFonte(v.fonte_texto, P.fonte_texto),
+    cor_primaria: pfCor(v.cor_primaria, P.cor_primaria), cor_fundo: pfCor(v.cor_fundo, P.cor_fundo), cor_cartao: pfCor(v.cor_cartao, P.cor_cartao), cor_texto: pfCor(v.cor_texto, P.cor_texto),
+    raio: Math.max(0, Math.min(28, Number.isFinite(+v.raio) && v.raio !== '' && v.raio != null ? +v.raio : P.raio)), botao: String(v.botao || P.botao).slice(0, 40), enviar: String(v.enviar || P.enviar).slice(0, 40) };
+}
+function pfLum(hex) { const n = parseInt(hex.slice(1), 16), c = [n >> 16, (n >> 8) & 255, n & 255].map(x => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; }
+const pfContraste = (a, b) => { const x = pfLum(a), y = pfLum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+const pfSobre = hex => pfContraste(hex, '#FFFFFF') >= pfContraste(hex, '#111111') ? '#FFFFFF' : '#111111';
+function pfCarregaFontes(v) {
+  [v.fonte_titulo, v.fonte_texto].forEach(f => {
+    const id = 'pf-f-' + f.replace(/\s+/g, '-');
+    if (document.getElementById(id)) return;
+    const fam = encodeURIComponent(f).replace(/%20/g, '+');
+    // um link simples (sempre existe) e outro com pesos; se a fonte não tiver os pesos, só o segundo falha
+    [['', ''], ['-p', ':wght@500;600;700']].forEach(([suf, pesos]) => { const l = document.createElement('link'); l.id = id + suf; l.rel = 'stylesheet'; l.href = `https://fonts.googleapis.com/css2?family=${fam}${pesos}&display=swap`; document.head.appendChild(l); });
+  });
+}
+const pfEstilo = v => `--pc:${v.cor_primaria};--pcx:${pfSobre(v.cor_primaria)};--bg:${v.cor_fundo};--card:${v.cor_cartao};--tx:${v.cor_texto};--rd:${v.raio}px;--ftt:'${v.fonte_titulo}',Georgia,serif;--ftx:'${v.fonte_texto}',system-ui,sans-serif`;
+
+/* passos: contato (se capta ou é link aberto), um por seção das perguntas, e o final (aviso e consentimentos) */
+function pfPassos(d) {
+  const cap = d.captacao, P = [];
+  if (cap || d.aberto) P.push({ tipo: 'contato', titulo: (cap && cap.passo_contato) || 'Seus dados' });
+  const sec = [];
+  (d.perguntas || []).forEach(x => { const k = (x.secao || '').trim() || 'Perguntas'; let s = sec.find(y => y.titulo === k); if (!s) { s = { tipo: 'perguntas', titulo: k, perguntas: [] }; sec.push(s); } s.perguntas.push(x); });
+  P.push(...sec);
+  if (cap && ((cap.aviso_texto || '').trim() || (cap.consentimentos || []).some(c => (c.texto || '').trim()) || (cap.nota_final || '').trim())) P.push({ tipo: 'final', titulo: cap.passo_final || 'Confirmação' });
+  return P;
+}
+function pfCampo(x) {
+  const n = 'q_' + x.id, req = x.obrigatoria ? ' required' : '';
+  const op = (tipo, v, l) => `<label class="pf-op"><input type="${tipo}" name="${n}" value="${esc(v)}"${tipo === 'radio' ? req : ''}><span>${esc(l)}</span></label>`;
+  let inp;
+  if (x.tipo === 'nps') inp = `<div class="pf-esc">${Array.from({ length: 11 }, (_, i) => `<label class="pf-n"><input type="radio" name="${n}" value="${i}"${req}><span>${i}</span></label>`).join('')}</div><small class="pf-dica">0 = nada provável · 10 = muito provável</small>`;
+  else if (x.tipo === 'escala') inp = `<div class="pf-esc">${[1, 2, 3, 4, 5].map(i => `<label class="pf-n"><input type="radio" name="${n}" value="${i}"${req}><span>${i}</span></label>`).join('')}</div><small class="pf-dica">1 = muito ruim · 5 = excelente</small>`;
+  else if (x.tipo === 'sim_nao') inp = op('radio', 'sim', 'Sim') + op('radio', 'nao', 'Não');
+  else if (x.tipo === 'escolha') inp = (x.opcoes || []).map(o => op('radio', o, o)).join('');
+  else if (x.tipo === 'multipla') inp = (x.opcoes || []).map(o => op('checkbox', o, o)).join('') + '<small class="pf-dica">Pode marcar mais de uma.</small>';
+  else inp = `<textarea name="${n}" rows="3" maxlength="2000"${req}></textarea>`;
+  return `<fieldset class="pf-q" data-q="${x.id}" data-tipo="${x.tipo}" data-obr="${x.obrigatoria ? 1 : 0}"><legend>${esc(x.texto)}${x.obrigatoria ? '' : ' <span class="pf-opc">(opcional)</span>'}</legend>${inp}</fieldset>`;
+}
+/* desenha o formulário inteiro em "el". op.previa = não envia (usado no editor). */
+function pfDesenha(el, d, token, op = {}) {
+  const v = pfVis(d.visual), cap = d.captacao, P = pfPassos(d), N = P.length;
+  pfCarregaFontes(v);
+  const cmp = (cap && cap.campos) || {};
+  const campoC = (k, rot, tipo, ac, ph, obr) => `<label class="pf-l" for="pf_${k}">${esc(rot)}${obr ? '' : ' <span class="pf-opc">(opcional)</span>'}</label><input id="pf_${k}" name="c_${k}" type="${tipo}" autocomplete="${ac}" placeholder="${esc(ph)}" maxlength="${k === 'nome' ? 120 : k === 'instagram' ? 80 : 200}"${obr ? ' required' : ''}>`;
+  const passoHtml = (p, i) => {
+    let h = '';
+    if (p.tipo === 'contato') {
+      h = campoC('nome', 'Nome', 'text', 'name', '', true) + campoC('email', 'E-mail', 'email', 'email', '', true);
+      if (cap && cmp.telefone && cmp.telefone.mostrar) h += campoC('telefone', cmp.telefone.rotulo || 'WhatsApp', 'tel', 'tel', '(00) 00000-0000', !!cmp.telefone.obrig);
+      if (cap && cmp.instagram && cmp.instagram.mostrar) h += campoC('instagram', cmp.instagram.rotulo || 'Instagram', 'text', 'off', '@seuperfil', !!cmp.instagram.obrig);
+      if (!cap) h = campoC('email', 'Seu e-mail', 'email', 'email', '', true);
+      h += '<div class="pf-hp" aria-hidden="true"><label>Site<input name="site" tabindex="-1" autocomplete="off"></label></div>';
+    } else if (p.tipo === 'perguntas') h = p.perguntas.map(pfCampo).join('');
+    else {
+      if ((cap.aviso_texto || '').trim()) h += `<div class="pf-aviso">${cap.aviso_titulo ? `<b>${esc(cap.aviso_titulo)}</b>` : ''}<p>${esc(cap.aviso_texto)}</p></div>`;
+      h += (cap.consentimentos || []).filter(c => (c.texto || '').trim()).map((c, j) => `<label class="pf-ck"><input type="checkbox" name="cons_${j}" data-cons="${j}"${c.obrig ? ' required' : ''}><span>${esc(c.texto)}${c.obrig ? '' : ' <span class="pf-opc">(opcional)</span>'}</span></label>`).join('');
+      if ((cap.nota_final || '').trim()) h += `<p class="pf-nota">${esc(cap.nota_final)}</p>`;
+    }
+    return `<section class="pf-card" data-passo="${i}"${i ? ' hidden' : ''}>${N > 1 ? `<div class="pf-de">Passo ${i + 1} de ${N}</div>` : ''}<h2>${esc(p.titulo)}</h2>${h}</section>`;
   };
-  box.innerHTML = wrap(`<div class="panel"><h1 style="margin:0">${esc(d.nome)}</h1>${d.descricao ? `<span class="muted">${esc(d.descricao)}</span>` : ''}<form id="pubF" style="display:flex;flex-direction:column;gap:16px">${d.aberto ? '<label>Seu e-mail<input type="email" name="email" required maxlength="200"></label>' : ''}${d.perguntas.map(campo).join('')}<div id="pubMsg" class="muted"></div><button class="btn pri" type="submit">Enviar respostas</button></form></div>`);
-  $('#pubF').onsubmit = async e => {
-    e.preventDefault(); const f = e.target, resp = {}; const btn = f.querySelector('button'); btn.disabled = true;
+  el.innerHTML = `<div class="pf" style="${pfEstilo(v)}"><div class="pf-in">
+    ${v.logo_url ? `<img class="pf-logo" src="${esc(v.logo_url)}" alt="${esc(v.marca || 'Logo')}">` : ''}${v.marca ? `<div class="pf-marca">${esc(v.marca)}</div>` : ''}
+    <h1>${esc(v.titulo || d.nome)}</h1>${d.descricao ? `<p class="pf-sub">${esc(d.descricao)}</p>` : ''}
+    ${N > 1 ? `<div class="pf-bar" role="progressbar" aria-valuemin="1" aria-valuemax="${N}" aria-valuenow="1"><i style="width:${100 / N}%"></i></div>` : ''}
+    <form class="pf-f" novalidate>${P.map(passoHtml).join('')}
+      <div class="pf-acts"><button type="button" class="pf-b pf-b2" data-pf="volta" hidden>Voltar</button><span></span><button type="button" class="pf-b" data-pf="segue"${N > 1 ? '' : ' hidden'}>${esc(v.botao)}</button><button type="submit" class="pf-b" data-pf="envia"${N > 1 ? ' hidden' : ''}>${esc(v.enviar)}</button></div>
+      <p class="pf-msg" role="status" aria-live="polite"></p></form></div></div>`;
+  const f = el.querySelector('form'), msg = el.querySelector('.pf-msg'); let at = 0;
+  const mostra = () => {
+    f.querySelectorAll('[data-passo]').forEach(s => s.hidden = +s.dataset.passo !== at);
+    f.querySelector('[data-pf="volta"]').hidden = at === 0; f.querySelector('[data-pf="segue"]').hidden = at === N - 1; f.querySelector('[data-pf="envia"]').hidden = at !== N - 1;
+    const b = el.querySelector('.pf-bar'); if (b) { b.firstElementChild.style.width = ((at + 1) / N * 100) + '%'; b.setAttribute('aria-valuenow', at + 1); }
+    msg.textContent = '';
+  };
+  const valida = () => {
+    const s = f.querySelector(`[data-passo="${at}"]`);
+    for (const fs of s.querySelectorAll('.pf-q')) {
+      if (fs.dataset.obr !== '1') continue;
+      const t = fs.dataset.tipo, ok = t === 'texto' ? fs.querySelector('textarea').value.trim() !== '' : !!fs.querySelector('input:checked');
+      if (!ok) { msg.textContent = 'Responda: ' + fs.querySelector('legend').firstChild.textContent; (fs.querySelector('input,textarea')).focus(); return false; }
+    }
+    for (const i of s.querySelectorAll('input:not([type=radio]):not([name=site]),textarea')) {
+      if (i.closest('.pf-q')) continue;
+      if (i.type === 'checkbox') { if (i.required && !i.checked) { msg.textContent = 'Marque para continuar: ' + i.nextElementSibling.textContent.replace(' (opcional)', ''); i.focus(); return false; } continue; }
+      if (i.required && !i.value.trim()) { msg.textContent = 'Preencha: ' + f.querySelector(`label[for="${i.id}"]`).textContent.replace(' (opcional)', ''); i.focus(); return false; }
+      if (i.type === 'email' && i.value.trim() && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(i.value.trim())) { msg.textContent = 'Confira o e-mail.'; i.focus(); return false; }
+      if (i.type === 'tel' && i.value.trim()) { const dg = i.value.replace(/\D/g, ''); if (dg.length < 10 || dg.length > 13) { msg.textContent = 'Confira o WhatsApp: DDD e número.'; i.focus(); return false; } }
+    }
+    return true;
+  };
+  const topo = () => { if (!op.previa) { const b = document.getElementById('pubPesq'); if (b) b.scrollTop = 0; } };
+  f.querySelector('[data-pf="segue"]').onclick = () => { if (valida()) { at++; mostra(); topo(); } };
+  f.querySelector('[data-pf="volta"]').onclick = () => { at--; mostra(); topo(); };
+  f.onsubmit = async e => {
+    e.preventDefault(); if (!valida()) return;
+    if (op.previa) { msg.textContent = 'Pré-visualização: o envio só funciona pelo link.'; return; }
+    const resp = {};
     for (const x of d.perguntas) {
       const n = 'q_' + x.id;
       if (x.tipo === 'multipla') resp[x.id] = [...f.querySelectorAll(`input[name="${n}"]:checked`)].map(i => i.value);
@@ -13727,10 +13897,171 @@ async function vPesquisaPublica(token) {
       else if (['sim_nao', 'escolha'].includes(x.tipo)) { const c = f.querySelector(`input[name="${n}"]:checked`); resp[x.id] = c ? c.value : null; }
       else resp[x.id] = f.elements[n].value.trim();
     }
-    try { await q(sb.rpc('pesquisa_responder', { p_token: token, p_respostas: resp, p_email: d.aberto ? f.elements.email.value : null })); box.innerHTML = wrap('<div class="panel"><h2>Obrigado!</h2><span class="muted">Suas respostas foram enviadas.</span></div>'); }
-    catch (err) { $('#pubMsg').textContent = err.message || 'Não foi possível enviar.'; btn.disabled = false; }
+    const val = k => (f.elements['c_' + k] ? f.elements['c_' + k].value.trim() : '');
+    const btn = f.querySelector('[data-pf="envia"]'); btn.disabled = true; msg.textContent = 'Enviando…';
+    try {
+      if (cap) {
+        const u = new URLSearchParams(location.search), utm = {}; ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(k => { if (u.get(k)) utm[k] = u.get(k).slice(0, 200); });
+        const cons = (cap.consentimentos || []).map((c, j) => { const i = f.querySelector(`[data-cons="${j}"]`); return !!(i && i.checked); });
+        await q(sb.rpc('pesquisa_captar', { p_token: token, p_respostas: resp, p_contato: { nome: val('nome'), email: val('email'), telefone: val('telefone'), instagram: val('instagram') },
+          p_extra: { consentimentos: cons, utm, pagina: (location.origin + location.pathname).slice(0, 500), referrer: (document.referrer || '').slice(0, 500), site: f.elements.site ? f.elements.site.value : '' } }));
+      } else await q(sb.rpc('pesquisa_responder', { p_token: token, p_respostas: resp, p_email: d.aberto ? val('email') : null }));
+      el.querySelector('.pf-in').innerHTML = `${v.logo_url ? `<img class="pf-logo" src="${esc(v.logo_url)}" alt="${esc(v.marca || 'Logo')}">` : ''}${v.marca ? `<div class="pf-marca">${esc(v.marca)}</div>` : ''}<section class="pf-card pf-ok"><h2>${esc((cap && cap.sucesso_titulo) || 'Obrigado!')}</h2><p>${esc((cap && cap.sucesso_texto) || 'Suas respostas foram enviadas.')}</p></section>`;
+      topo();
+    } catch (err) { msg.textContent = (err && err.message) || 'Não foi possível enviar. Verifique a conexão e tente de novo.'; btn.disabled = false; }
   };
 }
+
+/* página pública (sem login) */
+async function vPesquisaPublica(token) {
+  document.title = 'Formulário';
+  const box = document.createElement('div'); box.id = 'pubPesq'; box.style.cssText = 'position:fixed;inset:0;z-index:999;overflow:auto;background:#F6F5F2';
+  document.body.appendChild(box);
+  let d = null;
+  try { d = await q(sb.rpc('pesquisa_publica', { p_token: token })); } catch (e) { d = null; }
+  const aviso = (t, x) => { box.innerHTML = `<div class="pf" style="${pfEstilo(pfVis(d && d.visual))}"><div class="pf-in"><section class="pf-card"><h2>${t}</h2><p>${x}</p></section></div></div>`; };
+  if (!d) return aviso('Formulário indisponível', 'O link está incorreto ou o formulário foi encerrado.');
+  box.style.background = pfVis(d.visual).cor_fundo;
+  document.title = pfVis(d.visual).titulo || d.nome;
+  if (d.ja_respondida) return aviso('Obrigado!', 'Você já respondeu esta pesquisa.');
+  pfDesenha(box, d, token);
+}
+
+/* ---------- editor: aba "Formulário e aparência" ---------- */
+async function pqForm(el, p, perg) {
+  if (!(await temColuna('pesquisas', 'captacao'))) { el.innerHTML = '<div class="panel">' + GC.vazio('Para usar o formulário de captação, rode supabase/RODAR_v0.130_formulario.sql no Supabase.') + '</div>'; return; }
+  const [etapas, eqs, capt] = await Promise.all([
+    q(sb.from('etapas_kanban').select('id,nome,ordem').eq('workspace_id', S.ws).eq('quadro', 'leads').order('ordem')),
+    equipeAtiva(),
+    q(sb.from('pesquisa_respostas').select('id,respondida_em,pessoa_id,contato,novo_contato,utm,consentimentos').eq('pesquisa_id', p.id).not('contato', 'is', null).order('respondida_em', { ascending: false }).limit(30))
+  ]);
+  const V = { ...PF_PADRAO, ...(p.visual || {}) };
+  const C = JSON.parse(JSON.stringify(p.captacao || { ...PF_CAP_PADRAO(), ativa: false }));
+  C.campos = C.campos || PF_CAP_PADRAO().campos; C.consentimentos = C.consentimentos || [];
+  while (C.consentimentos.length < 3) C.consentimentos.push({ texto: '', obrig: false });
+  const link = linkPesquisa(p.token_aberto);
+  const pronto = p.ativa && p.aceita_link_aberto && p.captacao && p.captacao.ativa;
+  const fOpt = (sel) => PF_FONTES.map(f => `<option${f === sel ? ' selected' : ''}>${f}</option>`).join('') + (PF_FONTES.includes(sel) ? '' : `<option selected>${esc(sel)}</option>`);
+  const ck = (k, b) => `<input type="checkbox" data-c="${k}"${b ? ' checked' : ''}>`;
+  const tx = (k, val, ph = '', ml = 200) => `<input type="text" data-c="${k}" value="${esc(val || '')}" placeholder="${esc(ph)}" maxlength="${ml}">`;
+  el.innerHTML = `
+  <div class="panel pf-link">
+    <h2>Link para enviar</h2>
+    ${pronto ? `<span class="muted">Mande este link para a pessoa responder. Quem responde entra no seu <b>Funil de leads</b> (ou é atualizado, se já existir) com as respostas, a origem e a qualificação.</span>
+      <div class="pf-lk"><code id="pfLk">${esc(link)}</code><button class="btn sm" id="pfCp">Copiar</button><a class="btn sm" href="${esc(link)}" target="_blank" rel="noopener">Abrir</a><a class="btn sm" id="pfWa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(link)}">Enviar pelo WhatsApp</a></div>
+      <details><summary>Link com origem (UTM) para saber de onde veio cada lead</summary><div class="pf-utm"><label>Origem (utm_source)<input id="uS" placeholder="instagram"></label><label>Meio (utm_medium)<input id="uM" placeholder="bio"></label><label>Campanha (utm_campaign)<input id="uC" placeholder="qualificacao"></label></div><div class="pf-lk"><code id="pfLkU">${esc(link)}</code><button class="btn sm" id="pfCpU">Copiar</button></div></details>`
+      : `<span class="muted">${!p.ativa ? 'A pesquisa está <b>desativada</b>. ' : ''}${!(p.captacao && p.captacao.ativa) ? 'Ligue "Este formulário capta contatos" abaixo e salve. ' : ''}${p.ativa ? '' : 'Depois ative a pesquisa em Configurar. '}O link aparece aqui quando estiver tudo pronto.</span>`}
+    ${fonteLink()}
+  </div>
+  <div class="pf-ed">
+    <div class="pf-cfg">
+      <div class="panel"><h2>Captação de contatos</h2>
+        <label class="pf-rl">${ck('ativa', C.ativa)} Este formulário capta contatos (cria ou atualiza o lead no CRM)</label>
+        <span class="muted">Nome e e-mail são sempre pedidos. O contato é reconhecido pelo e-mail e, se não achar, pelo WhatsApp: quem já existe é atualizado, não duplicado.</span>
+        <div class="pf-g2">
+          <div><b>WhatsApp</b><label class="pf-rl">${ck('campos.telefone.mostrar', C.campos.telefone.mostrar)} Pedir</label><label class="pf-rl">${ck('campos.telefone.obrig', C.campos.telefone.obrig)} Obrigatório</label><label>Rótulo${tx('campos.telefone.rotulo', C.campos.telefone.rotulo, 'WhatsApp', 40)}</label></div>
+          <div><b>Instagram</b><label class="pf-rl">${ck('campos.instagram.mostrar', C.campos.instagram.mostrar)} Pedir</label><label class="pf-rl">${ck('campos.instagram.obrig', C.campos.instagram.obrig)} Obrigatório</label><label>Rótulo${tx('campos.instagram.rotulo', C.campos.instagram.rotulo, 'Instagram do negócio', 40)}</label></div>
+        </div>
+        <div class="pf-g2">
+          <label>Entra no Funil de leads na etapa<select data-c="etapa_id"><option value="">Primeira etapa (${esc((etapas[0] || {}).nome || '—')})</option>${etapas.map(e => `<option value="${e.id}"${C.etapa_id === e.id ? ' selected' : ''}>${esc(e.nome)}</option>`).join('')}</select></label>
+          <label>Comercial responsável<select data-c="responsavel_id"><option value="">Sem responsável</option>${eqs.map(e => `<option value="${e.id}"${C.responsavel_id === e.id ? ' selected' : ''}>${esc(e.nome)}</option>`).join('')}</select></label>
+        </div>
+        <label>Tags para quem responder (separe por vírgula)<input type="text" data-c="tags" value="${esc((C.tags || []).join(', '))}" placeholder="formulário, diagnóstico"></label>
+        <small class="muted">As tags por resposta (ex.: oferta sugerida) ficam na aba Qualificação e pontos.</small>
+      </div>
+      <div class="panel"><h2>Passos e textos</h2>
+        <div class="pf-g2"><label>Título do passo de contato${tx('passo_contato', C.passo_contato, 'Seus dados', 60)}</label><label>Título do passo final${tx('passo_final', C.passo_final, 'Confirmação', 60)}</label></div>
+        <small class="muted">As perguntas são agrupadas em passos pelo campo "Passo do formulário" de cada pergunta (aba Perguntas).</small>
+        <label>Aviso no passo final: título${tx('aviso_titulo', C.aviso_titulo, 'Informação sobre investimento', 80)}</label>
+        <label>Aviso no passo final: texto<textarea data-c="aviso_texto" rows="3" maxlength="600">${esc(C.aviso_texto || '')}</textarea></label>
+        <b style="margin-top:6px">Caixas de confirmação</b><small class="muted">Ficam registradas com o texto exato que a pessoa viu. Deixe em branco para não usar.</small>
+        ${C.consentimentos.slice(0, 4).map((c, j) => `<div class="pf-cons"><input type="text" data-c="consentimentos.${j}.texto" value="${esc(c.texto || '')}" maxlength="300" placeholder="Texto da confirmação"><label class="pf-rl">${ck('consentimentos.' + j + '.obrig', c.obrig)} Obrigatória</label></div>`).join('')}
+        <label>Nota ao final (opcional)<textarea data-c="nota_final" rows="2" maxlength="400">${esc(C.nota_final || '')}</textarea></label>
+        <div class="pf-g2"><label>Mensagem de sucesso: título${tx('sucesso_titulo', C.sucesso_titulo, 'Recebemos suas respostas!', 80)}</label><label>Mensagem de sucesso: texto${tx('sucesso_texto', C.sucesso_texto, '', 300)}</label></div>
+      </div>
+      <div class="panel"><h2>Aparência (identidade visual do cliente)</h2>
+        <div class="pf-temas"><span class="muted">Começar de:</span>${Object.entries(PF_TEMAS).map(([k, t]) => `<button class="btn sm" data-tema="${k}"><i style="background:${t.v.cor_primaria}"></i><i style="background:${t.v.cor_fundo}"></i>${t.nome}</button>`).join('')}</div>
+        <div class="pf-g2"><label>Marca (texto pequeno no topo)<input type="text" data-v="marca" value="${esc(V.marca)}" maxlength="60" placeholder="Nome da empresa"></label><label>Logo (endereço https da imagem)<input type="url" data-v="logo_url" value="${esc(V.logo_url)}" placeholder="https://…/logo.png"></label></div>
+        <label>Título grande<input type="text" data-v="titulo" value="${esc(V.titulo)}" maxlength="160" placeholder="${esc(p.nome)}"></label>
+        <div class="pf-g2">
+          <label>Fonte dos títulos<select data-v="fonte_titulo">${fOpt(V.fonte_titulo)}</select></label>
+          <label>Fonte do texto<select data-v="fonte_texto">${fOpt(V.fonte_texto)}</select></label>
+        </div>
+        <label>Outra fonte do Google Fonts (nome exato, vale para títulos)<input type="text" id="pfOutra" maxlength="40" placeholder="ex.: Libre Caslon Text"></label>
+        <div class="pf-cores">
+          ${[['cor_primaria', 'Cor principal (botões, destaques)'], ['cor_fundo', 'Fundo da página'], ['cor_cartao', 'Fundo dos cartões'], ['cor_texto', 'Texto']].map(([k, l]) => `<label>${l}<span class="pf-cor"><input type="color" data-v="${k}" value="${esc(pfCor(V[k], PF_PADRAO[k]))}"><input type="text" data-vh="${k}" value="${esc(pfCor(V[k], PF_PADRAO[k]))}" maxlength="7" aria-label="${l} em hexadecimal"></span></label>`).join('')}
+        </div>
+        <div class="pf-g2"><label>Cantos arredondados<input type="range" min="0" max="28" data-v="raio" value="${esc(String(pfVis(V).raio))}"></label><span id="pfCtr" class="muted"></span></div>
+        <div class="pf-g2"><label>Botão de avançar${`<input type="text" data-v="botao" value="${esc(V.botao)}" maxlength="40">`}</label><label>Botão de enviar<input type="text" data-v="enviar" value="${esc(V.enviar)}" maxlength="40"></label></div>
+      </div>
+      <div class="acts"><button class="btn pri" id="pfSalva">Salvar formulário</button></div>
+    </div>
+    <div class="pf-prev"><div class="pf-prevh"><b>Como a pessoa vê</b><span class="pf-dev"><button class="btn sm on" data-dev="pc">Computador</button><button class="btn sm" data-dev="cel">Celular</button></span></div><div id="pfPrev" class="pf-prevbox"></div></div>
+  </div>
+  <div class="panel"><h2>Últimos contatos que chegaram pelo formulário</h2><div class="tw"><table><thead><tr><th>Quando</th><th>Contato</th><th>WhatsApp</th><th>Instagram</th><th>No CRM</th><th>Origem</th><th></th></tr></thead><tbody>${capt.map(r => { const c = r.contato || {}, u = r.utm || {}; return `<tr><td>${dtt(r.respondida_em)}</td><td><b>${esc(c.nome || '')}</b><br><small class="muted">${esc(c.email || '')}</small></td><td>${esc(c.telefone || '—')}</td><td>${esc(c.instagram || '—')}</td><td>${r.novo_contato ? '<span class="pill good">novo lead</span>' : '<span class="pill info">já existia, atualizado</span>'}</td><td>${esc([u.utm_source, u.utm_medium, u.utm_campaign].filter(Boolean).join(' / ') || '—')}</td><td>${r.pessoa_id ? `<button class="btn sm" data-fp="${r.pessoa_id}">Abrir lead</button>` : ''}</td></tr>`; }).join('') || '<tr><td colspan="7" class="empty">Ninguém respondeu pelo formulário ainda.</td></tr>'}</tbody></table></div></div>`;
+
+  const set = (o, path, val) => { const k = path.split('.'); let x = o; k.slice(0, -1).forEach(s => { x = x[s] = x[s] ?? (/^\d+$/.test(s) ? [] : {}); }); x[k[k.length - 1]] = val; };
+  const dados = () => ({ nome: p.nome, descricao: p.descricao, aberto: true, perguntas: perg.map(x => ({ id: x.id, texto: x.texto, tipo: x.tipo, opcoes: x.opcoes, obrigatoria: x.obrigatoria, secao: x.secao })), visual: V, captacao: C.ativa ? C : null });
+  let tm = null;
+  const contrasteAviso = () => { const v = pfVis(V), a = pfContraste(v.cor_texto, v.cor_cartao), b = pfContraste(v.cor_texto, v.cor_fundo); $('#pfCtr').innerHTML = a < 4.5 || b < 4.5 ? `<span class="pill warn">Texto com pouco contraste (${Math.min(a, b).toFixed(1)}:1). O mínimo para leitura é 4,5:1.</span>` : `<span class="pill good">Contraste do texto ${Math.min(a, b).toFixed(1)}:1</span>`; };
+  const prev = () => { clearTimeout(tm); tm = setTimeout(() => { pfDesenha($('#pfPrev'), dados(), '', { previa: true }); contrasteAviso(); }, 120); };
+  el.querySelectorAll('[data-c]').forEach(i => i.addEventListener(i.type === 'checkbox' || i.tagName === 'SELECT' ? 'change' : 'input', () => {
+    const k = i.dataset.c; let val = i.type === 'checkbox' ? i.checked : i.value;
+    if (k === 'tags') val = i.value.split(',').map(x => x.trim()).filter(Boolean);
+    set(C, k, val); prev();
+  }));
+  el.querySelectorAll('[data-v]').forEach(i => i.addEventListener('input', () => { V[i.dataset.v] = i.type === 'range' ? +i.value : i.value; const h = el.querySelector(`[data-vh="${i.dataset.v}"]`); if (h) h.value = i.value; prev(); }));
+  el.querySelectorAll('[data-vh]').forEach(i => i.addEventListener('input', () => { if (/^#[0-9a-fA-F]{6}$/.test(i.value)) { V[i.dataset.vh] = i.value; el.querySelector(`[data-v="${i.dataset.vh}"]`).value = i.value; prev(); } }));
+  $('#pfOutra').addEventListener('change', e => { const f = pfFonte(e.target.value, ''); if (!f) { if (e.target.value.trim()) toast('Use só letras, números e espaços no nome da fonte.', true); return; } V.fonte_titulo = f; const s = el.querySelector('[data-v="fonte_titulo"]'); if (![...s.options].some(o => o.value === f)) s.insertAdjacentHTML('beforeend', `<option>${esc(f)}</option>`); s.value = f; prev(); });
+  el.querySelectorAll('[data-tema]').forEach(b => b.onclick = () => { Object.assign(V, PF_TEMAS[b.dataset.tema].v); Object.entries(PF_TEMAS[b.dataset.tema].v).forEach(([k, x]) => { const i = el.querySelector(`[data-v="${k}"]`), h = el.querySelector(`[data-vh="${k}"]`); if (i) { if (i.tagName === 'SELECT' && ![...i.options].some(o => o.value === x)) i.insertAdjacentHTML('beforeend', `<option>${esc(x)}</option>`); i.value = x; } if (h) h.value = x; }); prev(); });
+  el.querySelectorAll('[data-dev]').forEach(b => b.onclick = () => { el.querySelectorAll('[data-dev]').forEach(x => x.classList.toggle('on', x === b)); $('#pfPrev').classList.toggle('cel', b.dataset.dev === 'cel'); });
+  el.querySelectorAll('[data-fp]').forEach(b => b.onclick = () => fichaPessoa(b.dataset.fp));
+  const cp = (t, ok) => navigator.clipboard.writeText(t).then(() => toast(ok), () => toast('Não consegui copiar. Selecione e copie o link.', true));
+  if ($('#pfCp')) $('#pfCp').onclick = () => cp(link, 'Link copiado');
+  if ($('#uS')) { const lu = () => { const u = new URLSearchParams(); [['utm_source', '#uS'], ['utm_medium', '#uM'], ['utm_campaign', '#uC']].forEach(([k, s]) => { const x = $(s).value.trim(); if (x) u.set(k, x); }); const s = u.toString(); $('#pfLkU').textContent = link + (s ? '&' + s : ''); }; ['#uS', '#uM', '#uC'].forEach(s => $(s).oninput = lu); $('#pfCpU').onclick = () => cp($('#pfLkU').textContent, 'Link com origem copiado'); }
+  $('#pfSalva').onclick = () => act(async () => {
+    const vis = pfVis(V);
+    if (V.logo_url && !vis.logo_url) throw new Error('O logo precisa ser um endereço https da imagem (sem espaços).');
+    const cap = JSON.parse(JSON.stringify(C));
+    cap.consentimentos = (cap.consentimentos || []).map(c => ({ texto: (c.texto || '').trim(), obrig: !!c.obrig })).filter(c => c.texto);
+    cap.tags = (cap.tags || []).map(x => String(x).trim()).filter(Boolean);
+    if (cap.ativa && !perg.length) throw new Error('Cadastre ao menos uma pergunta antes de ligar a captação.');
+    const up = { visual: vis, captacao: cap };
+    if (cap.ativa) up.aceita_link_aberto = true;
+    await q(sb.from('pesquisas').update(up).eq('id', p.id));
+    toast(cap.ativa && !p.ativa ? 'Formulário salvo. Ative a pesquisa em Configurar para o link funcionar.' : 'Formulário salvo'); render();
+  });
+  prev();
+}
+
+/* ---------- modelo pronto: diagnóstico de qualificação (formulário de captação) ---------- */
+PQ_MODELOS.captacao_mathisa = {
+  nome: 'Captação: diagnóstico inicial de crescimento', tipo: 'lead', gatilho: 'manual',
+  descricao: 'Responda algumas perguntas rápidas para identificarmos como podemos ajudar você a crescer com mais eficiência e lucratividade.',
+  extra: {
+    aceita_link_aberto: true,
+    visual: { marca: 'MATHISA GROWTH LAB', titulo: 'Vamos entender o momento do seu negócio.', logo_url: '', fonte_titulo: 'Bodoni Moda', fonte_texto: 'Poppins', cor_primaria: '#521F32', cor_fundo: '#F8F5EF', cor_cartao: '#FFFFFF', cor_texto: '#35241F', raio: 16, botao: 'Continuar', enviar: 'Enviar solicitação' },
+    captacao: { ativa: true, campos: { telefone: { mostrar: true, obrig: true, rotulo: 'WhatsApp' }, instagram: { mostrar: true, obrig: true, rotulo: 'Instagram do negócio' } }, etapa_id: '', tags: ['Formulário de qualificação'], responsavel_id: '',
+      passo_contato: 'Seus dados', passo_final: 'Alinhamento', aviso_titulo: 'Informação sobre investimento',
+      aviso_texto: 'O investimento mínimo para contratar uma solução da Mathisa é de R$ 3.500. O valor final depende do escopo e será apresentado após a avaliação da necessidade.',
+      consentimentos: [{ texto: 'Estou ciente do investimento mínimo informado e desejo seguir com minha solicitação.', obrig: true }, { texto: 'Autorizo o uso dos meus dados e respostas para análise da solicitação e contato comercial sobre os serviços da Mathisa.', obrig: true }, { texto: 'Quero receber também conteúdos e novidades da Mathisa.', obrig: false }],
+      nota_final: 'As respostas serão utilizadas para orientar a análise comercial. A oferta recomendada será validada pela equipe.',
+      sucesso_titulo: 'Solicitação recebida!', sucesso_texto: 'Obrigado por compartilhar as informações. Nossa equipe fará a avaliação do seu negócio.' },
+    qualif: { ativa: true, modo: 'soma', corte: '', faixas: [] }
+  },
+  perguntas: [
+    ['Qual é o faturamento médio mensal do seu negócio?', 'escolha', ['Até R$ 10 mil', 'De R$ 10 mil a R$ 30 mil', 'De R$ 30 mil a R$ 100 mil', 'De R$ 100 mil a R$ 250 mil', 'Acima de R$ 250 mil'], 'qualificacao', true, 'Seu negócio',
+      { opcoes: { 'Até R$ 10 mil': { p: 0, tag: 'Alerta: avaliar capacidade econômica' } } }],
+    ['Qual é o principal desafio do seu negócio hoje?', 'escolha', ['Tenho dificuldade para entender meus números e saber onde melhorar.', 'Não consigo identificar onde meu negócio está perdendo dinheiro ou eficiência.', 'Tenho dados, mas falta uma estratégia clara de crescimento.', 'Não consigo enxergar o negócio de ponta a ponta.', 'Minhas ferramentas e informações estão desconectadas.', 'Preciso de automações, infraestrutura e inteligência para escalar.'], 'alavanca', true, 'Seu negócio'],
+    ['Como você acompanha os resultados do negócio atualmente?', 'escolha', ['Não tenho uma rotina estruturada.', 'Uso relatórios das plataformas e planilhas.', 'Tenho dashboards, mas as informações estão fragmentadas.', 'Tenho dados integrados e indicadores confiáveis.'], 'qualificacao', true, 'Seu negócio'],
+    ['Você possui uma estratégia de crescimento estruturada, com metas, indicadores e prioridades?', 'escolha', ['Não, ainda tomo decisões conforme os problemas aparecem.', 'Tenho metas e um planejamento de marketing.', 'Tenho uma estratégia definida, mas dificuldade para executá-la.', 'Sim, tenho um plano estruturado e acompanhado regularmente.'], 'qualificacao', true, 'Seu momento e sua equipe'],
+    ['Como está organizada sua equipe?', 'escolha', ['Faço praticamente tudo sozinho(a).', 'Tenho uma equipe pequena que pode executar melhorias.', 'Tenho profissionais de marketing, vendas e operação.', 'Tenho uma equipe estruturada, incluindo tecnologia e dados.'], 'qualificacao', true, 'Seu momento e sua equipe'],
+    ['Que tipo de ajuda você procura neste momento?', 'escolha', ['Orientação para organizar números, analisar e melhorar os resultados.', 'Ajuda para construir uma estratégia de crescimento com a participação da minha equipe.', 'Especialistas para investigar meu negócio e construir o plano.', 'Implementação de dados, integrações, automações e inteligência contínua.', 'Ainda não sei exatamente do que preciso.'], 'qualificacao', true, 'Seu momento e sua equipe',
+      { opcoes: { 'Orientação para organizar números, analisar e melhorar os resultados.': { p: 0, tag: 'Oferta sugerida: Growth Starter' }, 'Ajuda para construir uma estratégia de crescimento com a participação da minha equipe.': { p: 0, tag: 'Oferta sugerida: Growth Consulting' },
+        'Especialistas para investigar meu negócio e construir o plano.': { p: 0, tag: 'Oferta sugerida: Growth Strategy DFY' }, 'Implementação de dados, integrações, automações e inteligência contínua.': { p: 0, tag: 'Oferta sugerida: Growth Brain + Intelligence' },
+        'Ainda não sei exatamente do que preciso.': { p: 0, tag: 'Oferta sugerida: Avaliação comercial' } } }]
+  ]
+};
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
 if (PQ_TOKEN) vPesquisaPublica(PQ_TOKEN);

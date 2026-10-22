@@ -1,5 +1,8 @@
 
 
+## v0.130
+**Formulário de captação com a cara do cliente.** Dentro da pesquisa, a aba "Formulário e aparência" transforma o questionário em um formulário em passos com as fontes e cores do cliente, gera o link para enviar e coloca quem responde direto no Funil de leads, com respostas, origem, consentimentos e oferta sugerida. O diagnóstico de qualificação da Mathisa já vem como modelo.
+
 ## v0.129
 **Um gráfico, as métricas que você quiser.** O movimento por dia da campanha é um gráfico só, com botões para ligar e desligar cada métrica.
 

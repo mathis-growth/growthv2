@@ -100,6 +100,20 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.130] - 2026-10-21 — Formulário de captação dentro das Pesquisas
+- **Pesquisas → aba "Formulário e aparência"** (nova): a pesquisa vira um formulário público em passos, com o link para enviar ao cliente.
+  - **Link para enviar**: copiar, abrir, mandar pelo WhatsApp e montar o link com origem (utm_source, utm_medium, utm_campaign). Só aparece com a pesquisa ativa e a captação ligada.
+  - **Captação de contatos**: nome e e-mail sempre; WhatsApp e Instagram com "pedir" e "obrigatório" e rótulo próprio. Quem responde **entra no Funil de leads** (na etapa escolhida, com tags e comercial responsável) ou, se já existir (pelo e-mail ou pelo WhatsApp), é **atualizado sem duplicar**. As respostas, a origem (UTM, página) e a qualificação por pontos da v0.129 vão para o lead.
+  - **Passos e textos**: as perguntas se agrupam pelo novo campo "Passo do formulário"; passo de dados, passo final com **aviso** (ex.: investimento mínimo), até 4 **caixas de confirmação** (obrigatórias ou não, gravadas com o texto exato que a pessoa viu), nota final e mensagem de sucesso.
+  - **Aparência**: fontes do Google Fonts para títulos e texto (25 sugeridas ou qualquer outra pelo nome), cor principal, fundo, cartões e texto, cantos, logo, marca, título e textos dos botões. Temas de partida (Neutro, Mathisa, Escuro, Moderno), aviso de contraste e **pré-visualização ao lado**, no computador e no celular.
+  - **Últimos contatos** que chegaram pelo formulário: novo lead ou já existia, origem e botão para abrir o lead.
+- **Modelo pronto** "Captação: diagnóstico inicial de crescimento": o formulário de qualificação da Mathisa (6 perguntas em 2 passos, dados, aviso de R$ 3.500 e 3 confirmações), com a **oferta sugerida como tag** pela resposta "Que tipo de ajuda você procura" (Growth Starter, Consulting, Strategy DFY, Brain + Intelligence, Avaliação comercial) e o alerta de capacidade econômica para faturamento até R$ 10 mil.
+- **Página pública** refeita: passos com barra de progresso, validação passo a passo, botões grandes, funciona no celular; vale também para as pesquisas comuns (link único e link aberto), que passam a usar a aparência escolhida.
+- Proteções: campo-armadilha contra robôs, mesmo e-mail só de novo depois de 2 minutos, limite de 500 respostas por hora por formulário, etapa/tags/responsável não aparecem para quem responde.
+- Ficha do lead mostra o **Instagram**.
+- Banco: `20261027100000_formulario_captacao.sql` / `RODAR_v0.130_formulario.sql` (colunas `pesquisas.visual`, `pesquisas.captacao`, `pesquisa_perguntas.secao`, `pesquisa_respostas.contato/consentimentos/utm/novo_contato`; funções `pesquisa_captar` e `pesquisa_registrar`; `pesquisa_responder` e `pesquisa_publica` reescritas com o mesmo comportamento). **Ainda não aplicado em produção.**
+- Teste: `t130_formulario_captacao.py`.
+
 ## [0.129] - 2026-10-21 — Movimento por dia num gráfico só e qualificação por pontos
 - **Campanha → Movimento por dia**: virou **um gráfico só**, uma cor por métrica (investimento, impressões, CTR, CPM, CPC, leads, custo por lead, vendas, receita). Os botões ligam e desligam cada linha; "Todas" e "Limpar" também. Com uma métrica, o eixo mostra o valor de verdade e a meta tracejada (leads e custo por lead); com várias, cada linha fica na sua escala para comparar o movimento, e passar o mouse mostra o valor de todas no dia. A escolha fica guardada enquanto você navega.
 - **Pesquisas → aba "Qualificação e pontos"** (nova):

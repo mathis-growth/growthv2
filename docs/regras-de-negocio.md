@@ -1,5 +1,13 @@
 
 
+## v0.130 — Formulário de captação
+- O link do formulário é o link aberto da pesquisa; só capta com a pesquisa **ativa** e a captação **ligada** (ligar a captação liga o link aberto).
+- Nome (2+ letras) e e-mail válido são sempre obrigatórios. WhatsApp aceito com 10 a 13 dígitos (DDD + número, com ou sem 55). Campos desligados são ignorados mesmo se enviados.
+- Quem é a pessoa: e-mail igual no workspace; se não houver, WhatsApp igual (normalizado). Achou: completa telefone se vazio, soma tags, põe responsável se vazio, atualiza Instagram e consentimentos; não muda nome, etapa nem origem. Não achou: cria lead na etapa escolhida (ou a primeira do Funil de leads), com origem = utm_source ou "formulario".
+- Confirmações obrigatórias precisam vir marcadas (conferido no banco); todas ficam gravadas na resposta com o texto que a pessoa viu e se aceitou.
+- Bloqueios: mesmo e-mail no mesmo formulário só depois de 2 minutos; até 500 respostas por hora por formulário; campo-armadilha preenchido = responde "ok" e não grava nada.
+- Depois de gravar, roda a qualificação por pontos (v0.129): tags por opção, pontos e, se houver nota de corte, qualificado/não qualificado.
+
 ## v0.129 — Gráfico único e qualificação por pontos
 - Movimento por dia: com uma métrica, eixo em valor real; com várias, cada linha de 0 até o maior valor dela no período (o tooltip mostra os valores reais). Metas tracejadas: leads (meta do dia) e custo por lead (meta de CPL), só com uma métrica.
 - Pontos por pergunta: escolha e sim/não = pontos da opção marcada; várias opções = soma das marcadas; NPS/escala = nota × peso; texto = não pontua. Opção marcada sem pontos conta como 0 (entra na média).

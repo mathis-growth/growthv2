@@ -1,5 +1,9 @@
 
 
+## v0.130
+- index.html: 0.129 → 0.130.
+- Novo: `20261027100000_formulario_captacao.sql` e `RODAR_v0.130_formulario.sql` (pendente em produção); teste `t130_formulario_captacao.py`.
+
 ## v0.129
 - index.html: 0.128 → 0.129.
 - Novo: `20261026100000_qualificacao_pontos.sql` e `RODAR_v0.129_qualificacao.sql` (aplicado em produção em 21/10/2026); teste `t129_multi_qualificacao.py`.

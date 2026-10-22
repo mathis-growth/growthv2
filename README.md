@@ -15,8 +15,8 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.129 · 21/10/2026 (`index.html`) |
-| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.129** (aplicado em 21/10/2026) |
+| **Versão da tela** | 0.130 · 21/10/2026 (`index.html`) |
+| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.129** (aplicado em 21/10/2026); **falta** `RODAR_v0.130_formulario.sql` |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta, projeto do Google e os segredos no Supabase: [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
 
@@ -26,6 +26,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.130 | 21/10/2026 | **Formulário de captação nas Pesquisas**: aba "Formulário e aparência" com passos, link para enviar (com UTM e WhatsApp), contato que entra ou é atualizado no Funil de leads (etapa, tags, responsável, sem duplicar), aviso e confirmações gravadas, fontes e cores do cliente com pré-visualização; modelo pronto do diagnóstico de qualificação da Mathisa com a oferta sugerida como tag. | `RODAR_v0.130_formulario.sql`, **pendente** |
 | 0.129 | 21/10/2026 | **Movimento por dia da campanha num gráfico só**, com botões para escolher as métricas; **qualificação por pontos nas pesquisas** (pontos e tags por resposta, soma ou média, nota de corte, faixas, simulador; qualifica ao responder e no recalcular). | `RODAR_v0.129_qualificacao.sql`, aplicado |
 | 0.128 | 21/10/2026 | **Painel da campanha, dia a dia**: quadrinhos verde/vermelho de cada dia contra a meta (investimento, CTR, CPC, leads, CPL, vendas, receita); onde caiu (7 dias × 7 anteriores, etapa por etapa); movimento por dia; vendas por dia, produto e oferta; quanto foi e o que trouxe cada vídeo/criativo. | não muda o banco |
 | 0.127 | 21/10/2026 | **Onda 3**: receita por papel da oferta (order bump, upsell, downsell) em Vendas e a oferta na importação; meta × realizado acumulado do plano e a projeção dos cenários aprovados; saldo mínimo de caixa no Financeiro e aviso no Dashboard. | `RODAR_v0.127_saldo_minimo.sql`, aplicado |
