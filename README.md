@@ -15,7 +15,7 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.130 · 21/10/2026 (`index.html`) |
+| **Versão da tela** | 0.131 · 21/10/2026 (`index.html`) |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.130** (aplicado em 21/10/2026) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta, projeto do Google e os segredos no Supabase: [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
@@ -26,6 +26,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.131 | 21/10/2026 | **Selo de qualificado** (verde/vermelho com a pontuação) no cartão, na ficha e na lista de leads; **tags coloridas**; aba **"Quem respondeu"** na pesquisa, com a pontuação de cada pessoa, situação no CRM, filtro e planilha. | não muda o banco |
 | 0.130 | 21/10/2026 | **Formulário de captação nas Pesquisas**: aba "Formulário e aparência" com passos, link para enviar (com UTM e WhatsApp), contato que entra ou é atualizado no Funil de leads (etapa, tags, responsável, sem duplicar), aviso e confirmações gravadas, fontes e cores do cliente com pré-visualização; modelo pronto do diagnóstico de qualificação da Mathisa com a oferta sugerida como tag. | `RODAR_v0.130_formulario.sql`, aplicado |
 | 0.129 | 21/10/2026 | **Movimento por dia da campanha num gráfico só**, com botões para escolher as métricas; **qualificação por pontos nas pesquisas** (pontos e tags por resposta, soma ou média, nota de corte, faixas, simulador; qualifica ao responder e no recalcular). | `RODAR_v0.129_qualificacao.sql`, aplicado |
 | 0.128 | 21/10/2026 | **Painel da campanha, dia a dia**: quadrinhos verde/vermelho de cada dia contra a meta (investimento, CTR, CPC, leads, CPL, vendas, receita); onde caiu (7 dias × 7 anteriores, etapa por etapa); movimento por dia; vendas por dia, produto e oferta; quanto foi e o que trouxe cada vídeo/criativo. | não muda o banco |

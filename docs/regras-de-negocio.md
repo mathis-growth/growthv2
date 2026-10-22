@@ -1,5 +1,9 @@
 
 
+## v0.131 — Selo, tags e quem respondeu
+- Selo: qualificado = verde, não qualificado = vermelho, pendente = tracejado; pontos = `pontuacao_qualificacao` do lead (a última qualificação gravada).
+- Quem respondeu: por padrão, a última resposta de cada pessoa (sem pessoa: por e-mail). "Pontos" e "Pela regra" = regra de hoje aplicada às respostas daquela vez; "No CRM agora" = o que está no lead. Pontuação média = média dos pontos de quem aparece na lista (antes do filtro).
+
 ## v0.130 — Formulário de captação
 - O link do formulário é o link aberto da pesquisa; só capta com a pesquisa **ativa** e a captação **ligada** (ligar a captação liga o link aberto).
 - Nome (2+ letras) e e-mail válido são sempre obrigatórios. WhatsApp aceito com 10 a 13 dígitos (DDD + número, com ou sem 55). Campos desligados são ignorados mesmo se enviados.

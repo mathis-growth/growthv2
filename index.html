@@ -387,7 +387,16 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">.pf{background:var(--bg);color:var(--tx);font-family:var(--ftx);font-size:16px;line-height:1.5;padding:36px 18px 56px;min-height:100%;box-sizing:border-box}
+<style id="v122">.tg{display:inline-flex;align-items:center;padding:2px 9px;border-radius:99px;font-size:11.5px;font-weight:600;line-height:1.5;white-space:nowrap;color:color-mix(in srgb,var(--tc) 78%,var(--ink));background:color-mix(in srgb,var(--tc) 13%,transparent);border:1px solid color-mix(in srgb,var(--tc) 38%,transparent)}
+.tg-l{display:flex;flex-wrap:wrap;gap:4px}
+.ca .tg{margin:1px 0}
+.selo{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-weight:700;font-size:12px;line-height:1.4;white-space:nowrap}
+.selo b{font-weight:600;opacity:.92;padding-left:6px;margin-left:2px;border-left:1px solid currentColor}
+.selo.q{background:#15803D;color:#fff}
+.selo.n{background:#B91C1C;color:#fff}
+.selo.p{border:1px dashed var(--line);color:var(--muted);font-weight:600}
+.selo.p b{border-left-color:var(--line)}
+.pf{background:var(--bg);color:var(--tx);font-family:var(--ftx);font-size:16px;line-height:1.5;padding:36px 18px 56px;min-height:100%;box-sizing:border-box}
 .pf *{box-sizing:border-box}
 .pf-in{max-width:680px;margin:0 auto}
 .pf-logo{display:block;max-height:52px;max-width:220px;object-fit:contain;margin-bottom:14px}
@@ -573,7 +582,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.130 · 21/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.131 · 21/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -2071,7 +2080,7 @@ const NEG_COR = { aberto: 'info', ganho: 'good', perdido: 'bad' };
 const NEG_TXT = { aberto: 'Em aberto', ganho: 'Ganho', perdido: 'Perdido' };
 const pillNeg = s => `<span class="pill ${NEG_COR[s] || 'neutral'}">${NEG_TXT[s] || esc(s)}</span>`;
 const CRMF0 = () => ({ busca: '', tag: '', origem: '', camp: '', produto: '', status: '', qual: '', utm_source: '', utm_medium: '', utm_campaign: '', utm_content: '', utm_term: '', de: '', ate: '' });
-const chipsTags = (p, X, max = 3) => { const t = tagsDe(p, X); return t.slice(0, max).map(x => `<span class="pill neutral">${esc(x)}</span>`).join(' ') + (t.length > max ? ` <span class="muted">+${t.length - max}</span>` : ''); };
+const chipsTags = (p, X, max = 3) => { const t = tagsDe(p, X); return t.slice(0, max).map(tagPill).join(' ') + (t.length > max ? ` <span class="muted">+${t.length - max}</span>` : ''); };
 
 async function crmExtras() {
   const w = S.ws;
@@ -2121,7 +2130,8 @@ function crmFiltroLiga(m, F, reset) {
 }
 const crmCardTopo = (p, X) => `<button type="button" class="btn sm" style="text-align:left;border:0;padding:0;font-weight:700;font-size:13.5px;background:none" data-f="${p.id}">${esc(p.nome)}</button>
   ${p.email ? `<div class="muted" style="font-size:12px;overflow:hidden;text-overflow:ellipsis">${esc(p.email)}</div>` : ''}${p.telefone ? `<div class="muted" style="font-size:12px">${esc(p.telefone)}</div>` : ''}
-  <small>${esc(p.canal_origem || 'sem origem')}${p.utm_content ? ' · ' + esc(p.utm_content) : ''} · ${pillQual(p.qualificacao)}</small>
+  <small>${esc(p.canal_origem || 'sem origem')}${p.utm_content ? ' · ' + esc(p.utm_content) : ''}</small>
+  <div class="ca">${seloQual(p)}</div>
   <div class="ca">${pillNeg(p.negocio_status || 'aberto')} ${chipsTags(p, X)}</div>`;
 
 async function fecharNegocio(pessoaId, tipo, depoisContrato) {
@@ -3300,7 +3310,7 @@ async function fichaPessoa(id) {
   const zap = (p.telefone || '').replace(/\D/g, ''), ini2 = (p.nome || '?').trim().split(/\s+/).slice(0, 2).map(x => x[0]).join('').toUpperCase();
   const f = modal(p.nome, `<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
       <div style="width:46px;height:46px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700">${esc(ini2)}</div>
-      <div style="flex:1;min-width:200px"><div style="font-size:18px;font-weight:700;cursor:pointer" data-edit title="Clique para editar nome, e-mail e telefone">${esc(p.nome)} <span class="muted" style="font-size:12px;font-weight:400">✎ editar</span></div><div>${pillFunil(p.status_funil, p.status_cliente)} ${pillNeg(neg)} ${pillQual(p.qualificacao)}</div></div>
+      <div style="flex:1;min-width:200px"><div style="font-size:18px;font-weight:700;cursor:pointer" data-edit title="Clique para editar nome, e-mail e telefone">${esc(p.nome)} <span class="muted" style="font-size:12px;font-weight:400">✎ editar</span></div><div>${pillFunil(p.status_funil, p.status_cliente)} ${pillNeg(neg)} ${seloQual(p)}</div>${(p.tags || []).length ? '<div class="tg-l" style="margin-top:6px">' + p.tags.map(tagPill).join('') + '</div>' : ''}</div>
       <button type="button" class="btn sm" data-edit>Editar cadastro</button></div>
     ${tit('Contato')}
     <div class="infog">${p.email ? `<div><span class="muted" style="font-size:11px">E-mail</span><br><a href="mailto:${esc(p.email)}">${esc(p.email)}</a></div>` : campo('E-mail', '')}
@@ -3422,7 +3432,7 @@ async function vClientes(m) {
     $('#tb').innerHTML = rows.length ? rows.slice(0, 500).map(p => `<tr>
       <td>${esc(p.nome)}<br><span class="muted">${esc(p.email || '')}${p.telefone ? ' · ' + esc(p.telefone) : ''}</span></td>
       <td>${pillFunil(p.status_funil, p.status_cliente)}</td>
-      <td>${pillQual(p.qualificacao)}<br><span class="muted mono">${p.pontuacao_qualificacao ?? ''}</span></td>
+      <td>${seloQual(p)}</td>
       <td>${esc(p.canal_origem || '—')}<br><span class="muted mono">${esc([p.utm_source, p.utm_medium].filter(Boolean).join(' / '))}</span></td>
       <td>${esc(cn[p.campanha_id] || p.utm_campaign || '—')}<br><span class="muted mono">${esc(p.utm_content || '')}${p.utm_term ? ' · ' + esc(p.utm_term) : ''}</span></td>
       <td>${esc(et[p.etapa_kanban_id] || '—')}</td><td>${dtt(p.criado_em)}</td>
@@ -13685,11 +13695,11 @@ async function vPesquisaDet(m) {
   const p = ps[0]; if (!p) { S.pqSel = null; return vPesquisas(m); }
   S.pqSecao = await temColuna('pesquisa_perguntas', 'secao');
   m.innerHTML = `<div class="head"><div><button class="btn sm" id="pqVolta">← Pesquisas</button><h1 style="margin-top:8px">${esc(p.nome)} ${pillAtivo(p.ativa)}</h1><span class="muted">${PQ_TIPO[p.tipo]} · ${esc(PQ_GAT[p.gatilho])}${p.gatilho === 'etapa' ? ': ' + esc(p.gatilho_etapa) : ''}</span></div><div class="acts"><button class="btn" id="pqEd">Configurar</button></div></div>
-  <div class="tabs">${[['perguntas', 'Perguntas'], ['form', 'Formulário e aparência'], ['qual', 'Qualificação e pontos'], ['envios', 'Fila de envio'], ['res', 'Resultados'], ['ins', 'Insights']].map(([k, l]) => `<button data-t="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="pqBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
+  <div class="tabs">${[['perguntas', 'Perguntas'], ['form', 'Formulário e aparência'], ['qual', 'Qualificação e pontos'], ['quem', 'Quem respondeu'], ['envios', 'Fila de envio'], ['res', 'Resultados'], ['ins', 'Insights']].map(([k, l]) => `<button data-t="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="pqBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
   $('#pqVolta').onclick = () => { S.pqSel = null; render(); }; $('#pqEd').onclick = () => modalPesquisa(p);
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { S.pqTab = b.dataset.t; render(); });
   const body = $('#pqBody');
-  if (T === 'envios') return pqEnvios(body, p); if (T === 'res') return pqResultados(body, p, perg); if (T === 'ins') return pqInsights(body, p, perg); if (T === 'qual') return pqQualif(body, p, perg); if (T === 'form') return pqForm(body, p, perg);
+  if (T === 'envios') return pqEnvios(body, p); if (T === 'res') return pqResultados(body, p, perg); if (T === 'ins') return pqInsights(body, p, perg); if (T === 'qual') return pqQualif(body, p, perg); if (T === 'form') return pqForm(body, p, perg); if (T === 'quem') return pqRespondentes(body, p, perg);
   pqPerguntas(body, p, perg);
 }
 function modalPergunta(p, row, n) {
@@ -14062,6 +14072,82 @@ PQ_MODELOS.captacao_mathisa = {
         'Ainda não sei exatamente do que preciso.': { p: 0, tag: 'Oferta sugerida: Avaliação comercial' } } }]
   ]
 };
+
+/* ================= v0.131: selo de qualificação, tags coloridas e quem respondeu cada pesquisa ================= */
+/* cor da tag: sempre a mesma para o mesmo nome; "Oferta…" roxo, "Alerta…" laranja */
+const TAG_PAL = ['#2563EB', '#DB2777', '#0891B2', '#059669', '#7C3AED', '#D97706', '#DC2626', '#4F46E5', '#0D9488', '#C026D3', '#C2410C', '#65A30D'];
+function tagCor(t) {
+  const s = String(t || '').trim(), l = s.toLowerCase();
+  if (l.startsWith('oferta')) return '#7C3AED';
+  if (l.startsWith('alerta')) return '#D97706';
+  if (/^(n[aã]o qualificad|frio)/.test(l)) return '#64748B';
+  if (/^(qualificad|quente)/.test(l)) return '#059669';
+  let h = 0; for (const c of l) h = (h * 31 + c.codePointAt(0)) >>> 0;
+  return TAG_PAL[h % TAG_PAL.length];
+}
+const tagPill = t => `<span class="tg" style="--tc:${tagCor(t)}">${esc(t)}</span>`;
+const fmtPts = v => v == null || v === '' ? '' : Number(v).toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + ' pts';
+/* selo grande: qualificado (verde cheio), não qualificado (vermelho cheio), pendente (tracejado), com a pontuação */
+function seloQual(p) {
+  const q = p.qualificacao || 'pendente', pts = fmtPts(p.pontuacao_qualificacao);
+  const [cls, txt, ic] = q === 'qualificado' ? ['q', 'Qualificado', '<path d="M5 12l4 4 10-10"/>'] : q === 'nao_qualificado' ? ['n', 'Não qualificado', '<path d="M6 6l12 12M18 6L6 18"/>'] : ['p', 'Qualificação pendente', ''];
+  return `<span class="selo ${cls}">${ic ? `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ic}</svg>` : ''}${txt}${pts ? `<b>${pts}</b>` : ''}</span>`;
+}
+
+/* ---------- aba "Quem respondeu" da pesquisa ---------- */
+async function pqRespondentes(el, p, perg) {
+  const cfg = p.qualif || null, regra = !!(cfg && cfg.ativa);
+  const temCont = await temColuna('pesquisa_respostas', 'contato');
+  const [resp, itens] = await Promise.all([
+    gcTodos(() => sb.from('pesquisa_respostas').select('id,pessoa_id,email,respondida_em' + (temCont ? ',contato,novo_contato' : '')).eq('pesquisa_id', p.id).order('id')),
+    gcTodos(() => sb.from('pesquisa_resposta_itens').select('id,resposta_id,pergunta_id,valor_num,valor_texto').eq('workspace_id', S.ws).in('pergunta_id', perg.length ? perg.map(x => x.id) : ['00000000-0000-0000-0000-000000000000']).order('id'))
+  ]);
+  const ids = [...new Set(resp.map(r => r.pessoa_id).filter(Boolean))], pes = [];
+  for (let i = 0; i < ids.length; i += 150) pes.push(...await q(sb.from('pessoas').select('id,nome,email,telefone,qualificacao,pontuacao_qualificacao,tags').in('id', ids.slice(i, i + 150))));
+  const PE = Object.fromEntries(pes.map(x => [x.id, x])), porR = {};
+  itens.forEach(i => (porR[i.resposta_id] = porR[i.resposta_id] || []).push(i));
+  const V = S.pqRv = S.pqRv || { todas: false, filtro: '', ord: 'pts' };
+  let L = resp.map(r => {
+    const pe = PE[r.pessoa_id] || null, c = r.contato || {}, calc = regra ? pqPontua(cfg, perg, porR[r.id] || []) : null;
+    return { r, pe, nome: (pe && pe.nome) || c.nome || '', email: (pe && pe.email) || c.email || r.email || '', pts: calc ? calc.pts : null, res: calc ? calc.qual : null, tags: calc ? [...calc.tags, ...(calc.faixa ? [calc.faixa] : [])] : [] };
+  });
+  if (!V.todas) L = Object.values(L.reduce((o, x) => { const k = x.r.pessoa_id || x.email || x.r.id; if (!o[k] || String(x.r.respondida_em) > String(o[k].r.respondida_em)) o[k] = x; return o; }, {}));
+  const situ = x => x.pe ? (x.pe.qualificacao || 'pendente') : 'sem_contato';
+  const tot = L.length, nq = L.filter(x => situ(x) === 'qualificado').length, nn = L.filter(x => situ(x) === 'nao_qualificado').length;
+  const com = L.filter(x => x.pts != null), med = com.length ? com.reduce((a, x) => a + Number(x.pts), 0) / com.length : null;
+  if (V.filtro) L = L.filter(x => situ(x) === V.filtro);
+  L.sort((a, b) => V.ord === 'pts' ? (Number(b.pts ?? -1e9) - Number(a.pts ?? -1e9)) || String(b.r.respondida_em).localeCompare(String(a.r.respondida_em)) : V.ord === 'nome' ? a.nome.localeCompare(b.nome, 'pt-BR') : String(b.r.respondida_em).localeCompare(String(a.r.respondida_em)));
+  el.innerHTML = `${regra ? '' : `<div class="panel"><span class="muted">Esta pesquisa ainda não tem regra de pontos. Monte em <a href="#" id="rIrQ">Qualificação e pontos</a> para ver a pontuação de cada pessoa aqui.</span></div>`}
+  <div class="kpis">${kpi('Responderam', num(tot), V.todas ? 'todas as respostas' : 'pessoas (a última resposta de cada)')}${kpi('Qualificados', num(nq), tot ? fP(nq / tot) + ' de quem respondeu' : '')}${kpi('Não qualificados', num(nn), '')}${kpi('Pontuação média', med == null ? '—' : fmtPts(Math.round(med * 100) / 100), regra ? (cfg.modo === 'media' ? 'média por pergunta' : 'soma dos pontos') + (cfg.corte !== '' && cfg.corte != null ? ' · corte ' + fmtPts(cfg.corte) : '') : 'sem regra')}</div>
+  <div class="filters" style="align-items:flex-end">
+    <label>Situação no CRM<select id="rF"><option value="">Todas</option><option value="qualificado"${V.filtro === 'qualificado' ? ' selected' : ''}>Qualificado</option><option value="nao_qualificado"${V.filtro === 'nao_qualificado' ? ' selected' : ''}>Não qualificado</option><option value="pendente"${V.filtro === 'pendente' ? ' selected' : ''}>Pendente</option><option value="sem_contato"${V.filtro === 'sem_contato' ? ' selected' : ''}>Sem contato no CRM</option></select></label>
+    <label>Ordenar por<select id="rO"><option value="pts"${V.ord === 'pts' ? ' selected' : ''}>Maior pontuação</option><option value="data"${V.ord === 'data' ? ' selected' : ''}>Mais recentes</option><option value="nome"${V.ord === 'nome' ? ' selected' : ''}>Nome</option></select></label>
+    <label class="pf-rl"><input type="checkbox" id="rT"${V.todas ? ' checked' : ''}> Mostrar todas as respostas (não só a última de cada pessoa)</label>
+    <button class="btn" id="rCsv"${L.length ? '' : ' disabled'}>Baixar planilha (CSV)</button></div>
+  <div class="panel"><div class="tw"><table><thead><tr><th>Quando</th><th>Pessoa</th><th class="n">Pontos</th><th>Pela regra</th><th>No CRM agora</th><th>Tags desta resposta</th><th></th></tr></thead><tbody>${L.map(x => `<tr>
+    <td>${dtt(x.r.respondida_em)}</td><td><b>${esc(x.nome || '—')}</b><br><small class="muted">${esc(x.email)}</small></td>
+    <td class="n"><b>${x.pts == null ? '—' : fmtPts(x.pts)}</b></td>
+    <td>${x.res === 'qualificado' ? '<span class="pill good">qualifica</span>' : x.res === 'nao_qualificado' ? '<span class="pill bad">não qualifica</span>' : '<span class="muted">sem corte</span>'}</td>
+    <td>${x.pe ? seloQual(x.pe) : '<span class="muted">não entrou no CRM</span>'}</td>
+    <td><div class="tg-l">${x.tags.map(tagPill).join('') || '<span class="muted">—</span>'}</div></td>
+    <td>${x.pe ? `<button class="btn sm" data-fp="${x.pe.id}">Abrir lead</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="7" class="empty">Ninguém respondeu ainda.</td></tr>'}</tbody></table></div>
+  ${regra ? '<small class="muted">"Pontos" e "Pela regra" usam a regra de hoje (aba Qualificação e pontos). "No CRM agora" é o que está gravado no lead; se mudou a regra depois que a pessoa respondeu, use "Recalcular quem já respondeu" lá.</small>' : ''}</div>`;
+  if ($('#rIrQ')) $('#rIrQ').onclick = e => { e.preventDefault(); S.pqTab = 'qual'; render(); };
+  $('#rF').onchange = e => { V.filtro = e.target.value; render(); };
+  $('#rO').onchange = e => { V.ord = e.target.value; render(); };
+  $('#rT').onchange = e => { V.todas = e.target.checked; render(); };
+  el.querySelectorAll('[data-fp]').forEach(b => b.onclick = () => fichaPessoa(b.dataset.fp));
+  $('#rCsv').onclick = () => {
+    const cel = v => { const s = String(v ?? ''); return /[";\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+    const PQ = perg;
+    const cab = ['Quando', 'Nome', 'E-mail', 'Pontos', 'Pela regra', 'No CRM', 'Tags', ...PQ.map(x => x.texto)];
+    const rot = { qualificado: 'Qualificado', nao_qualificado: 'Não qualificado', pendente: 'Pendente', sem_contato: 'Sem contato' };
+    const linhas = L.map(x => { const its = porR[x.r.id] || []; return [new Date(x.r.respondida_em).toLocaleString('pt-BR'), x.nome, x.email, x.pts == null ? '' : String(x.pts).replace('.', ','), x.res ? rot[x.res] : '', rot[situ(x)], x.tags.join(', '),
+      ...PQ.map(qq => its.filter(i => i.pergunta_id === qq.id).map(i => i.valor_texto ?? i.valor_num).join(', '))]; });
+    const csv = '﻿' + [cab, ...linhas].map(r => r.map(cel).join(';')).join('\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })); a.download = 'respostas-' + (p.nome || 'pesquisa').toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  };
+}
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
 if (PQ_TOKEN) vPesquisaPublica(PQ_TOKEN);

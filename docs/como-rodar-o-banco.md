@@ -1,5 +1,8 @@
 
 
+## v0.131
+- Nada a rodar no banco.
+
 ## v0.130 — Formulário de captação
 - `supabase/RODAR_v0.130_formulario.sql`: colunas de aparência, captação e passo; funções `pesquisa_captar` (pública) e `pesquisa_registrar` (interna); reescreve `pesquisa_responder` e `pesquisa_publica` mantendo o comportamento. Precisa da v0.129 aplicada antes. Pode ser rodado de novo sem erro. Aplicado em produção em 21/10/2026.
 

@@ -1,5 +1,11 @@
 
 
+## Selo, tags coloridas e quem respondeu (v0.131)
+- `seloQual(p)` (usa `qualificacao` e `pontuacao_qualificacao`) no `crmCardTopo`, no topo da `fichaPessoa` e na lista de clientes; `tagCor(t)` / `tagPill(t)` no `chipsTags` (CRM) e no topo da ficha; `fmtPts`.
+- Pesquisa: aba `quem` em `vPesquisaDet` → `pqRespondentes(el, p, perg)` (estado `S.pqRv`: todas, filtro, ordem; CSV com BOM e `;`).
+- Montagem: `integra131.py` (roda o `integra130.py`) com `g131.js` (antes de `const PQ_TOKEN`) e `g131.css`.
+- Teste: `t131_selo_tags_respondentes.py`.
+
 ## Formulário de captação (v0.130)
 - Página pública: `vPesquisaPublica(token)` → `pfDesenha(el, d, token, {previa})`; passos por `pfPassos(d)`; campos por `pfCampo`; aparência saneada por `pfVis` (fonte, cor, logo) e aplicada como variáveis CSS (`pfEstilo`); fontes carregadas por `pfCarregaFontes` (dois links por família, um sem pesos que sempre existe).
 - Editor: aba `form` em `vPesquisaDet` → `pqForm(el, p, perg)` (configuração em `C`/`V`, pré-visualização com `pfDesenha(..., {previa: true})`, temas `PF_TEMAS`, contraste por `pfContraste`). `modalPergunta` ganhou `secao` (se a coluna existir: `S.pqSecao`).

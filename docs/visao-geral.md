@@ -1,5 +1,8 @@
 
 
+## v0.131
+**Qualificado na cara.** O cartão e a ficha do lead mostram um selo verde ou vermelho com a pontuação, e as tags ficam coloridas. Cada pesquisa ganhou a aba "Quem respondeu", com a pontuação de cada pessoa e a planilha.
+
 ## v0.130
 **Formulário de captação com a cara do cliente.** Dentro da pesquisa, a aba "Formulário e aparência" transforma o questionário em um formulário em passos com as fontes e cores do cliente, gera o link para enviar e coloca quem responde direto no Funil de leads, com respostas, origem, consentimentos e oferta sugerida. O diagnóstico de qualificação da Mathisa já vem como modelo.
 

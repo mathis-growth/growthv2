@@ -100,6 +100,13 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.131] - 2026-10-21 — Selo de qualificado, tags coloridas e quem respondeu cada pesquisa
+- **Selo de qualificação** bem visível no cartão do Funil de leads, na ficha do lead e na lista de clientes e leads: verde "✓ Qualificado", vermelho "✕ Não qualificado" ou tracejado "Qualificação pendente", sempre com a **pontuação** ao lado (ex.: "Qualificado | 25 pts").
+- **Tags coloridas** no CRM e na ficha (que agora mostra as tags no topo): cada tag tem sempre a mesma cor; "Oferta…" em roxo, "Alerta…" em laranja, "quente/qualificado" em verde, "frio/não qualificado" em cinza.
+- **Pesquisas → aba "Quem respondeu"** (nova): todo mundo que respondeu, com a **pontuação** de cada um, se qualifica pela regra, como está no CRM agora (selo), as tags que a resposta deu e o botão para abrir o lead. Números do topo: quantos responderam, qualificados, não qualificados e pontuação média. Filtro pela situação no CRM, ordem por pontuação, data ou nome, opção de ver todas as respostas (não só a última de cada pessoa) e **planilha (CSV)** com as respostas de cada pergunta.
+- Não muda o banco.
+- Teste: `t131_selo_tags_respondentes.py`.
+
 ## [0.130] - 2026-10-21 — Formulário de captação dentro das Pesquisas
 - **Pesquisas → aba "Formulário e aparência"** (nova): a pesquisa vira um formulário público em passos, com o link para enviar ao cliente.
   - **Link para enviar**: copiar, abrir, mandar pelo WhatsApp e montar o link com origem (utm_source, utm_medium, utm_campaign). Só aparece com a pesquisa ativa e a captação ligada.

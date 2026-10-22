@@ -1,5 +1,9 @@
 
 
+## v0.131
+- index.html: 0.130 → 0.131.
+- Não muda o banco. Novo teste `t131_selo_tags_respondentes.py`.
+
 ## v0.130
 - index.html: 0.129 → 0.130.
 - Novo: `20261027100000_formulario_captacao.sql` e `RODAR_v0.130_formulario.sql` (aplicado em produção em 21/10/2026); teste `t130_formulario_captacao.py`.
