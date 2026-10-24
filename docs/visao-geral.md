@@ -1,5 +1,8 @@
 
 
+## v0.132
+**Pergunte ao Growths e alertas.** "Como foi meu dia ontem?" responde na hora com os números exatos e a comparação com a semana. O Growths confere os números de hora em hora e avisa no sino, por e-mail e por WhatsApp quando algo muda de forma brusca, se repete ou pede ação, e manda o resumo de ontem toda manhã.
+
 ## v0.131
 **Qualificado na cara.** O cartão e a ficha do lead mostram um selo verde ou vermelho com a pontuação, e as tags ficam coloridas. Cada pesquisa ganhou a aba "Quem respondeu", com a pontuação de cada pessoa e a planilha.
 

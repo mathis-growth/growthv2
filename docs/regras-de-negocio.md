@@ -1,5 +1,13 @@
 
 
+## v0.132 — Resumo do dia e alertas
+- Dia = fuso de São Paulo. Leads = pessoas criadas no dia; vendas/receita = vendas aprovadas pela data da venda; reembolsos pela data do reembolso; mídia = `v_trafego_anuncio_dia`; comparação = média dos 7 dias anteriores e o mesmo dia da semana passada.
+- Brusco (ontem × 14 dias anteriores): alerta se |ontem − média| ≥ maior entre (desvios × desvio padrão) e (média × variação %). Só com 7+ dias com dado e movimento mínimo (3 leads, 1 venda, R$ 100 de receita ou R$ 50 de mídia por dia; CPL com 3+ leads de anúncio; CTR com 500+ impressões). Mídia zerada no dia não gera alerta de mídia. A mesma métrica para o mesmo lado em 3 dias não repete.
+- Repetido: leads caindo todo dia por N dias (padrão 3) e terminando 30% abaixo; N dias sem venda quando a média era 0,5+/dia; CPL acima da meta da campanha ativa em todos os N dias com gasto; 3+ reembolsos em 3 dias, em 2+ dias.
+- Pede ação: investimento ≥ R$ 100 (ajustável) sem lead de anúncio (ontem ou hoje); contas a pagar vencidas (no máximo 1 aviso por semana); saldo das contas abaixo do saldo mínimo; dia sem nenhum lead, venda nem mídia num negócio com movimento.
+- Repetição de aviso: queda seguida e sem vendas, a cada N dias; CPL por campanha, a cada N dias; reembolsos e sem dados, a cada 3; saldo, a cada 3; contas vencidas, a cada 7.
+- Resumo: na primeira rodada a partir da hora escolhida, uma vez por dia, sobre ontem.
+
 ## v0.131 — Selo, tags e quem respondeu
 - Selo: qualificado = verde, não qualificado = vermelho, pendente = tracejado; pontos = `pontuacao_qualificacao` do lead (a última qualificação gravada).
 - Quem respondeu: por padrão, a última resposta de cada pessoa (sem pessoa: por e-mail). "Pontos" e "Pela regra" = regra de hoje aplicada às respostas daquela vez; "No CRM agora" = o que está no lead. Pontuação média = média dos pontos de quem aparece na lista (antes do filtro).

@@ -1,5 +1,14 @@
 
 
+## v0.132 — Alertas e resumo do dia
+Na ordem:
+1. `supabase/RODAR_v0.132_alertas.sql` (tabelas e funções). Pode ser rodado de novo sem erro.
+2. Publicar as edge functions: `supabase functions deploy avisos --no-verify-jwt` e `supabase functions deploy perguntar`.
+3. `supabase/RODAR_v0.132_agendador.sql` com o id do projeto no lugar de `<PROJETO>` (liga pg_cron e pg_net e agenda `growths_rodar_agendado()` de hora em hora).
+4. Segredos (Edge Functions → Secrets), quando houver: `RESEND_API_KEY` e `AVISOS_EMAIL_DE` (e-mail); `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_ID` e o modelo `aviso_growths` aprovado na Meta (WhatsApp); `ANTHROPIC_API_KEY` ou `OPENAI_API_KEY` (IA). Sem eles, o sino funciona e os e-mails/WhatsApps ficam marcados como "não foi" com o motivo.
+5. Em cada cliente, na tela Alertas e resumo do dia, "Ligar alertas e resumo".
+**Pendente em produção.**
+
 ## v0.131
 - Nada a rodar no banco.
 

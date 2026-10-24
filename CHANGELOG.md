@@ -100,6 +100,19 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.132] - 2026-10-24 — "Como foi o meu dia?" e alertas automáticos
+- **Pergunte ao Growths** (antes "Pergunte aos dados"): botões **Ontem**, **Hoje até agora**, **Anteontem** e outro dia; e perguntas como "como foi meu dia ontem?" respondem na hora, **sem IA**, com os números exatos do dia: leads (e qualificados), vendas, receita, investimento, custo por lead, cada um comparado com a média dos 7 dias anteriores e com o mesmo dia da semana passada; de onde vieram os leads, o que vendeu, mídia por canal, reembolsos, abandonos, respostas de formulários, caixa e contas vencidas; os alertas do dia; botão "Copiar resumo". As outras perguntas seguem para a IA (Claude ou ChatGPT), que agora também enxerga o dia a dia (hoje, ontem, os últimos 60 dias) e os alertas abertos.
+- **Alertas e resumo do dia** (tela nova em Administrativo e no Growth Starter): o Growths confere os números de hora em hora e grava um alerta quando:
+  - **muda de forma brusca**: ontem fora do normal dos 14 dias anteriores (leads, vendas, receita, investimento, custo por lead, CTR), pela variação em % e pelo desvio do normal; queda de leads/vendas/receita/CTR e alta do CPL = importante; alta = bom sinal;
+  - **se repete**: leads caindo dias seguidos, dias seguidos sem venda, CPL acima da meta da campanha dias seguidos, reembolsos se repetindo;
+  - **pede ação**: mídia gastando sem trazer lead, contas a pagar vencidas, caixa abaixo do saldo mínimo, **dia sem nenhum dado** (integração ou importação parada, em vez de vários "caiu 100%").
+  O mesmo problema que continua não vira um aviso por dia (volta a avisar a cada poucos dias). Vários alertas juntos viram um aviso só.
+- **Resumo do dia** todo dia na hora escolhida (padrão 7h), com o resumo de ontem.
+- **Avisos no sino, por e-mail e por WhatsApp**, pelos canais de cada pessoa da equipe (os mesmos dos avisos de projetos e do CRM), para quem tem acesso ao sistema ou para quem você marcar. Configuração na tela: ligar/desligar, hora do resumo, o que vigiar, sensibilidade, quem recebe e por onde, aviso de teste para você e envios recentes.
+- **Envio de e-mail e WhatsApp** (edge function nova `avisos`): e-mail pelo Resend e WhatsApp pela API oficial da Meta (modelo de mensagem aprovado). Serve também para os avisos de atividades e do CRM, que antes ficavam só na fila.
+- Banco: `20261028100000_assistente_alertas.sql` / `RODAR_v0.132_alertas.sql` (tabelas `alertas_config`, `alertas`, `resumos_diarios`, `sistema_config`; funções `growths_serie`, `growths_fatos_dia`, `growths_verificar_alertas`, `growths_resumo_gerar`, `growths_ia_extra`, `growths_aviso_teste`, `growths_rodar_agendado`) e `RODAR_v0.132_agendador.sql` (pg_cron de hora em hora). Edge functions: `avisos` (nova) e `perguntar` (dia a dia). **Ainda não aplicado em produção.**
+- Testes: `t132_assistente_alertas.py` e `supabase/functions/avisos/logica_test.ts`.
+
 ## [0.131] - 2026-10-21 — Selo de qualificado, tags coloridas e quem respondeu cada pesquisa
 - **Selo de qualificação** bem visível no cartão do Funil de leads, na ficha do lead e na lista de clientes e leads: verde "✓ Qualificado", vermelho "✕ Não qualificado" ou tracejado "Qualificação pendente", sempre com a **pontuação** ao lado (ex.: "Qualificado | 25 pts").
 - **Tags coloridas** no CRM e na ficha (que agora mostra as tags no topo): cada tag tem sempre a mesma cor; "Oferta…" em roxo, "Alerta…" em laranja, "quente/qualificado" em verde, "frio/não qualificado" em cinza.

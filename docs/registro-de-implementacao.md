@@ -1,5 +1,13 @@
 
 
+## "Como foi o meu dia?" e alertas (v0.132)
+- Tela `ia-perguntar` → `vPerguntar` reescrita (a antiga saiu no `integra132.py`): botões de dia e `diaDaPergunta(texto)` reconhecem ontem/hoje/anteontem/dd/mm e mostram `cardFatos(f)` (de `growths_fatos_dia`); com chave de IA, a pergunta também vai para `perguntar`.
+- Tela nova `ia-alertas` → `vAlertas`: alertas (`alertas`), configuração (`alertas_config`), canais por pessoa (`equipe.avisar_*`), status dos canais (`avisos` → `{acao:'status'}`), teste (`growths_aviso_teste` + `avisos` → `{acao:'enviar'}`), envios recentes (`notificacoes`).
+- Edge function `avisos`: autentica pelo `x-growths-token` (agendador) ou login; reserva cada notificação antes de enviar (não manda duas vezes); expira fila com mais de 3 dias; `logica.ts` monta e-mail (Resend) e WhatsApp (modelo da Meta, variáveis sem quebra de linha).
+- `perguntar`: junta `growths_ia_extra` ao contexto; regra 7 da IA explica hoje/ontem/série/alertas.
+- Montagem: `integra132.py` (roda o `integra131.py`) com `g132.js` e `g132.css`.
+- Testes: `t132_assistente_alertas.py` (banco com cliente de teste e telas), `deno test supabase/functions/avisos/logica_test.ts`.
+
 ## Selo, tags coloridas e quem respondeu (v0.131)
 - `seloQual(p)` (usa `qualificacao` e `pontuacao_qualificacao`) no `crmCardTopo`, no topo da `fichaPessoa` e na lista de clientes; `tagCor(t)` / `tagPill(t)` no `chipsTags` (CRM) e no topo da ficha; `fmtPts`.
 - Pesquisa: aba `quem` em `vPesquisaDet` → `pqRespondentes(el, p, perg)` (estado `S.pqRv`: todas, filtro, ordem; CSV com BOM e `;`).

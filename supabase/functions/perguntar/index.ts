@@ -44,8 +44,11 @@ Deno.serve(async (req: Request) => {
     const { count } = await sb.from('ia_perguntas').select('id', { count: 'exact', head: true }).gte('criado_em', new Date(Date.now() - 3600e3).toISOString());
     if ((count || 0) >= 40) return json({ erro: 'Limite de 40 perguntas por hora. Tente mais tarde.' }, 429);
     // o servidor, e não a tela, escolhe o que a IA enxerga
-    const { data: ctx, error } = await sb.rpc('ia_contexto', { p_ws: corpo.ws, p_ini: corpo.ini, p_fim: corpo.fim });
+    const { data: base, error } = await sb.rpc('ia_contexto', { p_ws: corpo.ws, p_ini: corpo.ini, p_fim: corpo.fim });
     if (error) return json({ erro: error.message }, 400);
+    // v0.132: o dia a dia (hoje até agora, ontem, a série por dia e os alertas abertos), para "como foi ontem?"
+    const { data: extra } = await sb.rpc('growths_ia_extra', { p_ws: corpo.ws, p_ini: corpo.ini, p_fim: corpo.fim });
+    const ctx = { ...(base as Record<string, unknown>), ...((extra as Record<string, unknown>) || {}) };
     const { texto, modelo } = provedor === 'claude' ? await chamaClaude(montaMensagem(pergunta, ctx)) : await chamaOpenAI(montaMensagem(pergunta, ctx));
     const r = leResposta(texto, ctx);
     const nao_conferidos = confere(r.resposta, ctx);

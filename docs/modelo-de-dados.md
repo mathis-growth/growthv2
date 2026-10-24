@@ -1,5 +1,13 @@
 
 
+## v0.132
+- `alertas_config` (1 por cliente): `ligado`, `resumo_diario`, `resumo_hora`, `regras jsonb` (`variacao_pct`, `desvios`, `dias_seguidos`, `gasto_sem_lead`, `desligadas[]`), `destinatarios uuid[]` (vazio = equipe com acesso).
+- `alertas`: `chave` única por cliente (não repete), `tipo` (brusco/repetido/operacional), `regra`, `severidade` (alta/media/info), `titulo`, `mensagem`, `dados`, `dia`, `visto_em`, `resolvido_em`.
+- `resumos_diarios` (cliente + dia): `fatos jsonb`, `texto`, `avisado_em`.
+- `sistema_config` (sem acesso pelo sistema): `avisos_token`, `avisos_url` para o agendador chamar a função `avisos`.
+- `notificacoes`: novos tipos `alerta`, `resumo`, `teste` (mesma fila e canais).
+- Funções: `growths_serie(ws, ini, fim)`, `growths_fatos_dia(ws, dia)`, `growths_verificar_alertas(ws, ref, avisar)`, `growths_resumo_gerar(ws, dia, avisar)`, `growths_resumo_texto(fatos)`, `growths_ia_extra(ws, ini, fim)`, `growths_aviso_teste(ws)`, `growths_avisar` (interna), `growths_rodar_agendado(ref)` (só o banco). **Pendente em produção.**
+
 ## v0.131
 - Sem mudança no banco. Leituras novas: `pesquisa_respostas` (com `contato`) + `pesquisa_resposta_itens` + `pessoas` (qualificação, pontuação, tags) na aba Quem respondeu.
 

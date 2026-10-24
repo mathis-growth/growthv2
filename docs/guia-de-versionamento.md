@@ -1,5 +1,9 @@
 
 
+## v0.132
+- index.html: 0.131 → 0.132.
+- Novo: `20261028100000_assistente_alertas.sql`, `RODAR_v0.132_alertas.sql`, `RODAR_v0.132_agendador.sql`, edge function `avisos` (com `logica_test.ts`), `perguntar` alterada; teste `t132_assistente_alertas.py`. Pendente em produção.
+
 ## v0.131
 - index.html: 0.130 → 0.131.
 - Não muda o banco. Novo teste `t131_selo_tags_respondentes.py`.

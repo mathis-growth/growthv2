@@ -387,7 +387,31 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">.tg{display:inline-flex;align-items:center;padding:2px 9px;border-radius:99px;font-size:11.5px;font-weight:600;line-height:1.5;white-space:nowrap;color:color-mix(in srgb,var(--tc) 78%,var(--ink));background:color-mix(in srgb,var(--tc) 13%,transparent);border:1px solid color-mix(in srgb,var(--tc) 38%,transparent)}
+<style id="v122">.fd-bt{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ia-q{font-size:14px;padding:0 4px}
+.fd{display:flex;flex-direction:column;gap:14px;margin-top:10px}
+.fd-ks{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.fd-k{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;background:var(--surface)}
+.fd-k span{font-size:12px;color:var(--muted)}.fd-k b{font-size:20px;line-height:1.2}.fd-k small{font-size:11.5px;color:var(--muted)}
+.fd-var{font-size:12px;font-weight:700}.fd-var.up{color:#15803D}.fd-var.dn{color:#B91C1C}
+.fd-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.fd-g h3{font-size:13px;margin:0 0 6px}
+.fd-l{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;font-size:13px}
+.fd-l li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding-bottom:3px}.fd-l li span{color:var(--muted)}.fd-l li b{font-weight:600;text-align:right}
+.fd-al{display:flex;flex-wrap:wrap;gap:6px}
+.al-s{display:inline-flex;align-items:center;padding:2px 9px;border-radius:99px;font-size:11.5px;font-weight:700}
+.al-s.alta{background:#B91C1C;color:#fff}.al-s.media{background:#B45309;color:#fff}.al-s.info{background:#15803D;color:#fff}
+.al-l{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.al-c{border:1px solid var(--line);border-left:4px solid var(--line);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;gap:4px}
+.al-c.alta{border-left-color:#B91C1C}.al-c.media{border-left-color:#B45309}.al-c.info{border-left-color:#15803D}.al-c.ok{opacity:.6}
+.al-t{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.al-c .ca{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.al-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:16px;align-items:start}
+.al-g .panel{display:flex;flex-direction:column;gap:8px}.al-g h2,.al-g h3{margin:4px 0 0}.al-g h3{font-size:13px}
+.al-sens{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.al-liga{display:flex;flex-direction:column;gap:6px;align-items:flex-start;border-left:4px solid var(--accent)}
+@media (max-width:600px){.al-g{grid-template-columns:1fr}.al-sens{grid-template-columns:1fr}}
+.tg{display:inline-flex;align-items:center;padding:2px 9px;border-radius:99px;font-size:11.5px;font-weight:600;line-height:1.5;white-space:nowrap;color:color-mix(in srgb,var(--tc) 78%,var(--ink));background:color-mix(in srgb,var(--tc) 13%,transparent);border:1px solid color-mix(in srgb,var(--tc) 38%,transparent)}
 .tg-l{display:flex;flex-wrap:wrap;gap:4px}
 .ca .tg{margin:1px 0}
 .selo{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-weight:700;font-size:12px;line-height:1.4;white-space:nowrap}
@@ -582,7 +606,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.131 · 21/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.132 · 24/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -604,8 +628,8 @@ const sb = supabase.createClient(SB_URL, SB_KEY);
 setTimeout(() => { if ($('#login').classList.contains('hide') && $('#app').classList.contains('hide')) avisoFalha('Sem resposta do servidor. Verifique a internet e se o projeto do Supabase não está pausado (projetos gratuitos pausam por inatividade).'); }, 8000);
 
 const NAV = [
-  { g: 'Growth Starter', flat: true, starter: true, items: [['st-dash', 'Dashboard'], ['mkt-dash', 'Aquisição'], ['mkt-midia', 'Mídia'], ['crm-vendas', 'Vendas'], ['ho-retencao', 'Retenção & Expansão'], ['cad-produtos', 'Produtos'], ['crm-alunos', 'Clientes / Alunos'], ['fin-dash', 'Financeiro'], ['st-relatorios', 'Relatórios'], ['ia-perguntar', 'Pergunte aos dados'], ['gro-ciclo', 'Experimentos']] },
-  { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte aos dados'], ['adm-plano', 'Planejamento da empresa'], ['adm-empresa', 'Cadastro da empresa']] },
+  { g: 'Growth Starter', flat: true, starter: true, items: [['st-dash', 'Dashboard'], ['mkt-dash', 'Aquisição'], ['mkt-midia', 'Mídia'], ['crm-vendas', 'Vendas'], ['ho-retencao', 'Retenção & Expansão'], ['cad-produtos', 'Produtos'], ['crm-alunos', 'Clientes / Alunos'], ['fin-dash', 'Financeiro'], ['st-relatorios', 'Relatórios'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['gro-ciclo', 'Experimentos']] },
+  { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['adm-plano', 'Planejamento da empresa'], ['adm-empresa', 'Cadastro da empresa']] },
   { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários'], ['mkt-cont', 'Planejamento de conteúdo']] },
   { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['mkt-origem', 'Leads por origem']] },
   { g: 'RevOps', items: [['ho-dash', 'Dashboard'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
@@ -867,6 +891,7 @@ const ICO = {
   Cadastros: P('<path d="M4 6a8 3 0 0 1 16 0v12a8 3 0 0 1-16 0z"/><path d="M4 12a8 3 0 0 0 16 0"/>'),
   'mkt-dash': P('<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>'),
   'mkt-midia': P('<path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/>'),
+  'ia-alertas': P('<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>'),
   'ia-perguntar': P('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9.5 10a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .8-1 1.5"/><path d="M12 16.5h.01"/>'),
   'mkt-trafego': P('<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>'),
   'mkt-origem': P('<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>'),
@@ -1003,7 +1028,7 @@ $('#novoCli').onclick = () => { modal('Novo cliente', `<label>Nome do cliente<in
 $('#wsSel').onchange = e => { S.ws = S.wsBase = e.target.value; if (ehCasaV(S.view)) S.view = 'fin-dash'; S.perm = null; S.permWs = null; render(); };
 
 const VIEWS = {
-  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo,
+  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo,
   'crm-leads': vCrmLeads, 'crm-oport': vCrmOport, 'crm-vendas': vVendas, 'crm-contratos': vContratos, 'crm-comissoes': vComissoes, 'cad-comissoes': vComissoes, 'crm-alunos': vCrmAlunos,
   'fin-receber': vReceber,  'cfg-uso': vUso, 'fin-pagar': vPagar, 'fin-custo': vCustoOp, 'fin-lanc': vLanc, 'adm-painel': vPainel, 'adm-plano': vPlano,
   'cad-clientes': vClientes, 'cad-plataformas': vPlataformas, 'cad-funis': vFunis, 'cad-regras': vRegras,
@@ -1549,40 +1574,6 @@ async function iaChama(body) {
   if (r.data && r.data.erro) throw new Error(r.data.erro);
   return r.data;
 }
-async function vPerguntar(m) {
-  const h = hoje(), I = S.ia = S.ia || { ini: h.slice(0, 4) + '-01-01', fim: h, prov: 'claude', hist: [] };
-  let st = null; try { st = (await iaChama({ acao: 'status' })).provedores; } catch (e) { st = null; }
-  const ok = p => !st || st[p];
-  if (!ok(I.prov)) I.prov = ok('claude') ? 'claude' : 'openai';
-  const card = x => `<div class="panel"><div class="head"><b>${esc(x.pergunta)}</b><span class="muted">${esc(x.provedor === 'openai' ? 'ChatGPT' : 'Claude')} · ${esc(x.modelo || '')}</span></div>
-    ${x.erro ? `<div class="pill bad">${esc(x.erro)}</div>` : `<div style="white-space:pre-wrap;line-height:1.5">${esc(x.resposta)}</div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
-      ${x.sem_dado ? '<span class="pill warn">Sem dado para responder</span>' : ''}
-      ${x.nao_conferidos && x.nao_conferidos.length ? `<span class="pill bad">⚠ Não encontrei nos dados: ${esc(x.nao_conferidos.join(', '))}. Não confie nesses valores.</span>` : '<span class="pill good">✔ Números conferidos com os dados</span>'}
-      ${(x.fontes || []).map(f => `<span class="pill">${esc(f)}</span>`).join('')}</div>
-    <details style="margin-top:8px"><summary class="muted" style="cursor:pointer">Dados que a IA recebeu (é só isto que ela enxerga)</summary><pre style="max-height:260px;overflow:auto;font-size:12px;white-space:pre-wrap">${esc(JSON.stringify(x.contexto, null, 1))}</pre></details>`}</div>`;
-  m.innerHTML = `<div class="head"><div><h1>Pergunte aos dados</h1><span class="muted">Faça perguntas em português sobre o seu desempenho. A IA <b>não acessa o banco</b>: ela lê só um resumo já calculado (você vê abaixo de cada resposta) e todo número que ela citar é conferido contra esse resumo.</span></div></div>
-  <div class="panel"><div class="filters" style="flex-wrap:wrap;gap:12px"><label>IA<select id="iaProv"><option value="claude"${I.prov === 'claude' ? ' selected' : ''}${ok('claude') ? '' : ' disabled'}>Claude${ok('claude') ? '' : ' (chave não configurada)'}</option><option value="openai"${I.prov === 'openai' ? ' selected' : ''}${ok('openai') ? '' : ' disabled'}>ChatGPT${ok('openai') ? '' : ' (chave não configurada)'}</option></select></label>
-    <label>De<input type="date" id="iaIni" value="${I.ini}"></label><label>Até<input type="date" id="iaFim" value="${I.fim}"></label></div>
-    <label style="margin-top:10px">Sua pergunta<textarea id="iaPerg" rows="2" maxlength="600" placeholder="Ex.: qual canal teve o melhor ROAS?"></textarea></label>
-    <div style="display:flex;flex-wrap:wrap;gap:6px;margin:8px 0">${IA_EXEMPLOS.map(e => `<button class="btn sm" data-ex="${esc(e)}">${esc(e)}</button>`).join('')}</div>
-    <div class="acts"><button class="btn pri" id="iaGo">Perguntar</button></div>
-    ${st && !st.claude && !st.openai ? '<div class="pill warn" style="margin-top:8px">Nenhuma chave de IA configurada ainda. No Supabase, em Edge Functions → Secrets, cadastre ANTHROPIC_API_KEY (Claude) e/ou OPENAI_API_KEY (ChatGPT).</div>' : ''}
-    <span class="muted" style="font-size:12px">A IA responde só com o que está no resumo: receita e funil por mês, mídia por canal, campanha e ângulo, receita por produto, resultado contábil e contas a pagar. Não recebe nomes, e-mails nem telefones de pessoas. Respostas ficam registradas para auditoria.</span></div>
-  <div id="iaHist" style="display:flex;flex-direction:column;gap:12px">${I.hist.slice().reverse().map(card).join('')}</div>`;
-  m.querySelectorAll('[data-ex]').forEach(b => b.onclick = () => { $('#iaPerg').value = b.dataset.ex; $('#iaPerg').focus(); });
-  $('#iaProv').onchange = e => { I.prov = e.target.value; };
-  $('#iaIni').onchange = e => { I.ini = e.target.value; }; $('#iaFim').onchange = e => { I.fim = e.target.value; };
-  $('#iaGo').onclick = async () => {
-    const pergunta = $('#iaPerg').value.trim(); if (pergunta.length < 3) { toast('Escreva a pergunta.', true); return; }
-    if (!I.ini || !I.fim || I.ini > I.fim) { toast('Informe um período válido.', true); return; }
-    const bt = $('#iaGo'); bt.disabled = true; bt.textContent = 'Consultando...';
-    try { const r = await iaChama({ pergunta, ws: S.ws, ini: I.ini, fim: I.fim, provedor: I.prov }); I.hist.push({ pergunta, ...r }); }
-    catch (e) { I.hist.push({ pergunta, provedor: I.prov, erro: e.message || String(e) }); }
-    render();
-  };
-}
-
 async function vOrigem(m) {
   const w = S.ws, O = S.o = S.o || { dim: 'utm_content', camp: '', de: '', ate: '' };
   const [pes, ven, camp] = await Promise.all([
@@ -4700,7 +4691,7 @@ function dgLigaControles() {
 const DG_KPIS = ['rec', 'inv', 'led', 'cac', 'conv', 'ret', 'margem', 'pagar'], DG_BLOCOS = ['nsm', 'guard', 'graf', 'canais', 'funil', 'asc', 'insights', 'acoes', 'produtos'];
 const DG_PADRAO = () => ({ k: ['rec', 'inv', 'led', 'cac', 'conv', 'ret', 'margem', 'pagar'], b: ['nsm', 'guard', 'graf', 'canais', 'funil', 'asc', 'insights', 'acoes', 'produtos'] });
 const dgLayout = async () => DG_PADRAO();
-const dgDestino = v => { if (!ehStarter()) return v; const ok = ['st-dash', 'mkt-dash', 'mkt-midia', 'ia-perguntar', 'crm-vendas', 'ho-retencao', 'cad-produtos', 'crm-alunos', 'fin-dash', 'st-relatorios', 'gro-ciclo']; return ok.includes(v) ? v : v.startsWith('fin-') ? 'fin-dash' : v === 'mkt-trafego' ? 'mkt-midia' : v.startsWith('mkt-') || v === 'crm-leads' ? 'mkt-dash' : 'st-dash'; };
+const dgDestino = v => { if (!ehStarter()) return v; const ok = ['st-dash', 'mkt-dash', 'mkt-midia', 'ia-perguntar', 'ia-alertas', 'crm-vendas', 'ho-retencao', 'cad-produtos', 'crm-alunos', 'fin-dash', 'st-relatorios', 'gro-ciclo']; return ok.includes(v) ? v : v.startsWith('fin-') ? 'fin-dash' : v === 'mkt-trafego' ? 'mkt-midia' : v.startsWith('mkt-') || v === 'crm-leads' ? 'mkt-dash' : 'st-dash'; };
 async function vDashGrowth(m) {
   S.dp = S.dp || 'mes'; const D = await dgDados(S.dp), c = D.c, p = D.p, st = ehStarter();
   const dgDelta = (a, b, mm, pp) => dgDeltaG(a, b, mm, pp, dgRotCmp());
@@ -14147,6 +14138,198 @@ async function pqRespondentes(el, p, perg) {
     const csv = '﻿' + [cab, ...linhas].map(r => r.map(cel).join(';')).join('\n');
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })); a.download = 'respostas-' + (p.nome || 'pesquisa').toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
   };
+}
+
+/* ================= v0.132: "Como foi o meu dia?" e alertas automáticos ================= */
+const AL_TIPO = { brusco: 'Mudança brusca', repetido: 'Se repetindo', operacional: 'Pede ação' };
+const AL_REGRAS = [['sem_dados', 'Dia sem nenhum dado (integração ou importação parada)'], ['brusco', 'Mudança brusca (ontem fora do normal dos 14 dias anteriores)'], ['queda_seguida', 'Leads caindo dias seguidos'], ['sem_vendas', 'Dias seguidos sem venda'],
+  ['cpl_meta', 'CPL acima da meta da campanha dias seguidos'], ['reembolsos', 'Reembolsos se repetindo'], ['gasto_sem_lead', 'Mídia gastando sem trazer lead'], ['contas_vencidas', 'Contas a pagar vencidas'], ['saldo_minimo', 'Caixa abaixo do saldo mínimo']];
+const fBRL = v => v == null ? '—' : brl(v);
+const fN = (v, c = 0) => v == null ? '—' : Number(v).toLocaleString('pt-BR', { maximumFractionDigits: c });
+const fDia = d => { const [a, m, x] = String(d).split('-'); return x + '/' + m; };
+/* seta de comparação com a média dos 7 dias anteriores; "bom" diz para que lado é bom */
+const fVar = (pct, bom = 1) => pct == null ? '' : `<span class="fd-var ${pct === 0 || bom === 0 ? '' : (pct > 0) === (bom > 0) ? 'up' : 'dn'}">${pct > 0 ? '▲' : pct < 0 ? '▼' : '='} ${fN(Math.abs(pct), 0)}%</span>`;
+
+/* texto do resumo (o mesmo formato do que vai por e-mail e WhatsApp) */
+function fatosTexto(f) {
+  const m = f.comparacao.media_7_dias_anteriores, v = f.comparacao.variacao_vs_media_pct, L = [];
+  L.push(`Resumo de ${f.dia_semana}, ${fDia(f.data)}${f.parcial ? ' (até agora)' : ''}`);
+  L.push(`- Leads: ${fN(f.leads)}${f.qualificados ? ` (${fN(f.qualificados)} qualificados)` : ''}${m.leads != null ? ` · média dos 7 dias anteriores: ${fN(m.leads, 1)}${v.leads != null ? ` (${v.leads >= 0 ? '+' : ''}${fN(v.leads)}%)` : ''}` : ''}`);
+  L.push(`- Vendas: ${fN(f.vendas)}, receita ${fBRL(f.receita)}${m.vendas != null ? ` · média: ${fN(m.vendas, 1)} vendas, ${fBRL(m.receita)}` : ''}`);
+  if (f.vendas_por_produto.length) L.push(`- Mais vendido: ${f.vendas_por_produto[0].produto} (${fN(f.vendas_por_produto[0].vendas)}, ${fBRL(f.vendas_por_produto[0].receita)})`);
+  if (f.midia.investimento > 0) L.push(`- Mídia: ${fBRL(f.midia.investimento)} investidos${f.midia.cpl != null ? ', CPL ' + fBRL(f.midia.cpl) : ''}${f.midia.ctr_pct != null ? ', CTR ' + fN(f.midia.ctr_pct, 2) + '%' : ''}`);
+  if (f.reembolsos) L.push(`- Reembolsos: ${fN(f.reembolsos)} (${fBRL(f.valor_reembolsado)})`);
+  if (f.abandonos_checkout) L.push(`- Abandonos de checkout: ${fN(f.abandonos_checkout)}`);
+  if (f.respostas_formularios) L.push(`- Respostas de formulários: ${fN(f.respostas_formularios)}`);
+  if (f.financeiro.contas_vencidas_qtd) L.push(`- Contas a pagar vencidas: ${f.financeiro.contas_vencidas_qtd} (${fBRL(f.financeiro.contas_vencidas_valor)})`);
+  if (f.alertas_do_dia.length) L.push(`- Alertas: ${f.alertas_do_dia.map(a => a.titulo).join('; ')}`);
+  return L.join('\n');
+}
+/* o dia em cartões: números com a comparação, de onde vieram, o que vendeu, mídia e caixa */
+function fatosHtml(f) {
+  const m = f.comparacao.media_7_dias_anteriores, v = f.comparacao.variacao_vs_media_pct, s = f.comparacao.mesmo_dia_semana_passada;
+  const k = (rot, val, sub, varr) => `<div class="fd-k"><span>${rot}</span><b>${val}</b>${varr || ''}<small>${sub}</small></div>`;
+  const lista = (tit, L, fn) => L.length ? `<div><h3>${tit}</h3><ul class="fd-l">${L.map(fn).join('')}</ul></div>` : '';
+  return `<div class="fd">
+    <div class="fd-ks">${k('Leads', fN(f.leads), `média 7 dias: ${fN(m.leads, 1)} · ${growthsDiaCurto(s.data)}: ${fN(s.leads)}`, fVar(v.leads))}
+      ${k('Vendas', fN(f.vendas), `média 7 dias: ${fN(m.vendas, 1)} · ${growthsDiaCurto(s.data)}: ${fN(s.vendas)}`, fVar(v.vendas))}
+      ${k('Receita', fBRL(f.receita), `média 7 dias: ${fBRL(m.receita)}`, fVar(v.receita))}
+      ${k('Investimento em mídia', fBRL(f.midia.investimento), `média 7 dias: ${fBRL(m.investimento)}`, fVar(v.investimento, 0))}
+      ${k('Custo por lead', fBRL(f.midia.cpl), `média 7 dias: ${fBRL(m.cpl)}`, f.midia.cpl != null && m.cpl ? fVar(Math.round((f.midia.cpl / m.cpl - 1) * 1000) / 10, -1) : '')}
+      ${k('Qualificados', fN(f.qualificados), f.leads ? fN(f.qualificados / f.leads * 100, 0) + '% dos leads do dia' : '')}</div>
+    ${f.alertas_do_dia.length ? `<div class="fd-al">${f.alertas_do_dia.map(a => `<span class="al-s ${a.severidade}">${esc(a.titulo)}</span>`).join('')}</div>` : ''}
+    <div class="fd-g">
+      ${lista('De onde vieram os leads', f.leads_por_origem, x => `<li><span>${esc(x.origem)}</span><b>${fN(x.leads)}</b></li>`)}
+      ${lista('O que vendeu', f.vendas_por_produto, x => `<li><span>${esc(x.produto)}</span><b>${fN(x.vendas)} · ${fBRL(x.receita)}</b></li>`)}
+      ${lista('Mídia por canal', f.midia_por_canal, x => `<li><span>${esc(x.canal)}</span><b>${fBRL(x.investimento)} · ${fN(x.leads)} leads${x.cpl != null ? ' · CPL ' + fBRL(x.cpl) : ''}</b></li>`)}
+      <div><h3>Também no dia</h3><ul class="fd-l">
+        <li><span>Reembolsos</span><b>${fN(f.reembolsos)}${f.reembolsos ? ' · ' + fBRL(f.valor_reembolsado) : ''}</b></li>
+        <li><span>Abandonos de checkout</span><b>${fN(f.abandonos_checkout)}</b></li>
+        <li><span>Respostas de formulários</span><b>${fN(f.respostas_formularios)}</b></li>
+        <li><span>Recebido / pago</span><b>${fBRL(f.financeiro.recebido)} / ${fBRL(f.financeiro.pago)}</b></li>
+        <li><span>Contas a pagar vencidas</span><b>${fN(f.financeiro.contas_vencidas_qtd)}${f.financeiro.contas_vencidas_qtd ? ' · ' + fBRL(f.financeiro.contas_vencidas_valor) : ''}</b></li></ul></div>
+    </div></div>`;
+}
+const growthsDiaCurto = d => { const x = new Date(d + 'T12:00:00'); return ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'][x.getDay()] + ' ' + fDia(d); };
+async function fatosDia(dia) { return q(sb.rpc('growths_fatos_dia', { p_ws: S.ws, p_dia: dia })); }
+function cardFatos(f) {
+  return `<div class="panel fd-card"><div class="head"><div><h2 style="margin:0">${f.parcial ? 'Hoje até agora' : 'Como foi ' + (f.data === diaMais(hoje(), -1) ? 'ontem' : 'o dia')}: ${esc(f.dia_semana)}, ${fDia(f.data)}</h2><span class="muted">Números exatos do sistema, sem IA. A comparação é com a média dos 7 dias anteriores.</span></div>
+    <button class="btn sm" data-copia="${esc(fatosTexto(f))}">Copiar resumo</button></div>${fatosHtml(f)}</div>`;
+}
+/* "como foi ontem?", "e hoje?", "resumo de 12/10": responde com os números do dia, com ou sem IA */
+function diaDaPergunta(t) {
+  const s = t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''), h = hoje();
+  if (/\banteontem\b/.test(s)) return diaMais(h, -2);
+  if (/\bontem\b/.test(s)) return diaMais(h, -1);
+  if (/\bhoje\b/.test(s) && /(como|resumo|foi|esta|ta |indo|dia)/.test(s)) return h;
+  const m = s.match(/\b(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\b/);
+  if (m && /(como|resumo|dia|foi)/.test(s)) { const a = m[3] ? (m[3].length === 2 ? '20' + m[3] : m[3]) : h.slice(0, 4); const d = `${a}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`; if (!isNaN(new Date(d + 'T12:00:00')) && d <= h) return d; }
+  return null;
+}
+
+/* ---------- tela: Pergunte ao Growths ---------- */
+async function vPerguntar(m) {
+  const h = hoje(), I = S.ia = S.ia || { ini: h.slice(0, 4) + '-01-01', fim: h, prov: 'claude', hist: [] };
+  let st = null; try { st = (await iaChama({ acao: 'status' })).provedores; } catch (e) { st = null; }
+  const ok = p => !!(st && st[p]), algum = ok('claude') || ok('openai');
+  if (st && !ok(I.prov)) I.prov = ok('claude') ? 'claude' : 'openai';
+  const card = x => x.fatos ? `<div class="ia-q"><b>${esc(x.pergunta)}</b></div>${cardFatos(x.fatos)}` : `<div class="panel"><div class="head"><b>${esc(x.pergunta)}</b><span class="muted">${esc(x.provedor === 'openai' ? 'ChatGPT' : 'Claude')} · ${esc(x.modelo || '')}</span></div>
+    ${x.erro ? `<div class="pill bad">${esc(x.erro)}</div>` : `<div style="white-space:pre-wrap;line-height:1.5">${esc(x.resposta)}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+      ${x.sem_dado ? '<span class="pill warn">Sem dado para responder</span>' : ''}
+      ${x.nao_conferidos && x.nao_conferidos.length ? `<span class="pill bad">⚠ Não encontrei nos dados: ${esc(x.nao_conferidos.join(', '))}. Não confie nesses valores.</span>` : '<span class="pill good">✔ Números conferidos com os dados</span>'}
+      ${(x.fontes || []).map(f => `<span class="pill">${esc(f)}</span>`).join('')}</div>
+    <details style="margin-top:8px"><summary class="muted" style="cursor:pointer">Dados que a IA recebeu (é só isto que ela enxerga)</summary><pre style="max-height:260px;overflow:auto;font-size:12px;white-space:pre-wrap">${esc(JSON.stringify(x.contexto, null, 1))}</pre></details>`}</div>`;
+  m.innerHTML = `<div class="head"><div><h1>Pergunte ao Growths</h1><span class="muted">Pergunte em português sobre o seu negócio. "Como foi ontem?" sai na hora com os números exatos do sistema; as outras perguntas vão para a IA, que lê só um resumo calculado (você vê abaixo de cada resposta) e tem cada número conferido.</span></div><div class="acts">${ir('ia-alertas', 'Alertas e resumo do dia')}</div></div>
+  <div class="panel"><h2 style="margin:0 0 8px">Como foi?</h2><div class="fd-bt"><button class="btn pri" data-dia="${diaMais(h, -1)}">Ontem</button><button class="btn" data-dia="${h}">Hoje até agora</button><button class="btn" data-dia="${diaMais(h, -2)}">Anteontem</button><label class="pf-rl">Outro dia <input type="date" id="iaDia" max="${h}" style="width:auto"></label></div></div>
+  <div class="panel"><div class="filters" style="flex-wrap:wrap;gap:12px"><label>IA<select id="iaProv"><option value="claude"${I.prov === 'claude' ? ' selected' : ''}${!st || ok('claude') ? '' : ' disabled'}>Claude${!st || ok('claude') ? '' : ' (chave não configurada)'}</option><option value="openai"${I.prov === 'openai' ? ' selected' : ''}${!st || ok('openai') ? '' : ' disabled'}>ChatGPT${!st || ok('openai') ? '' : ' (chave não configurada)'}</option></select></label>
+    <label>De<input type="date" id="iaIni" value="${I.ini}"></label><label>Até<input type="date" id="iaFim" value="${I.fim}"></label></div>
+    <label style="margin-top:10px">Sua pergunta<textarea id="iaPerg" rows="2" maxlength="600" placeholder="Ex.: como foi meu dia ontem?"></textarea></label>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin:8px 0">${['Como foi meu dia ontem?', 'Como está hoje até agora?', ...IA_EXEMPLOS].map(e => `<button class="btn sm" data-ex="${esc(e)}">${esc(e)}</button>`).join('')}</div>
+    <div class="acts"><button class="btn pri" id="iaGo">Perguntar</button></div>
+    ${st && !algum ? '<div class="pill warn" style="margin-top:8px">A IA ainda não tem chave: perguntas sobre um dia ("como foi ontem?") funcionam; as outras precisam da chave. No Supabase, em Edge Functions → Secrets, cadastre ANTHROPIC_API_KEY (Claude) e/ou OPENAI_API_KEY (ChatGPT).</div>' : ''}
+    <span class="muted" style="font-size:12px">A IA enxerga: receita e funil por mês, mídia por canal, campanha e ângulo, receita por produto, resultado contábil, contas a pagar, o dia a dia (hoje, ontem e os últimos 60 dias do período) e os alertas abertos. Não recebe nomes, e-mails nem telefones de pessoas. Respostas ficam registradas para auditoria.</span></div>
+  <div id="iaHist" style="display:flex;flex-direction:column;gap:12px">${I.hist.slice().reverse().map(card).join('')}</div>`;
+  const mostraDia = async (dia, pergunta) => { try { I.hist.push({ pergunta, fatos: await fatosDia(dia) }); } catch (e) { I.hist.push({ pergunta, provedor: I.prov, erro: e.message || String(e) }); } render(); };
+  m.querySelectorAll('[data-dia]').forEach(b => b.onclick = () => mostraDia(b.dataset.dia, b.textContent));
+  $('#iaDia').onchange = e => { if (e.target.value) mostraDia(e.target.value, 'Como foi ' + growthsDiaCurto(e.target.value) + '?'); };
+  m.querySelectorAll('[data-ex]').forEach(b => b.onclick = () => { $('#iaPerg').value = b.dataset.ex; $('#iaPerg').focus(); });
+  m.querySelectorAll('[data-copia]').forEach(b => b.onclick = () => navigator.clipboard.writeText(b.dataset.copia).then(() => toast('Resumo copiado'), () => toast('Não consegui copiar.', true)));
+  $('#iaProv').onchange = e => { I.prov = e.target.value; };
+  $('#iaIni').onchange = e => { I.ini = e.target.value; }; $('#iaFim').onchange = e => { I.fim = e.target.value; };
+  $('#iaGo').onclick = async () => {
+    const pergunta = $('#iaPerg').value.trim(); if (pergunta.length < 3) { toast('Escreva a pergunta.', true); return; }
+    const dia = diaDaPergunta(pergunta);
+    // pergunta sobre um dia: os números exatos primeiro; a IA comenta só se houver chave
+    if (dia && (!algum || /^\s*(e\s+)?(como\s+(foi|esta|está)|resumo)/i.test(pergunta))) { await mostraDia(dia, pergunta); if (!algum) return; }
+    if (!I.ini || !I.fim || I.ini > I.fim) { toast('Informe um período válido.', true); return; }
+    if (st && !algum) { I.hist.push({ pergunta, provedor: I.prov, erro: 'A IA ainda não tem chave configurada. Perguntas sobre um dia ("como foi ontem?", "e hoje?") funcionam sem ela.' }); render(); return; }
+    const bt = $('#iaGo'); bt.disabled = true; bt.textContent = 'Consultando...';
+    try { const r = await iaChama({ pergunta, ws: S.ws, ini: I.ini, fim: I.fim, provedor: I.prov }); I.hist.push({ pergunta, ...r }); }
+    catch (e) { I.hist.push({ pergunta, provedor: I.prov, erro: e.message || String(e) }); }
+    render();
+  };
+}
+
+/* ---------- tela: Alertas e resumo do dia ---------- */
+async function vAlertas(m) {
+  if (!(await temColuna('alertas_config', 'ligado'))) { m.innerHTML = '<div class="head"><h1>Alertas e resumo do dia</h1></div><div class="panel">' + GC.vazio('Para usar os alertas, rode supabase/RODAR_v0.132_alertas.sql no Supabase.') + '</div>'; return; }
+  const w = S.ws, F = S.alF = S.alF || 'abertos';
+  const [cfgs, als, res, eqs, envs] = await Promise.all([
+    q(sb.from('alertas_config').select('*').eq('workspace_id', w)),
+    q(sb.from('alertas').select('*').eq('workspace_id', w).order('criado_em', { ascending: false }).limit(200)),
+    q(sb.from('resumos_diarios').select('dia,texto,avisado_em').eq('workspace_id', w).order('dia', { ascending: false }).limit(14)),
+    q(sb.from('equipe').select('id,nome,email,telefone,ativo,acesso_ativo,avisar_app,avisar_email,avisar_whatsapp').eq('workspace_id', w).eq('ativo', true).order('nome')),
+    q(sb.from('notificacoes').select('id,tipo,canal,titulo,status,erro,criada_em,destinatario_id').eq('workspace_id', w).in('tipo', ['alerta', 'resumo', 'teste']).order('criada_em', { ascending: false }).limit(30))
+  ]);
+  let canais = null; try { const r = await sb.functions.invoke('avisos', { body: { acao: 'status' } }); canais = r.error ? null : r.data; } catch (e) { canais = null; }
+  const cfg = cfgs[0] || null, R = (cfg && cfg.regras) || {}, desl = R.desligadas || [];
+  const C = { ligado: cfg ? cfg.ligado : true, resumo_diario: cfg ? cfg.resumo_diario : true, resumo_hora: cfg ? cfg.resumo_hora : 7, destinatarios: cfg ? cfg.destinatarios || [] : [] };
+  const abertos = als.filter(a => !a.resolvido_em), L = F === 'abertos' ? abertos : als;
+  const recebe = e => C.destinatarios.length ? C.destinatarios.includes(e.id) : !!e.acesso_ativo;
+  const EQ = Object.fromEntries(eqs.map(e => [e.id, e.nome]));
+  const statusCanal = (ok, nome) => canais == null ? `<span class="pill neutral">${nome}: não consegui conferir</span>` : ok ? `<span class="pill good">${nome}: pronto</span>` : `<span class="pill warn">${nome}: falta configurar</span>`;
+  m.innerHTML = `<div class="head"><div><h1>Alertas e resumo do dia</h1><span class="muted">O Growths confere os números de hora em hora e avisa quando algo muda de forma brusca, se repete ou pede ação. Todo dia ${C.resumo_hora}h manda o resumo de ontem. Os avisos chegam no sino, por e-mail e por WhatsApp, conforme cada pessoa da equipe.</span></div>
+    <div class="acts">${ir('ia-perguntar', 'Pergunte ao Growths')}<button class="btn" id="alResumo">Ver resumo de ontem</button><button class="btn pri" id="alVer">Verificar agora</button></div></div>
+  ${!cfg ? `<div class="panel al-liga"><b>Os alertas automáticos ainda não estão ligados para este cliente.</b><span class="muted">Ligando, o resumo e os alertas passam a ser enviados para a equipe com acesso ao sistema (ajuste abaixo quem recebe).</span><button class="btn pri" id="alLiga">Ligar alertas e resumo</button></div>` : !C.ligado ? '<div class="panel al-liga"><b>Alertas automáticos desligados.</b><span class="muted">"Verificar agora" ainda funciona; nada é enviado sozinho.</span></div>' : ''}
+  <div class="kpis">${kpi('Alertas abertos', num(abertos.length), abertos.filter(a => a.severidade === 'alta').length + ' importantes')}${kpi('Últimos 7 dias', num(als.filter(a => a.dia >= diaMais(hoje(), -7)).length), 'alertas detectados')}${kpi('Último resumo', res[0] ? fDia(res[0].dia) : '—', res[0] ? (res[0].avisado_em ? 'enviado ' + dtt(res[0].avisado_em) : 'só gerado') : 'ainda não saiu')}${kpi('Quem recebe', num(eqs.filter(recebe).length), 'pessoas da equipe')}</div>
+  <div id="alRes"></div>
+  <div class="panel"><div class="head"><h2 style="margin:0">Alertas</h2><div class="filters" style="margin:0"><select id="alF"><option value="abertos"${F === 'abertos' ? ' selected' : ''}>Abertos</option><option value="todos"${F === 'todos' ? ' selected' : ''}>Todos (últimos 200)</option></select></div></div>
+    <div class="al-l">${L.map(a => `<div class="al-c ${a.severidade}${a.resolvido_em ? ' ok' : ''}"><div class="al-t"><span class="al-s ${a.severidade}">${a.severidade === 'alta' ? 'Importante' : a.severidade === 'media' ? 'Atenção' : 'Bom sinal'}</span><span class="pill neutral">${AL_TIPO[a.tipo] || a.tipo}</span><small class="muted">${growthsDiaCurto(a.dia)} · detectado ${dtt(a.criado_em)}</small></div>
+      <b>${esc(a.titulo)}</b><div class="muted">${esc(a.mensagem)}</div>
+      <div class="ca">${a.resolvido_em ? `<span class="muted">Resolvido em ${dtt(a.resolvido_em)}</span> <button class="btn sm" data-reabre="${a.id}">Reabrir</button>` : `<button class="btn sm" data-resolve="${a.id}">Marcar como resolvido</button>`}<button class="btn sm" data-diaal="${a.dia}">Ver o dia</button></div></div>`).join('') || `<div class="empty">${F === 'abertos' ? 'Nenhum alerta aberto. Quando algo fugir do normal, aparece aqui.' : 'Nenhum alerta ainda.'}</div>`}</div></div>
+  <div class="al-g">
+    <div class="panel"><h2>Configuração</h2>
+      <label class="pf-rl"><input type="checkbox" id="cLig"${C.ligado ? ' checked' : ''}> Conferir os números sozinho, de hora em hora, e avisar</label>
+      <label class="pf-rl"><input type="checkbox" id="cRes"${C.resumo_diario ? ' checked' : ''}> Mandar o resumo de ontem todo dia às <select id="cHora" style="width:auto">${Array.from({ length: 24 }, (_, i) => `<option value="${i}"${C.resumo_hora === i ? ' selected' : ''}>${i}h</option>`).join('')}</select></label>
+      <h3>O que vigiar</h3>${AL_REGRAS.map(([k, l]) => `<label class="pf-rl"><input type="checkbox" data-regra="${k}"${desl.includes(k) ? '' : ' checked'}> ${l}</label>`).join('')}
+      <h3>Sensibilidade</h3><div class="al-sens">
+        <label>Avisar quando variar mais de (%)<input type="number" id="cPct" min="10" max="300" value="${esc(R.variacao_pct ?? 40)}"></label>
+        <label>e mais de quantos desvios do normal<input type="number" id="cDsv" min="1" max="5" step="0.5" value="${esc(R.desvios ?? 2)}"></label>
+        <label>Dias seguidos para "se repetindo"<input type="number" id="cSeg" min="2" max="10" value="${esc(R.dias_seguidos ?? 3)}"></label>
+        <label>Gasto sem lead a partir de (R$)<input type="number" id="cGsl" min="0" step="10" value="${esc(R.gasto_sem_lead ?? 100)}"></label></div>
+      <small class="muted">Mudança brusca = ontem comparado com os 14 dias anteriores, só para números com movimento normal (ex.: pelo menos 3 leads por dia). O mesmo problema que continua não vira um aviso por dia: volta a avisar a cada poucos dias.</small>
+      <div class="acts"><button class="btn pri" id="cSalva">Salvar configuração</button></div></div>
+    <div class="panel"><h2>Quem recebe e por onde</h2>
+      <span class="muted">${C.destinatarios.length ? 'Só as pessoas marcadas recebem.' : 'Ninguém marcado = recebe quem tem acesso ao sistema.'} Os canais são de cada pessoa (os mesmos dos avisos de projetos e do CRM).</span>
+      <div class="tw"><table><thead><tr><th>Recebe</th><th>Pessoa</th><th>Sino</th><th>E-mail</th><th>WhatsApp</th></tr></thead><tbody>${eqs.map(e => `<tr><td><input type="checkbox" data-dest="${e.id}"${C.destinatarios.includes(e.id) ? ' checked' : ''} aria-label="${esc(e.nome)} recebe"></td><td><b>${esc(e.nome)}</b>${e.acesso_ativo ? '' : ' <span class="pill neutral">sem acesso</span>'}${recebe(e) ? ' <span class="pill good">recebe</span>' : ''}</td>
+        <td><input type="checkbox" data-can="avisar_app" data-eq="${e.id}"${e.avisar_app ? ' checked' : ''} aria-label="Sino"></td>
+        <td><input type="checkbox" data-can="avisar_email" data-eq="${e.id}"${e.avisar_email ? ' checked' : ''} aria-label="E-mail">${e.avisar_email && !e.email ? '<br><small class="pill warn">sem e-mail</small>' : e.email ? `<br><small class="muted">${esc(e.email)}</small>` : ''}</td>
+        <td><input type="checkbox" data-can="avisar_whatsapp" data-eq="${e.id}"${e.avisar_whatsapp ? ' checked' : ''} aria-label="WhatsApp">${e.avisar_whatsapp && !e.telefone ? '<br><small class="pill warn">sem telefone</small>' : e.telefone ? `<br><small class="muted">${esc(e.telefone)}</small>` : ''}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">Ninguém na equipe deste cliente. Cadastre em Cadastros → Equipe e acessos.</td></tr>'}</tbody></table></div>
+      <h3>Canais</h3><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill good">Sino: pronto</span>${statusCanal(canais && canais.email, 'E-mail')}${statusCanal(canais && canais.whatsapp, 'WhatsApp')}</div>
+      ${canais && (!canais.email || !canais.whatsapp) ? `<details><summary class="muted" style="cursor:pointer">Como ligar e-mail e WhatsApp</summary><div class="muted" style="font-size:13px;line-height:1.55">
+        ${!canais.email ? '<p><b>E-mail</b>: crie uma conta no Resend (resend.com), verifique o domínio de envio e cadastre no Supabase (Edge Functions → Secrets) <code>RESEND_API_KEY</code> e <code>AVISOS_EMAIL_DE</code> (ex.: Growths &lt;avisos@seudominio.com.br&gt;).</p>' : ''}
+        ${!canais.whatsapp ? '<p><b>WhatsApp</b>: precisa da API oficial (WhatsApp Business Platform, da Meta). Crie e aprove na Meta um modelo de mensagem chamado <code>aviso_growths</code>, em português, com o texto: <i>"Growths: {{1}}. {{2}}"</i>. Depois cadastre no Supabase <code>WHATSAPP_TOKEN</code> e <code>WHATSAPP_PHONE_ID</code>. A Meta cobra por mensagem.</p>' : ''}</div></details>` : ''}
+      <div class="acts"><button class="btn" id="cTeste">Enviar aviso de teste para mim</button></div></div>
+  </div>
+  <div class="panel"><h2>Envios recentes</h2><div class="tw"><table><thead><tr><th>Quando</th><th>Para</th><th>Canal</th><th>Aviso</th><th>Situação</th></tr></thead><tbody>${envs.map(n => `<tr><td>${dtt(n.criada_em)}</td><td>${esc(EQ[n.destinatario_id] || '—')}</td><td>${{ app: 'Sino', email: 'E-mail', whatsapp: 'WhatsApp' }[n.canal] || n.canal}</td><td>${esc(n.titulo)}</td><td>${n.status === 'enviada' ? '<span class="pill good">enviado</span>' : n.status === 'pendente' ? '<span class="pill info">na fila</span>' : `<span class="pill bad">não foi</span><br><small class="muted">${esc(n.erro || '')}</small>`}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">Nada enviado ainda.</td></tr>'}</tbody></table></div></div>`;
+  // abrir a tela marca os alertas como vistos
+  const naoVistos = als.filter(a => !a.visto_em).map(a => a.id);
+  if (naoVistos.length) sb.from('alertas').update({ visto_em: new Date().toISOString() }).in('id', naoVistos).then(() => {});
+  $('#alF').onchange = e => { S.alF = e.target.value; render(); };
+  const mostra = async dia => { const el = $('#alRes'); el.innerHTML = '<div class="panel muted">Calculando…</div>'; try { el.innerHTML = cardFatos(await fatosDia(dia)); el.querySelectorAll('[data-copia]').forEach(b => b.onclick = () => navigator.clipboard.writeText(b.dataset.copia).then(() => toast('Resumo copiado'))); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { el.innerHTML = `<div class="panel"><span class="pill bad">${esc(e.message || e)}</span></div>`; } };
+  $('#alResumo').onclick = () => mostra(diaMais(hoje(), -1));
+  m.querySelectorAll('[data-diaal]').forEach(b => b.onclick = () => mostra(b.dataset.diaal));
+  $('#alVer').onclick = () => act(async () => { const r = await q(sb.rpc('growths_verificar_alertas', { p_ws: w, p_avisar: !!(cfg && cfg.ligado) })); toast(r.novos ? r.novos + ' alerta(s) novo(s)' : 'Nada fora do normal agora'); render(); });
+  if ($('#alLiga')) $('#alLiga').onclick = () => act(async () => { await q(sb.from('alertas_config').upsert({ workspace_id: w, ligado: true, resumo_diario: true, resumo_hora: 7 })); toast('Alertas ligados'); render(); });
+  m.querySelectorAll('[data-resolve]').forEach(b => b.onclick = () => act(async () => { await q(sb.from('alertas').update({ resolvido_em: new Date().toISOString() }).eq('id', b.dataset.resolve)); render(); }));
+  m.querySelectorAll('[data-reabre]').forEach(b => b.onclick = () => act(async () => { await q(sb.from('alertas').update({ resolvido_em: null }).eq('id', b.dataset.reabre)); render(); }));
+  m.querySelectorAll('[data-can]').forEach(i => i.onchange = () => act(async () => { await q(sb.from('equipe').update({ [i.dataset.can]: i.checked }).eq('id', i.dataset.eq)); toast('Canal atualizado'); }));
+  $('#cSalva').onclick = () => act(async () => {
+    const n = (id, min, max, def) => { const v = Number($(id).value); return Number.isFinite(v) ? Math.min(max, Math.max(min, v)) : def; };
+    const regras = { ...R, variacao_pct: n('#cPct', 10, 300, 40), desvios: n('#cDsv', 1, 5, 2), dias_seguidos: Math.round(n('#cSeg', 2, 10, 3)), gasto_sem_lead: n('#cGsl', 0, 1e7, 100),
+      desligadas: [...m.querySelectorAll('[data-regra]')].filter(i => !i.checked).map(i => i.dataset.regra) };
+    await q(sb.from('alertas_config').upsert({ workspace_id: w, ligado: $('#cLig').checked, resumo_diario: $('#cRes').checked, resumo_hora: Number($('#cHora').value), regras,
+      destinatarios: [...m.querySelectorAll('[data-dest]')].filter(i => i.checked).map(i => i.dataset.dest), atualizado_em: new Date().toISOString() }));
+    toast('Configuração salva'); render();
+  });
+  $('#cTeste').onclick = () => act(async () => {
+    const r = await q(sb.rpc('growths_aviso_teste', { p_ws: w }));
+    let env = null; if (r.email || r.whatsapp) { const x = await sb.functions.invoke('avisos', { body: { acao: 'enviar' } }); env = x.error ? { erro: x.error.message } : x.data; }
+    const can = [r.app ? 'sino' : null, r.email ? 'e-mail' : null, r.whatsapp ? 'WhatsApp' : null].filter(Boolean);
+    toast(!can.length ? 'Nenhum canal ligado para você em Equipe.' : 'Teste enviado para ' + can.join(', ') + (env && env.falharam ? '. Algum canal falhou: veja "Envios recentes".' : ''), !can.length || !!(env && (env.falharam || env.erro)));
+    render();
+  });
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
