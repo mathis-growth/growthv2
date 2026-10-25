@@ -1,3 +1,6 @@
+## v0.140
+**Growth's Content e a pasta do cliente no Drive.** O módulo de conteúdo passa a se chamar Growth's Content (Marketing → Growth's Content → Estratégia de conteúdo e Instagram). Quando a equipe marca que um cliente usa o Growth's Content (no "Novo cliente" ou em Configurações → Pacotes de acesso), o Growths cria sozinho a pasta do cliente no Google Drive, dentro de GERAL › Mathisa › Clientes › Mathisa Growth's Content, e mostra o link no topo do módulo. A árvore de subpastas entra assim que for definida.
+
 ## v0.139
 **Insights automáticos e melhores dias.** O dashboard do Instagram lê os números do período e já diz o que se destaca: o assunto que mais engaja (pelas palavras das legendas) e o que rende menos, o tema mais forte (quando os posts estão classificados), o tipo de mídia que mais alcança, o post que puxou conversa, o que pode ter levado gente para a DM, o conteúdo mais salvo e o mais compartilhado, o melhor dia e a comparação com o período anterior. Cada insight diz se é fato, hipótese ou recomendação e tem um botão para ver os posts que o formam. Logo abaixo da galeria, gráficos de linha com a métrica escolhida por dia da semana e por horário de publicação.
 

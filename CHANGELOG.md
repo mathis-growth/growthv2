@@ -100,6 +100,11 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.140] - 2026-10-25 — Growth's Content e a pasta do cliente no Drive
+- O módulo de conteúdo agora se chama **Growth's Content** no menu e no título.
+- **Novo cliente** e **Configurações → Pacotes de acesso** ganham "Usa o Growth's Content". Ao marcar, o Growths cria a pasta do cliente no Google Drive, em "Mathisa Growth's Content"; o link aparece no topo do módulo. Erro com motivo e "Tentar de novo"; "Testar a ligação com o Drive".
+- Banco: `20261102100000_content_drive.sql`; função `content-drive`; Apps Script `growths-drive.gs`. **Aplicado em produção em 25/10/2026** (falta o endereço do Apps Script).
+
 ## [0.139] - 2026-10-25 — Insights automáticos e melhores dias
 - Dashboard do Instagram: **Insights do período** lidos dos números (assunto que mais engaja e que rende menos, tema, tipo de mídia, post que puxou conversa, possível ida para a DM, mais salvo, mais compartilhado, melhor dia, comparação com o período anterior). Cada um diz se é fato, hipótese ou recomendação e mostra os posts que o formam.
 - **Melhores dias e horários** em gráfico de linha, com a métrica escolhida e os pontos coloridos pela média.

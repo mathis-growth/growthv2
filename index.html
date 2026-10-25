@@ -387,7 +387,10 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.139 insights e melhores dias */
+<style id="v122">/* v0.140 pasta do cliente no Drive */
+.cd-erro{color:var(--bad,#b42318);display:inline-block;max-width:420px;line-height:1.35;margin-top:4px}
+.cd-pasta{margin-left:auto;align-self:center}
+/* v0.139 insights e melhores dias */
 .ig-ins{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 .ig-in{border:1px solid var(--line);border-left:4px solid var(--muted);border-radius:12px;padding:14px 16px;background:var(--surface);display:flex;flex-direction:column;gap:6px;align-items:flex-start}
 .ig-in.fato{border-left-color:var(--accent)}
@@ -842,7 +845,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.139 · 25/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.140 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -866,7 +869,7 @@ setTimeout(() => { if ($('#login').classList.contains('hide') && $('#app').class
 const NAV = [
   { g: 'Growth Starter', flat: true, starter: true, items: [['st-dash', 'Dashboard'], ['mkt-dash', 'Aquisição'], ['mkt-midia', 'Mídia'], ['crm-vendas', 'Vendas'], ['ho-retencao', 'Retenção & Expansão'], ['cad-produtos', 'Produtos'], ['crm-alunos', 'Clientes / Alunos'], ['fin-dash', 'Financeiro'], ['st-relatorios', 'Relatórios'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['gro-ciclo', 'Experimentos']] },
   { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['adm-plano', 'Planejamento da empresa'], ['adm-empresa', 'Cadastro da empresa']] },
-  { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários']], subs: [{ g: 'Máquina de Conteúdo', mod: 'mkt', items: [['mkt-cont', 'Estratégia de conteúdo'], ['mkt-insta', 'Instagram']] }] },
+  { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários']], subs: [{ g: 'Growth\'s Content', mod: 'mkt', items: [['mkt-cont', 'Estratégia de conteúdo'], ['mkt-insta', 'Instagram']] }] },
   { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['crm-dms', 'DMs do Instagram'], ['mkt-origem', 'Leads por origem']] },
   { g: 'RevOps', items: [['ho-dash', 'Dashboard'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
   { g: 'Financeiro', items: [['fin-dash', 'Dashboard'], ['fin-receber', 'Contas a receber'], ['fin-pagar', 'Contas a pagar'], ['fin-custo', 'Custos e margens'], ['fin-lanc', 'Lançamentos contábeis']] },
@@ -1134,7 +1137,7 @@ const ICO = {
   'gro-analise': P('<path d="M3 4h18l-7 8v6l-4 2v-8z"/>'),
   'gro-pesq': P('<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/>'),
   'mkt-insta': P('<rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle cx="16.9" cy="7.1" r=".6"/>'),
-  'Máquina de Conteúdo': P('<rect x="4" y="4" width="6" height="16" rx="1.5"/><rect x="14" y="4" width="6" height="10" rx="1.5"/>'),
+  'Growth\'s Content': P('<rect x="4" y="4" width="6" height="16" rx="1.5"/><rect x="14" y="4" width="6" height="10" rx="1.5"/>'),
   'mkt-cont': P('<rect x="4" y="4" width="6" height="16" rx="1.5"/><rect x="14" y="4" width="6" height="10" rx="1.5"/>'),
   'mkt-camp': P('<path d="M5 21V4"/><path d="M5 4h12l-2 4 2 4H5"/>'),
   'crm-jornada': P('<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="17" y="4" width="4" height="13" rx="1.5"/>'),
@@ -1260,8 +1263,8 @@ async function boot() {
   });
   bootando = false;
 }
-$('#novoCli').onclick = () => { modal('Novo cliente', `<label>Nome do cliente<input name="nome" required></label><label>Tipo de acesso<select name="tipo"><option value="starter">Growth Starter (consultoria: só diagnóstico e relatórios)</option><option value="completo">Growths completo (operação inteira)</option></select></label><label>Pacote de acesso<select name="pacote" id="ncPac"><option value="">— sem pacote (acesso a tudo) —</option></select></label><p class="muted">Cada cliente tem o seu banco separado. No Growth Starter você importa as planilhas dele, confere o de-para e puxa os relatórios. Dá para ver os dados do cliente só depois de importar.</p>`,
-  async d => { const id = await q(sb.rpc('criar_workspace_cliente', { p_nome: d.nome, p_modo: d.tipo === 'starter' ? 'starter' : 'completo' })); if (d.pacote) { try { await q(sb.rpc('workspace_definir_acesso', { p_ws: id, p_pacote: d.pacote, p_liga: [], p_desliga: [] })); } catch (e) { toast('Cliente criado, mas o pacote não foi aplicado: ' + e.message, true); } }
+$('#novoCli').onclick = () => { modal('Novo cliente', `<label>Nome do cliente<input name="nome" required></label><label>Tipo de acesso<select name="tipo"><option value="starter">Growth Starter (consultoria: só diagnóstico e relatórios)</option><option value="completo">Growths completo (operação inteira)</option></select></label><label>Pacote de acesso<select name="pacote" id="ncPac"><option value="">— sem pacote (acesso a tudo) —</option></select></label><label class="chk"><input type="checkbox" name="content"> Usa o Growth's Content (cria a pasta do cliente no Google Drive)</label><p class="muted">Cada cliente tem o seu banco separado. No Growth Starter você importa as planilhas dele, confere o de-para e puxa os relatórios. Dá para ver os dados do cliente só depois de importar.</p>`,
+  async d => { const id = await q(sb.rpc('criar_workspace_cliente', { p_nome: d.nome, p_modo: d.tipo === 'starter' ? 'starter' : 'completo' })); if (d.content) { try { await q(sb.rpc('content_definir', { p_ws: id, p_ativo: true })); } catch (e) { toast('Cliente criado, mas o Growth\'s Content não foi ligado: ' + e.message, true); } } if (d.pacote) { try { await q(sb.rpc('workspace_definir_acesso', { p_ws: id, p_pacote: d.pacote, p_liga: [], p_desliga: [] })); } catch (e) { toast('Cliente criado, mas o pacote não foi aplicado: ' + e.message, true); } }
     S.ws = S.wsBase = id; S.perm = null; S.permWs = null; S.view = d.tipo === 'starter' ? 'st-dash' : 'adm-painel'; await boot(); toast('Cliente criado'); }, 'Criar cliente');
   sb.from('pacotes_acesso').select('id,nome,ativo').order('nome').then(r => { const sel = $('#ncPac'); if (!sel || r.error || !r.data) { if (sel) sel.closest('label').style.display = 'none'; return; } sel.insertAdjacentHTML('beforeend', r.data.filter(p => p.ativo).map(p => `<option value="${p.id}">${esc(p.nome)}</option>`).join('')); }); };
 $('#wsSel').onchange = e => { S.ws = S.wsBase = e.target.value; if (ehCasaV(S.view)) S.view = 'fin-dash'; S.perm = null; S.permWs = null; render(); };
@@ -9711,7 +9714,8 @@ async function vPacotes(m) {
     ${C.length ? C.map(c => `<tr><td><b>${esc(c.nome)}</b></td><td><small>${c.modo_produto === 'starter' ? 'Growth Starter' : 'Completo'}</small></td>
       <td><select data-cp="${c.id}" style="width:auto"><option value="">— sem pacote (acesso a tudo) —</option>${P.filter(p => p.ativo || p.id === c.pacote_id).map(p => `<option value="${p.id}"${p.id === c.pacote_id ? ' selected' : ''}>${esc(p.nome)}</option>`).join('')}</select></td>
       <td>${(c.liga || []).length || (c.desliga || []).length ? `<small>${(c.liga || []).length ? '<span class="pos">+' + (c.liga || []).length + ' ligada(s)</span> ' : ''}${(c.desliga || []).length ? '<span class="neg">−' + (c.desliga || []).length + ' desligada(s)</span>' : ''}</small>` : '<span class="muted">—</span>'}</td>
-      <td><button class="btn sm" data-ca="${c.id}">Ajustar telas</button></td></tr>`).join('') : '<tr><td colspan="5" class="empty">Nenhum cliente.</td></tr>'}</tbody></table></div></div>`;
+      <td><button class="btn sm" data-ca="${c.id}">Ajustar telas</button></td></tr>`).join('') : '<tr><td colspan="5" class="empty">Nenhum cliente.</td></tr>'}</tbody></table></div></div><div class="panel" id="pacContent"></div>`;
+  cdPainel(m.querySelector('#pacContent'));
   const editar = (p, dup) => {
     const marc = new Set(p ? p.telas || [] : []);
     const f = modal(p && !dup ? 'Editar pacote' : 'Novo pacote', `<div class="grid2"><label>Nome<input name="nome" required maxlength="60" value="${esc(p ? (dup ? p.nome + ' (cópia)' : p.nome) : '')}" placeholder="Ex.: Disparo"></label>
@@ -15237,9 +15241,10 @@ async function vConteudo(m) {
   let subs, tabK;
   if (canal) { subs = MQ_CANAL[canal] || [['ideias', 'Ideias do canal']]; C.tabCanal = C.tabCanal || {}; tabK = C.tabCanal[canal] = subs.some(s => s[0] === C.tabCanal[canal]) ? C.tabCanal[canal] : subs[0][0]; }
   else { subs = MQ_EST; if (!subs.some(s => s[0] === C.tab)) C.tab = 'dash'; tabK = C.tab; }
-  m.innerHTML = `<div class="head"><div><h1>${canal ? esc(CANAL_N[canal]) : 'Máquina de Conteúdo'}</h1><span class="muted">${canal ? 'A sua conta: números gerais, cada post, o que performa melhor por tema e formato, e as conversas.' : 'Estratégia de conteúdo: como cada canal está indo, as ideias, os canais de cada tema e a produção da semana.'}</span></div>${D.cfg.modelo && !canal ? `<span class="pill info" title="Linha editorial instalada">Linha: ${esc(D.cfg.modelo)}</span>` : ''}</div>
+  m.innerHTML = `<div class="head"><div><h1>${canal ? esc(CANAL_N[canal]) : 'Growth\'s Content'}</h1><span class="muted">${canal ? 'A sua conta: números gerais, cada post, o que performa melhor por tema e formato, e as conversas.' : 'Estratégia de conteúdo: como cada canal está indo, as ideias, os canais de cada tema e a produção da semana.'}</span></div>${D.cfg.modelo && !canal ? `<span class="pill info" title="Linha editorial instalada">Linha: ${esc(D.cfg.modelo)}</span>` : ''}</div>
   <div class="tabs">${subs.map(([k, l]) => `<button data-t="${k}" class="${tabK === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="ctTab" style="display:flex;flex-direction:column;gap:16px"></div>`;
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { if (canal) C.tabCanal[canal] = b.dataset.t; else C.tab = b.dataset.t; render(); });
+  if (!canal) cdPillModulo(m);
   const el = $('#ctTab');
   if (!canal) return ({ dash: tabDashCanais, kanban: tabKanban, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, persona: tabPersona, linhas: tabLinhas, canais: tabCanais }[tabK] || tabDashCanais)(el, D, C);
   if (tabK === 'insta') return tabInsta(el, D, C);
@@ -15595,6 +15600,49 @@ function igMontaDias(box, P, I, D) {
 }
 async function igDMs(ini, fim) {
   try { return await q(sb.from('social_conversas').select('primeira_em').eq('workspace_id', S.ws).gte('primeira_em', ini + 'T00:00:00-03:00').lte('primeira_em', diaMais(fim, 2) + 'T23:59:59-03:00')); } catch (e) { return []; }
+}
+
+/* ===================== v0.140 — Growth's Content: pasta do cliente no Google Drive ===================== */
+const CD_ST = { criando: ['info', 'Criando a pasta…'], ok: ['good', 'Pasta criada'], erro: ['bad', 'Não criou'] };
+const cdData = d => d ? new Date(d).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' }) : '';
+function cdSituacao(c) {
+  if (!c.content_ativo) return c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">Pasta (módulo desligado)</a>` : '<span class="muted">—</span>';
+  if (c.status === 'ok' && c.url) return `<a class="btn sm" href="${esc(c.url)}" target="_blank" rel="noopener">Abrir pasta no Drive</a>`;
+  const st = CD_ST[c.status] || ['warn', 'Aguardando'];
+  return `<span class="pill ${st[0]}">${st[1]}</span>${c.status === 'erro' && c.erro ? `<br><small class="cd-erro">${esc(c.erro)}</small>` : ''}${c.status !== 'criando' ? ` <button class="btn sm" data-cdt="${c.id}">Tentar de novo</button>` : ''}`;
+}
+/* quadro em Configurações → Pacotes de acesso: quem usa o Growth's Content e a pasta de cada um */
+async function cdPainel(el, voltas = 0) {
+  if (!el) return;
+  let L;
+  try { L = await q(sb.rpc('content_clientes')); }
+  catch (e) { el.innerHTML = `<h2>Growth's Content</h2><p class="muted">A lista ainda não está disponível: ${esc(e.message || String(e))}. Rode a migração da v0.140.</p>`; return; }
+  el.innerHTML = `<div class="ig-head"><div><h2 style="margin:0">Growth's Content</h2><span class="muted">Marque quem usa o módulo. Ao marcar, o Growths cria a pasta do cliente no Google Drive, dentro de "Mathisa Growth's Content". Desmarcar não apaga a pasta.</span></div><button class="btn sm" id="cdTeste">Testar a ligação com o Drive</button></div>
+    <div class="tw"><table><thead><tr><th>Cliente</th><th>Usa o Growth's Content</th><th>Pasta no Drive</th><th>Atualizado</th></tr></thead><tbody>
+    ${L.map(c => `<tr><td><b>${esc(c.nome)}</b>${c.agencia ? ' <small class="muted">(equipe interna)</small>' : ''}</td><td><label class="chk"><input type="checkbox" data-cdc="${c.id}"${c.content_ativo ? ' checked' : ''}> Sim</label></td><td>${cdSituacao(c)}</td><td><small class="muted">${cdData(c.em)}</small></td></tr>`).join('') || '<tr><td colspan="4" class="empty">Nenhum cliente.</td></tr>'}</tbody></table></div>`;
+  const de_novo = () => cdPainel(el, voltas + 1);
+  el.querySelectorAll('[data-cdc]').forEach(x => x.onchange = () => act(async () => {
+    await q(sb.rpc('content_definir', { p_ws: x.dataset.cdc, p_ativo: x.checked }));
+    toast(x.checked ? 'Growth\'s Content ligado. Criando a pasta no Drive…' : 'Growth\'s Content desligado. A pasta continua no Drive.');
+    cdPainel(el, 0);
+  }));
+  el.querySelectorAll('[data-cdt]').forEach(b => b.onclick = () => act(async () => { await q(sb.rpc('content_drive_tentar', { p_ws: b.dataset.cdt })); toast('Pedido enviado. Criando a pasta…'); cdPainel(el, 0); }));
+  $('#cdTeste').onclick = () => act(async () => {
+    const { data, error } = await sb.functions.invoke('content-drive', { body: { acao: 'teste' } });
+    if (error) throw new Error('A função de pastas não respondeu: ' + (error.message || error));
+    if (!data || !data.ok) throw new Error(data && data.erro ? data.erro : 'A ligação com o Drive não funcionou.');
+    toast(`Ligação ok: o Growths enxerga a pasta "${data.raiz}".`);
+  });
+  // enquanto alguma pasta está sendo criada, confere de novo a cada 4 segundos (até 1 minuto)
+  if (L.some(c => c.content_ativo && c.status === 'criando') && voltas < 15) setTimeout(() => { if (el.isConnected) de_novo(); }, 4000);
+}
+/* link da pasta no topo do Growth's Content */
+async function cdPillModulo(m) {
+  try {
+    const r = await q(sb.rpc('content_minha_pasta', { p_ws: S.ws }));
+    const h = m.querySelector('.head'); if (!h || !r || !r.content_ativo || !h.isConnected) return;
+    h.insertAdjacentHTML('beforeend', r.url ? `<a class="btn sm cd-pasta" href="${esc(r.url)}" target="_blank" rel="noopener">Pasta no Drive</a>` : `<span class="pill ${r.status === 'erro' ? 'bad' : 'info'}">${r.status === 'erro' ? 'Pasta no Drive não criada' : 'Criando a pasta no Drive…'}</span>`);
+  } catch (e) { /* sem a migração da v0.140: não mostra nada */ }
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

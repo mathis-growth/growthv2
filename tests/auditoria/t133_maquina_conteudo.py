@@ -123,8 +123,8 @@ PROP = {'nome': 'Linha Aurora', 'linha': {'tese': 'Aprender é rotina', 'inimigo
 with sync_playwright() as pw:
     b = pw.chromium.launch(); ctx, pg = front.abre(b, hoje='2026-10-28', vw=1500, vh=1000)
     t = front.vai(pg, 'mkt-cont', "S.ct = null;", 4000)
-    chk("g: 'Máquina de Conteúdo'" in pg.content() and "['mkt-cont', 'Planejamento" not in pg.content(), 'menu: "Máquina de Conteúdo" no lugar de "Planejamento de conteúdo"')
-    chk('\nMáquina de Conteúdo\n' in t and 'Monte a sua Máquina' in t, 'título novo e começo guiado quando não há territórios')
+    chk("g: 'Growth\\'s Content'" in pg.content() and "['mkt-cont', 'Planejamento" not in pg.content(), 'menu: "Máquina de Conteúdo" no lugar de "Planejamento de conteúdo"')
+    chk('\nGrowth\'s Content\n' in t and 'Monte a sua Máquina' in t, 'título novo e começo guiado quando não há territórios')
     chk(pg.locator('#main .tabs button').all_inner_texts() == ['Dashboard', 'Ideias e pautas', 'Priorização', 'Máquina', 'Semana', 'Fechamento', 'Persona', 'Linha editorial', 'Canais'], 'Estratégia de conteúdo: Dashboard dos canais e as abas da Máquina')
     pg.locator('[data-mq-v18]').first.click(); pg.wait_for_timeout(500); pg.click('#modalRoot .pri'); pg.wait_for_timeout(3500)
     chk(sql(f"select count(*) from conteudo_linhas where workspace_id = '{WS}'") == '4' and 'Linha: V18' in pg.inner_text('#main'), 'instala o modelo V18 pela tela')

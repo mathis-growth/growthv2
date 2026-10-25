@@ -1,5 +1,10 @@
 
 
+## v0.140 — Pasta do cliente no Drive
+- Marcar "usa o Growth's Content" num cliente sem pasta → pede a pasta. Já com pasta → não pede outra. Desmarcar → a pasta fica.
+- Nome da pasta = nome do cliente (barras viram hífen). Se já existe uma pasta com esse nome dentro da raiz, ela é usada. Subpastas da árvore são criadas só se faltarem ("Tentar de novo" completa a árvore numa pasta já existente).
+
+
 ## v0.139 — Insights e melhores dias
 - Base: posts do período com alcance. Média de engajamento = interações somadas ÷ alcance somado.
 - Assunto forte: palavra/hashtag da legenda (4+ letras, sem palavras comuns e formas de verbo) em ≥3 posts (≥2 com menos de 15 posts) e em ≤60% deles; engajamento do grupo > 110% da média; escolhe o maior engajamento × raiz do número de posts. Recomendação: levar para os tipos de mídia que o assunto ainda não usou. Assunto fraco: ≥3 posts e < 80% da média.

@@ -15,8 +15,8 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.139 · 25/10/2026 (`index.html`) |
-| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.136** (25/10/2026): alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
+| **Versão da tela** | 0.140 · 25/10/2026 (`index.html`) |
+| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.140** (25/10/2026): alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta, projeto do Google e os segredos no Supabase: [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
 
@@ -26,6 +26,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.140 | 25/10/2026 | Módulo renomeado para **Growth's Content**; "Usa o Growth's Content" no cliente cria a **pasta do cliente no Google Drive** (Apps Script), com link no topo do módulo. | `RODAR_v0.140_content_drive.sql` + função `content-drive`, aplicado em 25/10/2026 |
 | 0.139 | 25/10/2026 | **Insights automáticos** no Instagram (assunto que mais engaja, o que levar para outros formatos, post que puxou conversa, DMs, salvos, compartilhados, melhor dia), cada um como fato, hipótese ou recomendação e com os posts que o formam; **melhores dias e horários** em linha. | Só tela, sem banco |
 | 0.138 | 25/10/2026 | **Cores pela média** nos gráficos de tema, formato e tipo (verde acima, azul na média, vermelho abaixo, com "+X% vs. média"); cada gráfico num quadro; **menu em níveis** com recuo. | Só tela, sem banco |
 | 0.137 | 25/10/2026 | **Os posts em imagens** no dashboard do Instagram (4 primeiro, Mostrar mais, ordenar por engajamento, curtidas, alcance, recentes…) e **gráficos por tema, formato e tipo de mídia** com filtro de métrica e de contagem; clicar na barra filtra a galeria. | Só tela, sem banco |

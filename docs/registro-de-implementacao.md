@@ -1,5 +1,13 @@
 
 
+## Pasta do cliente no Drive (v0.140)
+- Migração `20261102100000_content_drive.sql` (aplicada em produção em 25/10/2026) + valores em `sistema_config`.
+- Função `supabase/functions/content-drive` (index.ts, logica.ts, logica_test.ts), publicada sem verificação de JWT: aceita a senha do banco (`x-growths-token`) ou alguém da equipe interna logado; ação `teste` confere a ligação.
+- Apps Script `integracoes/apps-script/growths-drive.gs` (publicado na conta da Rebecka como App da Web): `criar_cliente` e `teste`, com trava contra pedidos simultâneos.
+- `g140.js`: `cdPainel` (quadro em Pacotes de acesso), `cdPillModulo` (link no topo do módulo), opção no "Novo cliente"; `integra140.py` renomeia o módulo para Growth's Content.
+- Teste `t140_content_drive.py`; `t133` e `t135` com o nome novo.
+
+
 ## Insights e melhores dias (v0.139)
 - `g139.js`: `igInsights(P, R, DM)` (regras acima; cada item `{cls: fato|hip|rec, tit, txt, rec, ids}`), `igPalavras` (palavras da legenda, `IG_STOP`), `igMontaInsights` (cartões; "Ver os posts" filtra a galeria por `ids`), `igLinhaCat` (linha por categoria), `igDiasCats`, `igHorasCats`, `igMontaDias`, `igDMs` (conversas novas do período). `igFiltra` aceita filtro por lista de posts.
 - `integra139.py` (roda o `integra138.py`): blocos `#igIns` (antes da galeria) e `#igDias` (depois dela); os insights esperam as DMs.

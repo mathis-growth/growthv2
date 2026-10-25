@@ -1,5 +1,11 @@
 
 
+## v0.140
+- `workspaces`: `content_ativo` (usa o Growth's Content), `content_drive_id`, `content_drive_url`, `content_drive_status` (criando | ok | erro), `content_drive_erro`, `content_drive_em`.
+- `sistema_config`: `content_drive_raiz` (pasta "Mathisa Growth's Content"), `content_drive_arvore` (JSON com os caminhos das subpastas), `content_drive_url` e `content_drive_token` (função), `drive_script_url` e `drive_script_senha` (Apps Script).
+- Funções: `content_definir(ws, ativo)`, `content_drive_tentar(ws)`, `content_clientes()` (equipe interna); `content_minha_pasta(ws)` (quem pertence ao cliente); `content_drive_pedir(ws)` e o gatilho `content_ws_t` (internos).
+
+
 ## v0.139
 - Sem mudança no banco. A tela passa a ler `social_conversas.primeira_em` do período (até 2 dias depois do fim) para o insight de DMs.
 

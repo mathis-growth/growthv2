@@ -1,5 +1,10 @@
 
 
+## v0.140
+- index.html: 0.139 → 0.140 (`integra140.py`, que roda o `integra139.py`).
+- Novo: `20261102100000_content_drive.sql`, `RODAR_v0.140_content_drive.sql`, função `content-drive`, `integracoes/apps-script/growths-drive.gs`, teste `t140_content_drive.py`. Aplicado em produção.
+
+
 ## v0.139
 - index.html: 0.138 → 0.139 (`integra139.py`, que roda o `integra138.py`). Sem migração. Teste `t134` atualizado.
 

@@ -1,5 +1,16 @@
 
 
+## v0.140 — Pasta do cliente no Drive (Growth's Content)
+**Pedido da Rebecka (25/10)**: ao cadastrar um cliente e definir que ele usa o Growth's Content, criar a pasta dele no Drive dentro de "Mathisa Growth's Content" (criada nesta data em GERAL › Mathisa › Clientes). Sem painel "Comece aqui": sem configuração, o módulo abre na primeira tela de configuração e segue tela a tela (próximas versões); configurado, abre nas abas de hoje.
+Decisões:
+- Acesso ao Drive por um Google Apps Script na conta da Rebecka (as pastas ficam no nome dela, sem login que expira e sem projeto no Google Cloud). O Growths chama o script com uma senha; endereço e senha ficam só em `sistema_config`, fora da API.
+- Disparo pelo banco: marcar o cliente pede a pasta (gatilho + pg_net → função `content-drive`). Erro fica gravado no cliente, com "Tentar de novo". Desmarcar não apaga a pasta. Pasta com o mesmo nome já existente é reaproveitada (nunca duplica).
+- Só a equipe interna marca quem usa o módulo; a lista inclui a própria Mathisa.
+- Nome do módulo no menu: "Growth's Content". A pasta raiz no Drive: "Mathisa Growth's Content".
+- Teste do fluxo de configuração do zero num cliente novo de teste; a Mathisa mantém a linha editorial V18.
+**Pendente**: endereço do Apps Script (a Rebecka publica e envia); árvore de subpastas (a Rebecka envia; entra em `content_drive_arvore` sem mudar código); telas de configuração passo a passo.
+
+
 ## v0.139 — Insights automáticos; melhores dias e horários
 **Pedido da Rebecka (25/10)**: um trecho de insights que diga qual conteúdo, assunto ou tema está mais relevante, o que levar para outros formatos, qual post trouxe conversa; e os melhores dias em gráfico de linha.
 Decisões:
