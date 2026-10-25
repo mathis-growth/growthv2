@@ -387,7 +387,24 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.138 cores pela média e menu em níveis */
+<style id="v122">/* v0.139 insights e melhores dias */
+.ig-ins{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.ig-in{border:1px solid var(--line);border-left:4px solid var(--muted);border-radius:12px;padding:14px 16px;background:var(--surface);display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.ig-in.fato{border-left-color:var(--accent)}
+.ig-in.hip{border-left-color:var(--warn,#b7791f)}
+.ig-in.rec{border-left-color:var(--good,#17803d)}
+.ig-in h3{margin:2px 0 0;font-size:15px;line-height:1.35}
+.ig-in p{margin:0;font-size:13.5px;line-height:1.5}
+.ig-in .ig-rec{background:var(--surface-2);border-radius:8px;padding:8px 10px;width:100%;box-sizing:border-box}
+.ig-in .btn{margin-top:4px}
+.ig-svg .ig-ref{stroke:var(--muted);stroke-width:1.2;stroke-dasharray:4 4}
+.ig-svg .ig-pt{stroke:var(--surface);stroke-width:2}
+.ig-svg .ig-pt.baixo{fill:var(--bad,#c0362c)}.ig-svg .ig-pt.media{fill:var(--accent,#2457d6)}.ig-svg .ig-pt.alto{fill:var(--good,#17803d)}.ig-svg .ig-pt.na{fill:var(--muted)}
+.ig-svg .ig-pv{font-size:11.5px;fill:var(--ink);font-weight:600}
+.ig-svg .ig-cx{font-size:12px;fill:var(--ink);font-weight:600}
+.ig-svg .ig-hit:hover .ig-pt{r:7}
+@media (max-width:640px){.ig-ins{grid-template-columns:1fr}}
+/* v0.138 cores pela média e menu em níveis */
 .ig-hr.baixo .ig-ht u{background:var(--bad,#c0362c)}
 .ig-hr.media .ig-ht u{background:var(--accent,#2457d6)}
 .ig-hr.alto .ig-ht u{background:var(--good,#17803d)}
@@ -825,7 +842,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.138 · 25/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.139 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -15279,7 +15296,9 @@ async function tabInsta(el, D, C) {
   <div class="kpis">${kpi('Seguidores', sg.fim != null ? num(sg.fim) : '—', segVar == null ? 'sem histórico no período' : `${segVar > 0 ? '+' : ''}${num(segVar)} no período`)}${kpi('Novos seguidores', sg.ganhos != null ? num(sg.ganhos) : '—', igDelta(sg.ganhos, sg.ganhos_antes) || 'ganhos no período')}${kpi('Alcance da conta', sg.alcance_conta != null ? num(sg.alcance_conta) : '—', igDelta(sg.alcance_conta, sg.alcance_conta_antes) || 'contas alcançadas, somadas por dia')}${kpi('Visitas ao perfil', sg.visitas != null ? num(sg.visitas) : '—', 'no período')}</div>
   <h2 class="mq-h">Os posts</h2>
   <div class="kpis">${kpi('Posts', num(t.posts || 0), igDelta(t.posts, a.posts))}${kpi('Alcance dos posts', num(t.alcance || 0), igDelta(t.alcance, a.alcance))}${kpi('Interações', num(t.interacoes || 0), igDelta(t.interacoes, a.interacoes))}${kpi('Engajamento', fP(t.engajamento), igDelta(t.engajamento, a.engajamento))}${kpi('Salvamentos', num(t.salvamentos || 0), igDelta(t.salvamentos, a.salvamentos))}${kpi('Compartilhamentos', num(t.compartilhamentos || 0), igDelta(t.compartilhamentos, a.compartilhamentos))}</div>
+  <div class="panel" id="igIns"><div class="muted">Lendo os números para os insights…</div></div>
   <div class="panel" id="igGal"></div>
+  <div class="panel" id="igDias"></div>
   <div class="panel" id="igGraf"></div>
   ${top ? `<div class="panel ig-top"><div class="ig-top-l"><span class="ig-k">Top 1 em ${esc(IG_MN[k][1].toLowerCase())}</span><h2>${esc(igTit(top))}</h2><div class="ca">${pills(top)}</div><p class="muted">${dd(top.dia)}${top.fonte !== 'maquina' && top.quando ? ' às ' + String(top.quando).slice(11, 16) : ''}${top.legenda && top.titulo ? ' · ' + esc(top.legenda.slice(0, 140)) : ''}</p><div class="acts"><button class="btn sm" data-igp="${esc(top.id)}">Ver os números do post</button>${top.url ? `<a class="btn sm" href="${esc(top.url)}" target="_blank" rel="noopener">Abrir no Instagram</a>` : ''}</div></div>
     <div class="ig-top-n"><div class="ig-big">${igFmt(igVal(top, k), u)}</div>${vsMed(top)}<dl>${['alcance', 'interacoes', 'salvamentos', 'compartilhamentos', 'comentarios'].filter(x => x !== k).map(x => `<dt>${IG_MN[x][1]}</dt><dd>${igFmt(top[x], 'n')}</dd>`).join('')}${k !== 'engajamento' ? `<dt>Engajamento</dt><dd>${fP(top.engajamento)}</dd>` : ''}</dl></div></div>` : ''}
@@ -15302,7 +15321,8 @@ async function tabInsta(el, D, C) {
   liga('igM', e => { I.met = e.target.value; render(); }); liga('igO', e => { I.ord = e.target.value; render(); });
   el.querySelectorAll('[data-igg]').forEach(b => b.onclick = () => { I.grupo = b.dataset.igg; render(); });
   el.querySelectorAll('[data-igp]').forEach(r => r.onclick = () => igModalPost(P.find(p => p.id === r.dataset.igp), P, D));
-  igMontaGaleria(el.querySelector('#igGal'), P, I, D); igMontaGraf(el.querySelector('#igGraf'), P, I, D);
+  igMontaGaleria(el.querySelector('#igGal'), P, I, D); igMontaGraf(el.querySelector('#igGraf'), P, I, D); igMontaDias(el.querySelector('#igDias'), P, I, D);
+  igDMs(ini, fim).then(DM => { const b = el.querySelector('#igIns'); if (b && b.isConnected) igMontaInsights(b, P, R, I, D, DM); });
 }
 
 /* ----- um post: números contra a média e classificação (frente e formato) ----- */
@@ -15380,7 +15400,7 @@ function igMontaGaleria(box, P, I, D) {
   };
   box.innerHTML = `<div class="ig-head"><h2>Os posts${F ? '' : ' do período'}</h2>
       <label class="ig-ord">Ordenar por<select id="igGo">${IG_GORD.map(([v, l]) => `<option value="${v}"${o === v ? ' selected' : ''}>${l}</option>`).join('')}</select></label></div>
-    ${F ? `<div class="ig-fil">Só os posts de <b>${esc(F.nome)}</b> (${esc((IG_GRUPOS.find(g => g[0] === F.g) || [, ''])[1].toLowerCase())}) <button class="chip on" id="igGx" aria-label="Mostrar todos os posts">Mostrar todos ✕</button></div>` : ''}
+    ${F ? `<div class="ig-fil">${F.ids ? `Só os posts de: <b>${esc(F.nome)}</b>` : `Só os posts de <b>${esc(F.nome)}</b> (${esc((IG_GRUPOS.find(g => g[0] === F.g) || [, ''])[1].toLowerCase())})`} <button class="chip on" id="igGx" aria-label="Mostrar todos os posts">Mostrar todos ✕</button></div>` : ''}
     ${ver.length ? `<div class="ig-gal">${ver.map(card).join('')}</div>` : '<div class="empty">Nenhum post no período.</div>'}
     <div class="ig-gmais">${resta > 0 ? `<button class="btn" id="igGm">Mostrar mais (${resta} ${resta > 1 ? 'restantes' : 'restante'})</button>` : ''}${I.gN > 4 && ver.length > 4 ? `<button class="btn ghost" id="igGl">Mostrar menos</button>` : ''}<small class="muted">${ver.length} de ${L.length} post${L.length === 1 ? '' : 's'}</small></div>`;
   const re = () => igMontaGaleria(box, P, I, D);
@@ -15449,6 +15469,132 @@ function igBarrasH(G, k, mediaGeral) {
   const u = IG_MN[k][2], mx = Math.max(...G.map(g => g.v || 0), mediaGeral || 0) || 1;
   if (!G.length) return '<div class="empty">Sem posts no período.</div>';
   return `<div class="ig-hb">${G.map(g => { const r = g.v != null && mediaGeral ? g.v / mediaGeral : null, fx = IG_FAIXA(r); return `<div class="ig-hr ${fx}" title="${esc(g.nome)}: ${igFmt(g.v, u)} em média, ${g.n} post(s)${r != null ? ' · ' + igDifTxt(r) : ''}"><span class="ig-hn">${g.cor ? `<i style="background:${esc(g.cor)}"></i>` : ''}${esc(g.nome)}<small>${g.n} post${g.n > 1 ? 's' : ''}${r != null ? ` · ${igDifTxt(r)}` : ''}</small></span><span class="ig-ht"><u style="width:${g.v == null ? 0 : Math.max(1, g.v / mx * 100)}%"></u>${mediaGeral != null ? `<b class="ig-avg" style="left:${mediaGeral / mx * 100}%" aria-hidden="true"></b>` : ''}</span><span class="ig-hv">${igFmt(g.v, u)}</span></div>`; }).join('')}</div>${igLegendaFaixas(mediaGeral != null ? igFmt(mediaGeral, u) : '')}`;
+}
+
+/* ===================== v0.139 — insights automáticos e melhores dias e horários ===================== */
+// filtro da galeria: por grupo do gráfico ou pela lista de posts de um insight
+function igFiltra(P, F) { return !F ? P : F.ids ? P.filter(p => F.ids.includes(p.id)) : P.filter(p => igChaves(p, F.g).includes(F.nome)); }
+
+const IG_DOW_ORD = [1, 2, 3, 4, 5, 6, 0];  // segunda a domingo
+const IG_DOW_C = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+const IG_FAIXAS_H = [[0, 6, '0h–6h'], [6, 9, '6h–9h'], [9, 12, '9h–12h'], [12, 15, '12h–15h'], [15, 18, '15h–18h'], [18, 21, '18h–21h'], [21, 24, '21h–24h']];
+const IG_STOP = new Set(('para pelo pela pelos pelas como mais menos muito muita muitos muitas isso isto esse essa esses essas este esta estes estas aquele aquela ainda quando onde porque porquê sobre entre depois antes também tambem você voce vocês voces nosso nossa nossos nossas minha minhas meus seus suas dele dela deles delas tudo todo toda todos todas cada qual quais quem será seria sendo sido está estão estou estava foram fazer faz fazendo feito pode podem poder precisa preciso vamos vai vão tenho temos tem têm tinha aqui agora hoje sempre nunca então entao só apenas mesmo mesma assim desse dessa deste desta nesse nessa neste nesta disso nisso com sem que não nao sim uma umas uns dos das nos nas aos ser ter ver dar vou link bio comenta comente salva salve compartilha compartilhe segue siga seguir post posts conteúdo conteudo dessas desses daquele daquela quanto quanta quantos quantas qualquer outro outra outros outras algum alguma alguns algumas coisa coisas nada pouco melhor maior menor primeiro primeira segundo sabe acho gente dias vida anos ontem amanha semana vezes algo tipo deixa quer queria olha sabia veja voces nossa voce aquilo').split(' '));
+const igNorm9 = t => String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+/* palavras e hashtags da legenda: cada post conta uma vez por palavra */
+function igPalavras(p) {
+  const L = String(p.legenda || p.titulo || '').toLowerCase().replace(/https?:\S+/g, ' ').replace(/@\w+/g, ' ');
+  const S = new Map();
+  (L.match(/#?[a-zà-ÿ0-9][a-zà-ÿ0-9-]{3,}/g) || []).forEach(w => { w = w.replace(/-+$/, ''); const n = igNorm9(w.replace(/^#/, '')); if (n.length >= 4 && !IG_STOP.has(n) && !/^\d+$/.test(n) && !/(ei|ou|amos|emos|imos|ando|endo|indo|aram|eram|iram|asse|esse)$/.test(n) && !(n.length <= 6 && /(ar|er|ir)$/.test(n))) { if (!S.has(n)) S.set(n, w.replace(/^#/, '')); } });
+  return S;
+}
+
+/* o que os números do período mostram; cada item diz se é fato, hipótese ou recomendação e quais posts o formam */
+function igInsights(P, R, DM) {
+  const out = [], B = P.filter(p => p.alcance > 0), mE = igMedia(B, 'engajamento');
+  if (B.length < 3) return [{ cls: 'fato', tit: 'Poucos posts no período', txt: `Com ${B.length} post(s) com alcance não dá para comparar. Aumente o período no filtro acima.`, ids: [] }];
+  const pct = r => `${r >= 1 ? '+' : '−'}${Math.abs(Math.round((r - 1) * 100))}%`;
+  const tit = p => `"${esc(igTit(p).slice(0, 60))}"`;
+  // 1) assunto (palavras da legenda) que mais engaja
+  const W = new Map();
+  B.forEach(p => igPalavras(p).forEach((rot, n) => { const x = W.get(n) || { rot, P: [] }; x.P.push(p); W.set(n, x); }));
+  const minP = B.length >= 15 ? 3 : 2, cand = [...W.values()].filter(x => x.P.length >= minP && x.P.length <= Math.max(2, B.length * 0.6)).map(x => ({ ...x, e: igMedia(x.P, 'engajamento') })).filter(x => x.e != null && mE);
+  cand.sort((a, b) => b.e * Math.sqrt(b.P.length) - a.e * Math.sqrt(a.P.length));
+  const fortes = cand.filter(x => x.e / mE > 1.1).slice(0, 3);
+  if (fortes.length) {
+    const a = fortes[0], tipos = new Set(a.P.map(p => igTipo(p.tipo))), todos = [...new Set(B.map(p => igTipo(p.tipo)))], falta = todos.filter(t => !tipos.has(t));
+    out.push({ cls: 'fato', tit: `O assunto "${esc(a.rot)}" é o que mais engaja`, txt: `${a.P.length} posts falam de "${esc(a.rot)}" e têm ${fP(a.e)} de engajamento, ${pct(a.e / mE)} da média do período (${fP(mE)})${a.P.length < 3 ? '. Amostra pequena: trate como pista' : ''}.${fortes.length > 1 ? ` Também se destacam: ${fortes.slice(1).map(x => `"${esc(x.rot)}" (${fP(x.e)}, ${x.P.length} posts)`).join(' e ')}.` : ''}`,
+      rec: falta.length ? `Leve "${esc(a.rot)}" para ${falta.join(' e ')}: até agora ele só saiu em ${[...tipos].join(' e ')}.` : `Faça uma série sobre "${esc(a.rot)}" e teste um formato novo (ao vivo, caixinha de perguntas nos stories, material para baixar).`, ids: a.P.map(p => p.id) });
+  }
+  const fracos = cand.filter(x => x.P.length >= 3 && x.e / mE < 0.8).sort((a, b) => a.e - b.e);
+  if (fracos.length) { const a = fracos[0]; out.push({ cls: 'fato', tit: `"${esc(a.rot)}" está rendendo menos`, txt: `${a.P.length} posts com "${esc(a.rot)}" ficaram em ${fP(a.e)} de engajamento, ${pct(a.e / mE)} da média.`, rec: 'Mude o gancho ou o formato antes de repetir o assunto.', ids: a.P.map(p => p.id) }); }
+  // 2) tema (frente) — só se houver posts classificados
+  const cl = B.filter(p => p.frente), sem = P.length - P.filter(p => p.frente).length;
+  if (cl.length >= 3) {
+    const G = igAgrupa(cl, 'frente', 'engajamento').filter(g => g.n >= 2);
+    if (G.length && G[0].v / mE > 1.1) out.push({ cls: 'fato', tit: `O tema "${esc(G[0].nome)}" puxa o engajamento`, txt: `${G[0].n} posts, ${fP(G[0].v)} de engajamento, ${pct(G[0].v / mE)} da média.`, rec: 'Priorize ideias desse tema na Máquina nas próximas semanas.', ids: cl.filter(p => p.frente === G[0].nome).map(p => p.id) });
+  }
+  if (sem > P.length / 2) out.push({ cls: 'rec', tit: `${sem} de ${P.length} posts estão sem tema`, txt: 'Sem tema, os gráficos por tema e formato não dizem muito. Os assuntos acima saem das palavras da legenda.', rec: 'Abra os posts e escolha a frente e o formato: leva poucos segundos por post.', ids: P.filter(p => !p.frente).map(p => p.id) });
+  // 3) tipo de mídia: alcance e engajamento
+  const T = igAgrupa(B, 'tipo', 'alcance').filter(g => g.n >= 2);
+  if (T.length >= 2 && T[0].v && T[T.length - 1].v) {
+    const r = T[0].v / T[T.length - 1].v;
+    if (r >= 1.3) out.push({ cls: 'fato', tit: `${esc(T[0].nome)} alcança ${r.toFixed(1).replace('.', ',')}× mais que ${esc(T[T.length - 1].nome)}`, txt: `Alcance médio por post: ${T.map(g => `${esc(g.nome)} ${num(Math.round(g.v))} (${g.n} posts)`).join(' · ')}.`, rec: `Para chegar em gente nova, use ${esc(T[0].nome)}; guarde ${esc(T[T.length - 1].nome)} para quem já segue (aprofundar, salvar).`, ids: B.filter(p => igTipo(p.tipo) === T[0].nome).map(p => p.id) });
+  }
+  // 4) post que puxou conversa: comentários por alcance e DMs novas nas 48h seguintes
+  const cm = B.filter(p => (p.comentarios || 0) >= 3).map(p => ({ p, r: p.comentarios / p.alcance })).sort((a, b) => b.r - a.r);
+  const mC = B.reduce((s, p) => s + (p.comentarios || 0), 0) / B.reduce((s, p) => s + p.alcance, 0);
+  if (cm.length && mC && cm[0].r / mC > 1.5) out.push({ cls: 'fato', tit: `${tit(cm[0].p)} puxou conversa`, txt: `${num(cm[0].p.comentarios)} comentários para ${num(cm[0].p.alcance)} de alcance: ${(cm[0].r / mC).toFixed(1).replace('.', ',')}× a taxa de comentários do período.`, rec: 'Responda os comentários e transforme as perguntas em novos posts (respostas em Reels ou carrossel de dúvidas).', ids: [cm[0].p.id] });
+  if (DM && DM.length) {
+    const comHora = B.filter(p => p.fonte !== 'maquina' && p.quando);
+    const dm48 = comHora.map(p => { const t0 = new Date(String(p.quando).slice(0, 19) + '-03:00').getTime(); return { p, n: DM.filter(c => { const t = new Date(c.primeira_em).getTime(); return t >= t0 && t < t0 + 48 * 3600e3; }).length }; }).sort((a, b) => b.n - a.n);
+    const mD = dm48.length ? dm48.reduce((s, x) => s + x.n, 0) / dm48.length : 0;
+    if (dm48.length && dm48[0].n >= 2 && dm48[0].n > mD * 1.5) out.push({ cls: 'hip', tit: `${tit(dm48[0].p)} pode ter levado gente para a DM`, txt: `${dm48[0].n} conversas novas começaram nas 48 horas depois dele (média: ${mD.toFixed(1).replace('.', ',')} por post). É coincidência no tempo, não prova: confira as conversas na aba DMs.`, rec: 'Se as conversas falarem do assunto do post, repita a chamada para a DM nos próximos posts desse assunto.', ids: [dm48[0].p.id] });
+  }
+  // 5) salvamentos e compartilhamentos
+  const taxa = k => B.filter(p => (p[k] || 0) >= 3).map(p => ({ p, r: p[k] / p.alcance })).sort((a, b) => b.r - a.r);
+  const mk = k => B.reduce((s, p) => s + (p[k] || 0), 0) / B.reduce((s, p) => s + p.alcance, 0);
+  const sv = taxa('salvamentos'), mS = mk('salvamentos');
+  if (sv.length && mS && sv[0].r / mS > 1.5) out.push({ cls: 'fato', tit: `${tit(sv[0].p)} virou conteúdo de referência`, txt: `${num(sv[0].p.salvamentos)} salvamentos: ${(sv[0].r / mS).toFixed(1).replace('.', ',')}× a taxa de salvamentos do período. Quem salva quer voltar a ele.`, rec: 'Transforme em material rico (guia, checklist, aula curta) ou num carrossel mais completo.', ids: [sv[0].p.id] });
+  const sh = taxa('compartilhamentos'), mSh = mk('compartilhamentos');
+  if (sh.length && mSh && sh[0].r / mSh > 1.5) out.push({ cls: 'fato', tit: `${tit(sh[0].p)} foi o mais compartilhado`, txt: `${num(sh[0].p.compartilhamentos)} compartilhamentos: ${(sh[0].r / mSh).toFixed(1).replace('.', ',')}× a taxa do período. É o tipo de post que leva a conta para gente nova.`, rec: 'Repita o gancho e o formato desse post com outro assunto.', ids: [sh[0].p.id] });
+  // 6) melhor dia da semana e horário
+  const D = igAgrupa(B, 'dia_semana', 'engajamento').filter(g => g.n >= 2);
+  if (D.length >= 2 && D[0].v / mE > 1.1) out.push({ cls: 'fato', tit: `${D[0].nome} é o melhor dia`, txt: `Posts de ${D[0].nome.toLowerCase()} têm ${fP(D[0].v)} de engajamento (${D[0].n} posts, ${pct(D[0].v / mE)} da média). O mais fraco é ${D[D.length - 1].nome.toLowerCase()}, com ${fP(D[D.length - 1].v)}.`, rec: `Guarde ${D[0].nome.toLowerCase()} para os posts mais importantes da semana. Veja o gráfico de dias abaixo.`, ids: B.filter(p => igChaves(p, 'dia_semana')[0] === D[0].nome).map(p => p.id) });
+  // 7) período contra o anterior
+  const t = R.totais || {}, a = R.anterior || {};
+  if (t.engajamento != null && a.engajamento) { const r = t.engajamento / a.engajamento; if (r > 1.15 || r < 0.85) out.push({ cls: 'fato', tit: `Engajamento ${r > 1 ? 'subiu' : 'caiu'} ${Math.abs(Math.round((r - 1) * 100))}% contra o período anterior`, txt: `${fP(t.engajamento)} agora contra ${fP(a.engajamento)} antes, com ${num(t.posts || 0)} posts agora e ${num(a.posts || 0)} antes.`, rec: r > 1 ? 'Veja nos posts deste período o que mudou (assunto, formato, dia) e mantenha.' : 'Compare os assuntos e formatos dos dois períodos para achar o que mudou.', ids: P.map(p => p.id) }); }
+  if (!out.length) out.push({ cls: 'fato', tit: 'Nenhum destaque forte no período', txt: 'Os posts estão parecidos entre si: nenhum assunto, formato ou dia passou de 10% acima ou abaixo da média.', ids: [] });
+  return out;
+}
+
+/* gráfico de linha por categoria (dias da semana, faixas de horário): uma série, um eixo, pontos com a cor da faixa */
+function igLinhaCat(cats, k) {
+  const u = IG_MN[k][2], ok = cats.filter(c => c.v != null);
+  if (ok.length < 2) return '<div class="empty">Poucos posts para comparar.</div>';
+  const W = 560, H = 220, L = 52, R = 16, T = 18, Bm = 40, n = cats.length;
+  const vs = ok.map(c => c.v), ref = cats.ref, mx = Math.max(...vs, ref || 0) * 1.15, X = i => L + (i + 0.5) * (W - L - R) / n, Y = v => T + (H - T - Bm) * (1 - v / mx);
+  const f = v => u === 'pct' ? fP(v) : num(Math.round(v));
+  const grade = [0, .5, 1].map(q => `<line x1="${L}" x2="${W - R}" y1="${Y(mx * q)}" y2="${Y(mx * q)}" class="ig-g"/><text x="${L - 6}" y="${Y(mx * q) + 3}" text-anchor="end">${f(mx * q)}</text>`).join('');
+  let d = '', ab = false; cats.forEach((c, i) => { if (c.v == null) { ab = false; return; } d += `${ab ? 'L' : 'M'}${X(i).toFixed(1)},${Y(c.v).toFixed(1)} `; ab = true; });
+  const pts = cats.map((c, i) => c.v == null ? '' : `<g class="ig-hit"><circle cx="${X(i)}" cy="${Y(c.v)}" r="5" class="ig-pt ${IG_FAIXA(ref ? c.v / ref : null)}"/><text x="${X(i)}" y="${Y(c.v) - 10}" text-anchor="middle" class="ig-pv">${f(c.v)}</text><title>${esc(c.rot)}: ${f(c.v)} (${c.n} post${c.n > 1 ? 's' : ''})${ref ? ' · ' + igDifTxt(c.v / ref) : ''}</title></g>`).join('');
+  const eixo = cats.map((c, i) => `<text x="${X(i)}" y="${H - 22}" text-anchor="middle" class="ig-cx">${esc(c.rot)}</text><text x="${X(i)}" y="${H - 8}" text-anchor="middle">${c.n ? c.n + ' post' + (c.n > 1 ? 's' : '') : 'sem posts'}</text>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" class="ig-svg" role="img" aria-label="${esc(IG_MN[k][1])} por categoria">${grade}${ref ? `<line x1="${L}" x2="${W - R}" y1="${Y(ref)}" y2="${Y(ref)}" class="ig-ref"/>` : ''}<path d="${d}" class="ig-line"/>${pts}${eixo}</svg>`;
+}
+function igDiasCats(P, k) {
+  const C = IG_DOW_ORD.map(i => { const X = P.filter(p => new Date(p.dia + 'T12:00:00Z').getUTCDay() === i); return { rot: IG_DOW_C[i], nome: IG_DOW[i], n: X.length, v: X.length ? igMedia(X, k) : null, ids: X.map(p => p.id) }; });
+  C.ref = igMedia(P, k); return C;
+}
+function igHorasCats(P, k) {
+  const H = P.filter(p => p.fonte !== 'maquina' && p.quando);
+  const C = IG_FAIXAS_H.map(([a, b, rot]) => { const X = H.filter(p => { const h = Number(String(p.quando).slice(11, 13)); return h >= a && h < b; }); return { rot, nome: rot, n: X.length, v: X.length ? igMedia(X, k) : null, ids: X.map(p => p.id) }; }).filter(c => c.n || (c.rot !== '0h–6h'));
+  C.ref = igMedia(H, k); return C;
+}
+
+function igMontaInsights(box, P, R, I, D, DM) {
+  if (!box) return;
+  const L = igInsights(P, R, DM), ROT = { fato: 'Fato', hip: 'Hipótese', rec: 'Recomendação' };
+  box.innerHTML = `<div class="ig-head"><h2>Insights do período</h2><small class="muted">Lidos dos números acima. Cada um diz se é fato (está nos números), hipótese (pode ser) ou recomendação (o que fazer).</small></div>
+    <div class="ig-ins">${L.map((x, i) => `<article class="ig-in ${x.cls}"><span class="pill ${x.cls === 'fato' ? 'neutral' : x.cls === 'hip' ? 'warn' : 'info'}">${ROT[x.cls]}</span><h3>${x.tit}</h3><p>${x.txt}</p>${x.rec ? `<p class="ig-rec"><b>Recomendação:</b> ${x.rec}</p>` : ''}${x.ids.length ? `<button class="btn sm" data-ins="${i}">Ver ${x.ids.length === 1 ? 'o post' : `os ${x.ids.length} posts`}</button>` : ''}</article>`).join('')}</div>`;
+  box.querySelectorAll('[data-ins]').forEach(b => b.onclick = () => {
+    const x = L[Number(b.dataset.ins)]; I.gFiltro = { ids: x.ids, nome: x.tit.replace(/<[^>]+>/g, '').replace(/&quot;/g, '"') }; I.gN = Math.max(4, Math.min(12, x.ids.length));
+    const gal = document.getElementById('igGal'); if (gal) { igMontaGaleria(gal, P, I, D); gal.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+    const gr = document.getElementById('igGraf'); if (gr) igMontaGraf(gr, P, I, D);
+  });
+}
+function igMontaDias(box, P, I, D) {
+  if (!box) return;
+  I.dMet = I.dMet || 'engajamento'; const k = I.dMet;
+  const Cd = igDiasCats(P, k), Ch = igHorasCats(P, k), u = IG_MN[k][2];
+  box.innerHTML = `<div class="ig-head"><h2>Melhores dias e horários</h2><div class="filters ig-cf"><label>Métrica<select id="igDm">${IG_MET.map(([v, l]) => `<option value="${v}"${k === v ? ' selected' : ''}>${l}</option>`).join('')}</select></label></div></div>
+    <p class="muted ig-csub">${esc(IG_MN[k][1])} médio por post em cada dia da semana e em cada faixa de horário de publicação. A linha tracejada é a média; os pontos seguem as cores: verde acima, azul na média, vermelho abaixo. Clique num ponto para ver os posts.</p>
+    <div class="ig-g3"><section class="ig-gc"><h3>Por dia da semana<small>média ${igFmt(Cd.ref == null || u === 'pct' ? Cd.ref : Math.round(Cd.ref), u)}</small></h3>${igLinhaCat(Cd, k)}</section><section class="ig-gc"><h3>Por horário<small>média ${igFmt(Ch.ref == null || u === 'pct' ? Ch.ref : Math.round(Ch.ref), u)}</small></h3>${igLinhaCat(Ch, k)}</section></div>`;
+  box.querySelector('#igDm').onchange = e => { I.dMet = e.target.value; igMontaDias(box, P, I, D); };
+  const liga = (sel, C) => box.querySelectorAll(sel + ' .ig-hit').forEach((g, j) => { const c = C.filter(x => x.v != null)[j]; if (!c) return; g.style.cursor = 'pointer'; g.onclick = () => { I.gFiltro = { ids: c.ids, nome: `${c.nome} (${c.n} post${c.n > 1 ? 's' : ''})` }; I.gN = Math.max(4, Math.min(12, c.ids.length)); const gal = document.getElementById('igGal'); if (gal) { igMontaGaleria(gal, P, I, D); gal.scrollIntoView({ block: 'start', behavior: 'smooth' }); } }; });
+  liga('.ig-gc:nth-child(1)', Cd); liga('.ig-gc:nth-child(2)', Ch);
+}
+async function igDMs(ini, fim) {
+  try { return await q(sb.from('social_conversas').select('primeira_em').eq('workspace_id', S.ws).gte('primeira_em', ini + 'T00:00:00-03:00').lte('primeira_em', diaMais(fim, 2) + 'T23:59:59-03:00')); } catch (e) { return []; }
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

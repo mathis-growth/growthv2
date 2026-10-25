@@ -1,5 +1,11 @@
 
 
+## Insights e melhores dias (v0.139)
+- `g139.js`: `igInsights(P, R, DM)` (regras acima; cada item `{cls: fato|hip|rec, tit, txt, rec, ids}`), `igPalavras` (palavras da legenda, `IG_STOP`), `igMontaInsights` (cartões; "Ver os posts" filtra a galeria por `ids`), `igLinhaCat` (linha por categoria), `igDiasCats`, `igHorasCats`, `igMontaDias`, `igDMs` (conversas novas do período). `igFiltra` aceita filtro por lista de posts.
+- `integra139.py` (roda o `integra138.py`): blocos `#igIns` (antes da galeria) e `#igDias` (depois dela); os insights esperam as DMs.
+- Validado também com os dados reais da conta (somente leitura, 90 dias). Teste `t134` ganhou insights e linhas.
+
+
 ## Cores pela média, quadros e menu em níveis (v0.138)
 - `g138.js`: `IG_FAIXA` (baixo/media/alto), `igDifTxt`, `igLegendaFaixas`; `igGrafico` e `igBarrasH` redefinidos com a classe da faixa e a diferença para a média. `g137.js`: cada gráfico vira `<section class="ig-gc">` com contorno e número de grupos; legenda no topo.
 - `integra138.py` (roda o `integra137.py`): `desenhaNav` envolve o conteúdo de cada grupo aberto num `<div class="lv2">` recuado; subgrupos (`.sublist`) recuam mais um nível. No celular, cada linha do gráfico empilha nome em cima e barra embaixo.

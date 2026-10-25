@@ -1,5 +1,16 @@
 
 
+## v0.139 — Insights e melhores dias
+- Base: posts do período com alcance. Média de engajamento = interações somadas ÷ alcance somado.
+- Assunto forte: palavra/hashtag da legenda (4+ letras, sem palavras comuns e formas de verbo) em ≥3 posts (≥2 com menos de 15 posts) e em ≤60% deles; engajamento do grupo > 110% da média; escolhe o maior engajamento × raiz do número de posts. Recomendação: levar para os tipos de mídia que o assunto ainda não usou. Assunto fraco: ≥3 posts e < 80% da média.
+- Tema forte: só com ≥3 posts classificados; frente com ≥2 posts e > 110% da média. Aviso de classificação quando mais da metade dos posts está sem tema.
+- Tipo de mídia: alcance médio do melhor ≥ 1,3× o do pior (tipos com ≥2 posts).
+- Puxou conversa: post com ≥3 comentários e taxa de comentários (comentários ÷ alcance) ≥ 1,5× a do período. Salvamentos e compartilhamentos: mesma regra.
+- DM (hipótese): conversas com a primeira mensagem nas 48 h depois da publicação; destaque se ≥2 e ≥1,5× a média por post.
+- Melhor dia: dia com ≥2 posts e engajamento > 110% da média. Período: engajamento 15% acima ou abaixo do período anterior.
+- Gráficos de linha: média da métrica por post em cada dia (segunda a domingo) e em cada faixa de horário (0–6, 6–9, 9–12, 12–15, 15–18, 18–21, 21–24 h, horário de São Paulo); ponto com a cor da faixa (±10% da média).
+
+
 ## v0.138 — Cores pela média
 - Razão do grupo = valor do grupo ÷ média de referência. Vermelho se a razão for menor que 0,9; azul de 0,9 a 1,1; verde acima de 1,1. Diferença mostrada = (razão − 1), em %, arredondada.
 - Referência: "Média por post" → média de todos os posts do período; "Total do período" e "Quantidade de posts" → média simples dos valores dos grupos. No quadro de agrupamentos, a média de todos os posts.

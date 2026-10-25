@@ -1,5 +1,16 @@
 
 
+## v0.139 — Insights automáticos; melhores dias e horários
+**Pedido da Rebecka (25/10)**: um trecho de insights que diga qual conteúdo, assunto ou tema está mais relevante, o que levar para outros formatos, qual post trouxe conversa; e os melhores dias em gráfico de linha.
+Decisões:
+- Insights por regras sobre os números (sem IA): não inventam nada, saem na hora e cada um mostra os posts que o formam. Rótulo em cada um: Fato (está nos números), Hipótese (pode ser) ou Recomendação (o que fazer).
+- Assunto: como só 1 de 36 posts da conta tem tema (fato, conferido em 25/10), o assunto sai das palavras e hashtags das legendas: palavra que aparece em pelo menos 3 posts (2, se o período tiver menos de 15 posts) e em até 60% deles, sem palavras comuns nem verbos. Rodado nos dados reais (90 dias): "eficiência" (4 posts, +23% de engajamento) em destaque; "faturamento" (3 posts, −61%) rendendo menos.
+- DM depois do post: conversas novas nas 48 horas seguintes. É coincidência no tempo, por isso vem como hipótese.
+- Destaques só quando passam do limite: assunto e dia +10% sobre a média; comentários, salvamentos e compartilhamentos 1,5× a taxa do período; tipo de mídia 1,3× o alcance do outro; período 15% acima ou abaixo do anterior.
+- Melhores dias e horários: linha com uma série, ponto colorido pela faixa da v0.138, linha tracejada na média, quantidade de posts embaixo de cada dia; clicar no ponto mostra os posts.
+**Pendente (recomendação)**: as palavras da legenda são uma pista, não o tema. Próximo passo possível: a IA ler as legendas e sugerir a frente e o formato de cada post para a Rebecka confirmar, o que deixa os gráficos por tema completos.
+
+
 ## v0.138 — Cores pela média; quadros; menu em níveis
 **Pedido da Rebecka (25/10)**: gráficos com cores (piores em vermelho, na média em azul, bem melhores em verde), para ver e rastrear o dado; cada gráfico num quadro com contorno; menu com recuo por nível. Aprovou a prévia em 25/10.
 Decisões:

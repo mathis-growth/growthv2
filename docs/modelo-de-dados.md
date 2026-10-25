@@ -1,5 +1,9 @@
 
 
+## v0.139
+- Sem mudança no banco. A tela passa a ler `social_conversas.primeira_em` do período (até 2 dias depois do fim) para o insight de DMs.
+
+
 ## v0.138
 - Sem mudança no banco.
 

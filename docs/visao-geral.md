@@ -1,3 +1,6 @@
+## v0.139
+**Insights automáticos e melhores dias.** O dashboard do Instagram lê os números do período e já diz o que se destaca: o assunto que mais engaja (pelas palavras das legendas) e o que rende menos, o tema mais forte (quando os posts estão classificados), o tipo de mídia que mais alcança, o post que puxou conversa, o que pode ter levado gente para a DM, o conteúdo mais salvo e o mais compartilhado, o melhor dia e a comparação com o período anterior. Cada insight diz se é fato, hipótese ou recomendação e tem um botão para ver os posts que o formam. Logo abaixo da galeria, gráficos de linha com a métrica escolhida por dia da semana e por horário de publicação.
+
 ## v0.138
 **Cores que dizem o que está bom ou ruim, e o menu em níveis.** Nos gráficos de tema, formato e tipo de mídia (e no quadro de agrupamentos), a barra fica verde quando o grupo está mais de 10% acima da média, azul quando está na média e vermelha quando está mais de 10% abaixo; cada barra diz quantos posts formam o número e quanto ela está da média, e clicar mostra esses posts. Cada gráfico fica num quadro próprio. No menu, cada nível recua um pouco para a direita com uma linha guia (ex.: Marketing → Máquina de Conteúdo → Instagram).
 

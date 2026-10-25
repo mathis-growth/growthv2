@@ -1,5 +1,9 @@
 
 
+## v0.139
+Nada a rodar no banco: só a tela mudou.
+
+
 ## v0.138
 Nada a rodar no banco: só a tela mudou.
 

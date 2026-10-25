@@ -100,6 +100,11 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.139] - 2026-10-25 — Insights automáticos e melhores dias
+- Dashboard do Instagram: **Insights do período** lidos dos números (assunto que mais engaja e que rende menos, tema, tipo de mídia, post que puxou conversa, possível ida para a DM, mais salvo, mais compartilhado, melhor dia, comparação com o período anterior). Cada um diz se é fato, hipótese ou recomendação e mostra os posts que o formam.
+- **Melhores dias e horários** em gráfico de linha, com a métrica escolhida e os pontos coloridos pela média.
+- Sem mudança no banco.
+
 ## [0.138] - 2026-10-25 — Cores pela média e menu em níveis
 - Gráficos de tema, formato e tipo de mídia (e o quadro de agrupamentos): **verde** mais de 10% acima da média, **azul** na média, **vermelho** mais de 10% abaixo; cada barra mostra "+X% vs. média" e quantos posts formam o número; legenda no topo.
 - Cada gráfico num quadro com contorno.
