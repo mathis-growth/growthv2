@@ -387,7 +387,29 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.137 galeria de posts e gráficos de tema e formato */
+<style id="v122">/* v0.138 cores pela média e menu em níveis */
+.ig-hr.baixo .ig-ht u{background:var(--bad,#c0362c)}
+.ig-hr.media .ig-ht u{background:var(--accent,#2457d6)}
+.ig-hr.alto .ig-ht u{background:var(--good,#17803d)}
+.ig-hr.baixo .ig-hv{color:var(--bad,#c0362c)}
+.ig-hr.alto .ig-hv{color:var(--good,#17803d)}
+.ig-leg{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:12px;color:var(--ink)}
+.ig-leg span{display:inline-flex;align-items:center;gap:6px}
+.ig-sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+.ig-sw.baixo{background:var(--bad,#c0362c)}.ig-sw.media{background:var(--accent,#2457d6)}.ig-sw.alto{background:var(--good,#17803d)}
+/* menu: cada nível recua um pouco para a direita, com uma linha guia */
+.grp .lv2{display:flex;flex-direction:column;gap:1px;margin-left:16px;padding-left:8px;border-left:1px solid var(--line)}
+.grp .lv2 > button:not(.gt).on::before{left:-9px}
+.grp .lv2 button.gt.sub{padding-left:10px}
+.grp .lv2 .sublist{margin-left:14px}
+/* cada gráfico de grupo num quadro próprio */
+.ig-g3{gap:16px}
+.ig-gc{border:1px solid var(--line);border-radius:12px;padding:14px 16px 12px;background:var(--surface);align-self:start}
+.ig-gc h3{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 6px;padding-bottom:8px;border-bottom:1px solid var(--line);font-size:14.5px}
+.ig-gc h3 small{font-weight:400;color:var(--muted);font-size:12px}
+.ig-gc .ig-hb{margin-top:6px}
+@media (max-width:640px){.ig-gc{padding:12px}.ig-gc .ig-hr{grid-template-columns:1fr 58px;row-gap:4px}.ig-gc .ig-hn{grid-column:1 / -1}}
+/* v0.137 galeria de posts e gráficos de tema e formato */
 .ig-gal{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 @media (max-width:1100px){.ig-gal{grid-template-columns:repeat(3,1fr)}}
 .ig-ord{white-space:nowrap}
@@ -803,7 +825,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.137 · 25/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.138 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -1179,12 +1201,12 @@ function desenhaNav() {
   const gh = (g, cls = '') => `<button class="gt ${cls}" data-g="${g}" aria-expanded="${isOpen(g)}">${ICO[g] || ''}<span class="lbl">${g}</span>${CHEV}</button>`;
   const grp = g => {
     if (!!g.starter !== ehStarter() && !(ehStarter() && g.g === 'Configurações')) return '';
-    if (g.casa) return casaDe(S.wsBase) ? `<div class="grp">${gh(g.g)}${isOpen(g.g) ? btns(g.items) : ''}</div>` : '';
+    if (g.casa) return casaDe(S.wsBase) ? `<div class="grp">${gh(g.g)}${isOpen(g.g) ? `<div class="lv2">${btns(g.items)}</div>` : ''}</div>` : '';
     if (g.flat) return nivelMod(MOD_GRUPO[g.g]) === 'nenhum' ? '' : `<div class="grp">${btns(g.items.filter(i => telaLiberada(i[0])))}</div>`;
     const vis = items => items.filter(i => (!SO_ADMIN.includes(i[0]) || souAdmin()) && telaLiberada(i[0]) && (i[0] !== 'cfg-pacotes' || S.interno));
     const okG = g.items.length ? nivelMod(MOD_GRUPO[g.g]) !== 'nenhum' && vis(g.items).length > 0 : false, subs = subsDe(g).filter(x => nivelMod(modSub(x)) !== 'nenhum' && vis(x.items).length);
     if (!okG && !subs.length) return '';
-    return `<div class="grp${g.adm ? ' adm' : ''}">${gh(g.g)}${isOpen(g.g) ? (okG ? btns(vis(g.items)) : '') + subs.map(x => gh(x.g, 'sub') + (isOpen(x.g) ? `<div class="sublist">${btns(vis(x.items))}</div>` : '')).join('') : ''}</div>`;
+    return `<div class="grp${g.adm ? ' adm' : ''}">${gh(g.g)}${isOpen(g.g) ? `<div class="lv2">${(okG ? btns(vis(g.items)) : '') + subs.map(x => gh(x.g, 'sub') + (isOpen(x.g) ? `<div class="sublist">${btns(vis(x.items))}</div>` : '')).join('')}</div>` : ''}</div>`;
   };
   $('#nav').innerHTML = NAV.map(grp).join('');
 }
@@ -15392,9 +15414,9 @@ function igMontaGraf(box, P, I, D) {
   box.innerHTML = `<div class="ig-head"><h2>Temas e formatos</h2><div class="filters ig-cf">
       <label>Métrica<select id="igCm"${agg === 'posts' ? ' disabled' : ''}>${IG_MET.map(([v, l]) => `<option value="${v}"${k === v ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
       <label>Mostrar<select id="igCa">${IG_AGG.map(([v, l]) => `<option value="${v}"${agg === v ? ' selected' : ''}>${l}</option>`).join('')}</select></label></div></div>
-    <p class="muted ig-csub">${agg === 'posts' ? 'Quantos posts de cada grupo saíram no período.' : agg === 'media' ? `${esc(IG_MN[k][1])} médio por post de cada grupo. A linha marca a média de todos os posts${ref != null ? ` (${igFmt(ref, IG_MN[k][2])})` : ''}.` : k === 'engajamento' ? 'Engajamento do grupo: interações somadas ÷ alcance somado.' : `${esc(IG_MN[k][1])} somado de cada grupo no período.`} Clique numa barra para ver os posts dela acima.</p>
+    <p class="muted ig-csub">${agg === 'posts' ? 'Quantos posts de cada grupo saíram no período.' : agg === 'media' ? `${esc(IG_MN[k][1])} médio por post de cada grupo. A linha marca a média de todos os posts${ref != null ? ` (${igFmt(ref, IG_MN[k][2])})` : ''}.` : k === 'engajamento' ? 'Engajamento do grupo: interações somadas ÷ alcance somado.' : `${esc(IG_MN[k][1])} somado de cada grupo no período.`} Clique numa barra para ver os posts dela acima.</p>    ${typeof igLegendaFaixas === 'function' ? igLegendaFaixas(agg === 'media' && ref != null ? igFmt(ref, IG_MN[k][2]) + ' por post (linha tracejada)' : 'a média dos grupos (linha tracejada)') : ''}
     ${semClass ? `<small class="muted">${semClass} post(s) sem tema e formato aparecem como "Sem classificação". Abra o post e classifique.</small>` : ''}
-    <div class="ig-g3">${IG_GRAF.map(([g, l]) => `<div class="ig-gc"><h3>${l}</h3>${igGrafico(P, g, k, agg, I.gFiltro)}</div>`).join('')}</div>`;
+    <div class="ig-g3">${IG_GRAF.map(([g, l]) => `<section class="ig-gc" aria-label="${l}"><h3>${l}<small>${new Set(P.flatMap(p => igChaves(p, g))).size} grupo(s)</small></h3>${igGrafico(P, g, k, agg, I.gFiltro)}</section>`).join('')}</div>`;
   const re = () => igMontaGraf(box, P, I, D);
   box.querySelector('#igCm').onchange = e => { I.cMet = e.target.value; re(); };
   box.querySelector('#igCa').onchange = e => { I.cAgg = e.target.value; re(); };
@@ -15403,6 +15425,30 @@ function igMontaGraf(box, P, I, D) {
     I.gFiltro = F && F.g === g && F.nome === nome ? null : { g, nome }; I.gN = 4; re();
     const gal = document.getElementById('igGal'); if (gal) { igMontaGaleria(gal, P, I, D); if (I.gFiltro) gal.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
   });
+}
+
+/* ===================== v0.138 — cores pela média nos gráficos de grupo ===================== */
+// abaixo de 90% da referência = vermelho; entre 90% e 110% = azul (na média); acima de 110% = verde
+const IG_FAIXA = r => r == null ? 'na' : r < 0.9 ? 'baixo' : r > 1.1 ? 'alto' : 'media';
+const igDifTxt = r => r == null ? '' : r >= 1 ? `+${Math.round((r - 1) * 100)}% vs. média` : `−${Math.round((1 - r) * 100)}% vs. média`;
+function igLegendaFaixas(refTxt) {
+  return `<div class="ig-leg"><span><i class="ig-sw baixo"></i>Abaixo da média (mais de 10% abaixo)</span><span><i class="ig-sw media"></i>Na média (até 10% para mais ou para menos)</span><span><i class="ig-sw alto"></i>Acima da média (mais de 10% acima)</span>${refTxt ? `<span class="muted">Média: ${refTxt}</span>` : ''}</div>`;
+}
+function igGrafico(P, g, k, agg, F) {
+  const G = {}; P.forEach(p => igChaves(p, g).forEach(c => { (G[c] = G[c] || []).push(p); }));
+  const L = Object.entries(G).map(([nome, X]) => ({ nome, n: X.length, v: igGrupoVal(X, k, agg) })).sort((a, b) => (b.v ?? -1) - (a.v ?? -1));
+  if (!L.length) return '<div class="empty">Sem posts no período.</div>';
+  const u = agg === 'posts' ? 'n' : IG_MN[k][2], mx = Math.max(...L.map(x => x.v || 0)) || 1;
+  const VV = L.map(x => x.v).filter(v => v != null);
+  const ref = agg === 'media' ? igMedia(P, k) : (VV.length ? VV.reduce((a, b) => a + b, 0) / VV.length : null);
+  const rot = v => agg === 'posts' ? `${num(v)} post${v === 1 ? '' : 's'}` : igFmt(v, u);
+  return `<div class="ig-hb">${L.map(x => { const on = F && F.g === g && F.nome === x.nome, r = x.v != null && ref ? x.v / ref : null, fx = IG_FAIXA(r); return `<button type="button" class="ig-hr ig-hbtn ${fx}${on ? ' on' : ''}" data-igf="${esc(g)}|${esc(x.nome)}" title="${esc(x.nome)}: ${rot(x.v)}${agg !== 'posts' ? ` em ${x.n} post(s)` : ''}${r != null ? ` · ${igDifTxt(r)}` : ''}. Clique para ver os posts que formam este número." aria-pressed="${on}"><span class="ig-hn">${esc(x.nome)}<small>${x.n} post${x.n > 1 ? 's' : ''}${r != null ? ` · ${igDifTxt(r)}` : ''}</small></span><span class="ig-ht"><u style="width:${x.v == null ? 0 : Math.max(1, x.v / mx * 100)}%"></u>${ref != null && mx ? `<b class="ig-avg" style="left:${Math.min(100, ref / mx * 100)}%" aria-hidden="true"></b>` : ''}</span><span class="ig-hv">${rot(x.v)}</span></button>`; }).join('')}</div>`;
+}
+/* o mesmo código de cores no quadro de agrupamentos (Território, Quadro, Dia da semana…) */
+function igBarrasH(G, k, mediaGeral) {
+  const u = IG_MN[k][2], mx = Math.max(...G.map(g => g.v || 0), mediaGeral || 0) || 1;
+  if (!G.length) return '<div class="empty">Sem posts no período.</div>';
+  return `<div class="ig-hb">${G.map(g => { const r = g.v != null && mediaGeral ? g.v / mediaGeral : null, fx = IG_FAIXA(r); return `<div class="ig-hr ${fx}" title="${esc(g.nome)}: ${igFmt(g.v, u)} em média, ${g.n} post(s)${r != null ? ' · ' + igDifTxt(r) : ''}"><span class="ig-hn">${g.cor ? `<i style="background:${esc(g.cor)}"></i>` : ''}${esc(g.nome)}<small>${g.n} post${g.n > 1 ? 's' : ''}${r != null ? ` · ${igDifTxt(r)}` : ''}</small></span><span class="ig-ht"><u style="width:${g.v == null ? 0 : Math.max(1, g.v / mx * 100)}%"></u>${mediaGeral != null ? `<b class="ig-avg" style="left:${mediaGeral / mx * 100}%" aria-hidden="true"></b>` : ''}</span><span class="ig-hv">${igFmt(g.v, u)}</span></div>`; }).join('')}</div>${igLegendaFaixas(mediaGeral != null ? igFmt(mediaGeral, u) : '')}`;
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

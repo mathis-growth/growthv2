@@ -100,6 +100,12 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.138] - 2026-10-25 — Cores pela média e menu em níveis
+- Gráficos de tema, formato e tipo de mídia (e o quadro de agrupamentos): **verde** mais de 10% acima da média, **azul** na média, **vermelho** mais de 10% abaixo; cada barra mostra "+X% vs. média" e quantos posts formam o número; legenda no topo.
+- Cada gráfico num quadro com contorno.
+- Menu: cada nível recua para a direita com linha guia.
+- Sem mudança no banco.
+
 ## [0.137] - 2026-10-25 — Os posts em imagens; gráficos de tema e formato
 - Dashboard do Instagram: galeria com a imagem de cada post, 4 primeiro e **Mostrar mais**; ordenar por engajamento, curtidas, alcance, mais recentes, salvamentos, compartilhamentos, comentários ou visualizações. Clicar abre os números do post.
 - Gráficos **por tema (frente), por formato e por tipo de mídia**, com a métrica escolhida e em média por post, total do período ou quantidade de posts. Clicar numa barra mostra só os posts dela na galeria.

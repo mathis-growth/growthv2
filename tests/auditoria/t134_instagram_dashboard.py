@@ -121,6 +121,13 @@ with sync_playwright() as pw:
     chk('2 posts' in pg.inner_text('#igGraf') and pg.locator('#igCm').is_disabled(), 'gráfico por quantidade de posts')
     pg.select_option('#igCa', 'total'); pg.select_option('#igCm', 'alcance'); pg.wait_for_timeout(300)
     chk('7.200' in pg.inner_text('#igGraf'), 'gráfico com o alcance somado (Reels: 4.200 + 3.000)')
+    pg.select_option('#igCa', 'media'); pg.select_option('#igCm', 'engajamento'); pg.wait_for_timeout(300)
+    # engajamento: Reels (310+25+60+140 + 90+6+8+12)/(4200+3000) = 651/7200 = 9,0%; Carrossel 125/2000 = 6,3%; média geral 776/9200 = 8,4%
+    cR, cC = pg.get_attribute('#igGraf [data-igf="tipo|Reels"]', 'class'), pg.get_attribute('#igGraf [data-igf="tipo|Carrossel"]', 'class')
+    chk('media' in cR.split() and 'baixo' in cC.split(), 'cores pela média: Reels +7% azul (na média), Carrossel −25% vermelho ' + cR + ' | ' + cC)
+    chk('Abaixo da média' in pg.inner_text('#igGraf') and pg.locator('#igGraf section.ig-gc').count() == 3, 'legenda das cores e cada gráfico num quadro próprio')
+    chk('+7% vs. média' in pg.inner_text('#igGraf'), 'cada barra diz quanto está acima ou abaixo da média')
+    pg.select_option('#igCa', 'total'); pg.select_option('#igCm', 'alcance'); pg.wait_for_timeout(300)
     pg.locator('#igGraf [data-igf="tipo|Carrossel"]').click(); pg.wait_for_timeout(800)
     chk(pg.locator('#igGal .ig-card').count() == 1 and 'CAC em 5 páginas' in pg.inner_text('#igGal'), 'clicar na barra mostra só os posts dela na galeria')
     pg.click('#igGx'); pg.wait_for_timeout(500)

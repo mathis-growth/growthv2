@@ -1,5 +1,9 @@
 
 
+## v0.138
+- index.html: 0.137 → 0.138 (`integra138.py`, que roda o `integra137.py`). Sem migração. Testes `t134` e `t135` atualizados.
+
+
 ## v0.137
 - index.html: 0.136 → 0.137 (`integra137.py`, que roda o `integra136.py`). Sem migração. Teste `t134` atualizado.
 

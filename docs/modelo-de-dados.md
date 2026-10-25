@@ -1,5 +1,9 @@
 
 
+## v0.138
+- Sem mudança no banco.
+
+
 ## v0.137
 - Sem mudança no banco. A galeria usa `social_posts.miniatura` (já trazida pelo `zernio-sync` e devolvida por `instagram_dashboard`).
 

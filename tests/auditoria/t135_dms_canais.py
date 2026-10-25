@@ -60,6 +60,8 @@ with sync_playwright() as pw:
     b = pw.chromium.launch(); ctx, pg = front.abre(b, hoje='2026-10-25', vw=1500, vh=1000)
     t = front.vai(pg, 'mkt-cont', "S.ct = null;", 4000)
     chk("subs: [{ g: 'Máquina de Conteúdo', mod: 'mkt', items: [['mkt-cont', 'Estratégia de conteúdo'], ['mkt-insta', 'Instagram']] }]" in pg.content(), 'menu: Marketing → Máquina de Conteúdo → Estratégia de conteúdo e Instagram')
+    pg.evaluate("abreMenu('mkt-insta'); desenhaNav()")
+    chk(pg.locator('#nav .grp .lv2 .sublist button[data-v="mkt-insta"]').count() == 1, 'menu em níveis: Instagram dentro de Máquina de Conteúdo, dentro de Marketing')
     chk(pg.locator('#main .tabs button').all_inner_texts() == ['Dashboard', 'Ideias e pautas', 'Priorização', 'Máquina', 'Semana', 'Fechamento', 'Persona', 'Linha editorial', 'Canais'], 'abas da Estratégia de conteúdo')
     front.vai(pg, 'mkt-cont', "S.ct.tab = 'canais';", 3000)
     fid = sql(f"select id from conteudo_temas where workspace_id = '{WS}' and nome = 'Empreendedorismo'")

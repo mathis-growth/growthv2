@@ -1,5 +1,11 @@
 
 
+## Cores pela média, quadros e menu em níveis (v0.138)
+- `g138.js`: `IG_FAIXA` (baixo/media/alto), `igDifTxt`, `igLegendaFaixas`; `igGrafico` e `igBarrasH` redefinidos com a classe da faixa e a diferença para a média. `g137.js`: cada gráfico vira `<section class="ig-gc">` com contorno e número de grupos; legenda no topo.
+- `integra138.py` (roda o `integra137.py`): `desenhaNav` envolve o conteúdo de cada grupo aberto num `<div class="lv2">` recuado; subgrupos (`.sublist`) recuam mais um nível. No celular, cada linha do gráfico empilha nome em cima e barra embaixo.
+- Testes: `t134` (cores, legenda, quadros) e `t135` (menu em níveis).
+
+
 ## Galeria e gráficos de tema e formato (v0.137)
 - `g137.js`: `igMontaGaleria` (cartões com imagem, ordem `IG_GORD`, "Mostrar mais" de 8 em 8, filtro vindo do gráfico) e `igMontaGraf` (`igGrafico` por frente, formato e tipo, `igGrupoVal` com média/total/quantidade, barras clicáveis). Cada bloco se redesenha sozinho, sem recarregar os dados. Ícones SVG em `IG_IC`.
 - `integra137.py` (roda o `integra136.py`): coloca `#igGal` e `#igGraf` depois dos números dos posts e chama os dois no fim de `tabInsta`; trocar o período zera o filtro.

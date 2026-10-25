@@ -15,7 +15,7 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.137 · 25/10/2026 (`index.html`) |
+| **Versão da tela** | 0.138 · 25/10/2026 (`index.html`) |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.136** (25/10/2026): alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta, projeto do Google e os segredos no Supabase: [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
@@ -26,6 +26,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.138 | 25/10/2026 | **Cores pela média** nos gráficos de tema, formato e tipo (verde acima, azul na média, vermelho abaixo, com "+X% vs. média"); cada gráfico num quadro; **menu em níveis** com recuo. | Só tela, sem banco |
 | 0.137 | 25/10/2026 | **Os posts em imagens** no dashboard do Instagram (4 primeiro, Mostrar mais, ordenar por engajamento, curtidas, alcance, recentes…) e **gráficos por tema, formato e tipo de mídia** com filtro de métrica e de contagem; clicar na barra filtra a galeria. | Só tela, sem banco |
 | 0.136 | 25/10/2026 | **Instagram vira submenu da Máquina de Conteúdo**; dashboard geral de canais (eficiência e melhores posts por canal); dashboard do Instagram só com dados da conexão (conta, cada post, melhores por frente, formato e tipo); classificar o post direto; saem importação manual e Relatórios. A tela mostra qual conta está conectada e em qual cliente. | `RODAR_v0.136_instagram_classificar.sql`, aplicado em 25/10/2026 |
 | 0.135 | 25/10/2026 | **Máquina em duas partes**: Estratégia de conteúdo (com a aba **Canais**: canal por frente e por etiqueta) e **Instagram** (Dashboard, Ideias do canal, Relatórios, **DMs**). **DMs do Instagram** trazidas a cada 30 min; quem escreve vira lead no CRM; também em Vendas → DMs do Instagram. Corrigido: as DMs nunca chegavam. | `RODAR_v0.135_dms_canais.sql` + `zernio-sync`, aplicado em 25/10/2026 |

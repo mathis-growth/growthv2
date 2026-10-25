@@ -1,5 +1,10 @@
 
 
+## v0.138 — Cores pela média
+- Razão do grupo = valor do grupo ÷ média de referência. Vermelho se a razão for menor que 0,9; azul de 0,9 a 1,1; verde acima de 1,1. Diferença mostrada = (razão − 1), em %, arredondada.
+- Referência: "Média por post" → média de todos os posts do período; "Total do período" e "Quantidade de posts" → média simples dos valores dos grupos. No quadro de agrupamentos, a média de todos os posts.
+
+
 ## v0.137 — Galeria e gráficos
 - Ordem da galeria: maior valor da métrica escolhida primeiro (engajamento do post = interações ÷ alcance); "Mais recentes" = data e hora de publicação. Posts sem a métrica vão para o fim.
 - Gráficos por grupo: "Média por post" = média da métrica nos posts do grupo (engajamento = interações somadas ÷ alcance somado); "Total do período" = soma (para engajamento, a mesma razão das somas); "Quantidade de posts" = número de posts. Um post entra no grupo do seu tema, formato e tipo de mídia; sem classificação, em "Sem classificação".

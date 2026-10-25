@@ -1,5 +1,14 @@
 
 
+## v0.138 — Cores pela média; quadros; menu em níveis
+**Pedido da Rebecka (25/10)**: gráficos com cores (piores em vermelho, na média em azul, bem melhores em verde), para ver e rastrear o dado; cada gráfico num quadro com contorno; menu com recuo por nível. Aprovou a prévia em 25/10.
+Decisões:
+- Faixa de 10%: abaixo de 90% da média = vermelho; de 90% a 110% = azul; acima de 110% = verde. Média de referência: em "Média por post", a média de todos os posts do período (engajamento = interações somadas ÷ alcance somado); em "Total do período" e "Quantidade de posts", a média entre os grupos.
+- A cor nunca é a única pista: cada barra traz o texto "+22% vs. média" e a legenda fica no topo do quadro.
+- Rastrear: clicar na barra filtra a galeria para os posts que formam aquele número (já existia; agora o aviso diz isso).
+- Menu: o recuo vale para todos os grupos. A Rebecka vai definir depois os outros menus e submenus.
+
+
 ## v0.137 — Galeria de posts e gráficos de tema e formato
 **Pedido da Rebecka (25/10)**: ver na tela principal as imagens dos posts, os 4 principais, com "mostrar mais"; ordenar por curtidas, engajamento, alcance e mais recentes; gráficos de temas e de formato que mudam pelo filtro.
 Decisões:

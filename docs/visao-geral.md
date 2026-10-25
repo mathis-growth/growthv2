@@ -1,3 +1,6 @@
+## v0.138
+**Cores que dizem o que está bom ou ruim, e o menu em níveis.** Nos gráficos de tema, formato e tipo de mídia (e no quadro de agrupamentos), a barra fica verde quando o grupo está mais de 10% acima da média, azul quando está na média e vermelha quando está mais de 10% abaixo; cada barra diz quantos posts formam o número e quanto ela está da média, e clicar mostra esses posts. Cada gráfico fica num quadro próprio. No menu, cada nível recua um pouco para a direita com uma linha guia (ex.: Marketing → Máquina de Conteúdo → Instagram).
+
 ## v0.137
 **Os posts em imagens e gráficos de tema e formato.** No dashboard do Instagram, os posts aparecem como cartões com a imagem: primeiro os 4 principais, e "Mostrar mais" vai abrindo os outros. Dá para ordenar por engajamento, curtidas, alcance, mais recentes, salvamentos, compartilhamentos, comentários ou visualizações. Logo abaixo, gráficos por tema (frente), por formato e por tipo de mídia, com a métrica escolhida e em média por post, total do período ou quantidade de posts. Clicar numa barra mostra na galeria só os posts daquele tema ou formato.
 
