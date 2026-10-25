@@ -1,5 +1,15 @@
 
 
+## v0.135 — Estratégia e canais; DMs no CRM
+**Pedido da Rebecka (25/10)**: separar a Máquina em Estratégia de conteúdo (tudo o que se define: ideias, canais por tema e etiqueta) e uma parte por canal (hoje só Instagram: dashboard, relatórios, ideias e as DMs); DMs também no comercial, porque entram no CRM; e descobrir por que os dados não apareciam.
+**Por que não aparecia (fato, conferido no banco com o login dela)**: (1) os posts e os números da conta estavam no banco (36 posts, 89 dias), mas só aparecem na aba Instagram da tela v0.134+; as telas antigas leem as métricas digitadas na Máquina, que estavam vazias. (2) As DMs nunca chegavam: a função `registrar_dm_instagram` existia, mas nada a chamava; o `zernio-sync` só trazia posts e conta. O Zernio tem as conversas (Inbox API).
+Decisões:
+- DMs entram a cada 30 minutos. Quem escreve para a conta entra no CRM como lead (função já criada antes: origem `instagram_dm`, etiqueta "DM Instagram", cada mensagem recebida vira um toque). Conversa só com mensagens enviadas por ela não cria lead.
+- Conversas pessoais: botão "Não é lead" para de levar as mensagens ao CRM. A pessoa que já entrou continua no CRM (excluir é manual, para não apagar nada por engano).
+- Primeira carga: conversas dos últimos 90 dias, até 60 conversas com mensagens novas por rodada e até 100 mensagens por conversa; o resto entra nas rodadas seguintes.
+- Canais: canal padrão por frente e por etiqueta só **sugerem** (marcam ao criar a ideia; nunca desmarcam). "Canais em uso" decide quais canais aparecem como parte da Máquina.
+**Pendente**: conferir depois da primeira rodada quantas conversas viraram leads e marcar as pessoais como "não é lead".
+
 ## Produção — 25/10/2026
 - Aplicado no Supabase: v0.132 (`assistente_alertas` e `assistente_alertas_agendador`: pg_cron `growths-alertas` no minuto 7 de cada hora, `sistema_config.avisos_url`), funções `avisos` (sem verificação de JWT), `perguntar` (nova versão) e `linha-editorial`. A v0.133 e a v0.134 já estavam no banco, idênticas aos arquivos (conferido função por função).
 - Alertas ligados para **Mathisa — Operação** (resumo às 7h). **Ninguém da equipe desse cliente está marcado com acesso ao sistema**, então os alertas são gravados mas ainda não viram aviso: marcar as pessoas em Alertas e resumo do dia (ou em Equipe).

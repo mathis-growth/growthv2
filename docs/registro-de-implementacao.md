@@ -1,5 +1,10 @@
 
 
+## Estratégia e canais; DMs (v0.135)
+- `g135.js`: `vConteudo` novo com `C.sec` ('estrategia' ou o canal) e subabas; abas antigas 'insta', 'dms' e 'rel' são levadas para a parte do canal. `tabCanais` (canais em uso, por frente, por etiqueta, aplicar sugeridos), `mqCanaisAuto` no cartão novo, `tabDMs` + `dmConversa` (chat) e `vDMsCrm` (Vendas → DMs do Instagram). As ideias do canal usam o Kanban com o canal fixo.
+- `zernio-sync`: nova etapa `dms` (Inbox API do Zernio: `/inbox/conversations` e `/inbox/conversations/{id}/messages`), escolhida por `partes`.
+- Teste `t135_dms_canais.py`.
+
 ## Dashboard do Instagram (v0.134)
 - `g134.js`: `tabInsta` (aba 'insta' da Máquina; rota `mkt-insta`), gráficos SVG próprios de uma série e um eixo cada (`igBarrasDia`, `igLinhaDia`), barras horizontais com a média geral marcada (`igBarrasH`), `igModalPost` (post contra a média do período, posição e ligação), importação com leitor de CSV com aspas e quebra de linha (`igCsv`), mapeamento de colunas em português e inglês (`IG_COLS`/`igMapeia`), data dia/mês ou mês/dia (`igData`) e prévia.
 - Testes: `t134_instagram_dashboard.py` (banco e telas).

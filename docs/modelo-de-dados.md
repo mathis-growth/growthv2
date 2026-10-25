@@ -1,5 +1,11 @@
 
 
+## v0.135
+- `social_conversas` (1 por conversa do Instagram): `conta_id`, `id_externo`, participante (`participante_id`, `participante_nome`, `participante_usuario`), `url`, `ultima_mensagem`, `ultima_em`, `nao_lidas`, `primeira_em`, contagens (`mensagens`, `recebidas`, `enviadas`), `anuncio` (conversa iniciada por anúncio), `pessoa_id` (lead no CRM), `ignorada` ("não é lead"). Leitura: Marketing, Vendas e Administrativo; pela tela só se altera `ignorada`.
+- `social_mensagens`: `conversa_id`, `id_externo`, `direcao` (recebida/enviada), `texto`, `anexos`, `em`.
+- Funções: `social_gravar_dms(conta, conversas)` e `social_conversas_conhecidas(conta)` (só a chave de serviço), `instagram_dms_resumo(ws, ini, fim)`.
+- `conteudo_temas.canais_padrao text[]`; `conteudo_config.canais_por_tag jsonb` ({etiqueta: [canais]}) e `canais_ativos text[]` (padrão instagram).
+
 ## v0.134
 - `social_posts`: `conta_id` passa a aceitar vazio (post importado); novas colunas `origem` ('api' | 'importado'), `rede` (padrão 'instagram'), `conteudo_id` (ligação com a Máquina), `vinculo` ('manual' | 'automatico'), `seguidores_ganhos`. Índice único (cliente, rede, id_externo) para os importados. Pela tela só se altera `conteudo_id` e `vinculo` (quem edita Marketing); gatilho confere que o conteúdo é do mesmo cliente.
 - Funções: `social_importar_posts(ws, itens jsonb)` (tudo ou nada, até 2.000), `social_vincular_auto(ws)`, `instagram_dashboard(ws, ini, fim)` → `periodo`, `fontes`, `totais`, `anterior`, `seguidores` (fim, início, antes, alcance e visitas da conta), `serie` por dia e `posts` (métricas, engajamento, conteúdo ligado com território, frente, formato, quadro, destino, etiquetas e score).

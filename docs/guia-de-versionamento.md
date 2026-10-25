@@ -1,5 +1,9 @@
 
 
+## v0.135
+- index.html: 0.134 → 0.135 (`integra135.py`, que roda o `integra134.py`; substitui `vConteudo`).
+- Novo: `20261031100000_instagram_dms_canais.sql`, `RODAR_v0.135_dms_canais.sql`, `supabase/functions/zernio-sync/index.ts` (agora no repositório, com as DMs), cópias de `20261025022737_instagram_dm_crm.sql` e `20261025034245_conexao_zernio.sql`; teste `t135_dms_canais.py`. Aplicado em produção.
+
 ## v0.134
 - index.html: 0.133 → 0.134 (`integra134.py`, que roda o `integra133.py`).
 - Novo: `20261030100000_instagram_dashboard.sql`, `RODAR_v0.134_instagram.sql`; teste `t134_instagram_dashboard.py`. Pendente em produção.

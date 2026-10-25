@@ -1,5 +1,8 @@
 
 
+## v0.135
+**Estratégia e canais, e as DMs no CRM.** A Máquina de Conteúdo tem duas partes: Estratégia de conteúdo (ideias de todos os canais, priorização, máquina, semana, fechamento, persona, linha editorial e as regras de canal por frente e etiqueta) e Instagram (dashboard, ideias do canal, relatórios e DMs). As DMs do Instagram chegam a cada 30 minutos; quem escreve vira lead no CRM e aparece também em Vendas → DMs do Instagram.
+
 ## v0.134
 **Dashboard do Instagram.** Aba Instagram na Máquina de Conteúdo (e atalho em Marketing): posts, alcance, interações, engajamento, salvamentos, compartilhamentos e seguidores contra o período anterior; top 1; gráficos por dia; o que performa melhor por território, frente, formato, quadro, tipo de mídia, destino, etiqueta, dia da semana e horário; melhores posts; e cada post contra a média. Funciona com a planilha do Meta Business Suite ou do Metricool até a conexão com a Meta ser aprovada.
 

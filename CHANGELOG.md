@@ -100,6 +100,14 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.135] - 2026-10-25 — Estratégia de conteúdo e canais; DMs do Instagram no CRM
+- A Máquina de Conteúdo passa a ter duas partes: **Estratégia de conteúdo** (Ideias e pautas, Priorização, Máquina, Semana, Fechamento, Persona, Linha editorial e **Canais**) e **Instagram** (Dashboard, Ideias do canal, Relatórios e **DMs**).
+- **Canais**: quais canais estão em uso, o canal padrão de cada frente e de cada etiqueta (marcados sozinhos ao criar a ideia) e "aplicar os canais sugeridos" nas ideias sem canal.
+- **DMs do Instagram**: trazidas do Zernio a cada 30 minutos. Quem escreve entra no CRM como lead (origem Instagram DM), com cada mensagem no histórico. Lista com última mensagem, recebidas e enviadas, situação no CRM e conversa aberta como chat; "Não é lead" para conversas pessoais; números do período (conversas, novas, recebidas, leads, esperando resposta, viraram clientes). Também em **Vendas → DMs do Instagram**.
+- Corrigido: as DMs nunca chegavam ao Growths (a função de gravar existia, mas a sincronização não buscava as conversas).
+- Banco: `20261031100000_instagram_dms_canais.sql` / `RODAR_v0.135_dms_canais.sql`; função `zernio-sync` com DMs e cron `zernio-dms`. **Aplicado em produção em 25/10/2026.**
+- Testes: `t135_dms_canais.py`.
+
 ## [0.134] - 2026-10-25 — Dashboard do Instagram
 - Aba **Instagram** na Máquina de Conteúdo e atalho **Marketing → Instagram**.
 - **Indicadores** do período contra o período anterior: posts, alcance, interações, engajamento, salvamentos, compartilhamentos e seguidores.

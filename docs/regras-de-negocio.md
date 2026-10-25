@@ -1,5 +1,10 @@
 
 
+## v0.135 — DMs e canais
+- Lead pela DM: quem mandou ao menos uma mensagem para a conta; uma pessoa por id do Instagram. Cada mensagem recebida vira um toque "DM Instagram: …". Conversa "não é lead" não gera mais toques.
+- Números das DMs no período (fuso de São Paulo): conversas com alguma mensagem, conversas novas (primeira mensagem no período), recebidas, enviadas, leads novos (pessoas com origem Instagram DM criadas no período), esperando resposta (última mensagem é da pessoa, fora as "não é lead"), viraram clientes (origem Instagram DM e situação cliente).
+- Canal sugerido de uma ideia nova = canais da frente ∪ canais de cada etiqueta.
+
 ## v0.134 — Dashboard do Instagram
 - Posts do período = dia da publicação (fuso de São Paulo) entre as datas. Fontes: Meta, planilha importada e publicações da Máquina com canal Instagram que não estão ligadas a nenhum post.
 - Engajamento do post = interações ÷ alcance; do período e dos grupos = soma das interações ÷ soma do alcance (só posts com alcance). Outras métricas por grupo = média por post.

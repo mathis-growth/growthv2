@@ -1,5 +1,10 @@
 
 
+## v0.135 — DMs do Instagram e canais
+1. `supabase/RODAR_v0.135_dms_canais.sql` (aplicado em produção em 25/10/2026).
+2. Função `zernio-sync` (sem verificação de JWT) na versão que também traz as DMs; cron `zernio-dms` a cada 30 minutos (`{"partes":["dms"]}`), além do `zernio-sync-diario` (posts e conta, 9h UTC). Ambos já criados em produção.
+3. Migrações feitas em produção por outra sessão e agora copiadas para o repositório: `20261025022737_instagram_dm_crm.sql` (registrar_dm_instagram, canal Instagram DM) e `20261025034245_conexao_zernio.sql` (conexão zernio; o trecho do Vault só roda no Supabase).
+
 ## v0.134 — Dashboard do Instagram
 1. `supabase/RODAR_v0.134_instagram.sql` (depois da v0.133; pode ser rodado de novo sem erro). Nenhuma edge function nova.
 2. Para usar já: Marketing → Instagram → Importar posts (CSV exportado do Meta Business Suite ou do Metricool) e Importar dados da conta (seguidores e alcance por dia). Quando o app da Meta for aprovado, a conexão (`conexoes`) passa a preencher os mesmos números sozinha.

@@ -15,8 +15,8 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.134 · 25/10/2026 (`index.html`) |
-| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.134** (25/10/2026): alertas e agendador (pg_cron `growths-alertas`, minuto 7 de cada hora), Máquina de Conteúdo e dashboard do Instagram; funções `avisos`, `perguntar` e `linha-editorial` publicadas |
+| **Versão da tela** | 0.135 · 25/10/2026 (`index.html`) |
+| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.135** (25/10/2026): alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta, projeto do Google e os segredos no Supabase: [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
 
@@ -26,6 +26,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.135 | 25/10/2026 | **Máquina em duas partes**: Estratégia de conteúdo (com a aba **Canais**: canal por frente e por etiqueta) e **Instagram** (Dashboard, Ideias do canal, Relatórios, **DMs**). **DMs do Instagram** trazidas a cada 30 min; quem escreve vira lead no CRM; também em Vendas → DMs do Instagram. Corrigido: as DMs nunca chegavam. | `RODAR_v0.135_dms_canais.sql` + `zernio-sync`, aplicado em 25/10/2026 |
 | 0.134 | 25/10/2026 | **Dashboard do Instagram** (aba da Máquina e atalho em Marketing): indicadores contra o período anterior, top 1, gráficos por dia, o que performa melhor por território, frente, formato, tipo, destino, etiqueta, dia e horário, melhores posts e cada post contra a média; importação da planilha do Meta Business Suite ou do Metricool até a Meta aprovar. | `RODAR_v0.134_instagram.sql`, aplicado em 25/10/2026 |
 | 0.133 | 24/10/2026 | **Máquina de Conteúdo** (antes Planejamento de conteúdo): modelo V18 por botão (4 territórios com Empreendedorismo em Negócios, 5 formatos com Carrossel caderno e Série musical 1× por semana, quadros, destinos Rebecka/Mathisa/Ambas), pauta com palavra-chave, score de 6 critérios e VALIDAR, etiquetas e dia da semana; matriz território × formato, semana por dia, fechamento de sábado, questionário de persona com proposta de linha editorial pela IA. | `RODAR_v0.133_maquina_conteudo.sql` + edge function `linha-editorial`, aplicado em 25/10/2026 |
 | 0.132 | 24/10/2026 | **Pergunte ao Growths**: "como foi meu dia ontem?" com os números exatos do dia e a comparação; IA com o dia a dia. **Alertas e resumo do dia**: conferência de hora em hora (mudança brusca, se repetindo, pede ação, dia sem dados), resumo de ontem toda manhã, avisos no sino, e-mail (Resend) e WhatsApp (Meta). | `RODAR_v0.132_alertas.sql` + `RODAR_v0.132_agendador.sql` + edge functions, aplicado em 25/10/2026 |

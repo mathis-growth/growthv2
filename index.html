@@ -388,6 +388,21 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 
 </style>
 <style id="v122">
+/* v0.135 Estratégia e canais; DMs */
+.mq-secs{display:flex;gap:6px;flex-wrap:wrap;margin:-4px 0 2px}
+.mq-secs button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 16px;font:inherit;font-weight:600;cursor:pointer}
+.mq-secs button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.mq-secs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mq-cmat td,.mq-cmat th{padding:6px 8px}
+.mq-cmat input{width:auto}
+.mq-sug-on{color:var(--accent)!important}
+.dm-chat{display:flex;flex-direction:column;gap:6px;max-height:55vh;overflow:auto;padding:8px;background:var(--surface-2);border-radius:10px}
+.dm-m{display:flex;flex-direction:column;max-width:78%;gap:2px}
+.dm-m span{padding:8px 11px;border-radius:14px;white-space:pre-wrap;line-height:1.4;font-size:14px}
+.dm-m small{font-size:11px;color:var(--muted);padding:0 6px}
+.dm-m.recebida{align-self:flex-start}.dm-m.recebida span{background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px}
+.dm-m.enviada{align-self:flex-end;align-items:flex-end}.dm-m.enviada span{background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:4px}
+
 /* v0.134 Dashboard do Instagram */
 .ig-d{font-size:12px;color:var(--muted)}
 .ig-d.up{color:var(--good,#17803d)}.ig-d.down{color:var(--bad,#b42318)}
@@ -740,7 +755,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.134 · 25/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.135 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -765,7 +780,7 @@ const NAV = [
   { g: 'Growth Starter', flat: true, starter: true, items: [['st-dash', 'Dashboard'], ['mkt-dash', 'Aquisição'], ['mkt-midia', 'Mídia'], ['crm-vendas', 'Vendas'], ['ho-retencao', 'Retenção & Expansão'], ['cad-produtos', 'Produtos'], ['crm-alunos', 'Clientes / Alunos'], ['fin-dash', 'Financeiro'], ['st-relatorios', 'Relatórios'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['gro-ciclo', 'Experimentos']] },
   { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['adm-plano', 'Planejamento da empresa'], ['adm-empresa', 'Cadastro da empresa']] },
   { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários'], ['mkt-cont', 'Máquina de Conteúdo'], ['mkt-insta', 'Instagram']] },
-  { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['mkt-origem', 'Leads por origem']] },
+  { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['crm-dms', 'DMs do Instagram'], ['mkt-origem', 'Leads por origem']] },
   { g: 'RevOps', items: [['ho-dash', 'Dashboard'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
   { g: 'Financeiro', items: [['fin-dash', 'Dashboard'], ['fin-receber', 'Contas a receber'], ['fin-pagar', 'Contas a pagar'], ['fin-custo', 'Custos e margens'], ['fin-lanc', 'Lançamentos contábeis']] },
   { g: 'Casa', casa: true, items: [['casa-dash', 'Dashboard'], ['casa-receber', 'Contas a receber'], ['casa-pagar', 'Contas a pagar'], ['casa-custo', 'Custos do mês'], ['casa-lanc', 'Lançamentos contábeis'], ['casa-bancos', 'Contas bancárias e cartões'], ['casa-planocontas', 'Plano de contas'], ['casa-fornecedores', 'Fornecedores'], ['casa-formaspag', 'Formas de pagamento'], ['casa-centros', 'Centros de custo']] },
@@ -1035,6 +1050,7 @@ const ICO = {
   'mkt-cont': P('<rect x="4" y="4" width="6" height="16" rx="1.5"/><rect x="14" y="4" width="6" height="10" rx="1.5"/>'),
   'mkt-camp': P('<path d="M5 21V4"/><path d="M5 4h12l-2 4 2 4H5"/>'),
   'crm-jornada': P('<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="17" y="4" width="4" height="13" rx="1.5"/>'),
+  'crm-dms': P('<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/>'),
   'crm-leads': P('<path d="M3 5h18l-7 8v6l-4-2v-4z"/>'),
   'crm-vendas': P('<circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h2l2.5 11h11l2-8H6"/>'),
   'crm-oport': P('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="M12 12l6-6"/>'),
@@ -1163,7 +1179,7 @@ $('#novoCli').onclick = () => { modal('Novo cliente', `<label>Nome do cliente<in
 $('#wsSel').onchange = e => { S.ws = S.wsBase = e.target.value; if (ehCasaV(S.view)) S.view = 'fin-dash'; S.perm = null; S.permWs = null; render(); };
 
 const VIEWS = {
-  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': m => { S.ct = { ...(S.ct || {}), tab: 'insta' }; S.view = 'mkt-cont'; return vConteudo(m); },
+  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': m => { S.ct = { ...(S.ct || {}), sec: 'instagram', tab: 'insta' }; S.view = 'mkt-cont'; return vConteudo(m); }, 'crm-dms': vDMsCrm,
   'crm-leads': vCrmLeads, 'crm-oport': vCrmOport, 'crm-vendas': vVendas, 'crm-contratos': vContratos, 'crm-comissoes': vComissoes, 'cad-comissoes': vComissoes, 'crm-alunos': vCrmAlunos,
   'fin-receber': vReceber,  'cfg-uso': vUso, 'fin-pagar': vPagar, 'fin-custo': vCustoOp, 'fin-lanc': vLanc, 'adm-painel': vPainel, 'adm-plano': vPlano,
   'cad-clientes': vClientes, 'cad-plataformas': vPlataformas, 'cad-funis': vFunis, 'cad-regras': vRegras,
@@ -14365,20 +14381,10 @@ async function dadosConteudo() {
   ]);
   const c0 = cfg[0] || {};
   const C = { metodo: c0.metodo || 'notas5', criterios: c0.criterios || CRIT_PADRAO, score: c0.criterios_score || ['Timing / pauta quente', 'Potencial estratégico', 'Potencial de impacto', 'Facilidade de execução', 'Robustez da evidência', 'Novidade / pouco explorado no Brasil'],
-    destinos: c0.destinos || [], meta: c0.meta_semanal, diaFech: c0.dia_fechamento || 6, tags: c0.tags || [], linha: c0.linha || {}, modelo: c0.modelo || '', tem: 'metodo' in c0 || formatos.length > 0 };
+    destinos: c0.destinos || [], canaisAtivos: c0.canais_ativos || ['instagram'], canaisPorTag: c0.canais_por_tag || {}, meta: c0.meta_semanal, diaFech: c0.dia_fechamento || 6, tags: c0.tags || [], linha: c0.linha || {}, modelo: c0.modelo || '', tem: 'metodo' in c0 || formatos.length > 0 };
   const fmts = formatos.filter(f => f.grupo === 'formato'), quadros = formatos.filter(f => f.grupo === 'quadro');
   return { linhas, temas, cont, metas, pubs, crit: C.criterios, cfg: C, eq, conta, formatos, fmts, quadros, fech, personas, propostas,
     T: Object.fromEntries(temas.map(t => [t.id, t])), L: Object.fromEntries(linhas.map(l => [l.id, l])), F: Object.fromEntries(formatos.map(f => [f.id, f])) };
-}
-async function vConteudo(m) {
-  const C = S.ct = S.ct || { tab: 'kanban', tema: '', canal: '', formato: '', arq: false, dias: 30 };
-  Object.assign(C, { terr: C.terr || '', fmt: C.fmt || '', dest: C.dest || '', tag: C.tag || '', destP: C.destP || '', sem: C.sem || segundaDe(hoje()) });
-  const D = await dadosConteudo();
-  const TABS = [['kanban', 'Kanban'], ['insta', 'Instagram'], ['prior', 'Priorização'], ['maquina', 'Máquina'], ['plano', 'Semana'], ['fech', 'Fechamento'], ['rel', 'Relatórios'], ['persona', 'Persona'], ['linhas', 'Linha editorial']];
-  m.innerHTML = `<div class="head"><div><h1>Máquina de Conteúdo</h1><span class="muted">Território, formato e destino de cada pauta; score e validação; produção da semana; fechamento com aprendizado; resultado por canal.</span></div>${D.cfg.modelo ? `<span class="pill info" title="Linha editorial instalada">Linha: ${esc(D.cfg.modelo)}</span>` : ''}</div>
-  <div class="tabs">${TABS.map(([k, l]) => `<button data-t="${k}" class="${C.tab === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="ctTab" style="display:flex;flex-direction:column;gap:16px"></div>`;
-  m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { C.tab = b.dataset.t; render(); });
-  ({ kanban: tabKanban, insta: tabInsta, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, rel: tabRel, persona: tabPersona, linhas: tabLinhas }[C.tab] || tabKanban)($('#ctTab'), D, C);
 }
 function mqComeco(D) {
   if (D.linhas.length) return '';
@@ -14503,6 +14509,7 @@ function modalConteudo(row, D, pre) {
     const es = f.elements.estrutura; es.onchange = () => { const at = {}; f.querySelectorAll('[data-passo]').forEach(t => { at[t.dataset.passo] = t.value; }); $('#mqPassos').innerHTML = mqPassos(es.value, { ...(r.estrutura_notas || {}), ...at }); };
   }
   f.querySelectorAll('[data-tag]').forEach(b => b.onclick = () => { const i = f.elements.tags, L = separa(i.value, /[,;]/); if (!L.includes(b.dataset.tag)) L.push(b.dataset.tag); i.value = L.join(', '); });
+  if (!row) mqCanaisAuto(f, D);
   if (row && row.id) botaoExcluir(f, 'conteudos', row.id, 'Conteúdo excluído');
 }
 
@@ -15092,6 +15099,135 @@ function igModalImport() {
   const ta = f.elements.csv, prev = () => { const el = $('#igPrev'); if (!ta.value.trim()) { el.innerHTML = ''; return; } try { const L = igLeituraPlanilha(ta.value); const nomes = Object.entries(L.M).map(([k, i]) => `${k.replace('_', ' ')} ← "${esc(L.cab[i])}"`); el.innerHTML = `<div class="ig-prev"><b>${L.itens.length} post(s) prontos.</b> Datas lidas como ${L.ordem === 'mdy' ? 'mês/dia' : 'dia/mês'} (confira: primeiro post em ${dd(L.itens[0].publicado_em.slice(0, 10))}).<br><small class="muted">Colunas: ${nomes.join(' · ')}</small></div>`; } catch (e) { el.innerHTML = `<div class="ig-prev bad">${esc(e.message)}</div>`; } };
   ta.oninput = prev;
   f.elements.arq.onchange = e => { const a = e.target.files[0]; if (!a) return; const r = new FileReader(); r.onload = () => { ta.value = r.result; prev(); }; r.readAsText(a, 'utf-8'); };
+}
+
+/* ================= v0.135 MÁQUINA DE CONTEÚDO EM DUAS PARTES: ESTRATÉGIA E CANAIS; DMs DO INSTAGRAM =================
+   Estratégia de conteúdo: tudo o que se define (ideias de todos os canais, priorização, máquina, semana, fechamento, persona,
+   linha editorial e as regras de canal). Cada canal ativo (hoje, Instagram) tem a sua parte: dashboard, ideias do canal,
+   relatórios e, no Instagram, as DMs, que também entram no CRM. */
+const MQ_SECOES_EST = [['kanban', 'Ideias e pautas'], ['prior', 'Priorização'], ['maquina', 'Máquina'], ['plano', 'Semana'], ['fech', 'Fechamento'], ['persona', 'Persona'], ['linhas', 'Linha editorial'], ['canais', 'Canais']];
+const MQ_SECOES_CANAL = { instagram: [['insta', 'Dashboard'], ['ideias', 'Ideias do canal'], ['rel', 'Relatórios'], ['dms', 'DMs']] };
+const mqSecoesCanal = c => MQ_SECOES_CANAL[c] || [['ideias', 'Ideias do canal'], ['rel', 'Relatórios']];
+async function vConteudo(m) {
+  const C = S.ct = S.ct || { tab: 'kanban', tema: '', canal: '', formato: '', arq: false, dias: 30 };
+  Object.assign(C, { terr: C.terr || '', fmt: C.fmt || '', dest: C.dest || '', tag: C.tag || '', destP: C.destP || '', sem: C.sem || segundaDe(hoje()), sec: C.sec || 'estrategia' });
+  const D = await dadosConteudo();
+  const ativos = (D.cfg.canaisAtivos || ['instagram']).filter(c => CANAL_N[c]);
+  if (C.sec !== 'estrategia' && !ativos.includes(C.sec)) C.sec = 'estrategia';
+  // compatibilidade: abas antigas que viraram parte de um canal
+  if (C.sec === 'estrategia' && (C.tab === 'insta' || C.tab === 'dms')) { C.sec = 'instagram'; }
+  if (C.sec === 'estrategia' && C.tab === 'rel') { C.sec = ativos[0] || 'estrategia'; }
+  const subs = C.sec === 'estrategia' ? MQ_SECOES_EST : mqSecoesCanal(C.sec);
+  if (!subs.some(s => s[0] === C.tab)) C.tab = subs[0][0];
+  m.innerHTML = `<div class="head"><div><h1>Máquina de Conteúdo</h1><span class="muted">${C.sec === 'estrategia' ? 'Estratégia de conteúdo: territórios, ideias, canais, produção da semana e fechamento com aprendizado.' : `${esc(CANAL_N[C.sec])}: o que foi publicado, como performou e as conversas que vieram dele.`}</span></div>${D.cfg.modelo ? `<span class="pill info" title="Linha editorial instalada">Linha: ${esc(D.cfg.modelo)}</span>` : ''}</div>
+  <nav class="mq-secs" aria-label="Partes da Máquina de Conteúdo"><button data-sec="estrategia" class="${C.sec === 'estrategia' ? 'on' : ''}">Estratégia de conteúdo</button>${ativos.map(c => `<button data-sec="${c}" class="${C.sec === c ? 'on' : ''}">${esc(CANAL_N[c])}</button>`).join('')}</nav>
+  <div class="tabs">${subs.map(([k, l]) => `<button data-t="${k}" class="${C.tab === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="ctTab" style="display:flex;flex-direction:column;gap:16px"></div>`;
+  m.querySelectorAll('[data-sec]').forEach(b => b.onclick = () => { C.sec = b.dataset.sec; C.tab = (C.sec === 'estrategia' ? MQ_SECOES_EST : mqSecoesCanal(C.sec))[0][0]; render(); });
+  m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { C.tab = b.dataset.t; render(); });
+  const el = $('#ctTab');
+  if (C.sec === 'estrategia') return ({ kanban: tabKanban, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, persona: tabPersona, linhas: tabLinhas, canais: tabCanais }[C.tab] || tabKanban)(el, D, C);
+  const ch = C.sec;
+  if (C.tab === 'insta') return tabInsta(el, D, C);
+  if (C.tab === 'dms') return tabDMs(el, D, C);
+  if (C.tab === 'rel') { const D2 = { ...D, pubs: D.pubs.filter(p => p.canal === ch), conta: D.conta.filter(x => x.canal === ch) }; return tabRel(el, D2, C); }
+  // ideias do canal: o mesmo Kanban, com o canal fixo
+  const K = C.porCanal = C.porCanal || {}; const CK = K[ch] = K[ch] || { tema: '', formato: '', arq: false, terr: '', fmt: '', dest: '', tag: '' };
+  CK.canal = ch;
+  tabKanban(el, D, CK);
+  const s = el.querySelector('#cfC'); if (s) { s.disabled = true; s.title = 'Fixo neste canal. Para ver todos, use Estratégia de conteúdo.'; }
+}
+
+/* ----- regras de canal: por frente, por etiqueta e quais canais a Máquina mostra ----- */
+function mqCanaisSugeridos(D, temaId, tags) {
+  const out = new Set(); const t = D.T[temaId]; (t && t.canais_padrao || []).forEach(c => out.add(c));
+  (tags || []).forEach(g => ((D.cfg.canaisPorTag || {})[g] || []).forEach(c => out.add(c)));
+  return [...out];
+}
+function mqCanaisAuto(f, D) {
+  // só sugere: marca os canais da frente e das etiquetas; não desmarca o que a pessoa escolheu
+  const aplica = () => { const tags = separa(f.elements.tags ? f.elements.tags.value : '', /[,;]/), sug = mqCanaisSugeridos(D, f.elements.tema_id ? f.elements.tema_id.value : '', tags);
+    sug.forEach(c => { const x = f.querySelector(`input[name=canal][value="${c}"]`); if (x && !x.checked) { x.checked = true; x.closest('label').classList.add('mq-sug-on'); } }); };
+  if (f.elements.tema_id) f.elements.tema_id.addEventListener('change', aplica);
+  if (f.elements.tags) f.elements.tags.addEventListener('change', aplica);
+  f.querySelectorAll('[data-tag]').forEach(b => b.addEventListener('click', () => setTimeout(aplica, 0)));
+  if (!f.querySelector('input[name=canal]:checked')) aplica();
+}
+function tabCanais(el, D, C) {
+  const ativos = D.cfg.canaisAtivos || ['instagram'], ptag = D.cfg.canaisPorTag || {};
+  const tags = [...new Set([...(D.cfg.tags || []), ...D.cont.flatMap(x => x.tags || []), ...Object.keys(ptag)])].sort();
+  const cx = (nome, v, on) => `<input type="checkbox" data-${nome}="${esc(v)}"${on ? ' checked' : ''} aria-label="${esc(v)}">`;
+  const ordL = t => t.transversal || !D.L[t.linha_id] ? 999 : (D.L[t.linha_id].ordem ?? 0), frentes = D.temas.filter(t => t.ativo).sort((a, b) => ordL(a) - ordL(b) || a.nome.localeCompare(b.nome, 'pt-BR'));
+  const cab = CANAIS_C.map(([, l]) => `<th class="n">${l}</th>`).join('');
+  el.innerHTML = `<div class="panel"><h2>Canais em uso</h2><span class="muted">Cada canal marcado ganha a sua parte na Máquina, ao lado da Estratégia de conteúdo (dashboard, ideias do canal e relatórios).</span>
+    <div class="mq-checks" style="margin-top:10px">${CANAIS_C.map(([k, l]) => `<label><input type="checkbox" name="ativo" value="${k}"${ativos.includes(k) ? ' checked' : ''}> ${l}</label>`).join('')}</div>
+    <div class="acts" style="justify-content:flex-start;margin-top:10px"><button class="btn pri" id="caAtivos">Salvar canais em uso</button></div></div>
+  <div class="panel"><h2>Canal padrão de cada frente</h2><span class="muted">Ao escolher a frente de uma ideia nova, estes canais já vêm marcados. Dá para mudar em cada ideia.</span>
+    <div class="tw"><table class="mq-cmat"><thead><tr><th>Território · frente</th>${cab}</tr></thead><tbody>${frentes.map(t => `<tr><td>${t.linha_id && D.L[t.linha_id] ? `<small class="muted">${esc(D.L[t.linha_id].nome)}</small><br>` : ''}${esc(t.nome)}${t.transversal ? ' <span class="pill neutral">transversal</span>' : ''}</td>${CANAIS_C.map(([k]) => `<td class="n">${cx('ft', t.id + '|' + k, (t.canais_padrao || []).includes(k))}</td>`).join('')}</tr>`).join('') || `<tr><td colspan="${CANAIS_C.length + 1}" class="empty">Nenhuma frente cadastrada.</td></tr>`}</tbody></table></div>
+    <div class="acts" style="justify-content:flex-start;margin-top:10px"><button class="btn pri" id="caFrentes">Salvar canais das frentes</button></div></div>
+  <div class="panel"><h2>Canal de cada etiqueta</h2><span class="muted">Uma ideia com a etiqueta já vem com estes canais (ex.: "Série musical" só no Instagram).</span>
+    <div class="tw"><table class="mq-cmat"><thead><tr><th>Etiqueta</th>${cab}</tr></thead><tbody>${tags.map(g => `<tr><td><span class="chip">${esc(g)}</span></td>${CANAIS_C.map(([k]) => `<td class="n">${cx('tg', g + '|' + k, (ptag[g] || []).includes(k))}</td>`).join('')}</tr>`).join('') || `<tr><td colspan="${CANAIS_C.length + 1}" class="empty">Nenhuma etiqueta ainda.</td></tr>`}</tbody></table></div>
+    <div class="acts" style="justify-content:flex-start;margin-top:10px"><label style="flex-direction:row;align-items:center;gap:6px">Nova etiqueta<input id="caNova" placeholder="Ex.: Bastidores" style="width:180px"></label><button class="btn pri" id="caTags">Salvar canais das etiquetas</button></div></div>
+  <div class="panel"><h2>Ideias sem canal</h2>${(() => { const X = D.cont.filter(c => !(c.canais || []).length && !['publicado', 'arquivado'].includes(c.status)); const comSug = X.filter(c => mqCanaisSugeridos(D, c.tema_id, c.tags).length); return `<p class="muted" style="margin:0 0 8px">${X.length} ideia(s) e pauta(s) sem canal${comSug.length ? `; ${comSug.length} têm canal sugerido pela frente ou pela etiqueta` : ''}.</p>${comSug.length ? '<button class="btn" id="caAplica">Aplicar os canais sugeridos nelas</button>' : ''}`; })()}</div>`;
+  $('#caAtivos').onclick = () => act(async () => { const v = [...el.querySelectorAll('input[name=ativo]:checked')].map(x => x.value); await q(sb.from('conteudo_config').upsert({ workspace_id: S.ws, canais_ativos: v }, { onConflict: 'workspace_id' })); toast('Canais em uso salvos'); render(); });
+  $('#caFrentes').onclick = () => act(async () => {
+    const M = {}; frentes.forEach(t => { M[t.id] = []; }); el.querySelectorAll('[data-ft]:checked').forEach(x => { const [id, k] = x.dataset.ft.split('|'); M[id].push(k); });
+    const mud = frentes.filter(t => JSON.stringify([...(t.canais_padrao || [])].sort()) !== JSON.stringify(M[t.id].sort()));
+    for (const t of mud) await q(sb.from('conteudo_temas').update({ canais_padrao: M[t.id] }).eq('id', t.id));
+    toast(mud.length ? `Canais de ${mud.length} frente(s) salvos` : 'Nada mudou'); render();
+  });
+  $('#caTags').onclick = () => act(async () => {
+    const M = {}; el.querySelectorAll('[data-tg]:checked').forEach(x => { const i = x.dataset.tg.lastIndexOf('|'), g = x.dataset.tg.slice(0, i), k = x.dataset.tg.slice(i + 1); (M[g] = M[g] || []).push(k); });
+    const nova = $('#caNova').value.trim(); const tagsCfg = [...new Set([...(D.cfg.tags || []), ...(nova ? [nova] : [])])];
+    await q(sb.from('conteudo_config').upsert({ workspace_id: S.ws, canais_por_tag: M, tags: tagsCfg }, { onConflict: 'workspace_id' })); toast('Canais das etiquetas salvos'); render();
+  });
+  if ($('#caAplica')) $('#caAplica').onclick = () => act(async () => {
+    const X = D.cont.filter(c => !(c.canais || []).length && !['publicado', 'arquivado'].includes(c.status)); let n = 0;
+    for (const c of X) { const s = mqCanaisSugeridos(D, c.tema_id, c.tags); if (s.length) { await q(sb.from('conteudos').update({ canais: s }).eq('id', c.id)); n++; } }
+    toast(`${n} ideia(s) ganharam canal`); render();
+  });
+}
+
+/* ----- DMs do Instagram (também em Vendas → DMs do Instagram) ----- */
+async function tabDMs(el, D, C) {
+  const h = hoje(); C.dm = C.dm || { dias: 30, busca: '', filtro: '' };
+  const F = C.dm, ini = diaMais(h, -(F.dias - 1));
+  el.innerHTML = '<div class="panel muted">Carregando as conversas…</div>';
+  let R, conv, pes;
+  try {
+    [R, conv] = await Promise.all([q(sb.rpc('instagram_dms_resumo', { p_ws: S.ws, p_ini: ini, p_fim: h })), q(sb.from('social_conversas').select('*').eq('workspace_id', S.ws).order('ultima_em', { ascending: false, nullsFirst: false }).limit(1000))]);
+    const ids = [...new Set(conv.map(c => c.pessoa_id).filter(Boolean))];
+    pes = ids.length ? await q(sb.from('pessoas').select('id,nome,status_funil,qualificacao,tags').in('id', ids)) : [];
+  } catch (e) { el.innerHTML = `<div class="panel"><b>As DMs ainda não estão disponíveis.</b> <span class="muted">${esc(e.message || String(e))}. Rode a migração da v0.135.</span></div>`; return; }
+  const P = Object.fromEntries(pes.map(p => [p.id, p]));
+  const ultDir = c => c.ultima_dir;
+  const L = conv.filter(c => (F.filtro !== 'leads' || c.pessoa_id) && (F.filtro !== 'ignoradas' ? !c.ignorada : c.ignorada) && (F.filtro !== 'periodo' || (c.ultima_em && diaLocal(c.ultima_em) >= ini))
+    && (!F.busca || [c.participante_nome, c.participante_usuario, c.ultima_mensagem].some(x => String(x || '').toLowerCase().includes(F.busca.toLowerCase()))));
+  const sinc = R.ultima_sincronizacao ? new Date(R.ultima_sincronizacao).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' }) : null;
+  el.innerHTML = `<div class="filters"><label>Período dos números<select id="dmP">${[[7, 'Últimos 7 dias'], [30, 'Últimos 30 dias'], [90, 'Últimos 90 dias']].map(([v, l]) => `<option value="${v}"${F.dias === v ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+    <label>Mostrar<select id="dmF"><option value="">Todas as conversas</option><option value="periodo"${F.filtro === 'periodo' ? ' selected' : ''}>Com mensagem no período</option><option value="leads"${F.filtro === 'leads' ? ' selected' : ''}>Só quem está no CRM</option><option value="ignoradas"${F.filtro === 'ignoradas' ? ' selected' : ''}>Marcadas como "não é lead"</option></select></label>
+    <label>Buscar<input id="dmB" value="${esc(F.busca)}" placeholder="nome, @ ou texto"></label></div>
+  <div class="panel ig-fonte"><span class="muted">${sinc ? `Conversas trazidas do Instagram pelo Zernio; última atualização em ${sinc}. Atualiza a cada 30 minutos.` : 'Nenhuma conversa trazida ainda. Elas chegam pela conexão do Instagram (Zernio) a cada 30 minutos.'} Quem manda DM entra no CRM como lead (origem Instagram DM, etiqueta "DM Instagram"), com cada mensagem no histórico da pessoa. Conversas pessoais podem ser marcadas como "não é lead".</span></div>
+  <div class="kpis">${kpi('Conversas no período', num(R.conversas_ativas), 'com alguma mensagem')}${kpi('Conversas novas', num(R.conversas_novas), 'primeira mensagem no período')}${kpi('Mensagens recebidas', num(R.recebidas), `${num(R.enviadas)} enviadas`)}${kpi('Leads novos pela DM', num(R.leads_novos), 'entraram no CRM no período')}${kpi('Esperando resposta', num(R.sem_resposta), 'a última mensagem é da pessoa')}${kpi('Viraram clientes', num(R.clientes), 'leads da DM que compraram')}</div>
+  <div class="panel"><div class="tw"><table><thead><tr><th>Pessoa</th><th>Última mensagem</th><th>Quando</th><th class="n">Recebidas</th><th class="n">Enviadas</th><th>No CRM</th><th></th></tr></thead><tbody>${L.map(c => { const p = P[c.pessoa_id]; return `<tr class="clk" data-dm="${c.id}"><td><b>${esc(c.participante_usuario ? '@' + c.participante_usuario : c.participante_nome || 'Instagram')}</b>${c.participante_nome && c.participante_nome !== c.participante_usuario ? `<br><small class="muted">${esc(c.participante_nome)}</small>` : ''}${c.anuncio ? ' <span class="pill info" title="Conversa iniciada por um anúncio">anúncio</span>' : ''}</td><td>${esc((c.ultima_mensagem || '').slice(0, 90))}</td><td>${c.ultima_em ? new Date(c.ultima_em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'}</td><td class="n">${c.recebidas}</td><td class="n">${c.enviadas}</td><td>${c.ignorada ? '<span class="pill neutral">não é lead</span>' : p ? `${pillFunil(p.status_funil, '')}${p.qualificacao === 'qualificado' ? ' <span class="pill good">qualificado</span>' : ''}` : '<span class="muted">—</span>'}</td><td>${p ? `<button class="btn sm" data-ficha="${p.id}">Abrir no CRM</button>` : ''}</td></tr>`; }).join('') || '<tr><td colspan="7" class="empty">Nenhuma conversa com esses filtros.</td></tr>'}</tbody></table></div></div>`;
+  $('#dmP').onchange = e => { F.dias = Number(e.target.value); render(); }; $('#dmF').onchange = e => { F.filtro = e.target.value; render(); };
+  $('#dmB').onchange = e => { F.busca = e.target.value.trim(); render(); };
+  el.querySelectorAll('[data-ficha]').forEach(b => b.onclick = ev => { ev.stopPropagation(); fichaPessoa(b.dataset.ficha); });
+  el.querySelectorAll('[data-dm]').forEach(r => r.onclick = () => dmConversa(conv.find(c => c.id === r.dataset.dm), P));
+}
+async function dmConversa(c, P) {
+  const msgs = await q(sb.from('social_mensagens').select('direcao,texto,anexos,em').eq('conversa_id', c.id).order('em').limit(500));
+  const p = P[c.pessoa_id];
+  const f = modal(c.participante_usuario ? '@' + c.participante_usuario : (c.participante_nome || 'Conversa'), `<div class="dm-chat">${msgs.map(m => `<div class="dm-m ${m.direcao}"><span>${esc(m.texto || (m.anexos ? '(anexo)' : ''))}${m.anexos && m.texto ? ' <small>+ anexo</small>' : ''}</span><small>${new Date(m.em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' })}</small></div>`).join('') || '<p class="muted">Sem mensagens guardadas.</p>'}</div>
+    <div class="acts" style="justify-content:flex-start;margin-top:10px">${c.url ? `<a class="btn sm" href="${esc(c.url)}" target="_blank" rel="noopener">Responder no Instagram</a>` : ''}${p ? `<button type="button" class="btn sm" id="dmFicha">Abrir ${esc(p.nome)} no CRM</button>` : ''}<button type="button" class="btn sm" id="dmIgn">${c.ignorada ? 'Voltar a tratar como lead' : 'Não é lead (conversa pessoal)'}</button></div>
+    ${c.ignorada ? '' : '<small class="muted">"Não é lead" para de levar as mensagens desta conversa para o CRM. A pessoa que já entrou continua no CRM; se for o caso, exclua por lá.</small>'}`, null, 'Fechar', true);
+  const box = f.querySelector('.dm-chat'); if (box) box.scrollTop = box.scrollHeight;
+  if ($('#dmFicha')) $('#dmFicha').onclick = () => fichaPessoa(p.id);
+  $('#dmIgn').onclick = () => act(async () => { await q(sb.from('social_conversas').update({ ignorada: !c.ignorada }).eq('id', c.id)); toast(c.ignorada ? 'Conversa volta a alimentar o CRM' : 'Conversa marcada como não é lead'); $('#modalRoot').innerHTML = ''; render(); });
+}
+async function vDMsCrm(m) {
+  S.ctDm = S.ctDm || {};
+  m.innerHTML = `<div class="head"><div><h1>DMs do Instagram</h1><span class="muted">Quem escreveu para o Instagram e já está no CRM como lead. As mesmas conversas aparecem na Máquina de Conteúdo, parte Instagram.</span></div></div><div id="dmCrm" style="display:flex;flex-direction:column;gap:16px"></div>`;
+  return tabDMs($('#dmCrm'), null, S.ctDm);
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
