@@ -11,5 +11,6 @@ Deno.test('resposta do Apps Script', () => {
   assertEquals(lerResposta(200, '{"ok":true,"id":"1","url":"u"}'), { ok: true, id: '1', url: 'u' });
   assertEquals(lerResposta(200, '{"ok":false,"erro":"Senha inválida"}'), { ok: false, erro: 'Senha inválida' });
   assertEquals(lerResposta(200, '<html>accounts.google.com</html>').ok, false);
+  assertEquals((lerResposta(403, '<title>Acesso negado</title>') as { erro: string }).erro.includes('Qualquer pessoa'), true);
   assertEquals((lerResposta(404, '<html>x</html>') as { erro: string }).erro.includes('/exec'), true);
 });
