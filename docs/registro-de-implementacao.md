@@ -1,5 +1,9 @@
 
 
+## Correção Growth Starter (v0.142)
+- `g141.js` (`ncModal`): `starter` só quando o Growth's Content não está marcado; aviso `.ac-aviso`; troca automática do tipo. Teste `t141` ganhou 3 verificações.
+
+
 ## Acesso em árvore (v0.141)
 - `g141.js`: `acMonta`/`acArvore`/`acLiga` (árvore com setinhas, grupos e subgrupos, estado parcial, atalhos), `acGrava` (tudo / pacote igual / ligadas e desligadas), `ncModal` (Novo cliente). `integra141.py` troca o "Novo cliente" antigo e deixa no quadro do Growth's Content a caixa só para a equipe interna.
 - Migração `20261103100000_acesso_content.sql` (aplicada em produção em 25/10/2026). Teste `t141_acesso_content.py`; `t140` ajustado.

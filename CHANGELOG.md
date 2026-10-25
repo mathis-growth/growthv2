@@ -100,6 +100,10 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.142] - 2026-10-25 — Growth's Content nunca como Growth Starter
+- Corrigido: cliente criado com o Growth's Content ficava como Growth Starter (menu sem o Marketing). Agora marcar o Growth's Content troca para Growths completo, com aviso na tela.
+- Cliente de teste corrigido em produção. Sem mudança no banco.
+
 ## [0.141] - 2026-10-25 — O que o cliente acessa, em árvore
 - **Novo cliente**: "O que o cliente acessa" com setinhas por área e marcação tela por tela; atalhos "Só Growth's Content", pacotes, "Tudo" e "Limpar". Sai a lista de pacotes e a opção solta do Growth's Content.
 - **Growth's Content dentro de Marketing**: marcar libera só o módulo de conteúdo e cria a pasta do cliente no Drive. Instagram e DMs entram no catálogo dos pacotes.

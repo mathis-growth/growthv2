@@ -1,3 +1,6 @@
+## v0.142
+**Growth's Content nunca cai no Growth Starter.** Ao marcar o Growth's Content no Novo cliente, o tipo de acesso muda sozinho para Growths completo (o Growth Starter tem menu próprio, sem o Marketing), e a tela avisa quando o Growth Starter está escolhido.
+
 ## v0.141
 **O que o cliente acessa, marcado numa árvore.** No "Novo cliente", a lista de pacotes deu lugar a "O que o cliente acessa": cada área do menu com uma setinha para abrir e marcar tela por tela, e atalhos para começar de um pacote, de "Só Growth's Content", de "Tudo" ou limpar. O Growth's Content aparece dentro de Marketing; marcá-lo libera só o módulo de conteúdo (o cliente vê Marketing → Growth's Content e as telas de equipe) e cria a pasta dele no Google Drive. Quem decide se o cliente usa o módulo passa a ser o acesso dele.
 

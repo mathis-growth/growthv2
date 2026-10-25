@@ -1,5 +1,9 @@
 
 
+## v0.142
+- Cliente com o Growth's Content no acesso é sempre Growths completo (o Growth Starter não tem o Marketing).
+
+
 ## v0.141 — Acesso e Growth's Content
 - Acesso restrito (pacote, ligadas ou desligadas) que contém `mkt-cont` → usa o Growth's Content; sem `mkt-cont` → não usa. Sem restrição → mantém o que estava. Equipe interna (agência) só pela caixa manual.
 - Árvore do Novo cliente: grupo marcado = todas as telas dele; parcial aparece como "x de y". Equipe e acessos e Funções e permissões sempre marcadas.

@@ -1,5 +1,13 @@
 
 
+## v0.142 — Correção: cliente do Growth's Content criado como Growth Starter
+**Relato da Rebecka (25/10)**: o cliente de teste liberou outras coisas e não a parte do marketing.
+**Causa (fato, conferido no banco)**: o cliente "Teste Growth's Content" foi criado às 12h04 na tela antiga (v0.140), em que "Growth Starter" era o tipo de acesso marcado por padrão; o Growth Starter tem menu próprio (diagnóstico e relatórios) e não mostra o Marketing. A pasta no Drive foi criada certa.
+Decisões:
+- Cliente corrigido em produção: Growths completo, acesso só ao Growth's Content (Estratégia de conteúdo e Instagram, mais Equipe e Funções).
+- Novo cliente: "Growths completo" vem primeiro (já na v0.141); marcar o Growth's Content (ou o atalho "Só Growth's Content") troca para completo; com Growth Starter escolhido, aviso na tela; ao gravar, cliente com Growth's Content é sempre completo.
+
+
 ## v0.141 — Acesso do cliente em árvore; Growth's Content pelo acesso
 **Pedido da Rebecka (25/10)**: no cadastro do cliente, em vez de escolher numa lista, abrir a setinha e marcar o que a pessoa acessa, dentro do que já existe (sem mais uma opção solta); marcar Growth's Content libera só a parte de marketing.
 **Fato (25/10)**: o primeiro cliente de teste ("Teste Growth's Content") foi criado pela tela e a pasta dele saiu no Drive (v0.140 funcionando de ponta a ponta).

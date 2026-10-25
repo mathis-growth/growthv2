@@ -1,5 +1,9 @@
 
 
+## v0.142
+- index.html: 0.141 → 0.142 (mudança no `g141.js`, montado pelo `integra141.py`). Sem migração.
+
+
 ## v0.141
 - index.html: 0.140 → 0.141 (`integra141.py`, que roda o `integra140.py`). Novo: `20261103100000_acesso_content.sql`, `RODAR_v0.141_acesso_content.sql`, teste `t141_acesso_content.py`. Aplicado em produção.
 

@@ -1,5 +1,9 @@
 
 
+## v0.142
+Nada a rodar no banco.
+
+
 ## v0.141
 1. `supabase/RODAR_v0.141_acesso_content.sql` (aplicado em produção em 25/10/2026).
 

@@ -1,5 +1,9 @@
 
 
+## v0.142
+- Sem mudança no banco. Dado corrigido: cliente "Teste Growth's Content" (modo completo e acesso ao Growth's Content).
+
+
 ## v0.141
 - `acesso_telas`: `mkt-cont` (Estratégia de conteúdo) e `mkt-insta` (Instagram) no grupo "Marketing / Growth's Content"; `crm-dms` (DMs do Instagram) em Vendas.
 - Funções: `content_no_acesso(pacote, liga, desliga)`; gatilho `content_acesso_t` (antes de gravar o cliente) liga ou desliga `content_ativo` pelo acesso; `content_ws_t` passa a disparar em qualquer alteração do cliente.

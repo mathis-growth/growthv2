@@ -405,6 +405,7 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .ac-sc{display:flex;flex-direction:column;gap:2px;padding-left:22px}
 @media (prefers-reduced-motion:reduce){.ac-seta svg{transition:none}}
 .ac-c[hidden]{display:none}
+.ac-aviso{margin:0 0 8px;padding:8px 10px;border-radius:8px;background:var(--warn-soft,#fff4e0);font-size:13px}
 /* v0.140 pasta do cliente no Drive */
 .cd-erro{color:var(--bad,#b42318);display:inline-block;max-width:420px;line-height:1.35;margin-top:4px}
 .cd-pasta{margin-left:auto;align-self:center}
@@ -863,7 +864,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.141 · 25/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.142 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -15719,20 +15720,27 @@ function ncModal() {
     <p class="muted">Cada cliente tem o seu banco separado. No Growth Starter você importa as planilhas dele, confere o de-para e puxa os relatórios.</p>`,
     async d => {
       const sel = A ? A.marcadas() : [], todas = cat.map(t => t.tela);
-      if (d.tipo !== 'starter' && A && !sel.filter(t => !PAC_SEMPRE.includes(t)).length) throw new Error('Marque o que o cliente acessa (abra as setinhas para escolher).');
-      const id = await q(sb.rpc('criar_workspace_cliente', { p_nome: d.nome, p_modo: d.tipo === 'starter' ? 'starter' : 'completo' }));
-      if (d.tipo !== 'starter' && A) { try { await acGrava(id, sel, todas, pacs, catTodo); } catch (e) { toast('Cliente criado, mas o acesso não foi gravado: ' + e.message, true); } }
-      S.ws = S.wsBase = id; S.perm = null; S.permWs = null; S.view = d.tipo === 'starter' ? 'st-dash' : (sel.includes('mkt-cont') && !sel.includes('adm-painel') ? 'mkt-cont' : 'adm-painel'); await boot();
+      // o Growth Starter tem menu próprio, sem o Marketing: com o Growth's Content marcado, o cliente é Growths completo
+      const starter = d.tipo === 'starter' && !sel.includes('mkt-cont');
+      if (!starter && A && !sel.filter(t => !PAC_SEMPRE.includes(t)).length) throw new Error('Marque o que o cliente acessa (abra as setinhas para escolher).');
+      const id = await q(sb.rpc('criar_workspace_cliente', { p_nome: d.nome, p_modo: starter ? 'starter' : 'completo' }));
+      if (!starter && A) { try { await acGrava(id, sel, todas, pacs, catTodo); } catch (e) { toast('Cliente criado, mas o acesso não foi gravado: ' + e.message, true); } }
+      S.ws = S.wsBase = id; S.perm = null; S.permWs = null; S.view = starter ? 'st-dash' : (sel.includes('mkt-cont') && !sel.includes('adm-painel') ? 'mkt-cont' : 'adm-painel'); await boot();
       toast(sel.includes('mkt-cont') ? 'Cliente criado. Criando a pasta dele no Google Drive…' : 'Cliente criado');
     }, 'Criar cliente', true);
   Promise.all([q(sb.from('acesso_telas').select('*').order('ordem')), q(sb.from('pacotes_acesso').select('id,nome,ativo,telas').order('nome')).catch(() => [])]).then(([c, p]) => {
     catTodo = c.map(t => t.tela); cat = c.filter(t => !/^st-/.test(t.tela) && !TELAS_FORA_DO_MENU.includes(t.tela)); pacs = p || [];
     const box = f.querySelector('#ncAc'); if (!box) return;
     box.innerHTML = acArvore(cat, new Set()); A = acLiga(box);
+    const tipo = f.querySelector('[name=tipo]'), aviso = document.createElement('p'); aviso.className = 'ac-aviso'; box.before(aviso);
+    const ajusta = () => { const st = tipo.value === 'starter'; aviso.hidden = !st; aviso.textContent = 'O Growth Starter tem um menu próprio (diagnóstico e relatórios), sem o Marketing. Se marcar o Growth\'s Content, o cliente passa a ser Growths completo.'; };
+    tipo.onchange = ajusta; ajusta();
+    box.addEventListener('change', () => { if (tipo.value === 'starter' && A.marcadas().includes('mkt-cont')) { tipo.value = 'completo'; ajusta(); toast('Growth\'s Content marcado: o cliente fica como Growths completo.'); } });
     const pre = f.querySelector('#ncPre');
     pre.innerHTML = `<span class="muted">Começar de:</span> <button type="button" class="chip" data-pre="content">Só Growth's Content</button>${pacs.filter(x => x.ativo).map(x => `<button type="button" class="chip" data-pre="${x.id}">${esc(x.nome)}</button>`).join('')}<button type="button" class="chip" data-pre="tudo">Tudo</button><button type="button" class="chip" data-pre="nada">Limpar</button>`;
     pre.querySelectorAll('[data-pre]').forEach(b => b.onclick = () => {
       const k = b.dataset.pre;
+      if (k === 'content') tipo.value = 'completo', ajusta();
       A.marca(k === 'tudo' ? cat.map(t => t.tela) : k === 'nada' ? [] : k === 'content' ? cat.filter(t => /Growth's Content/.test(t.grupo || '')).map(t => t.tela) : ((pacs.find(x => x.id === k) || {}).telas || []));
       if (k === 'content') { const g = [...box.querySelectorAll('.ac-g')].find(x => x.querySelector('.ac-sub')); if (g && g.querySelector('.ac-c').hidden) g.querySelector('.ac-seta').click(); }
     });
