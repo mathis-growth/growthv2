@@ -1,5 +1,9 @@
 
 
+## Dashboard do Instagram (v0.134)
+- `g134.js`: `tabInsta` (aba 'insta' da Máquina; rota `mkt-insta`), gráficos SVG próprios de uma série e um eixo cada (`igBarrasDia`, `igLinhaDia`), barras horizontais com a média geral marcada (`igBarrasH`), `igModalPost` (post contra a média do período, posição e ligação), importação com leitor de CSV com aspas e quebra de linha (`igCsv`), mapeamento de colunas em português e inglês (`IG_COLS`/`igMapeia`), data dia/mês ou mês/dia (`igData`) e prévia.
+- Testes: `t134_instagram_dashboard.py` (banco e telas).
+
 ## Máquina de Conteúdo (v0.133)
 - `integra133.py` corta as versões antigas de `dadosConteudo`, `vConteudo`, `modalConteudo`, Kanban, Priorização, Plano e Linhas e injeta `g133.js` (antes de `const PQ_TOKEN`) e `g133.css`. Relatórios, métricas e importações ficaram como estavam (ganharam agrupamento por território, formato da Máquina e destino).
 - Abas: Kanban, Priorização (`tabPrior` / `tabPriorNotas` no método antigo), Máquina (`tabMaquina`, matriz território × formato), Semana (`tabPlano`, dias com arrastar e soltar; metas por tipo de mídia num bloco recolhível), Fechamento (`tabFechamento`, RPC `conteudo_semana` e `conteudo_fechar_semana`), Relatórios, Persona (`tabPersona`), Linha editorial (`tabLinhas`, núcleo, método, territórios, camadas, formatos, quadros).

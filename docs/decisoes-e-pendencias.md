@@ -1,5 +1,15 @@
 
 
+## v0.134 — Dashboard do Instagram
+**Pedido da Rebecka (24 e 25/10)**: uma aba de dashboard do Instagram dentro da Máquina, com insights, o top 1, os melhores conteúdos, os números de cada post e tudo separado por tema/território, para ver em gráficos.
+Decisões:
+- Fica como aba **Instagram** da Máquina de Conteúdo e como atalho **Marketing → Instagram**.
+- Três fontes, sem contar duas vezes: conexão com a Meta (quando aprovada), **planilha importada** (Meta Business Suite ou Metricool, que ela já usa sem plano pago; o Metricool gratuito não tem API) e as métricas registradas nas publicações da Máquina. Se um post real está ligado ao conteúdo, a métrica digitada no conteúdo deixa de contar.
+- **Ligação post ↔ conteúdo da Máquina** é o que permite ver por território, frente, formato, quadro, destino e etiqueta. Automática só quando não há dúvida (1 post e 1 conteúdo do Instagram no mesmo dia); o resto se liga no próprio post.
+- Engajamento = (curtidas + comentários + compartilhamentos + salvamentos) ÷ alcance (o mesmo dos Relatórios). Médias por grupo: engajamento ponderado pelo alcance; demais métricas, média por post. Comparação sempre com o período anterior de mesmo tamanho.
+- Datas da planilha: dia/mês ou mês/dia é decidido pelos dados (dia > 12); sem como decidir, cabeçalho em inglês = mês/dia. A prévia mostra como leu antes de importar.
+**Pendente**: rodar `RODAR_v0.133_maquina_conteudo.sql` e `RODAR_v0.134_instagram.sql` em produção; aprovação do app da Meta para a conexão automática (horário dos posts por hora e miniaturas só vêm com ela ou se a planilha trouxer).
+
 ## v0.133 — Máquina de Conteúdo
 **Pedido da Rebecka (24/10)**: o menu de conteúdo passa a se chamar Máquina de Conteúdo; padronizar no Growths a linha editorial V18 (Estratégia, Negócios — com Empreendedorismo registrado —, Dados + IA e Vida Real & Crenças), os formatos (No Quadro, Yap Content, Análise, Carrossel caderno com animações e a série musical sertaneja feita com IA, 1× por semana), destino, palavra-chave, critérios, fechamento semanal, etiquetas e dias da semana, tudo dentro do Growths, sem planilha; e um questionário de persona para a IA montar a linha editorial pelo método dela.
 Decisões:

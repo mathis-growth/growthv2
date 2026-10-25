@@ -1,5 +1,9 @@
 
 
+## v0.134
+- index.html: 0.133 → 0.134 (`integra134.py`, que roda o `integra133.py`).
+- Novo: `20261030100000_instagram_dashboard.sql`, `RODAR_v0.134_instagram.sql`; teste `t134_instagram_dashboard.py`. Pendente em produção.
+
 ## v0.133
 - index.html: 0.132 → 0.133 (`integra133.py`, que roda o `integra132.py` e reescreve as telas do módulo de conteúdo).
 - Novo: `20261029100000_maquina_conteudo.sql`, `RODAR_v0.133_maquina_conteudo.sql`, edge function `linha-editorial` (com `logica_test.ts`); teste `t133_maquina_conteudo.py`. Pendente em produção.

@@ -100,6 +100,17 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.134] - 2026-10-25 — Dashboard do Instagram
+- Aba **Instagram** na Máquina de Conteúdo e atalho **Marketing → Instagram**.
+- **Indicadores** do período contra o período anterior: posts, alcance, interações, engajamento, salvamentos, compartilhamentos e seguidores.
+- **Top 1** pela métrica escolhida (engajamento, alcance, interações, salvamentos, compartilhamentos, comentários, curtidas, visualizações ou seguidores ganhos), com quantas vezes a média.
+- **Gráficos por dia**: alcance dos posts, interações, seguidores e alcance da conta.
+- **O que performa melhor**: média da métrica por território, frente, formato, quadro, tipo de mídia, destino, etiqueta, dia da semana e horário, com a média geral marcada.
+- **Melhores posts** (top 10) e **todos os posts**; cada post abre os números contra a média do período, a posição no ranking e a ligação com o conteúdo da Máquina.
+- **Importar posts** da planilha do Meta Business Suite ou do Metricool (CSV, colunas em português ou inglês, prévia antes de gravar) e **dados da conta** por dia, até a conexão com a Meta ser aprovada. Posts ligados sozinhos ao conteúdo do mesmo dia quando não há dúvida.
+- Banco: `20261030100000_instagram_dashboard.sql` / `RODAR_v0.134_instagram.sql`. **Ainda não aplicado em produção** (depende da v0.133).
+- Testes: `t134_instagram_dashboard.py`.
+
 ## [0.133] - 2026-10-24 — Máquina de Conteúdo
 - O menu **Planejamento de conteúdo** passa a se chamar **Máquina de Conteúdo**, com a metodologia Máquina Editorial de Aprendizado (V18) dentro do Growths, sem planilha.
 - **Modelo V18 por botão**: 4 territórios (Estratégia com as frentes A a E; Negócios com Growth, Finanças, Gestão e **Empreendedorismo**; Dados + IA; Vida Real & Crenças), camadas transversais, 5 formatos (**No Quadro / Tablet, Yap Content, Análise, Carrossel caderno** e **Série musical (IA)** 1× por semana), 4 quadros de autoridade, destinos Rebecka / Mathisa / Ambas, meta de 12 por semana, fechamento no sábado e o núcleo da marca (tese, inimigo comum, frases).

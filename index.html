@@ -388,6 +388,49 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 
 </style>
 <style id="v122">
+/* v0.134 Dashboard do Instagram */
+.ig-d{font-size:12px;color:var(--muted)}
+.ig-d.up{color:var(--good,#17803d)}.ig-d.down{color:var(--bad,#b42318)}
+.ig-fonte{font-size:13px}
+.ig-top{display:grid;grid-template-columns:1fr 280px;gap:20px;align-items:start;border-left:4px solid var(--accent)}
+.ig-top h2{margin:4px 0 8px;font-size:19px;line-height:1.3}
+.ig-k{font-size:12px;font-weight:600;color:var(--accent)}
+.ig-top-n{border-left:1px solid var(--line);padding-left:20px}
+.ig-big{font-family:var(--font-display);font-size:34px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+.ig-top-n dl{display:grid;grid-template-columns:1fr auto;gap:4px 12px;margin:12px 0 0;font-size:13px}
+.ig-top-n dt{color:var(--muted)}.ig-top-n dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.ig-x{font-size:12px;font-weight:600;white-space:nowrap}
+.ig-x.up{color:var(--good,#17803d)}.ig-x.down{color:var(--muted)}
+.ig-g2{gap:16px;align-items:start}
+.ig-svg text{font-size:11px;fill:var(--muted);font-variant-numeric:tabular-nums}
+.ig-svg .ig-g{stroke:var(--line);stroke-width:1}
+.ig-svg .ig-base{stroke:var(--muted);stroke-width:1;opacity:.5}
+.ig-svg .ig-bar{fill:var(--accent)}
+.ig-svg .ig-hit:hover .ig-bar{fill:var(--accent-2)}
+.ig-svg .ig-line{fill:none;stroke:var(--accent);stroke-width:2;stroke-linejoin:round}
+.ig-svg .ig-dot{fill:var(--accent);stroke:var(--surface);stroke-width:2}
+.ig-svg .ig-hit:hover .ig-dot{r:5}
+.ig-svg .ig-lbl{fill:var(--ink);font-weight:600}
+.ig-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.ig-head h2{margin:0}
+.ig-chips{display:flex;flex-wrap:wrap;gap:6px}
+.ig-ord{flex-direction:row!important;align-items:center;gap:6px}
+.ig-hb{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.ig-hr{display:grid;grid-template-columns:minmax(140px,240px) 1fr 80px;gap:12px;align-items:center;font-size:13px}
+.ig-hn{display:flex;align-items:center;gap:6px;min-width:0}
+.ig-hn i{width:10px;height:10px;border-radius:2px;flex:0 0 auto}
+.ig-hn small{color:var(--muted);margin-left:auto;white-space:nowrap;padding-left:6px}
+.ig-ht{position:relative;height:16px;background:color-mix(in srgb,var(--line) 55%,transparent);border-radius:0 4px 4px 0}
+.ig-ht u{display:block;height:100%;background:var(--accent);border-radius:0 4px 4px 0}
+.ig-avg{position:absolute;top:-3px;bottom:-3px;width:0;border-left:2px dashed var(--ink);opacity:.55}
+.ig-avg-k{display:inline-block;width:0;height:12px;border-left:2px dashed var(--ink);opacity:.55;margin-right:6px;vertical-align:middle}
+.ig-hv{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.ig-post{display:flex;gap:12px;margin-bottom:10px}
+.ig-thumb{width:96px;height:96px;object-fit:cover;border-radius:8px;flex:0 0 auto}
+.ig-prev{margin-top:8px;padding:8px 10px;border-radius:8px;background:var(--surface-2);font-size:13px}
+.ig-prev.bad{color:var(--bad,#b42318)}
+@media (max-width:820px){.ig-top{grid-template-columns:1fr}.ig-top-n{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:12px}.ig-hr{grid-template-columns:120px 1fr 64px}}
+
 /* v0.133 Máquina de Conteúdo */
 .mq-terr,.mq-fmt{border-left:4px solid var(--c);background:color-mix(in srgb,var(--c) 13%,var(--surface));color:var(--ink)}
 .mq-fmt{border-left:0;border:1px solid color-mix(in srgb,var(--c) 45%,var(--line));border-radius:4px}
@@ -697,7 +740,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.133 · 24/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.134 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -721,7 +764,7 @@ setTimeout(() => { if ($('#login').classList.contains('hide') && $('#app').class
 const NAV = [
   { g: 'Growth Starter', flat: true, starter: true, items: [['st-dash', 'Dashboard'], ['mkt-dash', 'Aquisição'], ['mkt-midia', 'Mídia'], ['crm-vendas', 'Vendas'], ['ho-retencao', 'Retenção & Expansão'], ['cad-produtos', 'Produtos'], ['crm-alunos', 'Clientes / Alunos'], ['fin-dash', 'Financeiro'], ['st-relatorios', 'Relatórios'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['gro-ciclo', 'Experimentos']] },
   { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['adm-plano', 'Planejamento da empresa'], ['adm-empresa', 'Cadastro da empresa']] },
-  { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários'], ['mkt-cont', 'Máquina de Conteúdo']] },
+  { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários'], ['mkt-cont', 'Máquina de Conteúdo'], ['mkt-insta', 'Instagram']] },
   { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['mkt-origem', 'Leads por origem']] },
   { g: 'RevOps', items: [['ho-dash', 'Dashboard'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
   { g: 'Financeiro', items: [['fin-dash', 'Dashboard'], ['fin-receber', 'Contas a receber'], ['fin-pagar', 'Contas a pagar'], ['fin-custo', 'Custos e margens'], ['fin-lanc', 'Lançamentos contábeis']] },
@@ -988,6 +1031,7 @@ const ICO = {
   'mkt-origem': P('<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>'),
   'gro-analise': P('<path d="M3 4h18l-7 8v6l-4 2v-8z"/>'),
   'gro-pesq': P('<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/>'),
+  'mkt-insta': P('<rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle cx="16.9" cy="7.1" r=".6"/>'),
   'mkt-cont': P('<rect x="4" y="4" width="6" height="16" rx="1.5"/><rect x="14" y="4" width="6" height="10" rx="1.5"/>'),
   'mkt-camp': P('<path d="M5 21V4"/><path d="M5 4h12l-2 4 2 4H5"/>'),
   'crm-jornada': P('<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="17" y="4" width="4" height="13" rx="1.5"/>'),
@@ -1119,7 +1163,7 @@ $('#novoCli').onclick = () => { modal('Novo cliente', `<label>Nome do cliente<in
 $('#wsSel').onchange = e => { S.ws = S.wsBase = e.target.value; if (ehCasaV(S.view)) S.view = 'fin-dash'; S.perm = null; S.permWs = null; render(); };
 
 const VIEWS = {
-  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo,
+  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': m => { S.ct = { ...(S.ct || {}), tab: 'insta' }; S.view = 'mkt-cont'; return vConteudo(m); },
   'crm-leads': vCrmLeads, 'crm-oport': vCrmOport, 'crm-vendas': vVendas, 'crm-contratos': vContratos, 'crm-comissoes': vComissoes, 'cad-comissoes': vComissoes, 'crm-alunos': vCrmAlunos,
   'fin-receber': vReceber,  'cfg-uso': vUso, 'fin-pagar': vPagar, 'fin-custo': vCustoOp, 'fin-lanc': vLanc, 'adm-painel': vPainel, 'adm-plano': vPlano,
   'cad-clientes': vClientes, 'cad-plataformas': vPlataformas, 'cad-funis': vFunis, 'cad-regras': vRegras,
@@ -14330,11 +14374,11 @@ async function vConteudo(m) {
   const C = S.ct = S.ct || { tab: 'kanban', tema: '', canal: '', formato: '', arq: false, dias: 30 };
   Object.assign(C, { terr: C.terr || '', fmt: C.fmt || '', dest: C.dest || '', tag: C.tag || '', destP: C.destP || '', sem: C.sem || segundaDe(hoje()) });
   const D = await dadosConteudo();
-  const TABS = [['kanban', 'Kanban'], ['prior', 'Priorização'], ['maquina', 'Máquina'], ['plano', 'Semana'], ['fech', 'Fechamento'], ['rel', 'Relatórios'], ['persona', 'Persona'], ['linhas', 'Linha editorial']];
+  const TABS = [['kanban', 'Kanban'], ['insta', 'Instagram'], ['prior', 'Priorização'], ['maquina', 'Máquina'], ['plano', 'Semana'], ['fech', 'Fechamento'], ['rel', 'Relatórios'], ['persona', 'Persona'], ['linhas', 'Linha editorial']];
   m.innerHTML = `<div class="head"><div><h1>Máquina de Conteúdo</h1><span class="muted">Território, formato e destino de cada pauta; score e validação; produção da semana; fechamento com aprendizado; resultado por canal.</span></div>${D.cfg.modelo ? `<span class="pill info" title="Linha editorial instalada">Linha: ${esc(D.cfg.modelo)}</span>` : ''}</div>
   <div class="tabs">${TABS.map(([k, l]) => `<button data-t="${k}" class="${C.tab === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="ctTab" style="display:flex;flex-direction:column;gap:16px"></div>`;
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { C.tab = b.dataset.t; render(); });
-  ({ kanban: tabKanban, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, rel: tabRel, persona: tabPersona, linhas: tabLinhas }[C.tab] || tabKanban)($('#ctTab'), D, C);
+  ({ kanban: tabKanban, insta: tabInsta, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, rel: tabRel, persona: tabPersona, linhas: tabLinhas }[C.tab] || tabKanban)($('#ctTab'), D, C);
 }
 function mqComeco(D) {
   if (D.linhas.length) return '';
@@ -14841,6 +14885,213 @@ function tabLinhas(el, D, C) {
     if (criterios.some(x => !x)) throw new Error('Preencha os 5 critérios.');
     await q(sb.from('conteudo_config').upsert({ workspace_id: S.ws, criterios }, { onConflict: 'workspace_id' })); toast('Critérios salvos'); render();
   }); };
+}
+
+/* ================= v0.134 DASHBOARD DO INSTAGRAM (aba da Máquina de Conteúdo) =================
+   Fontes: conexão com a Meta (quando aprovada), planilha importada (Meta Business Suite ou Metricool) e as métricas registradas
+   nas publicações da Máquina. Tudo vem de instagram_dashboard(); nada é estimado. */
+const IG_MET = [['engajamento', 'Engajamento', 'pct'], ['alcance', 'Alcance', 'n'], ['interacoes', 'Interações', 'n'], ['salvamentos', 'Salvamentos', 'n'], ['compartilhamentos', 'Compartilhamentos', 'n'], ['comentarios', 'Comentários', 'n'], ['curtidas', 'Curtidas', 'n'], ['visualizacoes', 'Visualizações', 'n'], ['seguidores_ganhos', 'Seguidores ganhos', 'n']];
+const IG_MN = Object.fromEntries(IG_MET.map(m => [m[0], m]));
+const IG_GRUPOS = [['territorio', 'Território'], ['frente', 'Frente'], ['formato', 'Formato'], ['quadro', 'Quadro'], ['tipo', 'Tipo de mídia'], ['destino', 'Destino'], ['tag', 'Etiqueta'], ['dia_semana', 'Dia da semana'], ['hora', 'Horário']];
+const IG_TIPO = { reels: 'Reels', clips: 'Reels', video: 'Vídeo', carousel_album: 'Carrossel', carrossel: 'Carrossel', image: 'Imagem', imagem: 'Imagem', feed: 'Feed', story: 'Story', stories: 'Story', foto: 'Imagem', 'carrossel de fotos': 'Carrossel' };
+const igTipo = t => t ? (IG_TIPO[String(t).toLowerCase()] || (FORM_N[t] || String(t).charAt(0).toUpperCase() + String(t).slice(1))) : 'Sem tipo';
+const igFmt = (v, u) => v == null ? '—' : u === 'pct' ? fP(v) : num(v);
+const igVal = (p, k) => k === 'engajamento' ? p.engajamento : p[k];
+const igMedia = (L, k) => { if (k === 'engajamento') { const B = L.filter(p => p.alcance > 0); return B.length ? B.reduce((s, p) => s + p.interacoes, 0) / B.reduce((s, p) => s + p.alcance, 0) : null; } const V = L.map(p => p[k]).filter(v => v != null); return V.length ? V.reduce((a, b) => a + Number(b), 0) / V.length : null; };
+const igDelta = (a, b, inverso) => { if (a == null || b == null || !b) return ''; const v = a / b - 1; if (Math.abs(v) < 0.005) return '<span class="ig-d">= período anterior</span>'; const bom = inverso ? v < 0 : v > 0; return `<span class="ig-d ${bom ? 'up' : 'down'}">${v > 0 ? '▲' : '▼'} ${Math.abs(v * 100).toFixed(0)}% vs. período anterior</span>`; };
+const igTit = p => p.titulo || (p.legenda ? p.legenda.split('\n')[0].slice(0, 90) : '') || `Post de ${dd(p.dia)}`;
+const IG_DOW = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+function igChaves(p, g) {
+  if (g === 'tag') return (p.tags || []).length ? p.tags : ['Sem etiqueta'];
+  if (g === 'tipo') return [igTipo(p.tipo)];
+  if (g === 'dia_semana') return [IG_DOW[new Date(p.dia + 'T12:00:00Z').getUTCDay()]];
+  if (g === 'hora') { const h = p.fonte === 'maquina' ? null : Number(String(p.quando).slice(11, 13)); return [h == null || isNaN(h) ? 'Sem horário' : h < 6 ? 'Madrugada (0h–6h)' : h < 12 ? 'Manhã (6h–12h)' : h < 18 ? 'Tarde (12h–18h)' : 'Noite (18h–24h)']; }
+  const v = p[g]; return [v || (p.conteudo_id ? 'Sem ' + (IG_GRUPOS.find(x => x[0] === g) || [, ''])[1].toLowerCase() : 'Sem ligação com a Máquina')];
+}
+function igAgrupa(L, g, k) {
+  const G = {}; L.forEach(p => igChaves(p, g).forEach(c => { (G[c] = G[c] || []).push(p); }));
+  return Object.entries(G).map(([nome, X]) => ({ nome, n: X.length, v: igMedia(X, k), cor: g === 'territorio' && X[0].territorio_cor })).sort((a, b) => (b.v ?? -1) - (a.v ?? -1));
+}
+/* gráfico de barras por dia (uma série, um eixo) com dica ao passar o mouse */
+function igBarrasDia(serie, k, nome, fmt) {
+  const W = 760, H = 210, L = 52, R = 10, T = 14, B = 26, n = serie.length, V = serie.map(d => d[k]);
+  if (!V.some(v => v != null && v > 0)) return `<div class="empty">Sem ${esc(nome.toLowerCase())} no período.</div>`;
+  const mx = Math.max(...V.filter(v => v != null)) * 1.12, bw = Math.max(2, (W - L - R) / n - 2), X = i => L + i * (W - L - R) / n + 1, Y = v => T + (H - T - B) * (1 - v / mx);
+  const grade = [0, .5, 1].map(f => `<line x1="${L}" x2="${W - R}" y1="${Y(mx * f)}" y2="${Y(mx * f)}" class="ig-g"/><text x="${L - 6}" y="${Y(mx * f) + 3}" text-anchor="end">${num(Math.round(mx * f))}</text>`).join('');
+  const passo = Math.ceil(n / 10), eixo = serie.map((d, i) => i % passo === 0 ? `<text x="${X(i) + bw / 2}" y="${H - 8}" text-anchor="middle">${dd(d.dia).slice(0, 5)}</text>` : '').join('');
+  const barras = serie.map((d, i) => { const v = d[k]; if (v == null || v <= 0) return ''; const y = Y(v), h = Math.max(1, H - B - y); return `<g class="ig-hit"><rect x="${X(i) - 1}" y="${T}" width="${bw + 2}" height="${H - T - B}" fill="transparent"/><path d="M${X(i)},${H - B} v${-(h - Math.min(4, bw / 2))} q0,-${Math.min(4, bw / 2)} ${Math.min(4, bw / 2)},-${Math.min(4, bw / 2)} h${bw - 2 * Math.min(4, bw / 2)} q${Math.min(4, bw / 2)},0 ${Math.min(4, bw / 2)},${Math.min(4, bw / 2)} v${h - Math.min(4, bw / 2)} z" class="ig-bar"/><title>${dd(d.dia)}: ${fmt ? fmt(v) : num(v)} ${esc(nome.toLowerCase())}${d.posts ? ` · ${d.posts} post(s)` : ''}</title></g>`; }).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" class="ig-svg" role="img" aria-label="${esc(nome)} por dia">${grade}${barras}${eixo}<line x1="${L}" x2="${W - R}" y1="${H - B}" y2="${H - B}" class="ig-base"/></svg>`;
+}
+function igLinhaDia(serie, k, nome) {
+  const W = 760, H = 190, L = 64, R = 10, T = 14, B = 26, n = serie.length, P = serie.map((d, i) => [i, d[k]]).filter(x => x[1] != null);
+  if (P.length < 2) return `<div class="empty">Poucos dias com ${esc(nome.toLowerCase())} no período${P.length ? ` (último: ${num(P[0][1])})` : ''}. Importe os dados da conta por dia.</div>`;
+  const vs = P.map(x => x[1]), mn = Math.min(...vs), mx = Math.max(...vs), pad = Math.max(1, (mx - mn) * 0.15), lo = mn - pad, hi = mx + pad;
+  const X = i => L + (n > 1 ? i * (W - L - R) / (n - 1) : 0), Y = v => T + (H - T - B) * (1 - (v - lo) / (hi - lo));
+  const grade = [0, .5, 1].map(f => { const v = lo + (hi - lo) * f; return `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" class="ig-g"/><text x="${L - 6}" y="${Y(v) + 3}" text-anchor="end">${num(Math.round(v))}</text>`; }).join('');
+  const passo = Math.ceil(n / 10), eixo = serie.map((d, i) => i % passo === 0 ? `<text x="${X(i)}" y="${H - 8}" text-anchor="middle">${dd(d.dia).slice(0, 5)}</text>` : '').join('');
+  const pts = P.map(([i, v]) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');
+  const ult = P[P.length - 1];
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" class="ig-svg" role="img" aria-label="${esc(nome)} por dia">${grade}${eixo}<polyline points="${pts}" class="ig-line"/>${P.map(([i, v]) => `<g class="ig-hit"><circle cx="${X(i)}" cy="${Y(v)}" r="9" fill="transparent"/><circle cx="${X(i)}" cy="${Y(v)}" r="3" class="ig-dot"/><title>${dd(serie[i].dia)}: ${num(v)}</title></g>`).join('')}<text x="${X(ult[0]) - 4}" y="${Y(ult[1]) - 9}" text-anchor="end" class="ig-lbl">${num(ult[1])}</text></svg>`;
+}
+function igBarrasH(G, k, mediaGeral) {
+  const u = IG_MN[k][2], mx = Math.max(...G.map(g => g.v || 0), mediaGeral || 0) || 1;
+  if (!G.length) return '<div class="empty">Sem posts no período.</div>';
+  return `<div class="ig-hb">${G.map(g => `<div class="ig-hr" title="${esc(g.nome)}: ${igFmt(g.v, u)} em média, ${g.n} post(s)"><span class="ig-hn">${g.cor ? `<i style="background:${esc(g.cor)}"></i>` : ''}${esc(g.nome)}<small>${g.n} post${g.n > 1 ? 's' : ''}</small></span><span class="ig-ht"><u style="width:${g.v == null ? 0 : Math.max(1, g.v / mx * 100)}%"></u>${mediaGeral != null ? `<b class="ig-avg" style="left:${mediaGeral / mx * 100}%" aria-hidden="true"></b>` : ''}</span><span class="ig-hv">${igFmt(g.v, u)}</span></div>`).join('')}</div>${mediaGeral != null ? `<div class="legend"><span><b class="ig-avg-k"></b>média de todos os posts: ${igFmt(mediaGeral, u)}</span></div>` : ''}`;
+}
+
+async function tabInsta(el, D, C) {
+  const h = hoje(); C.ig = C.ig || { dias: 30, ini: '', fim: '', met: 'engajamento', grupo: 'territorio', fonte: '', ord: 'quando' };
+  const I = C.ig, fim = I.fim || h, ini = I.ini || diaMais(fim, -(I.dias - 1));
+  el.innerHTML = '<div class="panel muted">Carregando os números do Instagram…</div>';
+  let R;
+  try { R = await q(sb.rpc('instagram_dashboard', { p_ws: S.ws, p_ini: ini, p_fim: fim })); }
+  catch (e) { el.innerHTML = `<div class="panel"><b>O dashboard do Instagram ainda não está disponível.</b> <span class="muted">${esc(e.message || String(e))}. Rode a migração da v0.134.</span></div>`; return; }
+  const todos = R.posts || [], P = todos.filter(p => !I.fonte || p.fonte === I.fonte), t = R.totais || {}, a = R.anterior || {}, sg = R.seguidores || {}, F = R.fontes || {};
+  const k = I.met, u = IG_MN[k][2], med = igMedia(P, k);
+  const rank = [...P].filter(p => igVal(p, k) != null).sort((x, y) => igVal(y, k) - igVal(x, k));
+  const top = rank[0], semLig = todos.filter(p => !p.conteudo_id && p.fonte !== 'maquina').length;
+  const segVar = sg.fim != null && (sg.antes ?? sg.inicio) != null ? sg.fim - (sg.antes ?? sg.inicio) : null;
+  const fonteTxt = [F.meta ? `${F.meta} da conexão com a Meta` : '', F.importado ? `${F.importado} da planilha importada` : '', F.maquina ? `${F.maquina} registrados nas publicações da Máquina` : ''].filter(Boolean).join(', ');
+  const vsMed = p => { const v = igVal(p, k); if (v == null || !med) return ''; const r = v / med; return `<span class="ig-x ${r >= 1 ? 'up' : 'down'}">${r >= 1 ? (r).toFixed(1).replace('.', ',') + '× a média' : Math.round((1 - r) * 100) + '% abaixo da média'}</span>`; };
+  const pills = p => `${p.territorio ? pillTerr({ nome: p.territorio, cor: p.territorio_cor }) : ''}${p.formato ? `<span class="pill neutral">${esc(p.formato)}</span>` : ''}<span class="pill neutral">${esc(igTipo(p.tipo))}</span>${pillDest(p.destino)}`;
+  const ordena = { quando: (x, y) => String(y.quando).localeCompare(String(x.quando)), met: (x, y) => (igVal(y, k) ?? -1) - (igVal(x, k) ?? -1) };
+  const lista = [...P].sort(ordena[I.ord] || ordena.quando);
+  const G = igAgrupa(P, I.grupo, k);
+  el.innerHTML = `<div class="filters">
+    <label>Período<select id="igP">${[[7, 'Últimos 7 dias'], [30, 'Últimos 30 dias'], [90, 'Últimos 90 dias'], [365, 'Últimos 12 meses'], [0, 'Escolher datas']].map(([v, l]) => `<option value="${v}"${(I.ini ? 0 : I.dias) === v ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+    ${I.ini ? `<label>De<input type="date" id="igI" value="${ini}"></label><label>Até<input type="date" id="igF" value="${fim}"></label>` : ''}
+    <label>Métrica principal<select id="igM">${IG_MET.map(([v, l]) => `<option value="${v}"${k === v ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+    <label>Fonte<select id="igFo"><option value="">Todas</option><option value="meta"${I.fonte === 'meta' ? ' selected' : ''}>Conexão com a Meta</option><option value="importado"${I.fonte === 'importado' ? ' selected' : ''}>Planilha importada</option><option value="maquina"${I.fonte === 'maquina' ? ' selected' : ''}>Registrado na Máquina</option></select></label>
+    <div class="acts" style="margin-left:auto"><button class="btn pri" id="igImp">Importar posts</button><button class="btn" id="igConta">Importar dados da conta</button>${semLig ? `<button class="btn" id="igLiga">Ligar posts aos conteúdos</button>` : ''}</div></div>
+  <div class="panel ig-fonte"><b>${dd(ini)} a ${dd(fim)}.</b> <span class="muted">${todos.length ? `${todos.length} post(s): ${fonteTxt}.` : 'Nenhum post neste período.'} A conexão automática com o Instagram entra quando o app da Meta for aprovado; até lá, exporte os posts do Meta Business Suite (Insights → Conteúdo → Exportar) ou do Metricool e use <b>Importar posts</b>. Engajamento = (curtidas + comentários + compartilhamentos + salvamentos) ÷ alcance.</span></div>
+  <div class="kpis">${kpi('Posts', num(t.posts || 0), igDelta(t.posts, a.posts))}${kpi('Alcance dos posts', num(t.alcance || 0), igDelta(t.alcance, a.alcance))}${kpi('Interações', num(t.interacoes || 0), igDelta(t.interacoes, a.interacoes))}${kpi('Engajamento', fP(t.engajamento), igDelta(t.engajamento, a.engajamento))}${kpi('Salvamentos', num(t.salvamentos || 0), igDelta(t.salvamentos, a.salvamentos))}${kpi('Compartilhamentos', num(t.compartilhamentos || 0), igDelta(t.compartilhamentos, a.compartilhamentos))}${kpi('Seguidores', sg.fim != null ? num(sg.fim) : '—', segVar == null ? 'importe os dados da conta' : `${segVar > 0 ? '+' : ''}${num(segVar)} no período`)}</div>
+  ${top ? `<div class="panel ig-top"><div class="ig-top-l"><span class="ig-k">Top 1 em ${esc(IG_MN[k][1].toLowerCase())}</span><h2>${esc(igTit(top))}</h2><div class="ca">${pills(top)}</div><p class="muted">${dd(top.dia)}${top.fonte !== 'maquina' && top.quando ? ' às ' + String(top.quando).slice(11, 16) : ''}${top.legenda && top.titulo ? ' · ' + esc(top.legenda.slice(0, 140)) : ''}</p><div class="acts"><button class="btn sm" data-igp="${esc(top.id)}">Ver os números do post</button>${top.url ? `<a class="btn sm" href="${esc(top.url)}" target="_blank" rel="noopener">Abrir no Instagram</a>` : ''}</div></div>
+    <div class="ig-top-n"><div class="ig-big">${igFmt(igVal(top, k), u)}</div>${vsMed(top)}<dl>${['alcance', 'interacoes', 'salvamentos', 'compartilhamentos', 'comentarios'].filter(x => x !== k).map(x => `<dt>${IG_MN[x][1]}</dt><dd>${igFmt(top[x], 'n')}</dd>`).join('')}${k !== 'engajamento' ? `<dt>Engajamento</dt><dd>${fP(top.engajamento)}</dd>` : ''}</dl></div></div>` : ''}
+  <div class="grid2 ig-g2">
+    <div class="panel"><h2>Alcance dos posts por dia</h2>${igBarrasDia(R.serie || [], 'alcance_posts', 'Alcance', null)}</div>
+    <div class="panel"><h2>Interações por dia</h2>${igBarrasDia(R.serie || [], 'interacoes', 'Interações', null)}</div>
+    <div class="panel"><h2>Seguidores</h2>${igLinhaDia(R.serie || [], 'seguidores', 'Seguidores')}</div>
+    <div class="panel"><h2>Alcance da conta por dia</h2>${igBarrasDia(R.serie || [], 'alcance_conta', 'Alcance da conta', null)}${sg.visitas ? `<small class="muted">Visitas ao perfil no período: ${num(sg.visitas)}</small>` : ''}</div>
+  </div>
+  <div class="panel"><div class="ig-head"><h2>O que performa melhor: ${esc(IG_MN[k][1].toLowerCase())} médio por ${esc((IG_GRUPOS.find(g => g[0] === I.grupo) || [, ''])[1].toLowerCase())}</h2><div class="ig-chips" role="tablist">${IG_GRUPOS.map(([g, l]) => `<button class="chip${I.grupo === g ? ' on' : ''}" data-igg="${g}" role="tab" aria-selected="${I.grupo === g}">${l}</button>`).join('')}</div></div>
+    ${['territorio', 'frente', 'formato', 'quadro', 'destino', 'tag'].includes(I.grupo) && todos.some(p => !p.conteudo_id) ? `<small class="muted">Posts sem ligação com a Máquina aparecem como "Sem ligação com a Máquina". Ligue cada post ao conteúdo para ver território, formato e etiquetas.</small>` : ''}
+    ${igBarrasH(G, k, med)}</div>
+  <div class="panel"><h2>Melhores posts em ${esc(IG_MN[k][1].toLowerCase())}</h2><div class="tw"><table><thead><tr><th class="n">#</th><th>Post</th><th>Data</th><th>Território e formato</th><th class="n">${IG_MN[k][1]}</th><th>Contra a média</th><th class="n">Alcance</th><th class="n">Salv.</th><th class="n">Compart.</th></tr></thead><tbody>${rank.slice(0, 10).map((p, i) => `<tr class="clk" data-igp="${esc(p.id)}"><td class="n">${i + 1}</td><td><b>${esc(igTit(p))}</b></td><td>${dd(p.dia)}</td><td>${pills(p)}</td><td class="n"><b>${igFmt(igVal(p, k), u)}</b></td><td>${vsMed(p)}</td><td class="n">${igFmt(p.alcance)}</td><td class="n">${igFmt(p.salvamentos)}</td><td class="n">${igFmt(p.compartilhamentos)}</td></tr>`).join('') || '<tr><td colspan="9" class="empty">Nenhum post com essa métrica no período.</td></tr>'}</tbody></table></div></div>
+  <div class="panel"><div class="ig-head"><h2>Todos os posts do período</h2><label class="ig-ord">Ordenar<select id="igO"><option value="quando"${I.ord === 'quando' ? ' selected' : ''}>Mais recentes</option><option value="met"${I.ord === 'met' ? ' selected' : ''}>${esc(IG_MN[k][1])}</option></select></label></div>
+    <div class="tw"><table><thead><tr><th>Post</th><th>Data</th><th>Tipo</th><th>Conteúdo da Máquina</th><th class="n">Alcance</th><th class="n">Curt.</th><th class="n">Coment.</th><th class="n">Compart.</th><th class="n">Salv.</th><th class="n">Engaj.</th><th>Fonte</th></tr></thead><tbody>${lista.map(p => `<tr class="clk" data-igp="${esc(p.id)}"><td><b>${esc(p.legenda ? p.legenda.split('\n')[0].slice(0, 60) : igTit(p))}</b></td><td>${dd(p.dia)}${p.fonte !== 'maquina' && p.quando ? ' ' + String(p.quando).slice(11, 16) : ''}</td><td>${esc(igTipo(p.tipo))}</td><td>${p.conteudo_id ? `${esc(p.titulo || '')}${p.vinculo === 'automatico' ? ' <span class="pill neutral" title="Ligado pela data: um post e um conteúdo no mesmo dia">pela data</span>' : ''}` : p.fonte === 'maquina' ? '' : '<span class="pill warn">sem ligação</span>'}</td><td class="n">${igFmt(p.alcance)}</td><td class="n">${igFmt(p.curtidas)}</td><td class="n">${igFmt(p.comentarios)}</td><td class="n">${igFmt(p.compartilhamentos)}</td><td class="n">${igFmt(p.salvamentos)}</td><td class="n">${fP(p.engajamento)}</td><td><small>${{ meta: 'Meta', importado: 'Planilha', maquina: 'Máquina' }[p.fonte]}</small></td></tr>`).join('') || '<tr><td colspan="11" class="empty">Nenhum post no período. Importe a planilha de posts para começar.</td></tr>'}</tbody></table></div></div>`;
+  const liga = (id, f) => { const x = el.querySelector('#' + id); if (x) x.onchange = f; };
+  liga('igP', e => { const v = Number(e.target.value); if (v) { I.dias = v; I.ini = ''; I.fim = ''; } else { I.ini = ini; I.fim = fim; } render(); });
+  liga('igI', e => { if (e.target.value && e.target.value <= fim) { I.ini = e.target.value; render(); } else toast('Informe um período válido.', true); });
+  liga('igF', e => { if (e.target.value && e.target.value >= ini) { I.fim = e.target.value; render(); } else toast('Informe um período válido.', true); });
+  liga('igM', e => { I.met = e.target.value; render(); }); liga('igFo', e => { I.fonte = e.target.value; render(); }); liga('igO', e => { I.ord = e.target.value; render(); });
+  el.querySelectorAll('[data-igg]').forEach(b => b.onclick = () => { I.grupo = b.dataset.igg; render(); });
+  el.querySelectorAll('[data-igp]').forEach(r => r.onclick = () => igModalPost(todos.find(p => p.id === r.dataset.igp), P, D));
+  $('#igImp').onclick = () => igModalImport(); $('#igConta').onclick = () => modalImportConta();
+  if ($('#igLiga')) $('#igLiga').onclick = () => act(async () => { const n = await q(sb.rpc('social_vincular_auto', { p_ws: S.ws })); toast(n ? `${n} post(s) ligado(s) pela data. Os outros você liga no próprio post.` : 'Nenhum post ligado automaticamente: em cada dia há mais de um post ou de um conteúdo. Ligue no próprio post.'); render(); });
+}
+
+/* ----- números de um post, comparados com a média do período ----- */
+function igModalPost(p, P, D) {
+  if (!p) return;
+  const linhas = IG_MET.map(([k, l, u]) => { const v = igVal(p, k), m = igMedia(P, k); const r = v != null && m ? v / m : null; return `<tr><td>${l}</td><td class="n"><b>${igFmt(v, u)}</b></td><td class="n">${igFmt(m == null ? null : (u === 'pct' ? m : Math.round(m)), u)}</td><td>${r == null ? '—' : `<span class="ig-x ${r >= 1 ? 'up' : 'down'}">${r >= 1 ? '+' : '−'}${Math.abs(Math.round((r - 1) * 100))}%</span>`}</td></tr>`; }).join('');
+  const pos = k => { const R = [...P].filter(x => igVal(x, k) != null).sort((x, y) => igVal(y, k) - igVal(x, k)); const i = R.findIndex(x => x.id === p.id); return i < 0 ? '—' : `${i + 1}º de ${R.length}`; };
+  const conts = D.cont.filter(c => c.status !== 'arquivado').sort((x, y) => String(y.data_publicacao || '').localeCompare(String(x.data_publicacao || '')));
+  const podeLigar = p.fonte !== 'maquina';
+  const f = modal('Post de ' + dd(p.dia), `<div class="ig-post">${p.miniatura ? `<img src="${esc(p.miniatura)}" alt="" class="ig-thumb">` : ''}<div><p style="margin:0 0 6px;white-space:pre-wrap">${esc(p.legenda || p.titulo || '(sem legenda)')}</p><small class="muted">${esc(igTipo(p.tipo))} · ${dd(p.dia)}${p.fonte !== 'maquina' && p.quando ? ' às ' + String(p.quando).slice(11, 16) : ''} · fonte: ${{ meta: 'conexão com a Meta', importado: 'planilha importada', maquina: 'publicação registrada na Máquina' }[p.fonte]}</small>${p.url ? `<div style="margin-top:6px"><a href="${esc(p.url)}" target="_blank" rel="noopener">Abrir no Instagram</a></div>` : ''}</div></div>
+    <div class="tw"><table><thead><tr><th>Métrica</th><th class="n">Este post</th><th class="n">Média do período</th><th>Diferença</th></tr></thead><tbody>${linhas}</tbody></table></div>
+    <p class="muted" style="margin:8px 0">Posição no período: ${pos('engajamento')} em engajamento · ${pos('alcance')} em alcance · ${pos('salvamentos')} em salvamentos.</p>
+    ${podeLigar ? `<label>Conteúdo da Máquina<select name="cont"><option value="">— sem ligação —</option>${conts.map(c => `<option value="${c.id}"${c.id === p.conteudo_id ? ' selected' : ''}>${esc(c.titulo)}${c.data_publicacao ? ' · ' + dd(c.data_publicacao) : ''}</option>`).join('')}</select><span style="font-weight:400">Ligado, o post entra nos resultados por território, frente, formato, destino e etiqueta.</span></label>` : `<p class="muted">Estas métricas foram registradas no conteúdo "${esc(p.titulo || '')}" da Máquina.</p>`}
+    ${p.conteudo_id ? '<div class="acts" style="justify-content:flex-start;margin-top:6px"><button type="button" class="btn sm" id="igAbreC">Abrir o conteúdo (decisão e aprendizado)</button></div>' : ''}`, podeLigar ? async (d) => {
+      const novo = d.cont || null; if (novo === (p.conteudo_id || null)) return;
+      await q(sb.from('social_posts').update({ conteudo_id: novo, vinculo: novo ? 'manual' : null }).eq('id', p.id)); toast(novo ? 'Post ligado ao conteúdo' : 'Ligação retirada');
+    } : null, 'Salvar ligação', true);
+  const b = f.querySelector('#igAbreC'); if (b) b.onclick = () => { const c = D.cont.find(x => x.id === p.conteudo_id); if (c) modalConteudo(c, D); };
+}
+
+/* ----- importar a planilha de posts (Meta Business Suite, Metricool ou feita à mão) ----- */
+const igNorm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+const IG_COLS = {
+  id_externo: ['identificacao da publicacao', 'id da publicacao', 'post id', 'id do post', 'media id', 'id'],
+  publicado_em: ['horario de publicacao', 'publish time', 'data de publicacao', 'data e hora', 'date', 'data', 'published', 'publicado em', 'fecha'],
+  tipo: ['tipo de publicacao', 'post type', 'tipo de midia', 'media type', 'tipo', 'type'],
+  legenda: ['descricao', 'description', 'legenda', 'caption', 'texto', 'text', 'titulo'],
+  url: ['link permanente', 'permalink', 'link', 'url'],
+  alcance: ['alcance', 'reach', 'contas alcancadas', 'accounts reached'],
+  impressoes: ['impressoes', 'impressions'],
+  visualizacoes: ['visualizacoes', 'views', 'reproducoes', 'plays', 'video views'],
+  curtidas: ['curtidas', 'likes', 'reacoes', 'reactions'],
+  comentarios: ['comentarios', 'comments'],
+  compartilhamentos: ['compartilhamentos', 'shares'],
+  salvamentos: ['salvamentos', 'saves', 'salvos', 'saved'],
+  seguidores_ganhos: ['seguimentos', 'follows', 'novos seguidores', 'seguidores ganhos']
+};
+function igCsv(txt) {
+  txt = String(txt || '').replace(/^﻿/, '');
+  const prim = txt.split(/\r?\n/).find(l => l.trim()) || '';
+  const sep = [';', '\t', ','].sort((x, y) => prim.split(y).length - prim.split(x).length)[0];
+  const rows = []; let row = [], cel = '', aspas = false;
+  for (let i = 0; i < txt.length; i++) {
+    const ch = txt[i];
+    if (aspas) { if (ch === '"' && txt[i + 1] === '"') { cel += '"'; i++; } else if (ch === '"') aspas = false; else cel += ch; }
+    else if (ch === '"') aspas = true;
+    else if (ch === sep) { row.push(cel); cel = ''; }
+    else if (ch === '\n' || ch === '\r') { if (ch === '\r' && txt[i + 1] === '\n') i++; row.push(cel); cel = ''; if (row.some(x => x.trim())) rows.push(row); row = []; }
+    else cel += ch;
+  }
+  row.push(cel); if (row.some(x => x.trim())) rows.push(row);
+  return rows.map(r => r.map(x => x.trim()));
+}
+function igMapeia(cab) {
+  const N = cab.map(igNorm), M = {};
+  for (const [k, al] of Object.entries(IG_COLS)) {
+    let i = -1;
+    for (const a of al) { i = N.findIndex((h, j) => h === a && !Object.values(M).includes(j)); if (i >= 0) break; }
+    if (i < 0) for (const a of al) { if (a.length < 4) continue; i = N.findIndex((h, j) => h.startsWith(a) && !Object.values(M).includes(j)); if (i >= 0) break; }
+    if (i >= 0) M[k] = i;
+  }
+  return M;
+}
+const igInt = v => { const s = String(v ?? '').trim(); if (!s || /^[-–—]+$/.test(s)) return null; const d = s.replace(/[.,\s](?=\d{3}(\D|$))/g, ''); return /^\d+$/.test(d) ? Number(d) : NaN; };
+function igData(s, ordem) {
+  s = String(s || '').trim(); let m;
+  if ((m = s.match(/^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{1,2}):(\d{2}))?/))) return `${m[1]}-${m[2]}-${m[3]}T${(m[4] || '12').padStart(2, '0')}:${m[5] || '00'}:00-03:00`;
+  if ((m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?:,?\s+(\d{1,2}):(\d{2}))?/))) {
+    const [d1, d2] = ordem === 'mdy' ? [m[2], m[1]] : [m[1], m[2]], ano = m[3].length === 2 ? '20' + m[3] : m[3];
+    if (Number(d2) > 12 || Number(d1) > 31) return null;
+    return `${ano}-${d2.padStart(2, '0')}-${d1.padStart(2, '0')}T${(m[4] || '12').padStart(2, '0')}:${m[5] || '00'}:00-03:00`;
+  }
+  return null;
+}
+function igLeituraPlanilha(txt) {
+  const rows = igCsv(txt); if (rows.length < 2) throw new Error('A planilha precisa do cabeçalho e de pelo menos uma linha.');
+  const M = igMapeia(rows[0]); if (M.publicado_em == null) throw new Error('Não encontrei a coluna da data de publicação (ex.: "Horário de publicação", "Publish time" ou "Data").');
+  if (M.alcance == null && M.curtidas == null) throw new Error('Não encontrei colunas de métricas (alcance, curtidas…).');
+  const corpo = rows.slice(1).filter(r => r[M.publicado_em]);
+  // dia/mês ou mês/dia: decide pelos dados; sem como saber, cabeçalho em inglês = mês/dia
+  let ordem = /publish time|date/i.test(rows[0][M.publicado_em]) && !/data/i.test(rows[0][M.publicado_em]) ? 'mdy' : 'dmy';
+  const barras = corpo.map(r => r[M.publicado_em].match(/^(\d{1,2})\/(\d{1,2})\//)).filter(Boolean);
+  if (barras.some(x => Number(x[1]) > 12)) ordem = 'dmy'; else if (barras.some(x => Number(x[2]) > 12)) ordem = 'mdy';
+  const itens = corpo.map((r, i) => {
+    const n = i + 2, o = {}, g = k => M[k] == null ? null : r[M[k]];
+    o.publicado_em = igData(g('publicado_em'), ordem); if (!o.publicado_em) throw new Error(`Linha ${n}: não entendi a data "${g('publicado_em')}".`);
+    ['alcance', 'impressoes', 'visualizacoes', 'curtidas', 'comentarios', 'compartilhamentos', 'salvamentos', 'seguidores_ganhos'].forEach(k => { const v = igInt(g(k)); if (Number.isNaN(v)) throw new Error(`Linha ${n}: ${k} "${g(k)}" não é um número inteiro.`); o[k] = v; });
+    o.tipo = g('tipo') || null; o.legenda = g('legenda') || null; o.url = /^https?:\/\//i.test(g('url') || '') ? g('url') : null;
+    o.id_externo = g('id_externo') || o.url || ('sem-id:' + o.publicado_em + ':' + igNorm(o.legenda || '').slice(0, 60));
+    return o;
+  });
+  return { itens, M, ordem, cab: rows[0] };
+}
+function igModalImport() {
+  const f = modal('Importar posts do Instagram', `<p class="muted" style="margin:0 0 8px">Use a planilha exportada do <b>Meta Business Suite</b> (Insights → Conteúdo → Exportar dados, em CSV) ou do <b>Metricool</b>, ou monte a sua com as colunas <b>data;tipo;legenda;link;alcance;curtidas;comentarios;compartilhamentos;salvamentos</b>. O mesmo post importado de novo é atualizado, não duplicado. Se der erro em qualquer linha, nada é importado.</p>
+    <label>Arquivo CSV<input type="file" name="arq" accept=".csv,text/csv,text/plain"></label><label>ou cole aqui<textarea name="csv" rows="7"></textarea></label><div id="igPrev"></div>`, async d => {
+    const txt = d.csv; if (!txt || !txt.trim()) throw new Error('Escolha o arquivo ou cole a planilha.');
+    const L = igLeituraPlanilha(txt);
+    const r = await q(sb.rpc('social_importar_posts', { p_ws: S.ws, p_itens: L.itens }));
+    toast(`${r.novos} post(s) novo(s), ${r.atualizados} atualizado(s)${r.ligados ? `, ${r.ligados} ligado(s) a conteúdos da Máquina pela data` : ''}.`);
+  }, 'Importar', true);
+  const ta = f.elements.csv, prev = () => { const el = $('#igPrev'); if (!ta.value.trim()) { el.innerHTML = ''; return; } try { const L = igLeituraPlanilha(ta.value); const nomes = Object.entries(L.M).map(([k, i]) => `${k.replace('_', ' ')} ← "${esc(L.cab[i])}"`); el.innerHTML = `<div class="ig-prev"><b>${L.itens.length} post(s) prontos.</b> Datas lidas como ${L.ordem === 'mdy' ? 'mês/dia' : 'dia/mês'} (confira: primeiro post em ${dd(L.itens[0].publicado_em.slice(0, 10))}).<br><small class="muted">Colunas: ${nomes.join(' · ')}</small></div>`; } catch (e) { el.innerHTML = `<div class="ig-prev bad">${esc(e.message)}</div>`; } };
+  ta.oninput = prev;
+  f.elements.arq.onchange = e => { const a = e.target.files[0]; if (!a) return; const r = new FileReader(); r.onload = () => { ta.value = r.result; prev(); }; r.readAsText(a, 'utf-8'); };
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

@@ -1,5 +1,12 @@
 
 
+## v0.134 — Dashboard do Instagram
+- Posts do período = dia da publicação (fuso de São Paulo) entre as datas. Fontes: Meta, planilha importada e publicações da Máquina com canal Instagram que não estão ligadas a nenhum post.
+- Engajamento do post = interações ÷ alcance; do período e dos grupos = soma das interações ÷ soma do alcance (só posts com alcance). Outras métricas por grupo = média por post.
+- Período anterior = mesmo número de dias, imediatamente antes. Seguidores: último valor do período; variação contra o último valor antes do período (ou o primeiro do período).
+- Top 1 e melhores = ordem pela métrica escolhida; "contra a média" = valor do post ÷ média do período.
+- Ligação automática: só com exatamente 1 post sem ligação e 1 conteúdo (Instagram nos canais, agendado ou publicado, sem post ligado) no mesmo dia.
+
 ## v0.133 — Máquina de Conteúdo
 - Território = linha editorial; frente = tema dentro do território; camada transversal = frente marcada como transversal. Formato = como é feito; quadro = formato de autoridade (opcional); tipo de mídia = reels, carrossel etc.
 - Score V18: 6 critérios de 1 a 5; total = soma (6 a 30), só quando as 6 notas existem. Ordem: VALIDAR primeiro (no Kanban), depois score, potencial de impacto, robustez da evidência e data de criação.

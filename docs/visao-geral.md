@@ -1,5 +1,8 @@
 
 
+## v0.134
+**Dashboard do Instagram.** Aba Instagram na Máquina de Conteúdo (e atalho em Marketing): posts, alcance, interações, engajamento, salvamentos, compartilhamentos e seguidores contra o período anterior; top 1; gráficos por dia; o que performa melhor por território, frente, formato, quadro, tipo de mídia, destino, etiqueta, dia da semana e horário; melhores posts; e cada post contra a média. Funciona com a planilha do Meta Business Suite ou do Metricool até a conexão com a Meta ser aprovada.
+
 ## v0.133
 **Máquina de Conteúdo.** O antigo Planejamento de conteúdo virou a Máquina de Conteúdo, com a metodologia da Rebecka dentro do Growths: territórios e frentes, formatos e quadros, destino (Rebecka, Mathisa ou Ambas), palavra-chave e perguntas de busca, score de 6 critérios e VALIDAR, matriz território × formato, semana por dia (com a série musical 1× por semana), fechamento de sábado com retrospectiva e pré-pauta, e um questionário de persona para a IA propor a linha editorial de qualquer cliente. O modelo V18 é instalado por botão.
 
