@@ -1,5 +1,11 @@
 
 
+## Produção — 25/10/2026
+- Aplicado no Supabase: v0.132 (`assistente_alertas` e `assistente_alertas_agendador`: pg_cron `growths-alertas` no minuto 7 de cada hora, `sistema_config.avisos_url`), funções `avisos` (sem verificação de JWT), `perguntar` (nova versão) e `linha-editorial`. A v0.133 e a v0.134 já estavam no banco, idênticas aos arquivos (conferido função por função).
+- Alertas ligados para **Mathisa — Operação** (resumo às 7h). **Ninguém da equipe desse cliente está marcado com acesso ao sistema**, então os alertas são gravados mas ainda não viram aviso: marcar as pessoas em Alertas e resumo do dia (ou em Equipe).
+- Máquina V18 já instalada na Mathisa — Operação; o dashboard do Instagram já lê os 36 posts da conexão existente.
+- Falta: segredos de e-mail (`RESEND_API_KEY`, `AVISOS_EMAIL_DE`), WhatsApp (`WHATSAPP_TOKEN`, `WHATSAPP_PHONE_ID`, modelo aprovado) e IA (`ANTHROPIC_API_KEY` e/ou `OPENAI_API_KEY`); publicar o `index.html` v0.134 no site.
+
 ## v0.134 — Dashboard do Instagram
 **Pedido da Rebecka (24 e 25/10)**: uma aba de dashboard do Instagram dentro da Máquina, com insights, o top 1, os melhores conteúdos, os números de cada post e tudo separado por tema/território, para ver em gráficos.
 Decisões:
