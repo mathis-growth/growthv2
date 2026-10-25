@@ -1,5 +1,11 @@
 
 
+## Configuração passo a passo e Google do cliente (v0.143)
+- `g143.js`: `vConteudo` novo (configuração ou abas), `csWizard` (abertura, barra de passos, rodapé fixo com Voltar/Continuar/Concluir e o que falta), `csDrive` (conectar Google, sem Drive, completar, trocar, desconectar, espera da pasta), `csRotina`, `csRetornoGoogle`. As telas de Persona, Linha editorial e Canais são as mesmas, dentro dos passos. `integra143.py` renomeia o `vConteudo` antigo para `vConteudoAbas`.
+- Função `supabase/functions/content-google` (index.ts, logica.ts, logica_test.ts), publicada sem verificação de JWT.
+- Migração `20261104100000_content_setup.sql` (aplicada em produção em 25/10/2026). Testes: `t143_content_setup.py`; `t133`, `t134`, `t135`, `t140`, `t141` marcam o módulo como configurado ou seguem a regra nova.
+
+
 ## Correção Growth Starter (v0.142)
 - `g141.js` (`ncModal`): `starter` só quando o Growth's Content não está marcado; aviso `.ac-aviso`; troca automática do tipo. Teste `t141` ganhou 3 verificações.
 

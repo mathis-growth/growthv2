@@ -1,5 +1,12 @@
 
 
+## v0.143
+- `workspaces`: `content_setup_etapa`, `content_setup_em` (configuração concluída), `content_drive_modo` (cliente | mathisa), `content_drive_email`.
+- `content_google` (conta Google do cliente: e-mail, token de acesso contínuo, escopos; só o servidor lê) e `content_google_estados` (logins em andamento, 15 min).
+- `conteudo_backups` (cópia de segurança de configurações removidas; só o servidor lê).
+- Funções: `content_pode_configurar`, `content_setup_estado`, `content_setup_salvar(ws, etapa, concluir, reabrir)`, `content_drive_sem_google`; `content_drive_tentar` passa a valer para quem configura (modo Mathisa). O gatilho que criava a pasta ao ligar o módulo foi removido.
+
+
 ## v0.142
 - Sem mudança no banco. Dado corrigido: cliente "Teste Growth's Content" (modo completo e acesso ao Growth's Content).
 

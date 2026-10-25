@@ -1,5 +1,11 @@
 
 
+## v0.143 — Configuração passo a passo
+1. `supabase/RODAR_v0.143_content_setup.sql` (aplicado em produção em 25/10/2026).
+2. `supabase functions deploy content-google --no-verify-jwt` (publicada em 25/10/2026).
+3. Segredos `GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET` (Google Cloud → Credenciais → ID do cliente OAuth "Aplicativo da Web"; URI de redirecionamento `https://<projeto>.supabase.co/functions/v1/content-google`; Google Drive API ativada).
+
+
 ## v0.142
 Nada a rodar no banco.
 

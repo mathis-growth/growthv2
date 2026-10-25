@@ -100,6 +100,13 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.143] - 2026-10-25 — Growth's Content começa pela configuração
+- Sem configuração, o módulo abre num **passo a passo** de 5 telas (Google Drive, Briefing e persona, Linha editorial e formatos, Canais, Rotina da semana), que guarda onde parou. As abas aparecem só depois de concluir.
+- **Passo 1: conectar o Google Drive do cliente** (login Google dele) e criar lá a pasta com a árvore; sem Drive, a pasta vai para o Drive da Mathisa.
+- A pasta deixa de ser criada ao marcar o módulo no acesso.
+- Configuração da Mathisa removida para o teste (com cópia de segurança).
+- Banco: `20261104100000_content_setup.sql`; função `content-google`. **Aplicado em produção em 25/10/2026** (faltam os segredos do Google).
+
 ## [0.142] - 2026-10-25 — Growth's Content nunca como Growth Starter
 - Corrigido: cliente criado com o Growth's Content ficava como Growth Starter (menu sem o Marketing). Agora marcar o Growth's Content troca para Growths completo, com aviso na tela.
 - Cliente de teste corrigido em produção. Sem mudança no banco.

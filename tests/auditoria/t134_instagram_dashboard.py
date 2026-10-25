@@ -23,6 +23,7 @@ def limpa():
     for t in ['social_posts', 'conteudo_conta_dia', 'conteudo_publicacoes', 'conteudos', 'conteudo_temas', 'conteudo_linhas', 'conteudo_formatos', 'conteudo_config']:
         sql(f"delete from {t} where workspace_id = '{WS}'")
 limpa()
+sql(f"update workspaces set content_setup_em = now() where id = '{WS}'")  # v0.143: módulo já configurado (as abas aparecem)
 
 # ---------- parte 1: banco ----------
 T = sql("insert into workspaces (nome) values ('T134 Insta') returning id").split('\n')[0]

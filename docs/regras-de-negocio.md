@@ -1,5 +1,10 @@
 
 
+## v0.143 — Configuração do Growth's Content
+- Sem `content_setup_em`, a Estratégia de conteúdo mostra só a configuração. Passo pronto: 1 pasta com situação ok; 2 persona com ≥ metade das perguntas respondidas; 3 ≥1 território com frente (não transversal) e ≥1 formato; 4 configuração salva com ≥1 canal; 5 meta semanal ≥ 1.
+- Concluir exige os 5 passos e a pasta (o banco recusa sem a pasta).
+
+
 ## v0.142
 - Cliente com o Growth's Content no acesso é sempre Growths completo (o Growth Starter não tem o Marketing).
 

@@ -1,5 +1,17 @@
 
 
+## v0.143 — Configuração passo a passo; Google Drive do cliente
+**Pedido da Rebecka (25/10)**: a pasta deve ficar no Drive do cliente (conectando a conta Google dele); sem Drive, criar as pastas do nosso lado. A configuração é a primeira tela: sem configuração, nada do módulo aparece; ela segue tela a tela e, preenchida, abre o que existe hoje. Tirar a configuração da Mathisa para testar do zero; primeiro passo "Conectar meu Google".
+Decisões:
+- Configuração da Mathisa — Operação removida em 25/10/2026 (4 territórios, 24 frentes, 9 formatos, 3 metas, configuração), com cópia completa em `conteudo_backups` (dá para restaurar). Posts e DMs do Instagram ficaram.
+- 5 passos, reaproveitando as telas existentes: 1 Google Drive; 2 Briefing e persona (questionário; pronto com metade das perguntas respondidas); 3 Linha editorial e formatos (pronto com território, frente e formato); 4 Canais; 5 Rotina da semana (conteúdos por semana, dia da curadoria — sexta por padrão —, quem publica). "Concluir" só com os 5 prontos e a pasta criada.
+- Google: login OAuth com escopo `drive.file` (o Growths só enxerga o que ele mesmo criou no Drive do cliente); o token fica só no servidor (`content_google`). Pasta "Growth's Content — <cliente>" na raiz do Drive dele + árvore. "Completar as pastas", "Trocar de conta", "Desconectar".
+- Sem Drive: Apps Script da Mathisa (v0.140), na pasta "Mathisa Growth's Content".
+- Marcar o Growth's Content no acesso não cria mais a pasta sozinho: ela nasce no passo 1.
+- Quem configura: quem edita o Marketing do cliente ou a equipe interna.
+**Pendente**: Google Cloud da Mathisa (projeto, Drive API, tela de consentimento com usuários de teste, ID do cliente OAuth) e os segredos `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`; verificação do app no Google antes de vender (até lá, aviso "app não verificado" e só usuários de teste); árvore de subpastas; Instagram ainda é ligado à mão (Zernio).
+
+
 ## v0.142 — Correção: cliente do Growth's Content criado como Growth Starter
 **Relato da Rebecka (25/10)**: o cliente de teste liberou outras coisas e não a parte do marketing.
 **Causa (fato, conferido no banco)**: o cliente "Teste Growth's Content" foi criado às 12h04 na tela antiga (v0.140), em que "Growth Starter" era o tipo de acesso marcado por padrão; o Growth Starter tem menu próprio (diagnóstico e relatórios) e não mostra o Marketing. A pasta no Drive foi criada certa.

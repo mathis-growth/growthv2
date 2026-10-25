@@ -19,6 +19,7 @@ def limpa():
     sql(f"delete from pessoas where workspace_id = '{WS}' and canal_origem = 'instagram_dm'")
     for t in ['conteudos', 'conteudo_temas', 'conteudo_linhas', 'conteudo_formatos', 'conteudo_config']: sql(f"delete from {t} where workspace_id = '{WS}'")
 limpa()
+sql(f"update workspaces set content_setup_em = now() where id = '{WS}'")  # v0.143: módulo já configurado (as abas aparecem)
 def conta(ws):
     c = sql(f"insert into conexoes (workspace_id, plataforma, status) values ('{ws}', 'zernio', 'conectado') returning id").split('\n')[0]
     return sql(f"insert into conexao_contas (workspace_id, conexao_id, tipo, id_externo, nome) values ('{ws}', '{c}', 'instagram', 'acc', 'rebecka.mkt') returning id").split('\n')[0]

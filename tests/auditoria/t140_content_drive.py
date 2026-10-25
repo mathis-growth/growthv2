@@ -21,6 +21,7 @@ def limpa():
     sql(f"update workspaces set content_ativo = false, content_drive_id = null, content_drive_url = null, content_drive_status = null, content_drive_erro = null, content_drive_em = null where id = '{WS}'")
     sql("delete from sistema_config where chave in ('content_drive_url', 'content_drive_raiz')")
 limpa()
+sql(f"update workspaces set content_setup_em = now() where id = '{WS}'")  # v0.143: módulo já configurado
 UID = front.UID
 
 # ---------- banco ----------
@@ -30,14 +31,16 @@ try: sql(f"select content_definir('{CL}', true)", 'authenticated', UID); chk(Fal
 except Exception as e: chk('equipe interna' in str(e), 'só a equipe interna liga o Growth\'s Content')
 sql(f"insert into workspace_membros (workspace_id, user_id, papel) values ('{AG}', '{UID}', 'admin')")
 r = json.loads(sql(f"select content_definir('{CL}', true)", 'authenticated', UID))
-chk(r['content_ativo'] and r['status'] == 'erro' and 'ainda não está ligada' in (r['erro'] or ''), 'marcar dispara o pedido; sem a função configurada, o erro diz o motivo %s' % r)
+chk(r['content_ativo'] and r['status'] is None, 'v0.143: marcar liga o módulo, mas a pasta só nasce no passo 1 da configuração %s' % r)
+sql(f"select content_drive_tentar('{CL}')", 'authenticated', UID)
+chk(sql(f"select content_drive_status || '|' || content_drive_erro from workspaces where id = '{CL}'").startswith('erro|A criação de pastas ainda não está ligada'), 'sem a função configurada, o erro diz o motivo')
 sql("insert into sistema_config (chave, valor) values ('content_drive_url', 'http://127.0.0.1:9/functions/v1/content-drive')")
 sql(f"select content_drive_tentar('{CL}')", 'authenticated', UID)
 st = sql(f"select content_drive_status || '|' || coalesce(content_drive_erro, '') from workspaces where id = '{CL}'")
 chk(st.startswith('erro|') and 'função de pastas' in st, '"Tentar de novo" pede de novo; sem pg_net local, o erro é gravado %s' % st)
 sql(f"update workspaces set content_drive_status = null where id = '{CL}'")
 sql(f"select content_definir('{CL}', false)", 'authenticated', UID); sql(f"select content_definir('{CL}', true)", 'authenticated', UID)
-chk(sql(f"select content_drive_status from workspaces where id = '{CL}'") == 'erro', 'religar pede a pasta de novo enquanto ela não existe')
+chk(sql(f"select content_drive_status from workspaces where id = '{CL}'") == '', 'v0.143: religar não cria pasta sozinho')
 sql(f"update workspaces set content_drive_id = 'pasta1', content_drive_url = 'https://drive.google.com/drive/folders/pasta1', content_drive_status = 'ok', content_drive_erro = null where id = '{CL}'")
 sql(f"select content_definir('{CL}', false)", 'authenticated', UID); sql(f"select content_definir('{CL}', true)", 'authenticated', UID)
 chk(sql(f"select content_drive_status || '|' || content_drive_id from workspaces where id = '{CL}'") == 'ok|pasta1', 'cliente que já tem pasta não pede outra')

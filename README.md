@@ -15,8 +15,8 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.142 · 25/10/2026 (`index.html`) |
-| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.141** (25/10/2026): alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
+| **Versão da tela** | 0.143 · 25/10/2026 (`index.html`) |
+| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.143** (25/10/2026): alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta, projeto do Google e os segredos no Supabase: [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
 
@@ -26,6 +26,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.143 | 25/10/2026 | **Growth's Content começa pela configuração**: passo a passo de 5 telas antes das abas; passo 1 **conecta o Google Drive do cliente** e cria lá a pasta (sem Drive, no da Mathisa). | `RODAR_v0.143_content_setup.sql` + função `content-google`, aplicado em 25/10/2026 |
 | 0.142 | 25/10/2026 | Corrigido: cliente do **Growth's Content** ficava como Growth Starter (sem o Marketing); agora vira Growths completo, com aviso. | Só tela |
 | 0.141 | 25/10/2026 | **Novo cliente** com "O que o cliente acessa" em árvore (setinhas, tela por tela, atalhos); **Growth's Content dentro de Marketing** libera só o módulo e cria a pasta no Drive; Instagram e DMs no catálogo dos pacotes. | `RODAR_v0.141_acesso_content.sql`, aplicado em 25/10/2026 |
 | 0.140 | 25/10/2026 | Módulo renomeado para **Growth's Content**; "Usa o Growth's Content" no cliente cria a **pasta do cliente no Google Drive** (Apps Script), com link no topo do módulo. | `RODAR_v0.140_content_drive.sql` + função `content-drive`, aplicado em 25/10/2026 |

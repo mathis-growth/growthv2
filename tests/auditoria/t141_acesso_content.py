@@ -20,7 +20,7 @@ chk(sql("select string_agg(tela || ':' || grupo, ',' order by tela) from acesso_
 W = sql("insert into workspaces (nome) values ('T141 Livre') returning id").split('\n')[0]
 chk(sql(f"select content_ativo from workspaces where id = '{W}'") == 'f', 'cliente sem restrição não liga o módulo sozinho')
 sql(f"update workspaces set acesso_liga = array['mkt-cont', 'mkt-insta'], acesso_desliga = (select array_agg(tela) from acesso_telas where tela not in ('mkt-cont', 'mkt-insta')) where id = '{W}'")
-chk(sql(f"select content_ativo || '|' || coalesce(content_drive_status, '-') from workspaces where id = '{W}'") in ('true|erro', 'true|criando'), 'acesso com o Growth\'s Content liga o módulo e pede a pasta')
+chk(sql(f"select content_ativo || '|' || coalesce(content_drive_status, '-') from workspaces where id = '{W}'") == 'true|-', 'acesso com o Growth\'s Content liga o módulo (a pasta nasce na configuração)')
 chk(sql(f"select array_to_string(acesso_telas_ws('{W}'), ',')").split(',').__len__() == 4 and 'mkt-insta' in sql(f"select array_to_string(acesso_telas_ws('{W}'), ',')"), 'cliente só com Growth\'s Content vê Estratégia, Instagram e as telas de equipe')
 sql(f"update workspaces set acesso_liga = array['crm-leads'], acesso_desliga = (select array_agg(tela) from acesso_telas where tela <> 'crm-leads') where id = '{W}'")
 chk(sql(f"select content_ativo from workspaces where id = '{W}'") == 'f', 'tirar o Growth\'s Content do acesso desliga o módulo')
@@ -52,7 +52,7 @@ with sync_playwright() as pw:
     pg.fill('#modalRoot [name=nome]', 'T141 Só Content'); pg.click('#modalRoot .pri'); pg.wait_for_timeout(4000)
     r = sql("select content_ativo || '|' || coalesce(content_drive_status, '-') || '|' || array_to_string(acesso_liga, ' ') from workspaces where nome = 'T141 Só Content'")
     chk(sql("select modo_produto from workspaces where nome = 'T141 Só Content'") == 'completo', 'cliente do Growth\'s Content nasce como Growths completo')
-    chk(r.startswith('true|') and 'mkt-cont' in r and 'mkt-insta' in r, 'criar o cliente grava o acesso e liga o Growth\'s Content (pasta pedida) ' + r)
+    chk(r.startswith('true|') and 'mkt-cont' in r and 'mkt-insta' in r, 'criar o cliente grava o acesso e liga o Growth\'s Content ' + r)
     chk(pg.evaluate("S.view") == 'mkt-cont', 'cliente só de conteúdo abre direto no Growth\'s Content')
     nav = pg.inner_text('#nav')
     chk('MARKETING' in nav.upper() and all(x not in nav.upper() for x in ['VENDAS', 'FINANCEIRO', 'REVOPS', 'GROWTH\n', 'PROJETOS', 'ADMINISTRATIVO']), 'menu do cliente: só Marketing (e Configurações) ' + nav.replace('\n', ' | ')[:160])

@@ -1,3 +1,6 @@
+## v0.143
+**Growth's Content começa pela configuração.** Enquanto o módulo não está configurado, Marketing → Growth's Content → Estratégia de conteúdo abre numa configuração passo a passo (5 passos: Google Drive, Briefing e persona, Linha editorial e formatos, Canais, Rotina da semana), que guarda onde a pessoa parou. Só depois de concluída aparecem as abas de sempre. O passo 1 conecta o Google Drive do próprio cliente (login com a conta Google dele) e cria lá a pasta do Growth's Content com a árvore de subpastas; se o cliente não tiver Drive, a pasta é criada no Drive da Mathisa.
+
 ## v0.142
 **Growth's Content nunca cai no Growth Starter.** Ao marcar o Growth's Content no Novo cliente, o tipo de acesso muda sozinho para Growths completo (o Growth Starter tem menu próprio, sem o Marketing), e a tela avisa quando o Growth Starter está escolhido.
 

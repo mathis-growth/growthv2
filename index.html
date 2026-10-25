@@ -387,7 +387,33 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.141 árvore de acesso do cliente */
+<style id="v122">/* v0.143 configuração passo a passo */
+.cs-passos{list-style:none;margin:0 0 16px;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.cs-passos button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;gap:10px;align-items:flex-start;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.cs-passos button:hover{border-color:var(--accent)}
+.cs-passos button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cs-passos li.on button{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
+.cs-passos b{display:block;font-size:13px;line-height:1.3}
+.cs-passos small{display:block;color:var(--muted);font-size:11.5px;line-height:1.3;margin-top:2px}
+.cs-num{flex:none;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;border:1.5px solid var(--muted);color:var(--muted)}
+.cs-passos li.on .cs-num{border-color:var(--accent);color:var(--accent)}
+.cs-passos li.ok .cs-num{background:var(--good,#17803d);border-color:var(--good,#17803d);color:#fff}
+.cs-topo{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.cs-topo h2{margin:2px 0 0}
+.cs-etq{font-size:12px;color:var(--muted);font-weight:600}
+.cs-rodape{position:sticky;bottom:0;z-index:2;display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 -6px 16px rgba(0,0,0,.06)}
+.cs-falta{flex:1;font-size:13px;color:var(--muted)}
+.cs-inicio .cs-lista{margin:8px 0 14px;padding-left:22px;display:flex;flex-direction:column;gap:6px}
+.cs-inicio .cs-lista li.ok{color:var(--muted)}
+.cs-opcoes{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.cs-op h3{margin:0 0 4px}
+.cs-op p{margin:0 0 10px;font-size:13.5px;line-height:1.5}
+.cs-op.on{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.cs-pronto{border-left:4px solid var(--good,#17803d)}
+.cs-aviso{border-left:4px solid var(--warn,#b7791f)}
+@media (max-width:900px){.cs-passos{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.cs-passos{grid-template-columns:1fr}.cs-rodape{flex-wrap:wrap}.cs-falta{flex-basis:100%;order:-1}}
+/* v0.141 árvore de acesso do cliente */
 .ac-fs{margin:6px 0}
 .ac-pre{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:2px 0 8px;font-size:13px}
 .ac-arv{display:flex;flex-direction:column;gap:4px;max-height:46vh;overflow:auto;padding-right:4px;margin-bottom:6px}
@@ -864,7 +890,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.142 · 25/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.143 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -15253,7 +15279,7 @@ const MQ_EST = [['dash', 'Dashboard'], ['kanban', 'Ideias e pautas'], ['prior', 
 const MQ_CANAL = { instagram: [['insta', 'Dashboard'], ['ideias', 'Ideias do Instagram'], ['dms', 'DMs']] };
 const MQ_VIEW_CANAL = { 'mkt-insta': 'instagram' };
 const MQ_CANAL_VIEW = { instagram: 'mkt-insta' };
-async function vConteudo(m) {
+async function vConteudoAbas(m) {
   const C = S.ct = S.ct || { tab: 'dash', tema: '', canal: '', formato: '', arq: false, dias: 30 };
   Object.assign(C, { terr: C.terr || '', fmt: C.fmt || '', dest: C.dest || '', tag: C.tag || '', destP: C.destP || '', sem: C.sem || segundaDe(hoje()) });
   const canal = MQ_VIEW_CANAL[S.view] || null;
@@ -15637,7 +15663,7 @@ async function cdPainel(el, voltas = 0) {
   let L;
   try { L = await q(sb.rpc('content_clientes')); }
   catch (e) { el.innerHTML = `<h2>Growth's Content</h2><p class="muted">A lista ainda não está disponível: ${esc(e.message || String(e))}. Rode a migração da v0.140.</p>`; return; }
-  el.innerHTML = `<div class="ig-head"><div><h2 style="margin:0">Growth's Content</h2><span class="muted">Quem tem o Growth's Content no acesso (Novo cliente, pacote ou Ajustar telas) usa o módulo. Nessa hora o Growths cria a pasta do cliente no Google Drive, dentro de "Mathisa Growth's Content". Desmarcar não apaga a pasta.</span></div><button class="btn sm" id="cdTeste">Testar a ligação com o Drive</button></div>
+  el.innerHTML = `<div class="ig-head"><div><h2 style="margin:0">Growth's Content</h2><span class="muted">Quem tem o Growth's Content no acesso (Novo cliente, pacote ou Ajustar telas) usa o módulo. A pasta é criada no passo 1 da configuração: no Google Drive do cliente ou, se ele não tiver, no da Mathisa ("Tentar de novo" usa o da Mathisa). Aqui o Growths mostra a pasta do cliente no Google Drive, dentro de "Mathisa Growth's Content". Desmarcar não apaga a pasta.</span></div><button class="btn sm" id="cdTeste">Testar a ligação com o Drive</button></div>
     <div class="tw"><table><thead><tr><th>Cliente</th><th>Usa o Growth's Content</th><th>Pasta no Drive</th><th>Atualizado</th></tr></thead><tbody>
     ${L.map(c => `<tr><td><b>${esc(c.nome)}</b>${c.agencia ? ' <small class="muted">(equipe interna)</small>' : ''}</td><td>${c.agencia ? `<label class="chk"><input type="checkbox" data-cdc="${c.id}"${c.content_ativo ? ' checked' : ''}> Sim</label>` : `${c.content_ativo ? '<b>Sim</b>' : '<span class="muted">Não</span>'}<br><small class="muted">pelo acesso do cliente</small>`}</td><td>${cdSituacao(c)}</td><td><small class="muted">${cdData(c.em)}</small></td></tr>`).join('') || '<tr><td colspan="4" class="empty">Nenhum cliente.</td></tr>'}</tbody></table></div>`;
   const de_novo = () => cdPainel(el, voltas + 1);
@@ -15716,7 +15742,7 @@ function ncModal() {
   let A = null, cat = [], pacs = [], catTodo = [];
   const f = modal('Novo cliente', `<label>Nome do cliente<input name="nome" required></label><label>Tipo de acesso<select name="tipo"><option value="completo">Growths completo (operação inteira)</option><option value="starter">Growth Starter (consultoria: só diagnóstico e relatórios)</option></select></label>
     <fieldset class="mq-fs ac-fs"><legend>O que o cliente acessa</legend><div class="ac-pre" id="ncPre"></div><div id="ncAc"><small class="muted">Carregando as telas…</small></div>
-    <small class="muted">Abra a setinha para escolher tela por tela. Marcar <b>Growth's Content</b> (dentro de Marketing) libera só o módulo de conteúdo e cria a pasta do cliente no Google Drive.</small></fieldset>
+    <small class="muted">Abra a setinha para escolher tela por tela. Marcar <b>Growth's Content</b> (dentro de Marketing) libera só o módulo de conteúdo. A pasta no Google Drive é criada no primeiro passo da configuração do módulo.</small></fieldset>
     <p class="muted">Cada cliente tem o seu banco separado. No Growth Starter você importa as planilhas dele, confere o de-para e puxa os relatórios.</p>`,
     async d => {
       const sel = A ? A.marcadas() : [], todas = cat.map(t => t.tela);
@@ -15726,7 +15752,7 @@ function ncModal() {
       const id = await q(sb.rpc('criar_workspace_cliente', { p_nome: d.nome, p_modo: starter ? 'starter' : 'completo' }));
       if (!starter && A) { try { await acGrava(id, sel, todas, pacs, catTodo); } catch (e) { toast('Cliente criado, mas o acesso não foi gravado: ' + e.message, true); } }
       S.ws = S.wsBase = id; S.perm = null; S.permWs = null; S.view = starter ? 'st-dash' : (sel.includes('mkt-cont') && !sel.includes('adm-painel') ? 'mkt-cont' : 'adm-painel'); await boot();
-      toast(sel.includes('mkt-cont') ? 'Cliente criado. Criando a pasta dele no Google Drive…' : 'Cliente criado');
+      toast(sel.includes('mkt-cont') ? 'Cliente criado. Configure o Growth\'s Content: o primeiro passo é o Google Drive.' : 'Cliente criado');
     }, 'Criar cliente', true);
   Promise.all([q(sb.from('acesso_telas').select('*').order('ordem')), q(sb.from('pacotes_acesso').select('id,nome,ativo,telas').order('nome')).catch(() => [])]).then(([c, p]) => {
     catTodo = c.map(t => t.tela); cat = c.filter(t => !/^st-/.test(t.tela) && !TELAS_FORA_DO_MENU.includes(t.tela)); pacs = p || [];
@@ -15745,6 +15771,118 @@ function ncModal() {
       if (k === 'content') { const g = [...box.querySelectorAll('.ac-g')].find(x => x.querySelector('.ac-sub')); if (g && g.querySelector('.ac-c').hidden) g.querySelector('.ac-seta').click(); }
     });
   }).catch(e => { const box = f.querySelector('#ncAc'); if (box) box.innerHTML = `<small class="muted">Não consegui carregar as telas (${esc(e.message || String(e))}). O cliente será criado com acesso a tudo.</small>`; });
+}
+
+/* ===================== v0.143 — Growth's Content: configuração passo a passo (e o Google Drive do cliente) =====================
+   Enquanto a configuração não é concluída, Marketing → Growth's Content → Estratégia de conteúdo mostra só ela.
+   Os passos reaproveitam as telas que já existem (Persona, Linha editorial, Canais). Concluída, abre nas abas de sempre. */
+const CS_PASSOS = [
+  { k: 'drive', t: 'Google Drive', sub: 'Onde ficam os arquivos do cliente', ok: (D, E) => E.drive.status === 'ok', falta: 'Conecte o Google Drive (ou escolha "Não tenho Google Drive") e espere a pasta ficar pronta.' },
+  { k: 'persona', t: 'Briefing e persona', sub: 'Quem é o público e o que a marca defende', ok: D => !!D.personas.length && pRespondidas(D.personas[0].respostas || {}) >= Math.ceil(PERSONA_P.length / 2), falta: `Responda pelo menos ${Math.ceil(PERSONA_P.length / 2)} das ${PERSONA_P.length} perguntas e salve.` },
+  { k: 'linha', t: 'Linha editorial e formatos', sub: 'Territórios, frentes e formatos', ok: D => D.linhas.length > 0 && D.temas.some(t => !t.transversal) && D.fmts.length > 0, falta: 'Aplique a proposta da IA (ou cadastre) pelo menos um território com frente e um formato.' },
+  { k: 'canais', t: 'Canais', sub: 'Onde o conteúdo vai ser publicado', ok: D => !!D.cfg.tem && (D.cfg.canaisAtivos || []).length > 0, falta: 'Marque os canais em uso e salve.' },
+  { k: 'rotina', t: 'Rotina da semana', sub: 'Quantos conteúdos e o dia da curadoria', ok: D => D.cfg.meta != null && D.cfg.meta > 0, falta: 'Informe quantos conteúdos por semana e salve.' }];
+const CS_IR = { persona: 2, linhas: 3, canais: 4 };   // atalhos das telas antigas ("Responder o questionário" etc.) viram passos
+
+async function vConteudo(m) {
+  if (MQ_VIEW_CANAL[S.view]) return vConteudoAbas(m);
+  let E;
+  try { E = await q(sb.rpc('content_setup_estado', { p_ws: S.ws })); }
+  catch (e) { return vConteudoAbas(m); }   // sem a migração da v0.143: segue como antes
+  csRetornoGoogle();
+  if (E && E.concluido_em) return vConteudoAbas(m);
+  const D = await dadosConteudo();
+  return csWizard(m, D, E);
+}
+/* volta do login do Google: avisa e limpa o endereço */
+function csRetornoGoogle() {
+  const p = new URLSearchParams(location.search), g = p.get('google');
+  if (!g) return;
+  if (g === 'ok') toast('Google Drive conectado. A pasta do cliente foi criada.'); else toast('Google Drive: ' + (p.get('erro') || 'não conectou'), true);
+  ['google', 'erro'].forEach(k => p.delete(k));
+  try { history.replaceState(null, '', location.pathname + (p.toString() ? '?' + p : '')); } catch (e) { /* */ }
+}
+async function csWizard(m, D, E) {
+  const C = S.ct = S.ct || { tab: 'dash', tema: '', canal: '', formato: '', arq: false, dias: 30 };
+  Object.assign(C, { terr: C.terr || '', fmt: C.fmt || '', dest: C.dest || '', tag: C.tag || '', destP: C.destP || '', sem: C.sem || segundaDe(hoje()) });
+  if (C.csEtapa == null) C.csEtapa = E.etapa || 0;
+  const n = Math.max(0, Math.min(CS_PASSOS.length, C.csEtapa)), feito = CS_PASSOS.map(p => !!p.ok(D, E)), todos = feito.every(Boolean);
+  const vai = k => { C.csEtapa = k; if (E.pode) sb.rpc('content_setup_salvar', { p_ws: S.ws, p_etapa: k }).then(() => null, () => null); render(); };
+  const passos = `<ol class="cs-passos">${CS_PASSOS.map((p, i) => `<li class="${i + 1 === n ? 'on' : ''}${feito[i] ? ' ok' : ''}"><button type="button" data-cs="${i + 1}"${i + 1 === n ? ' aria-current="step"' : ''}><span class="cs-num" aria-hidden="true">${feito[i] ? '✓' : i + 1}</span><span><b>${p.t}</b><small>${feito[i] ? 'Pronto' : p.sub}</small></span></button></li>`).join('')}</ol>`;
+  m.innerHTML = `<div class="head"><div><h1>Growth's Content</h1><span class="muted">Configuração de ${esc(E.nome || 'cliente')}: ${feito.filter(Boolean).length} de ${CS_PASSOS.length} passos prontos. As abas do módulo aparecem quando tudo estiver configurado.</span></div></div>${n ? passos : ''}<div id="csCorpo" style="display:flex;flex-direction:column;gap:16px"></div>`;
+  m.querySelectorAll('[data-cs]').forEach(b => b.onclick = () => vai(Number(b.dataset.cs)));
+  const el = $('#csCorpo');
+  if (!E.pode) el.insertAdjacentHTML('beforeend', '<div class="panel cs-aviso">Você pode ver a configuração, mas só quem edita o Marketing deste cliente consegue preencher.</div>');
+  // ---------- abertura ----------
+  if (n === 0) {
+    el.insertAdjacentHTML('beforeend', `<div class="panel cs-inicio"><h2>Vamos configurar o Growth's Content</h2><p>São ${CS_PASSOS.length} passos. Você pode parar e voltar quando quiser: o Growths guarda onde você parou.</p>
+      <ol class="cs-lista">${CS_PASSOS.map((p, i) => `<li class="${feito[i] ? 'ok' : ''}"><b>${p.t}</b> <span class="muted">${p.sub}</span>${feito[i] ? ' <span class="pill good">pronto</span>' : ''}</li>`).join('')}</ol>
+      <div class="acts"><button class="btn pri" id="csComeca">${feito.some(Boolean) || E.etapa ? 'Continuar de onde parei' : 'Começar a configuração'}</button></div></div>`);
+    $('#csComeca').onclick = () => vai(Math.max(1, Math.min(CS_PASSOS.length, (feito.findIndex(x => !x) + 1) || CS_PASSOS.length)));
+    return;
+  }
+  const P = CS_PASSOS[n - 1], ok = feito[n - 1], ultimo = n === CS_PASSOS.length;
+  el.insertAdjacentHTML('beforeend', `<div class="cs-topo"><div><span class="cs-etq">Passo ${n} de ${CS_PASSOS.length}</span><h2>${P.t}</h2></div>${ok ? '<span class="pill good">Pronto</span>' : ''}</div><div id="csPasso" style="display:flex;flex-direction:column;gap:16px"></div>
+    <div class="cs-rodape"><button class="btn" id="csVolta">${n === 1 ? 'Voltar ao início' : 'Voltar'}</button><span class="cs-falta">${ok ? '' : esc(P.falta)}</span>
+    ${ultimo ? `<button class="btn pri" id="csFim"${todos && E.pode ? '' : ' disabled'}>Concluir a configuração</button>` : `<button class="btn pri" id="csSegue"${ok ? '' : ' disabled'}>Continuar</button>`}</div>`);
+  $('#csVolta').onclick = () => vai(n - 1);
+  if ($('#csSegue')) $('#csSegue').onclick = () => vai(n + 1);
+  if ($('#csFim')) $('#csFim').onclick = () => act(async () => {
+    await q(sb.rpc('content_setup_salvar', { p_ws: S.ws, p_etapa: n, p_concluir: true }));
+    C.tab = 'dash'; C.csEtapa = null; toast('Growth\'s Content configurado. Bem-vinda às abas do módulo!'); render();
+  });
+  if (ultimo && !todos) $('#csPasso').insertAdjacentHTML('afterend', `<div class="panel cs-aviso">Para concluir, falta: ${CS_PASSOS.filter((p, i) => !feito[i]).map(p => `<b>${p.t}</b>`).join(', ')}.</div>`);
+  const box = $('#csPasso');
+  if (P.k === 'drive') return csDrive(box, E);
+  if (P.k === 'persona') tabPersona(box, D, C);
+  else if (P.k === 'linha') tabLinhas(box, D, C);
+  else if (P.k === 'canais') { tabCanais(box, D, C); igConexao().then(CX => { if (box.isConnected) box.insertAdjacentHTML('afterbegin', `<div class="panel ig-fonte"><b>Instagram</b><br>${igFonteHtml(CX, {})}</div>`); }).catch(() => null); }
+  else if (P.k === 'rotina') csRotina(box, D);
+  box.querySelectorAll('[data-mq-ir]').forEach(b => b.onclick = () => { if (CS_IR[b.dataset.mqIr]) vai(CS_IR[b.dataset.mqIr]); });
+}
+/* ----- passo 1: Google Drive ----- */
+function csDrive(box, E) {
+  const d = E.drive || {}, ok = d.status === 'ok';
+  const voltar = location.origin + location.pathname + '?v=mkt-cont';
+  const conecta = (email) => act(async () => {
+    const { data, error } = await sb.functions.invoke('content-google', { body: { acao: 'iniciar', workspace_id: S.ws, voltar, email } });
+    if (error) throw new Error('A conexão com o Google não respondeu: ' + (error.message || error));
+    if (!data || !data.ok) throw new Error((data && data.erro) || 'Não deu para abrir o login do Google.');
+    location.href = data.url;
+  });
+  const situacao = ok ? `<div class="panel cs-pronto"><b>Pasta pronta.</b> ${d.modo === 'cliente' ? `No Google Drive de <b>${esc(d.email || 'cliente')}</b>.` : 'No Google Drive da Mathisa (o cliente não tem Drive).'} <a class="btn sm" href="${esc(d.url)}" target="_blank" rel="noopener">Abrir a pasta</a></div>`
+    : d.status === 'criando' ? '<div class="panel"><b>Criando a pasta…</b> <span class="muted">Leva alguns segundos.</span></div>'
+    : d.status === 'erro' ? `<div class="panel cs-aviso"><b>A pasta não foi criada.</b> ${esc(d.erro || '')}</div>` : '';
+  box.innerHTML = `${situacao}<p class="muted" style="margin:0">O Growths cria uma pasta para o Growth's Content com a árvore de subpastas do módulo. É ali que os materiais do cliente vão ficar.</p>
+    <div class="cs-opcoes">
+      <div class="panel cs-op${d.modo === 'cliente' ? ' on' : ''}"><h3>Conectar o Google Drive do cliente</h3><p>Entra com a conta Google do cliente e autoriza. A pasta fica no Drive dele, e o Growths só mexe no que ele mesmo criou.</p>
+        <div class="acts">${d.modo === 'cliente' && ok ? `<button class="btn" id="csRefaz">Completar as pastas</button><button class="btn" id="csTroca">Trocar de conta</button><button class="btn" id="csDesc">Desconectar</button>` : `<button class="btn pri" id="csGoogle">Conectar meu Google Drive</button>`}</div></div>
+      <div class="panel cs-op${d.modo === 'mathisa' ? ' on' : ''}"><h3>Não tenho Google Drive</h3><p>A pasta é criada no Google Drive da Mathisa, com o nome do cliente. Dá para conectar o Drive do cliente depois.</p>
+        <div class="acts"><button class="btn" id="csSem"${d.modo === 'mathisa' && ok ? ' disabled' : ''}>${d.modo === 'mathisa' && ok ? 'Pasta criada no Drive da Mathisa' : 'Criar no Drive da Mathisa'}</button></div></div></div>`;
+  const b = id => box.querySelector('#' + id);
+  if (b('csGoogle')) b('csGoogle').onclick = () => conecta();
+  if (b('csTroca')) b('csTroca').onclick = () => conecta();
+  if (b('csRefaz')) b('csRefaz').onclick = () => act(async () => { const { data, error } = await sb.functions.invoke('content-google', { body: { acao: 'refazer', workspace_id: S.ws } }); if (error || !data || !data.ok) throw new Error((data && data.erro) || 'Não deu para completar as pastas.'); toast('Pastas conferidas no Google Drive.'); render(); });
+  if (b('csDesc')) b('csDesc').onclick = () => modal('Desconectar o Google Drive', '<p>O Growths esquece a conta Google do cliente. A pasta e os arquivos continuam no Drive dele. Depois é preciso conectar de novo (ou escolher o Drive da Mathisa).</p>', async () => { const { data, error } = await sb.functions.invoke('content-google', { body: { acao: 'desconectar', workspace_id: S.ws } }); if (error || !data || !data.ok) throw new Error((data && data.erro) || 'Não deu para desconectar.'); toast('Google Drive desconectado.'); }, 'Desconectar');
+  if (b('csSem')) b('csSem').onclick = () => act(async () => { await q(sb.rpc('content_drive_sem_google', { p_ws: S.ws })); toast('Criando a pasta no Drive da Mathisa…'); render(); });
+  // enquanto cria, confere de novo
+  if (d.status === 'criando') { const C = S.ct; C.csVoltas = (C.csVoltas || 0) + 1; if (C.csVoltas < 20) setTimeout(() => { if (box.isConnected) render(); }, 3000); } else S.ct.csVoltas = 0;
+}
+/* ----- passo 5: rotina da semana ----- */
+function csRotina(box, D) {
+  const c = D.cfg, dia = c.meta != null ? c.diaFech : 5;
+  box.innerHTML = `<form class="panel" id="csRot"><div class="grid2">
+    <label>Conteúdos por semana<input type="number" name="meta" min="1" max="100" step="1" required value="${c.meta ?? ''}" placeholder="Ex.: 5"></label>
+    <label>Dia da curadoria (fechamento da semana)<select name="dia">${DIAS_C.map(([nn, , nome]) => `<option value="${nn}"${Number(dia) === nn ? ' selected' : ''}>${nome.charAt(0).toUpperCase() + nome.slice(1)}</option>`).join('')}</select></label>
+    <label style="grid-column:1/-1">Quem publica (marcas ou perfis, separados por vírgula)<input name="destinos" value="${esc(listaTxt(c.destinos))}" placeholder="Ex.: a pessoa, a empresa, ambas"></label></div>
+    <p class="muted" style="margin:8px 0 0">A curadoria é o momento da semana em que você escolhe o que vai ao ar na próxima. A sugestão é sexta-feira.</p>
+    <div class="acts"><button class="btn pri" type="submit">Salvar</button></div></form>`;
+  box.querySelector('#csRot').onsubmit = e => { e.preventDefault(); act(async () => {
+    const f = e.target.elements, meta = Number(f.meta.value);
+    if (!Number.isInteger(meta) || meta < 1) throw new Error('Informe quantos conteúdos por semana (número inteiro).');
+    await q(sb.from('conteudo_config').upsert({ workspace_id: S.ws, meta_semanal: meta, dia_fechamento: Number(f.dia.value), destinos: separa(f.destinos.value, /[,;]/) }, { onConflict: 'workspace_id' }));
+    toast('Rotina salva'); render();
+  }); };
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
