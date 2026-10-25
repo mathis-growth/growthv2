@@ -104,7 +104,7 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - **Estruturas de roteiro e copy**: biblioteca interna (Configurações → Growth's Content (interno)) com 7 estruturas iniciais, editáveis; etapas e instruções só para a equipe.
 - O cliente escolhe as estruturas por formato na nova aba **Estruturas** do Growth's Content (e no passo 7 da configuração); vê só nome e para que serve.
 - **Custos de IA**: tela só para a Rebecka, com tokens, buscas e custo por cliente e por mês, em dólar e em reais (câmbio informado por ela). Os registros começam com a rotina de IA.
-- Banco: `20261107100000_content_estruturas.sql`. **Pendente em produção** (aplicação cancelada em 25/10/2026).
+- Banco: `20261107100000_content_estruturas.sql`. **Aplicado em produção em 25/10/2026**.
 
 ## [0.145] - 2026-10-25 — Canais e materiais do cliente antes da call
 - Configuração em **9 passos**. Novo passo 2, **Seus canais**: o cliente informa o @ de cada plataforma (Instagram, YouTube, TikTok, LinkedIn, Threads, Facebook, site, podcast, outro).

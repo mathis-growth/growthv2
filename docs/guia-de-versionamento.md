@@ -1,7 +1,7 @@
 
 
 ## v0.146
-- index.html: 0.145 → 0.146 (`integra146.py`, que roda o `integra145.py`; novos `g146.js` e `g146.css`; menu, `TELAS_INT`, `S.verCustos`, aba Estruturas). Novo: `20261107100000_content_estruturas.sql`, `RODAR_v0.146_content_estruturas.sql`, teste `t146_estruturas_custos.py`. **Pendente em produção** (branch `v0.146-pendente`, fora do main até aplicar a migração).
+- index.html: 0.145 → 0.146 (`integra146.py`, que roda o `integra145.py`; novos `g146.js` e `g146.css`; menu, `TELAS_INT`, `S.verCustos`, aba Estruturas). Novo: `20261107100000_content_estruturas.sql`, `RODAR_v0.146_content_estruturas.sql`, teste `t146_estruturas_custos.py`. Aplicado em produção (pelo SQL Editor). Ficou numa branch separada (`v0.146-pendente`) até o banco ser aplicado, para a tela não ir ao ar antes.
 
 ## v0.145
 - index.html: 0.144 → 0.145 (`integra145.py`, que roda o `integra144.py`; novos `g145.js` e `g145.css`). Novo: `20261106100000_content_fontes.sql`, `RODAR_v0.145_content_fontes.sql`; teste `t143_content_setup.py` refeito para 9 passos. Aplicado em produção.
