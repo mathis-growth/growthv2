@@ -23,7 +23,7 @@ Deno.serve(async (req: Request) => {
   try {
     const corpo = await req.json().catch(() => ({}));
     const falhaSemWs = (erro: string) => { ws = /^[0-9a-f-]{36}$/i.test(String(corpo.workspace_id || '')) ? String(corpo.workspace_id) : ''; return falha(erro); };
-    const cfgL = await adm.from('sistema_config').select('chave, valor').in('chave', ['content_drive_token', 'content_drive_raiz', 'content_drive_arvore', 'drive_script_url', 'drive_script_senha']);
+    const cfgL = await adm.from('sistema_config').select('chave, valor').in('chave', ['content_drive_token', 'content_drive_raiz', 'content_drive_arvore', 'drive_script_url', 'drive_script_senha', 'drive_script_email']);
     const cfg = Object.fromEntries((cfgL.data || []).map((r: { chave: string; valor: string }) => [r.chave, r.valor]));
     // quem pode pedir: o banco (senha) ou alguém da equipe interna logado
     let ok = false;
@@ -52,14 +52,19 @@ Deno.serve(async (req: Request) => {
 
     ws = String(corpo.workspace_id || '');
     if (!/^[0-9a-f-]{36}$/i.test(ws)) { ws = ''; return json({ ok: false, erro: 'Cliente inválido' }, 400); }
-    const { data: w, error } = await adm.from('workspaces').select('id, nome, content_ativo, content_drive_id').eq('id', ws).maybeSingle();
+    const { data: w, error } = await adm.from('workspaces').select('id, nome, content_ativo, content_drive_id, content_drive_modo').eq('id', ws).maybeSingle();
     if (error || !w) { ws = ''; return json({ ok: false, erro: 'Cliente não encontrado' }, 404); }
     if (!w.content_ativo) return await falha('O cliente não está marcado como usuário do Growth\'s Content.');
 
     const pedido = montaPedido({ senha: cfg.drive_script_senha, raiz: cfg.content_drive_raiz, nome: w.nome, arvore: lerArvore(cfg.content_drive_arvore), pastaId: w.content_drive_id });
     const r = await fetch(cfg.drive_script_url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido) });
     const res = lerResposta(r.status, await r.text());
-    if (!res.ok) return await falha(res.erro);
+    if (!res.ok) {
+      // pasta do cliente que ainda não foi compartilhada com a Mathisa (ou link errado)
+      if (w.content_drive_modo === 'compartilhada' && /permission|permiss|not found|No item|não foi possível encontrar|Access denied|acesso/i.test(res.erro))
+        return await falha(`A Mathisa ainda não tem acesso a essa pasta. No Google Drive do cliente, clique com o botão direito na pasta → Compartilhar → adicione ${cfg.drive_script_email || 'o e-mail da Mathisa'} como Editor. Depois clique em "Verificar de novo".`);
+      return await falha(res.erro);
+    }
     await adm.from('workspaces').update({ content_drive_id: res.id, content_drive_url: res.url, content_drive_status: 'ok', content_drive_erro: null, content_drive_em: new Date().toISOString() }).eq('id', ws);
     return json({ ok: true, id: res.id, url: res.url });
   } catch (e) {

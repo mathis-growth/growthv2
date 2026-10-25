@@ -1,5 +1,15 @@
 
 
+## v0.144 — Pasta compartilhada pelo cliente; configuração em 8 passos
+**Pedido da Rebecka (25/10)**: não pagar Google Cloud; seguir o caminho recomendado ("a gente vai usar o recomendado. E já!"); o roteiro da call de briefing dentro do sistema; depois, a IA lê transcrição e materiais, faz pesquisa e tese, gera o dossiê para o cliente aprovar e, aprovado, vira o padrão editável e a skill do cliente.
+Decisões:
+- Passo 1 recomendado: o cliente cria uma pasta no Drive dele e **compartilha com rebecka@rebeckacappello.com.br como Editor**; cola o link no Growths e o Apps Script cria a árvore dentro dela. É gratuito e, ao contrário do login com escopo `drive.file`, o Growths enxerga tudo o que o cliente puser na pasta (necessário para a IA ler os materiais). "Não tenho Google Drive" continua (pasta no Drive da Mathisa). O login com o Google (`content-google`, v0.143) fica publicado, mas escondido.
+- Árvore padrão: 01 Briefing, 02 Materiais do cliente, 03 Identidade visual, 04 Referências de conteúdo, 05 Pesquisa de mercado, 06 Dossiê da marca, 07 Skill do cliente, 08 Produção (Roteiros, Gravações, Edição, Artes), 09 Publicados, 10 Resultados.
+- 8 passos: 1 Google Drive; 2 Call de briefing (roteiro na tela, uma parte por vez, salva sozinho); 3 Materiais do cliente (lista do que pedir e "Material pronto, pode ler"); 4 Pesquisa e tese e 5 Dossiê e aprovação (em construção, não travam a conclusão); 6 Linha editorial (com proposta pela IA para colar); 7 Canais; 8 Rotina.
+- IA: pela API da Claude (não pelo plano Pro/Max, que proíbe uso automatizado e revenda); cada cliente separado pelo `workspace_id`; dossiê guardado no banco e injetado a cada pedido; skills pela API depois.
+- Vídeo e arte: ferramentas pagas (ex.: Rig Studio) entram por faixa de plano; começar pelo básico (cortar pausas).
+**Pendente**: passos 4 e 5 (IA lendo a pasta pelo Apps Script, pesquisa, tese, dossiê em PDF, aprovação, skill do cliente) — falta a Rebecka mandar o formato das seções do dossiê; custos por faixa de plano; Instagram ainda ligado à mão (Zernio).
+
 ## v0.143 — Configuração passo a passo; Google Drive do cliente
 **Pedido da Rebecka (25/10)**: a pasta deve ficar no Drive do cliente (conectando a conta Google dele); sem Drive, criar as pastas do nosso lado. A configuração é a primeira tela: sem configuração, nada do módulo aparece; ela segue tela a tela e, preenchida, abre o que existe hoje. Tirar a configuração da Mathisa para testar do zero; primeiro passo "Conectar meu Google".
 Decisões:

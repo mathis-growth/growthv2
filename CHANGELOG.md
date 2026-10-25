@@ -100,6 +100,13 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.144] - 2026-10-25 — Configuração em 8 passos e pasta compartilhada
+- **Passo 1 (recomendado)**: o cliente compartilha uma pasta do Drive dele com a Mathisa e cola o link; o Growths cria ali a árvore padrão de 10 pastas. Gratuito. "Não tenho Google Drive" continua.
+- **Passo 2: roteiro da call de briefing** na tela, uma parte por vez, salvando sozinho.
+- **Passo 3: materiais do cliente**, com a lista do que pedir e "Material pronto, pode ler".
+- Passos 4 (Pesquisa e tese) e 5 (Dossiê e aprovação) aparecem como em construção; 6 Linha editorial (com proposta pela IA), 7 Canais, 8 Rotina.
+- Banco: `20261105100000_content_setup_v2.sql`; função `content-drive` atualizada. **Aplicado em produção em 25/10/2026**.
+
 ## [0.143] - 2026-10-25 — Growth's Content começa pela configuração
 - Sem configuração, o módulo abre num **passo a passo** de 5 telas (Google Drive, Briefing e persona, Linha editorial e formatos, Canais, Rotina da semana), que guarda onde parou. As abas aparecem só depois de concluir.
 - **Passo 1: conectar o Google Drive do cliente** (login Google dele) e criar lá a pasta com a árvore; sem Drive, a pasta vai para o Drive da Mathisa.

@@ -1,5 +1,8 @@
 
 
+## v0.144
+- index.html: 0.143 → 0.144 (`integra144.py`, que roda o `integra143.py`; `g143.js` editado, novos `g144.js` e `g144.css`). Novo: `20261105100000_content_setup_v2.sql`, `RODAR_v0.144_content_setup_v2.sql`; função `content-drive` atualizada; teste `t143_content_setup.py` refeito para 8 passos. Aplicado em produção.
+
 ## v0.143
 - index.html: 0.142 → 0.143 (`integra143.py`, que roda o `integra141.py`). Novo: `20261104100000_content_setup.sql`, `RODAR_v0.143_content_setup.sql`, função `content-google`, teste `t143_content_setup.py`. Aplicado em produção.
 

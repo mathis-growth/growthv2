@@ -1,5 +1,12 @@
 
 
+## v0.144
+- `workspaces.content_drive_modo` aceita também `compartilhada` (pasta do Drive do cliente compartilhada com a Mathisa).
+- `workspaces.content_setup_marcos` (jsonb): marcos da configuração com data (`materiais`, `leitura`, `tese`, `dossie`).
+- `sistema_config`: `drive_script_email` (com quem compartilhar) e `content_drive_arvore` preenchida com a árvore padrão.
+- Respostas da call ficam em `conteudo_personas.respostas` (mais `_call_data` e `_call_notas`).
+- Funções: `content_drive_compartilhar(ws, link)` (aceita link `/folders/ID`, `?id=` ou só o ID), `content_setup_marcar(ws, marco, feito)`; `content_drive_tentar` mantém o modo da pasta; `content_setup_estado` devolve `marcos` e `drive.compartilhar_com`.
+
 ## v0.143
 - `workspaces`: `content_setup_etapa`, `content_setup_em` (configuração concluída), `content_drive_modo` (cliente | mathisa), `content_drive_email`.
 - `content_google` (conta Google do cliente: e-mail, token de acesso contínuo, escopos; só o servidor lê) e `content_google_estados` (logins em andamento, 15 min).

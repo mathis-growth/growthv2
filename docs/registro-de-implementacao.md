@@ -1,5 +1,12 @@
 
 
+## Configuração em 8 passos e pasta compartilhada (v0.144)
+- `g143.js`: `CS_PASSOS` com 8 passos (`emBreve` não trava a conclusão), `CS_IR`, novo `csDrive` (compartilhar pasta, copiar e-mail, colar link, "Verificar de novo"; "Não tenho Google Drive").
+- `g144.js`: `csCall` (roteiro da call por blocos, salva em 900 ms), `csMateriais` (lista e marco "material pronto"), `csEmBreve`, `csLinhaIA` (gerar, copiar, colar e aplicar a proposta). `g144.css` com seletores mais específicos (`#main ol.cs-passos`, `#main .cc-q > label`).
+- Função `content-drive` (versão 5): lê `drive_script_email` e o modo; pasta compartilhada sem acesso devolve a explicação de como compartilhar.
+- Migração `20261105100000_content_setup_v2.sql` (aplicada em produção em 25/10/2026). Cliente "Teste Growth's Content": árvore criada na pasta dele em 25/10/2026 (conferida no Drive).
+- Testes: `t143` (8 passos), `t140`, `t141`, `t133`, `t134`, `t135` — 0 falhas.
+
 ## Configuração passo a passo e Google do cliente (v0.143)
 - `g143.js`: `vConteudo` novo (configuração ou abas), `csWizard` (abertura, barra de passos, rodapé fixo com Voltar/Continuar/Concluir e o que falta), `csDrive` (conectar Google, sem Drive, completar, trocar, desconectar, espera da pasta), `csRotina`, `csRetornoGoogle`. As telas de Persona, Linha editorial e Canais são as mesmas, dentro dos passos. `integra143.py` renomeia o `vConteudo` antigo para `vConteudoAbas`.
 - Função `supabase/functions/content-google` (index.ts, logica.ts, logica_test.ts), publicada sem verificação de JWT.

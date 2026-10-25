@@ -1,5 +1,10 @@
 
 
+## v0.144 — Configuração em 8 passos
+- Passo 1 pronto: pasta com situação ok (compartilhada, Drive da Mathisa ou login Google). Pasta compartilhada sem acesso fica em erro com a instrução de compartilhar como Editor.
+- Passo 2 pronto: metade das perguntas da call respondidas. Passo 3 pronto: marco `materiais`. Passos 4 e 5 estão em construção e não contam para concluir. Passos 6, 7 e 8 seguem as regras da v0.143 (linha editorial, canais, rotina).
+- Marcos só aceitos: materiais, leitura, tese, dossie. Quem marca: quem configura o cliente.
+
 ## v0.143 — Configuração do Growth's Content
 - Sem `content_setup_em`, a Estratégia de conteúdo mostra só a configuração. Passo pronto: 1 pasta com situação ok; 2 persona com ≥ metade das perguntas respondidas; 3 ≥1 território com frente (não transversal) e ≥1 formato; 4 configuração salva com ≥1 canal; 5 meta semanal ≥ 1.
 - Concluir exige os 5 passos e a pasta (o banco recusa sem a pasta).

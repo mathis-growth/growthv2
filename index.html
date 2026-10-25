@@ -387,7 +387,32 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.143 configuração passo a passo */
+<style id="v122">/* v0.144 roteiro da call e materiais */
+#main ol.cs-passos{grid-template-columns:repeat(4,1fr)}
+.cs-passos li.breve button{opacity:.7;border-style:dashed}
+.cs-mini{margin:4px 0 10px;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;line-height:1.45}
+.cs-link{display:flex;gap:8px;margin:0 0 8px}
+.cs-link input{flex:1;min-width:0}
+.cs-mat{margin:6px 0 12px;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;line-height:1.45}
+.cs-mat li span{display:block;color:var(--muted)}
+.cc-topo{display:flex;flex-direction:column;gap:10px}
+.cc-meta{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.cc-meta label{max-width:200px}
+.cc-salvo{font-size:12.5px;color:var(--muted)}
+.cc-blocos{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.cc-blocos button{all:unset;box-sizing:border-box;cursor:pointer;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);display:flex;flex-direction:column;gap:2px}
+.cc-blocos button.on{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
+.cc-blocos button:focus-visible{outline:2px solid var(--accent)}
+.cc-blocos b{font-size:13px}.cc-blocos small{font-size:11.5px;color:var(--muted)}
+.cc-bloco h3{margin:0 0 10px}
+.cc-q{padding:10px 0;border-top:1px solid var(--line)}
+.cc-q:first-of-type{border-top:0}
+#main .cc-q > label{display:flex;flex-direction:row;gap:10px;align-items:flex-start;font-size:15.5px;font-weight:600;line-height:1.4;margin-bottom:6px;color:var(--ink)}
+.cc-n{flex:none;width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;border:1.5px solid var(--muted);color:var(--muted)}
+.cc-q.feita .cc-n{background:var(--good,#17803d);border-color:var(--good,#17803d);color:#fff}
+.cc-q textarea{width:100%}
+@media (max-width:900px){#main ol.cs-passos{grid-template-columns:1fr 1fr}.cc-blocos{grid-template-columns:1fr 1fr}}
+/* v0.143 configuração passo a passo */
 .cs-passos{list-style:none;margin:0 0 16px;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .cs-passos button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;gap:10px;align-items:flex-start;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
 .cs-passos button:hover{border-color:var(--accent)}
@@ -890,7 +915,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.143 · 25/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.144 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -15777,12 +15802,15 @@ function ncModal() {
    Enquanto a configuração não é concluída, Marketing → Growth's Content → Estratégia de conteúdo mostra só ela.
    Os passos reaproveitam as telas que já existem (Persona, Linha editorial, Canais). Concluída, abre nas abas de sempre. */
 const CS_PASSOS = [
-  { k: 'drive', t: 'Google Drive', sub: 'Onde ficam os arquivos do cliente', ok: (D, E) => E.drive.status === 'ok', falta: 'Conecte o Google Drive (ou escolha "Não tenho Google Drive") e espere a pasta ficar pronta.' },
-  { k: 'persona', t: 'Briefing e persona', sub: 'Quem é o público e o que a marca defende', ok: D => !!D.personas.length && pRespondidas(D.personas[0].respostas || {}) >= Math.ceil(PERSONA_P.length / 2), falta: `Responda pelo menos ${Math.ceil(PERSONA_P.length / 2)} das ${PERSONA_P.length} perguntas e salve.` },
-  { k: 'linha', t: 'Linha editorial e formatos', sub: 'Territórios, frentes e formatos', ok: D => D.linhas.length > 0 && D.temas.some(t => !t.transversal) && D.fmts.length > 0, falta: 'Aplique a proposta da IA (ou cadastre) pelo menos um território com frente e um formato.' },
+  { k: 'drive', t: 'Google Drive', sub: 'A pasta do cliente com a árvore', ok: (D, E) => E.drive.status === 'ok', falta: 'Compartilhe a pasta do cliente (ou escolha "Não tenho Google Drive") e espere a pasta ficar pronta.' },
+  { k: 'call', t: 'Call de briefing', sub: 'Roteiro para usar na call', ok: D => !!D.personas.length && pRespondidas(D.personas[0].respostas || {}) >= Math.ceil(PERSONA_P.length / 2), falta: `Registre as respostas da call (pelo menos ${Math.ceil(PERSONA_P.length / 2)} das ${PERSONA_P.length} perguntas).` },
+  { k: 'materiais', t: 'Materiais do cliente', sub: 'Tudo na pasta para a IA ler', ok: (D, E) => !!(E.marcos || {}).materiais, falta: 'Coloque os materiais na pasta e clique em "Material pronto".' },
+  { k: 'tese', t: 'Pesquisa e tese', sub: 'Diferencial, mecanismos, narrativa, voz', emBreve: true, ok: () => false, falta: '' },
+  { k: 'dossie', t: 'Dossiê e aprovação', sub: 'Dossiê, PDF e a skill do cliente', emBreve: true, ok: () => false, falta: '' },
+  { k: 'linha', t: 'Linha editorial e formatos', sub: 'Territórios, frentes e formatos', ok: D => D.linhas.length > 0 && D.temas.some(t => !t.transversal) && D.fmts.length > 0, falta: 'Gere a proposta pela IA e aplique (ou cadastre) pelo menos um território com frente e um formato.' },
   { k: 'canais', t: 'Canais', sub: 'Onde o conteúdo vai ser publicado', ok: D => !!D.cfg.tem && (D.cfg.canaisAtivos || []).length > 0, falta: 'Marque os canais em uso e salve.' },
   { k: 'rotina', t: 'Rotina da semana', sub: 'Quantos conteúdos e o dia da curadoria', ok: D => D.cfg.meta != null && D.cfg.meta > 0, falta: 'Informe quantos conteúdos por semana e salve.' }];
-const CS_IR = { persona: 2, linhas: 3, canais: 4 };   // atalhos das telas antigas ("Responder o questionário" etc.) viram passos
+const CS_IR = { persona: 2, linhas: 6, canais: 7 };   // atalhos das telas antigas ("Responder o questionário" etc.) viram passos
 
 async function vConteudo(m) {
   if (MQ_VIEW_CANAL[S.view]) return vConteudoAbas(m);
@@ -15806,69 +15834,68 @@ async function csWizard(m, D, E) {
   const C = S.ct = S.ct || { tab: 'dash', tema: '', canal: '', formato: '', arq: false, dias: 30 };
   Object.assign(C, { terr: C.terr || '', fmt: C.fmt || '', dest: C.dest || '', tag: C.tag || '', destP: C.destP || '', sem: C.sem || segundaDe(hoje()) });
   if (C.csEtapa == null) C.csEtapa = E.etapa || 0;
-  const n = Math.max(0, Math.min(CS_PASSOS.length, C.csEtapa)), feito = CS_PASSOS.map(p => !!p.ok(D, E)), todos = feito.every(Boolean);
+  const n = Math.max(0, Math.min(CS_PASSOS.length, C.csEtapa)), feito = CS_PASSOS.map(p => !!p.ok(D, E)), todos = CS_PASSOS.every((p, i) => p.emBreve || feito[i]);
   const vai = k => { C.csEtapa = k; if (E.pode) sb.rpc('content_setup_salvar', { p_ws: S.ws, p_etapa: k }).then(() => null, () => null); render(); };
-  const passos = `<ol class="cs-passos">${CS_PASSOS.map((p, i) => `<li class="${i + 1 === n ? 'on' : ''}${feito[i] ? ' ok' : ''}"><button type="button" data-cs="${i + 1}"${i + 1 === n ? ' aria-current="step"' : ''}><span class="cs-num" aria-hidden="true">${feito[i] ? '✓' : i + 1}</span><span><b>${p.t}</b><small>${feito[i] ? 'Pronto' : p.sub}</small></span></button></li>`).join('')}</ol>`;
-  m.innerHTML = `<div class="head"><div><h1>Growth's Content</h1><span class="muted">Configuração de ${esc(E.nome || 'cliente')}: ${feito.filter(Boolean).length} de ${CS_PASSOS.length} passos prontos. As abas do módulo aparecem quando tudo estiver configurado.</span></div></div>${n ? passos : ''}<div id="csCorpo" style="display:flex;flex-direction:column;gap:16px"></div>`;
+  const passos = `<ol class="cs-passos">${CS_PASSOS.map((p, i) => `<li class="${i + 1 === n ? 'on' : ''}${feito[i] ? ' ok' : ''}${p.emBreve ? ' breve' : ''}"><button type="button" data-cs="${i + 1}"${i + 1 === n ? ' aria-current="step"' : ''}><span class="cs-num" aria-hidden="true">${feito[i] ? '✓' : i + 1}</span><span><b>${p.t}</b><small>${feito[i] ? 'Pronto' : p.emBreve ? 'Em construção' : p.sub}</small></span></button></li>`).join('')}</ol>`;
+  m.innerHTML = `<div class="head"><div><h1>Growth's Content</h1><span class="muted">Configuração de ${esc(E.nome || 'cliente')}: ${feito.filter(Boolean).length} de ${CS_PASSOS.filter(p => !p.emBreve).length} passos prontos. As abas do módulo aparecem quando tudo estiver configurado.</span></div></div>${n ? passos : ''}<div id="csCorpo" style="display:flex;flex-direction:column;gap:16px"></div>`;
   m.querySelectorAll('[data-cs]').forEach(b => b.onclick = () => vai(Number(b.dataset.cs)));
   const el = $('#csCorpo');
   if (!E.pode) el.insertAdjacentHTML('beforeend', '<div class="panel cs-aviso">Você pode ver a configuração, mas só quem edita o Marketing deste cliente consegue preencher.</div>');
   // ---------- abertura ----------
   if (n === 0) {
-    el.insertAdjacentHTML('beforeend', `<div class="panel cs-inicio"><h2>Vamos configurar o Growth's Content</h2><p>São ${CS_PASSOS.length} passos. Você pode parar e voltar quando quiser: o Growths guarda onde você parou.</p>
-      <ol class="cs-lista">${CS_PASSOS.map((p, i) => `<li class="${feito[i] ? 'ok' : ''}"><b>${p.t}</b> <span class="muted">${p.sub}</span>${feito[i] ? ' <span class="pill good">pronto</span>' : ''}</li>`).join('')}</ol>
+    el.insertAdjacentHTML('beforeend', `<div class="panel cs-inicio"><h2>Vamos configurar o Growth's Content</h2><p>São ${CS_PASSOS.length} passos (${CS_PASSOS.filter(p => p.emBreve).length} ainda em construção, que por enquanto podem ser pulados). Você pode parar e voltar quando quiser: o Growths guarda onde você parou.</p>
+      <ol class="cs-lista">${CS_PASSOS.map((p, i) => `<li class="${feito[i] ? 'ok' : ''}"><b>${p.t}</b> <span class="muted">${p.sub}</span>${feito[i] ? ' <span class="pill good">pronto</span>' : p.emBreve ? ' <span class="pill neutral">em construção</span>' : ''}</li>`).join('')}</ol>
       <div class="acts"><button class="btn pri" id="csComeca">${feito.some(Boolean) || E.etapa ? 'Continuar de onde parei' : 'Começar a configuração'}</button></div></div>`);
-    $('#csComeca').onclick = () => vai(Math.max(1, Math.min(CS_PASSOS.length, (feito.findIndex(x => !x) + 1) || CS_PASSOS.length)));
+    $('#csComeca').onclick = () => vai(Math.max(1, Math.min(CS_PASSOS.length, (CS_PASSOS.findIndex((p, i) => !p.emBreve && !feito[i]) + 1) || CS_PASSOS.length)));
     return;
   }
   const P = CS_PASSOS[n - 1], ok = feito[n - 1], ultimo = n === CS_PASSOS.length;
   el.insertAdjacentHTML('beforeend', `<div class="cs-topo"><div><span class="cs-etq">Passo ${n} de ${CS_PASSOS.length}</span><h2>${P.t}</h2></div>${ok ? '<span class="pill good">Pronto</span>' : ''}</div><div id="csPasso" style="display:flex;flex-direction:column;gap:16px"></div>
-    <div class="cs-rodape"><button class="btn" id="csVolta">${n === 1 ? 'Voltar ao início' : 'Voltar'}</button><span class="cs-falta">${ok ? '' : esc(P.falta)}</span>
-    ${ultimo ? `<button class="btn pri" id="csFim"${todos && E.pode ? '' : ' disabled'}>Concluir a configuração</button>` : `<button class="btn pri" id="csSegue"${ok ? '' : ' disabled'}>Continuar</button>`}</div>`);
+    <div class="cs-rodape"><button class="btn" id="csVolta">${n === 1 ? 'Voltar ao início' : 'Voltar'}</button><span class="cs-falta">${ok || P.emBreve ? (P.emBreve ? 'Este passo ainda está em construção: pode seguir.' : '') : esc(P.falta)}</span>
+    ${ultimo ? `<button class="btn pri" id="csFim"${todos && E.pode ? '' : ' disabled'}>Concluir a configuração</button>` : `<button class="btn pri" id="csSegue"${ok || P.emBreve ? '' : ' disabled'}>Continuar</button>`}</div>`);
   $('#csVolta').onclick = () => vai(n - 1);
   if ($('#csSegue')) $('#csSegue').onclick = () => vai(n + 1);
   if ($('#csFim')) $('#csFim').onclick = () => act(async () => {
     await q(sb.rpc('content_setup_salvar', { p_ws: S.ws, p_etapa: n, p_concluir: true }));
     C.tab = 'dash'; C.csEtapa = null; toast('Growth\'s Content configurado. Bem-vinda às abas do módulo!'); render();
   });
-  if (ultimo && !todos) $('#csPasso').insertAdjacentHTML('afterend', `<div class="panel cs-aviso">Para concluir, falta: ${CS_PASSOS.filter((p, i) => !feito[i]).map(p => `<b>${p.t}</b>`).join(', ')}.</div>`);
+  if (ultimo && !todos) $('#csPasso').insertAdjacentHTML('afterend', `<div class="panel cs-aviso">Para concluir, falta: ${CS_PASSOS.filter((p, i) => !p.emBreve && !feito[i]).map(p => `<b>${p.t}</b>`).join(', ')}.</div>`);
   const box = $('#csPasso');
   if (P.k === 'drive') return csDrive(box, E);
-  if (P.k === 'persona') tabPersona(box, D, C);
-  else if (P.k === 'linha') tabLinhas(box, D, C);
+  if (P.k === 'call') csCall(box, D, E);
+  else if (P.k === 'materiais') csMateriais(box, D, E);
+  else if (P.k === 'tese' || P.k === 'dossie') csEmBreve(box, P);
+  else if (P.k === 'linha') { csLinhaIA(box, D); const sub = document.createElement('div'); sub.style.cssText = 'display:flex;flex-direction:column;gap:16px'; box.appendChild(sub); tabLinhas(sub, D, C); }
   else if (P.k === 'canais') { tabCanais(box, D, C); igConexao().then(CX => { if (box.isConnected) box.insertAdjacentHTML('afterbegin', `<div class="panel ig-fonte"><b>Instagram</b><br>${igFonteHtml(CX, {})}</div>`); }).catch(() => null); }
   else if (P.k === 'rotina') csRotina(box, D);
   box.querySelectorAll('[data-mq-ir]').forEach(b => b.onclick = () => { if (CS_IR[b.dataset.mqIr]) vai(CS_IR[b.dataset.mqIr]); });
 }
-/* ----- passo 1: Google Drive ----- */
+/* ----- passo 1: Google Drive (pasta compartilhada pelo cliente, ou no Drive da Mathisa) ----- */
 function csDrive(box, E) {
-  const d = E.drive || {}, ok = d.status === 'ok';
-  const voltar = location.origin + location.pathname + '?v=mkt-cont';
-  const conecta = (email) => act(async () => {
-    const { data, error } = await sb.functions.invoke('content-google', { body: { acao: 'iniciar', workspace_id: S.ws, voltar, email } });
-    if (error) throw new Error('A conexão com o Google não respondeu: ' + (error.message || error));
-    if (!data || !data.ok) throw new Error((data && data.erro) || 'Não deu para abrir o login do Google.');
-    location.href = data.url;
-  });
-  const situacao = ok ? `<div class="panel cs-pronto"><b>Pasta pronta.</b> ${d.modo === 'cliente' ? `No Google Drive de <b>${esc(d.email || 'cliente')}</b>.` : 'No Google Drive da Mathisa (o cliente não tem Drive).'} <a class="btn sm" href="${esc(d.url)}" target="_blank" rel="noopener">Abrir a pasta</a></div>`
-    : d.status === 'criando' ? '<div class="panel"><b>Criando a pasta…</b> <span class="muted">Leva alguns segundos.</span></div>'
-    : d.status === 'erro' ? `<div class="panel cs-aviso"><b>A pasta não foi criada.</b> ${esc(d.erro || '')}</div>` : '';
-  box.innerHTML = `${situacao}<p class="muted" style="margin:0">O Growths cria uma pasta para o Growth's Content com a árvore de subpastas do módulo. É ali que os materiais do cliente vão ficar.</p>
+  const d = E.drive || {}, ok = d.status === 'ok', email = d.compartilhar_com || 'o e-mail da Mathisa';
+  const onde = d.modo === 'compartilhada' ? 'No Google Drive do cliente (pasta compartilhada com a Mathisa).' : d.modo === 'mathisa' ? 'No Google Drive da Mathisa (o cliente não tem Drive).' : d.modo === 'cliente' ? `No Google Drive de <b>${esc(d.email || 'cliente')}</b>.` : '';
+  const situacao = ok ? `<div class="panel cs-pronto"><b>Pasta pronta.</b> ${onde} <a class="btn sm" href="${esc(d.url)}" target="_blank" rel="noopener">Abrir a pasta</a> <button class="btn sm" id="csRefaz">Completar as pastas</button></div>`
+    : d.status === 'criando' ? '<div class="panel"><b>Criando as pastas…</b> <span class="muted">Leva alguns segundos.</span></div>'
+    : d.status === 'erro' ? `<div class="panel cs-aviso"><b>As pastas não foram criadas.</b> ${esc(d.erro || '')}${d.modo === 'compartilhada' || d.modo === 'mathisa' ? ' <button class="btn sm" id="csRefaz">Verificar de novo</button>' : ''}</div>` : '';
+  box.innerHTML = `${situacao}<p class="muted" style="margin:0">O Growths cria a árvore de pastas do Growth's Content: briefing, materiais, identidade visual, referências, pesquisa, dossiê, skill do cliente, produção, publicados e resultados. É ali que os materiais do cliente vão ficar e que a IA vai ler.</p>
     <div class="cs-opcoes">
-      <div class="panel cs-op${d.modo === 'cliente' ? ' on' : ''}"><h3>Conectar o Google Drive do cliente</h3><p>Entra com a conta Google do cliente e autoriza. A pasta fica no Drive dele, e o Growths só mexe no que ele mesmo criou.</p>
-        <div class="acts">${d.modo === 'cliente' && ok ? `<button class="btn" id="csRefaz">Completar as pastas</button><button class="btn" id="csTroca">Trocar de conta</button><button class="btn" id="csDesc">Desconectar</button>` : `<button class="btn pri" id="csGoogle">Conectar meu Google Drive</button>`}</div></div>
-      <div class="panel cs-op${d.modo === 'mathisa' ? ' on' : ''}"><h3>Não tenho Google Drive</h3><p>A pasta é criada no Google Drive da Mathisa, com o nome do cliente. Dá para conectar o Drive do cliente depois.</p>
+      <div class="panel cs-op${d.modo === 'compartilhada' ? ' on' : ''}"><h3>O cliente tem Google Drive</h3>
+        <ol class="cs-mini"><li>No Google Drive do cliente, crie uma pasta (sugestão: <b>Growth's Content</b>).</li>
+          <li>Clique com o botão direito na pasta → <b>Compartilhar</b> → adicione <b>${esc(email)}</b> como <b>Editor</b>. <button type="button" class="btn sm" id="csCopia">Copiar e-mail</button></li>
+          <li>Copie o link da pasta e cole aqui.</li></ol>
+        <form id="csLinkF" class="cs-link"><input name="link" placeholder="https://drive.google.com/drive/folders/..." required aria-label="Link da pasta do cliente"><button class="btn pri" type="submit">Criar as pastas</button></form>
+        <small class="muted">A pasta e os arquivos ficam no Drive do cliente. Tudo o que for colocado nela, por você ou por ele, o Growths consegue ler.</small></div>
+      <div class="panel cs-op${d.modo === 'mathisa' ? ' on' : ''}"><h3>Não tenho Google Drive</h3><p>A pasta é criada no Google Drive da Mathisa, com o nome do cliente. Dá para trocar para o Drive do cliente depois.</p>
         <div class="acts"><button class="btn" id="csSem"${d.modo === 'mathisa' && ok ? ' disabled' : ''}>${d.modo === 'mathisa' && ok ? 'Pasta criada no Drive da Mathisa' : 'Criar no Drive da Mathisa'}</button></div></div></div>`;
   const b = id => box.querySelector('#' + id);
-  if (b('csGoogle')) b('csGoogle').onclick = () => conecta();
-  if (b('csTroca')) b('csTroca').onclick = () => conecta();
-  if (b('csRefaz')) b('csRefaz').onclick = () => act(async () => { const { data, error } = await sb.functions.invoke('content-google', { body: { acao: 'refazer', workspace_id: S.ws } }); if (error || !data || !data.ok) throw new Error((data && data.erro) || 'Não deu para completar as pastas.'); toast('Pastas conferidas no Google Drive.'); render(); });
-  if (b('csDesc')) b('csDesc').onclick = () => modal('Desconectar o Google Drive', '<p>O Growths esquece a conta Google do cliente. A pasta e os arquivos continuam no Drive dele. Depois é preciso conectar de novo (ou escolher o Drive da Mathisa).</p>', async () => { const { data, error } = await sb.functions.invoke('content-google', { body: { acao: 'desconectar', workspace_id: S.ws } }); if (error || !data || !data.ok) throw new Error((data && data.erro) || 'Não deu para desconectar.'); toast('Google Drive desconectado.'); }, 'Desconectar');
+  b('csCopia').onclick = () => { try { navigator.clipboard.writeText(email); toast('E-mail copiado: ' + email); } catch (e) { toast(email); } };
+  b('csLinkF').onsubmit = ev => { ev.preventDefault(); act(async () => { await q(sb.rpc('content_drive_compartilhar', { p_ws: S.ws, p_link: ev.target.elements.link.value.trim() })); toast('Conferindo a pasta e criando as subpastas…'); render(); }); };
+  if (b('csRefaz')) b('csRefaz').onclick = () => act(async () => { await q(sb.rpc('content_drive_tentar', { p_ws: S.ws })); toast('Conferindo as pastas…'); render(); });
   if (b('csSem')) b('csSem').onclick = () => act(async () => { await q(sb.rpc('content_drive_sem_google', { p_ws: S.ws })); toast('Criando a pasta no Drive da Mathisa…'); render(); });
   // enquanto cria, confere de novo
   if (d.status === 'criando') { const C = S.ct; C.csVoltas = (C.csVoltas || 0) + 1; if (C.csVoltas < 20) setTimeout(() => { if (box.isConnected) render(); }, 3000); } else S.ct.csVoltas = 0;
 }
-/* ----- passo 5: rotina da semana ----- */
+/* ----- passo 8: rotina da semana ----- */
 function csRotina(box, D) {
   const c = D.cfg, dia = c.meta != null ? c.diaFech : 5;
   box.innerHTML = `<form class="panel" id="csRot"><div class="grid2">
@@ -15883,6 +15910,109 @@ function csRotina(box, D) {
     await q(sb.from('conteudo_config').upsert({ workspace_id: S.ws, meta_semanal: meta, dia_fechamento: Number(f.dia.value), destinos: separa(f.destinos.value, /[,;]/) }, { onConflict: 'workspace_id' }));
     toast('Rotina salva'); render();
   }); };
+}
+
+/* ===================== v0.144 — Growth's Content: roteiro da call, materiais e proposta da linha editorial dentro da configuração ===================== */
+/* ----- passo 2: roteiro da call de briefing (as perguntas do questionário, um bloco por vez, salvando sozinho) ----- */
+function csCall(box, D, E) {
+  const C = S.ct; C.csBloco = C.csBloco || 0;
+  let P = D.personas[0] || null; const r = { ...((P && P.respostas) || {}) };
+  const blocos = PERSONA_BLOCOS, bi = Math.max(0, Math.min(blocos.length - 1, C.csBloco)), [bn, bsub] = blocos[bi];
+  const perg = PERSONA_P.filter(p => p[1] === bn), num0 = PERSONA_P.findIndex(p => p[1] === bn);
+  const resp = k => pTxt(r[k]), meta = Math.ceil(PERSONA_P.length / 2);
+  const contaB = b => PERSONA_P.filter(p => p[1] === b && pTxt(r[p[0]])).length;
+  const campo = ([k, , l], i) => `<div class="cc-q${resp(k) ? ' feita' : ''}"><label for="cc_${k}"><span class="cc-n">${num0 + i + 1}</span>${esc(l)}</label>
+    ${k === 'objetivos' ? `<div class="mq-checks" id="cc_${k}">${PERSONA_OBJ.map(o => `<label><input type="checkbox" data-cco value="${esc(o)}"${(r.objetivos || []).includes(o) ? ' checked' : ''}> ${esc(o)}</label>`).join('')}</div>`
+      : `<textarea id="cc_${k}" data-cck="${k}" rows="3" placeholder="Anote o que o cliente responder…">${esc(resp(k))}</textarea>`}</div>`;
+  box.innerHTML = `<div class="panel cc-topo"><div><h2 style="margin:0">Roteiro da call de briefing</h2><span class="muted">Use durante a call: vá perguntando bloco a bloco e anote. Tudo é salvo sozinho. Depois, a transcrição da call vai para a pasta <b>01 Briefing</b> e a IA completa o que faltou.</span></div>
+      <div class="cc-meta"><label>Data da call<input type="date" id="ccData" value="${esc(r._call_data || '')}"></label><span class="cc-salvo" id="ccSalvo" aria-live="polite"></span></div>
+      <div class="mq-prog"><div class="bar"><i id="ccBar" style="width:${Math.round(pRespondidas(r) / PERSONA_P.length * 100)}%"></i></div><small id="ccConta">${pRespondidas(r)} de ${PERSONA_P.length} respondidas (pronto com ${meta})</small></div></div>
+    <div class="cc-blocos" role="tablist">${blocos.map(([b], i) => `<button type="button" role="tab" aria-selected="${i === bi}" class="${i === bi ? 'on' : ''}" data-ccb="${i}"><b>${i + 1}. ${esc(b)}</b><small data-ccc="${esc(b)}">${contaB(b)} de ${PERSONA_P.filter(p => p[1] === b).length}</small></button>`).join('')}</div>
+    <div class="panel cc-bloco"><h3>${esc(bn)} <small class="muted">${esc(bsub)}</small></h3>${perg.map(campo).join('')}</div>
+    <div class="panel"><label>Anotações livres da call (o que não coube nas perguntas)<textarea id="cc__notas" data-cck="_call_notas" rows="4">${esc(r._call_notas || '')}</textarea></label></div>
+    <div class="acts"><button type="button" class="btn" id="ccAnt"${bi === 0 ? ' disabled' : ''}>Bloco anterior</button><button type="button" class="btn pri" id="ccProx"${bi === blocos.length - 1 ? ' disabled' : ''}>Próximo bloco</button></div>`;
+  let tmr = null, salvando = Promise.resolve();
+  const marca = t => { const x = box.querySelector('#ccSalvo'); if (x) x.textContent = t; };
+  const atualiza = () => {
+    const n = pRespondidas(r); box.querySelector('#ccConta').textContent = `${n} de ${PERSONA_P.length} respondidas (pronto com ${meta})`; box.querySelector('#ccBar').style.width = Math.round(n / PERSONA_P.length * 100) + '%';
+    box.querySelectorAll('[data-ccc]').forEach(x => { x.textContent = `${contaB(x.dataset.ccc)} de ${PERSONA_P.filter(p => p[1] === x.dataset.ccc).length}`; });
+    const seg = document.getElementById('csSegue'), falta = document.querySelector('.cs-falta'); if (seg && n >= meta) { seg.disabled = false; if (falta) falta.textContent = ''; }
+  };
+  const salva = () => { salvando = salvando.then(async () => {
+    marca('Salvando…');
+    try {
+      const limpo = Object.fromEntries(Object.entries(r).filter(([, v]) => Array.isArray(v) ? v.length : String(v ?? '').trim()));
+      if (P) await q(sb.from('conteudo_personas').update({ respostas: limpo, atualizado_em: new Date().toISOString() }).eq('id', P.id));
+      else { P = one(await q(sb.from('conteudo_personas').insert({ workspace_id: S.ws, nome: 'Persona principal', respostas: limpo }).select('id').single())); D.personas.unshift({ id: P.id, respostas: limpo }); }
+      marca('Salvo às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
+    } catch (e) { marca('Não salvou: ' + (e.message || e)); }
+  }); };
+  const agenda = () => { marca('Editando…'); clearTimeout(tmr); tmr = setTimeout(salva, 900); };
+  box.querySelectorAll('[data-cck]').forEach(t => t.oninput = () => { r[t.dataset.cck] = t.value; t.closest('.cc-q') && t.closest('.cc-q').classList.toggle('feita', !!t.value.trim()); atualiza(); agenda(); });
+  box.querySelectorAll('[data-cco]').forEach(c => c.onchange = () => { r.objetivos = [...box.querySelectorAll('[data-cco]:checked')].map(x => x.value); atualiza(); agenda(); });
+  box.querySelector('#ccData').onchange = e => { r._call_data = e.target.value; agenda(); };
+  const vaiBloco = i => { clearTimeout(tmr); salva(); salvando.then(() => { C.csBloco = i; render(); }); };
+  box.querySelectorAll('[data-ccb]').forEach(x => x.onclick = () => vaiBloco(Number(x.dataset.ccb)));
+  box.querySelector('#ccAnt').onclick = () => vaiBloco(bi - 1); box.querySelector('#ccProx').onclick = () => vaiBloco(bi + 1);
+  // ao sair do passo (Continuar/Voltar), salva antes
+  ['csSegue', 'csVolta'].forEach(id => { const b = document.getElementById(id); if (b) { const o = b.onclick; b.onclick = () => { clearTimeout(tmr); salva(); salvando.then(() => o && o()); }; } });
+}
+/* ----- passo 3: materiais na pasta ----- */
+function csMateriais(box, D, E) {
+  const d = E.drive || {}, mk = (E.marcos || {}).materiais;
+  const itens = [['01 Briefing', 'A gravação da call e, principalmente, a transcrição em texto (o Meet, o Zoom e o tl;dv geram).'], ['02 Materiais do cliente', 'Documentos que o cliente já tem: persona, tese, narrativa, posicionamento, apresentações, página de vendas.'],
+    ['03 Identidade visual', 'Logo, paleta de cores, fontes e o guia da marca, se houver.'], ['04 Referências de conteúdo', 'Posts que funcionaram, perfis que ele admira, concorrentes.']];
+  box.innerHTML = `<div class="panel"><h2 style="margin:0 0 6px">O que colocar na pasta</h2><p class="muted" style="margin:0 0 10px">A IA vai ler estes materiais, junto com os posts e os números do Instagram que já estão no Growths, para montar a pesquisa, a tese e o dossiê da marca.</p>
+      <ul class="cs-mat">${itens.map(([p, t]) => `<li><b>${esc(p)}</b><span>${esc(t)}</span></li>`).join('')}</ul>
+      ${d.url ? `<a class="btn" href="${esc(d.url)}" target="_blank" rel="noopener">Abrir a pasta do cliente</a>` : '<span class="pill warn">A pasta ainda não foi criada (passo 1)</span>'}</div>
+    <div class="panel ${mk ? 'cs-pronto' : ''}">${mk ? `<b>Material marcado como pronto em ${esc(new Date(mk).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' }))}.</b> <span class="muted">A leitura pela IA entra no próximo passo (em construção).</span> <button class="btn sm" id="csMatDes">Ainda vou subir mais coisa</button>`
+      : `<b>Subiu tudo?</b> <span class="muted">Clique quando o material estiver na pasta. Dá para acrescentar depois.</span> <button class="btn pri" id="csMatOk"${d.status === 'ok' ? '' : ' disabled'}>Material pronto, pode ler</button>`}</div>`;
+  const ok = box.querySelector('#csMatOk'), des = box.querySelector('#csMatDes');
+  if (ok) ok.onclick = () => act(async () => { await q(sb.rpc('content_setup_marcar', { p_ws: S.ws, p_marco: 'materiais', p_feito: true })); toast('Material marcado como pronto.'); render(); });
+  if (des) des.onclick = () => act(async () => { await q(sb.rpc('content_setup_marcar', { p_ws: S.ws, p_marco: 'materiais', p_feito: false })); render(); });
+}
+/* ----- passos 4 e 5: em construção ----- */
+function csEmBreve(box, P) {
+  const txt = P.k === 'tese'
+    ? ['A IA lê os materiais e o Instagram e faz um resumo do que encontrou.', 'Pesquisa de mercado com a ajuda da IA.', 'Diferencial de mercado, mecanismo do problema, mecanismo da solução e product build.', 'Narrativa e tese da marca (se o cliente já tiver, ela entra aqui).', 'Voz da marca, tirada dos conteúdos dele.']
+    : ['O dossiê de inteligência da marca na tela, por seção.', 'PDF para apresentar ao cliente.', 'Aprovação do cliente (aprovar ou pedir ajuste).', 'Aprovado: vira o padrão do cliente (editável), os documentos vão para a pasta 06 Dossiê da marca e sai a skill do cliente na pasta 07.'];
+  box.innerHTML = `<div class="panel cs-aviso"><b>Este passo está em construção.</b> <span class="muted">Por enquanto, pode seguir para o próximo. Vai ter:</span><ul class="cs-mat">${txt.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+    <p class="muted" style="margin:6px 0 0">Para a IA preencher no seu modelo, os formatos de cada seção do dossiê (narrativa, persona, diferencial, mecanismos, product build, voz, identidade visual) precisam ser definidos.</p></div>`;
+}
+/* ----- passo 6: proposta de linha editorial pela IA, a partir da call ----- */
+function csLinhaIA(box, D) {
+  const P = D.personas[0] || null, r = (P && P.respostas) || {}, prop = D.propostas.filter(x => x.status !== 'descartada');
+  const card = x => { const p = x.proposta || {}; return `<div class="panel mq-prop${x.status === 'aplicada' ? ' aplicada' : ''}"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center"><div><b>${esc(p.nome || 'Proposta')}</b> <small class="muted">${x.origem === 'ia' ? 'gerada pela IA' : 'colada'} em ${dd(diaLocal(x.criado_em))}</small></div>
+    <div class="acts">${x.status === 'aplicada' ? '<span class="pill good">aplicada</span>' : `<button class="btn sm pri" data-capl="${x.id}">Aplicar</button><button class="btn sm" data-cdes="${x.id}">Descartar</button>`}</div></div>
+    ${p.linha && p.linha.tese ? `<p style="margin:8px 0 4px"><b>Tese:</b> ${esc(p.linha.tese)}</p>` : ''}<div class="mq-terrs">${(p.territorios || []).map(t => `<div class="mq-terrc" style="--c:${esc(corDe(t.cor, '#521F32'))}"><b>${esc(t.nome)}</b><ul>${(t.frentes || []).map(f => `<li>${esc(f.nome)}</li>`).join('')}</ul></div>`).join('')}</div>
+    ${(p.formatos || []).length ? `<p style="margin:6px 0 0"><b>Formatos:</b> ${p.formatos.map(f => esc(f.nome)).join(' · ')}</p>` : ''}</div>`; };
+  box.insertAdjacentHTML('beforeend', `<div class="panel"><h2 style="margin:0 0 4px">Proposta de linha editorial</h2><p class="muted" style="margin:0 0 10px">A IA lê o briefing da call e propõe territórios, frentes e formatos. Ela só muda a linha editorial quando você clica em Aplicar.</p>
+    <div class="acts"><button class="btn pri" id="clGerar"${P ? '' : ' disabled'}>Gerar proposta com IA</button><button class="btn" id="clCopiar"${P ? '' : ' disabled'}>Copiar pedido para outra IA</button><button class="btn" id="clColar"${P ? '' : ' disabled'}>Colar resposta da IA</button></div>
+    ${P ? '' : '<p class="muted" style="margin:8px 0 0">Registre a call de briefing (passo 2) antes.</p>'}</div>${prop.map(card).join('')}`);
+  const b = id => box.querySelector('#' + id);
+  if (!P) return;
+  b('clGerar').onclick = () => {
+    if (pRespondidas(r) < 6) { toast('Registre pelo menos 6 respostas da call antes de pedir a proposta.', true); return; }
+    modal('Gerar linha editorial com IA', `<p style="margin:0 0 8px">A IA lê o briefing da call e devolve territórios, frentes, formatos e o que faltou decidir. Leva até um minuto.</p><label>Provedor<select name="prov"><option value="claude">Claude</option><option value="openai">ChatGPT</option></select></label>`, async d => {
+      const r2 = await sb.functions.invoke('linha-editorial', { body: { persona_id: P.id, provedor: d.prov } });
+      if (r2.error) { let msg = r2.error.message || 'Não foi possível gerar.'; try { const j = await r2.error.context.json(); if (j && j.erro) msg = j.erro; } catch (e) { /* mantém */ } throw new Error(msg); }
+      if (r2.data && r2.data.erro) throw new Error(r2.data.erro);
+      if (!r2.data || !r2.data.id) throw new Error('A função linha-editorial não respondeu. Enquanto isso, use "Copiar pedido para outra IA".');
+      toast('Proposta criada. Revise e clique em Aplicar.');
+    }, 'Gerar');
+  };
+  b('clCopiar').onclick = () => iaCopia(mqPedidoIA(r), 'Pedido copiado. Cole no ChatGPT ou no Claude e depois use "Colar resposta da IA".');
+  b('clColar').onclick = () => modal('Colar resposta da IA', `<p class="muted" style="margin:0 0 8px">Cole aqui o JSON que a IA devolveu.</p><label>Resposta<textarea name="txt" rows="10" required></textarea></label>`, async d => {
+    let t = d.txt.trim(); const fz = t.match(/```(?:json)?\s*([\s\S]*?)```/i); if (fz) t = fz[1].trim();
+    const i = t.indexOf('{'), j = t.lastIndexOf('}'); if (i < 0 || j <= i) throw new Error('Não encontrei um JSON na resposta.');
+    let o; try { o = JSON.parse(t.slice(i, j + 1)); } catch (e) { throw new Error('O JSON está incompleto ou com erro de formato.'); }
+    await q(sb.from('conteudo_linha_propostas').insert({ workspace_id: S.ws, persona_id: P.id, origem: 'colada', proposta: mqValidaProposta(o) }));
+    toast('Proposta registrada. Revise e clique em Aplicar.');
+  }, 'Registrar proposta', true);
+  box.querySelectorAll('[data-capl]').forEach(x => x.onclick = () => modal('Aplicar proposta', '<p style="margin:0">Cria ou atualiza pelo nome os territórios, frentes, formatos e quadros e grava o núcleo da marca. Nada é apagado.</p>', async () => {
+    const r2 = await q(sb.rpc('conteudo_aplicar_proposta', { p_id: x.dataset.capl })); toast(`Aplicada: ${r2.territorios} territórios e ${r2.formatos} formatos.`);
+  }, 'Aplicar'));
+  box.querySelectorAll('[data-cdes]').forEach(x => x.onclick = () => act(async () => { await q(sb.from('conteudo_linha_propostas').update({ status: 'descartada' }).eq('id', x.dataset.cdes)); toast('Proposta descartada'); render(); }));
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

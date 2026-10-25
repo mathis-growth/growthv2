@@ -1,3 +1,6 @@
+## v0.144
+**Configuração em 8 passos, com a pasta compartilhada pelo cliente.** No passo 1, o cliente cria uma pasta no Google Drive dele, compartilha com o e-mail da Mathisa e cola o link; o Growths cria ali a árvore de 10 pastas (sem custo de Google Cloud, e o sistema enxerga tudo o que o cliente puser na pasta). Quem não tem Drive continua com a pasta no Drive da Mathisa. O passo 2 traz o roteiro da call de briefing na tela, uma parte por vez, salvando sozinho; o passo 3, a lista de materiais a pedir e o botão "Material pronto". Pesquisa e tese e o dossiê para aprovação (passos 4 e 5) estão em construção. Depois vêm linha editorial (com proposta pela IA), canais e rotina.
+
 ## v0.143
 **Growth's Content começa pela configuração.** Enquanto o módulo não está configurado, Marketing → Growth's Content → Estratégia de conteúdo abre numa configuração passo a passo (5 passos: Google Drive, Briefing e persona, Linha editorial e formatos, Canais, Rotina da semana), que guarda onde a pessoa parou. Só depois de concluída aparecem as abas de sempre. O passo 1 conecta o Google Drive do próprio cliente (login com a conta Google dele) e cria lá a pasta do Growth's Content com a árvore de subpastas; se o cliente não tiver Drive, a pasta é criada no Drive da Mathisa.
 

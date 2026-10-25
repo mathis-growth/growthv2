@@ -1,5 +1,10 @@
 
 
+## v0.144 — Configuração em 8 passos e pasta compartilhada
+1. `supabase/RODAR_v0.144_content_setup_v2.sql` (aplicado em produção em 25/10/2026).
+2. `supabase functions deploy content-drive --no-verify-jwt` (publicada em 25/10/2026, versão 5).
+3. Nada mais a configurar: a pasta compartilhada usa o Apps Script da v0.140 (gratuito). `sistema_config.drive_script_email` é o e-mail com quem o cliente compartilha a pasta.
+
 ## v0.143 — Configuração passo a passo
 1. `supabase/RODAR_v0.143_content_setup.sql` (aplicado em produção em 25/10/2026).
 2. `supabase functions deploy content-google --no-verify-jwt` (publicada em 25/10/2026).
