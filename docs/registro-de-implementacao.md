@@ -1,5 +1,12 @@
 
 
+## Máquina de Conteúdo (v0.133)
+- `integra133.py` corta as versões antigas de `dadosConteudo`, `vConteudo`, `modalConteudo`, Kanban, Priorização, Plano e Linhas e injeta `g133.js` (antes de `const PQ_TOKEN`) e `g133.css`. Relatórios, métricas e importações ficaram como estavam (ganharam agrupamento por território, formato da Máquina e destino).
+- Abas: Kanban, Priorização (`tabPrior` / `tabPriorNotas` no método antigo), Máquina (`tabMaquina`, matriz território × formato), Semana (`tabPlano`, dias com arrastar e soltar; metas por tipo de mídia num bloco recolhível), Fechamento (`tabFechamento`, RPC `conteudo_semana` e `conteudo_fechar_semana`), Relatórios, Persona (`tabPersona`), Linha editorial (`tabLinhas`, núcleo, método, territórios, camadas, formatos, quadros).
+- Cartão (`modalConteudo`) no score V18: seções Pauta, Encontrabilidade, Radar e evidência, Score (6 × 1 a 5, total ao vivo, VALIDAR), Roteiro (estrutura com passos), Produção e publicação, Depois de publicar.
+- Edge function `linha-editorial`: lê o questionário pelo cliente da pessoa logada (RLS), manda as respostas + o modelo V18 como exemplo, valida a resposta (`validaProposta`) e grava em `conteudo_linha_propostas`. Limite de 6 propostas por hora por cliente. A tela tem a mesma validação para a resposta colada (`mqValidaProposta`).
+- Testes: `t133_maquina_conteudo.py` (banco e telas, 70+ conferências) e `deno test supabase/functions/linha-editorial`.
+
 ## "Como foi o meu dia?" e alertas (v0.132)
 - Tela `ia-perguntar` → `vPerguntar` reescrita (a antiga saiu no `integra132.py`): botões de dia e `diaDaPergunta(texto)` reconhecem ontem/hoje/anteontem/dd/mm e mostram `cardFatos(f)` (de `growths_fatos_dia`); com chave de IA, a pergunta também vai para `perguntar`.
 - Tela nova `ia-alertas` → `vAlertas`: alertas (`alertas`), configuração (`alertas_config`), canais por pessoa (`equipe.avisar_*`), status dos canais (`avisos` → `{acao:'status'}`), teste (`growths_aviso_teste` + `avisos` → `{acao:'enviar'}`), envios recentes (`notificacoes`).

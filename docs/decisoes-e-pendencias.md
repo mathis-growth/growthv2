@@ -1,5 +1,17 @@
 
 
+## v0.133 — Máquina de Conteúdo
+**Pedido da Rebecka (24/10)**: o menu de conteúdo passa a se chamar Máquina de Conteúdo; padronizar no Growths a linha editorial V18 (Estratégia, Negócios — com Empreendedorismo registrado —, Dados + IA e Vida Real & Crenças), os formatos (No Quadro, Yap Content, Análise, Carrossel caderno com animações e a série musical sertaneja feita com IA, 1× por semana), destino, palavra-chave, critérios, fechamento semanal, etiquetas e dias da semana, tudo dentro do Growths, sem planilha; e um questionário de persona para a IA montar a linha editorial pelo método dela.
+Decisões:
+- **Fato**: territórios, frentes de Estratégia e Negócios, formatos de autoridade, destinos, score de 6 critérios, meta de 12 e fechamento no sábado vêm do documento "Linha Editorial V18" e da "Metodologia Própria" (Drive). **Organização (editável)**: a V18 lista os temas de Dados + IA e de Vida Real & Crenças num parágrafo só; agrupei em 4 e 5 frentes. A descrição de Empreendedorismo, do Carrossel caderno e da Série musical foi escrita a partir do pedido (não estão na V18).
+- O "formato" antigo (reels, carrossel, story…) continua e virou **tipo de mídia**; o formato da Máquina é uma tabela nova (`conteudo_formatos`), editável por cliente. Os 4 formatos de autoridade da seção 15 da V18 (Repertório de Funis, Business Case, Analisando os Dados de um Funil, Growth na Prática) entram como **quadros**, opcionais na pauta.
+- Dois métodos de nota convivem por cliente: o antigo (5 notas de 1 a 10) e o **score V18** (6 critérios de 1 a 5). Instalar a V18 ou aplicar uma proposta liga o score; dá para voltar em Linha editorial. As notas antigas ficam guardadas.
+- **VALIDAR é obrigatório para produzir** no score V18 ("a validação humana faz parte da metodologia"); o ranking nunca desmarca o VALIDAR.
+- O modelo V18 é **instalado por botão** (função `conteudo_instalar_v18`), não fixo no código: outros clientes podem ter a linha deles. Instalar ou aplicar uma proposta **não apaga nada** (cria/atualiza pelo nome).
+- A proposta da IA fica como "proposta" até alguém clicar em Aplicar. A IA só usa o que está no questionário e lista o que faltou ("pendências"); nada inventado.
+- Fechamento: antes do dia do fechamento, a tela abre a semana anterior; no dia (sábado) ou depois, a semana atual. Fechar guarda uma foto dos números daquele momento.
+**Pendente**: rodar `RODAR_v0.133_maquina_conteudo.sql` em produção, publicar `linha-editorial` e instalar o V18 no cliente da Rebecka. Dashboard do Instagram (v0.134) vem a seguir, lendo `social_posts`/`social_perfis_dia` (Meta) com importação manual enquanto o app da Meta não é aprovado. Radar diário automático continua não conectado.
+
 ## v0.132 — "Como foi o meu dia?" e alertas
 **Pedido da Rebecka (24/10)**: poder perguntar ao Growths ("como foi meu dia ontem?") e ter um resumo; e o sistema identificar algo acontecendo de forma brusca ou repetida e mandar alertas. Escolhas dela: alertas no sino, por e-mail e por WhatsApp; ligar o agendador do banco (pg_cron). Sobre a chave de IA, sem preferência.
 **Decisões técnicas**

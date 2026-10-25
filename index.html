@@ -387,7 +387,98 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">.fd-bt{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+<style id="v122">
+/* v0.133 Máquina de Conteúdo */
+.mq-terr,.mq-fmt{border-left:4px solid var(--c);background:color-mix(in srgb,var(--c) 13%,var(--surface));color:var(--ink)}
+.mq-fmt{border-left:0;border:1px solid color-mix(in srgb,var(--c) 45%,var(--line));border-radius:4px}
+.mq-dest{background:var(--surface-2);border:1px dashed var(--line);color:var(--ink);font-weight:600}
+.mq-dest[data-d="rebecka"]{border-style:solid;border-color:#b05a7a}
+.mq-dest[data-d="mathisa"]{border-style:solid;border-color:#3f7f86}
+.mq-dest[data-d="ambas"]{border-style:solid;border-image:linear-gradient(90deg,#b05a7a,#3f7f86) 1}
+.mq-score{display:inline-flex;align-items:center;gap:6px;font-size:12px;white-space:nowrap}
+.mq-score i{display:inline-block;height:6px;width:56px;border-radius:3px;background:var(--line);overflow:hidden}
+.mq-score u{display:block;height:100%;background:var(--accent)}
+.mq-score b{font-size:13px}
+.gcard.mq-val{border-color:color-mix(in srgb,var(--good,#17803d) 55%,var(--line))}
+.mq-check{color:var(--good,#17803d)}
+.mq-fs{grid-column:1/-1;border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:0}
+.mq-fs legend{font-size:12px;font-weight:600;padding:0 4px}
+.mq-checks{display:flex;flex-wrap:wrap;gap:6px 14px}
+.mq-checks label{flex-direction:row;align-items:center;gap:6px;font-weight:400;color:var(--ink)}
+.mq-checks input{width:auto}
+.mq-sug{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.mq-score-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px 16px}
+.mq-1a5{display:inline-flex;gap:4px;align-items:center;margin-top:4px}
+.mq-1a5 input{position:absolute;opacity:0;width:1px;height:1px}
+.mq-1a5 span{display:inline-grid;place-items:center;width:30px;height:30px;border:1px solid var(--line);border-radius:6px;font-weight:600;color:var(--ink);background:var(--surface);cursor:pointer}
+.mq-1a5 input:checked+span{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.mq-1a5 input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.mq-crit{display:flex;flex-direction:column;gap:2px;font-size:13px;font-weight:600;color:var(--muted)}
+.mq-1a5 label{display:inline-flex;margin:0;padding:0;font-weight:400;position:relative}
+.mq-limpa{border:0;background:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px}
+.mq-total{margin:8px 0 4px;font-size:13px}
+.mq-validar{flex-direction:row!important;align-items:center;gap:10px;margin-top:8px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);color:var(--ink)}
+.mq-validar input{width:20px!important;height:20px}
+.mq-tg{display:inline-flex;align-items:center;cursor:pointer}
+.mq-tg input{position:absolute;opacity:0;width:1px;height:1px}
+.mq-tg span{display:inline-grid;place-items:center;width:28px;height:28px;border:1px solid var(--line);border-radius:6px;color:transparent;font-size:16px;background:var(--surface)}
+.mq-tg input:checked+span{color:var(--good,#17803d);border-color:var(--good,#17803d)}
+.mq-tg input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.mq-subtabs{margin-bottom:0}
+.mq-mat th,.mq-mat td{vertical-align:top}
+.mq-mat thead th{min-width:120px}
+.mq-cel{position:relative;min-width:120px}
+.mq-cel.vazio{background:repeating-linear-gradient(135deg,transparent 0 6px,color-mix(in srgb,var(--line) 45%,transparent) 6px 7px)}
+.mq-n{font-size:22px;font-weight:700;background:none;border:0;color:var(--ink);cursor:pointer;padding:0;display:block}
+.mq-n:hover{color:var(--accent)}
+.mq-cel small{display:block;color:var(--muted);font-size:11px;line-height:1.35;padding-right:26px}
+.mq-mais{position:absolute;top:6px;right:6px;padding:0 7px}
+.mq-fmtl{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line)}
+.mq-fmtl:first-of-type{border-top:0}
+.mq-fmtl .pill{flex:0 0 auto;min-width:130px}
+.mq-semnav{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.mq-dias{display:grid;grid-template-columns:repeat(7,minmax(150px,1fr));gap:8px;overflow-x:auto;padding-bottom:6px}
+.mq-dia{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:6px;min-height:150px}
+.mq-dia.hoje{border-color:var(--accent)}
+.mq-dia.over{background:var(--accent-soft);border-color:var(--accent)}
+.mq-dia h3{display:flex;justify-content:space-between;align-items:baseline;gap:6px;margin:0;font-size:13px}
+.mq-dia h3 small{color:var(--muted);font-weight:400;margin-right:auto}
+.mq-mini{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:8px;padding:6px 8px;display:flex;flex-direction:column;gap:4px;cursor:pointer;font-size:12.5px}
+.mq-mini b{font-weight:600;line-height:1.3}
+.mq-mini span{display:flex;flex-wrap:wrap;gap:3px}
+.mq-mini .pill{font-size:10.5px;padding:1px 6px}
+.mq-mini.pub{opacity:.75}
+.mq-mini[draggable]{cursor:grab}
+.mq-fila{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:8px}
+.mq-freq .pill{margin:2px}
+.mq-h{font-size:15px;margin:6px 0 -6px;color:var(--muted);font-weight:600}
+.mq-lac{border-left:4px solid var(--warn,#9a6700)}
+.mq-prog{display:flex;align-items:center;gap:10px;margin-top:10px}
+.mq-prog .bar{flex:1;max-width:320px}
+.mq-sticky{position:sticky;bottom:0;background:var(--bg);padding:10px 0;z-index:2;border-top:1px solid var(--line)}
+.mq-prop.aplicada{border-left:4px solid var(--good,#17803d)}
+.mq-terrs{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:10px}
+.mq-terrc{border:1px solid var(--line);border-top:4px solid var(--c);border-radius:8px;padding:8px 10px;background:var(--surface)}
+.mq-terrc small{display:block;color:var(--muted);margin:2px 0 4px}
+.mq-terrc ul{margin:4px 0 0;padding-left:18px;font-size:13px}
+.mq-pend{margin-top:10px;padding:8px 10px;border-radius:8px;background:var(--surface-2);font-size:13px}
+.mq-pend ul{margin:4px 0 0;padding-left:18px}
+.mq-nucleo dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;margin:10px 0 0}
+.mq-nucleo dt{font-weight:600;color:var(--muted)}
+.mq-nucleo dd{margin:0}
+.mq-frases{columns:2 320px;margin:8px 0 0;padding-left:18px;font-size:13px}
+.mq-terrp{border-left:4px solid var(--c)}
+.mq-lim{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;margin:10px 0}
+.mq-lim div{font-size:13px}
+.mq-lim b{display:block;font-size:12px;color:var(--muted)}
+.mq-comeco{border:1px dashed var(--accent)}
+@media (max-width:720px){.mq-nucleo dl{grid-template-columns:1fr}.mq-dias{grid-template-columns:repeat(7,minmax(140px,1fr))}}
+.mq-mat th,.mq-mat thead th{text-transform:none;letter-spacing:0}
+.mq-mat th[scope=row]{font-weight:400;min-width:200px;max-width:260px;white-space:normal}
+.mq-mat th[scope=row] small{display:block;margin-top:4px;line-height:1.35}
+.mq-mat .mq-cel{min-width:150px}
+.gcard .pill,.mq-mini .pill{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fd-bt{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .ia-q{font-size:14px;padding:0 4px}
 .fd{display:flex;flex-direction:column;gap:14px;margin-top:10px}
 .fd-ks{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
@@ -606,7 +697,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.132 · 24/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.133 · 24/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -630,7 +721,7 @@ setTimeout(() => { if ($('#login').classList.contains('hide') && $('#app').class
 const NAV = [
   { g: 'Growth Starter', flat: true, starter: true, items: [['st-dash', 'Dashboard'], ['mkt-dash', 'Aquisição'], ['mkt-midia', 'Mídia'], ['crm-vendas', 'Vendas'], ['ho-retencao', 'Retenção & Expansão'], ['cad-produtos', 'Produtos'], ['crm-alunos', 'Clientes / Alunos'], ['fin-dash', 'Financeiro'], ['st-relatorios', 'Relatórios'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['gro-ciclo', 'Experimentos']] },
   { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['adm-plano', 'Planejamento da empresa'], ['adm-empresa', 'Cadastro da empresa']] },
-  { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários'], ['mkt-cont', 'Planejamento de conteúdo']] },
+  { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários'], ['mkt-cont', 'Máquina de Conteúdo']] },
   { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['mkt-origem', 'Leads por origem']] },
   { g: 'RevOps', items: [['ho-dash', 'Dashboard'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
   { g: 'Financeiro', items: [['fin-dash', 'Dashboard'], ['fin-receber', 'Contas a receber'], ['fin-pagar', 'Contas a pagar'], ['fin-custo', 'Custos e margens'], ['fin-lanc', 'Lançamentos contábeis']] },
@@ -6991,7 +7082,7 @@ async function vGmCenarios(m) {
 }
 
 /* ================= v0.109 — Ideias pelo ChatGPT =================
-   Um GPT no ChatGPT (ou outra IA que chame um endereço com chave) grava ideias no Planejamento de conteúdo, etapa Ideia, origem "ia".
+   Um GPT no ChatGPT (ou outra IA que chame um endereço com chave) grava ideias na Máquina de Conteúdo, etapa Ideia, origem "ia".
    A chave é gerada aqui (aparece uma vez), fica só como hash no banco e pode ser revogada. A edge function "ideias" recebe a chamada. */
 const IA_URL = SB_URL + '/functions/v1/ideias';
 const IA_INSTR = `Você é o meu caderno de ideias de conteúdo do Growths.
@@ -7007,7 +7098,7 @@ Se eu falar várias ideias de uma vez, mande todas numa chamada só (campo ideia
 Depois de gravar, responda em uma linha: quantas ideias entraram e os títulos. Responda sempre em português.`;
 const IA_SCHEMA = () => JSON.stringify({
   openapi: '3.1.0',
-  info: { title: 'Growths · Ideias de conteúdo', version: '1.0.0', description: 'Grava ideias no Planejamento de conteúdo do Growths.' },
+  info: { title: 'Growths · Ideias de conteúdo', version: '1.0.0', description: 'Grava ideias na Máquina de Conteúdo do Growths.' },
   servers: [{ url: SB_URL + '/functions/v1' }],
   paths: {
     '/ideias': {
@@ -11365,7 +11456,7 @@ function cxHtml(D) {
           <label>Primeira carga<select data-cxdias="${c.id}">${[7, 30, 90, 180].map(n => `<option value="${n}"${Number(c.dias_retroativos) === n ? ' selected' : ''}>${n} dias</option>`).join('')}</select></label></div>` : ''}
       <div style="display:flex;flex-direction:row;gap:6px;flex-wrap:wrap;align-items:center">${c.status === 'conectado' ? `<button class="btn pri sm" data-cxsync="${p}">Sincronizar agora</button><button class="btn sm" data-cxcon="${p}">Conectar outra conta</button>` : `<button class="btn pri sm" data-cxcon="${p}">${c.status === 'desconectado' ? 'Conectar' : 'Conectar de novo'}</button>`}${lig ? ` <button class="btn sm bad" data-cxdes="${p}">Desconectar</button>` : ''}</div></div>`; };
   const canalNome = k => ((one(k.campanhas) || {}).nome || 'Campanha') + ' · ' + (k.canal || '') + (k.utm_campaign ? ' (' + k.utm_campaign + ')' : '');
-  return `<div class="panel"><div class="head" style="margin:0 0 8px"><div><h2 style="margin:0">Conexões automáticas</h2><span class="muted">Entre com a conta da plataforma e escolha o que sincronizar. O acesso fica guardado no servidor e nunca aparece aqui. Os dados entram em Mídia paga, no Planejamento de conteúdo e em Vídeos e webinários.</span></div></div>
+  return `<div class="panel"><div class="head" style="margin:0 0 8px"><div><h2 style="margin:0">Conexões automáticas</h2><span class="muted">Entre com a conta da plataforma e escolha o que sincronizar. O acesso fica guardado no servidor e nunca aparece aqui. Os dados entram em Mídia paga, na Máquina de Conteúdo e em Vídeos e webinários.</span></div></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:12px">${card('meta')}${card('google')}</div>
     ${D.vinc.length ? `<h3 style="margin:16px 0 4px">Campanhas de anúncio sem canal (${D.vinc.length})</h3><span class="muted">O Growths liga sozinho quando o nome da campanha na plataforma (ou o utm_campaign do anúncio) é igual ao utm_campaign de um canal. Estas não bateram: escolha o canal ou ignore.</span>
       <div class="tw"><table><thead><tr><th>Plataforma</th><th>Campanha na plataforma</th><th>Canal no Growths</th><th></th></tr></thead><tbody>${D.vinc.map(v => `<tr><td>${v.provedor === 'meta_ads' ? 'Meta' : 'Google Ads'}</td><td><b>${esc(v.campanha_nome || v.campanha_ext)}</b></td>
@@ -13264,7 +13355,7 @@ async function vHeavyOps(m) {
   };
 }
 
-/* ---------- Planejamento de conteúdo ---------- */
+/* ---------- Máquina de Conteúdo (antes Planejamento de conteúdo) ---------- */
 const FORM_C = [['video', 'Vídeo'], ['reels', 'Reels'], ['carrossel', 'Carrossel'], ['imagem', 'Imagem'], ['story', 'Story'], ['artigo', 'Artigo'], ['newsletter', 'Newsletter'], ['live', 'Live']];
 const FORM_N = Object.fromEntries(FORM_C);
 const CANAIS_C = [['instagram', 'Instagram'], ['linkedin', 'LinkedIn'], ['youtube', 'YouTube'], ['tiktok', 'TikTok'], ['facebook', 'Facebook'], ['x', 'X'], ['blog', 'Blog'], ['email', 'E-mail']];
@@ -13281,57 +13372,6 @@ function agregaPub(L) {
   const t = { n: L.length, alcance: 0, views: 0, inter: 0, base: 0, cliques: 0 };
   L.forEach(p => { const i = inter(p); t.alcance += p.alcance || 0; t.views += p.visualizacoes || 0; t.inter += i; if (p.alcance) t.base += i; t.cliques += p.cliques || 0; });
   t.eng = div(t.base, t.alcance); return t;
-}
-async function dadosConteudo() {
-  const w = S.ws;
-  const [linhas, temas, cont, metas, pubs, cfg, eq, conta] = await Promise.all([
-    q(sb.from('conteudo_linhas').select('*').eq('workspace_id', w).order('ordem').order('nome')),
-    q(sb.from('conteudo_temas').select('*').eq('workspace_id', w).order('prioridade').order('nome')),
-    q(sb.from('conteudos').select('*').eq('workspace_id', w).order('criado_em')),
-    q(sb.from('conteudo_metas_semanais').select('*').eq('workspace_id', w)),
-    q(sb.from('conteudo_publicacoes').select('*').eq('workspace_id', w)),
-    q(sb.from('conteudo_config').select('*').eq('workspace_id', w)),
-    q(sb.from('equipe').select('id,nome').eq('workspace_id', w).eq('ativo', true).order('nome')),
-    q(sb.from('conteudo_conta_dia').select('*').eq('workspace_id', w).order('data'))
-  ]);
-  const crit = (cfg[0] && cfg[0].criterios) || CRIT_PADRAO;
-  return { linhas, temas, cont, metas, pubs, crit, eq, conta, T: Object.fromEntries(temas.map(t => [t.id, t])) };
-}
-async function vConteudo(m) {
-  const C = S.ct = S.ct || { tab: 'kanban', tema: '', canal: '', formato: '', arq: false, dias: 30 };
-  const D = await dadosConteudo();
-  m.innerHTML = `<div class="head"><div><h1>Planejamento de conteúdo</h1><span class="muted">Linhas editoriais e temas, ideias priorizadas por nota, produção semanal e resultado por canal.</span></div></div>
-  <div class="tabs">${[['kanban', 'Kanban'], ['prior', 'Priorização'], ['plano', 'Plano semanal'], ['rel', 'Relatórios'], ['linhas', 'Linhas e temas']].map(([k, l]) => `<button data-t="${k}" class="${C.tab === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="ctTab" style="display:flex;flex-direction:column;gap:16px"></div>`;
-  m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { C.tab = b.dataset.t; render(); });
-  ({ kanban: tabKanban, prior: tabPrior, plano: tabPlano, rel: tabRel, linhas: tabLinhas }[C.tab] || tabKanban)($('#ctTab'), D, C);
-}
-
-/* ----- cartão: criar e editar ----- */
-function modalConteudo(row, D, pre) {
-  const r = row || pre || {};
-  const campos = [
-    { k: 'titulo', l: 'Título da ideia ou pauta', req: 1, full: 1 }, { k: 'descricao', l: 'Descrição e ângulo', t: 'textarea' },
-    { k: 'tema_id', l: 'Tema', t: 'select', opts: sel(D.temas.filter(t => t.ativo || t.id === r.tema_id), 'id', t => t.nome) },
-    { k: 'formato', l: 'Formato', t: 'select', req: 1, def: 'carrossel', opts: FORM_C },
-    { k: 'status', l: 'Etapa', t: 'select', req: 1, def: 'ideia', opts: [...ETAPAS_C.map(e => [e[0], e[1]]), ['arquivado', 'Arquivado']] },
-    { k: 'responsavel_id', l: 'Responsável', t: 'select', opts: sel(D.eq, 'id', 'nome') },
-    { k: 'prazo', l: 'Prazo de produção', t: 'date' }, { k: 'data_publicacao', l: 'Data de publicação', t: 'date', hint: 'Obrigatória para agendar.' },
-    { k: 'copy_url', l: 'Link da copy (Google Docs)', t: 'url', ph: 'https://docs.google.com/…', full: 1 },
-    { k: 'midia_url', l: 'Link da mídia (Google Drive)', t: 'url', ph: 'https://drive.google.com/…', full: 1, hint: 'Copy e mídia são obrigatórias para marcar como pronto.' },
-    { k: 'fonte_url', l: 'Fonte da ideia', t: 'url', full: 1 }
-  ];
-  const notas = (ks, tit) => `<fieldset style="grid-column:1/-1;border:1px solid var(--line);border-radius:8px;padding:8px 10px"><legend style="font-size:12px;font-weight:600">${tit}</legend><div class="grid2">${ks.map((k, i) => campoHtml({ k, l: `${i + 1}. ${D.crit[i]} (1 a 10)`, t: 'number', step: '1' }, r[k])).join('')}</div></fieldset>`;
-  const canais = `<fieldset style="grid-column:1/-1;border:1px solid var(--line);border-radius:8px;padding:8px 10px"><legend style="font-size:12px;font-weight:600">Etiquetas de canal</legend><div style="display:flex;flex-wrap:wrap;gap:6px 14px">${CANAIS_C.map(([k, l]) => `<label style="flex-direction:row;align-items:center;gap:6px;font-weight:400;color:var(--ink)"><input type="checkbox" name="canal" value="${k}" style="width:auto"${(r.canais || []).includes(k) ? ' checked' : ''}> ${l}</label>`).join('')}</div></fieldset>`;
-  const f = modal(row ? 'Editar conteúdo' : 'Nova ideia', `<div class="grid2">${campos.slice(0, 6).map(c => campoHtml(c, r[c.k])).join('')}${canais}${campos.slice(6).map(c => campoHtml(c, r[c.k])).join('')}${notas(NOTAS_I, 'Nota da ideia (a média decide o que vira pauta)')}${notas(NOTAS_P, 'Nota da pauta (a média decide o que produzir)')}</div>`, async (_d, form) => {
-    const v = lerCampos([...campos, ...[...NOTAS_I, ...NOTAS_P].map(k => ({ k, t: 'number' }))], form);
-    v.canais = [...form.querySelectorAll('input[name=canal]:checked')].map(x => x.value);
-    for (const k of [...NOTAS_I, ...NOTAS_P]) if (v[k] != null && (!Number.isInteger(v[k]) || v[k] < 1 || v[k] > 10)) throw new Error('As notas são números inteiros de 1 a 10.');
-    let id = row && row.id;
-    if (id) await q(sb.from('conteudos').update(v).eq('id', id));
-    else id = one(await q(sb.from('conteudos').insert({ ...v, workspace_id: S.ws }).select('id').single())).id;
-    await sincPubs(id, v);
-  }, 'Salvar', true);
-  if (row && row.id) botaoExcluir(f, 'conteudos', row.id, 'Conteúdo excluído');
 }
 async function sincPubs(id, v) {
   if (!['agendado', 'publicado'].includes(v.status) || !(v.canais || []).length) return;
@@ -13353,72 +13393,6 @@ function modalColar(D) {
   }, 'Importar', true);
 }
 
-/* ----- Kanban ----- */
-function tabKanban(el, D, C) {
-  const h = hoje(), lim = diaMais(h, -29), T = D.T;
-  const L = D.cont.filter(c => (!C.tema || c.tema_id === C.tema) && (!C.canal || (c.canais || []).includes(C.canal)) && (!C.formato || c.formato === C.formato));
-  const etapas = C.arq ? [...ETAPAS_C, ['arquivado', 'Arquivado', '']] : ETAPAS_C;
-  const prio = c => (T[c.tema_id] || { prioridade: 9 }).prioridade;
-  const cmp = (a, b) => (notaDe(b) ?? -1) - (notaDe(a) ?? -1) || prio(a) - prio(b) || String(a.criado_em).localeCompare(String(b.criado_em));
-  const card = c => { const t = T[c.tema_id], n = notaDe(c), atraso = c.prazo && c.prazo < h && ['pauta', 'producao'].includes(c.status); return `<div class="card gcard" draggable="true" data-id="${c.id}">
-    <b>${esc(c.titulo)}</b>
-    <div class="ca">${t ? `<span class="pill neutral" style="border-left:4px solid ${esc(t.cor)}">${esc(t.nome)}</span><span class="pill ${PRI_C[t.prioridade][0]}">${PRI_C[t.prioridade][1]}</span>` : '<span class="pill neutral">sem tema</span>'}${n != null ? `<span class="pill info" title="Média das 5 notas">Nota ${notaC(n)}</span>` : '<span class="pill neutral">sem nota</span>'}${atraso ? '<span class="pill bad">atrasado</span>' : ''}</div>
-    <div class="ca"><span class="pill neutral">${esc(FORM_N[c.formato] || c.formato)}</span>${(c.canais || []).map(x => `<span class="pill info">${esc(CANAL_N[x] || x)}</span>`).join('')}${c.origem === 'ia' ? '<span class="pill info" title="Veio da IA (ex.: ChatGPT do celular)">pela IA</span>' : ''}</div>
-    ${c.data_publicacao ? `<small>Publica em ${dd(c.data_publicacao)}</small>` : c.prazo ? `<small>Prazo ${dd(c.prazo)}</small>` : ''}
-    <div class="ca"><button class="btn sm" data-edit="${c.id}">Abrir</button><select class="mv" data-mv="${c.id}" aria-label="Mover para"><option value="">Mover para…</option>${[...ETAPAS_C, ['arquivado', 'Arquivar']].filter(x => x[0] !== c.status).map(x => `<option value="${x[0]}">${x[1]}</option>`).join('')}</select></div></div>`; };
-  el.innerHTML = `<div class="acts"><button class="btn pri" id="cNovo">Nova ideia</button><button class="btn" id="cColar">Colar ideias</button><button class="btn" id="cIA" title="Fale a ideia no ChatGPT do celular e ela entra aqui">Ideias pelo ChatGPT</button></div>
-  <div class="filters"><label>Tema<select id="cfT"><option value="">Todos</option>${opts(D.temas, 'id', 'nome', C.tema)}</select></label><label>Canal<select id="cfC"><option value="">Todos</option>${CANAIS_C.map(([k, l]) => `<option value="${k}"${C.canal === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label><label>Formato<select id="cfF"><option value="">Todos</option>${FORM_C.map(([k, l]) => `<option value="${k}"${C.formato === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label><label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="cfA" style="width:auto"${C.arq ? ' checked' : ''}> Mostrar arquivados</label></div>
-  <div class="kpis">${kpi('Ideias a avaliar', num(L.filter(c => c.status === 'ideia').length), 'esperando nota')}${kpi('Pautas aprovadas', num(L.filter(c => c.status === 'pauta').length), 'prontas para produzir')}${kpi('Em produção', num(L.filter(c => ['producao', 'pronto'].includes(c.status)).length), 'produzindo e prontos')}${kpi('Publicados em 30 dias', num(L.filter(c => c.status === 'publicado' && (c.data_publicacao || diaLocal(c.publicado_em)) >= lim).length), 'conteúdos')}</div>
-  ${!D.temas.length ? '<div class="panel">Comece pela aba <b>Linhas e temas</b>: cadastre as linhas editoriais e os temas de cada uma. Depois as ideias ganham tema, prioridade e etiquetas.</div>' : ''}
-  <div class="board" style="grid-auto-columns:minmax(240px,1fr)">${etapas.map(([k, nome, sub]) => { const X = L.filter(c => c.status === k).sort(cmp); return `<div class="colk" data-col="${k}"><h3><span>${nome} <small class="muted">${esc(sub)}</small></span><span class="mono">${X.length}</span></h3>${X.map(card).join('') || '<small class="muted">Vazio</small>'}</div>`; }).join('')}</div>`;
-  $('#cNovo').onclick = () => modalConteudo(null, D, C.tema ? { tema_id: C.tema } : null);
-  $('#cColar').onclick = () => modalColar(D);
-  $('#cIA').onclick = () => modalIdeiasIA();
-  $('#cfT').onchange = e => { C.tema = e.target.value; render(); }; $('#cfC').onchange = e => { C.canal = e.target.value; render(); }; $('#cfF').onchange = e => { C.formato = e.target.value; render(); }; $('#cfA').onchange = e => { C.arq = e.target.checked; render(); };
-  const por = id => D.cont.find(x => x.id === id);
-  el.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => modalConteudo(por(b.dataset.edit), D));
-  el.querySelectorAll('[data-mv]').forEach(s => s.onchange = () => { if (s.value) moverConteudo(por(s.dataset.mv), s.value, D); });
-  el.querySelectorAll('.gcard').forEach(c => c.ondragstart = ev => { ev.dataTransfer.setData('text/plain', c.dataset.id); });
-  el.querySelectorAll('.colk').forEach(col => { col.ondragover = ev => { ev.preventDefault(); col.classList.add('over'); }; col.ondragleave = () => col.classList.remove('over'); col.ondrop = ev => { ev.preventDefault(); col.classList.remove('over'); const c = por(ev.dataTransfer.getData('text/plain')); if (c && c.status !== col.dataset.col) moverConteudo(c, col.dataset.col, D); }; });
-}
-
-/* ----- Priorização: ranking pela média das 5 notas ----- */
-function tabPrior(el, D, C) {
-  const T = D.T, prio = c => (T[c.tema_id] || { prioridade: 9 }).prioridade;
-  const ordem = (a, b) => (notaDe(b) ?? -1) - (notaDe(a) ?? -1) || prio(a) - prio(b) || String(a.criado_em).localeCompare(String(b.criado_em));
-  const cap = sum(D.metas, 'quantidade'), andamento = D.cont.filter(c => ['producao', 'pronto'].includes(c.status)).length, vagas = Math.max(0, cap - andamento);
-  const pautas = D.cont.filter(c => c.status === 'pauta').sort(ordem), ideias = D.cont.filter(c => c.status === 'ideia').sort(ordem);
-  const agora = new Set(pautas.filter(c => notaDe(c) != null).slice(0, vagas).map(c => c.id));
-  const linha = (c, i, ac) => { const t = T[c.tema_id]; return `<tr><td class="n">${i + 1}</td><td><b>${esc(c.titulo)}</b></td><td>${t ? `<span class="pill neutral" style="border-left:4px solid ${esc(t.cor)}">${esc(t.nome)}</span>` : '—'}</td><td>${t ? `<span class="pill ${PRI_C[t.prioridade][0]}">${PRI_C[t.prioridade][1]}</span>` : '—'}</td><td>${esc(FORM_N[c.formato] || '')} ${(c.canais || []).map(x => `<span class="pill info">${esc(CANAL_N[x] || x)}</span>`).join(' ')}</td><td class="n">${notaDe(c) != null ? `<span class="pill info">${notaC(notaDe(c))}</span>` : '<span class="pill neutral">sem nota</span>'}</td><td>${agora.has(c.id) ? '<span class="pill good">Produzir agora</span> ' : ''}<button class="btn sm" data-edit="${c.id}">Notas e dados</button> <button class="btn sm" data-ac="${c.id}">${ac}</button></td></tr>`; };
-  const tabela = (L, ac, vazio) => `<div class="tw"><table><thead><tr><th class="n">#</th><th>Conteúdo</th><th>Tema</th><th>Prioridade do tema</th><th>Formato e canais</th><th class="n">Nota</th><th></th></tr></thead><tbody>${L.map((c, i) => linha(c, i, ac)).join('') || `<tr><td colspan="7" class="empty">${vazio}</td></tr>`}</tbody></table></div>`;
-  el.innerHTML = `<div class="kpis">${kpi('Capacidade semanal', num(cap), 'soma das metas por formato')}${kpi('Em produção ou prontos', num(andamento), 'já ocupam a semana')}${kpi('Vagas para novas pautas', num(vagas), cap ? 'capacidade menos o que está em andamento' : 'defina a meta no Plano semanal')}${kpi('Pautas na fila', num(pautas.length), 'aprovadas e aguardando')}</div>
-  <div class="panel"><b>Como a nota funciona.</b> <span class="muted">Cada ideia e cada pauta recebe 5 notas de 1 a 10. A média é calculada pelo sistema e ordena as listas; empate é resolvido pela prioridade do tema. O destaque "Produzir agora" é só uma sugestão, quem decide é você. Critérios: ${D.crit.map((c, i) => `${i + 1}. ${esc(c)}`).join(' · ')}. Edite os critérios em Linhas e temas.</span></div>
-  <div class="panel"><h2>Pautas aprovadas, da maior para a menor nota</h2>${tabela(pautas, 'Iniciar produção', 'Nenhuma pauta aprovada ainda.')}</div>
-  <div class="panel"><h2>Ideias a avaliar, da maior para a menor nota</h2>${tabela(ideias, 'Aprovar como pauta', 'Nenhuma ideia esperando avaliação.')}</div>`;
-  const por = id => D.cont.find(x => x.id === id);
-  el.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => modalConteudo(por(b.dataset.edit), D));
-  el.querySelectorAll('[data-ac]').forEach(b => b.onclick = () => { const c = por(b.dataset.ac); moverConteudo(c, c.status === 'ideia' ? 'pauta' : 'producao', D); });
-}
-
-/* ----- Plano semanal: meta por formato x planejado ----- */
-function tabPlano(el, D, C) {
-  const h = hoje(), ini0 = segundaDe(h), M = Object.fromEntries(D.metas.map(x => [x.formato, x.quantidade]));
-  const fmts = FORM_C.filter(([k]) => (M[k] || 0) > 0);
-  const semanas = [-1, 0, 1, 2, 3, 4].map(i => { const ini = diaMais(ini0, i * 7), fim = diaMais(ini, 6); return { ini, fim, pas: fim < h, atual: ini <= h && h <= fim }; });
-  const noPlano = (f, s) => D.cont.filter(c => c.formato === f && ['pronto', 'agendado', 'publicado'].includes(c.status) && c.data_publicacao && c.data_publicacao >= s.ini && c.data_publicacao <= s.fim);
-  const semData = D.cont.filter(c => ['producao', 'pronto'].includes(c.status) && !c.data_publicacao).length;
-  el.innerHTML = `<div class="panel"><h2>Meta por semana</h2><span class="muted">Quantos conteúdos de cada formato você quer publicar por semana. Zero ignora o formato.</span>
-  <form id="mForm" style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-top:10px">${FORM_C.map(([k, l]) => `<label style="width:110px">${l}<input type="number" min="0" step="1" name="${k}" value="${M[k] ?? ''}"></label>`).join('')}<button class="btn pri" type="submit">Salvar metas</button></form></div>
-  <div class="panel"><h2>Planejado x meta, semana a semana</h2><span class="muted">Conta conteúdos prontos, agendados ou publicados com data de publicação na semana.</span>
-  ${fmts.length ? `<div class="tw"><table><thead><tr><th>Semana</th>${fmts.map(([, l]) => `<th class="n">${l}</th>`).join('')}<th class="n">Total</th></tr></thead><tbody>${semanas.map(s => { let tp = 0, tm = 0; const cel = fmts.map(([k]) => { const n = noPlano(k, s).length, mt = M[k]; tp += n; tm += mt; return `<td class="n"><span class="pill ${n >= mt ? 'good' : s.pas ? 'bad' : 'warn'}">${n} / ${mt}</span></td>`; }).join(''); return `<tr${s.atual ? ' style="font-weight:600"' : ''}><td>${dd(s.ini)} a ${dd(s.fim)}${s.atual ? ' <span class="pill info">esta semana</span>' : ''}</td>${cel}<td class="n">${tp} / ${tm}</td></tr>`; }).join('')}</tbody></table></div>` : '<p class="muted">Defina pelo menos um formato com meta maior que zero para ver o planejado.</p>'}
-  ${semData ? `<small class="muted">${semData} conteúdo(s) em produção ainda sem data de publicação e por isso fora da conta.</small>` : ''}</div>`;
-  $('#mForm').onsubmit = e => { e.preventDefault(); act(async () => {
-    const rows = FORM_C.map(([k]) => { const v = $('#mForm').elements[k].value; return v === '' ? null : { workspace_id: S.ws, formato: k, quantidade: Number(v) }; }).filter(Boolean);
-    if (rows.some(r => !Number.isInteger(r.quantidade) || r.quantidade < 0)) throw new Error('A meta é um número inteiro, zero ou maior.');
-    await q(sb.from('conteudo_metas_semanais').upsert(rows, { onConflict: 'workspace_id,formato' })); toast('Metas salvas'); render();
-  }); };
-}
-
 /* ----- Relatórios por canal, tema, formato e conteúdo ----- */
 function tabRel(el, D, C) {
   const h = hoje(), lim = diaMais(h, -(C.dias - 1));
@@ -13435,7 +13409,7 @@ function tabRel(el, D, C) {
   <div class="panel"><span class="muted">Os números vêm das métricas que você importa ou digita. A conexão automática com Instagram, LinkedIn, YouTube e TikTok ainda está em desenvolvimento (veja Configurações, Integrações). Engajamento = (curtidas + comentários + compartilhamentos + salvamentos) ÷ alcance.</span></div>
   <div class="kpis">${kpi('Publicações', num(tot.n), 'no período')}${kpi('Alcance', num(tot.alcance), 'soma das publicações')}${kpi('Interações', num(tot.inter), 'curtidas, comentários, compartilhamentos, salvamentos')}${kpi('Engajamento', fP(tot.eng), 'interações ÷ alcance')}${kpi('Cliques', num(tot.cliques), 'no link ou perfil')}</div>
   <div class="panel"><h2>Por canal (conta)</h2><div class="tw"><table><thead><tr><th>Canal</th><th class="n">Publicações</th><th class="n">Alcance</th><th class="n">Visualizações</th><th class="n">Interações</th><th class="n">Engajamento</th><th class="n">Seguidores</th><th class="n">Variação</th><th class="n">Alcance da conta</th></tr></thead><tbody>${canais.map(linhaCanal).join('') || '<tr><td colspan="9" class="empty">Sem dados no período. Importe as métricas ou registre-as em cada publicação.</td></tr>'}</tbody></table></div></div>
-  ${tabG(grupo(c => c.tema_id || '', k => k ? (D.T[k] || { nome: '—' }).nome : 'Sem tema'), 'Por tema')}${tabG(grupo(c => c.formato, k => FORM_N[k] || k), 'Por formato')}
+  ${D.linhas.length ? tabG(grupo(c => (terrDe(c, D) || {}).nome || '', k => k || 'Sem território'), 'Por território') : ''}${tabG(grupo(c => c.tema_id || '', k => k ? (D.T[k] || { nome: '—' }).nome : 'Sem tema'), ehScore(D) ? 'Por frente' : 'Por tema')}${D.fmts.length ? tabG(grupo(c => (D.F[c.formato_id] || {}).nome || '', k => k || 'Sem formato'), 'Por formato da Máquina') : ''}${D.cont.some(c => c.destino) ? tabG(grupo(c => c.destino || '', k => k || 'Sem destino'), 'Por destino') : ''}${tabG(grupo(c => c.formato, k => FORM_N[k] || k), 'Por tipo de mídia')}
   <div class="panel"><h2>Por conteúdo, do maior para o menor engajamento</h2><div class="tw"><table><thead><tr><th>Conteúdo</th><th>Canal</th><th>Data</th><th class="n">Alcance</th><th class="n">Views</th><th class="n">Curtidas</th><th class="n">Coment.</th><th class="n">Compart.</th><th class="n">Salv.</th><th class="n">Cliques</th><th class="n">Engaj.</th></tr></thead><tbody>${lista.map(p => `<tr class="clk" data-pub="${p.id}"><td><b>${esc((CT[p.conteudo_id] || {}).titulo || '—')}</b></td><td>${esc(CANAL_N[p.canal] || p.canal)}</td><td>${dd(p.data_publicacao)}</td><td class="n">${p.alcance == null ? '—' : num(p.alcance)}</td><td class="n">${p.visualizacoes == null ? '—' : num(p.visualizacoes)}</td><td class="n">${p.curtidas == null ? '—' : num(p.curtidas)}</td><td class="n">${p.comentarios == null ? '—' : num(p.comentarios)}</td><td class="n">${p.compartilhamentos == null ? '—' : num(p.compartilhamentos)}</td><td class="n">${p.salvamentos == null ? '—' : num(p.salvamentos)}</td><td class="n">${p.cliques == null ? '—' : num(p.cliques)}</td><td class="n">${fP(div(inter(p), p.alcance))}</td></tr>`).join('') || '<tr><td colspan="11" class="empty">Nenhuma publicação com data no período. Ao agendar ou publicar um conteúdo no Kanban, a publicação por canal é criada aqui.</td></tr>'}</tbody></table></div></div>`;
   $('#rDias').onchange = e => { C.dias = Number(e.target.value); render(); };
   $('#rImpC').onclick = () => modalImportPubs(D); $('#rImpA').onclick = () => modalImportConta();
@@ -13472,37 +13446,6 @@ function modalImportConta() {
     if (!rows.length) throw new Error('Nenhuma linha para importar.');
     await q(sb.from('conteudo_conta_dia').upsert(rows, { onConflict: 'workspace_id,canal,data' })); toast(rows.length + ' dia(s) importado(s)');
   }, 'Importar', true);
-}
-
-/* ----- Linhas editoriais e temas ----- */
-function modalLinha(row) {
-  const f = abrirForm(row ? 'Editar linha editorial' : 'Nova linha editorial', 'conteudo_linhas', [{ k: 'nome', l: 'Nome da linha', req: 1, full: 1, ph: 'Autoridade' }, { k: 'descricao', l: 'Descrição', t: 'textarea' }, { k: 'ordem', l: 'Ordem', t: 'number', def: 0 }, { k: 'ativo', l: 'Ativa', t: 'check', def: true }], row, { antes: v => { v.ordem = v.ordem || 0; return v; }, ok: 'Linha salva' });
-  if (row) botaoExcluir(f, 'conteudo_linhas', row.id, 'Linha excluída (os temas ficam sem linha)');
-}
-function modalTema(row, D, pre) {
-  const f = abrirForm(row ? 'Editar tema' : 'Novo tema', 'conteudo_temas', [{ k: 'nome', l: 'Nome do tema', req: 1, full: 1 }, { k: 'linha_id', l: 'Linha editorial', t: 'select', opts: sel(D.linhas, 'id', 'nome'), def: (pre || {}).linha_id },
-    { k: 'prioridade', l: 'Prioridade', t: 'select', req: 1, def: '2', opts: [['1', 'Alta'], ['2', 'Média'], ['3', 'Baixa']] }, { k: 'cor', l: 'Cor da etiqueta', t: 'color', def: '#e5365f' }, { k: 'ativo', l: 'Ativo', t: 'check', def: true }], row ? { ...row, prioridade: String(row.prioridade) } : null, { antes: v => { v.prioridade = Number(v.prioridade); return v; }, ok: 'Tema salvo' });
-  if (row) botaoExcluir(f, 'conteudo_temas', row.id, 'Tema excluído (os conteúdos ficam sem tema)');
-}
-function tabLinhas(el, D, C) {
-  const cnt = (t, st) => D.cont.filter(c => c.tema_id === t.id && (Array.isArray(st) ? st.includes(c.status) : c.status === st)).length;
-  const tabelaTemas = L => `<div class="tw"><table><thead><tr><th>Tema</th><th>Prioridade</th><th class="n">Ideias</th><th class="n">Pautas</th><th class="n">Em produção</th><th class="n">Publicados</th><th>Situação</th><th></th></tr></thead><tbody>${L.map(t => `<tr><td><span class="pill neutral" style="border-left:4px solid ${esc(t.cor)}">${esc(t.nome)}</span></td><td><span class="pill ${PRI_C[t.prioridade][0]}">${PRI_C[t.prioridade][1]}</span></td><td class="n">${cnt(t, 'ideia')}</td><td class="n">${cnt(t, 'pauta')}</td><td class="n">${cnt(t, ['producao', 'pronto', 'agendado'])}</td><td class="n">${cnt(t, 'publicado')}</td><td>${pillAtivo(t.ativo)}</td><td><button class="btn sm" data-tema="${t.id}">Editar</button></td></tr>`).join('') || '<tr><td colspan="8" class="empty">Nenhum tema nesta linha.</td></tr>'}</tbody></table></div>`;
-  const semLinha = D.temas.filter(t => !t.linha_id || !D.linhas.some(l => l.id === t.linha_id));
-  el.innerHTML = `<div class="acts"><button class="btn pri" id="lNova">Nova linha editorial</button><button class="btn" id="lTema">Novo tema</button></div>
-  ${D.linhas.map(l => `<div class="panel"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center"><div><h2 style="margin:0">${esc(l.nome)} ${l.ativo ? '' : '<span class="pill neutral">inativa</span>'}</h2>${l.descricao ? `<span class="muted">${esc(l.descricao)}</span>` : ''}</div><div class="acts"><button class="btn sm" data-linha="${l.id}">Editar linha</button><button class="btn sm" data-novotema="${l.id}">Novo tema nesta linha</button></div></div>${tabelaTemas(D.temas.filter(t => t.linha_id === l.id))}</div>`).join('') || '<div class="panel">Nenhuma linha editorial ainda. Crie a primeira (por exemplo, Autoridade, Prova social, Venda) e depois os temas de cada uma.</div>'}
-  ${semLinha.length ? `<div class="panel"><h2>Temas sem linha editorial</h2>${tabelaTemas(semLinha)}</div>` : ''}
-  <div class="panel"><h2>Critérios de nota</h2><span class="muted">As 5 categorias usadas para avaliar ideias e pautas. A nota final é a média simples das 5. Mudar o nome não altera notas já dadas.</span>
-  <form id="crForm" style="display:flex;flex-direction:column;gap:8px;margin-top:10px;max-width:520px">${D.crit.map((c, i) => `<label>Critério ${i + 1}<input name="c${i}" value="${esc(c)}" required></label>`).join('')}<div class="acts"><button class="btn pri" type="submit">Salvar critérios</button></div></form></div>
-  <div class="panel"><h2>Pesquisa diária por IA</h2><span class="muted"><b>Ainda não conectada.</b> Para rodar sozinha todo dia, a pesquisa precisa de uma chave de API de um provedor de IA e de uma rotina agendada no servidor, e ela ainda não foi configurada. Enquanto isso, faça a pesquisa onde preferir e use <b>Colar ideias</b> no Kanban: as ideias entram na coluna Ideias, já com tema e formato, prontas para receber nota. A integração fica registrada em Configurações, Integrações.</span></div>`;
-  $('#lNova').onclick = () => modalLinha(null); $('#lTema').onclick = () => modalTema(null, D);
-  el.querySelectorAll('[data-linha]').forEach(b => b.onclick = () => modalLinha(D.linhas.find(x => x.id === b.dataset.linha)));
-  el.querySelectorAll('[data-novotema]').forEach(b => b.onclick = () => modalTema(null, D, { linha_id: b.dataset.novotema }));
-  el.querySelectorAll('[data-tema]').forEach(b => b.onclick = () => modalTema(D.temas.find(x => x.id === b.dataset.tema), D));
-  $('#crForm').onsubmit = e => { e.preventDefault(); act(async () => {
-    const criterios = D.crit.map((_, i) => $('#crForm').elements['c' + i].value.trim());
-    if (criterios.some(x => !x)) throw new Error('Preencha os 5 critérios.');
-    await q(sb.from('conteudo_config').upsert({ workspace_id: S.ws, criterios }, { onConflict: 'workspace_id' })); toast('Critérios salvos'); render();
-  }); };
 }
 
 /* ---------- Growth: análise de funil e cohorts ---------- */
@@ -14330,6 +14273,574 @@ async function vAlertas(m) {
     toast(!can.length ? 'Nenhum canal ligado para você em Equipe.' : 'Teste enviado para ' + can.join(', ') + (env && env.falharam ? '. Algum canal falhou: veja "Envios recentes".' : ''), !can.length || !!(env && (env.falharam || env.erro)));
     render();
   });
+}
+
+/* ================= v0.133 MÁQUINA DE CONTEÚDO =================
+   Território (linha) → frente (tema) → formato → quadro → pauta com destino, palavra-chave, score 6×(1 a 5) e VALIDAR
+   → produção → publicação → fechamento semanal. Questionário de persona e proposta de linha editorial (IA ou colada). */
+const DIAS_C = [[1, 'Seg', 'segunda'], [2, 'Ter', 'terça'], [3, 'Qua', 'quarta'], [4, 'Qui', 'quinta'], [5, 'Sex', 'sexta'], [6, 'Sáb', 'sábado'], [7, 'Dom', 'domingo']];
+const INTENC_C = [['aprender', 'Aprender'], ['comparar', 'Comparar'], ['diagnosticar', 'Diagnosticar'], ['decidir', 'Decidir'], ['calcular', 'Calcular'], ['implementar', 'Implementar'], ['contratar', 'Contratar']];
+const CLASSIF_C = [['evidencia', 'Evidência', 'good'], ['tendencia', 'Tendência', 'info'], ['discussao', 'Discussão de mercado', 'warn'], ['hype', 'Hype', 'bad']];
+const CLASSIF_N = Object.fromEntries(CLASSIF_C.map(x => [x[0], x]));
+const FUND_C = [['interno', 'Interno (aulas, materiais próprios)'], ['externo', 'Externo (estudo, dado, notícia)'], ['ambos', 'Interno + externo']];
+const ESTR_C = [['aida', 'AIDA invisível'], ['vida_real', 'Vida Real → Tensão → Crença → Ponte → Negócio → Conclusão'], ['case', 'Case: Problema → Diagnóstico → Solução → Implementação → Resultado'], ['funil', 'Leitura do funil etapa por etapa'], ['livre', 'Livre']];
+const ESTR_PASSOS = { aida: ['Atenção', 'Interesse + Desejo', 'Ação'], vida_real: ['Vida real', 'Tensão', 'Crença', 'Ponte', 'Negócio', 'Conclusão'], case: ['Problema', 'Diagnóstico', 'Solução', 'Implementação', 'Resultado / aprendizado'], funil: ['Aquisição e captura', 'Qualificação e engajamento', 'Oferta e venda', 'CAC, reembolso e retenção', 'LTV e margem'] };
+const DECISAO_C = [['manter', 'Manter'], ['aprofundar', 'Aprofundar (virar sequência)'], ['testar', 'Testar outro ângulo'], ['descartar', 'Descartar']];
+const OBJ_C = ['Autoridade', 'Alcance', 'Relacionamento', 'Conversão', 'Educar o mercado', 'Atrair clientes'];
+const MQ_SCORE = ['s1', 's2', 's3', 's4', 's5', 's6'];
+const ctOpc = p => p.then(r => (r.error ? [] : r.data || []), () => []);
+const ehScore = D => D.cfg.metodo === 'score6';
+const notaCt = (c, D) => ehScore(D) ? c.score_total : (c.status === 'ideia' ? c.ideia_media : (c.pauta_media ?? c.ideia_media));
+const notaTxt = (c, D) => { const n = notaCt(c, D); return n == null ? null : ehScore(D) ? `${n}/30` : notaC(n); };
+const terrDe = (c, D) => { const t = D.T[c.tema_id]; return t && t.linha_id ? D.L[t.linha_id] : null; };
+const listaTxt = a => (a || []).join(', ');
+const separa = (s, re) => String(s || '').split(re).map(x => x.trim()).filter(Boolean);
+const corDe = (x, def) => (x && /^#[0-9a-f]{6}$/i.test(x)) ? x : def;
+const pillTerr = l => l ? `<span class="pill mq-terr" style="--c:${esc(corDe(l.cor, '#521F32'))}">${esc(l.nome)}</span>` : '<span class="pill neutral">sem território</span>';
+const pillFmt = f => f ? `<span class="pill mq-fmt" style="--c:${esc(corDe(f.cor, '#521F32'))}">${esc(f.nome)}</span>` : '';
+const pillDest = d => d ? `<span class="pill mq-dest" data-d="${esc(slug(d))}">${esc(d)}</span>` : '';
+const pillClass = k => k && CLASSIF_N[k] ? `<span class="pill ${CLASSIF_N[k][2]}">${CLASSIF_N[k][1]}</span>` : '';
+const scoreBar = n => n == null ? '<span class="pill neutral">sem score</span>' : `<span class="mq-score" title="Score total (6 critérios de 1 a 5)"><i><u style="width:${Math.round((n - 6) / 24 * 100)}%"></u></i><b>${n}</b>/30</span>`;
+const ordemScore = (a, b) => (b.score_total ?? -1) - (a.score_total ?? -1) || (b.s3 ?? -1) - (a.s3 ?? -1) || (b.s5 ?? -1) - (a.s5 ?? -1) || String(a.criado_em).localeCompare(String(b.criado_em));
+
+async function dadosConteudo() {
+  const w = S.ws;
+  const [linhas, temas, cont, metas, pubs, cfg, eq, conta, formatos, fech, personas, propostas] = await Promise.all([
+    q(sb.from('conteudo_linhas').select('*').eq('workspace_id', w).order('ordem').order('nome')),
+    q(sb.from('conteudo_temas').select('*').eq('workspace_id', w).order('prioridade').order('nome')),
+    q(sb.from('conteudos').select('*').eq('workspace_id', w).order('criado_em')),
+    q(sb.from('conteudo_metas_semanais').select('*').eq('workspace_id', w)),
+    q(sb.from('conteudo_publicacoes').select('*').eq('workspace_id', w)),
+    q(sb.from('conteudo_config').select('*').eq('workspace_id', w)),
+    q(sb.from('equipe').select('id,nome').eq('workspace_id', w).eq('ativo', true).order('nome')),
+    q(sb.from('conteudo_conta_dia').select('*').eq('workspace_id', w).order('data')),
+    ctOpc(sb.from('conteudo_formatos').select('*').eq('workspace_id', w).order('ordem').order('nome')),
+    ctOpc(sb.from('conteudo_fechamentos').select('id,semana_ini,objetivo_proxima,atualizado_em').eq('workspace_id', w).order('semana_ini', { ascending: false }).limit(20)),
+    ctOpc(sb.from('conteudo_personas').select('*').eq('workspace_id', w).order('criado_em')),
+    ctOpc(sb.from('conteudo_linha_propostas').select('*').eq('workspace_id', w).order('criado_em', { ascending: false }).limit(20))
+  ]);
+  const c0 = cfg[0] || {};
+  const C = { metodo: c0.metodo || 'notas5', criterios: c0.criterios || CRIT_PADRAO, score: c0.criterios_score || ['Timing / pauta quente', 'Potencial estratégico', 'Potencial de impacto', 'Facilidade de execução', 'Robustez da evidência', 'Novidade / pouco explorado no Brasil'],
+    destinos: c0.destinos || [], meta: c0.meta_semanal, diaFech: c0.dia_fechamento || 6, tags: c0.tags || [], linha: c0.linha || {}, modelo: c0.modelo || '', tem: 'metodo' in c0 || formatos.length > 0 };
+  const fmts = formatos.filter(f => f.grupo === 'formato'), quadros = formatos.filter(f => f.grupo === 'quadro');
+  return { linhas, temas, cont, metas, pubs, crit: C.criterios, cfg: C, eq, conta, formatos, fmts, quadros, fech, personas, propostas,
+    T: Object.fromEntries(temas.map(t => [t.id, t])), L: Object.fromEntries(linhas.map(l => [l.id, l])), F: Object.fromEntries(formatos.map(f => [f.id, f])) };
+}
+async function vConteudo(m) {
+  const C = S.ct = S.ct || { tab: 'kanban', tema: '', canal: '', formato: '', arq: false, dias: 30 };
+  Object.assign(C, { terr: C.terr || '', fmt: C.fmt || '', dest: C.dest || '', tag: C.tag || '', destP: C.destP || '', sem: C.sem || segundaDe(hoje()) });
+  const D = await dadosConteudo();
+  const TABS = [['kanban', 'Kanban'], ['prior', 'Priorização'], ['maquina', 'Máquina'], ['plano', 'Semana'], ['fech', 'Fechamento'], ['rel', 'Relatórios'], ['persona', 'Persona'], ['linhas', 'Linha editorial']];
+  m.innerHTML = `<div class="head"><div><h1>Máquina de Conteúdo</h1><span class="muted">Território, formato e destino de cada pauta; score e validação; produção da semana; fechamento com aprendizado; resultado por canal.</span></div>${D.cfg.modelo ? `<span class="pill info" title="Linha editorial instalada">Linha: ${esc(D.cfg.modelo)}</span>` : ''}</div>
+  <div class="tabs">${TABS.map(([k, l]) => `<button data-t="${k}" class="${C.tab === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="ctTab" style="display:flex;flex-direction:column;gap:16px"></div>`;
+  m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { C.tab = b.dataset.t; render(); });
+  ({ kanban: tabKanban, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, rel: tabRel, persona: tabPersona, linhas: tabLinhas }[C.tab] || tabKanban)($('#ctTab'), D, C);
+}
+function mqComeco(D) {
+  if (D.linhas.length) return '';
+  return `<div class="panel mq-comeco"><h2>Monte a sua Máquina</h2><p class="muted">Ainda não há territórios. Escolha um caminho: responda o questionário de persona para a IA propor a linha editorial, ou instale o modelo V18 (4 territórios, 5 formatos, 4 quadros, destinos e score) e ajuste depois.</p>
+  <div class="acts"><button class="btn pri" data-mq-ir="persona">Responder o questionário</button><button class="btn" data-mq-v18>Instalar o modelo V18</button></div></div>`;
+}
+function mqLigaComeco(el, C) {
+  el.querySelectorAll('[data-mq-ir]').forEach(b => b.onclick = () => { C.tab = b.dataset.mqIr; render(); });
+  el.querySelectorAll('[data-mq-v18]').forEach(b => b.onclick = () => mqInstalarV18());
+}
+function mqInstalarV18() {
+  modal('Instalar o modelo V18', `<p style="margin:0 0 8px">Cria (ou atualiza pelo nome) os 4 territórios — Estratégia, Negócios (com Empreendedorismo), Dados + IA e Vida Real &amp; Crenças —, as frentes, as camadas transversais, os 5 formatos (No Quadro / Tablet, Yap Content, Análise, Carrossel caderno e Série musical 1× por semana), os 4 quadros de autoridade, os destinos Rebecka / Mathisa / Ambas, a meta de 12 por semana e o score de 6 critérios.</p><p class="muted" style="margin:0">Nada é apagado: ideias, pautas e temas que já existem continuam. O método de nota passa a ser o score V18 (o antigo, de 5 notas, pode voltar em Linha editorial).</p>`, async () => {
+    const r = await q(sb.rpc('conteudo_instalar_v18', { p_ws: S.ws }));
+    toast(`Modelo V18 instalado: ${r.territorios} territórios, ${r.formatos} formatos (${r.frentes_novas} frentes e ${r.formatos_novos} formatos/quadros novos).`);
+  }, 'Instalar');
+}
+
+/* ----- cartão: criar e editar ----- */
+function mqOptTemas(D, atual) {
+  const ativos = D.temas.filter(t => t.ativo || t.id === atual);
+  const grupos = D.linhas.map(l => [l, ativos.filter(t => t.linha_id === l.id && !t.transversal)]).filter(([, L]) => L.length);
+  const soltos = ativos.filter(t => !t.linha_id || !D.L[t.linha_id] || t.transversal);
+  return `<option value="">—</option>${grupos.map(([l, L]) => `<optgroup label="${esc(l.nome)}">${L.map(t => `<option value="${t.id}"${t.id === atual ? ' selected' : ''}>${esc(t.nome)}</option>`).join('')}</optgroup>`).join('')}${soltos.length ? `<optgroup label="Sem território / transversais">${soltos.map(t => `<option value="${t.id}"${t.id === atual ? ' selected' : ''}>${esc(t.nome)}</option>`).join('')}</optgroup>` : ''}`;
+}
+function mqPassos(est, notas) {
+  const P = ESTR_PASSOS[est];
+  if (!P) return '<small class="muted">Escolha uma estrutura para anotar cada etapa do roteiro.</small>';
+  return P.map(p => `<label style="grid-column:1/-1">${esc(p)}<textarea data-passo="${esc(p)}" rows="2">${esc((notas || {})[p] || '')}</textarea></label>`).join('');
+}
+function modalConteudo(row, D, pre) {
+  const r = { ...(pre || {}), ...(row || {}) }, sc = ehScore(D);
+  const sec = (t, sub, primeira) => campoHtml({ secao: t, sub, primeira });
+  const c = (o) => campoHtml(o, r[o.k]);
+  const fmtOpts = D.fmts.filter(f => f.ativo || f.id === r.formato_id).map(f => [f.id, f.nome]), qOpts = D.quadros.filter(f => f.ativo || f.id === r.quadro_id).map(f => [f.id, f.nome]);
+  const destOpts = (D.cfg.destinos.length ? D.cfg.destinos : []).map(d => [d, d]);
+  const tags = [...new Set([...(D.cfg.tags || []), ...D.cont.flatMap(x => x.tags || [])])].slice(0, 30);
+  const canais = `<fieldset class="mq-fs"><legend>Canais</legend><div class="mq-checks">${CANAIS_C.map(([k, l]) => `<label><input type="checkbox" name="canal" value="${k}"${(r.canais || []).includes(k) ? ' checked' : ''}> ${l}</label>`).join('')}</div></fieldset>`;
+  const tagsH = `<label style="grid-column:1/-1">Etiquetas (tipos de conteúdo, séries, assinaturas) <input name="tags" value="${esc(listaTxt(r.tags))}" placeholder="Separe por vírgula"><span class="mq-sug">${tags.map(t => `<button type="button" class="chip" data-tag="${esc(t)}">${esc(t)}</button>`).join('')}</span></label>`;
+  const notas = (ks, tit) => `<fieldset class="mq-fs"><legend>${tit}</legend><div class="grid2">${ks.map((k, i) => campoHtml({ k, l: `${i + 1}. ${D.crit[i]} (1 a 10)`, t: 'number', step: '1' }, r[k])).join('')}</div></fieldset>`;
+  const score = `<fieldset class="mq-fs"><legend>Score editorial — 6 critérios de 1 a 5 (total de 6 a 30)</legend><div class="mq-score-g">${MQ_SCORE.map((k, i) => `<div class="mq-crit" role="radiogroup" aria-label="${esc(D.cfg.score[i])}"><span>${esc(D.cfg.score[i])}</span><span class="mq-1a5">${[1, 2, 3, 4, 5].map(n => `<label><input type="radio" name="${k}" value="${n}" aria-label="${esc(D.cfg.score[i])}: ${n}"${Number(r[k]) === n ? ' checked' : ''}><span>${n}</span></label>`).join('')}<button type="button" class="mq-limpa" data-limpa="${k}" title="Limpar" aria-label="Limpar ${esc(D.cfg.score[i])}">×</button></span></div>`).join('')}</div>
+    <div class="mq-total">Total: <b id="mqTot">—</b> <span class="muted">· nota não aprova sozinha: quem decide é o VALIDAR</span></div>
+    <label style="grid-column:1/-1">Justificativa das notas<textarea name="score_notas" rows="2" placeholder="Uma linha por critério, curta">${esc(r.score_notas || '')}</textarea></label>
+    <label class="mq-validar"><input type="checkbox" name="validado"${r.validado ? ' checked' : ''}> <span><b>VALIDAR</b> — escolhi esta pauta para produzir</span></label></fieldset>`;
+  const html = sc ? `<div class="grid2">
+    ${sec('Pauta', 'Sobre o que é, onde mora na linha editorial e para quem publica.', true)}
+    ${c({ k: 'titulo', l: 'Título da ideia ou pauta', req: 1, full: 1 })}
+    ${c({ k: 'descricao', l: 'Descrição e ângulo', t: 'textarea' })}
+    <label>Território e frente<select name="tema_id">${mqOptTemas(D, r.tema_id)}</select></label>
+    ${c({ k: 'formato_id', l: 'Formato', t: 'select', opts: fmtOpts })}
+    ${c({ k: 'quadro_id', l: 'Quadro de autoridade', t: 'select', opts: qOpts, hint: 'Opcional. Vida Real & Crenças não precisa de quadro.' })}
+    ${destOpts.length ? c({ k: 'destino', l: 'Destino', t: 'select', opts: destOpts, hint: D.cfg.linha.regra_destino || '' }) : c({ k: 'destino', l: 'Destino (marca ou perfil)' })}
+    ${c({ k: 'status', l: 'Etapa', t: 'select', req: 1, def: 'ideia', opts: [...ETAPAS_C.map(e => [e[0], e[1]]), ['arquivado', 'Arquivado']] })}
+    ${c({ k: 'formato', l: 'Tipo de mídia', t: 'select', req: 1, def: 'reels', opts: FORM_C })}
+    ${sec('Encontrabilidade', 'Uma pauta, uma intenção principal. Use a linguagem do público.')}
+    ${c({ k: 'palavra_chave', l: 'Palavra-chave principal' })}
+    ${c({ k: 'intencao', l: 'Intenção', t: 'select', opts: INTENC_C })}
+    <label style="grid-column:1/-1">Palavras relacionadas (3 a 6)<input name="palavras_relacionadas" value="${esc(listaTxt(r.palavras_relacionadas))}" placeholder="Separe por vírgula"></label>
+    <label style="grid-column:1/-1">Perguntas de busca ou para a IA (1 a 3)<textarea name="perguntas_busca" rows="2" placeholder="Uma por linha">${esc((r.perguntas_busca || []).join('\n'))}</textarea></label>
+    ${c({ k: 'entidade', l: 'Entidade central', ph: 'CAC, LTV, retenção…' })}
+    ${c({ k: 'problema', l: 'Problema ou oportunidade do público' })}
+    ${sec('Radar e evidência', 'Separe o que é fato, mecanismo, interpretação e hipótese.')}
+    ${c({ k: 'achado', l: 'O que encontrei', t: 'textarea' })}
+    ${c({ k: 'classificacao', l: 'Classificação', t: 'select', opts: CLASSIF_C.map(x => [x[0], x[1]]) })}
+    ${c({ k: 'fundamento', l: 'Fundamento', t: 'select', opts: FUND_C })}
+    ${c({ k: 'evidencia', l: 'Evidência principal', full: 1 })}
+    ${c({ k: 'fonte_url', l: 'Link da fonte', t: 'url', full: 1 })}
+    ${score}
+    ${sec('Roteiro', 'AIDA invisível: todo conteúdo precisa concluir.')}
+    ${c({ k: 'hook', l: 'Hook', full: 1 })}
+    ${c({ k: 'tese', l: 'Tese', full: 1 })}
+    <label>Objetivo<input name="objetivo" list="mqObj" value="${esc(r.objetivo || '')}"><datalist id="mqObj">${OBJ_C.map(o => `<option value="${esc(o)}">`).join('')}</datalist></label>
+    ${c({ k: 'cta', l: 'CTA' })}
+    ${c({ k: 'estrutura', l: 'Estrutura', t: 'select', opts: ESTR_C, full: 1 })}
+    <div id="mqPassos" class="grid2" style="grid-column:1/-1">${mqPassos(r.estrutura, r.estrutura_notas)}</div>
+    ${sec('Produção e publicação')}
+    ${canais}${tagsH}
+    ${c({ k: 'dia_semana', l: 'Dia da semana', t: 'select', opts: DIAS_C.map(d => [d[0], d[2]]), hint: 'Preenchido sozinho pela data de publicação.' })}
+    ${c({ k: 'responsavel_id', l: 'Responsável', t: 'select', opts: sel(D.eq, 'id', 'nome') })}
+    ${c({ k: 'prazo', l: 'Prazo de produção', t: 'date' })}${c({ k: 'data_publicacao', l: 'Data de publicação', t: 'date', hint: 'Obrigatória para agendar.' })}
+    ${c({ k: 'copy_url', l: 'Link da copy (Google Docs)', t: 'url', ph: 'https://docs.google.com/…', full: 1 })}
+    ${c({ k: 'midia_url', l: 'Link da mídia (Google Drive)', t: 'url', ph: 'https://drive.google.com/…', full: 1, hint: 'Copy e mídia são obrigatórias para marcar como pronto.' })}
+    ${c({ k: 'obs_producao', l: 'Observações de produção', t: 'textarea' })}
+    ${sec('Depois de publicar', 'O que este conteúdo ensinou para a próxima rodada.')}
+    ${c({ k: 'decisao', l: 'Decisão', t: 'select', opts: DECISAO_C })}
+    ${c({ k: 'aprendizado', l: 'Aprendizado', t: 'textarea' })}
+  </div>` : `<div class="grid2">${[{ k: 'titulo', l: 'Título da ideia ou pauta', req: 1, full: 1 }, { k: 'descricao', l: 'Descrição e ângulo', t: 'textarea' }].map(c).join('')}
+    <label>Tema<select name="tema_id">${mqOptTemas(D, r.tema_id)}</select></label>
+    ${c({ k: 'formato', l: 'Formato', t: 'select', req: 1, def: 'carrossel', opts: FORM_C })}${c({ k: 'status', l: 'Etapa', t: 'select', req: 1, def: 'ideia', opts: [...ETAPAS_C.map(e => [e[0], e[1]]), ['arquivado', 'Arquivado']] })}
+    ${c({ k: 'responsavel_id', l: 'Responsável', t: 'select', opts: sel(D.eq, 'id', 'nome') })}
+    ${canais}${tagsH}
+    ${c({ k: 'dia_semana', l: 'Dia da semana', t: 'select', opts: DIAS_C.map(d => [d[0], d[2]]) })}
+    ${c({ k: 'prazo', l: 'Prazo de produção', t: 'date' })}${c({ k: 'data_publicacao', l: 'Data de publicação', t: 'date', hint: 'Obrigatória para agendar.' })}
+    ${c({ k: 'copy_url', l: 'Link da copy (Google Docs)', t: 'url', ph: 'https://docs.google.com/…', full: 1 })}${c({ k: 'midia_url', l: 'Link da mídia (Google Drive)', t: 'url', ph: 'https://drive.google.com/…', full: 1, hint: 'Copy e mídia são obrigatórias para marcar como pronto.' })}${c({ k: 'fonte_url', l: 'Fonte da ideia', t: 'url', full: 1 })}
+    ${notas(NOTAS_I, 'Nota da ideia (a média decide o que vira pauta)')}${notas(NOTAS_P, 'Nota da pauta (a média decide o que produzir)')}</div>`;
+  const campos = sc ? ['titulo', 'descricao', 'tema_id', 'formato_id', 'quadro_id', 'destino', 'status', 'formato', 'palavra_chave', 'intencao', 'entidade', 'problema', 'achado', 'classificacao', 'fundamento', 'evidencia', 'fonte_url', 'score_notas', 'hook', 'tese', 'objetivo', 'cta', 'estrutura', 'dia_semana', 'responsavel_id', 'prazo', 'data_publicacao', 'copy_url', 'midia_url', 'obs_producao', 'decisao', 'aprendizado']
+    : ['titulo', 'descricao', 'tema_id', 'formato', 'status', 'responsavel_id', 'dia_semana', 'prazo', 'data_publicacao', 'copy_url', 'midia_url', 'fonte_url'];
+  const f = modal(row ? 'Editar conteúdo' : 'Nova ideia', html, async (_d, form) => {
+    const v = lerCampos(campos.map(k => ({ k, t: k === 'dia_semana' ? 'number' : undefined })), form);
+    v.canais = [...form.querySelectorAll('input[name=canal]:checked')].map(x => x.value);
+    v.tags = separa(form.elements.tags.value, /[,;]/);
+    if (sc) {
+      MQ_SCORE.forEach(k => { const x = form.querySelector(`input[name=${k}]:checked`); v[k] = x ? Number(x.value) : null; });
+      v.validado = form.elements.validado.checked;
+      v.palavras_relacionadas = separa(form.elements.palavras_relacionadas.value, /[,;]/);
+      v.perguntas_busca = separa(form.elements.perguntas_busca.value, /\n/);
+      const pn = {}; form.querySelectorAll('[data-passo]').forEach(t => { if (t.value.trim()) pn[t.dataset.passo] = t.value.trim(); });
+      v.estrutura_notas = { ...(r.estrutura_notas || {}), ...pn };
+      Object.keys(v.estrutura_notas).forEach(k => { if (!pn[k] && (ESTR_PASSOS[v.estrutura] || []).includes(k)) delete v.estrutura_notas[k]; });
+    } else {
+      Object.assign(v, lerCampos([...NOTAS_I, ...NOTAS_P].map(k => ({ k, t: 'number' })), form));
+      for (const k of [...NOTAS_I, ...NOTAS_P]) if (v[k] != null && (!Number.isInteger(v[k]) || v[k] < 1 || v[k] > 10)) throw new Error('As notas são números inteiros de 1 a 10.');
+    }
+    let id = row && row.id;
+    if (id) await q(sb.from('conteudos').update(v).eq('id', id));
+    else id = one(await q(sb.from('conteudos').insert({ ...v, workspace_id: S.ws }).select('id').single())).id;
+    await sincPubs(id, v);
+  }, 'Salvar', true);
+  const tot = () => { const n = MQ_SCORE.map(k => f.querySelector(`input[name=${k}]:checked`)).filter(Boolean).map(x => Number(x.value)); if ($('#mqTot')) $('#mqTot').textContent = n.length === 6 ? `${n.reduce((a, b) => a + b, 0)} / 30` : `${n.length} de 6 notas`; };
+  if (sc) {
+    f.querySelectorAll('.mq-1a5 input').forEach(x => x.onchange = tot); tot();
+    f.querySelectorAll('[data-limpa]').forEach(b => b.onclick = () => { f.querySelectorAll(`input[name=${b.dataset.limpa}]`).forEach(x => { x.checked = false; }); tot(); });
+    const es = f.elements.estrutura; es.onchange = () => { const at = {}; f.querySelectorAll('[data-passo]').forEach(t => { at[t.dataset.passo] = t.value; }); $('#mqPassos').innerHTML = mqPassos(es.value, { ...(r.estrutura_notas || {}), ...at }); };
+  }
+  f.querySelectorAll('[data-tag]').forEach(b => b.onclick = () => { const i = f.elements.tags, L = separa(i.value, /[,;]/); if (!L.includes(b.dataset.tag)) L.push(b.dataset.tag); i.value = L.join(', '); });
+  if (row && row.id) botaoExcluir(f, 'conteudos', row.id, 'Conteúdo excluído');
+}
+
+/* ----- Kanban ----- */
+function mqFiltra(D, C) {
+  return D.cont.filter(c => (!C.tema || c.tema_id === C.tema) && (!C.canal || (c.canais || []).includes(C.canal)) && (!C.formato || c.formato === C.formato)
+    && (!C.terr || (terrDe(c, D) || {}).id === C.terr) && (!C.fmt || c.formato_id === C.fmt) && (!C.dest || (C.dest === '-' ? !c.destino : c.destino === C.dest)) && (!C.tag || (c.tags || []).includes(C.tag)));
+}
+function mqCard(c, D) {
+  const h = hoje(), t = D.T[c.tema_id], l = terrDe(c, D), n = notaTxt(c, D), atraso = c.prazo && c.prazo < h && ['pauta', 'producao'].includes(c.status), sc = ehScore(D);
+  const dia = c.dia_semana ? DIAS_C[c.dia_semana - 1][1] : '';
+  return `<div class="card gcard${c.validado ? ' mq-val' : ''}" draggable="true" data-id="${c.id}">
+    <b>${c.validado ? '<span class="mq-check" title="Validada">☑</span> ' : ''}${esc(c.titulo)}</b>
+    <div class="ca">${sc ? pillTerr(l) : ''}${t ? `<span class="pill neutral" style="border-left:4px solid ${esc(t.cor)}">${esc(t.nome)}</span>${sc ? '' : `<span class="pill ${PRI_C[t.prioridade][0]}">${PRI_C[t.prioridade][1]}</span>`}` : (sc ? '' : '<span class="pill neutral">sem tema</span>')}${n != null ? `<span class="pill info" title="${sc ? 'Score total' : 'Média das 5 notas'}">${sc ? 'Score' : 'Nota'} ${n}</span>` : '<span class="pill neutral">sem nota</span>'}${atraso ? '<span class="pill bad">atrasado</span>' : ''}</div>
+    <div class="ca">${pillFmt(D.F[c.formato_id])}${pillDest(c.destino)}<span class="pill neutral">${esc(FORM_N[c.formato] || c.formato)}</span>${(c.canais || []).map(x => `<span class="pill info">${esc(CANAL_N[x] || x)}</span>`).join('')}${c.origem === 'ia' ? '<span class="pill info" title="Veio da IA (ex.: ChatGPT do celular)">pela IA</span>' : ''}</div>
+    ${(c.tags || []).length ? `<div class="ca">${c.tags.map(x => `<span class="chip">${esc(x)}</span>`).join('')}</div>` : ''}
+    ${c.palavra_chave ? `<small class="muted">Palavra-chave: ${esc(c.palavra_chave)}</small>` : ''}
+    ${c.data_publicacao ? `<small>Publica em ${dd(c.data_publicacao)}${dia ? ' (' + dia + ')' : ''}</small>` : c.prazo ? `<small>Prazo ${dd(c.prazo)}${dia ? ' · ' + dia : ''}</small>` : dia ? `<small>Dia: ${DIAS_C[c.dia_semana - 1][2]}</small>` : ''}
+    <div class="ca"><button class="btn sm" data-edit="${c.id}">Abrir</button><select class="mv" data-mv="${c.id}" aria-label="Mover para"><option value="">Mover para…</option>${[...ETAPAS_C, ['arquivado', 'Arquivar']].filter(x => x[0] !== c.status).map(x => `<option value="${x[0]}">${x[1]}</option>`).join('')}</select></div></div>`;
+}
+function mqFiltrosHtml(D, C, comMidia = true) {
+  const tags = [...new Set([...(D.cfg.tags || []), ...D.cont.flatMap(x => x.tags || [])])].sort();
+  const dests = [...new Set([...D.cfg.destinos, ...D.cont.map(c => c.destino).filter(Boolean)])];
+  return `<div class="filters">
+    ${D.linhas.length ? `<label>Território<select id="cfTe"><option value="">Todos</option>${opts(D.linhas, 'id', 'nome', C.terr)}</select></label>` : ''}
+    <label>${ehScore(D) ? 'Frente' : 'Tema'}<select id="cfT"><option value="">Todas</option>${opts(D.temas, 'id', 'nome', C.tema)}</select></label>
+    ${D.fmts.length ? `<label>Formato<select id="cfFm"><option value="">Todos</option>${opts(D.fmts, 'id', 'nome', C.fmt)}</select></label>` : ''}
+    ${dests.length ? `<label>Destino<select id="cfD"><option value="">Todos</option>${dests.map(d => `<option${C.dest === d ? ' selected' : ''}>${esc(d)}</option>`).join('')}<option value="-"${C.dest === '-' ? ' selected' : ''}>Sem destino</option></select></label>` : ''}
+    ${tags.length ? `<label>Etiqueta<select id="cfG"><option value="">Todas</option>${tags.map(t => `<option${C.tag === t ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select></label>` : ''}
+    <label>Canal<select id="cfC"><option value="">Todos</option>${CANAIS_C.map(([k, l]) => `<option value="${k}"${C.canal === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+    ${comMidia ? `<label>Tipo de mídia<select id="cfF"><option value="">Todos</option>${FORM_C.map(([k, l]) => `<option value="${k}"${C.formato === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>` : ''}
+    ${C.terr || C.tema || C.fmt || C.dest || C.tag || C.canal || C.formato ? '<button class="btn sm" id="cfLimpa" type="button">Limpar filtros</button>' : ''}</div>`;
+}
+function mqLigaFiltros(el, C) {
+  const liga = (id, k) => { const x = el.querySelector('#' + id); if (x) x.onchange = e => { C[k] = e.target.value; render(); }; };
+  liga('cfTe', 'terr'); liga('cfT', 'tema'); liga('cfFm', 'fmt'); liga('cfD', 'dest'); liga('cfG', 'tag'); liga('cfC', 'canal'); liga('cfF', 'formato');
+  const lp = el.querySelector('#cfLimpa'); if (lp) lp.onclick = () => { Object.assign(C, { terr: '', tema: '', fmt: '', dest: '', tag: '', canal: '', formato: '' }); render(); };
+}
+function tabKanban(el, D, C) {
+  const lim = diaMais(hoje(), -29), L = mqFiltra(D, C), sc = ehScore(D);
+  const etapas = C.arq ? [...ETAPAS_C, ['arquivado', 'Arquivado', '']] : ETAPAS_C;
+  const prio = c => (D.T[c.tema_id] || { prioridade: 9 }).prioridade;
+  const cmp = sc ? (a, b) => Number(b.validado) - Number(a.validado) || ordemScore(a, b) : (a, b) => (notaCt(b, D) ?? -1) - (notaCt(a, D) ?? -1) || prio(a) - prio(b) || String(a.criado_em).localeCompare(String(b.criado_em));
+  el.innerHTML = `${mqComeco(D)}<div class="acts"><button class="btn pri" id="cNovo">Nova ideia</button><button class="btn" id="cColar">Colar ideias</button><button class="btn" id="cIA" title="Fale a ideia no ChatGPT do celular e ela entra aqui">Ideias pelo ChatGPT</button></div>
+  ${mqFiltrosHtml(D, C)}<div class="filters" style="margin-top:-8px"><label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="cfA" style="width:auto"${C.arq ? ' checked' : ''}> Mostrar arquivados</label></div>
+  <div class="kpis">${kpi('Ideias a avaliar', num(L.filter(c => c.status === 'ideia').length), sc ? 'esperando score' : 'esperando nota')}${sc ? kpi('Validadas', num(L.filter(c => c.validado && ['ideia', 'pauta'].includes(c.status)).length), 'escolhidas e ainda não produzidas') : ''}${kpi('Pautas aprovadas', num(L.filter(c => c.status === 'pauta').length), 'prontas para produzir')}${kpi('Em produção', num(L.filter(c => ['producao', 'pronto'].includes(c.status)).length), 'produzindo e prontos')}${kpi('Publicados em 30 dias', num(L.filter(c => c.status === 'publicado' && (c.data_publicacao || diaLocal(c.publicado_em)) >= lim).length), 'conteúdos')}</div>
+  ${!D.temas.length && D.linhas.length ? '<div class="panel">Cadastre as frentes de cada território na aba <b>Linha editorial</b>. Depois as ideias ganham território, frente e etiquetas.</div>' : ''}
+  <div class="board" style="grid-auto-columns:minmax(250px,1fr)">${etapas.map(([k, nome, sub]) => { const X = L.filter(c => c.status === k).sort(cmp); return `<div class="colk" data-col="${k}"><h3><span>${nome} <small class="muted">${esc(sc && k === 'pauta' ? 'validar para produzir' : sub)}</small></span><span class="mono">${X.length}</span></h3>${X.map(c => mqCard(c, D)).join('') || '<small class="muted">Vazio</small>'}</div>`; }).join('')}</div>`;
+  mqLigaComeco(el, C); mqLigaFiltros(el, C);
+  const pre = {}; if (C.tema) pre.tema_id = C.tema; if (C.fmt) pre.formato_id = C.fmt; if (C.dest && C.dest !== '-') pre.destino = C.dest;
+  $('#cNovo').onclick = () => modalConteudo(null, D, pre);
+  $('#cColar').onclick = () => modalColar(D);
+  $('#cIA').onclick = () => modalIdeiasIA();
+  $('#cfA').onchange = e => { C.arq = e.target.checked; render(); };
+  const por = id => D.cont.find(x => x.id === id);
+  el.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => modalConteudo(por(b.dataset.edit), D));
+  el.querySelectorAll('[data-mv]').forEach(s => s.onchange = () => { if (s.value) moverConteudo(por(s.dataset.mv), s.value, D); });
+  el.querySelectorAll('.gcard').forEach(c => c.ondragstart = ev => { ev.dataTransfer.setData('text/plain', c.dataset.id); });
+  el.querySelectorAll('.colk').forEach(col => { col.ondragover = ev => { ev.preventDefault(); col.classList.add('over'); }; col.ondragleave = () => col.classList.remove('over'); col.ondrop = ev => { ev.preventDefault(); col.classList.remove('over'); const c = por(ev.dataTransfer.getData('text/plain')); if (c && c.status !== col.dataset.col) moverConteudo(c, col.dataset.col, D); }; });
+}
+
+/* ----- Priorização ----- */
+function tabPrior(el, D, C) {
+  if (!ehScore(D)) return tabPriorNotas(el, D, C);
+  const dests = [...new Set([...D.cfg.destinos, ...D.cont.map(c => c.destino).filter(Boolean)])];
+  const base = D.cont.filter(c => ['ideia', 'pauta'].includes(c.status) && (!C.destP || (C.destP === '-' ? !c.destino : c.destino === C.destP)));
+  const val = base.filter(c => c.validado).sort(ordemScore), res = base.filter(c => !c.validado && c.score_total != null).sort(ordemScore), sem = base.filter(c => !c.validado && c.score_total == null);
+  const andamento = D.cont.filter(c => ['producao', 'pronto'].includes(c.status)).length, meta = D.cfg.meta;
+  const linha = (c, i) => { const l = terrDe(c, D), t = D.T[c.tema_id]; return `<tr><td class="n">${i + 1}</td><td><label class="mq-tg" title="VALIDAR"><input type="checkbox" data-val="${c.id}"${c.validado ? ' checked' : ''}><span>☑</span></label></td><td><b>${esc(c.titulo)}</b>${c.palavra_chave ? `<br><small class="muted">${esc(c.palavra_chave)}</small>` : ''}</td><td>${pillTerr(l)}${t ? `<br><small class="muted">${esc(t.nome)}</small>` : ''}</td><td>${pillFmt(D.F[c.formato_id])}</td><td>${pillDest(c.destino) || '<span class="muted">—</span>'}</td><td>${pillClass(c.classificacao)}</td><td>${scoreBar(c.score_total)}</td><td class="n" title="Potencial de impacto">${c.s3 ?? '—'}</td><td><button class="btn sm" data-edit="${c.id}">Abrir</button>${c.validado && c.status === 'ideia' ? ` <button class="btn sm" data-ac="${c.id}" data-p="pauta">Aprovar pauta</button>` : c.validado && c.status === 'pauta' ? ` <button class="btn sm" data-ac="${c.id}" data-p="producao">Produzir</button>` : ''}</td></tr>`; };
+  const tabela = (L, vazio) => `<div class="tw"><table><thead><tr><th class="n">#</th><th>Validar</th><th>Pauta</th><th>Território</th><th>Formato</th><th>Destino</th><th>Classificação</th><th>Score</th><th class="n">Impacto</th><th></th></tr></thead><tbody>${L.map(linha).join('') || `<tr><td colspan="10" class="empty">${vazio}</td></tr>`}</tbody></table></div>`;
+  el.innerHTML = `<div class="kpis">${kpi('Validadas', num(val.length), 'escolhidas, ainda não produzidas')}${kpi('Meta da semana', meta ? num(meta) : '—', meta ? 'conteúdos por semana' : 'defina em Linha editorial')}${kpi('Em produção ou prontos', num(andamento), 'já ocupam a semana')}${kpi('Reservas com score', num(res.length), 'sem validar')}${kpi('Sem score', num(sem.length), 'faltam notas')}</div>
+  <div class="panel"><b>Como o ranking funciona.</b> <span class="muted">Score = soma dos 6 critérios (1 a 5): ${D.cfg.score.map((c, i) => `${i + 1}. ${esc(c)}`).join(' · ')}. Empate: maior potencial de impacto, depois evidência mais robusta. O VALIDAR é a sua escolha e o ranking nunca o desfaz: ele só ordena dentro das escolhas e mostra as reservas.</span></div>
+  ${dests.length ? `<div class="tabs mq-subtabs">${[['', 'Todos os destinos'], ...dests.map(d => [d, d]), ['-', 'Sem destino']].map(([k, l]) => `<button data-dp="${esc(k)}" class="${C.destP === k ? 'on' : ''}">${esc(l)}</button>`).join('')}</div>` : ''}
+  <div class="panel"><h2>Quadro de validação: pautas validadas, do maior para o menor score</h2>${tabela(val, 'Nenhuma pauta validada. Marque ☑ nas que você quer produzir.')}</div>
+  <div class="panel"><h2>Reservas, do maior para o menor score</h2>${tabela(res, 'Nenhuma reserva com score.')}</div>
+  ${sem.length ? `<div class="panel"><h2>Sem score ainda</h2>${tabela(sem, '')}</div>` : ''}`;
+  const por = id => D.cont.find(x => x.id === id);
+  el.querySelectorAll('[data-dp]').forEach(b => b.onclick = () => { C.destP = b.dataset.dp; render(); });
+  el.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => modalConteudo(por(b.dataset.edit), D));
+  el.querySelectorAll('[data-ac]').forEach(b => b.onclick = () => moverConteudo(por(b.dataset.ac), b.dataset.p, D));
+  el.querySelectorAll('[data-val]').forEach(x => x.onchange = () => act(async () => { await q(sb.from('conteudos').update({ validado: x.checked }).eq('id', x.dataset.val)); toast(x.checked ? 'Pauta validada' : 'Validação retirada'); render(); }));
+}
+function tabPriorNotas(el, D, C) {
+  const T = D.T, prio = c => (T[c.tema_id] || { prioridade: 9 }).prioridade;
+  const ordem = (a, b) => (notaCt(b, D) ?? -1) - (notaCt(a, D) ?? -1) || prio(a) - prio(b) || String(a.criado_em).localeCompare(String(b.criado_em));
+  const cap = sum(D.metas, 'quantidade'), andamento = D.cont.filter(c => ['producao', 'pronto'].includes(c.status)).length, vagas = Math.max(0, cap - andamento);
+  const pautas = D.cont.filter(c => c.status === 'pauta').sort(ordem), ideias = D.cont.filter(c => c.status === 'ideia').sort(ordem);
+  const agora = new Set(pautas.filter(c => notaCt(c, D) != null).slice(0, vagas).map(c => c.id));
+  const linha = (c, i, ac) => { const t = T[c.tema_id]; return `<tr><td class="n">${i + 1}</td><td><b>${esc(c.titulo)}</b></td><td>${t ? `<span class="pill neutral" style="border-left:4px solid ${esc(t.cor)}">${esc(t.nome)}</span>` : '—'}</td><td>${t ? `<span class="pill ${PRI_C[t.prioridade][0]}">${PRI_C[t.prioridade][1]}</span>` : '—'}</td><td>${esc(FORM_N[c.formato] || '')} ${(c.canais || []).map(x => `<span class="pill info">${esc(CANAL_N[x] || x)}</span>`).join(' ')}</td><td class="n">${notaCt(c, D) != null ? `<span class="pill info">${notaC(notaCt(c, D))}</span>` : '<span class="pill neutral">sem nota</span>'}</td><td>${agora.has(c.id) ? '<span class="pill good">Produzir agora</span> ' : ''}<button class="btn sm" data-edit="${c.id}">Notas e dados</button> <button class="btn sm" data-ac="${c.id}">${ac}</button></td></tr>`; };
+  const tabela = (L, ac, vazio) => `<div class="tw"><table><thead><tr><th class="n">#</th><th>Conteúdo</th><th>Tema</th><th>Prioridade do tema</th><th>Formato e canais</th><th class="n">Nota</th><th></th></tr></thead><tbody>${L.map((c, i) => linha(c, i, ac)).join('') || `<tr><td colspan="7" class="empty">${vazio}</td></tr>`}</tbody></table></div>`;
+  el.innerHTML = `<div class="kpis">${kpi('Capacidade semanal', num(cap), 'soma das metas por tipo de mídia')}${kpi('Em produção ou prontos', num(andamento), 'já ocupam a semana')}${kpi('Vagas para novas pautas', num(vagas), cap ? 'capacidade menos o que está em andamento' : 'defina a meta na aba Semana')}${kpi('Pautas na fila', num(pautas.length), 'aprovadas e aguardando')}</div>
+  <div class="panel"><b>Como a nota funciona.</b> <span class="muted">Cada ideia e cada pauta recebe 5 notas de 1 a 10. A média é calculada pelo sistema e ordena as listas; empate é resolvido pela prioridade do tema. O destaque "Produzir agora" é só uma sugestão, quem decide é você. Critérios: ${D.crit.map((c, i) => `${i + 1}. ${esc(c)}`).join(' · ')}. Para usar o score V18 (6 critérios de 1 a 5, VALIDAR e destino), troque o método em Linha editorial.</span></div>
+  <div class="panel"><h2>Pautas aprovadas, da maior para a menor nota</h2>${tabela(pautas, 'Iniciar produção', 'Nenhuma pauta aprovada ainda.')}</div>
+  <div class="panel"><h2>Ideias a avaliar, da maior para a menor nota</h2>${tabela(ideias, 'Aprovar como pauta', 'Nenhuma ideia esperando avaliação.')}</div>`;
+  const por = id => D.cont.find(x => x.id === id);
+  el.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => modalConteudo(por(b.dataset.edit), D));
+  el.querySelectorAll('[data-ac]').forEach(b => b.onclick = () => { const c = por(b.dataset.ac); moverConteudo(c, c.status === 'ideia' ? 'pauta' : 'producao', D); });
+}
+
+/* ----- Máquina: território × formato ----- */
+function tabMaquina(el, D, C) {
+  const ini = segundaDe(hoje()), fim = diaMais(ini, 6);
+  const ativos = D.cont.filter(c => c.status !== 'arquivado');
+  const fmts = D.fmts.filter(f => f.ativo), terrs = D.linhas.filter(l => l.ativo);
+  if (!terrs.length || !fmts.length) { el.innerHTML = `${mqComeco(D) || `<div class="panel"><h2>Território × formato</h2><p class="muted">A Máquina cruza os territórios com os formatos. ${!fmts.length ? 'Cadastre os formatos em <b>Linha editorial</b> (ou instale o modelo V18).' : ''}</p><div class="acts"><button class="btn" data-mq-ir="linhas">Ir para Linha editorial</button><button class="btn" data-mq-v18>Instalar o modelo V18</button></div></div>`}`; mqLigaComeco(el, C); return; }
+  const cel = (l, f) => { const X = ativos.filter(c => c.formato_id === f.id && (terrDe(c, D) || {}).id === l.id); const sem_ = X.filter(c => c.data_publicacao >= ini && c.data_publicacao <= fim).length, val = X.filter(c => c.validado && ['ideia', 'pauta'].includes(c.status)).length, pub = X.filter(c => c.status === 'publicado').length;
+    return `<td class="mq-cel${X.length ? '' : ' vazio'}"><button class="mq-n" data-ir="${l.id}|${f.id}" title="Ver no Kanban">${X.length}</button><small>${pub} publ. · ${val} ☑${sem_ ? ` · <b>${sem_} nesta semana</b>` : ''}</small><button class="btn sm mq-mais" data-novo="${l.id}|${f.id}" title="Nova ideia nesta combinação" aria-label="Nova ideia em ${esc(l.nome)} e ${esc(f.nome)}">＋</button></td>`; };
+  const semF = ativos.filter(c => !c.formato_id).length, semT = ativos.filter(c => !terrDe(c, D)).length;
+  const qd = D.quadros.filter(f => f.ativo);
+  el.innerHTML = `<div class="panel"><h2>Território × formato</h2><span class="muted">Cada célula é uma combinação replicável: o mesmo território explorado em experiências diferentes. O número é o total de conteúdos (fora arquivados); clique para ver no Kanban, ou em ＋ para uma ideia nova já com território e formato.</span>
+  <div class="tw"><table class="mq-mat"><thead><tr><th>Território</th>${fmts.map(f => `<th title="${esc(f.funcao || '')}">${pillFmt(f)}${f.vezes_semana ? `<br><small class="muted">${f.vezes_semana}× por semana</small>` : ''}</th>`).join('')}<th class="n">Total</th></tr></thead>
+  <tbody>${terrs.map(l => `<tr><th scope="row">${pillTerr(l)}${l.pergunta_central ? `<br><small class="muted">${esc(l.pergunta_central)}</small>` : ''}</th>${fmts.map(f => cel(l, f)).join('')}<td class="n"><b>${ativos.filter(c => (terrDe(c, D) || {}).id === l.id).length}</b></td></tr>`).join('')}</tbody>
+  <tfoot><tr><th>Total</th>${fmts.map(f => `<td class="n"><b>${ativos.filter(c => c.formato_id === f.id).length}</b></td>`).join('')}<td class="n"><b>${ativos.length}</b></td></tr></tfoot></table></div>
+  ${semF || semT ? `<small class="muted">Fora da matriz: ${semF} sem formato e ${semT} sem território.</small>` : ''}</div>
+  <div class="grid2" style="gap:16px;align-items:start">
+  <div class="panel"><h2>Formatos</h2>${fmts.map(f => `<div class="mq-fmtl">${pillFmt(f)}<div><b>${esc(f.funcao || '')}</b>${f.execucao ? `<br><span class="muted">${esc(f.execucao)}</span>` : ''}${f.melhor_uso ? `<br><small>Melhor uso: ${esc(f.melhor_uso)}</small>` : ''}</div></div>`).join('')}</div>
+  <div class="panel"><h2>Quadros de autoridade</h2>${qd.length ? `<div class="tw"><table><thead><tr><th>Quadro</th><th>Pergunta central</th><th class="n">Conteúdos</th></tr></thead><tbody>${qd.map(x => `<tr><td><b>${esc(x.nome)}</b></td><td>${esc(x.funcao || '')}</td><td class="n">${ativos.filter(c => c.quadro_id === x.id).length}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">Nenhum quadro cadastrado.</p>'}</div></div>`;
+  el.querySelectorAll('[data-ir]').forEach(b => b.onclick = () => { const [l, f] = b.dataset.ir.split('|'); Object.assign(C, { tab: 'kanban', terr: l, fmt: f, tema: '' }); render(); });
+  el.querySelectorAll('[data-novo]').forEach(b => b.onclick = () => { const [l, f] = b.dataset.novo.split('|'); const t = D.temas.find(x => x.linha_id === l && x.ativo && !x.transversal); modalConteudo(null, D, { formato_id: f, tema_id: t ? t.id : null, formato: (D.F[f] || {}).tipo_midia || 'reels' }); });
+}
+
+/* ----- Semana: dias, capacidade e metas ----- */
+function tabPlano(el, D, C) {
+  const ini = C.sem, fim = diaMais(ini, 6), h = hoje(), sc = ehScore(D);
+  const naSemana = D.cont.filter(c => c.status !== 'arquivado' && c.data_publicacao && c.data_publicacao >= ini && c.data_publicacao <= fim);
+  const semDia = D.cont.filter(c => ['ideia', 'pauta', 'producao', 'pronto'].includes(c.status) && !c.data_publicacao && (sc ? c.validado : c.status !== 'ideia'));
+  const meta = D.cfg.meta, fmtsF = D.fmts.filter(f => f.ativo && f.vezes_semana);
+  const mini = c => `<div class="mq-mini${c.status === 'publicado' ? ' pub' : ''}" data-edit="${c.id}" role="button" tabindex="0" style="--c:${esc(corDe((terrDe(c, D) || {}).cor, '#6b6f78'))}"><b>${esc(c.titulo)}</b><span>${pillFmt(D.F[c.formato_id])}${pillDest(c.destino)}<span class="pill neutral">${esc((ETAPAS_C.find(e => e[0] === c.status) || [, c.status])[1])}</span></span></div>`;
+  const M = Object.fromEntries(D.metas.map(x => [x.formato, x.quantidade])), fmtsM = FORM_C.filter(([k]) => (M[k] || 0) > 0), ini0 = segundaDe(h);
+  const semanas = [-1, 0, 1, 2, 3, 4].map(i => { const a = diaMais(ini0, i * 7), b = diaMais(a, 6); return { ini: a, fim: b, pas: b < h, atual: a <= h && h <= b }; });
+  const noPlano = (f, s) => D.cont.filter(c => c.formato === f && ['pronto', 'agendado', 'publicado'].includes(c.status) && c.data_publicacao && c.data_publicacao >= s.ini && c.data_publicacao <= s.fim);
+  el.innerHTML = `<div class="mq-semnav"><button class="btn sm" id="sPrev" aria-label="Semana anterior">‹</button><b>${dd(ini)} a ${dd(fim)}</b>${ini <= h && h <= fim ? '<span class="pill info">esta semana</span>' : ''}<button class="btn sm" id="sNext" aria-label="Próxima semana">›</button>${ini !== segundaDe(h) ? '<button class="btn sm" id="sHoje">Voltar para esta semana</button>' : ''}</div>
+  <div class="kpis">${kpi('Planejados na semana', num(naSemana.length), meta ? `meta de ${meta}` : 'sem meta definida')}${kpi('Publicados', num(naSemana.filter(c => c.status === 'publicado').length), 'na semana')}${kpi('Falta para a meta', meta ? num(Math.max(0, meta - naSemana.length)) : '—', meta ? 'conteúdos sem data nesta semana' : 'defina em Linha editorial')}${kpi(sc ? 'Validadas sem data' : 'Na fila sem data', num(semDia.length), 'arraste para um dia')}</div>
+  ${fmtsF.length ? `<div class="panel mq-freq"><b>Formatos com frequência fixa:</b> ${fmtsF.map(f => { const n = naSemana.filter(c => c.formato_id === f.id).length; return `<span class="pill ${n >= f.vezes_semana ? 'good' : 'warn'}">${esc(f.nome)}: ${n} de ${f.vezes_semana}</span>`; }).join(' ')}</div>` : ''}
+  <div class="mq-dias">${DIAS_C.map(([n, ab, nome], i) => { const dia = diaMais(ini, i), X = naSemana.filter(c => c.data_publicacao === dia); return `<div class="mq-dia${dia === h ? ' hoje' : ''}" data-dia="${dia}"><h3>${ab} <small>${dd(dia).slice(0, 5)}</small><span class="mono">${X.length}</span></h3>${X.map(mini).join('') || '<small class="muted">—</small>'}</div>`; }).join('')}</div>
+  <div class="panel"><h2>${sc ? 'Validadas e sem data' : 'Na fila e sem data'}</h2><span class="muted">Arraste para um dia acima para marcar a data de publicação.</span><div class="mq-fila">${semDia.sort(ordemScore).map(c => mini(c).replace('class="mq-mini', 'draggable="true" data-arr="' + c.id + '" class="mq-mini')).join('') || '<small class="muted">Nada na fila sem data.</small>'}</div></div>
+  <details class="panel"><summary><b>Metas por tipo de mídia</b> <span class="muted">(reels, carrossel, story…)</span></summary>
+  <form id="mForm" style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-top:10px">${FORM_C.map(([k, l]) => `<label style="width:110px">${l}<input type="number" min="0" step="1" name="${k}" value="${M[k] ?? ''}"></label>`).join('')}<button class="btn pri" type="submit">Salvar metas</button></form>
+  ${fmtsM.length ? `<div class="tw"><table><thead><tr><th>Semana</th>${fmtsM.map(([, l]) => `<th class="n">${l}</th>`).join('')}<th class="n">Total</th></tr></thead><tbody>${semanas.map(s => { let tp = 0, tm = 0; const cl = fmtsM.map(([k]) => { const n = noPlano(k, s).length, mt = M[k]; tp += n; tm += mt; return `<td class="n"><span class="pill ${n >= mt ? 'good' : s.pas ? 'bad' : 'warn'}">${n} / ${mt}</span></td>`; }).join(''); return `<tr${s.atual ? ' style="font-weight:600"' : ''}><td>${dd(s.ini)} a ${dd(s.fim)}${s.atual ? ' <span class="pill info">esta semana</span>' : ''}</td>${cl}<td class="n">${tp} / ${tm}</td></tr>`; }).join('')}</tbody></table></div>` : '<p class="muted">Defina pelo menos um tipo de mídia com meta maior que zero para ver o planejado.</p>'}</details>`;
+  $('#sPrev').onclick = () => { C.sem = diaMais(ini, -7); render(); }; $('#sNext').onclick = () => { C.sem = diaMais(ini, 7); render(); };
+  if ($('#sHoje')) $('#sHoje').onclick = () => { C.sem = segundaDe(h); render(); };
+  const por = id => D.cont.find(x => x.id === id);
+  el.querySelectorAll('[data-edit]').forEach(b => { b.onclick = () => modalConteudo(por(b.dataset.edit), D); b.onkeydown = e => { if (e.key === 'Enter') b.onclick(); }; });
+  el.querySelectorAll('[data-arr]').forEach(c => c.ondragstart = ev => ev.dataTransfer.setData('text/plain', c.dataset.arr));
+  el.querySelectorAll('.mq-dia').forEach(col => { col.ondragover = ev => { ev.preventDefault(); col.classList.add('over'); }; col.ondragleave = () => col.classList.remove('over'); col.ondrop = ev => { ev.preventDefault(); col.classList.remove('over'); const id = ev.dataTransfer.getData('text/plain'); if (id) act(async () => { await q(sb.from('conteudos').update({ data_publicacao: col.dataset.dia, dia_semana: null }).eq('id', id)); toast('Data de publicação marcada: ' + dd(col.dataset.dia)); render(); }); }; });
+  $('#mForm').onsubmit = e => { e.preventDefault(); act(async () => {
+    const rows = FORM_C.map(([k]) => { const v = $('#mForm').elements[k].value; return v === '' ? null : { workspace_id: S.ws, formato: k, quantidade: Number(v) }; }).filter(Boolean);
+    if (rows.some(r => !Number.isInteger(r.quantidade) || r.quantidade < 0)) throw new Error('A meta é um número inteiro, zero ou maior.');
+    await q(sb.from('conteudo_metas_semanais').upsert(rows, { onConflict: 'workspace_id,formato' })); toast('Metas salvas'); render();
+  }); };
+}
+
+/* ----- Fechamento semanal ----- */
+const RETRO_P = [['funcionou', 'O que funcionou?'], ['repetir', 'O que vale repetir?'], ['melhorar', 'O que precisa ser melhorado?'], ['tese', 'Qual tese ganhou força?'], ['repetitivo', 'O que ficou repetitivo?'], ['descartar', 'O que deve ser descartado?'], ['formato', 'Qual formato precisamos testar mais?'], ['lacuna', 'Há lacuna em algum território?'], ['fundo', 'Precisamos de mais conteúdo de fundo de funil para atrair clientes?']];
+const FOCO_C = ['Autoridade', 'Relacionamento', 'Alcance', 'Conversão'];
+async function tabFechamento(el, D, C) {
+  const h = hoje(), dF = D.cfg.diaFech, semAtual = segundaDe(h);
+  // no dia do fechamento (sábado, por padrão) ou depois, a semana a fechar é a atual; antes, a anterior
+  const isoHoje = ((new Date(h + 'T12:00:00Z').getUTCDay() + 6) % 7) + 1;
+  C.semF = C.semF || (isoHoje >= dF ? semAtual : diaMais(semAtual, -7));
+  const ini = C.semF;
+  el.innerHTML = '<div class="panel muted">Calculando a semana…</div>';
+  let R, F;
+  try {
+    [R, F] = await Promise.all([q(sb.rpc('conteudo_semana', { p_ws: S.ws, p_ini: ini })), q(sb.from('conteudo_fechamentos').select('*').eq('workspace_id', S.ws).eq('semana_ini', ini))]);
+  } catch (e) { el.innerHTML = `<div class="panel"><b>O fechamento ainda não está disponível.</b> <span class="muted">${esc(e.message || String(e))}. Rode a migração da v0.133 (Máquina de Conteúdo).</span></div>`; return; }
+  const f = (F || [])[0] || {}, rt = f.retro || {}, meta = R.meta;
+  const rk = (L, vazio) => `<div class="tw"><table><thead><tr><th class="n">#</th><th>Pauta</th><th>Território</th><th>Formato</th><th>Destino</th><th>Score</th><th class="n">Impacto</th></tr></thead><tbody>${L.map((x, i) => `<tr class="clk" data-edit="${x.id}"><td class="n">${i + 1}</td><td><b>${esc(x.titulo)}</b></td><td>${esc(x.territorio || '—')}</td><td>${esc(x.formato || '—')}</td><td>${pillDest(x.destino) || '—'}</td><td>${scoreBar(x.score)}</td><td class="n">${x.impacto ?? '—'}</td></tr>`).join('') || `<tr><td colspan="7" class="empty">${vazio}</td></tr>`}</tbody></table></div>`;
+  const lacT = (R.por_territorio || []).filter(x => !x.planejados), lacF = (R.por_formato || []).filter(x => !x.planejados), freq = (R.por_formato || []).filter(x => x.vezes_semana && x.planejados < x.vezes_semana);
+  const capPct = meta ? Math.min(100, Math.round(R.banco_forte / meta * 100)) : 0;
+  const ds = R.desempenho || {};
+  el.innerHTML = `<div class="mq-semnav"><button class="btn sm" id="fPrev" aria-label="Semana anterior">‹</button><b>Semana de ${dd(ini)} a ${dd(diaMais(ini, 6))}</b>${f.id ? `<span class="pill good">fechada em ${dd(diaLocal(f.atualizado_em))}</span>` : '<span class="pill warn">ainda não fechada</span>'}<button class="btn sm" id="fNext" aria-label="Próxima semana">›</button></div>
+  <div class="panel"><span class="muted">O fechamento acontece ${DIAS_C[dF - 1][2] === 'sábado' || DIAS_C[dF - 1][2] === 'domingo' ? 'no' : 'na'} <b>${DIAS_C[dF - 1][2]}</b>: primeiro aprender com a semana, depois montar a próxima. A próxima semana só é finalizada depois desta discussão.</span></div>
+  <h2 class="mq-h">A. Quadro de validação</h2>
+  <div class="panel"><h2>Pautas validadas (☑), por score</h2>${rk(R.ranking || [], 'Nenhuma pauta validada no banco.')}</div>
+  <div class="panel"><h2>Reservas</h2>${rk(R.reservas || [], 'Nenhuma reserva com score.')}</div>
+  <h2 class="mq-h">B. Mapa de capacidade</h2>
+  <div class="kpis">${kpi('Banco forte', num(R.banco_forte), 'pautas validadas a produzir')}${kpi('Meta semanal', meta ? num(meta) : '—', 'conteúdos por semana')}${kpi('Planejados na semana', num(R.planejados), 'com data nesta semana')}${kpi('Publicados', num(R.publicados), 'nesta semana')}${kpi('Validadas na semana', num(R.validadas_na_semana), 'marcadas ☑')}</div>
+  ${meta ? `<div class="panel"><b>${R.banco_forte >= meta ? 'O banco cobre a meta.' : `Faltam ${meta - R.banco_forte} pautas fortes para a meta de ${meta}.`}</b><div class="bar" style="margin-top:8px"><i class="${R.banco_forte >= meta ? 'over' : ''}" style="width:${capPct}%"></i></div></div>` : ''}
+  <div class="grid2" style="gap:16px;align-items:start">
+    <div class="panel"><h2>Por território</h2><div class="tw"><table><thead><tr><th>Território</th><th class="n">Na semana</th><th class="n">No banco</th></tr></thead><tbody>${(R.por_territorio || []).map(x => `<tr><td>${esc(x.nome)}</td><td class="n">${x.planejados ? x.planejados : '<span class="pill warn">0</span>'}</td><td class="n">${x.banco}</td></tr>`).join('') || '<tr><td colspan="3" class="empty">Sem territórios.</td></tr>'}</tbody></table></div>${R.sem_territorio ? `<small class="muted">${R.sem_territorio} conteúdo(s) da semana sem território.</small>` : ''}</div>
+    <div class="panel"><h2>Por formato e destino</h2><div class="tw"><table><thead><tr><th>Formato</th><th class="n">Na semana</th></tr></thead><tbody>${(R.por_formato || []).map(x => `<tr><td>${esc(x.nome)}${x.vezes_semana ? ` <small class="muted">(${x.vezes_semana}× por semana)</small>` : ''}</td><td class="n">${x.planejados}${x.vezes_semana && x.planejados < x.vezes_semana ? ' <span class="pill warn">abaixo</span>' : ''}</td></tr>`).join('') || '<tr><td colspan="2" class="empty">Sem formatos.</td></tr>'}</tbody></table></div>
+    <div class="ca" style="margin-top:8px">${Object.entries(R.por_destino || {}).map(([k, n]) => `${pillDest(k)} <b>${n}</b>`).join(' ') || '<small class="muted">Nada com data nesta semana.</small>'}</div></div>
+  </div>
+  ${lacT.length || lacF.length || freq.length ? `<div class="panel mq-lac"><b>Lacunas da semana:</b> ${[...lacT.map(x => 'território ' + esc(x.nome)), ...lacF.map(x => 'formato ' + esc(x.nome)), ...freq.map(x => esc(x.nome) + ` (${x.planejados} de ${x.vezes_semana})`)].join(' · ')}</div>` : ''}
+  <div class="panel"><h2>Desempenho registrado</h2>${ds.publicacoes ? `<div class="kpis">${kpi('Publicações com métrica', num(ds.publicacoes), 'nesta semana')}${kpi('Alcance', num(ds.alcance || 0), 'soma')}${kpi('Interações', num(ds.interacoes || 0), 'curtidas, comentários, compartilhamentos, salvamentos')}${kpi('Engajamento', fP(ds.engajamento), 'interações ÷ alcance')}</div>${(ds.top || []).length ? `<p style="margin:8px 0 0"><b>Destaques:</b> ${ds.top.map(t => `${esc(t.titulo)} (${esc(CANAL_N[t.canal] || t.canal)}, ${fP(t.engajamento)})`).join(' · ')}</p>` : ''}` : '<p class="muted" style="margin:0">Nenhuma publicação com métricas nesta semana. Registre em Relatórios (ou pela conexão com o Instagram, quando aprovada).</p>'}</div>
+  <h2 class="mq-h">C. Retrospectiva e D. pré-pauta</h2>
+  <form id="fForm" class="panel"><div class="grid2">${RETRO_P.map(([k, l]) => `<label>${esc(l)}<textarea name="${k}" rows="2">${esc(rt[k] || '')}</textarea></label>`).join('')}
+    <label>Foco da próxima semana<select name="foco"><option value="">—</option>${FOCO_C.map(o => `<option${rt.foco === o ? ' selected' : ''}>${o}</option>`).join('')}</select></label>
+    <label style="grid-column:1/-1">Objetivo estratégico e comercial da próxima semana<textarea name="objetivo" rows="2">${esc(f.objetivo_proxima || '')}</textarea></label>
+    <label style="grid-column:1/-1">Pré-pauta: direções possíveis para a próxima semana<textarea name="pre" rows="4">${esc(f.pre_pauta || '')}</textarea></label></div>
+    <div class="acts"><button class="btn pri" type="submit">${f.id ? 'Atualizar fechamento' : 'Fechar a semana'}</button></div></form>
+  ${D.fech.length ? `<div class="panel"><h2>Fechamentos anteriores</h2><div class="tw"><table><thead><tr><th>Semana</th><th>Objetivo da semana seguinte</th><th></th></tr></thead><tbody>${D.fech.map(x => `<tr><td>${dd(x.semana_ini)} a ${dd(diaMais(x.semana_ini, 6))}</td><td>${esc(x.objetivo_proxima || '—')}</td><td><button class="btn sm" data-sem="${x.semana_ini}">Abrir</button></td></tr>`).join('')}</tbody></table></div></div>` : ''}`;
+  $('#fPrev').onclick = () => { C.semF = diaMais(ini, -7); render(); }; $('#fNext').onclick = () => { C.semF = diaMais(ini, 7); render(); };
+  el.querySelectorAll('[data-sem]').forEach(b => b.onclick = () => { C.semF = b.dataset.sem; render(); });
+  el.querySelectorAll('[data-edit]').forEach(r => r.onclick = () => { const c = D.cont.find(x => x.id === r.dataset.edit); if (c) modalConteudo(c, D); });
+  $('#fForm').onsubmit = e => { e.preventDefault(); act(async () => {
+    const fm = $('#fForm').elements, retro = {}; RETRO_P.forEach(([k]) => { if (fm[k].value.trim()) retro[k] = fm[k].value.trim(); }); if (fm.foco.value) retro.foco = fm.foco.value;
+    await q(sb.rpc('conteudo_fechar_semana', { p_ws: S.ws, p_ini: ini, p_retro: retro, p_objetivo: fm.objetivo.value, p_pre_pauta: fm.pre.value }));
+    toast('Semana fechada. Os números ficaram registrados como estavam hoje.'); render();
+  }); };
+}
+
+/* ----- Persona: questionário e proposta de linha editorial ----- */
+const PERSONA_P = [
+  ['nicho', 'Nicho', 'Qual é o nicho?'], ['publico', 'Nicho', 'Quem é o público que queremos atrair?'], ['publico_valoriza', 'Nicho', 'O que esse público vende, compra, mede e valoriza?'],
+  ['dores', 'Nicho', 'Quais dores, desejos, crenças, objeções e decisões aparecem com frequência?'], ['repetido', 'Nicho', 'Quais assuntos o mercado já repete demais?'],
+  ['lacunas', 'Nicho', 'Quais lacunas de conhecimento ou de visão existem?'], ['atrair_agora', 'Nicho', 'Quem queremos atrair agora: audiência, oportunidades, clientes, parceiros, recrutadores, investidores?'],
+  ['objetivos', 'Objetivo', 'O que o conteúdo deve produzir para o negócio e para a marca?'], ['objetivo_comercial', 'Objetivo', 'Qual é o objetivo comercial atual?'],
+  ['ofertas', 'Objetivo', 'Quais produtos ou serviços o conteúdo precisa apoiar?'], ['por_que', 'Objetivo', 'Por que você quer falar sobre isso?'],
+  ['acredita', 'Tese', 'No que você acredita sobre o seu mercado?'], ['discorda', 'Tese', 'Do que você discorda na forma como o mercado costuma agir?'],
+  ['erro_recorrente', 'Tese', 'Qual erro de raciocínio aparece repetidamente?'], ['transformacao', 'Tese', 'Que transformação de pensamento você quer provocar?'],
+  ['frase_nome', 'Tese', 'Qual frase você gostaria que associassem ao seu nome?'], ['dominio', 'Repertório', 'Sobre quais assuntos você domina e gosta de falar?'],
+  ['vida_real', 'Repertório', 'Que experiências, histórias e crenças pessoais você topa mostrar?'], ['nao_falar', 'Repertório', 'O que fica de fora, de jeito nenhum?'],
+  ['formatos', 'Formatos', 'Como você gosta de aparecer? (falando para a câmera, quadro, análise de tela, carrossel, humor, música…)'],
+  ['capacidade', 'Formatos', 'Quantos conteúdos por semana dá para produzir com qualidade?'], ['marcas', 'Formatos', 'Há mais de uma marca ou perfil (ex.: a pessoa e a empresa)? Qual o papel de cada um?']];
+const PERSONA_BLOCOS = [['Nicho', 'Antes do conteúdo, entenda o nicho'], ['Objetivo', 'O objetivo vem antes da linha editorial'], ['Tese', 'A tese central da marca'], ['Repertório', 'O que você sabe e topa mostrar'], ['Formatos', 'Como e quanto você produz']];
+const PERSONA_OBJ = ['Construir autoridade', 'Atrair clientes', 'Educar o mercado', 'Mostrar raciocínio e método', 'Gerar demanda', 'Reforçar posicionamento', 'Criar diferenciação', 'Desenvolver relacionamento', 'Abrir oportunidades profissionais', 'Apoiar vendas', 'Validar ideias, teses ou produtos'];
+const pTxt = v => Array.isArray(v) ? v.filter(Boolean).join('; ') : String(v ?? '').trim();
+const pRespondidas = r => PERSONA_P.filter(([k]) => pTxt((r || {})[k])).length;
+function mqValidaProposta(p) {
+  const s = (v, m = 600) => String(v ?? '').trim().slice(0, m), lst = (v, m = 40, t = 300) => (Array.isArray(v) ? v : []).map(x => s(x, t)).filter(Boolean).slice(0, m);
+  const PAL = ['#521F32', '#1F4E52', '#2F3A6B', '#8A5A12', '#6B2F5A', '#3D5A2A'], cor = (v, d) => /^#[0-9a-f]{6}$/i.test(String(v ?? '')) ? String(v) : d;
+  const ter = (Array.isArray(p.territorios) ? p.territorios : []).map((t, i) => ({ nome: s(t?.nome, 80), cor: cor(t?.cor, PAL[i % 6]), pergunta: s(t?.pergunta), funcao: s(t?.funcao), papel_funil: s(t?.papel_funil), entra: s(t?.entra, 1200), nao_entra: s(t?.nao_entra, 1200), descricao: s(t?.descricao),
+    frentes: (Array.isArray(t?.frentes) ? t.frentes : []).map(f => ({ nome: s(f?.nome, 90), descricao: s(f?.descricao) })).filter(f => f.nome).slice(0, 10) })).filter(t => t.nome);
+  if (!ter.length) throw new Error('A resposta não trouxe nenhum território.');
+  if (ter.length > 6) throw new Error('A resposta trouxe mais de 6 territórios; a metodologia pede 3 ou 4.');
+  if (new Set(ter.map(t => t.nome.toLowerCase())).size !== ter.length) throw new Error('A resposta repete o nome de um território.');
+  const L = p.linha || {}, meta = Number(p.meta_semanal), dia = Number(p.dia_fechamento);
+  return { nome: s(p.nome, 120) || 'Linha editorial proposta',
+    linha: { papel: s(L.papel), tese: s(L.tese), sintese: s(L.sintese), visao: s(L.visao), objetivo: s(L.objetivo), inimigo: s(L.inimigo, 120), inimigo_descricao: s(L.inimigo_descricao), nicho: s(L.nicho, 200), frase_guia: s(L.frase_guia), assinatura: s(L.assinatura, 120), estruturas: lst(L.estruturas, 6), lentes: lst(L.lentes, 8, 80), regra_destino: s(L.regra_destino), frases: lst(L.frases, 40) },
+    destinos: lst(p.destinos, 4, 40), meta_semanal: Number.isInteger(meta) && meta >= 0 && meta <= 100 ? meta : 12, dia_fechamento: Number.isInteger(dia) && dia >= 1 && dia <= 7 ? dia : 6, tags: lst(p.tags, 20, 40), territorios: ter,
+    camadas: (Array.isArray(p.camadas) ? p.camadas : []).map(c => ({ nome: s(c?.nome, 90), descricao: s(c?.descricao) })).filter(c => c.nome).slice(0, 10),
+    formatos: (Array.isArray(p.formatos) ? p.formatos : []).map((f, i) => { const v = f?.vezes_semana == null || f?.vezes_semana === '' ? null : Number(f.vezes_semana); return { nome: s(f?.nome, 80), funcao: s(f?.funcao), execucao: s(f?.execucao), melhor_uso: s(f?.melhor_uso), tipo_midia: FORM_N[f?.tipo_midia] ? f.tipo_midia : null, vezes_semana: v != null && Number.isInteger(v) && v >= 0 && v <= 21 ? v : null, cor: cor(f?.cor, PAL[i % 6]) }; }).filter(f => f.nome).slice(0, 10),
+    quadros: (Array.isArray(p.quadros) ? p.quadros : []).map(x => ({ nome: s(x?.nome, 80), funcao: s(x?.funcao), estrutura: s(x?.estrutura, 800) })).filter(x => x.nome).slice(0, 8),
+    pendencias: lst(p.pendencias, 15) };
+}
+function mqPedidoIA(r) {
+  const resp = PERSONA_P.filter(([k]) => pTxt(r[k])).map(([k, b, l]) => `[${b}] ${l}\n${pTxt(r[k])}`).join('\n\n');
+  return `Você é estrategista de marketing editorial e vai propor a linha editorial de UMA marca, em português do Brasil, aplicando a metodologia Máquina Editorial de Aprendizado:
+NICHO → OBJETIVO → POSICIONAMENTO → LINHA EDITORIAL → SUBTEMAS → FORMATOS → MÁQUINA EDITORIAL → RADAR → PAUTAS → VALIDAÇÃO → PRODUÇÃO → FEEDBACK → APRENDIZADO.
+- Tese central: papel da marca, tese, visão de longo prazo, inimigo comum ou tensão central, banco de frases.
+- Linha editorial em 3 ou 4 territórios amplos (no máximo 6), cada um com função, pergunta central, papel no funil, o que entra e o que não entra, e 3 a 6 frentes (subtemas).
+- Camadas transversais atravessam territórios sem virar território novo. Separe tema (sobre o que falo) de formato (experiência repetível). Território × formato = Máquina Editorial.
+- Estrutura invisível: AIDA; para conteúdo pessoal: Vida Real → Tensão → Crença → Ponte → Negócio → Conclusão.
+REGRAS: use SOMENTE o que está nas respostas; não invente fatos, números, cases ou credenciais; o que faltar vai em "pendencias". Formatos respeitam como a pessoa gosta de aparecer. "meta_semanal" segue a capacidade informada (sem informação, 12).
+Responda SOMENTE com um objeto JSON neste formato:
+{"nome":"","linha":{"papel":"","tese":"","sintese":"","visao":"","objetivo":"","inimigo":"","inimigo_descricao":"","nicho":"","frase_guia":"","estruturas":[""],"lentes":[""],"regra_destino":"","frases":[""]},"destinos":[""],"meta_semanal":12,"dia_fechamento":6,"tags":[""],"territorios":[{"nome":"","cor":"#RRGGBB","pergunta":"","funcao":"","papel_funil":"","entra":"","nao_entra":"","frentes":[{"nome":"","descricao":""}]}],"camadas":[{"nome":"","descricao":""}],"formatos":[{"nome":"","funcao":"","execucao":"","melhor_uso":"","tipo_midia":"reels","vezes_semana":null}],"quadros":[{"nome":"","funcao":"","estrutura":""}],"pendencias":[""]}
+
+RESPOSTAS DO QUESTIONÁRIO:
+${resp}`;
+}
+function tabPersona(el, D, C) {
+  const P = D.personas[0] || null, r = (P && P.respostas) || {}, n = pRespondidas(r);
+  const campo = ([k, , l]) => k === 'objetivos'
+    ? `<fieldset class="mq-fs" style="grid-column:1/-1"><legend>${esc(l)}</legend><div class="mq-checks">${PERSONA_OBJ.map(o => `<label><input type="checkbox" name="objetivos" value="${esc(o)}"${(r.objetivos || []).includes(o) ? ' checked' : ''}> ${esc(o)}</label>`).join('')}</div></fieldset>`
+    : `<label style="grid-column:1/-1">${esc(l)}<textarea name="${k}" rows="2">${esc(pTxt(r[k]))}</textarea></label>`;
+  const prop = D.propostas.filter(x => x.status !== 'descartada');
+  const verProp = x => { const p = x.proposta || {}; return `<div class="panel mq-prop${x.status === 'aplicada' ? ' aplicada' : ''}"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center"><div><h2 style="margin:0">${esc(p.nome || 'Proposta')}</h2><small class="muted">${x.origem === 'ia' ? 'Gerada pela IA' + (x.modelo_ia ? ' (' + esc(x.modelo_ia) + ')' : '') : x.origem === 'colada' ? 'Colada de uma IA externa' : 'Modelo'} em ${dd(diaLocal(x.criado_em))}</small></div><div class="acts">${x.status === 'aplicada' ? '<span class="pill good">aplicada</span>' : `<button class="btn pri sm" data-apl="${x.id}">Aplicar na Máquina</button><button class="btn sm" data-desc="${x.id}">Descartar</button>`}</div></div>
+    ${p.linha && p.linha.tese ? `<p style="margin:10px 0 4px"><b>Tese:</b> ${esc(p.linha.tese)}</p>` : ''}${p.linha && p.linha.inimigo ? `<p style="margin:0 0 4px"><b>Inimigo comum:</b> ${esc(p.linha.inimigo)}${p.linha.inimigo_descricao ? ' — ' + esc(p.linha.inimigo_descricao) : ''}</p>` : ''}
+    <div class="mq-terrs">${(p.territorios || []).map(t => `<div class="mq-terrc" style="--c:${esc(corDe(t.cor, '#521F32'))}"><b>${esc(t.nome)}</b>${t.pergunta ? `<small>${esc(t.pergunta)}</small>` : ''}<ul>${(t.frentes || []).map(f => `<li>${esc(f.nome)}</li>`).join('')}</ul></div>`).join('')}</div>
+    ${(p.formatos || []).length ? `<p style="margin:8px 0 0"><b>Formatos:</b> ${p.formatos.map(f => esc(f.nome) + (f.vezes_semana ? ` (${f.vezes_semana}× por semana)` : '')).join(' · ')}</p>` : ''}
+    ${(p.destinos || []).length ? `<p style="margin:4px 0 0"><b>Destinos:</b> ${p.destinos.map(esc).join(' · ')} · <b>Meta:</b> ${p.meta_semanal ?? '—'} por semana</p>` : ''}
+    ${(p.pendencias || []).length ? `<div class="mq-pend"><b>O que faltou decidir:</b><ul>${p.pendencias.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}</div>`; };
+  el.innerHTML = `<div class="panel"><h2>Questionário de persona e nicho</h2><span class="muted">Quem responde é o cliente (ou você, junto com ele). As respostas alimentam a proposta de linha editorial pelo método: nicho → objetivo → tese → territórios → frentes → formatos. A IA só usa o que está escrito aqui e lista o que faltou.</span>
+    <div class="mq-prog"><div class="bar"><i style="width:${Math.round(n / PERSONA_P.length * 100)}%"></i></div><small>${n} de ${PERSONA_P.length} respondidas</small></div></div>
+  <form id="pForm">${PERSONA_BLOCOS.map(([b, sub]) => `<div class="panel"><h2>${esc(b)} <small class="muted" style="font-weight:400">${esc(sub)}</small></h2><div class="grid2">${PERSONA_P.filter(p => p[1] === b).map(campo).join('')}</div></div>`).join('')}
+  <div class="acts mq-sticky"><button class="btn pri" type="submit">Salvar respostas</button><button class="btn" type="button" id="pGerar">Gerar linha editorial com IA</button><button class="btn" type="button" id="pCopiar">Copiar pedido para outra IA</button><button class="btn" type="button" id="pColar">Colar resposta da IA</button></div></form>
+  <div class="panel"><h2>Propostas de linha editorial</h2><span class="muted">Uma proposta só muda a Máquina quando você clica em Aplicar. Aplicar não apaga nada: cria ou atualiza territórios, frentes, formatos e quadros pelo nome.</span></div>
+  ${prop.map(verProp).join('') || '<div class="panel muted">Nenhuma proposta ainda.</div>'}`;
+  const ler = () => { const f = $('#pForm'), o = {}; PERSONA_P.forEach(([k]) => { if (k === 'objetivos') o[k] = [...f.querySelectorAll('input[name=objetivos]:checked')].map(x => x.value); else if (f.elements[k].value.trim()) o[k] = f.elements[k].value.trim(); }); return o; };
+  const salva = async () => { const resp = ler(); if (P) await q(sb.from('conteudo_personas').update({ respostas: resp, atualizado_em: new Date().toISOString() }).eq('id', P.id)); else return one(await q(sb.from('conteudo_personas').insert({ workspace_id: S.ws, respostas: resp }).select('id').single())).id; return P.id; };
+  $('#pForm').onsubmit = e => { e.preventDefault(); act(async () => { await salva(); toast('Respostas salvas'); render(); }); };
+  $('#pCopiar').onclick = () => { const t = mqPedidoIA(ler()); iaCopia(t, 'Pedido copiado. Cole no ChatGPT ou no Claude e depois use "Colar resposta da IA".'); };
+  $('#pGerar').onclick = () => {
+    if (pRespondidas(ler()) < 6) { toast('Responda pelo menos 6 perguntas antes de pedir a proposta.', true); return; }
+    modal('Gerar linha editorial com IA', `<p style="margin:0 0 8px">A IA lê as respostas do questionário e devolve territórios, frentes, formatos e o que faltou decidir. Leva até um minuto.</p><label>Provedor<select name="prov"><option value="claude">Claude</option><option value="openai">ChatGPT</option></select></label>`, async d => {
+      const id = await salva();
+      const r2 = await sb.functions.invoke('linha-editorial', { body: { persona_id: id, provedor: d.prov } });
+      if (r2.error) { let msg = r2.error.message || 'Não foi possível gerar.'; try { const j = await r2.error.context.json(); if (j && j.erro) msg = j.erro; } catch (e) { /* mantém */ } throw new Error(msg); }
+      if (r2.data && r2.data.erro) throw new Error(r2.data.erro);
+      if (!r2.data || !r2.data.id) throw new Error('A função linha-editorial não respondeu. Ela foi publicada no Supabase? Enquanto isso, use "Copiar pedido".');
+      toast('Proposta criada. Revise e clique em Aplicar.');
+    }, 'Gerar');
+  };
+  $('#pColar').onclick = () => modal('Colar resposta da IA', `<p class="muted" style="margin:0 0 8px">Cole aqui o JSON que a IA devolveu para o pedido copiado. Ele passa pela mesma conferência da IA conectada antes de virar proposta.</p><label>Resposta<textarea name="txt" rows="10" required></textarea></label>`, async d => {
+    let t = d.txt.trim(); const fz = t.match(/```(?:json)?\s*([\s\S]*?)```/i); if (fz) t = fz[1].trim();
+    const i = t.indexOf('{'), j = t.lastIndexOf('}'); if (i < 0 || j <= i) throw new Error('Não encontrei um JSON na resposta.');
+    let o; try { o = JSON.parse(t.slice(i, j + 1)); } catch (e) { throw new Error('O JSON está incompleto ou com erro de formato.'); }
+    const proposta = mqValidaProposta(o), pid = await salva();
+    await q(sb.from('conteudo_linha_propostas').insert({ workspace_id: S.ws, persona_id: pid, origem: 'colada', proposta }));
+    toast('Proposta registrada. Revise e clique em Aplicar.');
+  }, 'Registrar proposta', true);
+  el.querySelectorAll('[data-apl]').forEach(b => b.onclick = () => modal('Aplicar proposta', '<p style="margin:0">Cria ou atualiza pelo nome os territórios, frentes, formatos e quadros, troca o método de nota para o score de 6 critérios e grava o núcleo da marca. Nada é apagado.</p>', async () => {
+    const r2 = await q(sb.rpc('conteudo_aplicar_proposta', { p_id: b.dataset.apl })); toast(`Aplicada: ${r2.territorios} territórios e ${r2.formatos} formatos.`);
+  }, 'Aplicar'));
+  el.querySelectorAll('[data-desc]').forEach(b => b.onclick = () => act(async () => { await q(sb.from('conteudo_linha_propostas').update({ status: 'descartada' }).eq('id', b.dataset.desc)); toast('Proposta descartada'); render(); }));
+}
+
+/* ----- Linha editorial: núcleo, método, territórios, frentes, formatos ----- */
+function modalLinha(row) {
+  const f = abrirForm(row ? 'Editar território' : 'Novo território', 'conteudo_linhas', [{ k: 'nome', l: 'Nome do território', req: 1, full: 1, ph: 'Estratégia' }, { k: 'pergunta_central', l: 'Pergunta central', full: 1 }, { k: 'descricao', l: 'Descrição', t: 'textarea' },
+    { k: 'funcao', l: 'Função do território', t: 'textarea' }, { k: 'papel_funil', l: 'Papel no funil' }, { k: 'cor', l: 'Cor', t: 'color', def: '#521F32' }, { k: 'entra', l: 'O que entra', t: 'textarea' }, { k: 'nao_entra', l: 'O que não entra', t: 'textarea' },
+    { k: 'ordem', l: 'Ordem', t: 'number', def: 0 }, { k: 'ativo', l: 'Ativo', t: 'check', def: true }], row, { antes: v => { v.ordem = v.ordem || 0; return v; }, ok: 'Território salvo', largo: true });
+  if (row) botaoExcluir(f, 'conteudo_linhas', row.id, 'Território excluído (as frentes ficam sem território)');
+}
+function modalTema(row, D, pre) {
+  const f = abrirForm(row ? 'Editar frente' : 'Nova frente', 'conteudo_temas', [{ k: 'nome', l: 'Nome da frente (tema)', req: 1, full: 1 }, { k: 'linha_id', l: 'Território', t: 'select', opts: sel(D.linhas, 'id', 'nome'), def: (pre || {}).linha_id },
+    { k: 'prioridade', l: 'Prioridade', t: 'select', req: 1, def: '2', opts: [['1', 'Alta'], ['2', 'Média'], ['3', 'Baixa']] }, { k: 'descricao', l: 'O que entra nesta frente', t: 'textarea' }, { k: 'cor', l: 'Cor da etiqueta', t: 'color', def: '#e5365f' },
+    { k: 'transversal', l: 'Camada transversal (atravessa territórios)', t: 'check', def: !!(pre || {}).transversal }, { k: 'ativo', l: 'Ativa', t: 'check', def: true }], row ? { ...row, prioridade: String(row.prioridade) } : null, { antes: v => { v.prioridade = Number(v.prioridade); return v; }, ok: 'Frente salva' });
+  if (row) botaoExcluir(f, 'conteudo_temas', row.id, 'Frente excluída (os conteúdos ficam sem frente)');
+}
+function modalFormato(row, grupo) {
+  const g = row ? row.grupo : grupo, fm = g === 'formato';
+  const f = abrirForm(row ? (fm ? 'Editar formato' : 'Editar quadro') : (fm ? 'Novo formato' : 'Novo quadro de autoridade'), 'conteudo_formatos', [{ k: 'nome', l: 'Nome', req: 1, full: 1 },
+    { k: 'funcao', l: fm ? 'Função' : 'Pergunta central', full: 1 }, ...(fm ? [{ k: 'execucao', l: 'Execução', t: 'textarea' }, { k: 'melhor_uso', l: 'Melhor uso', t: 'textarea' }, { k: 'tipo_midia', l: 'Tipo de mídia', t: 'select', opts: FORM_C }, { k: 'vezes_semana', l: 'Vezes por semana (frequência fixa)', t: 'number', step: '1', hint: 'Deixe vazio se não houver frequência fixa.' }] : [{ k: 'estrutura', l: 'Estrutura', t: 'textarea' }]),
+    { k: 'cor', l: 'Cor', t: 'color', def: '#521F32' }, { k: 'ordem', l: 'Ordem', t: 'number', def: 0 }, { k: 'ativo', l: 'Ativo', t: 'check', def: true }], row, { extra: { grupo: g }, antes: v => { v.ordem = v.ordem || 0; if (v.vezes_semana != null && (!Number.isInteger(v.vezes_semana) || v.vezes_semana < 0)) throw new Error('Vezes por semana é um número inteiro, zero ou maior.'); return v; }, ok: fm ? 'Formato salvo' : 'Quadro salvo' });
+  if (row) botaoExcluir(f, 'conteudo_formatos', row.id, (fm ? 'Formato' : 'Quadro') + ' excluído (os conteúdos ficam sem ele)');
+}
+function modalNucleo(D) {
+  const L = D.cfg.linha || {};
+  const cs = [['papel', 'Papel da marca'], ['tese', 'Tese central'], ['sintese', 'Síntese'], ['visao', 'Visão de longo prazo'], ['objetivo', 'Objetivo'], ['nicho', 'Nicho'], ['inimigo', 'Inimigo comum ou tensão central'], ['inimigo_descricao', 'Descrição do inimigo'], ['frase_guia', 'Frase-guia'], ['assinatura', 'Assinatura narrativa'], ['regra_destino', 'Regra de destino']];
+  modal('Núcleo da marca', `<div class="grid2">${cs.map(([k, l]) => `<label style="grid-column:1/-1">${l}<textarea name="${k}" rows="2">${esc(L[k] || '')}</textarea></label>`).join('')}
+    <label style="grid-column:1/-1">Estruturas narrativas (uma por linha)<textarea name="estruturas" rows="3">${esc((L.estruturas || []).join('\n'))}</textarea></label>
+    <label style="grid-column:1/-1">Lentes transversais (uma por linha)<textarea name="lentes" rows="3">${esc((L.lentes || []).join('\n'))}</textarea></label>
+    <label style="grid-column:1/-1">Banco de frases de posicionamento (uma por linha)<textarea name="frases" rows="8">${esc((L.frases || []).join('\n'))}</textarea></label></div>`, async d => {
+    const linha = { ...L }; cs.forEach(([k]) => { linha[k] = (d[k] || '').trim(); }); ['estruturas', 'lentes', 'frases'].forEach(k => { linha[k] = separa(d[k], /\n/); });
+    await q(sb.from('conteudo_config').upsert({ workspace_id: S.ws, linha }, { onConflict: 'workspace_id' })); toast('Núcleo da marca salvo');
+  }, 'Salvar', true);
+}
+function modalMetodo(D) {
+  const c = D.cfg;
+  modal('Método e configuração', `<div class="grid2">
+    <label style="grid-column:1/-1">Método de nota<select name="metodo"><option value="score6"${c.metodo === 'score6' ? ' selected' : ''}>Score V18: 6 critérios de 1 a 5, VALIDAR e destino</option><option value="notas5"${c.metodo !== 'score6' ? ' selected' : ''}>Antigo: 5 notas de 1 a 10 na ideia e na pauta</option></select><span style="font-weight:400">Trocar não apaga notas: as duas ficam guardadas em cada conteúdo.</span></label>
+    <label style="grid-column:1/-1">Destinos (marcas ou perfis que publicam, separados por vírgula)<input name="destinos" value="${esc(listaTxt(c.destinos))}" placeholder="Rebecka, Mathisa, Ambas"></label>
+    <label>Meta mínima por semana<input name="meta" type="number" min="0" step="1" value="${c.meta ?? ''}"></label>
+    <label>Dia do fechamento<select name="dia">${DIAS_C.map(([n, , l]) => `<option value="${n}"${c.diaFech === n ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+    <label style="grid-column:1/-1">Etiquetas sugeridas (separadas por vírgula)<input name="tags" value="${esc(listaTxt(c.tags))}"></label>
+    ${c.score.map((x, i) => `<label>Critério ${i + 1} do score<input name="s${i}" value="${esc(x)}" required></label>`).join('')}</div>`, async d => {
+    const meta = d.meta === '' ? null : Number(d.meta);
+    if (meta != null && (!Number.isInteger(meta) || meta < 0)) throw new Error('A meta é um número inteiro, zero ou maior.');
+    const criterios_score = c.score.map((_, i) => (d['s' + i] || '').trim()); if (criterios_score.some(x => !x)) throw new Error('Preencha os 6 critérios do score.');
+    await q(sb.from('conteudo_config').upsert({ workspace_id: S.ws, metodo: d.metodo, destinos: separa(d.destinos, /[,;]/), meta_semanal: meta, dia_fechamento: Number(d.dia), tags: separa(d.tags, /[,;]/), criterios_score }, { onConflict: 'workspace_id' }));
+    toast('Configuração salva');
+  }, 'Salvar', true);
+}
+function tabLinhas(el, D, C) {
+  const L = D.cfg.linha || {}, sc = ehScore(D);
+  const cnt = (t, st) => D.cont.filter(c => c.tema_id === t.id && (Array.isArray(st) ? st.includes(c.status) : c.status === st)).length;
+  const tabelaTemas = X => `<div class="tw"><table><thead><tr><th>Frente</th><th>Prioridade</th><th class="n">Ideias</th><th class="n">Pautas</th><th class="n">Em produção</th><th class="n">Publicados</th><th>Situação</th><th></th></tr></thead><tbody>${X.map(t => `<tr><td><span class="pill neutral" style="border-left:4px solid ${esc(t.cor)}">${esc(t.nome)}</span>${t.descricao ? `<br><small class="muted">${esc(t.descricao)}</small>` : ''}</td><td><span class="pill ${PRI_C[t.prioridade][0]}">${PRI_C[t.prioridade][1]}</span></td><td class="n">${cnt(t, 'ideia')}</td><td class="n">${cnt(t, 'pauta')}</td><td class="n">${cnt(t, ['producao', 'pronto', 'agendado'])}</td><td class="n">${cnt(t, 'publicado')}</td><td>${pillAtivo(t.ativo)}</td><td><button class="btn sm" data-tema="${t.id}">Editar</button></td></tr>`).join('') || '<tr><td colspan="8" class="empty">Nenhuma frente neste território.</td></tr>'}</tbody></table></div>`;
+  const transv = D.temas.filter(t => t.transversal), semLinha = D.temas.filter(t => !t.transversal && (!t.linha_id || !D.L[t.linha_id]));
+  const tabFmt = (X, g) => `<div class="tw"><table><thead><tr><th>${g === 'formato' ? 'Formato' : 'Quadro'}</th><th>${g === 'formato' ? 'Função' : 'Pergunta central'}</th>${g === 'formato' ? '<th>Mídia</th><th class="n">Por semana</th>' : '<th>Estrutura</th>'}<th class="n">Conteúdos</th><th>Situação</th><th></th></tr></thead><tbody>${X.map(f => `<tr><td>${pillFmt(f)}</td><td>${esc(f.funcao || '—')}</td>${g === 'formato' ? `<td>${esc(FORM_N[f.tipo_midia] || '—')}</td><td class="n">${f.vezes_semana ?? '—'}</td>` : `<td><small>${esc(f.estrutura || '—')}</small></td>`}<td class="n">${D.cont.filter(c => (g === 'formato' ? c.formato_id : c.quadro_id) === f.id).length}</td><td>${pillAtivo(f.ativo)}</td><td><button class="btn sm" data-fmt="${f.id}">Editar</button></td></tr>`).join('') || `<tr><td colspan="7" class="empty">Nenhum ${g === 'formato' ? 'formato' : 'quadro'} cadastrado.</td></tr>`}</tbody></table></div>`;
+  const nucleo = [['Papel', L.papel], ['Tese', L.tese], ['Síntese', L.sintese], ['Inimigo comum', L.inimigo ? L.inimigo + (L.inimigo_descricao ? ' — ' + L.inimigo_descricao : '') : ''], ['Frase-guia', L.frase_guia], ['Regra de destino', L.regra_destino], ['Assinatura', L.assinatura]].filter(x => x[1]);
+  el.innerHTML = `<div class="acts"><button class="btn pri" id="lNova">Novo território</button><button class="btn" id="lTema">Nova frente</button><button class="btn" id="lFmt">Novo formato</button><button class="btn" id="lQd">Novo quadro</button><button class="btn" id="lMet">Método e configuração</button><button class="btn" id="lV18">Instalar o modelo V18</button></div>
+  <div class="panel mq-nucleo"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center"><h2 style="margin:0">Núcleo da marca</h2><button class="btn sm" id="lNuc">Editar núcleo</button></div>
+    ${nucleo.length ? `<dl>${nucleo.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl>` : '<p class="muted">Ainda vazio. Ele vem da proposta aplicada (aba Persona) ou do modelo V18, e pode ser editado aqui.</p>'}
+    ${(L.estruturas || []).length ? `<p style="margin:8px 0 0"><b>Estruturas:</b> ${L.estruturas.map(esc).join(' · ')}</p>` : ''}${(L.lentes || []).length ? `<p style="margin:4px 0 0"><b>Lentes transversais:</b> ${L.lentes.map(esc).join(' · ')}</p>` : ''}
+    ${(L.frases || []).length ? `<details style="margin-top:8px"><summary><b>Banco de frases</b> (${L.frases.length})</summary><ul class="mq-frases">${L.frases.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>` : ''}</div>
+  <div class="panel mq-nucleo"><h2 style="margin:0">Método</h2><dl><dt>Nota</dt><dd>${sc ? `Score V18 — ${D.cfg.score.map(esc).join(' · ')} (1 a 5 cada, total 6 a 30). VALIDAR obrigatório para produzir.` : `5 notas de 1 a 10 — ${D.crit.map(esc).join(' · ')}.`}</dd><dt>Destinos</dt><dd>${D.cfg.destinos.length ? D.cfg.destinos.map(pillDest).join(' ') : '—'}</dd><dt>Meta</dt><dd>${D.cfg.meta ?? '—'} conteúdos por semana</dd><dt>Fechamento</dt><dd>${DIAS_C[D.cfg.diaFech - 1][2]}</dd></dl></div>
+  <h2 class="mq-h">Territórios e frentes</h2>
+  ${D.linhas.map(l => `<div class="panel mq-terrp" style="--c:${esc(corDe(l.cor, '#521F32'))}"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center"><div><h2 style="margin:0">${esc(l.nome)} ${l.ativo ? '' : '<span class="pill neutral">inativo</span>'}</h2>${l.pergunta_central ? `<span class="muted">${esc(l.pergunta_central)}</span>` : l.descricao ? `<span class="muted">${esc(l.descricao)}</span>` : ''}</div><div class="acts"><button class="btn sm" data-linha="${l.id}">Editar território</button><button class="btn sm" data-novotema="${l.id}">Nova frente neste território</button></div></div>
+    ${l.funcao || l.papel_funil || l.entra || l.nao_entra ? `<div class="mq-lim">${l.funcao ? `<div><b>Função</b><span>${esc(l.funcao)}</span></div>` : ''}${l.papel_funil ? `<div><b>Papel no funil</b><span>${esc(l.papel_funil)}</span></div>` : ''}${l.entra ? `<div><b>Entra</b><span>${esc(l.entra)}</span></div>` : ''}${l.nao_entra ? `<div><b>Não entra</b><span>${esc(l.nao_entra)}</span></div>` : ''}</div>` : ''}
+    ${tabelaTemas(D.temas.filter(t => t.linha_id === l.id && !t.transversal))}</div>`).join('') || `${mqComeco(D) || '<div class="panel">Nenhum território ainda.</div>'}`}
+  ${semLinha.length ? `<div class="panel"><h2>Frentes sem território</h2>${tabelaTemas(semLinha)}</div>` : ''}
+  <div class="panel"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center"><div><h2 style="margin:0">Camadas transversais</h2><span class="muted">Assuntos que atravessam territórios sem virar um território novo.</span></div><button class="btn sm" id="lTransv">Nova camada</button></div>${tabelaTemas(transv)}</div>
+  <div class="panel"><h2>Formatos</h2><span class="muted">Tema é sobre o que se fala; formato é a experiência repetível. Frequência fixa (ex.: série musical 1× por semana) aparece na Semana e no Fechamento.</span>${tabFmt(D.fmts, 'formato')}</div>
+  <div class="panel"><h2>Quadros de autoridade</h2>${tabFmt(D.quadros, 'quadro')}</div>
+  <div class="panel"><h2>Critérios do método antigo (5 notas)</h2><span class="muted">Usados quando o método é o de 5 notas de 1 a 10. A nota final é a média simples das 5. Mudar o nome não altera notas já dadas.</span>
+  <form id="crForm" style="display:flex;flex-direction:column;gap:8px;margin-top:10px;max-width:520px">${D.crit.map((c, i) => `<label>Critério ${i + 1}<input name="c${i}" value="${esc(c)}" required></label>`).join('')}<div class="acts"><button class="btn pri" type="submit">Salvar critérios</button></div></form></div>
+  <div class="panel"><h2>Radar diário por IA</h2><span class="muted"><b>Ainda não conectado.</b> Para rodar sozinho todo dia, o radar precisa de uma chave de API de um provedor de IA e de uma rotina agendada no servidor. Enquanto isso, faça a pesquisa onde preferir e use <b>Colar ideias</b> no Kanban: as ideias entram na coluna Ideias, prontas para receber score e validação.</span></div>`;
+  $('#lNova').onclick = () => modalLinha(null); $('#lTema').onclick = () => modalTema(null, D); $('#lTransv').onclick = () => modalTema(null, D, { transversal: true });
+  $('#lFmt').onclick = () => modalFormato(null, 'formato'); $('#lQd').onclick = () => modalFormato(null, 'quadro'); $('#lMet').onclick = () => modalMetodo(D); $('#lNuc').onclick = () => modalNucleo(D); $('#lV18').onclick = () => mqInstalarV18();
+  mqLigaComeco(el, C);
+  el.querySelectorAll('[data-linha]').forEach(b => b.onclick = () => modalLinha(D.linhas.find(x => x.id === b.dataset.linha)));
+  el.querySelectorAll('[data-novotema]').forEach(b => b.onclick = () => modalTema(null, D, { linha_id: b.dataset.novotema }));
+  el.querySelectorAll('[data-tema]').forEach(b => b.onclick = () => modalTema(D.temas.find(x => x.id === b.dataset.tema), D));
+  el.querySelectorAll('[data-fmt]').forEach(b => b.onclick = () => modalFormato(D.formatos.find(x => x.id === b.dataset.fmt)));
+  $('#crForm').onsubmit = e => { e.preventDefault(); act(async () => {
+    const criterios = D.crit.map((_, i) => $('#crForm').elements['c' + i].value.trim());
+    if (criterios.some(x => !x)) throw new Error('Preencha os 5 critérios.');
+    await q(sb.from('conteudo_config').upsert({ workspace_id: S.ws, criterios }, { onConflict: 'workspace_id' })); toast('Critérios salvos'); render();
+  }); };
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

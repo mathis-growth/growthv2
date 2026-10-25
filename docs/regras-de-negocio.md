@@ -1,5 +1,13 @@
 
 
+## v0.133 — Máquina de Conteúdo
+- Território = linha editorial; frente = tema dentro do território; camada transversal = frente marcada como transversal. Formato = como é feito; quadro = formato de autoridade (opcional); tipo de mídia = reels, carrossel etc.
+- Score V18: 6 critérios de 1 a 5; total = soma (6 a 30), só quando as 6 notas existem. Ordem: VALIDAR primeiro (no Kanban), depois score, potencial de impacto, robustez da evidência e data de criação.
+- Regras do Kanban no score V18: para virar pauta, 6 notas + frente + destino (se houver destinos cadastrados) + formato (se houver formatos); para produzir, VALIDAR + canal; pronto pede copy e mídia; agendar pede data. Quem não usa o score segue as regras antigas.
+- Destino só aceita os destinos cadastrados (grafia ajustada sozinha: "mathisa" vira "Mathisa"). Dia da semana vem da data de publicação quando não foi escolhido.
+- Semana = segunda a domingo. Planejados = com data de publicação na semana (fora arquivados); publicados = desses, os publicados; banco forte = validadas ainda não publicadas (ideia a pronto); validadas na semana = VALIDAR marcado na semana; lacunas = território ou formato sem nada na semana e formato com frequência fixa abaixo do combinado.
+- Desempenho do fechamento = publicações com métricas registradas na semana; engajamento = (curtidas + comentários + compartilhamentos + salvamentos) ÷ alcance, só onde há alcance.
+
 ## v0.132 — Resumo do dia e alertas
 - Dia = fuso de São Paulo. Leads = pessoas criadas no dia; vendas/receita = vendas aprovadas pela data da venda; reembolsos pela data do reembolso; mídia = `v_trafego_anuncio_dia`; comparação = média dos 7 dias anteriores e o mesmo dia da semana passada.
 - Brusco (ontem × 14 dias anteriores): alerta se |ontem − média| ≥ maior entre (desvios × desvio padrão) e (média × variação %). Só com 7+ dias com dado e movimento mínimo (3 leads, 1 venda, R$ 100 de receita ou R$ 50 de mídia por dia; CPL com 3+ leads de anúncio; CTR com 500+ impressões). Mídia zerada no dia não gera alerta de mídia. A mesma métrica para o mesmo lado em 3 dias não repete.

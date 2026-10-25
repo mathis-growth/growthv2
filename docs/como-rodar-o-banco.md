@@ -1,5 +1,10 @@
 
 
+## v0.133 — Máquina de Conteúdo
+1. `supabase/RODAR_v0.133_maquina_conteudo.sql` (só acrescenta colunas, tabelas e funções; pode ser rodado de novo sem erro). Não depende da v0.132.
+2. Publicar a edge function `linha-editorial` (com verificação de JWT, padrão): `supabase functions deploy linha-editorial`. Usa os mesmos segredos de IA do "Pergunte ao Growths" (`ANTHROPIC_API_KEY` e/ou `OPENAI_API_KEY`). Sem chave, a tela usa "Copiar pedido" e "Colar resposta da IA".
+3. No Growths, Marketing → Máquina de Conteúdo → "Instalar o modelo V18" no cliente da Rebecka (ou pelo SQL: `select conteudo_instalar_v18('<workspace>')`).
+
 ## v0.132 — Alertas e resumo do dia
 Na ordem:
 1. `supabase/RODAR_v0.132_alertas.sql` (tabelas e funções). Pode ser rodado de novo sem erro.

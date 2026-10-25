@@ -1,5 +1,8 @@
 
 
+## v0.133
+**Máquina de Conteúdo.** O antigo Planejamento de conteúdo virou a Máquina de Conteúdo, com a metodologia da Rebecka dentro do Growths: territórios e frentes, formatos e quadros, destino (Rebecka, Mathisa ou Ambas), palavra-chave e perguntas de busca, score de 6 critérios e VALIDAR, matriz território × formato, semana por dia (com a série musical 1× por semana), fechamento de sábado com retrospectiva e pré-pauta, e um questionário de persona para a IA propor a linha editorial de qualquer cliente. O modelo V18 é instalado por botão.
+
 ## v0.132
 **Pergunte ao Growths e alertas.** "Como foi meu dia ontem?" responde na hora com os números exatos e a comparação com a semana. O Growths confere os números de hora em hora e avisa no sino, por e-mail e por WhatsApp quando algo muda de forma brusca, se repete ou pede ação, e manda o resumo de ontem toda manhã.
 

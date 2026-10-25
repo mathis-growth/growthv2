@@ -1,5 +1,9 @@
 
 
+## v0.133
+- index.html: 0.132 → 0.133 (`integra133.py`, que roda o `integra132.py` e reescreve as telas do módulo de conteúdo).
+- Novo: `20261029100000_maquina_conteudo.sql`, `RODAR_v0.133_maquina_conteudo.sql`, edge function `linha-editorial` (com `logica_test.ts`); teste `t133_maquina_conteudo.py`. Pendente em produção.
+
 ## v0.132
 - index.html: 0.131 → 0.132.
 - Novo: `20261028100000_assistente_alertas.sql`, `RODAR_v0.132_alertas.sql`, `RODAR_v0.132_agendador.sql`, edge function `avisos` (com `logica_test.ts`), `perguntar` alterada; teste `t132_assistente_alertas.py`. Pendente em produção.

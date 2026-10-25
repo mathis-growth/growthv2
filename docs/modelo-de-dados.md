@@ -1,5 +1,14 @@
 
 
+## v0.133
+- `conteudo_config` +: `metodo` ('notas5' | 'score6'), `criterios_score text[6]`, `destinos text[]`, `meta_semanal`, `dia_fechamento` (1 = segunda … 7 = domingo; padrão 6, sábado), `tags text[]` (sugestões), `linha jsonb` (núcleo da marca: papel, tese, síntese, visão, inimigo, frase-guia, estruturas, lentes, frases), `modelo`.
+- `conteudo_linhas` (= territórios) +: `pergunta_central`, `funcao`, `papel_funil`, `entra`, `nao_entra`, `cor`. `conteudo_temas` (= frentes) +: `descricao`, `transversal` (camada transversal).
+- `conteudo_formatos` (nova): `grupo` ('formato' | 'quadro'), `nome`, `funcao`, `execucao`, `melhor_uso`, `estrutura`, `tipo_midia`, `vezes_semana`, `dias_semana`, `cor`, `ordem`, `ativo`. Único por cliente, grupo e nome.
+- `conteudos` +: `formato_id`, `quadro_id`, `destino`, `palavra_chave`, `palavras_relacionadas[]`, `perguntas_busca[]`, `intencao`, `entidade`, `problema`, `achado`, `classificacao` (evidência/tendência/discussão/hype), `fundamento`, `evidencia`, `s1`…`s6` (1 a 5), `score_total` (gerada, 6 a 30), `score_notas`, `tags[]`, `dia_semana`, `validado`, `validado_em`, `hook`, `tese`, `cta`, `objetivo`, `estrutura`, `estrutura_notas jsonb`, `obs_producao`, `decisao` (manter/aprofundar/testar/descartar), `aprendizado`.
+- `conteudo_fechamentos` (nova, 1 por cliente e semana): `semana_ini` (segunda), `resumo jsonb` (foto de `conteudo_semana`), `retro jsonb`, `objetivo_proxima`, `pre_pauta`, `fechado_por`.
+- `conteudo_personas` (nova): `respostas jsonb` do questionário. `conteudo_linha_propostas` (nova): `origem` (ia/colada/modelo), `modelo_ia`, `proposta jsonb` (mesmo formato do modelo V18), `status` (proposta/aplicada/descartada).
+- Funções: `conteudo_valida` (gatilho, agora por método), `conteudo_modelo_v18()`, `conteudo_aplicar_linha(ws, jsonb, modelo)`, `conteudo_instalar_v18(ws)`, `conteudo_aplicar_proposta(id)`, `conteudo_semana(ws, segunda)`, `conteudo_fechar_semana(ws, segunda, retro, objetivo, pre_pauta)`. Tabelas novas com RLS do cliente + regra de módulo (Marketing edita; Marketing e Administrativo leem).
+
 ## v0.132
 - `alertas_config` (1 por cliente): `ligado`, `resumo_diario`, `resumo_hora`, `regras jsonb` (`variacao_pct`, `desvios`, `dias_seguidos`, `gasto_sem_lead`, `desligadas[]`), `destinatarios uuid[]` (vazio = equipe com acesso).
 - `alertas`: `chave` única por cliente (não repete), `tipo` (brusco/repetido/operacional), `regra`, `severidade` (alta/media/info), `titulo`, `mensagem`, `dados`, `dia`, `visto_em`, `resolvido_em`.
