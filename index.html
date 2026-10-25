@@ -387,7 +387,39 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.145 canais e materiais do cliente */
+<style id="v122">/* v0.146 estruturas e custos */
+.es-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.es-card{display:flex;flex-direction:column;gap:8px}
+.es-card.off{opacity:.6}
+.es-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.es-top h3{margin:0}
+.es-pq{margin:0;font-size:14px;line-height:1.45}
+.es-fmts{display:flex;flex-wrap:wrap;gap:6px}
+.es-et{margin:0;font-size:12.5px;line-height:1.45}
+.es-sec{display:flex;flex-direction:column;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
+.es-sec:first-child{border-top:0;padding-top:0}
+.es-sec > b{font-size:12.5px;color:var(--muted)}
+.es-fs,.es-fsf{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0}
+.es-fs{display:flex;flex-wrap:wrap;gap:6px 16px}
+body #modalRoot .es-fs label{display:inline-flex;flex-direction:row;align-items:center;gap:6px;font-weight:500;white-space:nowrap}
+body #modalRoot .es-fs label input{width:auto;margin:0}
+body #modalRoot #esEtAdd{width:auto;align-self:flex-start}
+.es-etl{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;margin:0 0 10px}
+.es-etl > div{display:flex;flex-direction:column;gap:6px}
+.es-etb{display:flex;flex-direction:column;gap:6px}
+.es-esc{display:flex;flex-direction:column;gap:12px}
+.es-fsf legend{font-weight:700;padding:0 6px}
+.es-ops{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+body #main label.es-op{display:grid;grid-template-columns:18px 1fr;align-items:start;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;cursor:pointer;font-weight:400;text-align:left}
+body #main label.es-op input{width:18px;height:18px;margin:2px 0 0}
+body #main label.es-op:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.es-op span{display:flex;flex-direction:column;gap:2px}
+.es-op small{color:var(--muted);font-size:12.5px;line-height:1.4}
+body #main form.cu-filtro{display:flex;flex-direction:row;flex-wrap:wrap;gap:12px;align-items:flex-end}
+body #main form.cu-filtro label{flex:0 1 180px;max-width:180px}
+body #main form.cu-filtro label.cu-cb{flex-basis:220px;max-width:240px;margin-left:auto}
+body #main form.cu-filtro .btn{width:auto}
+/* v0.145 canais e materiais do cliente */
 body #main ol.cs-passos{grid-template-columns:repeat(5,1fr)}
 .cs-cliente{border-left:3px solid var(--accent);font-size:13.5px;line-height:1.5}
 .cs-canais{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
@@ -931,7 +963,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.145 · 25/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.146 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -965,6 +997,7 @@ const NAV = [
   { g: 'Configurações', adm: true, items: [], subs: [
     { g: 'Dados e integrações', mod: 'cfg', items: [['cfg-importar', 'Importar e validar dados'], ['cfg-integracoes', 'Integrações'], ['cfg-uso', 'Uso da plataforma'], ['cfg-qualidade', 'Qualidade dos dados'], ['cfg-metricas', 'Dicionário de métricas']] },
     { g: 'Pessoas e acessos', mod: 'cad', items: [['cad-equipe', 'Equipe e acessos'], ['cad-funcoes', 'Funções e permissões'], ['cad-auditoria', 'Auditoria'], ['cfg-pacotes', 'Pacotes de acesso dos clientes']] },
+    { g: 'Growth\'s Content (interno)', mod: 'cfg', items: [['cfg-estruturas', 'Estruturas de roteiro e copy'], ['cfg-custos', 'Custos de IA']] },
     { g: 'Comercial e produtos', mod: 'cad', items: [['cad-clientes', 'Clientes'], ['cad-duplicados', 'Cadastros repetidos'], ['cad-produtos', 'Produtos'], ['cad-comissoes', 'Comissões'], ['cad-plataformas', 'Plataformas'], ['cad-canais', 'Canais'], ['cad-funis', 'Estratégias e funis'], ['cad-motivos', 'Motivos de ganho e perda']] },
     { g: 'Financeiro e contabilidade', mod: 'cad', items: [['cad-planocontas', 'Plano de contas'], ['cad-regras', 'Regras contábeis'], ['cad-impostos', 'Impostos'], ['cad-bancos', 'Contas bancárias'], ['cad-formaspag', 'Formas de pagamento'], ['cad-fornecedores', 'Fornecedores'], ['cad-centros', 'Centros de custo'], ['cad-rateio', 'Rateio de custos']] }] }
 ];
@@ -1292,6 +1325,7 @@ const MODULOS = [['adm', 'Administrativo', 'Painel gerencial, planejamento e cad
 const NIVEIS = [['nenhum', 'Sem acesso'], ['ler', 'Só consultar'], ['editar', 'Consultar e editar']];
 const MOD_GRUPO = { 'Growth Starter': 'adm', Administrativo: 'adm', Marketing: 'mkt', Vendas: 'vendas', RevOps: 'revops', Financeiro: 'fin', Projetos: 'prj', Growth: 'gro', 'Configurações': 'cfg', Cadastros: 'cad' };
 const SO_ADMIN = ['cad-funcoes', 'cfg-uso', 'cad-auditoria'];
+const TELAS_INT = ['cfg-pacotes', 'cfg-estruturas', 'cfg-custos'];
 const nivelMod = k => S.perm && S.perm.modulos ? (S.perm.modulos[k] || 'nenhum') : 'editar';
 const souAdmin = () => !S.perm || S.perm.admin !== false;
 const subsDe = g => g.subs || [];
@@ -1299,7 +1333,7 @@ const itensDe = g => g.items.concat(subsDe(g).flatMap(x => x.items));
 const modSub = x => x.mod || MOD_GRUPO[x.g];
 function moduloDaView(v) { if (v === 'gro-lucro' || v === 'gro-cenarios' || v === 'gro-analise') return 'gro'; /* v0.80: procura primeiro nos grupos de verdade; o Growth Starter repete telas de outros módulos e só vale para as telas exclusivas dele */ for (const g of [...NAV.filter(x => !x.starter), ...NAV.filter(x => x.starter)]) { if (g.items.some(i => i[0] === v)) return MOD_GRUPO[g.g]; const sb_ = subsDe(g).find(x => x.items.some(i => i[0] === v)); if (sb_) return modSub(sb_); } return null; }
 function abreMenu(v) { for (const g of NAV) { if (g.starter) continue; if (itensDe(g).some(i => i[0] === v)) { S.abertos[g.g] = true; subsDe(g).forEach(x => { if (x.items.some(i => i[0] === v)) S.abertos[x.g] = true; }); } } }
-function primeiraTela() { for (const g of NAV) for (const [k] of itensDe(g)) { const mo = moduloDaView(k); if (mo && nivelMod(mo) !== 'nenhum' && !SO_ADMIN.includes(k) && telaLiberada(k) && k !== 'cfg-pacotes') return k; } return null; }
+function primeiraTela() { for (const g of NAV) for (const [k] of itensDe(g)) { const mo = moduloDaView(k); if (mo && nivelMod(mo) !== 'nenhum' && !SO_ADMIN.includes(k) && telaLiberada(k) && !TELAS_INT.includes(k)) return k; } return null; }
 async function carregaPerm() { S.permWs = S.ws; try { S.perm = await q(sb.rpc('minhas_permissoes', { p_ws: S.ws })); if (!S.perm || !S.perm.modulos) S.perm = null; } catch (e) { S.perm = null; } await carregaAcesso(); }
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
 function desenhaNav() {
@@ -1309,7 +1343,7 @@ function desenhaNav() {
     if (!!g.starter !== ehStarter() && !(ehStarter() && g.g === 'Configurações')) return '';
     if (g.casa) return casaDe(S.wsBase) ? `<div class="grp">${gh(g.g)}${isOpen(g.g) ? `<div class="lv2">${btns(g.items)}</div>` : ''}</div>` : '';
     if (g.flat) return nivelMod(MOD_GRUPO[g.g]) === 'nenhum' ? '' : `<div class="grp">${btns(g.items.filter(i => telaLiberada(i[0])))}</div>`;
-    const vis = items => items.filter(i => (!SO_ADMIN.includes(i[0]) || souAdmin()) && telaLiberada(i[0]) && (i[0] !== 'cfg-pacotes' || S.interno));
+    const vis = items => items.filter(i => (!SO_ADMIN.includes(i[0]) || souAdmin()) && telaLiberada(i[0]) && (!TELAS_INT.includes(i[0]) || S.interno) && (i[0] !== 'cfg-custos' || S.verCustos));
     const okG = g.items.length ? nivelMod(MOD_GRUPO[g.g]) !== 'nenhum' && vis(g.items).length > 0 : false, subs = subsDe(g).filter(x => nivelMod(modSub(x)) !== 'nenhum' && vis(x.items).length);
     if (!okG && !subs.length) return '';
     return `<div class="grp${g.adm ? ' adm' : ''}">${gh(g.g)}${isOpen(g.g) ? `<div class="lv2">${(okG ? btns(vis(g.items)) : '') + subs.map(x => gh(x.g, 'sub') + (isOpen(x.g) ? `<div class="sublist">${btns(vis(x.items))}</div>` : '')).join('')}</div>` : ''}</div>`;
@@ -1343,6 +1377,7 @@ async function boot() {
     S.wsBase = S.ws;
     $('#wsSel').innerHTML = opts(S.workspaces, 'id', 'nome', S.ws);
     try { S.interno = (await sb.rpc('sou_equipe_interna')).data === true; } catch (e) { S.interno = false; }
+    try { S.verCustos = S.interno && (await sb.rpc('posso_ver_custos')).data === true; } catch (e) { S.verCustos = false; }
     const wb = document.querySelector('.wsbox'); if (wb) wb.style.display = S.interno ? '' : 'none';
     $('#novoCli').style.display = S.interno ? '' : 'none';
     await render();
@@ -1357,7 +1392,7 @@ const ncModalV140 = () => { modal('Novo cliente', `<label>Nome do cliente<input 
 $('#wsSel').onchange = e => { S.ws = S.wsBase = e.target.value; if (ehCasaV(S.view)) S.view = 'fin-dash'; S.perm = null; S.permWs = null; render(); };
 
 const VIEWS = {
-  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': vConteudo, 'crm-dms': vDMsCrm,
+  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': vConteudo, 'cfg-estruturas': vEstruturas, 'cfg-custos': vCustos, 'crm-dms': vDMsCrm,
   'crm-leads': vCrmLeads, 'crm-oport': vCrmOport, 'crm-vendas': vVendas, 'crm-contratos': vContratos, 'crm-comissoes': vComissoes, 'cad-comissoes': vComissoes, 'crm-alunos': vCrmAlunos,
   'fin-receber': vReceber,  'cfg-uso': vUso, 'fin-pagar': vPagar, 'fin-custo': vCustoOp, 'fin-lanc': vLanc, 'adm-painel': vPainel, 'adm-plano': vPlano,
   'cad-clientes': vClientes, 'cad-plataformas': vPlataformas, 'cad-funis': vFunis, 'cad-regras': vRegras,
@@ -1410,7 +1445,7 @@ async function render() {
   { const stv = ehStarter(), liberadas = new Set(NAV.filter(g => g.starter || g.g === 'Configurações').flatMap(g => itensDe(g).map(i => i[0])));
     if (stv && !liberadas.has(S.view)) S.view = 'st-dash'; else if (!stv && /^st-/.test(S.view)) S.view = 'adm-painel'; }
   if (!casaV && S.permWs !== S.ws) { await carregaPerm(); desenhaNav(); }
-  const modV = moduloDaView(S.view), bloq = (modV && nivelMod(modV) === 'nenhum') || (SO_ADMIN.includes(S.view) && !souAdmin()) || !telaLiberada(S.view) || (S.view === 'cfg-pacotes' && !S.interno);
+  const modV = moduloDaView(S.view), bloq = (modV && nivelMod(modV) === 'nenhum') || (SO_ADMIN.includes(S.view) && !souAdmin()) || !telaLiberada(S.view) || (TELAS_INT.includes(S.view) && !S.interno) || (S.view === 'cfg-custos' && !S.verCustos);
   if (bloq) {
     const prim = primeiraTela();
     if (prim && prim !== S.view) { S.view = prim; return render(); }
@@ -9769,7 +9804,7 @@ const PAC_SEMPRE = ['cad-equipe', 'cad-funcoes'];
 /* v0.108: telas que saíram do menu (aposentadas ou que viraram aba de outra) */
 const TELAS_FORA_DO_MENU = ['gro-lucro', 'gro-analise', 'gro-cenarios', 'ho-cohort', 'ho-ascensao'];
 const PAC_SEM_BANCO = '<div class="panel" style="border-left:4px solid var(--warn)"><b>Os pacotes de acesso ainda não estão no banco.</b> <span class="muted">Execute supabase/migrations/20261010230000_pacotes_acesso.sql no SQL Editor do Supabase (depois da migração de segurança) e recarregue.</span></div>';
-const telaLiberada = k => ehCasaV(k) || !S.acesso || S.acesso.has(k) || (k === 'ho-retencao' && (S.acesso.has('ho-cohort') || S.acesso.has('ho-ascensao'))) || (k === 'gro-cenarios' && S.acesso.has('gro-modelo')) || PAC_SEMPRE.includes(k) || k === 'cfg-pacotes';
+const telaLiberada = k => ehCasaV(k) || !S.acesso || S.acesso.has(k) || (k === 'ho-retencao' && (S.acesso.has('ho-cohort') || S.acesso.has('ho-ascensao'))) || (k === 'gro-cenarios' && S.acesso.has('gro-modelo')) || PAC_SEMPRE.includes(k) || TELAS_INT.includes(k);
 async function carregaAcesso() {
   S.acesso = null; S.acessoInfo = null;
   try { const a = await q(sb.rpc('acesso_workspace', { p_ws: S.ws })); S.acessoInfo = a || null; S.acesso = a && Array.isArray(a.telas) ? new Set(a.telas) : null; }
@@ -15316,7 +15351,7 @@ async function vDMsCrm(m) {
    Estratégia: Dashboard dos canais (eficiência e melhores posts de cada canal), ideias, priorização, máquina, semana,
    fechamento, persona, linha editorial e canais. Instagram: Dashboard (conta + posts), Ideias do Instagram e DMs.
    Nada de importar à mão: os números vêm da conexão do Instagram. */
-const MQ_EST = [['dash', 'Dashboard'], ['kanban', 'Ideias e pautas'], ['prior', 'Priorização'], ['maquina', 'Máquina'], ['plano', 'Semana'], ['fech', 'Fechamento'], ['persona', 'Persona'], ['linhas', 'Linha editorial'], ['canais', 'Canais']];
+const MQ_EST = [['dash', 'Dashboard'], ['kanban', 'Ideias e pautas'], ['prior', 'Priorização'], ['maquina', 'Máquina'], ['plano', 'Semana'], ['fech', 'Fechamento'], ['persona', 'Persona'], ['linhas', 'Linha editorial'], ['estruturas', 'Estruturas'], ['canais', 'Canais']];
 const MQ_CANAL = { instagram: [['insta', 'Dashboard'], ['ideias', 'Ideias do Instagram'], ['dms', 'DMs']] };
 const MQ_VIEW_CANAL = { 'mkt-insta': 'instagram' };
 const MQ_CANAL_VIEW = { instagram: 'mkt-insta' };
@@ -15333,7 +15368,7 @@ async function vConteudoAbas(m) {
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { if (canal) C.tabCanal[canal] = b.dataset.t; else C.tab = b.dataset.t; render(); });
   if (!canal) cdPillModulo(m);
   const el = $('#ctTab');
-  if (!canal) return ({ dash: tabDashCanais, kanban: tabKanban, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, persona: tabPersona, linhas: tabLinhas, canais: tabCanais }[tabK] || tabDashCanais)(el, D, C);
+  if (!canal) return ({ dash: tabDashCanais, kanban: tabKanban, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, persona: tabPersona, linhas: tabLinhas, estruturas: tabEstruturas, canais: tabCanais }[tabK] || tabDashCanais)(el, D, C);
   if (tabK === 'insta') return tabInsta(el, D, C);
   if (tabK === 'dms') return tabDMs(el, D, C);
   const K = C.porCanal = C.porCanal || {}; const CK = K[canal] = K[canal] || { tema: '', formato: '', arq: false, terr: '', fmt: '', dest: '', tag: '' };
@@ -15882,7 +15917,7 @@ async function csWizard(m, D, E) {
   else if (P.k === 'fontes') csFontes(box, D, E);
   else if (P.k === 'materiais') csMateriais2(box, D, E);
   else if (P.k === 'tese' || P.k === 'dossie') csEmBreve(box, P);
-  else if (P.k === 'linha') { csLinhaIA(box, D); const sub = document.createElement('div'); sub.style.cssText = 'display:flex;flex-direction:column;gap:16px'; box.appendChild(sub); tabLinhas(sub, D, C); }
+  else if (P.k === 'linha') { csLinhaIA(box, D); const sub = document.createElement('div'); sub.style.cssText = 'display:flex;flex-direction:column;gap:16px'; box.appendChild(sub); tabLinhas(sub, D, C); tabEstruturas(box); }
   else if (P.k === 'canais') { tabCanais(box, D, C); igConexao().then(CX => { if (box.isConnected) box.insertAdjacentHTML('afterbegin', `<div class="panel ig-fonte"><b>Instagram</b><br>${igFonteHtml(CX, {})}</div>`); }).catch(() => null); }
   else if (P.k === 'rotina') csRotina(box, D);
   box.querySelectorAll('[data-mq-ir]').forEach(b => b.onclick = () => { if (CS_IR[b.dataset.mqIr]) vai(CS_IR[b.dataset.mqIr]); });
@@ -16128,6 +16163,100 @@ function csMateriais2(box, D, E) {
     box.querySelector('#csLkSalva').onclick = () => act(async () => { await grava(lista()); toast('Links salvos'); render(); });
     box.querySelectorAll('[data-lkx]').forEach(b => b.onclick = () => act(async () => { const ls = (f.links || []).filter((_, i) => i !== Number(b.dataset.lkx)); await grava(ls); render(); }));
   }
+}
+
+/* ===================== v0.146 — Estruturas de roteiro e copy (biblioteca interna + escolha do cliente) e custos de IA ===================== */
+const EST_FMT = [['reels', 'Reels'], ['carrossel', 'Carrossel'], ['post', 'Post'], ['stories', 'Stories'], ['video', 'Vídeo longo'], ['email', 'E-mail']];
+const EST_FMT_N = Object.fromEntries(EST_FMT);
+
+/* ----- Configurações → Growth's Content (interno) → Estruturas de roteiro e copy ----- */
+async function vEstruturas(m) {
+  const L = await q(sb.from('content_estruturas').select('*').order('ordem').order('nome'));
+  m.innerHTML = `<div class="head"><div><h1>Estruturas de roteiro e copy</h1><span class="muted">Biblioteca interna da Mathisa. O cliente vê só o <b>nome</b> e o <b>para que serve</b> e escolhe quais usar em cada formato. As etapas e as instruções ficam só com a equipe e guiam a IA.</span></div>
+      <button class="btn pri" id="esNova">Nova estrutura</button></div>
+    <div class="es-lista">${L.length ? L.map(e => `<article class="panel es-card${e.ativo ? '' : ' off'}">
+        <div class="es-top"><h3>${esc(e.nome)}</h3>${e.ativo ? '' : '<span class="pill neutral">Desativada</span>'}</div>
+        <p class="es-pq">${esc(e.para_que || 'Sem descrição para o cliente')}</p>
+        <div class="es-fmts">${(e.formatos || []).map(f => `<span class="pill">${esc(EST_FMT_N[f] || f)}</span>`).join('')}</div>
+        <p class="muted es-et">${(e.etapas || []).length} etapa(s): ${(e.etapas || []).map(x => esc(x.nome)).join(' › ')}</p>
+        <div class="acts" style="justify-content:flex-start"><button class="btn sm" data-ese="${e.id}">Editar</button><button class="btn sm" data-esa="${e.id}">${e.ativo ? 'Desativar' : 'Ativar'}</button></div>
+      </article>`).join('') : '<div class="panel">Nenhuma estrutura ainda. Crie a primeira.</div>'}</div>`;
+  $('#esNova').onclick = () => esModal(null);
+  m.querySelectorAll('[data-ese]').forEach(b => b.onclick = () => esModal(L.find(x => x.id === b.dataset.ese)));
+  m.querySelectorAll('[data-esa]').forEach(b => b.onclick = () => act(async () => { const e = L.find(x => x.id === b.dataset.esa); await q(sb.from('content_estruturas').update({ ativo: !e.ativo, atualizado_em: new Date().toISOString() }).eq('id', e.id)); toast(e.ativo ? 'Estrutura desativada' : 'Estrutura ativada'); render(); }));
+}
+function esModal(e) {
+  const et = (e && e.etapas && e.etapas.length) ? e.etapas : [{ nome: '', instrucao: '' }];
+  const linhaEt = (x, i) => `<div class="es-etl" data-eti="${i}"><span class="cc-n">${i + 1}</span><div><input data-etn placeholder="Nome da etapa (ex.: Gancho)" value="${esc(x.nome || '')}"><textarea data-eti2 rows="2" placeholder="O que a IA deve fazer nesta etapa">${esc(x.instrucao || '')}</textarea></div>
+      <div class="es-etb"><button type="button" class="btn sm" data-etc aria-label="Subir a etapa">↑</button><button type="button" class="btn sm" data-etx aria-label="Tirar a etapa">Tirar</button></div></div>`;
+  const form = modal(e ? 'Editar estrutura' : 'Nova estrutura', `
+    <div class="es-sec"><b>O cliente vê</b>
+      <label>Nome<input name="nome" required maxlength="80" value="${esc(e ? e.nome : '')}"></label>
+      <label>Para que serve (uma frase)<input name="para_que" required maxlength="200" value="${esc(e ? e.para_que : '')}"></label>
+      <fieldset class="es-fs"><legend>Formatos em que pode ser usada</legend>${EST_FMT.map(([k, n]) => `<label><input type="checkbox" name="f_${k}"${e && (e.formatos || []).includes(k) ? ' checked' : ''}> ${n}</label>`).join('')}</fieldset></div>
+    <div class="es-sec"><b>Só a equipe vê</b>
+      <div id="esEt">${et.map(linhaEt).join('')}</div><button type="button" class="btn sm" id="esEtAdd">Adicionar etapa</button>
+      <label>Instruções gerais para a IA<textarea name="instrucoes" rows="3">${esc(e ? e.instrucoes : '')}</textarea></label>
+      <label>Ordem na lista<input type="number" name="ordem" step="1" value="${e ? e.ordem : 100}"></label></div>`,
+  async (d, f) => {
+    const formatos = EST_FMT.map(([k]) => k).filter(k => f.elements['f_' + k].checked);
+    if (!formatos.length) throw new Error('Marque pelo menos um formato.');
+    const etapas = [...f.querySelectorAll('.es-etl')].map(x => ({ nome: x.querySelector('[data-etn]').value.trim(), instrucao: x.querySelector('[data-eti2]').value.trim() })).filter(x => x.nome || x.instrucao);
+    if (!etapas.length || etapas.some(x => !x.nome)) throw new Error('Dê um nome a cada etapa (e tenha pelo menos uma).');
+    const row = { nome: d.nome.trim(), para_que: d.para_que.trim(), formatos, etapas, instrucoes: (d.instrucoes || '').trim(), ordem: Number(d.ordem) || 0, atualizado_em: new Date().toISOString() };
+    if (e) await q(sb.from('content_estruturas').update(row).eq('id', e.id)); else await q(sb.from('content_estruturas').insert(row));
+    toast('Estrutura salva');
+  }, 'Salvar', true);
+  const box = form.querySelector('#esEt');
+  const renum = () => box.querySelectorAll('.es-etl').forEach((x, i) => { x.querySelector('.cc-n').textContent = i + 1; });
+  const liga = () => {
+    box.querySelectorAll('[data-etx]').forEach(b => b.onclick = () => { if (box.querySelectorAll('.es-etl').length > 1) { b.closest('.es-etl').remove(); renum(); } });
+    box.querySelectorAll('[data-etc]').forEach(b => b.onclick = () => { const l = b.closest('.es-etl'); if (l.previousElementSibling) { l.parentNode.insertBefore(l, l.previousElementSibling); renum(); } });
+  };
+  liga();
+  form.querySelector('#esEtAdd').onclick = () => { box.insertAdjacentHTML('beforeend', linhaEt({}, box.querySelectorAll('.es-etl').length)); liga(); box.lastElementChild.querySelector('[data-etn]').focus(); };
+}
+
+/* ----- escolha do cliente (aba Estruturas e passo 7 da configuração) ----- */
+async function tabEstruturas(el) {
+  let O, pode;
+  try { [O, pode] = await Promise.all([q(sb.rpc('content_estruturas_opcoes', { p_ws: S.ws })), q(sb.rpc('content_pode_configurar', { p_ws: S.ws }))]); }
+  catch (e) { el.insertAdjacentHTML('beforeend', `<div class="panel">Não deu para carregar as estruturas: ${esc(e.message || e)}</div>`); return; }
+  const fmts = EST_FMT.filter(([k]) => O.some(o => o.formatos.includes(k)));
+  const sec = document.createElement('form'); sec.className = 'panel es-esc';
+  sec.innerHTML = `<h2 style="margin:0 0 4px">Estruturas de roteiro e copy</h2>
+    <p class="muted" style="margin:0 0 12px">Escolha as estruturas que combinam com você em cada formato. As ideias e os roteiros vão seguir só as escolhidas. Sem nenhuma escolhida num formato, a IA escolhe a que fizer mais sentido.</p>
+    ${O.length ? fmts.map(([k, n]) => `<fieldset class="es-fsf"><legend>${n}</legend><div class="es-ops">${O.filter(o => o.formatos.includes(k)).map(o => `<label class="es-op"><input type="checkbox" data-eo="${o.id}" data-ef="${k}"${o.escolhidas.includes(k) ? ' checked' : ''}${pode ? '' : ' disabled'}><span><b>${esc(o.nome)}</b><small>${esc(o.para_que)}</small></span></label>`).join('')}</div></fieldset>`).join('')
+      : '<p>A equipe Mathisa ainda não cadastrou estruturas.</p>'}
+    ${pode && O.length ? '<div class="acts" style="justify-content:flex-start"><button class="btn pri" type="submit">Salvar escolhas</button></div>' : ''}`;
+  el.appendChild(sec);
+  sec.onsubmit = ev => { ev.preventDefault(); act(async () => {
+    const esc2 = [...sec.querySelectorAll('[data-eo]:checked')].map(x => ({ estrutura_id: x.dataset.eo, formato: x.dataset.ef }));
+    const n = await q(sb.rpc('content_estruturas_escolher', { p_ws: S.ws, p_escolhas: esc2 }));
+    toast(n ? `${n} escolha(s) salva(s)` : 'Escolhas limpas: a IA decide a estrutura');
+  }); };
+}
+
+/* ----- Configurações → Growth's Content (interno) → Custos de IA (só para quem a Mathisa indicou) ----- */
+async function vCustos(m) {
+  const C = S.cust = S.cust || { ini: hoje().slice(0, 8) + '01', fim: hoje() };
+  let R;
+  try { R = await q(sb.rpc('ia_custos', { p_ini: C.ini, p_fim: C.fim })); }
+  catch (e) { m.innerHTML = `<div class="head"><h1>Custos de IA</h1></div><div class="panel">${esc(e.message || e)}</div>`; return; }
+  const cb = R.cambio ? Number(R.cambio) : null, L = R.linhas || [];
+  const usd = v => v == null ? '—' : 'US$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+  const real = v => v == null || !cb ? '—' : brl(Number(v) * cb);
+  const tot = L.reduce((a, x) => ({ ch: a.ch + x.chamadas, te: a.te + Number(x.tokens_entrada), ts: a.ts + Number(x.tokens_saida), tc: a.tc + Number(x.tokens_cache), bu: a.bu + Number(x.buscas), usd: a.usd + Number(x.custo_usd || 0), sem: a.sem + Number(x.sem_custo) }), { ch: 0, te: 0, ts: 0, tc: 0, bu: 0, usd: 0, sem: 0 });
+  m.innerHTML = `<div class="head"><div><h1>Custos de IA</h1><span class="muted">Só você vê esta tela. Cada leitura, ideia ou roteiro gerado pela IA fica registrado aqui, por cliente.</span></div></div>
+    <form class="panel cu-filtro" id="cuF"><label>De<input type="date" name="ini" value="${C.ini}"></label><label>Até<input type="date" name="fim" value="${C.fim}"></label><button class="btn" type="submit">Ver</button>
+      <label class="cu-cb">Câmbio (R$ por US$ 1)<input type="number" name="cambio" data-money="0" step="0.0001" min="0" value="${cb ?? ''}" placeholder="Informe para ver em reais"></label><button class="btn" type="button" id="cuCb">Salvar câmbio</button></form>
+    <div class="kpis">${kpi('Gasto no período', usd(tot.usd), cb ? real(tot.usd) : 'Informe o câmbio para ver em reais')}${kpi('Chamadas', num(tot.ch), tot.sem ? tot.sem + ' sem custo calculado' : '')}${kpi('Tokens', num(tot.te + tot.ts), num(tot.te) + ' de entrada, ' + num(tot.ts) + ' de saída')}${kpi('Buscas na web', num(tot.bu), '')}</div>
+    <div class="panel">${L.length ? `<table class="tbl"><thead><tr><th>Mês</th><th>Cliente</th><th class="n">Chamadas</th><th class="n">Tokens de entrada</th><th class="n">Tokens de saída</th><th class="n">Buscas</th><th class="n">Custo (US$)</th><th class="n">Custo (R$)</th></tr></thead>
+        <tbody>${L.map(x => `<tr><td>${esc(x.mes)}</td><td>${esc(x.cliente)}</td><td class="n">${num(x.chamadas)}</td><td class="n">${num(x.tokens_entrada)}</td><td class="n">${num(x.tokens_saida)}</td><td class="n">${num(x.buscas)}</td><td class="n">${usd(x.custo_usd)}</td><td class="n">${real(x.custo_usd)}</td></tr>`).join('')}</tbody></table>`
+      : '<p style="margin:0"><b>Nenhum uso de IA neste período.</b> <span class="muted">Os registros começam quando a leitura diária e a geração de ideias estiverem ligadas (falta a chave da API da Claude).</span></p>'}</div>
+    ${(R.por_funcao || []).length ? `<div class="panel"><h3 style="margin:0 0 8px">Por tipo de uso</h3><table class="tbl"><thead><tr><th>Uso</th><th class="n">Chamadas</th><th class="n">Custo (US$)</th></tr></thead><tbody>${R.por_funcao.map(f => `<tr><td>${esc(f.funcao)}</td><td class="n">${num(f.chamadas)}</td><td class="n">${usd(f.custo_usd)}</td></tr>`).join('')}</tbody></table></div>` : ''}`;
+  $('#cuF').onsubmit = e => { e.preventDefault(); const f = e.target.elements; if (f.ini.value > f.fim.value) { toast('A data inicial passa da final.', true); return; } C.ini = f.ini.value; C.fim = f.fim.value; render(); };
+  $('#cuCb').onclick = () => act(async () => { const v = $('#cuF').elements.cambio.value; await q(sb.rpc('ia_cambio_salvar', { p_valor: v === '' ? null : Number(v) })); toast('Câmbio salvo'); render(); });
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

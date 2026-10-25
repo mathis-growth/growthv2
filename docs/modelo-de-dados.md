@@ -1,5 +1,12 @@
 
 
+## v0.146
+- `content_estruturas` (biblioteca interna): nome (único), para_que, formatos (reels, carrossel, post, stories, video, email), etapas [{nome, instrucao}], instrucoes, ativo, ordem. Só a equipe interna lê e grava.
+- `content_estruturas_ws` (escolhas do cliente): workspace, estrutura, formato. O cliente lê as dele; grava só por `content_estruturas_escolher`.
+- `ia_uso` (uso de IA): workspace, funcao, modelo, tokens de entrada, saída e cache, buscas, custo_usd, detalhe. Ninguém lê direto.
+- `sistema_config`: `custos_emails`, `cambio_usd_brl`.
+- Funções: `content_estruturas_opcoes(ws)` (sem etapas nem instruções), `content_estruturas_escolher(ws, escolhas)`, `posso_ver_custos()`, `ia_custos(ini, fim)`, `ia_cambio_salvar(valor)`.
+
 ## v0.145
 - `workspaces.content_fontes` (jsonb): `canais` {plataforma: @ ou endereço}, `sem_canais`, `materiais` {tipo: {estado ok|nao_tem, em}}, `links` [{url, desc}].
 - `sistema_config.content_drive_arvore`: subpastas Documentos, Reuniões gravadas, Aulas e cursos, Depoimentos e provas em "02 Materiais do cliente".

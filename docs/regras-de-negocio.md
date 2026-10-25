@@ -1,5 +1,10 @@
 
 
+## v0.146 — Estruturas e custos
+- O cliente nunca recebe etapas nem instruções das estruturas; só nome, para que serve e formatos das ativas.
+- Escolha só por formato que a estrutura aceita; estrutura desativada some das opções.
+- Custos: só e-mail em `custos_emails` e da equipe interna. Chamada sem custo calculado aparece como "sem custo calculado" (não é zero). Valor em reais só com câmbio informado.
+
 ## v0.145 — Canais e materiais
 - Passo 2 pronto: pelo menos um canal ou "Ainda não tenho conteúdo publicado". Plataformas fora da lista são recusadas.
 - Passo 3 pronto: os 6 tipos de material resolvidos ("Pronto" ou "Não tenho"); reabrir um desfaz. "Pronto" de material pede a pasta criada; "Pronto" dos links pede pelo menos um link válido (http/https).

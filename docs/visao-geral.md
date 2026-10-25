@@ -1,3 +1,6 @@
+## v0.146
+**Estruturas de roteiro e copy, e os custos de IA só para a Rebecka.** A equipe Mathisa mantém uma biblioteca interna de estruturas (AIDA, PAS, Antes-depois-ponte, Gancho para Reels, Carrossel educativo, Storytelling, 5 níveis de consciência e as que criar), com as etapas e as instruções que a IA segue. O cliente vê só o nome e para que serve cada uma e escolhe quais usar em cada formato, na aba Estruturas do Growth's Content. A tela Custos de IA, que só a Rebecka vê, mostra por cliente e por mês quanto a IA usou de tokens e buscas e quanto custou, em dólar e, com o câmbio informado, em reais.
+
 ## v0.145
 **O cliente informa os canais e entrega os materiais antes da call.** A configuração passa a ter 9 passos. Depois da pasta no Drive, o próprio cliente (com o acesso dele no Growths) informa o @ ou o endereço de cada plataforma onde já publica e, em seguida, passa por seis tipos de material — documentos, identidade visual, reuniões gravadas, aulas e cursos, depoimentos e provas, links de outros Drives —, cada um com a pasta certa e o botão "Pronto" ou "Não tenho". Só então vêm a call de briefing, a pesquisa e o dossiê (em construção), a linha editorial, onde publicar e a rotina.
 

@@ -15,7 +15,7 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.145 · 25/10/2026 (`index.html`) |
+| **Versão da tela** | 0.146 · 25/10/2026 (branch `v0.146-pendente`; no ar segue a 0.145) (`index.html`) |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.145** (25/10/2026): alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta, projeto do Google e os segredos no Supabase: [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
@@ -26,6 +26,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.146 | 25/10/2026 | **Estruturas de roteiro e copy** (biblioteca interna; o cliente só escolhe por formato) e **Custos de IA** (só para a Rebecka). | `RODAR_v0.146_content_estruturas.sql`, **pendente** (aplicação cancelada em 25/10/2026) |
 | 0.145 | 25/10/2026 | **Canais e materiais do cliente antes da call**: configuração em 9 passos; o cliente informa o @ de cada plataforma e resolve seis tipos de material, cada um com a sua pasta. | `RODAR_v0.145_content_fontes.sql`, aplicado em 25/10/2026 |
 | 0.144 | 25/10/2026 | **Configuração em 8 passos**: o cliente **compartilha uma pasta do Drive** dele e o Growths cria a árvore de 10 pastas (gratuito); roteiro da **call de briefing** na tela; lista de **materiais**; pesquisa, tese e dossiê em construção. | `RODAR_v0.144_content_setup_v2.sql` + função `content-drive`, aplicado em 25/10/2026 |
 | 0.143 | 25/10/2026 | **Growth's Content começa pela configuração**: passo a passo de 5 telas antes das abas; passo 1 **conecta o Google Drive do cliente** e cria lá a pasta (sem Drive, no da Mathisa). | `RODAR_v0.143_content_setup.sql` + função `content-google`, aplicado em 25/10/2026 |

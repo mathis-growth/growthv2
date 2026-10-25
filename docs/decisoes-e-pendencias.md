@@ -1,5 +1,15 @@
 
 
+## v0.146 — Estruturas de roteiro e copy (internas) e custos de IA só para a Rebecka
+**Pedido da Rebecka (25/10)**: estruturas de roteiro e de copy para escolher; a construção é interna, o cliente só vê a opção e escolhe a que quer; os custos só aparecem para ela. Sem limite de plano por enquanto (ela vai testar e medir o gasto de tokens).
+Decisões:
+- Biblioteca única da Mathisa (Configurações → Growth's Content (interno) → Estruturas de roteiro e copy), editável pela equipe interna: nome e "para que serve" (o cliente vê), formatos, etapas e instruções para a IA (só a equipe vê), ativar/desativar, ordem.
+- 7 estruturas iniciais: AIDA; PAS; Antes, depois e a ponte; Gancho, conteúdo e chamada (Reels); Carrossel educativo; Storytelling (jornada curta); Pelos 5 níveis de consciência. A Rebecka pode mandar as estruturas próprias (Mathisa/MIRA).
+- O cliente escolhe por formato (Reels, Carrossel, Post, Stories, Vídeo longo, E-mail) na aba Estruturas e no passo 7 da configuração. Sem escolha num formato, a IA escolhe.
+- Custos: tabela `ia_uso` (cada chamada de IA: tokens, buscas na web, custo em US$). Tela Custos de IA só para quem está em `custos_emails` e é da equipe interna; nem a tabela nem a função ficam abertas para mais ninguém. Câmbio informado por ela (não inventamos cotação).
+- Rotina diária (próximo pacote, depende da chave da API): lê o que entrou na pasta, busca na web sobre o nicho e gera ideias pela linha editorial, persona, voz e estruturas escolhidas; cada rodada registra o custo.
+**Pendente**: chave da API da Claude; rotina diária, leitura das pastas e dos canais, ideias e roteiros; tabela de preço por modelo (confirmar na página oficial antes de calcular o custo); conexão das outras plataformas; pesquisa, tese e dossiê (falta o formato das seções); limites por plano.
+
 ## v0.145 — O cliente informa os canais e entrega os materiais antes da call
 **Pedido da Rebecka (25/10)**: antes da call, o cliente informa o @ de todas as plataformas onde já tem conteúdo e sobe os materiais (documentos, identidade visual, reuniões gravadas, aulas, inclusive de plataforma de venda), indo de tela em tela e dando ok em cada um; cada tipo com a sua pastinha na árvore; poder informar o link de outro Drive (mas a recomendação é subir na pasta). Ao concluir a rotina, a primeira leitura e as primeiras ideias. Sem limite de plano por enquanto: ela vai testar na conta dela e medir o gasto de tokens.
 Decisões:

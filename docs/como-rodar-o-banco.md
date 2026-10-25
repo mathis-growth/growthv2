@@ -1,5 +1,10 @@
 
 
+## v0.146 — Estruturas de roteiro e copy; custos de IA
+1. `supabase/RODAR_v0.146_content_estruturas.sql` (**PENDENTE**: a aplicação em produção foi cancelada em 25/10/2026; aguarda a confirmação da Rebecka).
+2. Quem vê os custos: `sistema_config.custos_emails` (e-mails separados por vírgula; hoje só rebecka@rebeckacappello.com.br). Precisa também ser da equipe interna.
+3. Câmbio: na própria tela Custos de IA (fica em `sistema_config.cambio_usd_brl`; vazio = só em dólar).
+
 ## v0.145 — Canais e materiais do cliente
 1. `supabase/RODAR_v0.145_content_fontes.sql` (aplicado em produção em 25/10/2026).
 2. Nada a publicar nas funções. A árvore nova vale para as próximas pastas; nas que já existem, "Completar as pastas" cria as subpastas que faltam.
