@@ -100,6 +100,14 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.136] - 2026-10-25 — Instagram como submenu da Máquina de Conteúdo
+- Menu: Marketing → **Máquina de Conteúdo** → **Estratégia de conteúdo** e **Instagram**.
+- Estratégia de conteúdo abre num **dashboard de todos os canais**: eficiência de cada canal e os 3 melhores posts de cada um; clicar leva ao canal.
+- Instagram: **Dashboard** (a conta: seguidores, novos seguidores, alcance, visitas; os posts: totais, top 1, gráficos por dia, melhores por frente, formato, tipo de mídia e outros; cada post contra a média), **Ideias do Instagram** e **DMs**.
+- Sem importação manual e sem Relatórios. A tela diz qual conta está conectada, quando atualizou e em qual cliente ela está.
+- Post sem conteúdo da Máquina pode ser classificado (frente e formato) no próprio post.
+- Banco: `20261101100000_instagram_classificar.sql` / `RODAR_v0.136_instagram_classificar.sql`. **Aplicado em produção em 25/10/2026.**
+
 ## [0.135] - 2026-10-25 — Estratégia de conteúdo e canais; DMs do Instagram no CRM
 - A Máquina de Conteúdo passa a ter duas partes: **Estratégia de conteúdo** (Ideias e pautas, Priorização, Máquina, Semana, Fechamento, Persona, Linha editorial e **Canais**) e **Instagram** (Dashboard, Ideias do canal, Relatórios e **DMs**).
 - **Canais**: quais canais estão em uso, o canal padrão de cada frente e de cada etiqueta (marcados sozinhos ao criar a ideia) e "aplicar os canais sugeridos" nas ideias sem canal.

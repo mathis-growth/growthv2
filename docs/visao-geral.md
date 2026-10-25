@@ -1,3 +1,6 @@
+## v0.136
+**Instagram dentro da Máquina de Conteúdo, sem importar nada.** No menu, Marketing → Máquina de Conteúdo tem duas entradas: **Estratégia de conteúdo** e **Instagram**. A Estratégia abre num **dashboard de todos os canais** (eficiência de cada canal e os melhores posts de cada um; clicar no canal leva ao submenu dele). O Instagram tem Dashboard (números da conta, cada post, os melhores por frente, formato e tipo de mídia), Ideias do Instagram e DMs. Os números chegam só pela conexão; os botões de importar e a aba Relatórios saíram. O post que não veio da Máquina pode ser classificado (frente e formato) no próprio post.
+
 
 
 ## v0.135

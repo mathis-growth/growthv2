@@ -1,5 +1,12 @@
 
 
+## v0.136 — Instagram e dashboard de canais
+- Frente e formato do post = os do conteúdo da Máquina ligado a ele; sem ligação, os escolhidos no próprio post; sem nada, "Sem classificação".
+- Eficiência do canal no período = posts, alcance somado, interações somadas e engajamento (soma das interações ÷ soma do alcance, só posts com alcance). "Na fila" = ideias do canal ainda não publicadas.
+- Melhores de cada canal = 3 posts com maior engajamento no período.
+- Números da conta (Instagram): seguidores = último valor no período; novos seguidores e visitas = soma por dia, quando a conexão entrega; alcance da conta = soma por dia. Comparação sempre com o período anterior de mesmo tamanho.
+
+
 ## v0.135 — DMs e canais
 - Lead pela DM: quem mandou ao menos uma mensagem para a conta; uma pessoa por id do Instagram. Cada mensagem recebida vira um toque "DM Instagram: …". Conversa "não é lead" não gera mais toques.
 - Números das DMs no período (fuso de São Paulo): conversas com alguma mensagem, conversas novas (primeira mensagem no período), recebidas, enviadas, leads novos (pessoas com origem Instagram DM criadas no período), esperando resposta (última mensagem é da pessoa, fora as "não é lead"), viraram clientes (origem Instagram DM e situação cliente).

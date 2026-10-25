@@ -1,5 +1,18 @@
 
 
+## v0.136 — Instagram como submenu; sem importação
+**Pedido da Rebecka (25/10)**: Instagram como submenu dentro da Máquina de Conteúdo; o que se repete no Instagram não precisa estar na Máquina; na Máquina, um dashboard geral de todos os canais (eficiência e melhores posts de cada canal, clicando cai no canal); nada de importar ou digitar à mão; tirar Relatórios; no Instagram, um dash da conta (insights gerais), de cada post e dos melhores por tema e formato. E: "continua sem trazer nenhuma informação".
+**Diagnóstico de "sem informação" (fato, conferido no banco de produção em 25/10)**: os dados existem só no cliente **Mathisa — Operação** (conta @rebecka.mkt): 36 posts, 89 dias de alcance da conta, DMs. O dashboard desse cliente devolve 21 posts nos últimos 30 dias e 795 seguidores. Se a tela mostra vazio, a hipótese mais provável é estar em outro cliente (seletor no topo do menu) ou numa versão antiga do site. Agora a tela diz qual conta está conectada, quando atualizou e, se a conta estiver em outro cliente, em qual.
+Decisões:
+- Menu: Marketing → Máquina de Conteúdo → Estratégia de conteúdo | Instagram. A aba Dashboard da Estratégia é a primeira.
+- Sem importação: os botões de importar planilha e de digitar números saíram da tela. As funções do banco continuam (não apagamos nada), mas nada na tela as chama.
+- Relatórios saiu da tela (fica para outra função depois, como ela pediu).
+- Classificar o post: post que não nasceu na Máquina pode receber frente e formato direto (`social_posts.tema_id`, `formato_id`). Se o post estiver ligado a um conteúdo da Máquina, vale a classificação do conteúdo.
+- Eficiência por canal (hoje só Instagram tem dados): posts, alcance, interações, engajamento (interações ÷ alcance) e ideias na fila do canal.
+**Limites (fato)**: o Zernio entrega o alcance da conta por dia, mas os seguidores só como foto do dia em que sincroniza (1 dia até agora) e não entrega visitas ao perfil nem novos seguidores. Esses quadros mostram "—" até haver dias suficientes; o gráfico de seguidores vai se formar dia a dia.
+**Pendente**: conferir se o Zernio tem histórico de seguidores (estatística de seguidores da conta) para preencher o passado; confirmar com a Rebecka a URL do site e o cliente selecionado.
+
+
 ## v0.135 — Estratégia e canais; DMs no CRM
 **Pedido da Rebecka (25/10)**: separar a Máquina em Estratégia de conteúdo (tudo o que se define: ideias, canais por tema e etiqueta) e uma parte por canal (hoje só Instagram: dashboard, relatórios, ideias e as DMs); DMs também no comercial, porque entram no CRM; e descobrir por que os dados não apareciam.
 **Por que não aparecia (fato, conferido no banco com o login dela)**: (1) os posts e os números da conta estavam no banco (36 posts, 89 dias), mas só aparecem na aba Instagram da tela v0.134+; as telas antigas leem as métricas digitadas na Máquina, que estavam vazias. (2) As DMs nunca chegavam: a função `registrar_dm_instagram` existia, mas nada a chamava; o `zernio-sync` só trazia posts e conta. O Zernio tem as conversas (Inbox API).

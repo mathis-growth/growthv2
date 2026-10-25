@@ -1,5 +1,9 @@
 
 
+## v0.136 — Classificar post do Instagram
+1. `supabase/RODAR_v0.136_instagram_classificar.sql` (aplicado em produção em 25/10/2026). Pode rodar de novo sem erro.
+
+
 ## v0.135 — DMs do Instagram e canais
 1. `supabase/RODAR_v0.135_dms_canais.sql` (aplicado em produção em 25/10/2026).
 2. Função `zernio-sync` (sem verificação de JWT) na versão que também traz as DMs; cron `zernio-dms` a cada 30 minutos (`{"partes":["dms"]}`), além do `zernio-sync-diario` (posts e conta, 9h UTC). Ambos já criados em produção.

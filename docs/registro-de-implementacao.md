@@ -1,5 +1,11 @@
 
 
+## Instagram como submenu; dashboard de canais (v0.136)
+- `g136.js`: `vConteudo` novo, com a parte decidida pela rota (`mkt-cont` = Estratégia, `mkt-insta` = Instagram; `MQ_VIEW_CANAL`/`MQ_CANAL_VIEW`), abas da estratégia em `MQ_EST` (Dashboard primeiro) e do canal em `MQ_CANAL`; `mqIrCanal` abre o canal e o menu. `tabDashCanais` (eficiência por canal e melhores posts). `igConexao`/`igFonteHtml` (conta conectada, última atualização ou em qual cliente ela está). `tabInsta` sem importação: seção A conta (seguidores, novos seguidores, alcance, visitas) e Os posts, top 1, gráficos, agrupamentos e lista com "classificar". `igModalPost` salva frente e formato no post.
+- `integra136.py`: corta o `vConteudo`, o `tabInsta` e o `igModalPost` antigos; menu com `subs` "Máquina de Conteúdo"; ícone novo.
+- Testes atualizados: `t133`, `t134` (sem importação, classificação do post, dashboard de canais) e `t135`.
+
+
 ## Estratégia e canais; DMs (v0.135)
 - `g135.js`: `vConteudo` novo com `C.sec` ('estrategia' ou o canal) e subabas; abas antigas 'insta', 'dms' e 'rel' são levadas para a parte do canal. `tabCanais` (canais em uso, por frente, por etiqueta, aplicar sugeridos), `mqCanaisAuto` no cartão novo, `tabDMs` + `dmConversa` (chat) e `vDMsCrm` (Vendas → DMs do Instagram). As ideias do canal usam o Kanban com o canal fixo.
 - `zernio-sync`: nova etapa `dms` (Inbox API do Zernio: `/inbox/conversations` e `/inbox/conversations/{id}/messages`), escolhida por `partes`.

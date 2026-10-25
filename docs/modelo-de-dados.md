@@ -1,5 +1,10 @@
 
 
+## v0.136
+- `social_posts.tema_id` (frente, `conteudo_temas`) e `social_posts.formato_id` (`conteudo_formatos`, grupo formato): classificação do post sem conteúdo da Máquina. Pela tela, quem edita Marketing altera só essas duas e `conteudo_id`/`vinculo`. O gatilho `social_posts_valida` confere que frente e formato são do mesmo cliente.
+- `instagram_dashboard(ws, ini, fim)`: cada post traz `post_tema` e `post_formato`; frente, território e formato saem do conteúdo da Máquina e, sem ele, da classificação do post. `seguidores` ganhou `ganhos`, `ganhos_antes` e `alcance_conta_antes` (período anterior).
+
+
 ## v0.135
 - `social_conversas` (1 por conversa do Instagram): `conta_id`, `id_externo`, participante (`participante_id`, `participante_nome`, `participante_usuario`), `url`, `ultima_mensagem`, `ultima_em`, `nao_lidas`, `primeira_em`, contagens (`mensagens`, `recebidas`, `enviadas`), `anuncio` (conversa iniciada por anúncio), `pessoa_id` (lead no CRM), `ignorada` ("não é lead"). Leitura: Marketing, Vendas e Administrativo; pela tela só se altera `ignorada`.
 - `social_mensagens`: `conversa_id`, `id_externo`, `direcao` (recebida/enviada), `texto`, `anexos`, `em`.
