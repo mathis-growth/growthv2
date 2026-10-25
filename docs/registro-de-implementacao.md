@@ -1,5 +1,11 @@
 
 
+## Galeria e gráficos de tema e formato (v0.137)
+- `g137.js`: `igMontaGaleria` (cartões com imagem, ordem `IG_GORD`, "Mostrar mais" de 8 em 8, filtro vindo do gráfico) e `igMontaGraf` (`igGrafico` por frente, formato e tipo, `igGrupoVal` com média/total/quantidade, barras clicáveis). Cada bloco se redesenha sozinho, sem recarregar os dados. Ícones SVG em `IG_IC`.
+- `integra137.py` (roda o `integra136.py`): coloca `#igGal` e `#igGraf` depois dos números dos posts e chama os dois no fim de `tabInsta`; trocar o período zera o filtro.
+- Teste `t134_instagram_dashboard.py` ganhou galeria, ordenação, gráficos e filtro pela barra.
+
+
 ## Instagram como submenu; dashboard de canais (v0.136)
 - `g136.js`: `vConteudo` novo, com a parte decidida pela rota (`mkt-cont` = Estratégia, `mkt-insta` = Instagram; `MQ_VIEW_CANAL`/`MQ_CANAL_VIEW`), abas da estratégia em `MQ_EST` (Dashboard primeiro) e do canal em `MQ_CANAL`; `mqIrCanal` abre o canal e o menu. `tabDashCanais` (eficiência por canal e melhores posts). `igConexao`/`igFonteHtml` (conta conectada, última atualização ou em qual cliente ela está). `tabInsta` sem importação: seção A conta (seguidores, novos seguidores, alcance, visitas) e Os posts, top 1, gráficos, agrupamentos e lista com "classificar". `igModalPost` salva frente e formato no post.
 - `integra136.py`: corta o `vConteudo`, o `tabInsta` e o `igModalPost` antigos; menu com `subs` "Máquina de Conteúdo"; ícone novo.

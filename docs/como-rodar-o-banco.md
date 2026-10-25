@@ -1,5 +1,9 @@
 
 
+## v0.137
+Nada a rodar no banco: só a tela mudou.
+
+
 ## v0.136 — Classificar post do Instagram
 1. `supabase/RODAR_v0.136_instagram_classificar.sql` (aplicado em produção em 25/10/2026). Pode rodar de novo sem erro.
 

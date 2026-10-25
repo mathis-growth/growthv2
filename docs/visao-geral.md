@@ -1,3 +1,6 @@
+## v0.137
+**Os posts em imagens e gráficos de tema e formato.** No dashboard do Instagram, os posts aparecem como cartões com a imagem: primeiro os 4 principais, e "Mostrar mais" vai abrindo os outros. Dá para ordenar por engajamento, curtidas, alcance, mais recentes, salvamentos, compartilhamentos, comentários ou visualizações. Logo abaixo, gráficos por tema (frente), por formato e por tipo de mídia, com a métrica escolhida e em média por post, total do período ou quantidade de posts. Clicar numa barra mostra na galeria só os posts daquele tema ou formato.
+
 ## v0.136
 **Instagram dentro da Máquina de Conteúdo, sem importar nada.** No menu, Marketing → Máquina de Conteúdo tem duas entradas: **Estratégia de conteúdo** e **Instagram**. A Estratégia abre num **dashboard de todos os canais** (eficiência de cada canal e os melhores posts de cada um; clicar no canal leva ao submenu dele). O Instagram tem Dashboard (números da conta, cada post, os melhores por frente, formato e tipo de mídia), Ideias do Instagram e DMs. Os números chegam só pela conexão; os botões de importar e a aba Relatórios saíram. O post que não veio da Máquina pode ser classificado (frente e formato) no próprio post.
 

@@ -387,7 +387,40 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">
+<style id="v122">/* v0.137 galeria de posts e gráficos de tema e formato */
+.ig-gal{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media (max-width:1100px){.ig-gal{grid-template-columns:repeat(3,1fr)}}
+.ig-ord{white-space:nowrap}
+.ig-card{all:unset;box-sizing:border-box;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;transition:border-color .15s,transform .15s}
+.ig-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.ig-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ig-cimg{position:relative;display:block;aspect-ratio:4/5;background:var(--surface-2);overflow:hidden}
+.ig-cimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ig-cph{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:16px;font-weight:700;color:var(--muted);font-size:13px}
+.ig-cph small{font-weight:400;font-size:12px;line-height:1.35}
+.ig-crank{position:absolute;top:8px;left:8px;background:var(--accent);color:var(--accent-ink,#fff);font-weight:700;font-size:12px;border-radius:999px;padding:2px 9px}
+.ig-ctipo{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;border-radius:999px;padding:2px 8px}
+.ig-cbody{display:flex;flex-direction:column;gap:6px;padding:10px 12px 12px;min-width:0}
+.ig-cv{font-size:13px;color:var(--muted)}.ig-cv b{font-size:18px;color:var(--ink);font-variant-numeric:tabular-nums}
+.ig-cnums{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--ink);font-variant-numeric:tabular-nums}
+.ig-cnums span{display:inline-flex;align-items:center;gap:4px}
+.ig-cnums svg{width:13px;height:13px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linejoin:round}
+.ig-ccap{font-size:13px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ig-gmais{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.ig-fil{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px;font-size:13.5px}
+.ig-cf{margin:0}
+.ig-csub{margin:0 0 6px;font-size:13px}
+.ig-g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:22px 32px;margin-top:10px}
+.ig-gc h3{margin:0 0 2px;font-size:14px}
+.ig-gc .ig-hr{grid-template-columns:minmax(130px,200px) 1fr 70px}
+.ig-gc .ig-hn{flex-direction:column;align-items:flex-start;gap:1px;line-height:1.3}
+.ig-gc .ig-hn small{margin:0}
+.ig-hbtn{all:unset;box-sizing:border-box;display:grid;gap:12px;align-items:center;font-size:13px;cursor:pointer;border-radius:6px;padding:3px 4px}
+.ig-hbtn:hover{background:var(--surface-2)}
+.ig-hbtn:focus-visible{outline:2px solid var(--accent)}
+.ig-hbtn.on{background:var(--accent-soft)}
+@media (max-width:640px){.ig-gal{grid-template-columns:repeat(2,1fr);gap:10px}.ig-g3{grid-template-columns:1fr}.ig-gc .ig-hr{grid-template-columns:110px 1fr 58px}}
+
 /* v0.136 Dashboard dos canais; conexão do Instagram */
 .ig-con{font-size:13.5px;line-height:1.5}
 .ig-con.ok b{color:var(--good,#17803d)}
@@ -770,7 +803,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.136 · 25/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.137 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -15224,6 +15257,8 @@ async function tabInsta(el, D, C) {
   <div class="kpis">${kpi('Seguidores', sg.fim != null ? num(sg.fim) : '—', segVar == null ? 'sem histórico no período' : `${segVar > 0 ? '+' : ''}${num(segVar)} no período`)}${kpi('Novos seguidores', sg.ganhos != null ? num(sg.ganhos) : '—', igDelta(sg.ganhos, sg.ganhos_antes) || 'ganhos no período')}${kpi('Alcance da conta', sg.alcance_conta != null ? num(sg.alcance_conta) : '—', igDelta(sg.alcance_conta, sg.alcance_conta_antes) || 'contas alcançadas, somadas por dia')}${kpi('Visitas ao perfil', sg.visitas != null ? num(sg.visitas) : '—', 'no período')}</div>
   <h2 class="mq-h">Os posts</h2>
   <div class="kpis">${kpi('Posts', num(t.posts || 0), igDelta(t.posts, a.posts))}${kpi('Alcance dos posts', num(t.alcance || 0), igDelta(t.alcance, a.alcance))}${kpi('Interações', num(t.interacoes || 0), igDelta(t.interacoes, a.interacoes))}${kpi('Engajamento', fP(t.engajamento), igDelta(t.engajamento, a.engajamento))}${kpi('Salvamentos', num(t.salvamentos || 0), igDelta(t.salvamentos, a.salvamentos))}${kpi('Compartilhamentos', num(t.compartilhamentos || 0), igDelta(t.compartilhamentos, a.compartilhamentos))}</div>
+  <div class="panel" id="igGal"></div>
+  <div class="panel" id="igGraf"></div>
   ${top ? `<div class="panel ig-top"><div class="ig-top-l"><span class="ig-k">Top 1 em ${esc(IG_MN[k][1].toLowerCase())}</span><h2>${esc(igTit(top))}</h2><div class="ca">${pills(top)}</div><p class="muted">${dd(top.dia)}${top.fonte !== 'maquina' && top.quando ? ' às ' + String(top.quando).slice(11, 16) : ''}${top.legenda && top.titulo ? ' · ' + esc(top.legenda.slice(0, 140)) : ''}</p><div class="acts"><button class="btn sm" data-igp="${esc(top.id)}">Ver os números do post</button>${top.url ? `<a class="btn sm" href="${esc(top.url)}" target="_blank" rel="noopener">Abrir no Instagram</a>` : ''}</div></div>
     <div class="ig-top-n"><div class="ig-big">${igFmt(igVal(top, k), u)}</div>${vsMed(top)}<dl>${['alcance', 'interacoes', 'salvamentos', 'compartilhamentos', 'comentarios'].filter(x => x !== k).map(x => `<dt>${IG_MN[x][1]}</dt><dd>${igFmt(top[x], 'n')}</dd>`).join('')}${k !== 'engajamento' ? `<dt>Engajamento</dt><dd>${fP(top.engajamento)}</dd>` : ''}</dl></div></div>` : ''}
   <div class="grid2 ig-g2">
@@ -15239,12 +15274,13 @@ async function tabInsta(el, D, C) {
   <div class="panel"><div class="ig-head"><h2>Cada post do período</h2><label class="ig-ord">Ordenar<select id="igO"><option value="quando"${I.ord === 'quando' ? ' selected' : ''}>Mais recentes</option><option value="met"${I.ord === 'met' ? ' selected' : ''}>${esc(IG_MN[k][1])}</option></select></label></div>
     <div class="tw"><table><thead><tr><th>Post</th><th>Data</th><th>Tipo</th><th>Tema e formato</th><th class="n">Alcance</th><th class="n">Views</th><th class="n">Curt.</th><th class="n">Coment.</th><th class="n">Compart.</th><th class="n">Salv.</th><th class="n">Engaj.</th></tr></thead><tbody>${lista.map(p => `<tr class="clk" data-igp="${esc(p.id)}"><td><b>${esc(p.legenda ? p.legenda.split('\n')[0].slice(0, 60) : igTit(p))}</b></td><td>${dd(p.dia)}${p.fonte !== 'maquina' && p.quando ? ' ' + String(p.quando).slice(11, 16) : ''}</td><td>${esc(igTipo(p.tipo))}</td><td>${p.frente || p.formato ? `${esc(p.frente || '')}${p.frente && p.formato ? ' · ' : ''}${esc(p.formato || '')}` : '<span class="pill warn">classificar</span>'}</td><td class="n">${igFmt(p.alcance)}</td><td class="n">${igFmt(p.visualizacoes)}</td><td class="n">${igFmt(p.curtidas)}</td><td class="n">${igFmt(p.comentarios)}</td><td class="n">${igFmt(p.compartilhamentos)}</td><td class="n">${igFmt(p.salvamentos)}</td><td class="n">${fP(p.engajamento)}</td></tr>`).join('') || `<tr><td colspan="11" class="empty">Nenhum post neste período${CX.aqui.length ? '.' : ': veja acima de onde vêm os números.'}</td></tr>`}</tbody></table></div></div>`;
   const liga = (id, f) => { const x = el.querySelector('#' + id); if (x) x.onchange = f; };
-  liga('igP', e => { const v = Number(e.target.value); if (v) { I.dias = v; I.ini = ''; I.fim = ''; } else { I.ini = ini; I.fim = fim; } render(); });
+  liga('igP', e => { I.gFiltro = null; I.gN = 4; const v = Number(e.target.value); if (v) { I.dias = v; I.ini = ''; I.fim = ''; } else { I.ini = ini; I.fim = fim; } render(); });
   liga('igI', e => { if (e.target.value && e.target.value <= fim) { I.ini = e.target.value; render(); } else toast('Informe um período válido.', true); });
   liga('igF', e => { if (e.target.value && e.target.value >= ini) { I.fim = e.target.value; render(); } else toast('Informe um período válido.', true); });
   liga('igM', e => { I.met = e.target.value; render(); }); liga('igO', e => { I.ord = e.target.value; render(); });
   el.querySelectorAll('[data-igg]').forEach(b => b.onclick = () => { I.grupo = b.dataset.igg; render(); });
   el.querySelectorAll('[data-igp]').forEach(r => r.onclick = () => igModalPost(P.find(p => p.id === r.dataset.igp), P, D));
+  igMontaGaleria(el.querySelector('#igGal'), P, I, D); igMontaGraf(el.querySelector('#igGraf'), P, I, D);
 }
 
 /* ----- um post: números contra a média e classificação (frente e formato) ----- */
@@ -15287,6 +15323,86 @@ async function tabDashCanais(el, D, C) {
   $('#dgP').onchange = e => { C.dg.dias = Number(e.target.value); render(); };
   mqLigaComeco(el, C);
   el.querySelectorAll('[data-canal]').forEach(r => { r.onclick = () => mqIrCanal(r.dataset.canal); r.onkeydown = e => { if (e.key === 'Enter') mqIrCanal(r.dataset.canal); }; });
+}
+
+/* ===================== v0.137 — galeria de posts com imagem e gráficos de tema e formato ===================== */
+const IG_GORD = [['engajamento', 'Mais engajamento'], ['curtidas', 'Mais curtidas'], ['alcance', 'Maior alcance'], ['quando', 'Mais recentes'], ['salvamentos', 'Mais salvamentos'], ['compartilhamentos', 'Mais compartilhamentos'], ['comentarios', 'Mais comentários'], ['visualizacoes', 'Mais visualizações']];
+const IG_AGG = [['media', 'Média por post'], ['total', 'Total do período'], ['posts', 'Quantidade de posts']];
+const IG_IC = {
+  curtidas: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
+  comentarios: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>',
+  salvamentos: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg>',
+  alcance: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>' };
+const IG_GRAF = [['frente', 'Por tema (frente)'], ['formato', 'Por formato'], ['tipo', 'Por tipo de mídia']];
+
+/* posts filtrados pelo grupo clicado no gráfico */
+function igFiltra(P, F) { return F ? P.filter(p => igChaves(p, F.g).includes(F.nome)) : P; }
+
+/* ----- galeria: as imagens dos posts, 4 primeiro e "Mostrar mais" ----- */
+function igMontaGaleria(box, P, I, D) {
+  if (!box) return;
+  I.gOrd = I.gOrd || 'engajamento'; I.gN = I.gN || 4;
+  const o = I.gOrd, F = I.gFiltro, L0 = igFiltra(P, F);
+  const L = [...L0].sort(o === 'quando' ? (x, y) => String(y.quando).localeCompare(String(x.quando)) : (x, y) => (igVal(y, o) ?? -1) - (igVal(x, o) ?? -1));
+  const ver = L.slice(0, I.gN), resta = L.length - ver.length, u = o === 'quando' ? null : IG_MN[o][2];
+  const card = (p, i) => {
+    const v = o === 'quando' ? null : igVal(p, o);
+    const img = p.miniatura ? `<img src="${esc(p.miniatura)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : '';
+    return `<button type="button" class="ig-card" data-igp="${esc(p.id)}" aria-label="Ver os números do post de ${dd(p.dia)}">
+      <span class="ig-cimg"><span class="ig-cph">${esc(igTipo(p.tipo))}<small>${esc(igTit(p).slice(0, 70))}</small></span>${img}
+        ${o !== 'quando' ? `<span class="ig-crank">${i + 1}º</span>` : ''}<span class="ig-ctipo">${esc(igTipo(p.tipo))}</span></span>
+      <span class="ig-cbody">${o !== 'quando' ? `<span class="ig-cv"><b>${igFmt(v, u)}</b> ${esc(IG_MN[o][1].toLowerCase())}</span>` : ''}
+        <span class="ig-cnums">${['curtidas', 'comentarios', 'salvamentos', 'alcance'].map(m => `<span title="${IG_MN[m][1]}">${IG_IC[m]}${igFmt(p[m])}</span>`).join('')}</span>
+        <span class="ig-ccap">${esc(igTit(p))}</span>
+        <small class="muted">${dd(p.dia)}${p.frente || p.formato ? ' · ' + esc([p.frente, p.formato].filter(Boolean).join(' · ')) : ''}</small></span></button>`;
+  };
+  box.innerHTML = `<div class="ig-head"><h2>Os posts${F ? '' : ' do período'}</h2>
+      <label class="ig-ord">Ordenar por<select id="igGo">${IG_GORD.map(([v, l]) => `<option value="${v}"${o === v ? ' selected' : ''}>${l}</option>`).join('')}</select></label></div>
+    ${F ? `<div class="ig-fil">Só os posts de <b>${esc(F.nome)}</b> (${esc((IG_GRUPOS.find(g => g[0] === F.g) || [, ''])[1].toLowerCase())}) <button class="chip on" id="igGx" aria-label="Mostrar todos os posts">Mostrar todos ✕</button></div>` : ''}
+    ${ver.length ? `<div class="ig-gal">${ver.map(card).join('')}</div>` : '<div class="empty">Nenhum post no período.</div>'}
+    <div class="ig-gmais">${resta > 0 ? `<button class="btn" id="igGm">Mostrar mais (${resta} ${resta > 1 ? 'restantes' : 'restante'})</button>` : ''}${I.gN > 4 && ver.length > 4 ? `<button class="btn ghost" id="igGl">Mostrar menos</button>` : ''}<small class="muted">${ver.length} de ${L.length} post${L.length === 1 ? '' : 's'}</small></div>`;
+  const re = () => igMontaGaleria(box, P, I, D);
+  box.querySelector('#igGo').onchange = e => { I.gOrd = e.target.value; I.gN = 4; re(); };
+  const m = box.querySelector('#igGm'); if (m) m.onclick = () => { I.gN += 8; re(); };
+  const l = box.querySelector('#igGl'); if (l) l.onclick = () => { I.gN = 4; re(); box.scrollIntoView({ block: 'start', behavior: 'smooth' }); };
+  const x = box.querySelector('#igGx'); if (x) x.onclick = () => { I.gFiltro = null; I.gN = 4; re(); igMontaGraf(document.getElementById('igGraf'), P, I, D); };
+  box.querySelectorAll('[data-igp]').forEach(b => b.onclick = () => igModalPost(P.find(p => p.id === b.dataset.igp), P, D));
+}
+
+/* ----- gráficos de tema, formato e tipo de mídia, com a métrica e a conta escolhidas ----- */
+function igGrupoVal(X, k, agg) {
+  if (agg === 'posts') return X.length;
+  if (agg === 'media') return igMedia(X, k);
+  if (k === 'engajamento') return igMedia(X, k);  // engajamento total = interações somadas ÷ alcance somado
+  const V = X.map(p => p[k]).filter(v => v != null); return V.length ? V.reduce((a, b) => a + Number(b), 0) : null;
+}
+function igGrafico(P, g, k, agg, F) {
+  const G = {}; P.forEach(p => igChaves(p, g).forEach(c => { (G[c] = G[c] || []).push(p); }));
+  const L = Object.entries(G).map(([nome, X]) => ({ nome, n: X.length, v: igGrupoVal(X, k, agg) })).sort((a, b) => (b.v ?? -1) - (a.v ?? -1));
+  if (!L.length) return '<div class="empty">Sem posts no período.</div>';
+  const u = agg === 'posts' ? 'n' : IG_MN[k][2], mx = Math.max(...L.map(x => x.v || 0)) || 1, ref = agg === 'media' ? igMedia(P, k) : null;
+  const rot = v => agg === 'posts' ? `${num(v)} post${v === 1 ? '' : 's'}` : igFmt(v, u);
+  return `<div class="ig-hb">${L.map(x => { const on = F && F.g === g && F.nome === x.nome; return `<button type="button" class="ig-hr ig-hbtn${on ? ' on' : ''}" data-igf="${esc(g)}|${esc(x.nome)}" title="${esc(x.nome)}: ${rot(x.v)}${agg !== 'posts' ? `, ${x.n} post(s)` : ''}. Clique para ver os posts." aria-pressed="${on}"><span class="ig-hn">${esc(x.nome)}<small>${x.n} post${x.n > 1 ? 's' : ''}</small></span><span class="ig-ht"><u style="width:${x.v == null ? 0 : Math.max(1, x.v / mx * 100)}%"></u>${ref != null && mx ? `<b class="ig-avg" style="left:${Math.min(100, ref / mx * 100)}%" aria-hidden="true"></b>` : ''}</span><span class="ig-hv">${rot(x.v)}</span></button>`; }).join('')}</div>`;
+}
+function igMontaGraf(box, P, I, D) {
+  if (!box) return;
+  I.cMet = I.cMet || 'engajamento'; I.cAgg = I.cAgg || 'media';
+  const k = I.cMet, agg = I.cAgg, ref = agg === 'media' ? igMedia(P, k) : null;
+  const semClass = P.filter(p => !p.frente && !p.formato).length;
+  box.innerHTML = `<div class="ig-head"><h2>Temas e formatos</h2><div class="filters ig-cf">
+      <label>Métrica<select id="igCm"${agg === 'posts' ? ' disabled' : ''}>${IG_MET.map(([v, l]) => `<option value="${v}"${k === v ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+      <label>Mostrar<select id="igCa">${IG_AGG.map(([v, l]) => `<option value="${v}"${agg === v ? ' selected' : ''}>${l}</option>`).join('')}</select></label></div></div>
+    <p class="muted ig-csub">${agg === 'posts' ? 'Quantos posts de cada grupo saíram no período.' : agg === 'media' ? `${esc(IG_MN[k][1])} médio por post de cada grupo. A linha marca a média de todos os posts${ref != null ? ` (${igFmt(ref, IG_MN[k][2])})` : ''}.` : k === 'engajamento' ? 'Engajamento do grupo: interações somadas ÷ alcance somado.' : `${esc(IG_MN[k][1])} somado de cada grupo no período.`} Clique numa barra para ver os posts dela acima.</p>
+    ${semClass ? `<small class="muted">${semClass} post(s) sem tema e formato aparecem como "Sem classificação". Abra o post e classifique.</small>` : ''}
+    <div class="ig-g3">${IG_GRAF.map(([g, l]) => `<div class="ig-gc"><h3>${l}</h3>${igGrafico(P, g, k, agg, I.gFiltro)}</div>`).join('')}</div>`;
+  const re = () => igMontaGraf(box, P, I, D);
+  box.querySelector('#igCm').onchange = e => { I.cMet = e.target.value; re(); };
+  box.querySelector('#igCa').onchange = e => { I.cAgg = e.target.value; re(); };
+  box.querySelectorAll('[data-igf]').forEach(b => b.onclick = () => {
+    const [g, ...n] = b.dataset.igf.split('|'), nome = n.join('|'), F = I.gFiltro;
+    I.gFiltro = F && F.g === g && F.nome === nome ? null : { g, nome }; I.gN = 4; re();
+    const gal = document.getElementById('igGal'); if (gal) { igMontaGaleria(gal, P, I, D); if (I.gFiltro) gal.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+  });
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

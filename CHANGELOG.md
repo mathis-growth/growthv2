@@ -100,6 +100,11 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.137] - 2026-10-25 — Os posts em imagens; gráficos de tema e formato
+- Dashboard do Instagram: galeria com a imagem de cada post, 4 primeiro e **Mostrar mais**; ordenar por engajamento, curtidas, alcance, mais recentes, salvamentos, compartilhamentos, comentários ou visualizações. Clicar abre os números do post.
+- Gráficos **por tema (frente), por formato e por tipo de mídia**, com a métrica escolhida e em média por post, total do período ou quantidade de posts. Clicar numa barra mostra só os posts dela na galeria.
+- Sem mudança no banco.
+
 ## [0.136] - 2026-10-25 — Instagram como submenu da Máquina de Conteúdo
 - Menu: Marketing → **Máquina de Conteúdo** → **Estratégia de conteúdo** e **Instagram**.
 - Estratégia de conteúdo abre num **dashboard de todos os canais**: eficiência de cada canal e os 3 melhores posts de cada um; clicar leva ao canal.

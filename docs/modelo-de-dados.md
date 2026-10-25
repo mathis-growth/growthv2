@@ -1,5 +1,9 @@
 
 
+## v0.137
+- Sem mudança no banco. A galeria usa `social_posts.miniatura` (já trazida pelo `zernio-sync` e devolvida por `instagram_dashboard`).
+
+
 ## v0.136
 - `social_posts.tema_id` (frente, `conteudo_temas`) e `social_posts.formato_id` (`conteudo_formatos`, grupo formato): classificação do post sem conteúdo da Máquina. Pela tela, quem edita Marketing altera só essas duas e `conteudo_id`/`vinculo`. O gatilho `social_posts_valida` confere que frente e formato são do mesmo cliente.
 - `instagram_dashboard(ws, ini, fim)`: cada post traz `post_tema` e `post_formato`; frente, território e formato saem do conteúdo da Máquina e, sem ele, da classificação do post. `seguidores` ganhou `ganhos`, `ganhos_antes` e `alcance_conta_antes` (período anterior).

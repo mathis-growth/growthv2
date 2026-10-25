@@ -1,5 +1,15 @@
 
 
+## v0.137 — Galeria de posts e gráficos de tema e formato
+**Pedido da Rebecka (25/10)**: ver na tela principal as imagens dos posts, os 4 principais, com "mostrar mais"; ordenar por curtidas, engajamento, alcance e mais recentes; gráficos de temas e de formato que mudam pelo filtro.
+Decisões:
+- A galeria fica logo depois dos números dos posts; os gráficos, logo depois da galeria. Nada saiu da tela (Top 1, gráficos por dia, agrupamentos, top 10 e tabela continuam abaixo).
+- 4 posts de início; cada "Mostrar mais" abre mais 8; "Mostrar menos" volta para 4. Trocar a ordem ou o período volta para 4.
+- Gráficos: tema (frente), formato e tipo de mídia, lado a lado. A métrica e a forma de contar (média por post, total do período, quantidade de posts) são escolhidas no próprio quadro, sem mexer no resto da tela.
+- Clicar numa barra filtra a galeria (clicar de novo, ou "Mostrar todos", tira o filtro).
+**Limite (fato, conferido em 25/10)**: as imagens vêm do Instagram com link que vence em cerca de 4 dias; a sincronização diária troca os links de todos os posts. Se a sincronização parar mais de 4 dias, o cartão mostra o tipo e o título do post no lugar da imagem.
+
+
 ## v0.136 — Instagram como submenu; sem importação
 **Pedido da Rebecka (25/10)**: Instagram como submenu dentro da Máquina de Conteúdo; o que se repete no Instagram não precisa estar na Máquina; na Máquina, um dashboard geral de todos os canais (eficiência e melhores posts de cada canal, clicando cai no canal); nada de importar ou digitar à mão; tirar Relatórios; no Instagram, um dash da conta (insights gerais), de cada post e dos melhores por tema e formato. E: "continua sem trazer nenhuma informação".
 **Diagnóstico de "sem informação" (fato, conferido no banco de produção em 25/10)**: os dados existem só no cliente **Mathisa — Operação** (conta @rebecka.mkt): 36 posts, 89 dias de alcance da conta, DMs. O dashboard desse cliente devolve 21 posts nos últimos 30 dias e 795 seguidores. Se a tela mostra vazio, a hipótese mais provável é estar em outro cliente (seletor no topo do menu) ou numa versão antiga do site. Agora a tela diz qual conta está conectada, quando atualizou e, se a conta estiver em outro cliente, em qual.

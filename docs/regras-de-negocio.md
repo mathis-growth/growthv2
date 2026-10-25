@@ -1,5 +1,10 @@
 
 
+## v0.137 — Galeria e gráficos
+- Ordem da galeria: maior valor da métrica escolhida primeiro (engajamento do post = interações ÷ alcance); "Mais recentes" = data e hora de publicação. Posts sem a métrica vão para o fim.
+- Gráficos por grupo: "Média por post" = média da métrica nos posts do grupo (engajamento = interações somadas ÷ alcance somado); "Total do período" = soma (para engajamento, a mesma razão das somas); "Quantidade de posts" = número de posts. Um post entra no grupo do seu tema, formato e tipo de mídia; sem classificação, em "Sem classificação".
+
+
 ## v0.136 — Instagram e dashboard de canais
 - Frente e formato do post = os do conteúdo da Máquina ligado a ele; sem ligação, os escolhidos no próprio post; sem nada, "Sem classificação".
 - Eficiência do canal no período = posts, alcance somado, interações somadas e engajamento (soma das interações ÷ soma do alcance, só posts com alcance). "Na fila" = ideias do canal ainda não publicadas.
