@@ -1,5 +1,10 @@
 
 
+## v0.145 — Canais e materiais
+- Passo 2 pronto: pelo menos um canal ou "Ainda não tenho conteúdo publicado". Plataformas fora da lista são recusadas.
+- Passo 3 pronto: os 6 tipos de material resolvidos ("Pronto" ou "Não tenho"); reabrir um desfaz. "Pronto" de material pede a pasta criada; "Pronto" dos links pede pelo menos um link válido (http/https).
+- Sem limite de plano nesta fase.
+
 ## v0.144 — Configuração em 8 passos
 - Passo 1 pronto: pasta com situação ok (compartilhada, Drive da Mathisa ou login Google). Pasta compartilhada sem acesso fica em erro com a instrução de compartilhar como Editor.
 - Passo 2 pronto: metade das perguntas da call respondidas. Passo 3 pronto: marco `materiais`. Passos 4 e 5 estão em construção e não contam para concluir. Passos 6, 7 e 8 seguem as regras da v0.143 (linha editorial, canais, rotina).

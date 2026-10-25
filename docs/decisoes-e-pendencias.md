@@ -1,5 +1,16 @@
 
 
+## v0.145 — O cliente informa os canais e entrega os materiais antes da call
+**Pedido da Rebecka (25/10)**: antes da call, o cliente informa o @ de todas as plataformas onde já tem conteúdo e sobe os materiais (documentos, identidade visual, reuniões gravadas, aulas, inclusive de plataforma de venda), indo de tela em tela e dando ok em cada um; cada tipo com a sua pastinha na árvore; poder informar o link de outro Drive (mas a recomendação é subir na pasta). Ao concluir a rotina, a primeira leitura e as primeiras ideias. Sem limite de plano por enquanto: ela vai testar na conta dela e medir o gasto de tokens.
+Decisões:
+- Ordem: 1 Google Drive; 2 Seus canais (cliente); 3 Seus materiais (cliente); 4 Call de briefing; 5 Pesquisa e tese e 6 Dossiê e aprovação (em construção); 7 Linha editorial; 8 Onde publicar; 9 Rotina.
+- Canais: Instagram, YouTube, TikTok, LinkedIn, Threads, Facebook, Site ou blog, Podcast, Outro; ou "Ainda não tenho conteúdo publicado". O @ vira o link do perfil.
+- Materiais: Documentos, Identidade visual, Reuniões gravadas, Aulas e cursos, Depoimentos e provas, Links de outros Drives — cada um "Pronto" ou "Não tenho"; com os 6 resolvidos, o passo fica pronto sozinho.
+- Identidade visual continua na raiz (03) para não duplicar pastas já criadas; as outras subpastas entram em "02 Materiais do cliente".
+- Ler só pelo @, sem conectar a conta, seria raspagem (paga e contra os termos de algumas redes): não fazemos. A leitura dos posts vem da conta conectada (Instagram já; YouTube, TikTok, LinkedIn e Threads pelo Zernio no próximo pacote, a confirmar plataforma por plataforma).
+- A IA não assiste vídeo: lê a transcrição. Pedimos a transcrição quando existir; o resto vai precisar de um serviço de transcrição (pago por minuto).
+**Pendente (próximo pacote)**: leitura das pastas e dos canais; primeiras ideias ao concluir a rotina; registro de tokens gastos por leitura; conexão das outras plataformas; depois pesquisa, tese e dossiê (falta o formato das seções); limites por plano.
+
 ## v0.144 — Pasta compartilhada pelo cliente; configuração em 8 passos
 **Pedido da Rebecka (25/10)**: não pagar Google Cloud; seguir o caminho recomendado ("a gente vai usar o recomendado. E já!"); o roteiro da call de briefing dentro do sistema; depois, a IA lê transcrição e materiais, faz pesquisa e tese, gera o dossiê para o cliente aprovar e, aprovado, vira o padrão editável e a skill do cliente.
 Decisões:

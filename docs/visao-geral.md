@@ -1,3 +1,6 @@
+## v0.145
+**O cliente informa os canais e entrega os materiais antes da call.** A configuração passa a ter 9 passos. Depois da pasta no Drive, o próprio cliente (com o acesso dele no Growths) informa o @ ou o endereço de cada plataforma onde já publica e, em seguida, passa por seis tipos de material — documentos, identidade visual, reuniões gravadas, aulas e cursos, depoimentos e provas, links de outros Drives —, cada um com a pasta certa e o botão "Pronto" ou "Não tenho". Só então vêm a call de briefing, a pesquisa e o dossiê (em construção), a linha editorial, onde publicar e a rotina.
+
 ## v0.144
 **Configuração em 8 passos, com a pasta compartilhada pelo cliente.** No passo 1, o cliente cria uma pasta no Google Drive dele, compartilha com o e-mail da Mathisa e cola o link; o Growths cria ali a árvore de 10 pastas (sem custo de Google Cloud, e o sistema enxerga tudo o que o cliente puser na pasta). Quem não tem Drive continua com a pasta no Drive da Mathisa. O passo 2 traz o roteiro da call de briefing na tela, uma parte por vez, salvando sozinho; o passo 3, a lista de materiais a pedir e o botão "Material pronto". Pesquisa e tese e o dossiê para aprovação (passos 4 e 5) estão em construção. Depois vêm linha editorial (com proposta pela IA), canais e rotina.
 

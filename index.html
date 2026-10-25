@@ -387,7 +387,23 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.144 roteiro da call e materiais */
+<style id="v122">/* v0.145 canais e materiais do cliente */
+body #main ol.cs-passos{grid-template-columns:repeat(5,1fr)}
+.cs-cliente{border-left:3px solid var(--accent);font-size:13.5px;line-height:1.5}
+.cs-canais{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.cs-canais label{display:flex;flex-direction:column;gap:4px}
+.cs-abre{font-size:12px;color:var(--accent)}
+#main label.cs-sem{display:flex;flex-direction:row;align-items:center;gap:8px;margin-top:12px;font-weight:500}
+#main .cs-mats{grid-template-columns:repeat(6,1fr)}
+.cs-mats button.feito{border-color:var(--good,#17803d)}
+.cs-mats button.feito b{color:var(--good,#17803d)}
+.cs-matb p{font-size:14px;line-height:1.5}
+.cs-lk{display:grid;grid-template-columns:1.4fr 1fr auto;gap:8px;margin:0 0 8px}
+.cs-lk input{min-width:0}
+@media (max-width:900px){body #main ol.cs-passos{grid-template-columns:1fr 1fr}.cs-canais{grid-template-columns:1fr}#main .cs-mats{grid-template-columns:1fr 1fr}.cs-lk{grid-template-columns:1fr}}
+body #main .cs-matbt{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+body #main .cs-matbt .btn{width:auto;flex:none}
+/* v0.144 roteiro da call e materiais */
 #main ol.cs-passos{grid-template-columns:repeat(4,1fr)}
 .cs-passos li.breve button{opacity:.7;border-style:dashed}
 .cs-mini{margin:4px 0 10px;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;line-height:1.45}
@@ -915,7 +931,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.144 · 25/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.145 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -15863,7 +15879,8 @@ async function csWizard(m, D, E) {
   const box = $('#csPasso');
   if (P.k === 'drive') return csDrive(box, E);
   if (P.k === 'call') csCall(box, D, E);
-  else if (P.k === 'materiais') csMateriais(box, D, E);
+  else if (P.k === 'fontes') csFontes(box, D, E);
+  else if (P.k === 'materiais') csMateriais2(box, D, E);
   else if (P.k === 'tese' || P.k === 'dossie') csEmBreve(box, P);
   else if (P.k === 'linha') { csLinhaIA(box, D); const sub = document.createElement('div'); sub.style.cssText = 'display:flex;flex-direction:column;gap:16px'; box.appendChild(sub); tabLinhas(sub, D, C); }
   else if (P.k === 'canais') { tabCanais(box, D, C); igConexao().then(CX => { if (box.isConnected) box.insertAdjacentHTML('afterbegin', `<div class="panel ig-fonte"><b>Instagram</b><br>${igFonteHtml(CX, {})}</div>`); }).catch(() => null); }
@@ -16013,6 +16030,104 @@ function csLinhaIA(box, D) {
     const r2 = await q(sb.rpc('conteudo_aplicar_proposta', { p_id: x.dataset.capl })); toast(`Aplicada: ${r2.territorios} territórios e ${r2.formatos} formatos.`);
   }, 'Aplicar'));
   box.querySelectorAll('[data-cdes]').forEach(x => x.onclick = () => act(async () => { await q(sb.from('conteudo_linha_propostas').update({ status: 'descartada' }).eq('id', x.dataset.cdes)); toast('Proposta descartada'); render(); }));
+}
+
+/* ===================== v0.145 — Growth's Content: o cliente informa os canais e entrega os materiais antes da call ===================== */
+(() => {
+  const P = Object.fromEntries(CS_PASSOS.map(p => [p.k, p]));
+  const fontes = {
+    k: 'fontes', t: 'Seus canais', sub: 'Cliente: o @ de cada plataforma', cliente: true,
+    ok: (D, E) => { const f = E.fontes || {}; return !!f.sem_canais || Object.keys(f.canais || {}).length > 0; },
+    falta: 'Informe pelo menos um canal (ou marque que ainda não tem conteúdo publicado) e salve.' };
+  const mat = {
+    k: 'materiais', t: 'Seus materiais', sub: 'Cliente: documentos, gravações, aulas', cliente: true,
+    ok: (D, E) => !!(E.marcos || {}).materiais,
+    falta: 'Resolva cada tipo de material: "Pronto, está na pasta" ou "Não tenho".' };
+  const novos = [P.drive, fontes, mat, P.call, P.tese, P.dossie, P.linha, { ...P.canais, t: 'Onde publicar' }, P.rotina];
+  CS_PASSOS.length = 0; CS_PASSOS.push(...novos);
+  CS_IR.persona = 4; CS_IR.linhas = 7; CS_IR.canais = 8;
+})();
+
+const CS_CANAIS = [
+  ['instagram', 'Instagram', '@seuperfil'], ['youtube', 'YouTube', '@seucanal ou o endereço do canal'], ['tiktok', 'TikTok', '@seuperfil'],
+  ['linkedin', 'LinkedIn', 'linkedin.com/in/voce ou a página da empresa'], ['threads', 'Threads', '@seuperfil'], ['facebook', 'Facebook', 'facebook.com/suapagina'],
+  ['site', 'Site ou blog', 'seusite.com.br'], ['podcast', 'Podcast', 'endereço no Spotify, Apple Podcasts…'], ['outro', 'Outro lugar', 'newsletter, Kwai, Pinterest…']];
+function csPerfilUrl(k, v) {
+  v = String(v || '').trim(); if (!v) return '';
+  if (/^https?:\/\//i.test(v)) return v;
+  const h = v.replace(/^@/, '').replace(/^\/+/, '');
+  if (/^[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(h) && (h.includes('/') || ['site', 'podcast', 'outro', 'linkedin', 'facebook'].includes(k))) return 'https://' + h;
+  const base = { instagram: 'https://instagram.com/', tiktok: 'https://tiktok.com/@', youtube: 'https://youtube.com/@', threads: 'https://threads.net/@', linkedin: 'https://linkedin.com/in/', facebook: 'https://facebook.com/' }[k];
+  return base ? base + encodeURIComponent(h) : '';
+}
+
+/* ----- passo 2: canais do cliente ----- */
+function csFontes(box, D, E) {
+  const f = E.fontes || {}, c = f.canais || {};
+  box.innerHTML = `<div class="panel cs-cliente"><b>Este passo é do cliente.</b> Ele entra no Growths com o acesso dele e preenche antes da call de briefing. A equipe também pode preencher por ele.</div>
+    <form class="panel" id="csFonF"><h2 style="margin:0 0 4px">Onde você já publica conteúdo</h2>
+      <p class="muted" style="margin:0 0 12px">Coloque o @ ou o endereço de cada plataforma onde você já tem conteúdo. Vamos ler esse conteúdo para entender seus temas, o que funciona e o seu jeito de falar. Deixe em branco o que você não usa.</p>
+      <div class="cs-canais">${CS_CANAIS.map(([k, n, ph]) => { const u = csPerfilUrl(k, c[k]); return `<label>${n}<input name="${k}" value="${esc(c[k] || '')}" placeholder="${esc(ph)}" autocomplete="off">${u ? `<a class="cs-abre" href="${esc(u)}" target="_blank" rel="noopener">Abrir ${esc(n)}</a>` : ''}</label>`; }).join('')}</div>
+      <label class="cs-sem"><input type="checkbox" name="sem"${f.sem_canais ? ' checked' : ''}> Ainda não tenho conteúdo publicado</label>
+      <div class="acts"><button class="btn pri" type="submit">Salvar canais</button></div></form>
+    <div class="panel" id="csFonIg"><b>Leitura dos posts</b><p class="muted" style="margin:4px 0 0">Para ler os posts e os números, a conta precisa estar conectada ao Growths. O Instagram já é lido; a conexão do YouTube, TikTok, LinkedIn e Threads entra na próxima versão. Até lá, guardamos o endereço.</p></div>`;
+  igConexao().then(CX => { const x = box.querySelector('#csFonIg'); if (x) x.insertAdjacentHTML('beforeend', `<div style="margin-top:8px"><b>Instagram</b><br>${igFonteHtml(CX, {})}</div>`); }).catch(() => null);
+  box.querySelector('#csFonF').onsubmit = e => { e.preventDefault(); act(async () => {
+    const el = e.target.elements, canais = Object.fromEntries(CS_CANAIS.map(([k]) => [k, el[k].value.trim()]).filter(([, v]) => v));
+    if (!Object.keys(canais).length && !el.sem.checked) throw new Error('Informe pelo menos um canal ou marque "Ainda não tenho conteúdo publicado".');
+    await q(sb.rpc('content_fontes_salvar', { p_ws: S.ws, p_canais: canais, p_sem_canais: el.sem.checked, p_links: null }));
+    toast('Canais salvos'); render();
+  }); };
+}
+
+/* ----- passo 3: materiais, um tipo por vez ----- */
+const CS_MAT = [
+  ['documentos', 'Documentos', '02 Materiais do cliente › Documentos', 'Apresentações, e-books, roteiros, página de vendas, posicionamento, persona e pesquisas que você já tem. Vale PDF, Word, Google Docs ou Slides.'],
+  ['identidade', 'Identidade visual', '03 Identidade visual', 'Logo (de preferência em PNG ou SVG), cores, fontes e o guia da marca, se houver. Fotos suas que você gosta de usar nos conteúdos.'],
+  ['reunioes', 'Reuniões gravadas', '02 Materiais do cliente › Reuniões gravadas', 'Reuniões, lives, mentorias e entrevistas em que você explica o seu método. Se tiver a transcrição em texto (o Meet, o Zoom e o tl;dv geram), suba junto: é o que a IA lê primeiro.'],
+  ['aulas', 'Aulas e cursos', '02 Materiais do cliente › Aulas e cursos', 'Aulas e cursos gravados, inclusive os que estão em plataforma de venda (Hotmart, Kiwify, Eduzz…): baixe e suba aqui, com apostilas e transcrições, se tiver.'],
+  ['depoimentos', 'Depoimentos e provas', '02 Materiais do cliente › Depoimentos e provas', 'Prints de depoimentos, resultados de alunos, estudos de caso e números que comprovam o que você entrega.'],
+  ['links', 'Links de outros Drives', '', '']];
+function csMateriais2(box, D, E) {
+  const C = S.ct, f = E.fontes || {}, m = f.materiais || {}, d = E.drive || {}, email = (d.compartilhar_com || 'o e-mail da Mathisa');
+  const i0 = CS_MAT.findIndex(([k]) => !m[k]);
+  const ii = Math.max(0, Math.min(CS_MAT.length - 1, C.csMat ?? (i0 < 0 ? 0 : i0))), [k, nome, pasta, txt] = CS_MAT[ii], st = m[k];
+  const resolvidos = CS_MAT.filter(([x]) => m[x]).length;
+  const quando = st ? new Date(st.em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' }) : '';
+  const links = (f.links || []);
+  const corpo = k === 'links'
+    ? `<p style="margin:0 0 8px">Já tem material organizado em outro Google Drive? Compartilhe a pasta com <b>${esc(email)}</b> (pode ser como Leitor) e cole o link aqui. <span class="muted">Se puder, prefira copiar para a sua pasta do Growth's Content: fica mais organizado e a leitura é mais certa.</span></p>
+       <div id="csLks">${links.map((l, i) => `<div class="cs-lk"><input data-lku="${i}" value="${esc(l.url)}" placeholder="https://drive.google.com/drive/folders/..."><input data-lkd="${i}" value="${esc(l.desc || '')}" placeholder="O que tem lá (ex.: aulas do curso antigo)"><button type="button" class="btn sm" data-lkx="${i}" aria-label="Tirar este link">Tirar</button></div>`).join('') || '<p class="muted" style="margin:0">Nenhum link ainda.</p>'}</div>
+       <div class="cs-matbt"><button type="button" class="btn sm" id="csLkAdd">Adicionar link</button><button type="button" class="btn sm pri" id="csLkSalva">Salvar links</button></div>`
+    : `<p style="margin:0 0 8px">${esc(txt)}</p><p class="muted" style="margin:0">Onde colocar: <b>${esc(pasta)}</b>, dentro da sua pasta do Growth's Content.</p>
+       ${d.url ? `<a class="btn" style="margin-top:10px" href="${esc(d.url)}" target="_blank" rel="noopener">Abrir a pasta</a>` : '<span class="pill warn" style="margin-top:10px">A pasta ainda não foi criada (passo 1)</span>'}`;
+  box.innerHTML = `<div class="panel cs-cliente"><b>Este passo é do cliente.</b> Vá de um tipo de material para o outro e marque cada um. Se não tiver, marque "Não tenho". <span class="muted">${resolvidos} de ${CS_MAT.length} resolvidos.</span></div>
+    <div class="cc-blocos cs-mats" role="tablist">${CS_MAT.map(([x, n], i) => `<button type="button" role="tab" aria-selected="${i === ii}" class="${i === ii ? 'on' : ''}${m[x] ? ' feito' : ''}" data-csm="${i}"><b>${m[x] ? '✓ ' : ''}${esc(n)}</b><small>${m[x] ? (m[x].estado === 'ok' ? 'Pronto' : 'Não tem') : 'A fazer'}</small></button>`).join('')}</div>
+    <div class="panel cs-matb"><h3 style="margin:0 0 8px">${esc(nome)}</h3>${corpo}</div>
+    <div class="panel ${st ? 'cs-pronto' : ''}">${st ? `<b>${st.estado === 'ok' ? (k === 'links' ? 'Links registrados' : 'Pronto, está na pasta') : 'Marcado como "não tenho"'}</b> <span class="muted">em ${esc(quando)}.</span> <button class="btn sm" id="csMatRe">Reabrir</button>`
+      : `<div class="cs-matbt"><button class="btn pri" id="csMatOk"${k === 'links' ? (links.length ? '' : ' disabled') : (d.status === 'ok' ? '' : ' disabled')}>${k === 'links' ? 'Pronto, links registrados' : 'Pronto, está na pasta'}</button><button class="btn" id="csMatNao">Não tenho</button></div>`}</div>
+    ${(E.marcos || {}).materiais ? '<div class="panel cs-pronto"><b>Todos os materiais resolvidos.</b> <span class="muted">A leitura pela IA entra no passo de Pesquisa e tese (em construção). Dá para acrescentar coisas na pasta depois.</span></div>' : ''}`;
+  const marca = est => act(async () => {
+    await q(sb.rpc('content_material_marcar', { p_ws: S.ws, p_item: k, p_estado: est }));
+    if (est) { const prox = CS_MAT.findIndex(([x], i) => i !== ii && !m[x]); C.csMat = prox < 0 ? ii : prox; }
+    render();
+  });
+  box.querySelectorAll('[data-csm]').forEach(b => b.onclick = () => { C.csMat = Number(b.dataset.csm); render(); });
+  const ok = box.querySelector('#csMatOk'), nao = box.querySelector('#csMatNao'), re = box.querySelector('#csMatRe');
+  if (ok) ok.onclick = () => marca('ok');
+  if (nao) nao.onclick = () => marca('nao_tem');
+  if (re) re.onclick = () => marca(null);
+  if (k === 'links') {
+    const lista = () => [...box.querySelectorAll('[data-lku]')].map(u => ({ url: u.value.trim(), desc: (box.querySelector(`[data-lkd="${u.dataset.lku}"]`) || {}).value || '' })).filter(l => l.url);
+    const grava = async ls => { await q(sb.rpc('content_fontes_salvar', { p_ws: S.ws, p_canais: null, p_sem_canais: null, p_links: ls })); };
+    box.querySelector('#csLkAdd').onclick = () => {
+      const w = box.querySelector('#csLks'), i = w.querySelectorAll('[data-lku]').length; if (!i) w.innerHTML = '';
+      w.insertAdjacentHTML('beforeend', `<div class="cs-lk"><input data-lku="${i}" placeholder="https://drive.google.com/drive/folders/..."><input data-lkd="${i}" placeholder="O que tem lá (ex.: aulas do curso antigo)"></div>`);
+      w.querySelector(`[data-lku="${i}"]`).focus();
+    };
+    box.querySelector('#csLkSalva').onclick = () => act(async () => { await grava(lista()); toast('Links salvos'); render(); });
+    box.querySelectorAll('[data-lkx]').forEach(b => b.onclick = () => act(async () => { const ls = (f.links || []).filter((_, i) => i !== Number(b.dataset.lkx)); await grava(ls); render(); }));
+  }
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

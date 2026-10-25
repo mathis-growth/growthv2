@@ -1,5 +1,10 @@
 
 
+## v0.145
+- `workspaces.content_fontes` (jsonb): `canais` {plataforma: @ ou endereço}, `sem_canais`, `materiais` {tipo: {estado ok|nao_tem, em}}, `links` [{url, desc}].
+- `sistema_config.content_drive_arvore`: subpastas Documentos, Reuniões gravadas, Aulas e cursos, Depoimentos e provas em "02 Materiais do cliente".
+- Funções: `content_fontes_salvar(ws, canais, sem_canais, links)` (plataformas conhecidas, até 300 caracteres, até 30 links http/https), `content_material_marcar(ws, item, estado)` (marca/desmarca o marco `materiais` sozinho); `content_setup_estado` devolve `fontes`.
+
 ## v0.144
 - `workspaces.content_drive_modo` aceita também `compartilhada` (pasta do Drive do cliente compartilhada com a Mathisa).
 - `workspaces.content_setup_marcos` (jsonb): marcos da configuração com data (`materiais`, `leitura`, `tese`, `dossie`).

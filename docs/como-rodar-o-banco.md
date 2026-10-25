@@ -1,5 +1,9 @@
 
 
+## v0.145 — Canais e materiais do cliente
+1. `supabase/RODAR_v0.145_content_fontes.sql` (aplicado em produção em 25/10/2026).
+2. Nada a publicar nas funções. A árvore nova vale para as próximas pastas; nas que já existem, "Completar as pastas" cria as subpastas que faltam.
+
 ## v0.144 — Configuração em 8 passos e pasta compartilhada
 1. `supabase/RODAR_v0.144_content_setup_v2.sql` (aplicado em produção em 25/10/2026).
 2. `supabase functions deploy content-drive --no-verify-jwt` (publicada em 25/10/2026, versão 5).

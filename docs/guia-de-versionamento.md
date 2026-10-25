@@ -1,5 +1,8 @@
 
 
+## v0.145
+- index.html: 0.144 → 0.145 (`integra145.py`, que roda o `integra144.py`; novos `g145.js` e `g145.css`). Novo: `20261106100000_content_fontes.sql`, `RODAR_v0.145_content_fontes.sql`; teste `t143_content_setup.py` refeito para 9 passos. Aplicado em produção.
+
 ## v0.144
 - index.html: 0.143 → 0.144 (`integra144.py`, que roda o `integra143.py`; `g143.js` editado, novos `g144.js` e `g144.css`). Novo: `20261105100000_content_setup_v2.sql`, `RODAR_v0.144_content_setup_v2.sql`; função `content-drive` atualizada; teste `t143_content_setup.py` refeito para 8 passos. Aplicado em produção.
 

@@ -1,5 +1,10 @@
 
 
+## Canais e materiais do cliente (v0.145)
+- `g145.js`: reordena `CS_PASSOS` (9 passos, com `fontes` e `materiais` novos) e `CS_IR`; `csFontes` (canais, `csPerfilUrl`), `csMateriais2` (seis tipos em abas, "Pronto"/"Não tenho"/"Reabrir", links de outros Drives). `integra145.py` liga o passo `fontes` e troca o `csMateriais` pelo `csMateriais2`. `g145.css` com `body #main` para vencer o CSS anterior.
+- Migração `20261106100000_content_fontes.sql` (aplicada em produção em 25/10/2026).
+- Testes: `t143` (9 passos, canais, materiais, links, permissões), `t140`, `t141`, `t133`, `t134`, `t135` — 0 falhas.
+
 ## Configuração em 8 passos e pasta compartilhada (v0.144)
 - `g143.js`: `CS_PASSOS` com 8 passos (`emBreve` não trava a conclusão), `CS_IR`, novo `csDrive` (compartilhar pasta, copiar e-mail, colar link, "Verificar de novo"; "Não tenho Google Drive").
 - `g144.js`: `csCall` (roteiro da call por blocos, salva em 900 ms), `csMateriais` (lista e marco "material pronto"), `csEmBreve`, `csLinhaIA` (gerar, copiar, colar e aplicar a proposta). `g144.css` com seletores mais específicos (`#main ol.cs-passos`, `#main .cc-q > label`).

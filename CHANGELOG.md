@@ -100,6 +100,12 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.145] - 2026-10-25 — Canais e materiais do cliente antes da call
+- Configuração em **9 passos**. Novo passo 2, **Seus canais**: o cliente informa o @ de cada plataforma (Instagram, YouTube, TikTok, LinkedIn, Threads, Facebook, site, podcast, outro).
+- Novo passo 3, **Seus materiais**: seis tipos, um por tela, cada um com a sua pasta e "Pronto" ou "Não tenho"; inclui links de outros Drives.
+- Árvore: "02 Materiais do cliente" ganha Documentos, Reuniões gravadas, Aulas e cursos, Depoimentos e provas.
+- Banco: `20261106100000_content_fontes.sql`. **Aplicado em produção em 25/10/2026**.
+
 ## [0.144] - 2026-10-25 — Configuração em 8 passos e pasta compartilhada
 - **Passo 1 (recomendado)**: o cliente compartilha uma pasta do Drive dele com a Mathisa e cola o link; o Growths cria ali a árvore padrão de 10 pastas. Gratuito. "Não tenho Google Drive" continua.
 - **Passo 2: roteiro da call de briefing** na tela, uma parte por vez, salvando sozinho.
