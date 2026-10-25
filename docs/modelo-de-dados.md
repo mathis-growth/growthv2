@@ -1,5 +1,10 @@
 
 
+## v0.141
+- `acesso_telas`: `mkt-cont` (Estratégia de conteúdo) e `mkt-insta` (Instagram) no grupo "Marketing / Growth's Content"; `crm-dms` (DMs do Instagram) em Vendas.
+- Funções: `content_no_acesso(pacote, liga, desliga)`; gatilho `content_acesso_t` (antes de gravar o cliente) liga ou desliga `content_ativo` pelo acesso; `content_ws_t` passa a disparar em qualquer alteração do cliente.
+
+
 ## v0.140
 - `workspaces`: `content_ativo` (usa o Growth's Content), `content_drive_id`, `content_drive_url`, `content_drive_status` (criando | ok | erro), `content_drive_erro`, `content_drive_em`.
 - `sistema_config`: `content_drive_raiz` (pasta "Mathisa Growth's Content"), `content_drive_arvore` (JSON com os caminhos das subpastas), `content_drive_url` e `content_drive_token` (função), `drive_script_url` e `drive_script_senha` (Apps Script).

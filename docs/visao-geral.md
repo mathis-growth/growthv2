@@ -1,3 +1,6 @@
+## v0.141
+**O que o cliente acessa, marcado numa árvore.** No "Novo cliente", a lista de pacotes deu lugar a "O que o cliente acessa": cada área do menu com uma setinha para abrir e marcar tela por tela, e atalhos para começar de um pacote, de "Só Growth's Content", de "Tudo" ou limpar. O Growth's Content aparece dentro de Marketing; marcá-lo libera só o módulo de conteúdo (o cliente vê Marketing → Growth's Content e as telas de equipe) e cria a pasta dele no Google Drive. Quem decide se o cliente usa o módulo passa a ser o acesso dele.
+
 ## v0.140
 **Growth's Content e a pasta do cliente no Drive.** O módulo de conteúdo passa a se chamar Growth's Content (Marketing → Growth's Content → Estratégia de conteúdo e Instagram). Quando a equipe marca que um cliente usa o Growth's Content (no "Novo cliente" ou em Configurações → Pacotes de acesso), o Growths cria sozinho a pasta do cliente no Google Drive, dentro de GERAL › Mathisa › Clientes › Mathisa Growth's Content, e mostra o link no topo do módulo. A árvore de subpastas entra assim que for definida.
 

@@ -100,6 +100,12 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.141] - 2026-10-25 — O que o cliente acessa, em árvore
+- **Novo cliente**: "O que o cliente acessa" com setinhas por área e marcação tela por tela; atalhos "Só Growth's Content", pacotes, "Tudo" e "Limpar". Sai a lista de pacotes e a opção solta do Growth's Content.
+- **Growth's Content dentro de Marketing**: marcar libera só o módulo de conteúdo e cria a pasta do cliente no Drive. Instagram e DMs entram no catálogo dos pacotes.
+- O acesso do cliente decide se ele usa o Growth's Content (também por pacote e "Ajustar telas").
+- Banco: `20261103100000_acesso_content.sql`. **Aplicado em produção em 25/10/2026.**
+
 ## [0.140] - 2026-10-25 — Growth's Content e a pasta do cliente no Drive
 - O módulo de conteúdo agora se chama **Growth's Content** no menu e no título.
 - **Novo cliente** e **Configurações → Pacotes de acesso** ganham "Usa o Growth's Content". Ao marcar, o Growths cria a pasta do cliente no Google Drive, em "Mathisa Growth's Content"; o link aparece no topo do módulo. Erro com motivo e "Tentar de novo"; "Testar a ligação com o Drive".

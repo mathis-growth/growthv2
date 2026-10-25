@@ -387,7 +387,25 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.140 pasta do cliente no Drive */
+<style id="v122">/* v0.141 árvore de acesso do cliente */
+.ac-fs{margin:6px 0}
+.ac-pre{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:2px 0 8px;font-size:13px}
+.ac-arv{display:flex;flex-direction:column;gap:4px;max-height:46vh;overflow:auto;padding-right:4px;margin-bottom:6px}
+.ac-g{border:1px solid var(--line);border-radius:10px;padding:4px 8px}
+.ac-h{display:flex;align-items:center;gap:6px}
+.ac-h .chk{flex:1;margin:0}
+.ac-seta{background:none;border:0;padding:4px;cursor:pointer;color:var(--muted);display:inline-flex;border-radius:6px}
+.ac-seta:hover{background:var(--surface-2)}
+.ac-seta svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;transition:transform .15s;transform:rotate(-90deg)}
+.ac-seta[aria-expanded="true"] svg{transform:none}
+.ac-n{color:var(--muted);font-size:12px;white-space:nowrap}
+.ac-c{display:flex;flex-direction:column;gap:2px;padding:2px 0 6px 30px}
+.ac-t{font-size:13px}
+.ac-sub{border-left:2px solid var(--accent);padding:2px 0 2px 10px;margin:4px 0}
+.ac-sc{display:flex;flex-direction:column;gap:2px;padding-left:22px}
+@media (prefers-reduced-motion:reduce){.ac-seta svg{transition:none}}
+.ac-c[hidden]{display:none}
+/* v0.140 pasta do cliente no Drive */
 .cd-erro{color:var(--bad,#b42318);display:inline-block;max-width:420px;line-height:1.35;margin-top:4px}
 .cd-pasta{margin-left:auto;align-self:center}
 /* v0.139 insights e melhores dias */
@@ -845,7 +863,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.140 · 25/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.141 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -1263,7 +1281,8 @@ async function boot() {
   });
   bootando = false;
 }
-$('#novoCli').onclick = () => { modal('Novo cliente', `<label>Nome do cliente<input name="nome" required></label><label>Tipo de acesso<select name="tipo"><option value="starter">Growth Starter (consultoria: só diagnóstico e relatórios)</option><option value="completo">Growths completo (operação inteira)</option></select></label><label>Pacote de acesso<select name="pacote" id="ncPac"><option value="">— sem pacote (acesso a tudo) —</option></select></label><label class="chk"><input type="checkbox" name="content"> Usa o Growth's Content (cria a pasta do cliente no Google Drive)</label><p class="muted">Cada cliente tem o seu banco separado. No Growth Starter você importa as planilhas dele, confere o de-para e puxa os relatórios. Dá para ver os dados do cliente só depois de importar.</p>`,
+$('#novoCli').onclick = () => ncModal();
+const ncModalV140 = () => { modal('Novo cliente', `<label>Nome do cliente<input name="nome" required></label><label>Tipo de acesso<select name="tipo"><option value="starter">Growth Starter (consultoria: só diagnóstico e relatórios)</option><option value="completo">Growths completo (operação inteira)</option></select></label><label>Pacote de acesso<select name="pacote" id="ncPac"><option value="">— sem pacote (acesso a tudo) —</option></select></label><label class="chk"><input type="checkbox" name="content"> Usa o Growth's Content (cria a pasta do cliente no Google Drive)</label><p class="muted">Cada cliente tem o seu banco separado. No Growth Starter você importa as planilhas dele, confere o de-para e puxa os relatórios. Dá para ver os dados do cliente só depois de importar.</p>`,
   async d => { const id = await q(sb.rpc('criar_workspace_cliente', { p_nome: d.nome, p_modo: d.tipo === 'starter' ? 'starter' : 'completo' })); if (d.content) { try { await q(sb.rpc('content_definir', { p_ws: id, p_ativo: true })); } catch (e) { toast('Cliente criado, mas o Growth\'s Content não foi ligado: ' + e.message, true); } } if (d.pacote) { try { await q(sb.rpc('workspace_definir_acesso', { p_ws: id, p_pacote: d.pacote, p_liga: [], p_desliga: [] })); } catch (e) { toast('Cliente criado, mas o pacote não foi aplicado: ' + e.message, true); } }
     S.ws = S.wsBase = id; S.perm = null; S.permWs = null; S.view = d.tipo === 'starter' ? 'st-dash' : 'adm-painel'; await boot(); toast('Cliente criado'); }, 'Criar cliente');
   sb.from('pacotes_acesso').select('id,nome,ativo').order('nome').then(r => { const sel = $('#ncPac'); if (!sel || r.error || !r.data) { if (sel) sel.closest('label').style.display = 'none'; return; } sel.insertAdjacentHTML('beforeend', r.data.filter(p => p.ativo).map(p => `<option value="${p.id}">${esc(p.nome)}</option>`).join('')); }); };
@@ -15617,9 +15636,9 @@ async function cdPainel(el, voltas = 0) {
   let L;
   try { L = await q(sb.rpc('content_clientes')); }
   catch (e) { el.innerHTML = `<h2>Growth's Content</h2><p class="muted">A lista ainda não está disponível: ${esc(e.message || String(e))}. Rode a migração da v0.140.</p>`; return; }
-  el.innerHTML = `<div class="ig-head"><div><h2 style="margin:0">Growth's Content</h2><span class="muted">Marque quem usa o módulo. Ao marcar, o Growths cria a pasta do cliente no Google Drive, dentro de "Mathisa Growth's Content". Desmarcar não apaga a pasta.</span></div><button class="btn sm" id="cdTeste">Testar a ligação com o Drive</button></div>
+  el.innerHTML = `<div class="ig-head"><div><h2 style="margin:0">Growth's Content</h2><span class="muted">Quem tem o Growth's Content no acesso (Novo cliente, pacote ou Ajustar telas) usa o módulo. Nessa hora o Growths cria a pasta do cliente no Google Drive, dentro de "Mathisa Growth's Content". Desmarcar não apaga a pasta.</span></div><button class="btn sm" id="cdTeste">Testar a ligação com o Drive</button></div>
     <div class="tw"><table><thead><tr><th>Cliente</th><th>Usa o Growth's Content</th><th>Pasta no Drive</th><th>Atualizado</th></tr></thead><tbody>
-    ${L.map(c => `<tr><td><b>${esc(c.nome)}</b>${c.agencia ? ' <small class="muted">(equipe interna)</small>' : ''}</td><td><label class="chk"><input type="checkbox" data-cdc="${c.id}"${c.content_ativo ? ' checked' : ''}> Sim</label></td><td>${cdSituacao(c)}</td><td><small class="muted">${cdData(c.em)}</small></td></tr>`).join('') || '<tr><td colspan="4" class="empty">Nenhum cliente.</td></tr>'}</tbody></table></div>`;
+    ${L.map(c => `<tr><td><b>${esc(c.nome)}</b>${c.agencia ? ' <small class="muted">(equipe interna)</small>' : ''}</td><td>${c.agencia ? `<label class="chk"><input type="checkbox" data-cdc="${c.id}"${c.content_ativo ? ' checked' : ''}> Sim</label>` : `${c.content_ativo ? '<b>Sim</b>' : '<span class="muted">Não</span>'}<br><small class="muted">pelo acesso do cliente</small>`}</td><td>${cdSituacao(c)}</td><td><small class="muted">${cdData(c.em)}</small></td></tr>`).join('') || '<tr><td colspan="4" class="empty">Nenhum cliente.</td></tr>'}</tbody></table></div>`;
   const de_novo = () => cdPainel(el, voltas + 1);
   el.querySelectorAll('[data-cdc]').forEach(x => x.onchange = () => act(async () => {
     await q(sb.rpc('content_definir', { p_ws: x.dataset.cdc, p_ativo: x.checked }));
@@ -15643,6 +15662,81 @@ async function cdPillModulo(m) {
     const h = m.querySelector('.head'); if (!h || !r || !r.content_ativo || !h.isConnected) return;
     h.insertAdjacentHTML('beforeend', r.url ? `<a class="btn sm cd-pasta" href="${esc(r.url)}" target="_blank" rel="noopener">Pasta no Drive</a>` : `<span class="pill ${r.status === 'erro' ? 'bad' : 'info'}">${r.status === 'erro' ? 'Pasta no Drive não criada' : 'Criando a pasta no Drive…'}</span>`);
   } catch (e) { /* sem a migração da v0.140: não mostra nada */ }
+}
+
+/* ===================== v0.141 — o que o cliente acessa: árvore com setinhas (e o Growth's Content dentro de Marketing) ===================== */
+/* catálogo → árvore: grupo do menu, subgrupos ("Marketing / Growth's Content") e telas */
+function acMonta(cat) {
+  const G = [];
+  cat.forEach(t => {
+    const [top, ...r] = String(t.grupo || 'Outros').split(' / '), sub = r.join(' / ');
+    let g = G.find(x => x.nome === top); if (!g) G.push(g = { nome: top, telas: [], subs: [] });
+    if (!sub) { g.telas.push(t); return; }
+    let s = g.subs.find(x => x.nome === sub); if (!s) g.subs.push(s = { nome: sub, telas: [] });
+    s.telas.push(t);
+  });
+  return G;
+}
+function acArvore(cat, marcadas) {
+  const ck = t => marcadas.has(t.tela) || PAC_SEMPRE.includes(t.tela);
+  const tela = t => `<label class="chk ac-t"><input type="checkbox" name="ac" value="${esc(t.tela)}"${ck(t) ? ' checked' : ''}${PAC_SEMPRE.includes(t.tela) ? ' disabled title="Sempre liberada para o administrador do cliente"' : ''}> ${esc(t.nome)}</label>`;
+  return `<div class="ac-arv">${acMonta(cat).map((g, i) => `<div class="ac-g" data-acg="${i}">
+    <div class="ac-h"><button type="button" class="ac-seta" aria-expanded="false" aria-label="Abrir ${esc(g.nome)}">${CHEV}</button><label class="chk"><input type="checkbox" data-acx="g${i}"> <b>${esc(g.nome)}</b></label><small class="ac-n"></small></div>
+    <div class="ac-c" hidden>${g.telas.map(tela).join('')}${g.subs.map((s, j) => `<div class="ac-sub"><label class="chk"><input type="checkbox" data-acx="g${i}s${j}"> <b>${esc(s.nome)}</b></label><div class="ac-sc">${s.telas.map(tela).join('')}</div></div>`).join('')}</div></div>`).join('')}</div>`;
+}
+/* marca e desmarca em grupo, mostra "x de y" e o estado parcial */
+function acLiga(box) {
+  const telasDe = el => [...el.querySelectorAll('input[name=ac]')];
+  const conta = () => box.querySelectorAll('.ac-g').forEach(g => {
+    const T = telasDe(g), n = T.filter(x => x.checked).length;
+    g.querySelector('.ac-n').textContent = n ? `${n} de ${T.length}` : '';
+    const gx = g.querySelector('.ac-h input'); gx.checked = n === T.length; gx.indeterminate = n > 0 && n < T.length;
+    g.querySelectorAll('.ac-sub').forEach(s => { const S2 = telasDe(s), m = S2.filter(x => x.checked).length, sx = s.querySelector(':scope > label input'); sx.checked = m === S2.length; sx.indeterminate = m > 0 && m < S2.length; });
+  });
+  box.querySelectorAll('.ac-seta').forEach(b => b.onclick = () => { const c = b.closest('.ac-g').querySelector('.ac-c'), ab = c.hidden; c.hidden = !ab; b.setAttribute('aria-expanded', String(ab)); });
+  box.querySelectorAll('.ac-h input').forEach(x => x.onchange = () => { telasDe(x.closest('.ac-g')).filter(t => !t.disabled).forEach(t => t.checked = x.checked); conta(); });
+  box.querySelectorAll('.ac-sub > label input').forEach(x => x.onchange = () => { telasDe(x.closest('.ac-sub')).filter(t => !t.disabled).forEach(t => t.checked = x.checked); conta(); });
+  box.querySelectorAll('input[name=ac]').forEach(x => x.onchange = conta);
+  conta();
+  return { marcadas: () => telasDe(box).filter(x => x.checked).map(x => x.value), marca: L => { const S3 = new Set(L); telasDe(box).filter(t => !t.disabled).forEach(t => t.checked = S3.has(t.value)); conta(); } };
+}
+/* grava o acesso: tudo marcado = sem restrição; igual a um pacote = o pacote; senão, as telas marcadas */
+async function acGrava(ws, sel, todas, pacotes, catalogo) {
+  const S4 = new Set(sel), base = todas.filter(t => !PAC_SEMPRE.includes(t));
+  // telas fora do menu (abas de outras telas) e do Growth Starter também ficam desligadas quando não foram marcadas
+  const desl = (catalogo || todas).filter(t => !PAC_SEMPRE.includes(t) && !S4.has(t));
+  if (base.every(t => S4.has(t))) return;
+  const igual = p => { const T = new Set((p.telas || []).filter(t => todas.includes(t))); return base.every(t => T.has(t) === S4.has(t)); };
+  const p = pacotes.find(x => x.ativo && igual(x));
+  if (p) return q(sb.rpc('workspace_definir_acesso', { p_ws: ws, p_pacote: p.id, p_liga: [], p_desliga: [] }));
+  return q(sb.rpc('workspace_definir_acesso', { p_ws: ws, p_pacote: null, p_liga: base.filter(t => S4.has(t)), p_desliga: desl }));
+}
+function ncModal() {
+  let A = null, cat = [], pacs = [], catTodo = [];
+  const f = modal('Novo cliente', `<label>Nome do cliente<input name="nome" required></label><label>Tipo de acesso<select name="tipo"><option value="completo">Growths completo (operação inteira)</option><option value="starter">Growth Starter (consultoria: só diagnóstico e relatórios)</option></select></label>
+    <fieldset class="mq-fs ac-fs"><legend>O que o cliente acessa</legend><div class="ac-pre" id="ncPre"></div><div id="ncAc"><small class="muted">Carregando as telas…</small></div>
+    <small class="muted">Abra a setinha para escolher tela por tela. Marcar <b>Growth's Content</b> (dentro de Marketing) libera só o módulo de conteúdo e cria a pasta do cliente no Google Drive.</small></fieldset>
+    <p class="muted">Cada cliente tem o seu banco separado. No Growth Starter você importa as planilhas dele, confere o de-para e puxa os relatórios.</p>`,
+    async d => {
+      const sel = A ? A.marcadas() : [], todas = cat.map(t => t.tela);
+      if (d.tipo !== 'starter' && A && !sel.filter(t => !PAC_SEMPRE.includes(t)).length) throw new Error('Marque o que o cliente acessa (abra as setinhas para escolher).');
+      const id = await q(sb.rpc('criar_workspace_cliente', { p_nome: d.nome, p_modo: d.tipo === 'starter' ? 'starter' : 'completo' }));
+      if (d.tipo !== 'starter' && A) { try { await acGrava(id, sel, todas, pacs, catTodo); } catch (e) { toast('Cliente criado, mas o acesso não foi gravado: ' + e.message, true); } }
+      S.ws = S.wsBase = id; S.perm = null; S.permWs = null; S.view = d.tipo === 'starter' ? 'st-dash' : (sel.includes('mkt-cont') && !sel.includes('adm-painel') ? 'mkt-cont' : 'adm-painel'); await boot();
+      toast(sel.includes('mkt-cont') ? 'Cliente criado. Criando a pasta dele no Google Drive…' : 'Cliente criado');
+    }, 'Criar cliente', true);
+  Promise.all([q(sb.from('acesso_telas').select('*').order('ordem')), q(sb.from('pacotes_acesso').select('id,nome,ativo,telas').order('nome')).catch(() => [])]).then(([c, p]) => {
+    catTodo = c.map(t => t.tela); cat = c.filter(t => !/^st-/.test(t.tela) && !TELAS_FORA_DO_MENU.includes(t.tela)); pacs = p || [];
+    const box = f.querySelector('#ncAc'); if (!box) return;
+    box.innerHTML = acArvore(cat, new Set()); A = acLiga(box);
+    const pre = f.querySelector('#ncPre');
+    pre.innerHTML = `<span class="muted">Começar de:</span> <button type="button" class="chip" data-pre="content">Só Growth's Content</button>${pacs.filter(x => x.ativo).map(x => `<button type="button" class="chip" data-pre="${x.id}">${esc(x.nome)}</button>`).join('')}<button type="button" class="chip" data-pre="tudo">Tudo</button><button type="button" class="chip" data-pre="nada">Limpar</button>`;
+    pre.querySelectorAll('[data-pre]').forEach(b => b.onclick = () => {
+      const k = b.dataset.pre;
+      A.marca(k === 'tudo' ? cat.map(t => t.tela) : k === 'nada' ? [] : k === 'content' ? cat.filter(t => /Growth's Content/.test(t.grupo || '')).map(t => t.tela) : ((pacs.find(x => x.id === k) || {}).telas || []));
+      if (k === 'content') { const g = [...box.querySelectorAll('.ac-g')].find(x => x.querySelector('.ac-sub')); if (g && g.querySelector('.ac-c').hidden) g.querySelector('.ac-seta').click(); }
+    });
+  }).catch(e => { const box = f.querySelector('#ncAc'); if (box) box.innerHTML = `<small class="muted">Não consegui carregar as telas (${esc(e.message || String(e))}). O cliente será criado com acesso a tudo.</small>`; });
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

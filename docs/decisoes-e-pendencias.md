@@ -1,5 +1,17 @@
 
 
+## v0.141 — Acesso do cliente em árvore; Growth's Content pelo acesso
+**Pedido da Rebecka (25/10)**: no cadastro do cliente, em vez de escolher numa lista, abrir a setinha e marcar o que a pessoa acessa, dentro do que já existe (sem mais uma opção solta); marcar Growth's Content libera só a parte de marketing.
+**Fato (25/10)**: o primeiro cliente de teste ("Teste Growth's Content") foi criado pela tela e a pasta dele saiu no Drive (v0.140 funcionando de ponta a ponta).
+Decisões:
+- Catálogo de telas: Growth's Content é um subgrupo de Marketing (Estratégia de conteúdo e Instagram); DMs do Instagram entram em Vendas. Antes o Instagram e as DMs não existiam no catálogo.
+- Gravação do acesso: tudo marcado = sem restrição; igual a um pacote = aquele pacote; senão, telas ligadas e todas as outras desligadas (inclusive as abas internas, como Cohorts e Unit Economics, que antes ficavam liberadas sem querer).
+- O cliente usa o Growth's Content quando o acesso restrito dele inclui o módulo (por árvore, pacote ou "Ajustar telas"); tirar do acesso desliga (a pasta fica). Cliente sem restrição não muda sozinho. Na tela de Pacotes, só a equipe interna tem a caixa manual.
+- Cliente criado só com o Growth's Content abre direto no módulo.
+- Equipe e acessos e Funções e permissões continuam sempre liberadas para o administrador do cliente.
+**Pendente**: árvore de subpastas; telas de configuração passo a passo do Growth's Content.
+
+
 ## v0.140 — Pasta do cliente no Drive (Growth's Content)
 **Pedido da Rebecka (25/10)**: ao cadastrar um cliente e definir que ele usa o Growth's Content, criar a pasta dele no Drive dentro de "Mathisa Growth's Content" (criada nesta data em GERAL › Mathisa › Clientes). Sem painel "Comece aqui": sem configuração, o módulo abre na primeira tela de configuração e segue tela a tela (próximas versões); configurado, abre nas abas de hoje.
 Decisões:

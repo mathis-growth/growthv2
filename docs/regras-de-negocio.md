@@ -1,5 +1,10 @@
 
 
+## v0.141 — Acesso e Growth's Content
+- Acesso restrito (pacote, ligadas ou desligadas) que contém `mkt-cont` → usa o Growth's Content; sem `mkt-cont` → não usa. Sem restrição → mantém o que estava. Equipe interna (agência) só pela caixa manual.
+- Árvore do Novo cliente: grupo marcado = todas as telas dele; parcial aparece como "x de y". Equipe e acessos e Funções e permissões sempre marcadas.
+
+
 ## v0.140 — Pasta do cliente no Drive
 - Marcar "usa o Growth's Content" num cliente sem pasta → pede a pasta. Já com pasta → não pede outra. Desmarcar → a pasta fica.
 - Nome da pasta = nome do cliente (barras viram hífen). Se já existe uma pasta com esse nome dentro da raiz, ela é usada. Subpastas da árvore são criadas só se faltarem ("Tentar de novo" completa a árvore numa pasta já existente).

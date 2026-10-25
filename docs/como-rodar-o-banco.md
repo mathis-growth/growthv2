@@ -1,5 +1,9 @@
 
 
+## v0.141
+1. `supabase/RODAR_v0.141_acesso_content.sql` (aplicado em produção em 25/10/2026).
+
+
 ## v0.140 — Pasta do cliente no Drive
 1. `supabase/RODAR_v0.140_content_drive.sql` (aplicado em produção em 25/10/2026).
 2. Publicar a função: `supabase functions deploy content-drive --no-verify-jwt` (publicada em 25/10/2026).
