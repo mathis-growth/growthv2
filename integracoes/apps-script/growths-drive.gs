@@ -11,6 +11,7 @@
  */
 const SENHA = '<SENHA — a mesma de sistema_config.drive_script_senha>';
 
+const EMAIL_MATHISA = 'rebecka@rebeckacappello.com.br'; // só para a mensagem de pasta sem acesso
 const LER_MAX_ARQUIVOS = 80;          // por pedido
 const LER_MAX_TEXTO = 60000;          // caracteres por arquivo
 const LER_MAX_TOTAL = 600000;         // caracteres somando tudo
@@ -25,7 +26,7 @@ function doPost(e) {
     if (b.senha !== SENHA) return responde({ ok: false, erro: 'Senha inválida' });
     if (b.acao === 'ler') return responde(ler_(b));
     const raiz = DriveApp.getFolderById(b.raiz);
-    if (b.acao === 'teste') return responde({ ok: true, raiz: raiz.getName(), versao: 2 });
+    if (b.acao === 'teste') return responde({ ok: true, raiz: raiz.getName(), versao: 3 });
     if (b.acao !== 'criar_cliente') return responde({ ok: false, erro: 'Ação desconhecida' });
     const nome = String(b.nome || '').replace(/[\\/]/g, '-').trim();
     if (!nome) return responde({ ok: false, erro: 'Cliente sem nome' });
@@ -91,7 +92,7 @@ function ler_(b) {
   };
   (b.pastas || []).forEach(p => {
     try { const f = DriveApp.getFolderById(p.id); visita(f, f.getName(), p.rotulo || ''); }
-    catch (err) { pastasErro.push({ id: p.id, rotulo: p.rotulo || '', erro: 'Sem acesso a esta pasta (confira se foi compartilhada com ' + Session.getEffectiveUser().getEmail() + ')' }); }
+    catch (err) { pastasErro.push({ id: p.id, rotulo: p.rotulo || '', erro: 'Sem acesso a esta pasta (confira se foi compartilhada com ' + (b.email || EMAIL_MATHISA) + ')' }); }
   });
-  return { ok: true, versao: 2, arquivos: saida, pastas_com_erro: pastasErro, limite_arquivos: saida.length >= LER_MAX_ARQUIVOS };
+  return { ok: true, versao: 3, arquivos: saida, pastas_com_erro: pastasErro, limite_arquivos: saida.length >= LER_MAX_ARQUIVOS };
 }
