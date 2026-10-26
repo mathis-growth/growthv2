@@ -1,3 +1,6 @@
+## v0.151
+**A pesquisa com um botão e o dossiê.** No passo Pesquisa da configuração do Growth's Content, um botão lê as pastas do cliente (e as outras que ele compartilhou), as pastas com os padrões da Mathisa, as respostas da call, os produtos e os canais, pesquisa na web sobre o mercado, os concorrentes e o que o público pergunta, e entrega um relatório para ler, com as fontes e a lista do que foi e do que não foi lido. Depois de ler, um clique gera o dossiê da marca em seções (diferencial, mecanismos, construção do produto, narrativa, voz, persona, concorrência, oportunidades de conteúdo). O custo de cada rodada vai para a tela de custos, que só a Rebecka vê.
+
 ## v0.150
 **Ficha de produto simples e a esteira no questionário.** A aba Produtos do Growth's Content ficou enxuta: cada produto tem nome, valor e histórico, cadastrados ali mesmo (ou trazidos do cadastro comercial), e as ideias podem ser ligadas a ele. O questionário da call de briefing ganhou o bloco Produtos e esteira: quais produtos e valores, como a esteira funciona, o carro-chefe, como a venda acontece e o histórico dos produtos.
 

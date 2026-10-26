@@ -1,5 +1,12 @@
 
 
+## v0.151
+- `content_pesquisas`: workspace, status (fila, lendo, pesquisando, pronto, erro), etapa, erro, relatório (Markdown), fontes da web, arquivos (lidos e não lidos com o motivo, sem o conteúdo), modelo, tokens, buscas, quem pediu, datas.
+- `content_dossies`: workspace, pesquisa, versão, status (gerando, rascunho, aprovado, erro), seções [{titulo, texto}], modelo, tokens.
+- Os dois: o cliente lê os dele; só o servidor grava.
+- `sistema_config`: `ia_modelo_pesquisa`, `content_pesquisa_buscas`, `ia_precos`, `content_dossie_secoes`.
+- Marcos usados: `leitura` (relatório lido) e `dossie` (dossiê ok).
+
 ## v0.150
 - `content_produtos` (id, workspace_id, nome, valor, historico, ativo, ordem, produto_id opcional do cadastro comercial). Lê quem é do cliente ou da equipe interna; grava quem configura o Growth's Content.
 - `conteudos.produto_id` passa a apontar para `content_produtos`.

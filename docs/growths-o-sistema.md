@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 25/10/2026, versão 0.150.
+**Última atualização:** 25/10/2026, versão 0.151.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -168,8 +168,11 @@ Enquanto o cliente não estiver configurado, o módulo abre num passo a passo de
    - aulas e cursos, inclusive os de plataforma de venda, baixados e subidos;
    - depoimentos e provas.
 4. **Call de briefing.** O roteiro da call aparece na tela, um bloco de perguntas por vez, salvando sozinho enquanto a pessoa digita: nicho, objetivo, **produtos e esteira** (quais produtos e valores, como a esteira funciona, o carro-chefe, como a venda acontece e o histórico), tese, repertório e formatos. Tem data da call e anotações livres.
-5. **Pesquisa e tese** (em construção). Um botão "Fazer a pesquisa": a IA lê as pastas (do cliente e da Mathisa), as respostas da call, os produtos e os canais, pesquisa na web e entrega um relatório para ler. Dele sai a tese: diferencial, mecanismo do problema e da solução, construção do produto, narrativa e voz.
-6. **Dossiê e aprovação** (em construção). O dossiê da marca na tela e em PDF para o cliente aprovar. Aprovado, vira o padrão editável e gera a "skill do cliente".
+5. **Pesquisa.** Um botão, "Fazer a pesquisa". A IA lê as pastas do cliente (a principal e as outras que ele compartilhou) e as pastas com os padrões da Mathisa, junta as respostas da call, os produtos com o histórico e os canais, e pesquisa na web o mercado, as tendências, os concorrentes e o que o público pergunta. Entrega um relatório para ler, com:
+   - cada afirmação marcada como fato, hipótese ou recomendação;
+   - as fontes de cada fato;
+   - a lista do que foi lido e do que não foi lido (por exemplo, vídeo sem transcrição), com o motivo.
+6. **Dossiê.** Depois de ler o relatório, um clique gera o dossiê da marca em seções: diferencial, mecanismo do problema, mecanismo da solução, construção do produto, narrativa, voz, persona, concorrência e oportunidades de conteúdo. Cada nova geração é uma versão. A aprovação do cliente, o PDF e a skill do cliente vêm na sequência.
 7. **Linha editorial e formatos.** A IA propõe territórios, frentes e formatos a partir da call. Aqui também se escolhem as estruturas de roteiro e copy.
 8. **Onde publicar.** Os canais em uso e as regras de canal por frente e etiqueta.
 9. **Rotina da semana.** Quantos conteúdos por semana, o dia da curadoria (sexta por padrão) e quem publica.
@@ -240,7 +243,7 @@ Enquanto o cliente não estiver configurado, o módulo abre num passo a passo de
   - registrar o custo de cada rodada.
 - **Leitura dos outros canais** (YouTube, TikTok, LinkedIn, Threads) pela conexão.
 - **Pesquisa, tese, dossiê e skill do cliente**, com aprovação.
-- **Pesquisa com um botão**: leitura das pastas, da call e dos produtos, pesquisa na web e um relatório para ler; depois, o dossiê.
+- **Aprovação do dossiê pelo cliente**, o PDF e a skill do cliente.
 - **A rotina de ideias usando os produtos** e o histórico de cada um.
 - **Planos por faixa**, com limites de produção e ferramentas de vídeo e arte. Começa pelo básico: cortar pausas.
 - A IA trabalha pela API da Claude: cada cliente separado e nada passando por contas pessoais.
@@ -407,6 +410,8 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - Order bump, upsell e downsell medidos com o denominador certo.
 - Cenário ruim, bom e ótimo: margem como meta de gestão.
 - A esteira explicada: por onde o cliente entra e o que compra depois.
+- Da pasta ao dossiê: como a IA lê o material do cliente sem inventar nada.
+- Fato, hipótese ou recomendação: como ler uma pesquisa feita por IA.
 - Objeção com resposta: transformar o "não tenho tempo" em pauta.
 - Construir um sistema em 140 versões: o bastidor da Mathisa.
 
@@ -453,4 +458,5 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - Máquina de Conteúdo; Instagram (dashboard, DMs, insights);
   - Growth's Content com pasta no Drive, configuração em 9 passos, estruturas de roteiro e copy, custos de IA, pastas da Mathisa;
   - painel da produção no Kanban;
-  - produtos no conteúdo (nome, valor e histórico), com as ideias ligadas a eles, e o bloco Produtos e esteira no questionário.
+  - produtos no conteúdo (nome, valor e histórico), com as ideias ligadas a eles, e o bloco Produtos e esteira no questionário;
+  - pesquisa com um botão (pastas, call, produtos, canais e web) e o dossiê em seções.

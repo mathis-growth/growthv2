@@ -387,7 +387,28 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.150 ficha de produto simples */
+<style id="v122">/* v0.151 pesquisa e dossiê */
+.cp-usa{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:4px;font-size:14px}
+.cp-andando{display:flex;gap:14px;align-items:center}
+.cp-roda{width:22px;height:22px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:cpgira 1s linear infinite;flex:none}
+@keyframes cpgira{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.cp-roda{animation:none;border-top-color:var(--accent)}}
+.cp-cab{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin:0 0 10px;padding:0 0 10px;border-bottom:1px solid var(--line)}
+.md{font-size:14.5px;line-height:1.65;max-width:78ch}
+.md h2,.md h3,.md h4{margin:18px 0 6px;line-height:1.3}
+.md h2{font-size:18px}.md h3{font-size:16px}.md h4{font-size:14.5px}
+.md p{margin:0 0 8px}
+.md ul,.md ol{margin:0 0 10px;padding-left:22px}
+.md li{margin:0 0 4px}
+.md .md-tag{font-size:11px;padding:1px 6px;vertical-align:1px}
+.cp-fontes{margin:8px 0 0;padding-left:22px;font-size:13.5px;line-height:1.6}
+.cp-arqs{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+.cp-arqs li{display:grid;grid-template-columns:18px 1fr;gap:6px}
+.cp-arqs li.nao{color:var(--muted)}
+.cd-ind{display:flex;flex-wrap:wrap;gap:6px 14px;margin:0 0 12px;font-size:13px}
+.cd-sec{padding:12px 0;border-top:1px solid var(--line)}
+.cd-sec h3{margin:0 0 6px}
+/* v0.150 ficha de produto simples */
 body #main .panel.pf-cab{display:flex;flex-direction:row;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 body #main .pf-cab p{flex:1 1 420px}
 .pf-hist{margin:0;font-size:14px;line-height:1.55;white-space:pre-line;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
@@ -1032,7 +1053,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.150 · 25/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.151 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -15967,7 +15988,7 @@ async function csWizard(m, D, E) {
   if (!E.pode) el.insertAdjacentHTML('beforeend', '<div class="panel cs-aviso">Você pode ver a configuração, mas só quem edita o Marketing deste cliente consegue preencher.</div>');
   // ---------- abertura ----------
   if (n === 0) {
-    el.insertAdjacentHTML('beforeend', `<div class="panel cs-inicio"><h2>Vamos configurar o Growth's Content</h2><p>São ${CS_PASSOS.length} passos (${CS_PASSOS.filter(p => p.emBreve).length} ainda em construção, que por enquanto podem ser pulados). Você pode parar e voltar quando quiser: o Growths guarda onde você parou.</p>
+    el.insertAdjacentHTML('beforeend', `<div class="panel cs-inicio"><h2>Vamos configurar o Growth's Content</h2><p>São ${CS_PASSOS.length} passos${CS_PASSOS.some(p => p.emBreve) ? ` (${CS_PASSOS.filter(p => p.emBreve).length} ainda em construção, que por enquanto podem ser pulados)` : ''}. Você pode parar e voltar quando quiser: o Growths guarda onde você parou.</p>
       <ol class="cs-lista">${CS_PASSOS.map((p, i) => `<li class="${feito[i] ? 'ok' : ''}"><b>${p.t}</b> <span class="muted">${p.sub}</span>${feito[i] ? ' <span class="pill good">pronto</span>' : p.emBreve ? ' <span class="pill neutral">em construção</span>' : ''}</li>`).join('')}</ol>
       <div class="acts"><button class="btn pri" id="csComeca">${feito.some(Boolean) || E.etapa ? 'Continuar de onde parei' : 'Começar a configuração'}</button></div></div>`);
     $('#csComeca').onclick = () => vai(Math.max(1, Math.min(CS_PASSOS.length, (CS_PASSOS.findIndex((p, i) => !p.emBreve && !feito[i]) + 1) || CS_PASSOS.length)));
@@ -15989,7 +16010,8 @@ async function csWizard(m, D, E) {
   if (P.k === 'call') csCall(box, D, E);
   else if (P.k === 'fontes') csFontes(box, D, E);
   else if (P.k === 'materiais') csMateriais2(box, D, E);
-  else if (P.k === 'tese' || P.k === 'dossie') csEmBreve(box, P);
+  else if (P.k === 'tese') csPesquisa(box, D, E);
+  else if (P.k === 'dossie') csDossie(box, D, E);
   else if (P.k === 'linha') { csLinhaIA(box, D); const sub = document.createElement('div'); sub.style.cssText = 'display:flex;flex-direction:column;gap:16px'; box.appendChild(sub); tabLinhas(sub, D, C); tabEstruturas(box); }
   else if (P.k === 'canais') { tabCanais(box, D, C); igConexao().then(CX => { if (box.isConnected) box.insertAdjacentHTML('afterbegin', `<div class="panel ig-fonte"><b>Instagram</b><br>${igFonteHtml(CX, {})}</div>`); }).catch(() => null); }
   else if (P.k === 'rotina') csRotina(box, D);
@@ -16578,6 +16600,108 @@ async function tabProdutos2(el, D, C) {
   el.querySelectorAll('[data-pre]').forEach(b => b.onclick = () => prModal(por(b.dataset.pre)));
   el.querySelectorAll('[data-pfv]').forEach(b => b.onclick = () => { C.pfAbre[b.dataset.pfv] = !C.pfAbre[b.dataset.pfv]; render(); });
   el.querySelectorAll('[data-pfi]').forEach(b => b.onclick = () => modalConteudo(null, D, { produto_id: b.dataset.pfi }));
+}
+
+/* ===================== v0.151 — Growth's Content: pesquisa (pastas + call + produtos + canais + web) e dossiê ===================== */
+(() => {
+  const T = CS_PASSOS.find(p => p.k === 'tese'), Do = CS_PASSOS.find(p => p.k === 'dossie');
+  Object.assign(T, { t: 'Pesquisa', sub: 'Leitura das pastas e pesquisa na web', emBreve: false, ok: (D, E) => !!(E.marcos || {}).leitura, falta: 'Faça a pesquisa, leia o relatório e clique em "Li o relatório, gerar o dossiê".' });
+  Object.assign(Do, { t: 'Dossiê', sub: 'Gerado a partir da pesquisa', emBreve: false, ok: (D, E) => !!(E.marcos || {}).dossie, falta: 'Gere o dossiê, leia e clique em "Dossiê ok, seguir".' });
+})();
+
+// Markdown simples (o relatório e o dossiê vêm da IA): títulos, listas, negrito, links. Tudo escapado antes.
+function mdHtml(t) {
+  const inl = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/\[(Fato|Hipótese|Recomendação)\]/g, (m, x) => `<span class="pill ${x === 'Fato' ? 'good' : x === 'Hipótese' ? 'warn' : 'info'} md-tag">${x}</span>`);
+  const out = []; let lista = null;
+  const fecha = () => { if (lista) { out.push(`</${lista}>`); lista = null; } };
+  String(t || '').split('\n').forEach(l => {
+    const h = l.match(/^(#{1,4})\s+(.*)$/), ul = l.match(/^\s*[-*]\s+(.*)$/), ol = l.match(/^\s*\d+[.)]\s+(.*)$/);
+    if (h) { fecha(); const n = Math.min(4, h[1].length + 1); out.push(`<h${n}>${inl(h[2])}</h${n}>`); }
+    else if (ul) { if (lista !== 'ul') { fecha(); out.push('<ul>'); lista = 'ul'; } out.push(`<li>${inl(ul[1])}</li>`); }
+    else if (ol) { if (lista !== 'ol') { fecha(); out.push('<ol>'); lista = 'ol'; } out.push(`<li>${inl(ol[1])}</li>`); }
+    else if (!l.trim()) fecha();
+    else { fecha(); out.push(`<p>${inl(l)}</p>`); }
+  });
+  fecha(); return out.join('');
+}
+async function cpChama(body) {
+  const r = await sb.functions.invoke('content-pesquisa', { body });
+  if (r.error) { let msg = r.error.message || 'Não foi possível falar com o servidor.'; try { const j = await r.error.context.json(); if (j && j.erro) msg = j.erro; } catch (e) { /* mantém */ } throw new Error(msg); }
+  if (r.data && r.data.ok === false) throw new Error(r.data.erro || 'Não deu certo.');
+  return r.data;
+}
+const cpAndando = p => p && ['fila', 'lendo', 'pesquisando', 'gerando'].includes(p.status);
+const cpTravou = p => cpAndando(p) && Date.now() - new Date(p.atualizado_em).getTime() > 8 * 60 * 1000;
+function cpEspera(box, p) {
+  const C = S.ct;
+  if (cpAndando(p) && !cpTravou(p)) { C.cpVoltas = (C.cpVoltas || 0) + 1; if (C.cpVoltas < 150) setTimeout(() => { if (box.isConnected) render(); }, 4000); } else C.cpVoltas = 0;
+}
+
+/* ----- passo 5: pesquisa ----- */
+async function csPesquisa(box, D, E) {
+  const [ult, chave] = await Promise.all([
+    q(sb.from('content_pesquisas').select('*').eq('workspace_id', S.ws).order('criado_em', { ascending: false }).limit(1)).then(L => L[0] || null).catch(() => null),
+    sb.functions.invoke('content-pesquisa', { method: 'GET' }).then(r => r.data ? !!r.data.chave : null).catch(() => null)]);
+  if (!box.isConnected) return;
+  const f = E.fontes || {}, d = E.drive || {}, pe = D.personas[0], resp = pRespondidas((pe || {}).respostas || {});
+  const nLinks = (f.links || []).length, nProd = (D.produtos || []).filter(x => x.ativo).length, nCan = Object.keys(f.canais || {}).length;
+  const oQue = `<div class="panel"><h3 style="margin:0 0 8px">O que a pesquisa usa</h3><ul class="cp-usa">
+      <li>${d.status === 'ok' ? '✓' : '—'} A pasta do Growth's Content${nLinks ? ` e ${nLinks} outra(s) pasta(s) do cliente` : ''}</li>
+      <li>✓ As pastas com os padrões da Mathisa</li>
+      <li>${resp ? '✓' : '—'} As respostas da call (${resp} de ${PERSONA_P.length})</li>
+      <li>${nProd ? '✓' : '—'} Os produtos (${nProd}) com o histórico</li>
+      <li>${nCan ? '✓' : '—'} Os canais onde o cliente publica (${nCan})</li>
+      <li>✓ Busca na web: mercado, tendências, concorrentes e o que o público pergunta, com a fonte</li></ul>
+      <p class="muted" style="margin:8px 0 0">A IA lê texto: documentos, PDFs, planilhas, apresentações e transcrições. Vídeos e áudios sem transcrição ficam de fora, e a lista diz quais.</p></div>`;
+  const semChave = chave === false ? '<div class="panel cs-aviso"><b>A IA ainda não está ligada.</b> Falta configurar a chave da Claude no servidor. Depois disso o botão funciona.</div>' : '';
+  const btn = (id, txt, pri) => `<button class="btn${pri ? ' pri' : ''}" id="${id}"${chave === false ? ' disabled' : ''}>${txt}</button>`;
+  let corpo;
+  if (!ult) corpo = `${semChave}${oQue}<div class="cs-matbt">${btn('cpVai', 'Fazer a pesquisa', 1)}</div>`;
+  else if (cpAndando(ult) && !cpTravou(ult)) corpo = `<div class="panel cp-andando" aria-live="polite"><span class="cp-roda" aria-hidden="true"></span><div><b>${ult.status === 'lendo' ? 'Lendo as pastas…' : ult.status === 'pesquisando' ? 'Pesquisando…' : 'Começando…'}</b><br><span class="muted">${esc(ult.etapa || '')}. Pode levar alguns minutos; dá para sair desta tela e voltar depois.</span></div></div>`;
+  else if (ult.status === 'erro' || cpTravou(ult)) corpo = `${semChave}<div class="panel cs-aviso"><b>A pesquisa não terminou.</b> ${esc(ult.erro || 'Demorou mais do que o esperado.')}</div>${oQue}<div class="cs-matbt">${btn('cpVai', 'Tentar de novo', 1)}</div>`;
+  else {
+    const A = (ult.arquivos || {}).lista || [], lidos = A.filter(a => a.lido), nao = A.filter(a => !a.lido), pErr = (ult.arquivos || {}).pastas_com_erro || [];
+    const quando = new Date(ult.concluido_em || ult.atualizado_em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' });
+    const lido = !!(E.marcos || {}).leitura;
+    corpo = `${semChave}<div class="panel cp-rel"><div class="cp-cab"><div><h3 style="margin:0">Relatório da pesquisa</h3><span class="muted">Feito em ${esc(quando)} · ${lidos.length} arquivo(s) lido(s) · ${(ult.fontes || []).length} fonte(s) da web</span></div></div>
+        <div class="md">${mdHtml(ult.relatorio)}</div></div>
+      ${(ult.fontes || []).length ? `<details class="panel"><summary><b>Fontes da web</b> <span class="muted">(${ult.fontes.length})</span></summary><ol class="cp-fontes">${ult.fontes.map(x => `<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.titulo || x.url)}</a></li>`).join('')}</ol></details>` : ''}
+      <details class="panel"><summary><b>Arquivos</b> <span class="muted">(${lidos.length} lido(s)${nao.length ? `, ${nao.length} não lido(s)` : ''})</span></summary>
+        ${pErr.length ? `<p class="cs-aviso" style="margin:8px 0">${pErr.map(x => esc(x.erro)).join('<br>')}</p>` : ''}
+        <ul class="cp-arqs">${A.map(a => `<li class="${a.lido ? '' : 'nao'}"><span>${a.lido ? '✓' : '—'}</span><div><b>${esc(a.nome)}</b> <small class="muted">${esc(a.caminho)}${a.rotulo === 'mathisa' ? ' · padrão da Mathisa' : ''}</small>${a.lido ? '' : `<br><small>${esc(a.motivo || '')}</small>`}</div></li>`).join('')}</ul></details>
+      <div class="cs-matbt">${lido ? '<span class="pill good">Relatório lido</span>' : btn('cpLi', 'Li o relatório, gerar o dossiê', 1)}${btn('cpVai', 'Fazer a pesquisa de novo')}</div>`;
+  }
+  box.innerHTML = corpo;
+  if ($('#cpVai')) $('#cpVai').onclick = () => act(async () => { const r = await cpChama({ acao: 'pesquisar', workspace_id: S.ws }); toast(r.ja ? 'Já existe uma pesquisa em andamento.' : 'Pesquisa começou. Leva alguns minutos.'); S.ct.cpVoltas = 0; render(); });
+  if ($('#cpLi')) $('#cpLi').onclick = () => act(async () => {
+    await q(sb.rpc('content_setup_marcar', { p_ws: S.ws, p_marco: 'leitura', p_feito: true }));
+    await cpChama({ acao: 'dossie', pesquisa_id: ult.id });
+    toast('Gerando o dossiê…'); S.ct.csEtapa = CS_PASSOS.findIndex(p => p.k === 'dossie') + 1; S.ct.cpVoltas = 0;
+    await q(sb.rpc('content_setup_salvar', { p_ws: S.ws, p_etapa: S.ct.csEtapa })); render();
+  });
+  cpEspera(box, ult);
+}
+
+/* ----- passo 6: dossiê ----- */
+async function csDossie(box, D, E) {
+  const [dos, pes] = await Promise.all([
+    q(sb.from('content_dossies').select('*').eq('workspace_id', S.ws).order('versao', { ascending: false }).limit(1)).then(L => L[0] || null).catch(() => null),
+    q(sb.from('content_pesquisas').select('id,status').eq('workspace_id', S.ws).eq('status', 'pronto').order('criado_em', { ascending: false }).limit(1)).then(L => L[0] || null).catch(() => null)]);
+  if (!box.isConnected) return;
+  const ok = !!(E.marcos || {}).dossie;
+  let corpo;
+  if (!dos) corpo = `<div class="panel">${pes ? '<b>O dossiê ainda não foi gerado.</b> <span class="muted">Ele sai do relatório da pesquisa.</span>' : '<b>Primeiro, a pesquisa.</b> <span class="muted">Volte ao passo Pesquisa, faça a pesquisa e leia o relatório.</span>'}</div>${pes ? '<div class="cs-matbt"><button class="btn pri" id="cdGera">Gerar o dossiê</button></div>' : ''}`;
+  else if (cpAndando(dos) && !cpTravou(dos)) corpo = `<div class="panel cp-andando" aria-live="polite"><span class="cp-roda" aria-hidden="true"></span><div><b>Escrevendo o dossiê…</b><br><span class="muted">Versão ${dos.versao}. Leva um ou dois minutos.</span></div></div>`;
+  else if (dos.status === 'erro' || cpTravou(dos)) corpo = `<div class="panel cs-aviso"><b>O dossiê não foi gerado.</b> ${esc(dos.erro || 'Demorou mais do que o esperado.')}</div>${pes ? '<div class="cs-matbt"><button class="btn pri" id="cdGera">Tentar de novo</button></div>' : ''}`;
+  else corpo = `<div class="panel cp-rel"><div class="cp-cab"><div><h3 style="margin:0">Dossiê da marca · versão ${dos.versao}</h3><span class="muted">Rascunho gerado em ${esc(new Date(dos.atualizado_em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' }))}. A aprovação do cliente, o PDF e a skill do cliente vêm na próxima etapa.</span></div></div>
+      <nav class="cd-ind" aria-label="Seções do dossiê">${(dos.secoes || []).map((s, i) => `<a href="#cd${i}">${esc(s.titulo)}</a>`).join('')}</nav>
+      ${(dos.secoes || []).map((s, i) => `<section class="cd-sec" id="cd${i}"><h3>${esc(s.titulo)}</h3><div class="md">${mdHtml(s.texto)}</div></section>`).join('')}</div>
+    <div class="cs-matbt">${ok ? '<span class="pill good">Dossiê ok</span>' : '<button class="btn pri" id="cdOk">Dossiê ok, seguir</button>'}${pes ? '<button class="btn" id="cdGera">Gerar de novo</button>' : ''}</div>`;
+  box.innerHTML = corpo;
+  if ($('#cdGera')) $('#cdGera').onclick = () => act(async () => { await cpChama({ acao: 'dossie', pesquisa_id: pes.id }); toast('Gerando o dossiê…'); S.ct.cpVoltas = 0; render(); });
+  if ($('#cdOk')) $('#cdOk').onclick = () => act(async () => { await q(sb.rpc('content_setup_marcar', { p_ws: S.ws, p_marco: 'dossie', p_feito: true })); toast('Dossiê marcado como ok'); render(); });
+  cpEspera(box, dos);
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

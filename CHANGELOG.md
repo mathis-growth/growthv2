@@ -100,6 +100,12 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.151] - 2026-10-25 — Pesquisa com um botão e o dossiê
+- Passo 5 **Pesquisa**: "Fazer a pesquisa" lê as pastas (cliente, outras do cliente e as da Mathisa), junta call, produtos e canais, pesquisa na web e entrega o relatório com fontes e a lista de arquivos lidos e não lidos.
+- Passo 6 **Dossiê**: "Li o relatório, gerar o dossiê" gera o dossiê em 9 seções; "Dossiê ok, seguir".
+- Função `content-pesquisa` (Claude com busca na web) e Apps Script com a leitura das pastas. Custo em Custos de IA.
+- Banco: `20261111100000_content_pesquisa.sql`. **Pendente em produção** (confirmação expirou); falta a chave da API e reimplantar o Apps Script.
+
 ## [0.150] - 2026-10-25 — Ficha de produto simples; produtos e esteira no questionário
 - Aba **Produtos** enxuta: cada produto com **nome, valor e histórico**, cadastrado ali mesmo ou trazido do cadastro comercial. Sai a ficha longa da v0.149.
 - Ideias continuam ligadas a um produto ("Nova ideia sobre este produto").

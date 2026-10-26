@@ -1,5 +1,11 @@
 
 
+## v0.151 — Pesquisa e dossiê
+- Uma pesquisa por vez por cliente (se houver uma andando há menos de 10 minutos, o botão mostra a que já existe). Andando há mais de 8 minutos sem atualizar = "não terminou", com "Tentar de novo".
+- Passo 5 pronto quando o relatório foi lido ("Li o relatório"); passo 6 pronto com "Dossiê ok".
+- Custo = tokens de entrada e saída × preço do modelo + buscas × preço por mil, só com os preços cadastrados.
+- Quem pode pedir: quem configura o Growth's Content do cliente ou a equipe interna.
+
 ## v0.150 — Produtos e questionário
 - Produto: nome obrigatório (até 120 caracteres), valor opcional (zero ou mais), histórico até 8.000 caracteres.
 - "Trazer do cadastro" aparece só quando não há nenhum produto no conteúdo e existe produto ativo no cadastro comercial.

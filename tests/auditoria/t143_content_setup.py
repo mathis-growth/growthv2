@@ -14,7 +14,7 @@ def chk(c, msg):
     if not c: falhas.append(msg)
 def limpa():
     sql(f"update workspaces set content_setup_em = null, content_setup_etapa = 0, content_ativo = false, content_drive_id = null, content_drive_url = null, content_drive_status = null, content_drive_erro = null, content_drive_modo = null, content_drive_email = null, content_setup_marcos = '{{}}', content_fontes = '{{}}' where id = '{WS}'")
-    for t in ['conteudos', 'conteudo_temas', 'conteudo_linhas', 'conteudo_formatos', 'conteudo_config', 'conteudo_personas', 'conteudo_linha_propostas', 'conteudo_metas_semanais']: sql(f"delete from {t} where workspace_id = '{WS}'")
+    for t in ['content_dossies', 'content_pesquisas', 'conteudos', 'conteudo_temas', 'conteudo_linhas', 'conteudo_formatos', 'conteudo_config', 'conteudo_personas', 'conteudo_linha_propostas', 'conteudo_metas_semanais']: sql(f"delete from {t} where workspace_id = '{WS}'")
 limpa()
 SHOT = '/tmp/claude-0/-home-claude/6d4aa2ee-cf0f-5c9b-bd48-3047ac34b6ff/scratchpad/shots143/'
 import os; os.makedirs(SHOT, exist_ok=True)
@@ -76,7 +76,8 @@ with sync_playwright() as pw:
     chk(pg.locator('.cc-blocos button.on').inner_text().startswith('2.'), 'próximo bloco')
     sql(f"update conteudo_personas set respostas = respostas || (select jsonb_object_agg(k, 'resposta ' || k) from unnest(array['publico','publico_valoriza','dores','repetido','lacunas','atrair_agora','objetivo_comercial','ofertas','por_que','acredita','discorda','produtos_lista','esteira','carro_chefe']) k) where workspace_id = '{WS}'")
     front.vai(pg, 'mkt-cont', "S.ct.csEtapa = 5;", 3000)
-    chk('Passo 5 de 9' in pg.inner_text('#main') and 'em construção' in pg.inner_text('#main').lower() and not pg.locator('#csSegue').is_disabled(), 'passos 5 e 6 em construção: dá para seguir')
+    chk('Passo 5 de 9' in pg.inner_text('#main') and 'O que a pesquisa usa' in pg.inner_text('#main') and pg.locator('#csSegue').is_disabled(), 'passo 5 (Pesquisa): sem ler o relatório não segue (detalhe no t151)')
+    sql(f"update workspaces set content_setup_marcos = content_setup_marcos || '{{\"leitura\":\"2026-10-25\",\"dossie\":\"2026-10-25\"}}' where id = '{WS}'")
     sql(f"select conteudo_instalar_v18('{WS}')")
     sql(f"update conteudo_config set meta_semanal = null where workspace_id = '{WS}'")
     front.vai(pg, 'mkt-cont', "S.ct.csEtapa = 7;", 3000)
@@ -86,7 +87,7 @@ with sync_playwright() as pw:
     chk('Passo 9 de 9' in t and pg.locator('#csFim').is_disabled() and 'Rotina da semana' in pg.inner_text('.cs-aviso') if pg.locator('.cs-aviso').count() else False, 'sem a rotina, não conclui e diz o que falta')
     pg.fill('#csRot [name=meta]', '5'); pg.click('#csRot button[type=submit]'); pg.wait_for_timeout(2500)
     chk(sql(f"select meta_semanal || '|' || dia_fechamento from conteudo_config where workspace_id = '{WS}'") == '5|5', 'rotina salva, curadoria na sexta por padrão')
-    chk(not pg.locator('#csFim').is_disabled(), 'tudo pronto (fora os passos em construção) libera "Concluir a configuração"')
+    chk(not pg.locator('#csFim').is_disabled(), 'tudo pronto libera "Concluir a configuração"')
     pg.screenshot(path=SHOT + '5_rotina.png')
     pg.click('#csFim'); pg.wait_for_timeout(3500)
     chk(pg.locator('#main .tabs button').count() >= 8 and sql(f"select content_setup_em is not null from workspaces where id = '{WS}'") == 't', 'concluída: abre nas abas de sempre')
