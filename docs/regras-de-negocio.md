@@ -1,5 +1,10 @@
 
 
+## v0.149 — Ficha de conteúdo dos produtos
+- % da ficha = campos principais preenchidos ÷ 12 (frase, para quem é, dor, transformação, método, entregáveis, diferenciais, provas, objeções, momento de venda, chamada, página de vendas).
+- Objeções: uma por linha, "objeção | resposta".
+- Conteúdos de um produto = ideias e pautas ligadas a ele, fora as arquivadas, separadas em ideia/pauta, em produção e publicadas.
+
 ## v0.148 — Painel da produção
 - Pronto para a semana: status pronto, agendado ou publicado e data de publicação entre a segunda e o domingo da semana.
 - Semana completa: prontos da semana ≥ meta semanal. Abaixo da meta com algo marcado: "Faltam N". Nada marcado: "Vazia". Sem meta: "N prontos".

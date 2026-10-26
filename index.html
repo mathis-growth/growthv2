@@ -387,7 +387,29 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.148 painel da produção no Kanban */
+<style id="v122">/* v0.149 ficha de conteúdo dos produtos */
+.pf-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px;align-items:start}
+.pf-card{display:flex;flex-direction:column;gap:8px}
+.pf-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.pf-top h3{margin:0 0 2px}
+.pf-pct{display:flex;flex-direction:column;align-items:flex-end;gap:4px;min-width:84px;font-size:12.5px;font-weight:700}
+.pf-pct .kb-prog{width:84px;margin:0;height:6px}
+.pf-frase{margin:0;font-size:14px;line-height:1.5}
+.pf-conts{margin:0;font-size:12.5px}
+.pf-ler{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:12px}
+.pf-sec h4{margin:0 0 6px;font-size:13px;color:var(--muted)}
+.pf-it{margin:0 0 8px;font-size:13.5px;line-height:1.5}
+.pf-it b{display:block;font-size:12.5px}
+.pf-it p{margin:2px 0 0;white-space:pre-line}
+.pf-it ul{margin:4px 0 0;padding-left:18px}
+.pf-obj li{margin:0 0 4px}.pf-obj em{display:block;font-style:normal;color:var(--muted)}
+.pf-fs{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 12px}
+.pf-fs legend{font-weight:700;padding:0 6px}
+.pf-sub{margin:0 0 8px;font-size:12.5px}
+#modalRoot .pf-full{grid-column:1/-1}
+@media (max-width:700px){.pf-lista{grid-template-columns:1fr}}
+.pf-pct .kb-prog i{background:var(--good,#17803d)}
+/* v0.148 painel da produção no Kanban */
 .kb-painel{display:flex;flex-direction:column;gap:16px;--k-ideia:#9aa0aa;--k-pauta:#6a8cff;--k-prod:#e0a100;--k-pronto:#2fb171;--k-agend:#0f9fb5;--k-pub:#17803d}
 .kb-ets{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
 body #main button.kb-et{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);border-top:3px solid var(--kc)}
@@ -1003,7 +1025,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.148 · 25/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.149 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -14619,7 +14641,7 @@ const ordemScore = (a, b) => (b.score_total ?? -1) - (a.score_total ?? -1) || (b
 
 async function dadosConteudo() {
   const w = S.ws;
-  const [linhas, temas, cont, metas, pubs, cfg, eq, conta, formatos, fech, personas, propostas] = await Promise.all([
+  const [linhas, temas, cont, metas, pubs, cfg, eq, conta, formatos, fech, personas, propostas, produtos, fichas] = await Promise.all([
     q(sb.from('conteudo_linhas').select('*').eq('workspace_id', w).order('ordem').order('nome')),
     q(sb.from('conteudo_temas').select('*').eq('workspace_id', w).order('prioridade').order('nome')),
     q(sb.from('conteudos').select('*').eq('workspace_id', w).order('criado_em')),
@@ -14631,13 +14653,15 @@ async function dadosConteudo() {
     ctOpc(sb.from('conteudo_formatos').select('*').eq('workspace_id', w).order('ordem').order('nome')),
     ctOpc(sb.from('conteudo_fechamentos').select('id,semana_ini,objetivo_proxima,atualizado_em').eq('workspace_id', w).order('semana_ini', { ascending: false }).limit(20)),
     ctOpc(sb.from('conteudo_personas').select('*').eq('workspace_id', w).order('criado_em')),
-    ctOpc(sb.from('conteudo_linha_propostas').select('*').eq('workspace_id', w).order('criado_em', { ascending: false }).limit(20))
+    ctOpc(sb.from('conteudo_linha_propostas').select('*').eq('workspace_id', w).order('criado_em', { ascending: false }).limit(20)),
+    ctOpc(sb.from('produtos').select('id,nome,tipo,preco,ativo,nivel_escada').eq('workspace_id', w).order('nome')),
+    ctOpc(sb.from('content_produto_fichas').select('*').eq('workspace_id', w))
   ]);
   const c0 = cfg[0] || {};
   const C = { metodo: c0.metodo || 'notas5', criterios: c0.criterios || CRIT_PADRAO, score: c0.criterios_score || ['Timing / pauta quente', 'Potencial estratégico', 'Potencial de impacto', 'Facilidade de execução', 'Robustez da evidência', 'Novidade / pouco explorado no Brasil'],
     destinos: c0.destinos || [], canaisAtivos: c0.canais_ativos || ['instagram'], canaisPorTag: c0.canais_por_tag || {}, meta: c0.meta_semanal, diaFech: c0.dia_fechamento || 6, tags: c0.tags || [], linha: c0.linha || {}, modelo: c0.modelo || '', tem: 'metodo' in c0 || formatos.length > 0 };
   const fmts = formatos.filter(f => f.grupo === 'formato'), quadros = formatos.filter(f => f.grupo === 'quadro');
-  return { linhas, temas, cont, metas, pubs, crit: C.criterios, cfg: C, eq, conta, formatos, fmts, quadros, fech, personas, propostas,
+  return { produtos, fichas: Object.fromEntries(fichas.map(x => [x.produto_id, x])), PR: Object.fromEntries(produtos.map(p => [p.id, p])), linhas, temas, cont, metas, pubs, crit: C.criterios, cfg: C, eq, conta, formatos, fmts, quadros, fech, personas, propostas,
     T: Object.fromEntries(temas.map(t => [t.id, t])), L: Object.fromEntries(linhas.map(l => [l.id, l])), F: Object.fromEntries(formatos.map(f => [f.id, f])) };
 }
 function mqComeco(D) {
@@ -14688,6 +14712,7 @@ function modalConteudo(row, D, pre) {
     ${c({ k: 'descricao', l: 'Descrição e ângulo', t: 'textarea' })}
     <label>Território e frente<select name="tema_id">${mqOptTemas(D, r.tema_id)}</select></label>
     ${c({ k: 'formato_id', l: 'Formato', t: 'select', opts: fmtOpts })}
+    ${c({ k: 'produto_id', l: 'Produto', t: 'select', opts: (D.produtos || []).filter(p => p.ativo || p.id === r.produto_id).map(p => [p.id, p.nome]), hint: 'Opcional. O conteúdo leva a este produto.' })}
     ${c({ k: 'quadro_id', l: 'Quadro de autoridade', t: 'select', opts: qOpts, hint: 'Opcional. Vida Real & Crenças não precisa de quadro.' })}
     ${destOpts.length ? c({ k: 'destino', l: 'Destino', t: 'select', opts: destOpts, hint: D.cfg.linha.regra_destino || '' }) : c({ k: 'destino', l: 'Destino (marca ou perfil)' })}
     ${c({ k: 'status', l: 'Etapa', t: 'select', req: 1, def: 'ideia', opts: [...ETAPAS_C.map(e => [e[0], e[1]]), ['arquivado', 'Arquivado']] })}
@@ -14726,6 +14751,7 @@ function modalConteudo(row, D, pre) {
     ${c({ k: 'aprendizado', l: 'Aprendizado', t: 'textarea' })}
   </div>` : `<div class="grid2">${[{ k: 'titulo', l: 'Título da ideia ou pauta', req: 1, full: 1 }, { k: 'descricao', l: 'Descrição e ângulo', t: 'textarea' }].map(c).join('')}
     <label>Tema<select name="tema_id">${mqOptTemas(D, r.tema_id)}</select></label>
+    ${c({ k: 'produto_id', l: 'Produto', t: 'select', opts: (D.produtos || []).filter(p => p.ativo || p.id === r.produto_id).map(p => [p.id, p.nome]) })}
     ${c({ k: 'formato', l: 'Formato', t: 'select', req: 1, def: 'carrossel', opts: FORM_C })}${c({ k: 'status', l: 'Etapa', t: 'select', req: 1, def: 'ideia', opts: [...ETAPAS_C.map(e => [e[0], e[1]]), ['arquivado', 'Arquivado']] })}
     ${c({ k: 'responsavel_id', l: 'Responsável', t: 'select', opts: sel(D.eq, 'id', 'nome') })}
     ${canais}${tagsH}
@@ -14733,8 +14759,8 @@ function modalConteudo(row, D, pre) {
     ${c({ k: 'prazo', l: 'Prazo de produção', t: 'date' })}${c({ k: 'data_publicacao', l: 'Data de publicação', t: 'date', hint: 'Obrigatória para agendar.' })}
     ${c({ k: 'copy_url', l: 'Link da copy (Google Docs)', t: 'url', ph: 'https://docs.google.com/…', full: 1 })}${c({ k: 'midia_url', l: 'Link da mídia (Google Drive)', t: 'url', ph: 'https://drive.google.com/…', full: 1, hint: 'Copy e mídia são obrigatórias para marcar como pronto.' })}${c({ k: 'fonte_url', l: 'Fonte da ideia', t: 'url', full: 1 })}
     ${notas(NOTAS_I, 'Nota da ideia (a média decide o que vira pauta)')}${notas(NOTAS_P, 'Nota da pauta (a média decide o que produzir)')}</div>`;
-  const campos = sc ? ['titulo', 'descricao', 'tema_id', 'formato_id', 'quadro_id', 'destino', 'status', 'formato', 'palavra_chave', 'intencao', 'entidade', 'problema', 'achado', 'classificacao', 'fundamento', 'evidencia', 'fonte_url', 'score_notas', 'hook', 'tese', 'objetivo', 'cta', 'estrutura', 'dia_semana', 'responsavel_id', 'prazo', 'data_publicacao', 'copy_url', 'midia_url', 'obs_producao', 'decisao', 'aprendizado']
-    : ['titulo', 'descricao', 'tema_id', 'formato', 'status', 'responsavel_id', 'dia_semana', 'prazo', 'data_publicacao', 'copy_url', 'midia_url', 'fonte_url'];
+  const campos = sc ? ['titulo', 'descricao', 'tema_id', 'produto_id', 'formato_id', 'quadro_id', 'destino', 'status', 'formato', 'palavra_chave', 'intencao', 'entidade', 'problema', 'achado', 'classificacao', 'fundamento', 'evidencia', 'fonte_url', 'score_notas', 'hook', 'tese', 'objetivo', 'cta', 'estrutura', 'dia_semana', 'responsavel_id', 'prazo', 'data_publicacao', 'copy_url', 'midia_url', 'obs_producao', 'decisao', 'aprendizado']
+    : ['titulo', 'descricao', 'tema_id', 'produto_id', 'formato', 'status', 'responsavel_id', 'dia_semana', 'prazo', 'data_publicacao', 'copy_url', 'midia_url', 'fonte_url'];
   const f = modal(row ? 'Editar conteúdo' : 'Nova ideia', html, async (_d, form) => {
     const v = lerCampos(campos.map(k => ({ k, t: k === 'dia_semana' ? 'number' : undefined })), form);
     v.canais = [...form.querySelectorAll('input[name=canal]:checked')].map(x => x.value);
@@ -15391,7 +15417,7 @@ async function vDMsCrm(m) {
    Estratégia: Dashboard dos canais (eficiência e melhores posts de cada canal), ideias, priorização, máquina, semana,
    fechamento, persona, linha editorial e canais. Instagram: Dashboard (conta + posts), Ideias do Instagram e DMs.
    Nada de importar à mão: os números vêm da conexão do Instagram. */
-const MQ_EST = [['dash', 'Dashboard'], ['kanban', 'Ideias e pautas'], ['prior', 'Priorização'], ['maquina', 'Máquina'], ['plano', 'Semana'], ['fech', 'Fechamento'], ['persona', 'Persona'], ['linhas', 'Linha editorial'], ['estruturas', 'Estruturas'], ['canais', 'Canais']];
+const MQ_EST = [['dash', 'Dashboard'], ['kanban', 'Ideias e pautas'], ['prior', 'Priorização'], ['maquina', 'Máquina'], ['plano', 'Semana'], ['fech', 'Fechamento'], ['persona', 'Persona'], ['produtos', 'Produtos'], ['linhas', 'Linha editorial'], ['estruturas', 'Estruturas'], ['canais', 'Canais']];
 const MQ_CANAL = { instagram: [['insta', 'Dashboard'], ['ideias', 'Ideias do Instagram'], ['dms', 'DMs']] };
 const MQ_VIEW_CANAL = { 'mkt-insta': 'instagram' };
 const MQ_CANAL_VIEW = { instagram: 'mkt-insta' };
@@ -15408,7 +15434,7 @@ async function vConteudoAbas(m) {
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { if (canal) C.tabCanal[canal] = b.dataset.t; else C.tab = b.dataset.t; render(); });
   if (!canal) cdPillModulo(m);
   const el = $('#ctTab');
-  if (!canal) return ({ dash: tabDashCanais, kanban: tabKanban, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, persona: tabPersona, linhas: tabLinhas, estruturas: tabEstruturas, canais: tabCanais }[tabK] || tabDashCanais)(el, D, C);
+  if (!canal) return ({ dash: tabDashCanais, kanban: tabKanban, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, persona: tabPersona, produtos: tabProdutos, linhas: tabLinhas, estruturas: tabEstruturas, canais: tabCanais }[tabK] || tabDashCanais)(el, D, C);
   if (tabK === 'insta') return tabInsta(el, D, C);
   if (tabK === 'dms') return tabDMs(el, D, C);
   const K = C.porCanal = C.porCanal || {}; const CK = K[canal] = K[canal] || { tema: '', formato: '', arq: false, terr: '', fmt: '', dest: '', tag: '' };
@@ -16392,6 +16418,106 @@ function kbPainel(L, D) {
 function kbLiga(el, C) {
   el.querySelectorAll('[data-kbcol]').forEach(b => b.onclick = () => { const col = el.querySelector(`.colk[data-col="${b.dataset.kbcol}"]`); if (col) { col.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); col.classList.add('over'); setTimeout(() => col.classList.remove('over'), 900); } });
   el.querySelectorAll('[data-kbsem]').forEach(b => b.onclick = () => { const CT = S.ct; CT.tab = 'plano'; CT.sem = b.dataset.kbsem; if (MQ_VIEW_CANAL[S.view]) S.view = 'mkt-cont'; render(); });
+}
+
+/* ===================== v0.149 — Growth's Content: ficha de conteúdo de cada produto ===================== */
+const PF_MOMENTO = [['perpetuo', 'Perpétuo (vende sempre)'], ['lancamento', 'Lançamento (abre e fecha)'], ['aberto', 'Carrinho aberto agora'], ['fechado', 'Carrinho fechado'], ['em_breve', 'Em breve (ainda não lançado)']];
+const PF_ESCADA = [['entrada', 'Entrada (primeira compra)'], ['principal', 'Principal'], ['ascensao', 'Ascensão (para quem já comprou)'], ['recorrencia', 'Recorrência (assinatura, renovação)']];
+const PF_CONSC = [['inconsciente', 'Inconsciente (não sabe que tem o problema)'], ['problema', 'Consciente do problema'], ['solucao', 'Consciente da solução'], ['produto', 'Consciente do produto'], ['total', 'Totalmente consciente (só falta a oferta)']];
+const PF_SECOES = [
+  ['O que é', 'Em poucas palavras, para qualquer pessoa entender.', [
+    ['frase', 'O produto em uma frase', 'area', null, 'Ex.: mentoria de 12 semanas para infoprodutoras organizarem o funil e venderem todo mês'],
+    ['para_quem', 'Para quem é', 'area', null, 'Quem é a pessoa, em que momento ela está, o que ela já tem'],
+    ['nao_e_para', 'Para quem não é', 'area', null, 'Ajuda a filtrar e dá ótimos conteúdos de posicionamento']]],
+  ['Problema e transformação', 'De onde a pessoa sai e onde ela chega.', [
+    ['dor', 'A dor principal', 'area', null, 'Com as palavras que o público usa'],
+    ['ja_tentou', 'O que ela já tentou e não deu certo', 'area'],
+    ['transformacao', 'A transformação (o resultado)', 'area', null, 'Concreta e crível'],
+    ['prazo_resultado', 'Em quanto tempo o resultado aparece', 'text']]],
+  ['Método e entrega', 'Como o produto leva a pessoa até lá.', [
+    ['metodo', 'O método ou mecanismo (nome e como funciona)', 'area'],
+    ['etapas', 'Etapas ou módulos', 'area', null, 'Um por linha'],
+    ['entregaveis', 'O que a pessoa recebe', 'area', null, 'Aulas, encontros, materiais, suporte, comunidade…'],
+    ['bonus', 'Bônus', 'area'],
+    ['formato_entrega', 'Formato e duração', 'text', null, 'Ao vivo, gravado, em grupo, individual; quantas semanas']]],
+  ['Diferenciais e provas', 'Por que este e não outro.', [
+    ['diferenciais', 'Diferenciais em relação às alternativas', 'area'],
+    ['provas', 'Provas: resultados, casos, números, depoimentos', 'area', null, 'Só o que é real; diga onde está a prova (pasta, link)'],
+    ['garantia', 'Garantia', 'text']]],
+  ['Objeções', 'O que faz a pessoa não comprar, e a resposta.', [
+    ['objecoes', 'Objeções e respostas', 'area', null, 'Uma por linha: objeção | resposta']]],
+  ['Oferta e momento de venda', 'Para o conteúdo saber para onde chamar.', [
+    ['momento', 'Momento de venda', 'select', PF_MOMENTO],
+    ['proxima_abertura', 'Próxima abertura ou data importante', 'text'],
+    ['condicoes', 'Condições (parcelamento, desconto, turma)', 'text'],
+    ['pagina_vendas', 'Página de vendas', 'url'],
+    ['checkout', 'Link do checkout ou do formulário', 'url'],
+    ['cta', 'Chamada principal (o que pedir no conteúdo)', 'text', null, 'Ex.: comenta MÉTODO, entra na lista de espera, chama no direct'],
+    ['papel_escada', 'Papel na escada de produtos', 'select', PF_ESCADA],
+    ['consciencia', 'Nível de consciência de quem compra', 'select', PF_CONSC]]],
+  ['Para o conteúdo', 'O que ajuda a IA e a equipe a criar.', [
+    ['pilares', 'Temas que levam a este produto', 'area', null, 'Um por linha'],
+    ['palavras_publico', 'Palavras e frases que o público usa', 'area'],
+    ['evitar', 'O que evitar dizer', 'area', null, 'Promessas proibidas, termos que o cliente não usa'],
+    ['materiais', 'Onde estão os materiais deste produto', 'text', null, 'Pasta do Drive, links']]]];
+const PF_TIPO = { curso: 'Curso', servico: 'Serviço', digital: 'Digital', saas: 'SaaS', assinatura: 'Assinatura', outro: 'Outro' };
+const PF_CHAVE = ['frase', 'para_quem', 'dor', 'transformacao', 'metodo', 'entregaveis', 'diferenciais', 'provas', 'objecoes', 'momento', 'cta', 'pagina_vendas'];
+const pfPct = f => Math.round(PF_CHAVE.filter(k => (f || {})[k]).length / PF_CHAVE.length * 100);
+const pfLabel = (opts, v) => ((opts || []).find(o => o[0] === v) || [, v])[1];
+
+function pfLeitura(f) {
+  const blocos = PF_SECOES.map(([t, , campos]) => {
+    const itens = campos.filter(([k]) => f[k]).map(([k, l, tipo, opts]) => {
+      let v = f[k];
+      if (k === 'objecoes') return `<div class="pf-it"><b>${esc(l)}</b><ul class="pf-obj">${v.split('\n').filter(x => x.trim()).map(x => { const [o, r] = x.split('|'); return `<li><span>${esc(o.trim())}</span>${r ? `<em>${esc(r.trim())}</em>` : ''}</li>`; }).join('')}</ul></div>`;
+      if (tipo === 'select') v = pfLabel(opts, v);
+      if (tipo === 'url') return `<div class="pf-it"><b>${esc(l)}</b><a href="${esc(v)}" target="_blank" rel="noopener">${esc(v)}</a></div>`;
+      if (['etapas', 'pilares'].includes(k)) return `<div class="pf-it"><b>${esc(l)}</b><ul>${v.split('\n').filter(x => x.trim()).map(x => `<li>${esc(x.trim())}</li>`).join('')}</ul></div>`;
+      return `<div class="pf-it"><b>${esc(l)}</b><p>${esc(v)}</p></div>`;
+    }).join('');
+    return itens ? `<section class="pf-sec"><h4>${esc(t)}</h4>${itens}</section>` : '';
+  }).join('');
+  return blocos || '<p class="muted" style="margin:0">A ficha ainda está vazia.</p>';
+}
+
+function pfModal(p, ficha) {
+  const f = ficha || {};
+  const campo = ([k, l, tipo, opts, ph]) => tipo === 'area' ? `<label class="pf-full">${esc(l)}<textarea name="${k}" rows="${k === 'objecoes' ? 5 : 3}" placeholder="${esc(ph || '')}">${esc(f[k] || '')}</textarea></label>`
+    : tipo === 'select' ? `<label>${esc(l)}<select name="${k}"><option value="">—</option>${opts.map(([v, n]) => `<option value="${v}"${f[k] === v ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select></label>`
+    : `<label>${esc(l)}<input name="${k}" type="text"${tipo === 'url' ? ' inputmode="url"' : ''} value="${esc(f[k] || '')}" placeholder="${esc(ph || (tipo === 'url' ? 'https://' : ''))}"></label>`;
+  modal(`Ficha de conteúdo · ${p.nome}`, `<p class="muted" style="margin:0 0 6px">Preencha o que souber; dá para voltar depois. É daqui que a IA e a equipe tiram o que dizer sobre o produto. Preço cadastrado: <b>${brl(p.preco)}</b>.</p>
+    ${PF_SECOES.map(([t, sub, campos]) => `<fieldset class="pf-fs"><legend>${esc(t)}</legend><p class="muted pf-sub">${esc(sub)}</p><div class="grid2">${campos.map(campo).join('')}</div></fieldset>`).join('')}`,
+  async d => {
+    const ficha2 = Object.fromEntries(PF_SECOES.flatMap(s => s[2]).map(([k]) => [k, (d[k] || '').trim()]).filter(([, v]) => v));
+    for (const k of ['pagina_vendas', 'checkout']) if (ficha2[k] && !/^https?:\/\//i.test(ficha2[k])) ficha2[k] = 'https://' + ficha2[k];
+    await q(sb.rpc('content_produto_ficha_salvar', { p_produto: p.id, p_ficha: ficha2 }));
+    toast('Ficha salva');
+  }, 'Salvar ficha', true);
+}
+
+function tabProdutos(el, D, C) {
+  const P = D.produtos || [], ativos = P.filter(p => p.ativo), inativos = P.filter(p => !p.ativo);
+  C.pfAbre = C.pfAbre || {};
+  const conts = id => D.cont.filter(c => c.produto_id === id && c.status !== 'arquivado');
+  const card = p => {
+    const fi = (D.fichas[p.id] || {}).ficha || {}, pct = pfPct(fi), X = conts(p.id);
+    const n = k => X.filter(c => k.includes(c.status)).length, aberto = !!C.pfAbre[p.id];
+    return `<article class="panel pf-card">
+      <div class="pf-top"><div><h3>${esc(p.nome)}</h3><span class="muted">${esc(PF_TIPO[p.tipo] || p.tipo || '')}${p.preco != null ? ` · ${brl(p.preco)}` : ''}${fi.momento ? ` · ${esc(pfLabel(PF_MOMENTO, fi.momento))}` : ''}</span></div>
+        <div class="pf-pct" title="Campos principais preenchidos"><span>${pct}%</span><div class="kb-prog" role="img" aria-label="Ficha ${pct}% preenchida"><i style="width:${pct}%"></i></div></div></div>
+      ${fi.frase ? `<p class="pf-frase">${esc(fi.frase)}</p>` : '<p class="muted pf-frase">Sem a ficha de conteúdo ainda.</p>'}
+      <p class="muted pf-conts">${X.length ? `${n(['ideia', 'pauta'])} ideia(s) ou pauta(s), ${n(['producao', 'pronto', 'agendado'])} em produção, ${n(['publicado'])} publicado(s) sobre este produto` : 'Nenhum conteúdo ligado a este produto ainda.'}</p>
+      <div class="cs-matbt"><button class="btn sm${pct ? '' : ' pri'}" data-pfe="${p.id}">${pct ? 'Editar ficha' : 'Preencher ficha'}</button>${pct ? `<button class="btn sm" data-pfv="${p.id}" aria-expanded="${aberto}">${aberto ? 'Fechar ficha' : 'Ver ficha'}</button>` : ''}<button class="btn sm" data-pfi="${p.id}">Nova ideia sobre este produto</button></div>
+      ${aberto ? `<div class="pf-ler">${pfLeitura(fi)}</div>` : ''}</article>`;
+  };
+  el.innerHTML = `<div class="panel cs-cliente"><p style="margin:0"><b>Os produtos, do jeito que o conteúdo precisa.</b> Para cada produto: para quem é, a dor e a transformação, o método, o que a pessoa recebe, as provas, as objeções e o momento de venda. A IA usa a ficha para criar ideias e roteiros que levam ao produto certo.</p></div>
+    ${ativos.length ? `<div class="pf-lista">${ativos.map(card).join('')}</div>` : `<div class="panel"><b>Nenhum produto cadastrado.</b> <span class="muted">Cadastre os produtos em Configurações → Comercial e produtos → Produtos; eles aparecem aqui para receber a ficha de conteúdo.</span> <button class="btn sm" id="pfCad">Cadastrar produtos</button></div>`}
+    ${inativos.length ? `<details class="panel"><summary><b>Produtos inativos</b> <span class="muted">(${inativos.length})</span></summary><div class="pf-lista" style="margin-top:12px">${inativos.map(card).join('')}</div></details>` : ''}`;
+  const por = id => P.find(p => p.id === id);
+  el.querySelectorAll('[data-pfe]').forEach(b => b.onclick = () => pfModal(por(b.dataset.pfe), (D.fichas[b.dataset.pfe] || {}).ficha));
+  el.querySelectorAll('[data-pfv]').forEach(b => b.onclick = () => { C.pfAbre[b.dataset.pfv] = !C.pfAbre[b.dataset.pfv]; render(); });
+  el.querySelectorAll('[data-pfi]').forEach(b => b.onclick = () => modalConteudo(null, D, { produto_id: b.dataset.pfi }));
+  if ($('#pfCad')) $('#pfCad').onclick = () => { S.view = 'cad-produtos'; abreMenu(S.view); render(); };
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

@@ -1,5 +1,11 @@
 
 
+## Ficha de conteúdo dos produtos (v0.149)
+- `g149.js`: `PF_SECOES` (7 partes), `pfModal` (formulário), `pfLeitura` (ver ficha), `tabProdutos` (cartões com % preenchido e conteúdos ligados). `integra149.py`: produtos e fichas no `dadosConteudo`, campo Produto no `modalConteudo` (com score e com notas), aba Produtos.
+- Links da página e do checkout aceitos sem "https://" (o sistema completa).
+- Migração `20261109100000_content_produtos.sql` (aplicada em produção em 25/10/2026).
+- Testes: `t149` (novo), `t148`, `t147`, `t143`, `t146`, `t140`, `t141`, `t133`, `t134`, `t135` — 0 falhas.
+
 ## Painel da produção no Kanban (v0.148)
 - `g148.js`: `kbPainel(L, D)` (total por etapa, semana atual, calendário de 6 semanas) e `kbLiga(el, C)` (ir para a coluna; abrir a semana na aba Semana). `integra148.py` troca a linha de quadrinhos do Kanban pelo painel. `g148.css` com as cores das etapas.
 - Testes: `t148` (novo), `t147`, `t143`, `t146`, `t140`, `t141`, `t133`, `t134`, `t135` — 0 falhas.

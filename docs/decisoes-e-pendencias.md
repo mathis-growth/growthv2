@@ -1,5 +1,15 @@
 
 
+## v0.149 — Produtos dentro da Estratégia de conteúdo
+**Pedido da Rebecka (25/10)**: dentro da estratégia de conteúdo, colocar as informações sobre os produtos, para entender cada produto e fazer conteúdo em cima dele.
+Decisões:
+- Nova aba **Produtos** na Estratégia de conteúdo, com os produtos do cadastro (Configurações → Produtos). O cadastro comercial (preço, ofertas) não muda; o conteúdo ganha uma **ficha de conteúdo** por produto.
+- Ficha em 7 partes: o que é (frase, para quem é, para quem não é); problema e transformação (dor, o que já tentou, resultado, prazo); método e entrega (método, etapas, entregáveis, bônus, formato); diferenciais e provas (diferenciais, provas, garantia); objeções (objeção | resposta); oferta e momento de venda (momento, próxima abertura, condições, página, checkout, chamada, papel na escada, nível de consciência); para o conteúdo (temas, palavras do público, o que evitar, onde estão os materiais).
+- O cartão mostra a frase, o momento de venda, quanto da ficha está preenchido (12 campos principais) e quantos conteúdos falam do produto; "Ver ficha" mostra a leitura por seções.
+- Cada ideia ou pauta pode ser ligada a um produto ("Nova ideia sobre este produto" já vem com ele).
+- Quem edita a ficha: quem configura o Growth's Content do cliente (Marketing com edição) ou a equipe interna. Provas: só o que é real, dizendo onde está.
+**Pendente**: a rotina diária de ideias usar a ficha (falta a chave da API da Claude); filtro por produto no Kanban.
+
 ## v0.148 — Painel da produção no Kanban
 **Pedido da Rebecka (25/10)**: no Kanban, um dashboard do total: quantos em cada etapa, quantos prontos para a semana, quais semanas estão completas, com um calendariozinho para visualizar. Confirmado também o entendimento das pastas: o cliente já tem as pastas dele organizadas e só acrescenta os links para a gente ler (feito na v0.147).
 Decisões:

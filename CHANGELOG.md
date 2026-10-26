@@ -100,6 +100,12 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.149] - 2026-10-25 — Produtos na Estratégia de conteúdo
+- Nova aba **Produtos** no Growth's Content: cada produto do cadastro ganha a **ficha de conteúdo** (para quem é, dor, transformação, método, entregáveis, provas, objeções, momento de venda, chamada, temas, palavras do público).
+- Cartão com a frase do produto, o momento de venda, % da ficha preenchida e quantos conteúdos falam dele; "Ver ficha" para ler.
+- Ideias e pautas podem ser ligadas a um produto ("Nova ideia sobre este produto").
+- Banco: `20261109100000_content_produtos.sql`. **Aplicado em produção em 25/10/2026**.
+
 ## [0.148] - 2026-10-25 — Painel da produção no Kanban
 - No topo de Ideias e pautas: **total em cada etapa** (clicável), **esta semana** (prontos contra a meta, em produção, sem data) e **calendário** da semana atual e das 5 seguintes, com quais semanas estão completas.
 - Só tela, sem mudança no banco.

@@ -1,5 +1,8 @@
 
 
+## v0.149 — Ficha de conteúdo dos produtos
+1. `supabase/RODAR_v0.149_content_produtos.sql` (aplicado em produção em 25/10/2026).
+
 ## v0.148
 Nada a rodar no banco.
 

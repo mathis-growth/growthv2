@@ -1,5 +1,8 @@
 
 
+## v0.149
+- index.html: 0.148 → 0.149 (`integra149.py`, que roda o `integra148.py`; novos `g149.js` e `g149.css`; `dadosConteudo` traz produtos e fichas; `modalConteudo` com o campo Produto; aba `produtos`). Novo: `20261109100000_content_produtos.sql`, `RODAR_v0.149_content_produtos.sql`, teste `t149_produtos_conteudo.py`. Aplicado em produção.
+
 ## Regra permanente: o documento "Growths: o sistema, explicado"
 - `docs/growths-o-sistema.md` explica todas as funcionalidades do Growths (sem tabelas), para a Rebecka subir no Growth's Content e usar como base de conteúdo.
 - **A cada entrega**, atualizar este documento: a data e a versão no topo, a seção da área que mudou, o histórico resumido (seção 14) e, quando fizer sentido, um ângulo novo na seção 13.

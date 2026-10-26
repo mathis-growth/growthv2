@@ -1,5 +1,9 @@
 
 
+## v0.149
+- `content_produto_fichas` (produto_id, workspace_id, ficha jsonb, atualizado_em, atualizado_por): ficha de conteúdo por produto; o cliente lê a dele; grava só por `content_produto_ficha_salvar(produto, ficha)` (28 campos conhecidos, até 4000 caracteres; momento, papel na escada e nível de consciência validados).
+- `conteudos.produto_id` (opcional): a ideia ou pauta é sobre aquele produto.
+
 ## v0.148
 - Sem mudança no banco. O painel usa `conteudos.status`, `conteudos.data_publicacao` e `conteudo_config.meta_semanal`.
 

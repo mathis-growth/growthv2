@@ -1,3 +1,6 @@
+## v0.149
+**Os produtos dentro da Estratégia de conteúdo.** Uma aba Produtos mostra cada produto do cliente com a sua ficha de conteúdo: para quem é e para quem não é, a dor e a transformação, o método, o que a pessoa recebe, diferenciais e provas, as objeções com as respostas, o momento de venda e a chamada, e o que ajuda a criar (temas, palavras do público, o que evitar). Cada ideia pode ser ligada a um produto, e o cartão mostra quantos conteúdos já falam dele.
+
 ## v0.148
 **Painel da produção no Kanban.** Em cima das colunas de Ideias e pautas, o Growth's Content mostra quantos conteúdos estão em cada etapa, quantos já estão prontos para a semana atual contra a meta e um calendário da semana atual e das 5 seguintes, com um ponto colorido por conteúdo e o aviso de quais semanas estão completas e quanto falta nas outras. Clicar numa semana abre o planejamento dela.
 
