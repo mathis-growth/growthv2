@@ -1,5 +1,10 @@
 
 
+## Banco de narrativas (v0.157)
+- `g157.js`: `narrCarrega` (lê os modelos aprovados uma vez), `narr(codigo, campos, alternativas)` (monta a frase, põe `data-nar` e `data-nar-v`; sem modelo ou sem campo, devolve vazio); Financeiro: `finContexto` (NAR-E07), `finCascata` + `gcCascata` (NAR-D02, "sobraram/faltaram"), `finPonte` (ponte ago → set, NAR-H01 e NAR-I01), `finSaldoMin` (caixa + saldo mínimo, NAR-A01, A02, D06, D07); `vMetricas157` (Dicionário com as frases do sistema e a situação de cada uma).
+- Banco: `20261113100000_narrativa_modelos.sql` gerado de `nar_modelos.py` (fonte única dos 39 modelos).
+- Teste novo `t157_narrativas.py`: regras do banco (versão, histórico, aprovação, sem apagar, só leitura), montagem das frases, ponte que fecha com os dois resultados, cores, modelo não aprovado some, saldo mínimo, Dicionário, celular. 0 falhas. Bateria de regressão: ver CHANGELOG.
+
 ## Data Storytelling (v0.152 a v0.156)
 - `g152.js`: `SEM` (dicionário de apresentação), `semFmt`/`semBRL`/`semEscala` (formatador único, sinal de menos verdadeiro, "—" para sem dado), `semVar` (variação com direção, tolerância, p.p. e reais), `semStatus` (regra 2a e referências), `semPerAnt` (período anterior), `semCenarioMargem`; Dashboard: `painelHero`, `painelRecVendas`, `painelSemRefs`, `saldoHero`, `compactaKpis` (escala única por linha); observações com categoria e Referência.
 - `g153.js`: `marcaSinais` (só saldos; tabelas pela coluna ou linha de saldo), `kpiD`, `dgDeltaG`, `varMes` com a camada nova; `brl` com "—" e sinal de menos; ROAS com 1 casa; LTV ÷ CAC como razão; cores de status do sistema = camada semântica; sem neon nos números.

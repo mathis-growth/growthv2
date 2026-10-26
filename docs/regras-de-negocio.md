@@ -1,5 +1,13 @@
 
 
+## v0.157 — Banco de narrativas
+- Frase de análise só aparece se o modelo estiver aprovado e todos os `{campos}` tiverem número calculado pelo sistema. Faltou: nada aparece (não há frase de reserva).
+- `[a/b]` escolhe a palavra pela direção do número (ex.: sobraram/faltaram pelo sinal do resultado).
+- Hipótese sempre escrita como "Possível fator associado", nunca como causa. NAR-I01 não repete a conta da hipótese.
+- Ponte do resultado: anterior + receita + contas = atual (fecha sempre); degraus neutros; pontas na cor do saldo (regra 2a).
+- Caixa: com saldo mínimo, NAR-A01 (abaixo) ou NAR-D06 (dentro); sem mínimo, o zero é o limite: NAR-A02 ou NAR-D07.
+- Mudar texto de modelo aprovado = nova versão em "proposto" até nova aprovação.
+
 ## v0.152 a v0.156 — Data Storytelling
 - Cor só com critério: direção cadastrada + referência válida (meta, limite, guardrail, cenário cadastrado ou período anterior comparável). Sem isso, neutro.
 - Regra 2a: lucro, resultado, margem, ROI, saldo e caixa: < 0 vermelho; ≥ 0 e abaixo da referência cadastrada âmbar; acima dela (ou > 0 sem referência) verde.

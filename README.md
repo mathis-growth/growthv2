@@ -15,8 +15,9 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.156 · 26/10/2026 (`index.html`) |
+| **Versão da tela** | 0.157 · 26/10/2026 (`index.html`) |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.156** (26/10/2026): dicionário de métricas com direção e referência; alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
+| **Falta aplicar no banco** | `supabase/RODAR_v0.157_narrativas.sql` (banco de narrativas); sem ele, as frases do Financeiro não aparecem |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta e a chave da Claude (`ANTHROPIC_API_KEY`); o app do Google já existe (segredos conferidos em 25/10/2026): [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
 
@@ -26,6 +27,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.157 | 26/10/2026 | **Banco de narrativas**: as frases de análise passam a morar na tabela `narrativa_modelos` (código, versão, aprovação, histórico); a tela só preenche números calculados. Piloto no **Dashboard financeiro**: frase da cascata com "sobraram/faltaram", ponte do resultado (mês anterior → atual), caixa projetado e saldo mínimo num painel só. Dicionário mostra as frases. | `RODAR_v0.157_narrativas.sql`, **ainda não aplicado** em produção |
 | 0.156 | 26/10/2026 | **Alertas em quatro categorias** (favorável, desfavorável, atenção, informativo) e **Dicionário de métricas** com unidade, direção, zero como limite e referência. | `RODAR_v0.156_metricas_semantica.sql`, aplicado em 26/10/2026 |
 | 0.155 | 26/10/2026 | **Contexto e frase-recado** no Financeiro, Marketing e Vendas (contra o período anterior, com a base escrita); custos neutros. | Só tela |
 | 0.154 | 26/10/2026 | **Gráficos**: negativos na escala (dois gráficos do Financeiro voltaram), cascata com custos neutros e resultado com sinal, meta e saldo mínimo como linha de referência, séries sem verde/vermelho. | Só tela |

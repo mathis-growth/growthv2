@@ -64,7 +64,7 @@ try:
         chk(pg.locator('#finSmin').count() == 1 and 'Informe o saldo' in pg.inner_text('#finSmin'), 'Financeiro: saldo mínimo, ainda sem valor')
         alto = int(float(pg.evaluate("Math.max(...[...document.querySelectorAll('#finSmin svg circle title')].map(t => Number(t.textContent.split(':').pop().replace(/−/g, '-').replace(/[^0-9,-]/g, '').replace(',', '.'))))")) + 1000)
         pg.fill('#smV', str(alto)); pg.click('#smSalva'); pg.wait_for_timeout(6000)
-        chk('Atenção' in pg.inner_text('#finSmin') and 'navegador' in pg.inner_text('#finSmin'), 'mínimo acima da projeção → aviso; salvo no navegador sem a coluna')
+        chk('abaixo do saldo mínimo' in pg.inner_text('#finSmin') and 'navegador' in pg.inner_text('#finSmin'), 'mínimo acima da projeção → aviso; salvo no navegador sem a coluna')
         front.vai(pg, 'adm-painel', "S.pg = { per: '30d' }", 9000)
         chk('Caixa abaixo do mínimo' in pg.inner_text('.gc-obs'), 'Dashboard: observação "Caixa abaixo do mínimo"')
         b.close()
@@ -80,7 +80,7 @@ try:
         baixo = max(0, int(float(pg.evaluate("Math.min(...[...document.querySelectorAll('#finSmin svg circle title')].map(t => Number(t.textContent.split(':').pop().replace(/−/g, '-').replace(/[^0-9,-]/g, '').replace(',', '.'))))")) - 1000))
         pg.fill('#smV', str(baixo)); pg.click('#smSalva'); pg.wait_for_timeout(6000)
         chk(sql(f"select saldo_minimo::int from empresa where workspace_id = '{WS}'") == str(baixo) and 'toda a equipe' in pg.inner_text('#finSmin'), 'com a coluna, o mínimo fica no cadastro da empresa')
-        t = pg.inner_text('#finSmin'); chk(('Dentro do mínimo' in t) if baixo > 0 else ('Atenção' in t), 'aviso segue a projeção (mínimo %d)' % baixo)
+        t = pg.inner_text('#finSmin'); chk(('Dentro do saldo mínimo' in t) if baixo > 0 else ('abaixo do saldo mínimo' in t), 'aviso segue a projeção (mínimo %d)' % baixo)
         b.close()
     chk(not erros, 'sem erro de JavaScript ' + (str(erros[:2]) if erros else ''))
 finally:

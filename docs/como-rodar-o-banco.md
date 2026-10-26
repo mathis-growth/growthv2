@@ -1,5 +1,10 @@
 
 
+## v0.157 — Banco de narrativas
+1. `supabase/RODAR_v0.157_narrativas.sql`: cria `narrativa_modelos` e `narrativa_modelos_historico`, a regra de versão (gatilho `narrativa_modelos_regras`) e os 39 modelos (9 aprovados). **Ainda não aplicado em produção**: a aplicação pelo conector foi cancelada em 26/10/2026. Rodar no SQL Editor do Supabase ou autorizar de novo.
+2. Sem a tabela, a tela continua funcionando: as frases do piloto não aparecem e o Dicionário avisa que falta a atualização.
+3. Para mudar um texto: editar a linha em `narrativa_modelos` (Table Editor ou SQL). A versão sobe sozinha, a anterior vai para o histórico e o modelo volta para "proposto"; para aprovar, `status = 'aprovado'` e `aprovado_por` preenchido.
+
 ## v0.152 a v0.156 — Data Storytelling
 1. `supabase/RODAR_v0.156_metricas_semantica.sql` (aplicado em produção em 26/10/2026): colunas `unidade`, `casas`, `direcao`, `zero_limite` e `referencia` em `metricas_definicoes` e as linhas novas Lucro, Margem, ROI, Caixa projetado e CTR.
 2. As versões 0.152 a 0.155 são só tela.

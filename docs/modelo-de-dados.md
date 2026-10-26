@@ -1,5 +1,10 @@
 
 
+## v0.157
+- `narrativa_modelos` (codigo NAR-X00 chave, versao, status proposto/aprovado/descontinuado, categoria, evidencia F/C/A/H/R, modelo, campos tirados do texto, ativa_quando, precisa, cor, nao_usar, telas, investigar, observacao, aprovado_por, aprovado_em, criado_em, atualizado_em). Gatilho `narrativa_modelos_regras`: versão, volta para proposto, histórico, sem apagar, código fixo, marcação válida, aprovação com responsável.
+- `narrativa_modelos_historico` (codigo, versao, status, modelo, ativa_quando, precisa, cor, nao_usar, aprovado_por, aprovado_em, substituido_em).
+- As duas: leitura para usuário logado; escrita só pelo painel (service role).
+
 ## v0.156
 - `metricas_definicoes` ganhou `unidade` (brl, pct, x, razao, numero, dias, texto), `casas`, `direcao` (maior, menor, faixa, neutra), `zero_limite` (o zero é limite: negativo vermelho, positivo verde) e `referencia` (onde está a meta ou o limite que dá a cor). Linhas novas: `lucro`, `margem`, `roi`, `caixa_projetado`, `ctr`.
 - A tela lê o dicionário e usa a direção, as casas e o zero como limite (`semDoDicionario`).

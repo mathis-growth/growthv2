@@ -387,7 +387,11 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.156 categoria do alerta */
+<style id="v122">/* v0.157 banco de narrativas */
+body #main #narDic td{vertical-align:top}
+body #main #narDic td:nth-child(4){min-width:280px}
+body #main #finSmin .gc-lead .sem-p{margin-right:4px}
+/* v0.156 categoria do alerta */
 body #main .al-t .sem-p{font-size:11.5px}
 body #main .dq88 .tw{overflow-x:auto;max-width:100%}
 /* v0.155 frase-recado e linha de contexto dos cartões */
@@ -1089,7 +1093,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.156 · 26/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.157 · 26/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -1522,7 +1526,7 @@ const VIEWS = {
   'crm-leads': vCrmLeads, 'crm-oport': vCrmOport, 'crm-vendas': vVendas, 'crm-contratos': vContratos, 'crm-comissoes': vComissoes, 'cad-comissoes': vComissoes, 'crm-alunos': vCrmAlunos,
   'fin-receber': vReceber,  'cfg-uso': vUso, 'fin-pagar': vPagar, 'fin-custo': vCustoOp, 'fin-lanc': vLanc, 'adm-painel': vPainel, 'adm-plano': vPlano,
   'cad-clientes': vClientes, 'cad-plataformas': vPlataformas, 'cad-funis': vFunis, 'cad-regras': vRegras,
-  'cfg-qualidade': vQualidade, 'cfg-metricas': vMetricas, 'cad-auditoria': vAuditoria, 'cad-duplicados': vDuplicados, 'crm-abandonos': vAbandonos, 'prj-atividades': vTodasAtividades
+  'cfg-qualidade': vQualidade, 'cfg-metricas': vMetricas157, 'cad-auditoria': vAuditoria, 'cad-duplicados': vDuplicados, 'crm-abandonos': vAbandonos, 'prj-atividades': vTodasAtividades
 };
 /* ---------- Voltar: pilha de telas visitadas ---------- */
 const NAVH = { stack: [], cur: null, ws: null, restaurando: false, push: false };
@@ -8647,7 +8651,7 @@ async function vFinDash(m) {
     ${kpi('Resultado no período', brl(F.resultado_mes), F.pct_resultado_mes != null ? fP(F.pct_resultado_mes) + ' da receita' : '')}
   </div>
   <div class="cols">
-    <div class="panel"><h2>Caixa projetado, próximos 30 dias</h2>${linhas(dias.map(d => dd(d).slice(0, 5)), null, proj, fK, true)}<span class="muted">Parte do saldo de hoje e soma o que vence a receber e a pagar. Contas em atraso entram no dia de hoje. Esta curva é sempre de 30 dias; o período acima muda os cartões e as listas.</span></div>
+    <div class="panel" id="finSmin"><h2>Caixa projetado, próximos 30 dias</h2><div class="muted">Calculando…</div></div>
     <div class="panel"><h2>Resultado por mês</h2><span class="muted">Até o mês atual (${mesFmt(h.slice(0, 7))}, ainda incompleto). Meses futuros com lançamentos já feitos ficam fora da linha.</span>${meses.length ? linhas(meses.map(x => mesFmt(x.slice(0, 7))), null, meses.map(x => resPorMes[x]), fK, true) : '<div class="empty">Sem lançamentos ainda.</div>'}</div>
   </div>
   <div class="cols">
@@ -8662,6 +8666,7 @@ async function vFinDash(m) {
   finDashLigar(m);
   finContexto(m, PER, h).catch(e => console.warn('contexto v0.155', e));
   finCascata(m, PER);
+  finPonte(m, PER, h).catch(e => console.warn('ponte v0.157', e));
   finResBanco(m, F);
   finSaldoMin(m, F);
 }
@@ -12223,7 +12228,7 @@ function gcLinhas({ series, rotulos, un = 'brl', parcial = false, altura = 190, 
     ${ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" ${v === 0 ? '' : 'stroke-dasharray="2 4"'}/><text x="${L - 8}" y="${y(v) + 3.5}" text-anchor="end">${GC.fmtK(v, un)}</text>`).join('')}
     ${ref && ref.v != null ? `<line x1="${L}" x2="${W - R}" y1="${y(ref.v)}" y2="${y(ref.v)}" stroke="var(--ink)" stroke-dasharray="6 4" stroke-width="1.4" opacity=".7"/><text x="${W - R}" y="${y(ref.v) - 5}" text-anchor="end" class="gc-v">${esc(ref.rot)}: ${GC.fmtK(ref.v, un)}</text>` : ''}
     ${series.map(linha).join('')}
-    ${rotulos.map((r, i) => (i % passoR === 0 && n - 1 - i >= passoR / 2) || i === n - 1 ? `<text x="${x(i)}" y="${H - 7}" text-anchor="${i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle'}">${esc(r)}</text>` : '').join('')}</svg>`;
+    ${rotulos.map((r, i) => (i % passoR === 0 && n - 1 - i >= passoR * 0.8) || i === n - 1 ? `<text x="${x(i)}" y="${H - 7}" text-anchor="${i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle'}">${esc(r)}</text>` : '').join('')}</svg>`;
 }
 /* barras horizontais ordenadas, com o período anterior como marcador: itens [{rotulo, valor, anterior?, no?, par?}] */
 function gcBarrasH({ itens, un = 'brl', max = 6, total, fixo = false }) {
@@ -12239,23 +12244,7 @@ function gcBarrasH({ itens, un = 'brl', max = 6, total, fixo = false }) {
     ${L.some(x => x.anterior != null) ? '<div class="gc-leg"><span><b class="gc-ant gc-ant-l"></b>período anterior</span><span class="muted">% = participação no total</span></div>' : ''}</div>`;
 }
 /* cascata: passos [{rotulo, valor, tipo:'base'|'entra'|'sai'|'total', no?, par?}] */
-function gcCascata({ passos, un = 'brl' }) {
-  const P = passos.filter((p, i) => p.tipo === 'base' || p.tipo === 'total' || Number(p.valor));
-  if (P.length < 2) return GC.vazio('Sem lançamentos no período.');
-  let acc = 0; const B = P.map(p => { const v = Number(p.valor) || 0; let de, ate; if (p.tipo === 'base') { de = 0; ate = v; acc = v; } else if (p.tipo === 'total') { de = 0; ate = v; } else { de = acc; ate = acc + (p.tipo === 'sai' ? -Math.abs(v) : Math.abs(v)); acc = ate; } return { ...p, de, ate }; });
-  const W = 900, H = 230, L = 64, R = 12, T = 22, Bm = 34, mx = Math.max(0, ...B.map(b => Math.max(b.de, b.ate))), mn = Math.min(0, ...B.map(b => Math.min(b.de, b.ate)));
-  const st = GC.passo((mx - mn) / 4 || 1), y0v = Math.floor(mn / st) * st, y1v = Math.ceil(mx / st) * st || st, y = v => T + (y1v - v) / ((y1v - y0v) || 1) * (H - T - Bm), bw = (W - L - R) / B.length;
-  const ticks = []; for (let v = y0v; v <= y1v + st / 2; v += st) ticks.push(v);
-  const cor = b => b.tipo === 'base' ? 'var(--accent)' : b.tipo === 'sai' || b.tipo === 'entra' ? 'var(--muted)' : (b.ate >= 0 ? 'var(--s-fav)' : 'var(--s-desf)');
-  return `<svg class="gc" viewBox="0 0 ${W} ${H}" role="img" aria-label="Como se chega no resultado">
-    ${ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" ${v === 0 ? '' : 'stroke-dasharray="2 4"'}/><text x="${L - 8}" y="${y(v) + 3.5}" text-anchor="end">${GC.fmtK(v, un)}</text>`).join('')}
-    ${B.map((b, i) => { const x0 = L + i * bw + bw * .16, w = bw * .68, yt = y(Math.max(b.de, b.ate)), h = Math.max(2, Math.abs(y(b.de) - y(b.ate))), pode = !!b.no;
-      return `<g${pode ? ` class="gc-clk" data-arvno="${esc(b.no)}" data-arvpar="${esc(JSON.stringify(b.par || {}))}" data-arvrot="${esc(b.rotulo)}" role="button" tabindex="0"` : ''}><title>${esc(b.rotulo)}: ${GC.fmt(b.tipo === 'sai' ? -Math.abs(b.valor) : b.valor, un)}</title>
-        <rect x="${x0}" y="${yt}" width="${w}" height="${h}" rx="3" fill="${cor(b)}" opacity="${b.tipo === 'total' ? 1 : .85}"/>
-        ${i < B.length - 1 ? `<line x1="${x0 + w}" x2="${x0 + bw}" y1="${y(b.ate)}" y2="${y(b.ate)}" stroke="var(--muted)" stroke-dasharray="2 2"/>` : ''}
-        <text x="${x0 + w / 2}" y="${yt - 6}" text-anchor="middle" class="gc-v">${b.tipo === 'total' || b.tipo === 'base' ? GC.fmtK(b.ate, un) : (b.tipo === 'sai' ? '−' : '+') + GC.fmtK(Math.abs(b.valor), un)}</text>
-        <text x="${x0 + w / 2}" y="${H - 14}" text-anchor="middle">${esc(b.rotulo)}</text></g>`; }).join('')}</svg>`;
-}
+/* function gcCascata({ passos, un = 'brl' }) { → v0.157 (g157.js) */
 /* bullet: onde o valor está contra marcos (ex.: equilíbrio, meta). marcos [{rotulo, valor, tipo:'ref'|'meta'}] */
 function gcBullet({ rotulo, valor, marcos, un = 'brl' }) {
   const M = marcos.filter(m => m.valor != null && isFinite(m.valor)), mx = Math.max(Number(valor) || 0, ...M.map(m => m.valor)) * 1.08 || 1, p = v => Math.max(0, Math.min(100, v / mx * 100));
@@ -12331,19 +12320,7 @@ async function painelV124(m, ctx) {
 }
 
 /* ---------- Financeiro: cascata do resultado ---------- */
-async function finCascata(m, PER) {
-  // o mesmo período do cartão "Resultado no período" (fin_dashboard_periodo): sem data = tudo
-  const ini = PER.de || '2000-01-01', fim = PER.ate || '2100-12-31', perR = PER.de || PER.ate ? (PER.de ? dd(PER.de) : 'o início') + ' a ' + (PER.ate ? dd(PER.ate) : 'hoje em diante') : 'todo o período';
-  const el = document.createElement('div'); el.className = 'panel'; el.innerHTML = '<h2>Como se formou o resultado</h2><div class="muted">Calculando…</div>';
-  const ref = m.querySelector('.kpis'); if (ref) ref.after(el);
-  try {
-    const N = await q(sb.rpc('arvore_no', { p_ws: S.ws, p_no: 'fin.lucro', p_par: { ini, fim } }));
-    const F = N.formula || [], passos = F.map((it, i) => ({ rotulo: it.rotulo.replace(/^[−+-]\s*/, ''), valor: Number(it.valor) || 0, tipo: i === 0 ? 'base' : /^[−-]/.test(it.rotulo) ? 'sai' : 'entra', no: it.no, par: it.par }));
-    passos.push({ rotulo: 'Resultado', valor: Number(N.valor) || 0, tipo: 'total', no: 'fin.lucro', par: { ini, fim } });
-    el.innerHTML = `<h2>Como se formou o resultado · ${perR}</h2><p class="gc-lead">Da receita de ${GC.fmtK(F[0] ? Number(F[0].valor) : 0)}, sobraram <b class="${Number(N.valor) >= 0 ? 'vpos' : 'vneg'}">${GC.fmtK(Number(N.valor))}</b> de resultado${F[0] && Number(F[0].valor) ? ` (${(Number(N.valor) / Number(F[0].valor) * 100).toFixed(1).replace('.', ',')}% da receita)` : ''}. Clique numa barra para ver os lançamentos.</p>${gcCascata({ passos })}${GC.fonte('Fonte: DRE gerencial (competência), a mesma conta do cartão "Resultado no período".')}`;
-    gcLiga(el);
-  } catch (e) { el.innerHTML = '<h2>Como se formou o resultado</h2>' + GC.vazio(e.message || String(e)); }
-}
+/* async function finCascata(m, PER) { → v0.157 (g157.js) */
 
 /* ---------- Custos e margens: receita × equilíbrio × cenários e custo por área contra o mês anterior ---------- */
 async function custoV124(m, ctx) {
@@ -12940,19 +12917,7 @@ async function saldoMinGrava(v) {
   try { if (v == null) localStorage.removeItem('growths_saldo_min_' + S.ws); else localStorage.setItem('growths_saldo_min_' + S.ws, String(v)); } catch (e) { /* sem armazenamento */ }
   return false;
 }
-async function finSaldoMin(m, F) {
-  const SM = await saldoMinLer(), dias = F.projecao.map(x => x.d), proj = F.projecao.map(x => Number(x.saldo));
-  const el = document.createElement('div'); el.className = 'panel'; el.id = 'finSmin';
-  const abaixo = SM.v != null ? dias.findIndex((d, i) => proj[i] < SM.v) : -1, minV = Math.min(...proj), minD = dias[proj.indexOf(minV)];
-  el.innerHTML = `<div class="head" style="margin:0"><h2 style="margin:0">Saldo mínimo de caixa</h2><div class="acts"><label style="flex-direction:row;align-items:center;gap:6px">Mínimo (R$)<input id="smV" type="number" min="0" step="100" value="${SM.v ?? ''}" style="width:130px" placeholder="ex.: 20000"></label><button class="btn sm" id="smSalva">Salvar</button></div></div>
-    ${SM.v == null ? '<p class="gc-lead">Informe o saldo que o caixa não pode furar (reserva para folha, impostos e imprevistos). O sistema avisa quando a projeção de 30 dias ficar abaixo dele.</p>'
-      : abaixo >= 0 ? `<p class="gc-lead"><b class="vneg">Atenção:</b> pela projeção, o caixa fica abaixo do mínimo de ${GC.fmtK(SM.v)} em <b>${dd(dias[abaixo])}</b>; o ponto mais baixo é ${GC.fmtK(minV)} em ${dd(minD)}.</p>`
-      : `<p class="gc-lead"><span class="vpos">Dentro do mínimo</span> nos próximos 30 dias: o ponto mais baixo da projeção é ${GC.fmtK(minV)} em ${dd(minD)} (mínimo ${GC.fmtK(SM.v)}).</p>`}
-    ${gcLinhas({ series: [{ nome: 'Caixa projetado', valores: proj }], ref: SM.v != null ? { v: SM.v, rot: 'Saldo mínimo' } : null, rotulos: dias.map(d => dd(d).slice(0, 5)), altura: 200, W: 900, zero: true })}
-    ${GC.fonte('Caixa projetado: o mesmo da curva "Caixa projetado, próximos 30 dias" (saldo de hoje + a receber − a pagar, dia a dia). ' + (SM.banco ? 'O mínimo fica salvo no cadastro da empresa e vale para toda a equipe.' : 'O mínimo está salvo só neste navegador até rodar a atualização do banco (supabase/RODAR_v0.127_saldo_minimo.sql); depois disso vale para toda a equipe.'))}`;
-  const ref = [...m.querySelectorAll('.cols')][0]; if (ref) ref.after(el); else m.appendChild(el);
-  el.querySelector('#smSalva').onclick = () => act(async () => { const x = el.querySelector('#smV').value.trim(), v = x === '' ? null : Number(x); if (v != null && (!isFinite(v) || v < 0)) throw new Error('Informe um valor em reais, zero ou maior.'); const b = await saldoMinGrava(v); toast(b ? 'Saldo mínimo salvo' : 'Saldo mínimo salvo neste navegador'); render(); });
-}
+/* async function finSaldoMin(m, F) { → v0.157 (g157.js) */
 
 /* ================= v0.128 — Painel da campanha (dia a dia) =================
    No Dashboard da campanha, logo abaixo dos cartões: os quadrinhos do dia a dia (verde = dentro da meta, vermelho = fora),
@@ -13111,7 +13076,7 @@ function gcMulti(el, { rotulos, metricas, sel, parcial, aoMudar, metas = {} }) {
         ${esc1 ? ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${y(esc1, v)}" y2="${y(esc1, v)}" stroke="var(--line)" ${v ? 'stroke-dasharray="2 4"' : ''}/><text x="${L - 8}" y="${y(esc1, v) + 3.5}" text-anchor="end">${GC.fmtK(v, esc1.un)}</text>`).join('') : [0, .25, .5, .75, 1].map(f => `<line x1="${L}" x2="${W - R}" y1="${T + f * (H - T - B)}" y2="${T + f * (H - T - B)}" stroke="var(--line)" ${f < 1 ? 'stroke-dasharray="2 4"' : ''}/>`).join('')}
         ${S_.map(linha).join('')}
         <line class="cp-mg" x1="0" x2="0" y1="${T}" y2="${H - B}" stroke="var(--ink)" opacity="0"/>
-        ${rotulos.map((r, i) => (i % passoR === 0 && n - 1 - i >= passoR / 2) || i === n - 1 ? `<text x="${x(i)}" y="${H - 8}" text-anchor="${i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle'}">${esc(r)}</text>` : '').join('')}
+        ${rotulos.map((r, i) => (i % passoR === 0 && n - 1 - i >= passoR * 0.8) || i === n - 1 ? `<text x="${x(i)}" y="${H - 8}" text-anchor="${i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle'}">${esc(r)}</text>` : '').join('')}
         ${rotulos.map((r, i) => `<rect class="cp-mh" data-i="${i}" x="${x(i) - (W - L - R) / Math.max(1, n - 1) / 2}" y="0" width="${(W - L - R) / Math.max(1, n - 1)}" height="${H}" fill="transparent"/>`).join('')}</svg>
         <div class="cp-mt" hidden></div></div>`;
     el.querySelectorAll('[data-cpm]').forEach(b => b.onclick = () => { const k = b.dataset.cpm; const i = sel.indexOf(k); if (i >= 0) sel.splice(i, 1); else sel.push(k); aoMudar && aoMudar(sel); desenha(); });
@@ -16928,18 +16893,7 @@ function semCtxKpi(m, rot, html) {
   const s = document.createElement('span'); s.className = 's sem-ctx'; s.innerHTML = html; const ult = [...k.querySelectorAll('.s')].pop(); if (ult) ult.after(s); else k.appendChild(s);
 }
 /* Dashboard financeiro: receitas, despesas e resultado contra o período anterior + frase */
-async function finContexto(m, PER, h) {
-  if (!PER.de || !PER.ate) return;
-  const PA = semPerAnt(PER.de, PER.ate > h ? h : PER.ate);
-  let A, F; try { [F, A] = await Promise.all([q(sb.rpc('fin_dashboard_periodo', { p_ws: S.ws, p_hoje: h, p_ini: PER.de, p_fim: PER.ate })), q(sb.rpc('fin_dashboard_periodo', { p_ws: S.ws, p_hoje: h, p_ini: PA.pIni, p_fim: PA.pFim }))]); } catch (e) { return; }
-  const r = semVar(Number(F.receitas_mes), Number(A.receitas_mes), 'receita', PA.rot), d = semVar(Number(F.despesas_mes), Number(A.despesas_mes), 'despesa', PA.rot), l = semVar(Number(F.resultado_mes), Number(A.resultado_mes), 'resultado', PA.rot, { baseVal: semBRL(A.resultado_mes) });
-  semCtxKpi(m, 'Receitas no período', r.html); semCtxKpi(m, 'Despesas no período', d.html); semCtxKpi(m, 'Resultado no período', l.html);
-  const res = Number(F.resultado_mes), st = semStatus(res, 'resultado');
-  const p = document.createElement('p'); p.className = 'gc-lead sem-recado';
-  const so = x => x.html.replace(/ <span class="muted">vs\..*$/, '');
-  p.innerHTML = `No período, o resultado foi <b class="sem-d sem-${st ? st.k : 'neu'}">${semBRL(res)}</b>: ${so(l)} contra ${esc(PA.rot)}, quando foi ${semBRL(A.resultado_mes)}. Receitas ${so(r)} e despesas ${so(d)}.`;
-  const kp = m.querySelector('.kpis'); if (kp) kp.before(p);
-}
+/* async function finContexto(m, PER, h) { → v0.157 (g157.js) */
 /* Dashboard de marketing: leads, investimento e CPL contra o período anterior. Clientes, CAC, receita, ROAS, ROI e LTV seguem os leads até hoje:
    o período anterior teve mais tempo para converter, então não são comparados (a comparação enganaria). */
 async function mktContexto(body, A) {
@@ -16971,6 +16925,174 @@ function semDoDicionario(D) {
 }
 const SEM_DIR_ROT = { maior: 'Quanto maior, melhor', menor: 'Quanto menor, melhor', faixa: 'Faixa (acima do limite)', neutra: 'Neutra (depende do contexto)' };
 const SEM_UN_ROT = { brl: 'Reais', pct: 'Percentual', x: 'Múltiplo (x)', razao: 'Razão (x:1)', numero: 'Número', dias: 'Dias', texto: 'Regra' };
+
+/* ================= v0.157 — Banco de narrativas (tabela narrativa_modelos) =================
+   As frases de análise não moram mais no código: o texto, a condição e a regra de cor ficam na tabela narrativa_modelos,
+   com código estável, versão e aprovação. O front só escolhe o modelo e preenche os {campos} com números já calculados
+   (banco ou camada semântica). Modelo que não está aprovado, ou que não recebeu todos os campos, não aparece:
+   a tela nunca completa uma frase "de cabeça". Piloto: Dashboard financeiro. */
+let NAR_P = null;
+function narrCarrega() {
+  if (!NAR_P) NAR_P = q(sb.from('narrativa_modelos').select('codigo,versao,status,modelo,campos').eq('status', 'aprovado'))
+    .then(L => { S.narr = Object.fromEntries((L || []).map(x => [x.codigo, x])); if (!(L || []).length) NAR_P = null; return S.narr; })
+    .catch(e => { console.warn('narrativas v0.157', e); S.narr = {}; NAR_P = null; return S.narr; });
+  return NAR_P;
+}
+/* monta a frase: [a/b] escolhe a palavra pela posição em alt (na ordem em que aparecem); {campo} recebe o valor já formatado */
+function narr(cod, c = {}, alt = []) {
+  const M = (S.narr || {})[cod]; if (!M) return '';
+  if ((M.campos || []).some(k => c[k] == null || c[k] === '')) return '';
+  let i = 0;
+  const t = esc(M.modelo).replace(/\[([^\[\]]+)\]/g, (_, ops) => { const o = ops.split('/'), k = Number(alt[i++] || 0); return o[Math.min(Math.max(k, 0), o.length - 1)]; })
+    .replace(/\{([a-z_]+)\}/g, (_, k) => String(c[k]));
+  return `<span class="nar" data-nar="${cod}" data-nar-v="${M.versao}">${t}</span>`;
+}
+const narB = (v, k) => `<b class="sem-d sem-${k || 'neu'}">${v}</b>`;
+/* rótulo curto de um período: mês cheio = "set/26"; senão "01/09 a 15/09" */
+const narPerRot = (ini, fim) => ini.slice(8, 10) === '01' && ini.slice(0, 7) === fim.slice(0, 7) && fim === coFimMes(fim.slice(0, 7)) ? semMesRot(ini.slice(0, 7)) : dd(ini).slice(0, 5) + ' a ' + dd(fim).slice(0, 5);
+
+/* cascata: o mesmo desenho da v0.154, com rótulos em até duas linhas e, na ponte, as duas pontas (resultado anterior e atual) na cor do saldo (regra 2a) */
+function gcCascata({ passos, un = 'brl', pontas = false }) {
+  const P = passos.filter((p, i) => p.tipo === 'base' || p.tipo === 'total' || Number(p.valor));
+  if (P.length < 2) return GC.vazio('Sem lançamentos no período.');
+  let acc = 0; const B = P.map(p => { const v = Number(p.valor) || 0; let de, ate; if (p.tipo === 'base') { de = 0; ate = v; acc = v; } else if (p.tipo === 'total') { de = 0; ate = v; } else { de = acc; ate = acc + (p.tipo === 'sai' ? -Math.abs(v) : Math.abs(v)); acc = ate; } return { ...p, de, ate }; });
+  const W = 900, H = 244, L = 64, R = 12, T = 22, Bm = 48, mx = Math.max(0, ...B.map(b => Math.max(b.de, b.ate))), mn = Math.min(0, ...B.map(b => Math.min(b.de, b.ate)));
+  const st = GC.passo((mx - mn) / 4 || 1), y0v = Math.floor(mn / st) * st, y1v = Math.ceil(mx / st) * st || st, y = v => T + (y1v - v) / ((y1v - y0v) || 1) * (H - T - Bm), bw = (W - L - R) / B.length;
+  const ticks = []; for (let v = y0v; v <= y1v + st / 2; v += st) ticks.push(v);
+  const saldo = b => b.ate >= 0 ? 'var(--s-fav)' : 'var(--s-desf)';
+  const cor = b => b.tipo === 'base' ? (pontas ? saldo(b) : 'var(--accent)') : b.tipo === 'sai' || b.tipo === 'entra' ? 'var(--muted)' : saldo(b);
+  const nch = Math.max(6, Math.floor(bw / 6.4));
+  const linhasRot = t => { const ws = String(t).split(/\s+/), out = ['']; ws.forEach(w => { const l = out.length - 1; if (!out[l]) out[l] = w; else if ((out[l] + ' ' + w).length <= nch) out[l] += ' ' + w; else out.push(w); });
+    if (out.length > 2) { out.length = 2; out[1] = out[1].slice(0, nch - 1) + '…'; } return out.map(x => x.length > nch ? x.slice(0, nch - 1) + '…' : x); };
+  return `<svg class="gc" viewBox="0 0 ${W} ${H}" role="img" aria-label="Como se chega no resultado">
+    ${ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" ${v === 0 ? '' : 'stroke-dasharray="2 4"'}/><text x="${L - 8}" y="${y(v) + 3.5}" text-anchor="end">${GC.fmtK(v, un)}</text>`).join('')}
+    ${B.map((b, i) => { const x0 = L + i * bw + bw * .16, w = bw * .68, yt = y(Math.max(b.de, b.ate)), h = Math.max(2, Math.abs(y(b.de) - y(b.ate))), pode = !!b.no, lr = linhasRot(b.rotulo);
+      return `<g${pode ? ` class="gc-clk" data-arvno="${esc(b.no)}" data-arvpar="${esc(JSON.stringify(b.par || {}))}" data-arvrot="${esc(b.rotulo)}" role="button" tabindex="0"` : ''} data-passo="${b.tipo}"><title>${esc(b.rotulo)}: ${GC.fmt(b.tipo === 'sai' ? -Math.abs(b.valor) : b.valor, un)}</title>
+        <rect x="${x0}" y="${yt}" width="${w}" height="${h}" rx="3" fill="${cor(b)}" opacity="${b.tipo === 'total' || (pontas && b.tipo === 'base') ? 1 : .85}"/>
+        ${i < B.length - 1 ? `<line x1="${x0 + w}" x2="${x0 + bw}" y1="${y(b.ate)}" y2="${y(b.ate)}" stroke="var(--muted)" stroke-dasharray="2 2"/>` : ''}
+        <text x="${x0 + w / 2}" y="${yt - 6}" text-anchor="middle" class="gc-v">${b.tipo === 'total' || b.tipo === 'base' ? GC.fmtK(b.ate, un) : (b.tipo === 'sai' ? '−' : '+') + GC.fmtK(Math.abs(b.valor), un)}</text>
+        ${lr.map((t, k) => `<text x="${x0 + w / 2}" y="${H - 28 + k * 13}" text-anchor="middle">${esc(t)}</text>`).join('')}</g>`; }).join('')}</svg>`;
+}
+
+/* ---------- Financeiro: como se formou o resultado (frase NAR-D02) ---------- */
+async function finCascata(m, PER) {
+  const ini = PER.de || '2000-01-01', fim = PER.ate || '2100-12-31', perR = PER.de || PER.ate ? (PER.de ? dd(PER.de) : 'o início') + ' a ' + (PER.ate ? dd(PER.ate) : 'hoje em diante') : 'todo o período';
+  const el = document.createElement('div'); el.className = 'panel'; el.id = 'finCasc'; el.innerHTML = '<h2>Como se formou o resultado</h2><div class="muted">Calculando…</div>';
+  const ref = m.querySelector('.kpis'); if (ref) ref.after(el);
+  try {
+    const [N] = await Promise.all([q(sb.rpc('arvore_no', { p_ws: S.ws, p_no: 'fin.lucro', p_par: { ini, fim } })), narrCarrega()]);
+    const F = N.formula || [], passos = F.map((it, i) => ({ rotulo: it.rotulo.replace(/^[−+-]\s*/, ''), valor: Number(it.valor) || 0, tipo: i === 0 ? 'base' : /^[−-]/.test(it.rotulo) ? 'sai' : 'entra', no: it.no, par: it.par }));
+    passos.push({ rotulo: 'Resultado', valor: Number(N.valor) || 0, tipo: 'total', no: 'fin.lucro', par: { ini, fim } });
+    const rec = F[0] ? Number(F[0].valor) || 0 : 0, res = Number(N.valor) || 0, st = semStatus(res, 'resultado'), k = st ? st.k : 'neu';
+    const frase = rec > 0 ? narr('NAR-D02', { receita: semBRL(rec), abs_resultado: semBRL(Math.abs(res)), resultado: narB(semBRL(res), k), margem: narB(semFmt(res / rec, 'pct'), k) }, [res >= 0 ? 0 : 1]) : '';
+    el.innerHTML = `<h2>Como se formou o resultado · ${perR}</h2><p class="gc-lead">${frase ? frase + ' ' : ''}<span class="muted">Clique numa barra para ver os lançamentos.</span></p>${gcCascata({ passos })}${GC.fonte('Fonte: DRE gerencial (competência), a mesma conta do cartão "Resultado no período".')}`;
+    gcLiga(el);
+  } catch (e) { el.innerHTML = '<h2>Como se formou o resultado</h2>' + GC.vazio(e.message || String(e)); }
+}
+
+/* ---------- Financeiro: ponte do resultado, período anterior → atual (VIS-08; frases NAR-H01 e NAR-I01) ---------- */
+async function finPonte(m, PER, h) {
+  if (!PER.de || !PER.ate) return;
+  const fimA = PER.ate > h ? h : PER.ate, PA = semPerAnt(PER.de, fimA);
+  const el = document.createElement('div'); el.className = 'panel'; el.id = 'finPonte'; el.innerHTML = '<h2>O que mudou no resultado</h2><div class="muted">Calculando…</div>';
+  const ref = m.querySelector('#finCasc') || m.querySelector('.kpis'); if (ref) ref.after(el); else m.appendChild(el);
+  const G = ['receita', 'deducao', 'custo', 'despesa'];
+  const pega = (ini, fim) => Promise.all(G.map(g => q(sb.rpc('arvore_no', { p_ws: S.ws, p_no: 'fin.razao', p_par: { ini, fim, grupo: g } }))));
+  try {
+    const [A, B] = await Promise.all([pega(PER.de, PER.ate), pega(PA.pIni, PA.pFim), narrCarrega()]);
+    const v = n => Number(n && n.valor) || 0, tot = L => v(L[0]) - v(L[1]) - v(L[2]) - v(L[3]);
+    const resA = tot(A), resB = tot(B), dRec = v(A[0]) - v(B[0]), rotA = narPerRot(PER.de, PER.ate), rotB = narPerRot(PA.pIni, PA.pFim);
+    const tit = `<h2>O que mudou no resultado · ${esc(rotB)} → ${esc(rotA)}</h2>`;
+    if (B.every(n => !v(n))) { const f = narr('NAR-N01', { metrica: 'o resultado' }); el.innerHTML = tit + (f ? `<p class="gc-lead">${f}</p>` : '') + GC.vazio(`Sem lançamentos em ${PA.rot}.`); return; }
+    const contas = {};
+    [[A, 'cur'], [B, 'ant']].forEach(([L, k]) => L.slice(1).forEach(n => {
+      const qb = (n.quebras || []).find(x => x && x.titulo === 'Por conta contábil');
+      (qb ? qb.itens : []).forEach(it => { const id = (it.par && it.par.conta) || it.rotulo;
+        const c = contas[id] = contas[id] || { rotulo: String(it.rotulo).replace(/^[\d.]+\s+/, ''), cur: 0, ant: 0, par: { ...(it.par || {}), ini: PER.de, fim: PER.ate } };
+        c[k] += Number(it.valor) || 0; });
+    }));
+    const imp = Object.values(contas).map(c => ({ ...c, imp: -(c.cur - c.ant) })).filter(c => Math.abs(c.imp) >= 0.5).sort((x, y) => Math.abs(y.imp) - Math.abs(x.imp));
+    const top = imp.slice(0, 5), outros = (resA - resB) - dRec - top.reduce((s, c) => s + c.imp, 0);
+    const passos = [{ rotulo: 'Resultado ' + rotB, valor: resB, tipo: 'base', no: 'fin.lucro', par: { ini: PA.pIni, fim: PA.pFim } }];
+    if (Math.abs(dRec) >= 0.5) passos.push({ rotulo: 'Receitas', valor: Math.abs(dRec), tipo: dRec > 0 ? 'entra' : 'sai', no: 'fin.razao', par: { ini: PER.de, fim: PER.ate, grupo: 'receita' } });
+    top.forEach(c => passos.push({ rotulo: c.rotulo, valor: Math.abs(c.imp), tipo: c.imp > 0 ? 'entra' : 'sai', no: 'fin.razao', par: c.par }));
+    if (Math.abs(outros) >= 0.5) passos.push({ rotulo: 'Outras contas', valor: Math.abs(outros), tipo: outros > 0 ? 'entra' : 'sai' });
+    passos.push({ rotulo: 'Resultado ' + rotA, valor: resA, tipo: 'total', no: 'fin.lucro', par: { ini: PER.de, fim: PER.ate } });
+    // frases: só com dado e só quando a diferença passa da tolerância
+    const dif = resA - resB, vr = semVar(resA, resB, 'resultado', PA.rot), fr = []; let fator = null;
+    if (vr.cls !== 'neu') {
+      const cand = [{ nome: 'a receita', mov: dRec, imp: dRec }, ...imp.map(c => ({ nome: 'a conta ' + c.rotulo, mov: c.cur - c.ant, imp: c.imp }))].filter(x => Math.sign(x.imp) === Math.sign(dif)).sort((x, y) => Math.abs(y.imp) - Math.abs(x.imp));
+      if (cand[0]) { fr.push(narr('NAR-H01', { componente: `<b>${esc(cand[0].nome)}</b>`, var: semBRL(Math.abs(cand[0].mov)) }, [cand[0].mov >= 0 ? 0 : 1])); fator = cand[0].nome; }
+    }
+    if (resA < 0 || (vr.cls === 'desf')) {
+      const maior = Object.values(contas).filter(c => c.cur > 0).sort((x, y) => y.cur - x.cur)[0];
+      if (maior && fator !== 'a conta ' + maior.rotulo) fr.push(narr('NAR-I01', { conta: `<b>${esc(maior.rotulo)}</b>`, valor: semBRL(maior.cur) }));
+    }
+    const frases = fr.filter(Boolean);
+    el.innerHTML = `${tit}${frases.length ? `<p class="gc-lead">${frases.join(' ')}</p>` : ''}<span class="muted">Do resultado de ${esc(PA.rot)} ao do período: cada barra cinza é quanto a receita ou uma conta mexeu no resultado (para cima melhorou, para baixo piorou). As contas que mais mexeram aparecem uma a uma; o resto fica em "Outras contas". Clique numa barra para ver os lançamentos.</span>${gcCascata({ passos, pontas: true })}${GC.fonte('Fonte: DRE gerencial (competência), as mesmas contas da cascata acima, nos dois períodos.')}`;
+    gcLiga(el);
+  } catch (e) { el.innerHTML = '<h2>O que mudou no resultado</h2>' + GC.vazio(e.message || String(e)); }
+}
+
+/* ---------- Financeiro: caixa projetado e saldo mínimo num painel só (frases NAR-A01, NAR-A02, NAR-D06, NAR-D07) ---------- */
+async function finSaldoMin(m, F) {
+  const [SM] = await Promise.all([saldoMinLer(), narrCarrega()]);
+  const dias = F.projecao.map(x => x.d), proj = F.projecao.map(x => Number(x.saldo));
+  let el = m.querySelector('#finSmin'); if (!el) { el = document.createElement('div'); el.className = 'panel'; el.id = 'finSmin'; const ref = [...m.querySelectorAll('.cols')][0]; if (ref) ref.before(el); else m.appendChild(el); }
+  const minV = proj.length ? Math.min(...proj) : null, minD = minV != null ? dias[proj.indexOf(minV)] : null;
+  let frase = '', pil = '';
+  if (proj.length) {
+    if (SM.v != null) {
+      const abaixo = dias.findIndex((d, i) => proj[i] < SM.v);
+      if (abaixo >= 0) { frase = narr('NAR-A01', { minimo: semBRL(SM.v), data: `<b>${dd(dias[abaixo])}</b>`, valor: narB(semBRL(minV), minV < 0 ? 'desf' : 'aten'), data_min: dd(minD) }); pil = semPilula({ k: 'desf', txt: 'Desfavorável' }); }
+      else { frase = narr('NAR-D06', { valor: semBRL(minV), data_min: dd(minD), minimo: semBRL(SM.v) }); pil = semPilula({ k: 'fav', txt: 'Favorável' }); }
+    } else {
+      const neg = proj.findIndex(x => x < 0);
+      if (neg >= 0) { frase = narr('NAR-A02', { data: `<b>${dd(dias[neg])}</b>`, valor: narB(semBRL(minV), 'desf'), data_min: dd(minD) }); pil = semPilula({ k: 'desf', txt: 'Desfavorável' }); }
+      else { frase = narr('NAR-D07', { valor: semBRL(minV), data_min: dd(minD) }); pil = semPilula({ k: 'fav', txt: 'Favorável' }); }
+    }
+  }
+  el.innerHTML = `<div class="head" style="margin:0"><h2 style="margin:0">Caixa projetado, próximos 30 dias</h2><div class="acts"><label style="flex-direction:row;align-items:center;gap:6px">Saldo mínimo (R$)<input id="smV" type="number" min="0" step="100" value="${SM.v ?? ''}" style="width:120px" placeholder="ex.: 20000"></label><button class="btn sm" id="smSalva">Salvar</button></div></div>
+    ${frase ? `<p class="gc-lead">${pil} ${frase}</p>` : ''}
+    ${SM.v == null ? '<p class="muted" style="margin:4px 0 0">Informe o saldo que o caixa não pode furar (reserva para folha, impostos e imprevistos). Sem ele, o aviso usa o zero como limite.</p>' : ''}
+    ${gcLinhas({ series: [{ nome: 'Caixa projetado', valores: proj }], ref: SM.v != null ? { v: SM.v, rot: 'Saldo mínimo' } : null, rotulos: dias.map(d => dd(d).slice(0, 5)), altura: 200, W: 640, zero: true })}
+    <span class="muted">Parte do saldo de hoje e soma o que vence a receber e a pagar. Contas em atraso entram no dia de hoje. Esta curva é sempre de 30 dias; o período acima muda os cartões e as listas.</span>
+    ${GC.fonte(SM.banco ? 'O mínimo fica salvo no cadastro da empresa e vale para toda a equipe.' : 'O mínimo está salvo só neste navegador até rodar a atualização do banco (supabase/RODAR_v0.127_saldo_minimo.sql); depois disso vale para toda a equipe.')}`;
+  el.querySelector('#smSalva').onclick = () => act(async () => { const x = el.querySelector('#smV').value.trim(), v = x === '' ? null : Number(x); if (v != null && (!isFinite(v) || v < 0)) throw new Error('Informe um valor em reais, zero ou maior.'); const b = await saldoMinGrava(v); toast(b ? 'Saldo mínimo salvo' : 'Saldo mínimo salvo neste navegador'); render(); });
+}
+
+/* ---------- Financeiro: frase de topo contra o período anterior (NAR-E07; os cartões seguem com o contexto da v0.155) ---------- */
+async function finContexto(m, PER, h) {
+  if (!PER.de || !PER.ate) return;
+  const PA = semPerAnt(PER.de, PER.ate > h ? h : PER.ate);
+  let A, F; try { [F, A] = await Promise.all([q(sb.rpc('fin_dashboard_periodo', { p_ws: S.ws, p_hoje: h, p_ini: PER.de, p_fim: PER.ate })), q(sb.rpc('fin_dashboard_periodo', { p_ws: S.ws, p_hoje: h, p_ini: PA.pIni, p_fim: PA.pFim })), narrCarrega()]); } catch (e) { return; }
+  const r = semVar(Number(F.receitas_mes), Number(A.receitas_mes), 'receita', PA.rot), d = semVar(Number(F.despesas_mes), Number(A.despesas_mes), 'despesa', PA.rot), l = semVar(Number(F.resultado_mes), Number(A.resultado_mes), 'resultado', PA.rot, { baseVal: semBRL(A.resultado_mes) });
+  semCtxKpi(m, 'Receitas no período', r.html); semCtxKpi(m, 'Despesas no período', d.html); semCtxKpi(m, 'Resultado no período', l.html);
+  const res = Number(F.resultado_mes), st = semStatus(res, 'resultado'), so = x => x.html.replace(/ <span class="muted">vs\..*$/, '');
+  const f = narr('NAR-E07', { resultado: narB(semBRL(res), st ? st.k : 'neu'), var_resultado: so(l), base: esc(PA.rot), resultado_ant: semBRL(A.resultado_mes), var_receita: so(r), var_despesa: so(d) });
+  if (!f) return;
+  const p = document.createElement('p'); p.className = 'gc-lead sem-recado'; p.innerHTML = f;
+  const kp = m.querySelector('.kpis'); if (kp) kp.before(p);
+}
+
+/* ---------- Configurações → Dicionário de métricas: as frases do sistema ---------- */
+const NAR_CAT = { descricao: 'Descrição', evolucao: 'Evolução', comparacao: 'Comparação', meta: 'Meta', atencao: 'Atenção', relacao: 'Relação', hipotese: 'Hipótese', investigacao: 'Investigação', oportunidade: 'Oportunidade', neutra: 'Sem base' };
+const NAR_EV = { F: 'fato calculado', C: 'comparação', A: 'alerta condicionado', H: 'hipótese', R: 'recomendação' };
+const NAR_ST = { aprovado: { k: 'fav', txt: 'Aprovado' }, proposto: { k: 'aten', txt: 'Proposto' }, descontinuado: { k: 'neu', txt: 'Descontinuado' } };
+async function vMetricas157(m) {
+  await vMetricas(m);
+  let L; try { L = await q(sb.from('narrativa_modelos').select('*').order('codigo')); } catch (e) { L = null; }
+  const el = document.createElement('div'); el.className = 'panel'; el.id = 'narDic';
+  if (!L) { el.innerHTML = '<h2>Frases do sistema</h2><p class="muted">Esta parte precisa da atualização do banco <span class="mono">supabase/RODAR_v0.157_narrativas.sql</span>.</p>'; m.appendChild(el); return; }
+  const n = s => L.filter(x => x.status === s).length;
+  el.innerHTML = `<h2>Frases do sistema</h2>
+    <p class="muted">As frases de análise das telas vêm desta lista, não do código: o sistema só escolhe o modelo e põe no lugar de cada {campo} um número que ele mesmo calculou. As palavras entre colchetes, como [subiu/caiu], são escolhidas pela direção do número. Só as aprovadas aparecem nas telas. Para mudar um texto, edite a tabela <span class="mono">narrativa_modelos</span> no banco: a versão sobe sozinha, a anterior fica no histórico e o texto novo volta para "proposto" até ser aprovado de novo. Nenhum modelo se apaga; o que sai de uso fica "descontinuado".</p>
+    <p>${n('aprovado')} aprovada(s) · ${n('proposto')} proposta(s) · ${n('descontinuado')} descontinuada(s)</p>
+    <div class="tw"><table><thead><tr><th>Código</th><th>Situação</th><th>Tipo</th><th>Modelo</th><th>Quando entra</th><th>Quando não usar</th><th class="n">Versão</th></tr></thead><tbody>
+    ${L.map(x => `<tr data-nar-cod="${esc(x.codigo)}"><td class="mono">${esc(x.codigo)}</td><td>${semPilula(NAR_ST[x.status])}</td><td>${esc(NAR_CAT[x.categoria] || x.categoria)}<br><span class="muted">${esc(String(x.evidencia).split('+').map(e => NAR_EV[e] || e).join(' + '))}</span></td><td>${esc(x.modelo)}</td><td class="muted">${esc(x.ativa_quando || '')}</td><td class="muted">${esc(x.nao_usar || '')}</td><td class="n">${x.versao}</td></tr>`).join('')}
+    </tbody></table></div>`;
+  m.appendChild(el);
+}
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
 if (PQ_TOKEN) vPesquisaPublica(PQ_TOKEN);

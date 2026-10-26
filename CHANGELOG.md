@@ -2,6 +2,14 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.157 — Banco de narrativas (26/10/2026)
+- **Frases no banco**: tabela `narrativa_modelos` com 39 modelos (os 36 do documento de auditoria + NAR-D06, D07 e E07), código estável, versão, status (proposto, aprovado, descontinuado), quem aprovou e quando; histórico em `narrativa_modelos_historico`. O banco sobe a versão quando o texto muda, devolve o modelo para "proposto", não deixa apagar nem trocar código e só aceita `{campo}` e `[a/b]`. Usuário do sistema só lê.
+- **A tela só preenche**: `narr()` monta a frase com números já calculados; modelo não aprovado ou campo faltando = sem frase (não há texto de reserva no código). Cada frase leva `data-nar` com o código.
+- **Piloto no Dashboard financeiro** (9 modelos aprovados): frase de topo (NAR-E07); cascata com "sobraram/faltaram" e sinal de menos (NAR-D02, antes dizia "sobraram −R$ 103 mil"); **ponte do resultado** do período anterior ao atual, degraus neutros e pontas na cor do saldo, com a hipótese (NAR-H01) e onde investigar (NAR-I01); **caixa projetado e saldo mínimo num painel só** (NAR-A01, A02, D06, D07).
+- **Dicionário de métricas** ganhou a lista "Frases do sistema" com a situação de cada uma.
+- Banco: `20261113100000_narrativa_modelos.sql` / `RODAR_v0.157_narrativas.sql` (**ainda não aplicado em produção**).
+- Testes: `t157_narrativas.py` (0 falhas); `t127` ajustado aos textos novos do saldo mínimo.
+
 ## v0.152 a v0.156 — Data Storytelling (26/10/2026)
 - **Camada semântica**: quatro cores só para dados (favorável #27836A, desfavorável #C64B54, atenção #B88432/#C28B35, informação #3974AB), com tons de texto que passam contraste AA no claro e no escuro; sempre com seta, símbolo e palavra.
 - **Regra 2a** (decisão da Rebecka): lucro, resultado, margem, ROI, saldo e caixa negativos em vermelho, positivos em verde; âmbar acima de zero e abaixo da referência cadastrada. As outras métricas seguem a direção (maior, menor, faixa, neutra) com tolerância de 5%.

@@ -1,5 +1,8 @@
 
 
+## v0.157
+- index.html: 0.156 → 0.157 (`integra157.py`, que roda o `integra156.py`; novos `g157.js` e `g157.css`). Funções trocadas: `gcCascata`, `finCascata`, `finSaldoMin`, `finContexto`; novas: `narrCarrega`, `narr`, `finPonte`, `vMetricas157`. Novo: `20261113100000_narrativa_modelos.sql`, `RODAR_v0.157_narrativas.sql` (gerados por `gera_mig157.py` a partir de `nar_modelos.py`); teste `t157_narrativas.py`; `t127` ajustado aos textos novos do saldo mínimo. Banco ainda não aplicado em produção.
+
 ## v0.152 a v0.156
 - index.html: 0.151 → 0.156 (`integra152.py` a `integra156.py`, encadeados; novos `g152.js` a `g156.js` e `g152.css` a `g156.css`). Funções antigas trocadas por novas: `painelHero`, `saldoHero`, `compactaKpis` (0.152), `marcaSinais`, `varMes`, `kpiD`, `dgDeltaG` (0.153), `linhas` (0.154). Novo: `20261112100000_metricas_semantica.sql`, `RODAR_v0.156_metricas_semantica.sql`; testes `t152_semantica.py`, `t153_cores_globais.py`, `t154_graficos.py`, `t155_modulos.py`, `t156_alertas_dicionario.py`. Banco aplicado em produção em 26/10/2026.
 

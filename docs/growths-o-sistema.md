@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 26/10/2026, versão 0.156.
+**Última atualização:** 26/10/2026, versão 0.157.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -298,7 +298,7 @@ Enquanto o cliente não estiver configurado, o módulo abre num passo a passo de
 - **Contas a pagar.** Conta única, recorrente fixa, recorrente variável (valor estimado que se confirma) ou parcelada. Tem formas de pagamento, inclusive cartão de outra pessoa, e fornecedores com valor e vencimento padrão.
 - **Baixa parcial.** Pagar ou receber uma parte deixa o saldo em aberto, sem bagunçar a despesa ou a receita do mês. Desfazer junta de novo.
 - **Cartão de crédito como fatura**, não como saldo. O dinheiro só sai do banco ao pagar a fatura.
-- **Dashboard financeiro.** Saldo em banco (abre o extrato com saldo linha a linha), a receber e a pagar no período, atraso, projeção, resultado contra caixa e a cascata de como o resultado se formou.
+- **Dashboard financeiro.** Saldo em banco (abre o extrato com saldo linha a linha), a receber e a pagar no período, atraso, projeção, resultado contra caixa e a cascata de como o resultado se formou. A cascata diz "sobraram" ou "faltaram" conforme o sinal do resultado. Um gráfico de ponte mostra o que mudou do período anterior para este: parte do resultado anterior, cada barra é quanto a receita ou uma conta mexeu, e chega no resultado atual; ao lado, a conta que mais pesou aparece como "possível fator associado" (nunca como causa). Caixa projetado e saldo mínimo ficam num painel só, com o aviso de quando o caixa fura o mínimo (ou o zero, se não houver mínimo).
 - **Custos e margens:**
   - custo do mês (fixo, variável, parcelado, pontual) e pró-labores;
   - margem de contribuição por produto e lucro líquido;
@@ -376,6 +376,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - **Cor com significado (Data Storytelling).** Quatro cores só para leitura de dados: verde (favorável), vermelho (desfavorável), âmbar (atenção) e azul (informação e comparação). A cor nunca vem sozinha: sempre com seta ou símbolo (▲ ▼ ✓ ✕ ⚠) e uma palavra, porque verde e vermelho se confundem para quem tem daltonismo. Lucro, resultado, margem, ROI e saldo têm o zero como limite: negativo em vermelho, positivo em verde, âmbar quando passa de zero mas não chega na meta ou no cenário cadastrado. As outras métricas só ganham cor quando há meta, limite ou período anterior comparável, e cada uma tem a sua direção: CAC caindo é bom, margem caindo é ruim, investimento subindo é neutro. Variações abaixo de 5% ficam neutras.
 - **Números num padrão só.** Sinal de menos verdadeiro, reais abreviados em cartões e completos em tabelas, pontos percentuais para taxas, ROAS com uma casa (4,5x) e LTV:CAC como razão (3,2:1). "—" quer dizer sem dado; zero quer dizer zero.
 - **Gráficos limpos.** Verde e vermelho saem das linhas e barras comuns e ficam para o que é bom ou ruim. Meta, limite e saldo mínimo aparecem como linha tracejada com o valor escrito. Na cascata do resultado, receitas, deduções e despesas ficam neutras e só o resultado ganha cor.
+- **Frases que vêm do banco, não da cabeça da IA.** Cada frase de análise é um modelo guardado numa tabela, com código, versão e aprovação. A tela só preenche os números que ela mesma calculou; se faltar um número, a frase não aparece. Mudar o texto cria uma versão nova, que volta para "proposta" até ser aprovada, e a antiga fica no histórico. O Dicionário de métricas mostra todas as frases e quais estão aprovadas. O Dashboard financeiro é o primeiro a usar.
 - **Menu em níveis**, com recuo e linha guia.
 - **Gráficos com função.** Cada gráfico responde uma pergunta: o tipo é escolhido pelo número (linha no tempo, cascata, composição, barras por dia, medidor).
 - **Campos de moeda com máscara** (R$ 1.234,56).
@@ -427,6 +428,11 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - O dia 1 que sumiu da conta: como uma janela de comparação mal escolhida inventa uma queda de margem.
 - Lucro negativo não cai "242%": quando falar em reais e não em porcentagem.
 - Cor nunca sozinha: dashboards que funcionam para quem tem daltonismo.
+- "A IA não escreve seus números": frases de análise com modelo aprovado, e só número calculado entra nelas.
+- Sobrou ou faltou? Quando a frase do relatório contradiz o próprio número.
+- A ponte do resultado: o gráfico que responde "por que meu lucro piorou" em uma olhada.
+- Possível fator não é causa: como um dashboard deve falar de hipótese.
+- Versão e aprovação para frases: governança de texto num sistema de dados.
 
 ---
 
@@ -475,3 +481,4 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - pesquisa com um botão (pastas, call, produtos, canais e web) e o dossiê em seções.
 - **26/10:**
   - auditoria de Data Storytelling e a camada de leitura dos dados em todo o sistema: cores com significado, zero como limite dos saldos, números padronizados, comparações com a base escrita, gráficos sem cor pelo sinal, frases que contam o que aconteceu, alertas em quatro categorias e o dicionário com direção e referência.
+  - biblioteca de visualizações, banco de narrativas e auditoria das telas; as frases de análise passam a morar numa tabela no banco, com versão e aprovação, começando pelo Dashboard financeiro (frase da cascata corrigida, ponte do resultado, caixa e saldo mínimo juntos).

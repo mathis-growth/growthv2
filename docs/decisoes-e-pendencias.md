@@ -1,5 +1,17 @@
 
 
+## v0.157 — Banco de narrativas e piloto no Financeiro
+**Pedido da Rebecka (26/10)**, depois do documento "Growths — Biblioteca de visualizações, banco de narrativas e auditoria contextual": aprovar o piloto; o banco de frases vai direto para uma tabela no banco (não fica no código), por segurança e para a IA não calcular "a partir do nada"; sem etapa separada de aprovação do piloto, só as telas para ela olhar.
+Decisões técnicas:
+- Tabela `narrativa_modelos` com código estável (NAR-X00), versão, status (proposto, aprovado, descontinuado), quem aprovou e quando. Histórico em `narrativa_modelos_historico`.
+- O banco garante as regras: texto novo sobe a versão e volta para "proposto"; aprovar exige `aprovado_por`; modelo não se apaga; código não muda; marcação só `{campo}` e `[a/b]`. Usuário do sistema só lê; escrita pelo painel do Supabase.
+- A tela só preenche `{campos}` com números que ela já calculou (DRE, projeção de caixa). Modelo fora de "aprovado" ou com campo faltando: a frase não aparece. Não há texto de reserva no código.
+- 39 modelos: os 36 do documento, mais NAR-D06, NAR-D07 (caixa dentro do mínimo, sem e com mínimo) e NAR-E07 (frase de topo do Financeiro, que já existia na v0.155). NAR-D02 foi reescrito para dizer "sobraram/faltaram" e o resultado com sinal. 9 aprovados em nome da Rebecka (D02, D06, D07, E07, A01, A02, H01, I01, N01); os outros 30 ficam "propostos".
+- Piloto: Dashboard financeiro. Ponte do resultado (período anterior → atual) com degraus neutros e as duas pontas na cor do saldo; contas pequenas juntas em "Outras contas". Caixa projetado e saldo mínimo num painel só.
+Pendências:
+- Aplicar `RODAR_v0.157_narrativas.sql` em produção (cancelado pelo conector em 26/10).
+- Revisar e aprovar os 30 modelos propostos; levar os modelos às outras telas (plano F do documento).
+
 ## v0.152 a v0.156 — Data Storytelling: cor pelo significado, números padronizados
 **Pedido da Rebecka (26/10)**: aplicar uma camada de Data Storytelling (Knaflic, IBCS adaptado, Gestalt) sem mudar a identidade visual; primeiro a auditoria (documento "Growths — Data Storytelling: auditoria e plano (fase 1)") e depois "pode aplicar todas as outras etapas".
 Decisões da Rebecka:
