@@ -1,5 +1,8 @@
 
 
+## v0.148
+- Sem mudança no banco. O painel usa `conteudos.status`, `conteudos.data_publicacao` e `conteudo_config.meta_semanal`.
+
 ## v0.147
 - `content_pastas_mathisa` (padrões da Mathisa): workspace_id (nulo = todos os clientes), nome, pasta_id, url, ativo, criado_por. Só a equipe interna lê e grava.
 - Funções: `drive_pasta_id(link)` (id da pasta a partir do link), `content_pasta_mathisa_add(ws, nome, link)`; `content_material_marcar` com 5 tipos (sem "links"); `content_drive_sem_google` sem permissão para a tela.

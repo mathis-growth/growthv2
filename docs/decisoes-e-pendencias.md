@@ -1,5 +1,13 @@
 
 
+## v0.148 — Painel da produção no Kanban
+**Pedido da Rebecka (25/10)**: no Kanban, um dashboard do total: quantos em cada etapa, quantos prontos para a semana, quais semanas estão completas, com um calendariozinho para visualizar. Confirmado também o entendimento das pastas: o cliente já tem as pastas dele organizadas e só acrescenta os links para a gente ler (feito na v0.147).
+Decisões:
+- O painel substitui os quadrinhos antigos do topo do Kanban (Ideias a avaliar, Pautas, Em produção, Publicados em 30 dias): total por etapa (as 6 colunas), clicável para ir à coluna.
+- "Pronto para a semana" = pronto, agendado ou publicado com data de publicação naquela semana (segunda a domingo). Semana completa = esse número chega à meta semanal. Sem meta, mostra só os números, sem dizer "completa".
+- Calendário: a semana atual e as 5 seguintes, um ponto por conteúdo com a cor da etapa; passar o mouse mostra os títulos; clicar na semana abre o planejamento dela (aba Semana).
+- Segue os filtros do Kanban (tema, canal, tipo de mídia).
+
 ## v0.147 — Sem o Drive da Mathisa para o cliente; outras pastas do cliente; pastas da Mathisa
 **Pedido da Rebecka (25/10)**: tirar a opção de criar no Drive da Mathisa; o cliente sempre compartilha a pasta dele e pode acrescentar várias pastas que já tem organizadas; a Mathisa coloca pastas dela, com as informações dela, que a IA também lê. Regra: nas pastas da Mathisa ficam os padrões (muda pouco); na pasta do cliente, as novidades (metodologia nova, estudo novo). Não precisa estar escrito para o cliente.
 Decisões:

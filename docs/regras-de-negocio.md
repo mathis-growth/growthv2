@@ -1,5 +1,10 @@
 
 
+## v0.148 — Painel da produção
+- Pronto para a semana: status pronto, agendado ou publicado e data de publicação entre a segunda e o domingo da semana.
+- Semana completa: prontos da semana ≥ meta semanal. Abaixo da meta com algo marcado: "Faltam N". Nada marcado: "Vazia". Sem meta: "N prontos".
+- Sem data marcada: pautas, em produção ou prontos sem data de publicação.
+
 ## v0.147 — Pastas
 - O cliente só configura a pasta compartilhando uma pasta do Drive dele com a Mathisa (Editor). As pastas extras podem ser como Leitor.
 - Passo 3 pronto com os 5 tipos de material resolvidos (documentos, identidade visual, reuniões gravadas, aulas e cursos, depoimentos e provas).

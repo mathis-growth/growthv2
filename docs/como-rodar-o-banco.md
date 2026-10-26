@@ -1,5 +1,8 @@
 
 
+## v0.148
+Nada a rodar no banco.
+
 ## v0.147 — Só a pasta do cliente; pastas da Mathisa
 1. `supabase/RODAR_v0.147_content_pastas.sql` (aplicado em produção em 25/10/2026).
 2. As pastas da Mathisa precisam estar no Drive de rebecka@rebeckacappello.com.br (a conta que roda o Apps Script) ou compartilhadas com ela.

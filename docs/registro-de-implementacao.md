@@ -1,5 +1,9 @@
 
 
+## Painel da produção no Kanban (v0.148)
+- `g148.js`: `kbPainel(L, D)` (total por etapa, semana atual, calendário de 6 semanas) e `kbLiga(el, C)` (ir para a coluna; abrir a semana na aba Semana). `integra148.py` troca a linha de quadrinhos do Kanban pelo painel. `g148.css` com as cores das etapas.
+- Testes: `t148` (novo), `t147`, `t143`, `t146`, `t140`, `t141`, `t133`, `t134`, `t135` — 0 falhas.
+
 ## Pastas do cliente e da Mathisa (v0.147)
 - `g147.js`: `csDrive2` (só a pasta compartilhada; "Outras pastas que você já tem" com adicionar, salvar e tirar), tira "links" do `CS_MAT`, `vPastasMathisa` (tela interna). `integra147.py`: menu, `TELAS_INT`, rota `cfg-pastas`, passo 1 usando `csDrive2`.
 - Migração `20261108100000_content_pastas.sql` (aplicada em produção em 25/10/2026).

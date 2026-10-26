@@ -100,6 +100,10 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.148] - 2026-10-25 — Painel da produção no Kanban
+- No topo de Ideias e pautas: **total em cada etapa** (clicável), **esta semana** (prontos contra a meta, em produção, sem data) e **calendário** da semana atual e das 5 seguintes, com quais semanas estão completas.
+- Só tela, sem mudança no banco.
+
 ## [0.147] - 2026-10-25 — Só a pasta do cliente; outras pastas dele; pastas da Mathisa
 - Sai a opção **"Não tenho Google Drive"**: o cliente sempre compartilha uma pasta dele.
 - Passo 1 ganha **"Outras pastas que você já tem"**: várias pastas do Drive do cliente, compartilhadas com a Mathisa, lidas junto com a principal. O passo 3 fica com 5 tipos de material.

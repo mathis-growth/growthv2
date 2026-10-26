@@ -1,5 +1,8 @@
 
 
+## v0.148
+- index.html: 0.147 → 0.148 (`integra148.py`, que roda o `integra147.py`; novos `g148.js` e `g148.css`; o topo do `tabKanban` passa a usar `kbPainel` e `kbLiga`). Teste novo: `t148_painel_kanban.py`. Sem migração.
+
 ## v0.147
 - index.html: 0.146 → 0.147 (`integra147.py`, que roda o `integra146.py`; novos `g147.js` e `g147.css`; `csDrive2` no lugar do `csDrive`, `CS_MAT` sem "links", tela `cfg-pastas`). Novo: `20261108100000_content_pastas.sql`, `RODAR_v0.147_content_pastas.sql`, teste `t147_pastas.py`; `t143` ajustado. Aplicado em produção.
 

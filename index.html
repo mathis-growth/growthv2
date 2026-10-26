@@ -387,7 +387,43 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.147 pastas */
+<style id="v122">/* v0.148 painel da produção no Kanban */
+.kb-painel{display:flex;flex-direction:column;gap:16px;--k-ideia:#9aa0aa;--k-pauta:#6a8cff;--k-prod:#e0a100;--k-pronto:#2fb171;--k-agend:#0f9fb5;--k-pub:#17803d}
+.kb-ets{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+body #main button.kb-et{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);border-top:3px solid var(--kc)}
+body #main button.kb-et:hover{border-color:var(--kc)}
+body #main button.kb-et:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.kb-et .kb-n{font-family:var(--font-display);font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+.kb-et .kb-l{font-size:12.5px;color:var(--muted)}
+.kb-bar{height:4px;border-radius:2px;background:var(--line);overflow:hidden}
+.kb-bar i{display:block;height:100%;background:var(--kc)}
+.kb-ideia{--kc:var(--k-ideia)}.kb-pauta{--kc:var(--k-pauta)}.kb-prod{--kc:var(--k-prod)}.kb-pronto{--kc:var(--k-pronto)}.kb-agend{--kc:var(--k-agend)}.kb-pub{--kc:var(--k-pub)}
+.kb-grid{display:grid;grid-template-columns:minmax(240px,300px) 1fr;gap:20px;align-items:start}
+.kb-sem h3,.kb-cal h3{margin:0 0 8px;font-size:15px}
+.kb-big{margin:0 0 8px;font-size:14px}.kb-big b{font-family:var(--font-display);font-size:32px;font-variant-numeric:tabular-nums}
+.kb-big span{color:var(--muted)}
+.kb-prog{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin:0 0 10px}
+.kb-prog i{display:block;height:100%;background:var(--k-pronto)}
+.kb-sl{margin:0;padding-left:18px;font-size:13px;line-height:1.6;color:var(--muted)}.kb-sl b{color:var(--ink)}
+.kb-cab{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.kb-leg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--muted)}
+.kb-leg span{display:inline-flex;align-items:center;gap:4px}
+.kb-leg i,.kb-dots i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--kc)}
+.kb-w{display:grid;grid-template-columns:150px repeat(7,1fr);gap:4px;margin:0 0 4px}
+.kb-wh span{font-size:11px;color:var(--muted);text-align:center}
+body #main button.kb-wl{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:2px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+body #main button.kb-wl:hover{border-color:var(--accent)}
+body #main button.kb-wl:focus-visible{outline:2px solid var(--accent)}
+.kb-wl .pill{align-self:flex-start;font-size:11px}
+.kb-wl small{font-size:11px;color:var(--muted)}
+.kb-d{border:1px solid var(--line);border-radius:8px;padding:4px 6px;min-height:52px;display:flex;flex-direction:column;gap:4px;background:var(--surface)}
+.kb-d.pas{opacity:.55}.kb-d.hoje{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.kb-dn{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.kb-dots{display:flex;flex-wrap:wrap;gap:3px;align-items:center}.kb-dots em{font-size:10.5px;font-style:normal;color:var(--muted)}
+.kb-d .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:1100px){.kb-grid{grid-template-columns:1fr}}
+@media (max-width:700px){.kb-ets{grid-template-columns:repeat(3,1fr)}.kb-w{grid-template-columns:90px repeat(7,1fr)}}
+/* v0.147 pastas */
 .pm-grid{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:12px}
 tr.pm-off td{opacity:.6}
 @media (max-width:900px){.pm-grid{grid-template-columns:1fr}}
@@ -967,7 +1003,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.147 · 25/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.148 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -14773,10 +14809,10 @@ function tabKanban(el, D, C) {
   const cmp = sc ? (a, b) => Number(b.validado) - Number(a.validado) || ordemScore(a, b) : (a, b) => (notaCt(b, D) ?? -1) - (notaCt(a, D) ?? -1) || prio(a) - prio(b) || String(a.criado_em).localeCompare(String(b.criado_em));
   el.innerHTML = `${mqComeco(D)}<div class="acts"><button class="btn pri" id="cNovo">Nova ideia</button><button class="btn" id="cColar">Colar ideias</button><button class="btn" id="cIA" title="Fale a ideia no ChatGPT do celular e ela entra aqui">Ideias pelo ChatGPT</button></div>
   ${mqFiltrosHtml(D, C)}<div class="filters" style="margin-top:-8px"><label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="cfA" style="width:auto"${C.arq ? ' checked' : ''}> Mostrar arquivados</label></div>
-  <div class="kpis">${kpi('Ideias a avaliar', num(L.filter(c => c.status === 'ideia').length), sc ? 'esperando score' : 'esperando nota')}${sc ? kpi('Validadas', num(L.filter(c => c.validado && ['ideia', 'pauta'].includes(c.status)).length), 'escolhidas e ainda não produzidas') : ''}${kpi('Pautas aprovadas', num(L.filter(c => c.status === 'pauta').length), 'prontas para produzir')}${kpi('Em produção', num(L.filter(c => ['producao', 'pronto'].includes(c.status)).length), 'produzindo e prontos')}${kpi('Publicados em 30 dias', num(L.filter(c => c.status === 'publicado' && (c.data_publicacao || diaLocal(c.publicado_em)) >= lim).length), 'conteúdos')}</div>
+  ${kbPainel(L, D)}
   ${!D.temas.length && D.linhas.length ? '<div class="panel">Cadastre as frentes de cada território na aba <b>Linha editorial</b>. Depois as ideias ganham território, frente e etiquetas.</div>' : ''}
   <div class="board" style="grid-auto-columns:minmax(250px,1fr)">${etapas.map(([k, nome, sub]) => { const X = L.filter(c => c.status === k).sort(cmp); return `<div class="colk" data-col="${k}"><h3><span>${nome} <small class="muted">${esc(sc && k === 'pauta' ? 'validar para produzir' : sub)}</small></span><span class="mono">${X.length}</span></h3>${X.map(c => mqCard(c, D)).join('') || '<small class="muted">Vazio</small>'}</div>`; }).join('')}</div>`;
-  mqLigaComeco(el, C); mqLigaFiltros(el, C);
+  mqLigaComeco(el, C); mqLigaFiltros(el, C); kbLiga(el, C);
   const pre = {}; if (C.tema) pre.tema_id = C.tema; if (C.fmt) pre.formato_id = C.fmt; if (C.dest && C.dest !== '-') pre.destino = C.dest;
   $('#cNovo').onclick = () => modalConteudo(null, D, pre);
   $('#cColar').onclick = () => modalColar(D);
@@ -16320,6 +16356,42 @@ async function vPastasMathisa(m) {
   $('#pmF').onsubmit = e => { e.preventDefault(); act(async () => { const f = e.target.elements; await q(sb.rpc('content_pasta_mathisa_add', { p_ws: f.ws.value || null, p_nome: f.nome.value, p_link: f.link.value.trim() })); toast('Pasta adicionada'); render(); }); };
   m.querySelectorAll('[data-pma]').forEach(x => x.onclick = () => act(async () => { const p = L.find(y => y.id === x.dataset.pma); await q(sb.from('content_pastas_mathisa').update({ ativo: !p.ativo }).eq('id', p.id)); render(); }));
   m.querySelectorAll('[data-pmx]').forEach(x => x.onclick = () => act(async () => { await q(sb.from('content_pastas_mathisa').delete().eq('id', x.dataset.pmx)); toast('Pasta tirada da lista (no Drive ela continua)'); render(); }));
+}
+
+/* ===================== v0.148 — Kanban: painel da produção (total por etapa, semana atual e calendário das próximas semanas) ===================== */
+const KB_PRONTO = ['pronto', 'agendado', 'publicado'];
+const KB_COR = { ideia: 'ideia', pauta: 'pauta', producao: 'prod', pronto: 'pronto', agendado: 'agend', publicado: 'pub' };
+function kbPainel(L, D) {
+  const h = hoje(), meta = Number(D.cfg.meta) || 0, ini0 = segundaDe(h), ativos = L.filter(c => c.status !== 'arquivado');
+  const naFaixa = (c, a, b) => c.data_publicacao && c.data_publicacao >= a && c.data_publicacao <= b;
+  const tot = ativos.length || 1;
+  const etapas = ETAPAS_C.map(([k, nome]) => { const n = ativos.filter(c => c.status === k).length; return `<button type="button" class="kb-et kb-${KB_COR[k]}" data-kbcol="${k}"><span class="kb-n">${num(n)}</span><span class="kb-l">${esc(nome)}</span><span class="kb-bar" aria-hidden="true"><i style="width:${Math.round(n / tot * 100)}%"></i></span></button>`; }).join('');
+  // semana atual
+  const fimS = diaMais(ini0, 6), daSemana = ativos.filter(c => naFaixa(c, ini0, fimS)), prontosS = daSemana.filter(c => KB_PRONTO.includes(c.status)).length;
+  const prodS = daSemana.filter(c => c.status === 'producao').length, filaS = daSemana.filter(c => ['ideia', 'pauta'].includes(c.status)).length;
+  const semData = ativos.filter(c => ['pauta', 'producao', 'pronto'].includes(c.status) && !c.data_publicacao).length;
+  const pct = meta ? Math.min(100, Math.round(prontosS / meta * 100)) : 0;
+  const semana = `<div class="kb-sem"><h3>Esta semana <small class="muted">${dd(ini0).slice(0, 5)} a ${dd(fimS).slice(0, 5)}</small></h3>
+    <p class="kb-big"><b>${num(prontosS)}</b>${meta ? ` de ${num(meta)}` : ''} <span>prontos para publicar</span></p>
+    ${meta ? `<div class="kb-prog" role="img" aria-label="${pct}% da meta da semana pronta"><i style="width:${pct}%"></i></div>` : '<p class="muted" style="margin:0">Sem meta semanal definida (passo Rotina da semana).</p>'}
+    <ul class="kb-sl"><li><b>${num(prodS)}</b> em produção com data nesta semana</li><li><b>${num(filaS)}</b> com data nesta semana, ainda como ideia ou pauta</li><li><b>${num(semData)}</b> sem data marcada (pautas, em produção ou prontos)</li></ul></div>`;
+  // calendário: semana atual + 5
+  const sems = [0, 1, 2, 3, 4, 5].map(i => { const a = diaMais(ini0, i * 7); return { a, b: diaMais(a, 6) }; });
+  const linha = s => {
+    const X = ativos.filter(c => naFaixa(c, s.a, s.b)), p = X.filter(c => KB_PRONTO.includes(c.status)).length;
+    const st = meta ? (p >= meta ? ['good', 'Completa'] : X.length ? ['warn', `Faltam ${meta - p}`] : ['neutral', 'Vazia']) : [X.length ? 'info' : 'neutral', X.length ? `${p} prontos` : 'Vazia'];
+    const dias = [0, 1, 2, 3, 4, 5, 6].map(i => { const d = diaMais(s.a, i), Y = X.filter(c => c.data_publicacao === d);
+      return `<div class="kb-d${d === h ? ' hoje' : ''}${d < h ? ' pas' : ''}" title="${esc(Y.map(c => `${c.titulo} (${(ETAPAS_C.find(e => e[0] === c.status) || [, c.status])[1]})`).join('\n') || 'Nada marcado')}"><span class="kb-dn">${d.slice(8)}</span><span class="kb-dots" aria-hidden="true">${Y.slice(0, 4).map(c => `<i class="kb-${KB_COR[c.status] || 'ideia'}"></i>`).join('')}${Y.length > 4 ? `<em>+${Y.length - 4}</em>` : ''}</span><span class="sr">${Y.length} conteúdo(s)</span></div>`; }).join('');
+    return `<div class="kb-w"><button type="button" class="kb-wl" data-kbsem="${s.a}" title="Abrir esta semana"><b>${dd(s.a).slice(0, 5)}</b><span class="pill ${st[0]}">${st[1]}</span><small>${p} pronto(s) de ${X.length} marcados</small></button>${dias}</div>`;
+  };
+  const cal = `<div class="kb-cal"><div class="kb-cab"><h3>Próximas semanas</h3><div class="kb-leg" aria-label="Legenda">${ETAPAS_C.map(([k, n]) => `<span><i class="kb-${KB_COR[k]}"></i>${esc(n)}</span>`).join('')}</div></div>
+    <div class="kb-w kb-wh" aria-hidden="true"><span></span>${DIAS_C.map(([, ab]) => `<span>${ab}</span>`).join('')}</div>${sems.map(linha).join('')}
+    <small class="muted">Uma semana fica completa quando os prontos, agendados e publicados com data nela chegam à meta semanal. Clique na semana para abrir o planejamento dela.</small></div>`;
+  return `<section class="panel kb-painel" aria-label="Painel da produção"><div class="kb-ets">${etapas}</div><div class="kb-grid">${semana}${cal}</div></section>`;
+}
+function kbLiga(el, C) {
+  el.querySelectorAll('[data-kbcol]').forEach(b => b.onclick = () => { const col = el.querySelector(`.colk[data-col="${b.dataset.kbcol}"]`); if (col) { col.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); col.classList.add('over'); setTimeout(() => col.classList.remove('over'), 900); } });
+  el.querySelectorAll('[data-kbsem]').forEach(b => b.onclick = () => { const CT = S.ct; CT.tab = 'plano'; CT.sem = b.dataset.kbsem; if (MQ_VIEW_CANAL[S.view]) S.view = 'mkt-cont'; render(); });
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

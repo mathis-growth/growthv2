@@ -1,3 +1,6 @@
+## v0.148
+**Painel da produção no Kanban.** Em cima das colunas de Ideias e pautas, o Growth's Content mostra quantos conteúdos estão em cada etapa, quantos já estão prontos para a semana atual contra a meta e um calendário da semana atual e das 5 seguintes, com um ponto colorido por conteúdo e o aviso de quais semanas estão completas e quanto falta nas outras. Clicar numa semana abre o planejamento dela.
+
 ## v0.147
 **Só a pasta do cliente, mais as pastas que ele já tem e as pastas da Mathisa.** A opção de criar a pasta no Drive da Mathisa saiu: o cliente sempre compartilha uma pasta do Drive dele, onde o Growths cria a árvore, e pode acrescentar outras pastas que já tem organizadas, só compartilhando cada uma. A equipe Mathisa cadastra as próprias pastas (para todos os clientes ou para um) numa tela interna. A IA vai ler as pastas da Mathisa como os padrões e as do cliente como as novidades — regra que o cliente não vê.
 
