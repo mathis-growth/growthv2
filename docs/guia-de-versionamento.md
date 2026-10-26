@@ -1,5 +1,10 @@
 
 
+## Regra permanente: o documento "Growths: o sistema, explicado"
+- `docs/growths-o-sistema.md` explica todas as funcionalidades do Growths (sem tabelas), para a Rebecka subir no Growth's Content e usar como base de conteúdo.
+- **A cada entrega**, atualizar este documento: a data e a versão no topo, a seção da área que mudou, o histórico resumido (seção 14) e, quando fizer sentido, um ângulo novo na seção 13.
+- Entregar junto com os outros docs, também em .docx (abre como Google Docs no Drive).
+
 ## v0.148
 - index.html: 0.147 → 0.148 (`integra148.py`, que roda o `integra147.py`; novos `g148.js` e `g148.css`; o topo do `tabKanban` passa a usar `kbPainel` e `kbLiga`). Teste novo: `t148_painel_kanban.py`. Sem migração.
 

@@ -79,6 +79,7 @@ _headers                  cabeçalhos do Cloudflare Pages
 CHANGELOG.md              histórico detalhado de cada versão
 docs/
   visao-geral.md          o que o sistema faz, versão a versão
+  growths-o-sistema.md    todas as funcionalidades explicadas (documento vivo, base de conteúdo)
   regras-de-negocio.md    como cada número é calculado
   modelo-de-dados.md      tabelas, funções e views
   decisoes-e-pendencias.md decisões tomadas e o que falta
