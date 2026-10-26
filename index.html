@@ -387,7 +387,11 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.146 estruturas e custos */
+<style id="v122">/* v0.147 pastas */
+.pm-grid{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:12px}
+tr.pm-off td{opacity:.6}
+@media (max-width:900px){.pm-grid{grid-template-columns:1fr}}
+/* v0.146 estruturas e custos */
 .es-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
 .es-card{display:flex;flex-direction:column;gap:8px}
 .es-card.off{opacity:.6}
@@ -963,7 +967,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.146 · 25/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.147 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -997,7 +1001,7 @@ const NAV = [
   { g: 'Configurações', adm: true, items: [], subs: [
     { g: 'Dados e integrações', mod: 'cfg', items: [['cfg-importar', 'Importar e validar dados'], ['cfg-integracoes', 'Integrações'], ['cfg-uso', 'Uso da plataforma'], ['cfg-qualidade', 'Qualidade dos dados'], ['cfg-metricas', 'Dicionário de métricas']] },
     { g: 'Pessoas e acessos', mod: 'cad', items: [['cad-equipe', 'Equipe e acessos'], ['cad-funcoes', 'Funções e permissões'], ['cad-auditoria', 'Auditoria'], ['cfg-pacotes', 'Pacotes de acesso dos clientes']] },
-    { g: 'Growth\'s Content (interno)', mod: 'cfg', items: [['cfg-estruturas', 'Estruturas de roteiro e copy'], ['cfg-custos', 'Custos de IA']] },
+    { g: 'Growth\'s Content (interno)', mod: 'cfg', items: [['cfg-estruturas', 'Estruturas de roteiro e copy'], ['cfg-pastas', 'Pastas da Mathisa'], ['cfg-custos', 'Custos de IA']] },
     { g: 'Comercial e produtos', mod: 'cad', items: [['cad-clientes', 'Clientes'], ['cad-duplicados', 'Cadastros repetidos'], ['cad-produtos', 'Produtos'], ['cad-comissoes', 'Comissões'], ['cad-plataformas', 'Plataformas'], ['cad-canais', 'Canais'], ['cad-funis', 'Estratégias e funis'], ['cad-motivos', 'Motivos de ganho e perda']] },
     { g: 'Financeiro e contabilidade', mod: 'cad', items: [['cad-planocontas', 'Plano de contas'], ['cad-regras', 'Regras contábeis'], ['cad-impostos', 'Impostos'], ['cad-bancos', 'Contas bancárias'], ['cad-formaspag', 'Formas de pagamento'], ['cad-fornecedores', 'Fornecedores'], ['cad-centros', 'Centros de custo'], ['cad-rateio', 'Rateio de custos']] }] }
 ];
@@ -1325,7 +1329,7 @@ const MODULOS = [['adm', 'Administrativo', 'Painel gerencial, planejamento e cad
 const NIVEIS = [['nenhum', 'Sem acesso'], ['ler', 'Só consultar'], ['editar', 'Consultar e editar']];
 const MOD_GRUPO = { 'Growth Starter': 'adm', Administrativo: 'adm', Marketing: 'mkt', Vendas: 'vendas', RevOps: 'revops', Financeiro: 'fin', Projetos: 'prj', Growth: 'gro', 'Configurações': 'cfg', Cadastros: 'cad' };
 const SO_ADMIN = ['cad-funcoes', 'cfg-uso', 'cad-auditoria'];
-const TELAS_INT = ['cfg-pacotes', 'cfg-estruturas', 'cfg-custos'];
+const TELAS_INT = ['cfg-pacotes', 'cfg-estruturas', 'cfg-pastas', 'cfg-custos'];
 const nivelMod = k => S.perm && S.perm.modulos ? (S.perm.modulos[k] || 'nenhum') : 'editar';
 const souAdmin = () => !S.perm || S.perm.admin !== false;
 const subsDe = g => g.subs || [];
@@ -1392,7 +1396,7 @@ const ncModalV140 = () => { modal('Novo cliente', `<label>Nome do cliente<input 
 $('#wsSel').onchange = e => { S.ws = S.wsBase = e.target.value; if (ehCasaV(S.view)) S.view = 'fin-dash'; S.perm = null; S.permWs = null; render(); };
 
 const VIEWS = {
-  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': vConteudo, 'cfg-estruturas': vEstruturas, 'cfg-custos': vCustos, 'crm-dms': vDMsCrm,
+  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': vConteudo, 'cfg-estruturas': vEstruturas, 'cfg-pastas': vPastasMathisa, 'cfg-custos': vCustos, 'crm-dms': vDMsCrm,
   'crm-leads': vCrmLeads, 'crm-oport': vCrmOport, 'crm-vendas': vVendas, 'crm-contratos': vContratos, 'crm-comissoes': vComissoes, 'cad-comissoes': vComissoes, 'crm-alunos': vCrmAlunos,
   'fin-receber': vReceber,  'cfg-uso': vUso, 'fin-pagar': vPagar, 'fin-custo': vCustoOp, 'fin-lanc': vLanc, 'adm-painel': vPainel, 'adm-plano': vPlano,
   'cad-clientes': vClientes, 'cad-plataformas': vPlataformas, 'cad-funis': vFunis, 'cad-regras': vRegras,
@@ -15912,7 +15916,7 @@ async function csWizard(m, D, E) {
   });
   if (ultimo && !todos) $('#csPasso').insertAdjacentHTML('afterend', `<div class="panel cs-aviso">Para concluir, falta: ${CS_PASSOS.filter((p, i) => !p.emBreve && !feito[i]).map(p => `<b>${p.t}</b>`).join(', ')}.</div>`);
   const box = $('#csPasso');
-  if (P.k === 'drive') return csDrive(box, E);
+  if (P.k === 'drive') return csDrive2(box, E);
   if (P.k === 'call') csCall(box, D, E);
   else if (P.k === 'fontes') csFontes(box, D, E);
   else if (P.k === 'materiais') csMateriais2(box, D, E);
@@ -16257,6 +16261,65 @@ async function vCustos(m) {
     ${(R.por_funcao || []).length ? `<div class="panel"><h3 style="margin:0 0 8px">Por tipo de uso</h3><table class="tbl"><thead><tr><th>Uso</th><th class="n">Chamadas</th><th class="n">Custo (US$)</th></tr></thead><tbody>${R.por_funcao.map(f => `<tr><td>${esc(f.funcao)}</td><td class="n">${num(f.chamadas)}</td><td class="n">${usd(f.custo_usd)}</td></tr>`).join('')}</tbody></table></div>` : ''}`;
   $('#cuF').onsubmit = e => { e.preventDefault(); const f = e.target.elements; if (f.ini.value > f.fim.value) { toast('A data inicial passa da final.', true); return; } C.ini = f.ini.value; C.fim = f.fim.value; render(); };
   $('#cuCb').onclick = () => act(async () => { const v = $('#cuF').elements.cambio.value; await q(sb.rpc('ia_cambio_salvar', { p_valor: v === '' ? null : Number(v) })); toast('Câmbio salvo'); render(); });
+}
+
+/* ===================== v0.147 — Growth's Content: só a pasta do cliente, outras pastas dele no passo 1 e as pastas da Mathisa ===================== */
+// "Links de outros Drives" sai do passo 3: vira "Outras pastas que você já tem" no passo 1
+(() => { const i = CS_MAT.findIndex(([k]) => k === 'links'); if (i >= 0) CS_MAT.splice(i, 1); })();
+CS_PASSOS[0].falta = 'Compartilhe a pasta do cliente com a Mathisa, cole o link e espere a pasta ficar pronta.';
+
+/* ----- passo 1: a pasta do cliente (e as outras pastas que ele já tem) ----- */
+function csDrive2(box, E) {
+  const d = E.drive || {}, ok = d.status === 'ok', email = d.compartilhar_com || 'o e-mail da Mathisa', links = ((E.fontes || {}).links) || [];
+  const onde = d.modo === 'mathisa' ? 'No Google Drive da Mathisa (cliente configurado antes desta versão).' : d.modo === 'cliente' ? `No Google Drive de <b>${esc(d.email || 'cliente')}</b>.` : 'No Google Drive do cliente.';
+  const situacao = ok ? `<div class="panel cs-pronto"><p style="margin:0"><b>Pasta pronta.</b> ${onde}</p><div class="cs-matbt"><a class="btn sm" href="${esc(d.url)}" target="_blank" rel="noopener">Abrir a pasta</a><button class="btn sm" id="csRefaz">Completar as pastas</button></div></div>`
+    : d.status === 'criando' ? '<div class="panel"><b>Criando as pastas…</b> <span class="muted">Leva alguns segundos.</span></div>'
+    : d.status === 'erro' ? `<div class="panel cs-aviso"><b>As pastas não foram criadas.</b> ${esc(d.erro || '')}${d.modo && d.modo !== 'cliente' ? ' <button class="btn sm" id="csRefaz">Verificar de novo</button>' : ''}</div>` : '';
+  box.innerHTML = `${situacao}
+    <div class="panel"><h3 style="margin:0 0 6px">A pasta do Growth's Content</h3>
+      <p class="muted" style="margin:0 0 10px">O Growths cria dentro dela a árvore de pastas: briefing, materiais, identidade visual, referências, pesquisa, dossiê, produção, publicados e resultados. A pasta e os arquivos continuam no seu Drive.</p>
+      <ol class="cs-mini"><li>No seu Google Drive, crie uma pasta (sugestão: <b>Growth's Content</b>).</li>
+        <li>Clique com o botão direito na pasta → <b>Compartilhar</b> → adicione <b>${esc(email)}</b> como <b>Editor</b>. <button type="button" class="btn sm" id="csCopia">Copiar e-mail</button></li>
+        <li>Copie o link da pasta e cole aqui.</li></ol>
+      <form id="csLinkF" class="cs-link"><input name="link" placeholder="https://drive.google.com/drive/folders/..." required aria-label="Link da pasta"><button class="btn pri" type="submit">${ok ? 'Trocar a pasta' : 'Criar as pastas'}</button></form></div>
+    <div class="panel"><h3 style="margin:0 0 6px">Outras pastas que você já tem <span class="muted" style="font-weight:400">(opcional)</span></h3>
+      <p class="muted" style="margin:0 0 10px">Já tem materiais organizados em outras pastas do Drive? Compartilhe cada uma com <b>${esc(email)}</b> (pode ser como Leitor) e cole o link. Elas são lidas junto com a pasta principal.</p>
+      <div id="csLks">${links.map((l, i) => `<div class="cs-lk"><input data-lku="${i}" value="${esc(l.url)}" placeholder="https://drive.google.com/drive/folders/..." aria-label="Link da pasta ${i + 1}"><input data-lkd="${i}" value="${esc(l.desc || '')}" placeholder="O que tem lá (ex.: aulas do curso antigo)" aria-label="O que tem na pasta ${i + 1}"><button type="button" class="btn sm" data-lkx="${i}">Tirar</button></div>`).join('') || '<p class="muted" style="margin:0 0 8px">Nenhuma pasta extra.</p>'}</div>
+      <div class="cs-matbt"><button type="button" class="btn sm" id="csLkAdd">Adicionar pasta</button><button type="button" class="btn sm pri" id="csLkSalva">Salvar pastas</button></div></div>`;
+  const b = id => box.querySelector('#' + id);
+  b('csCopia').onclick = () => { try { navigator.clipboard.writeText(email); toast('E-mail copiado: ' + email); } catch (e) { toast(email); } };
+  b('csLinkF').onsubmit = ev => { ev.preventDefault(); act(async () => { await q(sb.rpc('content_drive_compartilhar', { p_ws: S.ws, p_link: ev.target.elements.link.value.trim() })); toast('Conferindo a pasta e criando as subpastas…'); render(); }); };
+  if (b('csRefaz')) b('csRefaz').onclick = () => act(async () => { await q(sb.rpc('content_drive_tentar', { p_ws: S.ws })); toast('Conferindo as pastas…'); render(); });
+  const lista = () => [...box.querySelectorAll('[data-lku]')].map(u => ({ url: u.value.trim(), desc: (box.querySelector(`[data-lkd="${u.dataset.lku}"]`) || {}).value || '' })).filter(l => l.url);
+  const grava = ls => q(sb.rpc('content_fontes_salvar', { p_ws: S.ws, p_canais: null, p_sem_canais: null, p_links: ls }));
+  b('csLkAdd').onclick = () => {
+    const w = b('csLks'), i = w.querySelectorAll('[data-lku]').length; if (!i) w.innerHTML = '';
+    w.insertAdjacentHTML('beforeend', `<div class="cs-lk"><input data-lku="${i}" placeholder="https://drive.google.com/drive/folders/..." aria-label="Link da pasta ${i + 1}"><input data-lkd="${i}" placeholder="O que tem lá (ex.: aulas do curso antigo)" aria-label="O que tem na pasta ${i + 1}"></div>`);
+    w.querySelector(`[data-lku="${i}"]`).focus();
+  };
+  b('csLkSalva').onclick = () => act(async () => { await grava(lista()); toast('Pastas salvas'); render(); });
+  box.querySelectorAll('[data-lkx]').forEach(x => x.onclick = () => act(async () => { await grava(links.filter((_, i) => i !== Number(x.dataset.lkx))); render(); }));
+  if (d.status === 'criando') { const C = S.ct; C.csVoltas = (C.csVoltas || 0) + 1; if (C.csVoltas < 20) setTimeout(() => { if (box.isConnected) render(); }, 3000); } else S.ct.csVoltas = 0;
+}
+
+/* ----- Configurações → Growth's Content (interno) → Pastas da Mathisa ----- */
+async function vPastasMathisa(m) {
+  const [L, CL] = await Promise.all([q(sb.from('content_pastas_mathisa').select('*').order('criado_em')), q(sb.rpc('content_clientes')).catch(() => [])]);
+  const nomeCli = Object.fromEntries((CL || []).map(c => [c.id, c.nome]));
+  m.innerHTML = `<div class="head"><div><h1>Pastas da Mathisa</h1><span class="muted">Pastas do seu Google Drive que a IA lê junto com as do cliente. Só a equipe vê esta tela.</span></div></div>
+    <div class="panel cs-cliente"><p style="margin:0"><b>Como a IA usa cada pasta.</b> As pastas da Mathisa são os <b>padrões</b>: método, estruturas, exemplos, o que muda pouco. As pastas do cliente trazem as <b>novidades</b>: método novo, estudo novo, material novo. Quando os dois falarem de um mesmo assunto, a novidade do cliente vale para aquele cliente; o padrão da Mathisa vale para todos.</p></div>
+    <form class="panel" id="pmF"><h3 style="margin:0 0 8px">Adicionar pasta</h3><div class="pm-grid">
+      <label>Nome<input name="nome" required maxlength="120" placeholder="Ex.: Método MIRA"></label>
+      <label>Link da pasta<input name="link" required placeholder="https://drive.google.com/drive/folders/..."></label>
+      <label>Vale para<select name="ws"><option value="">Todos os clientes</option>${(CL || []).filter(c => !c.agencia).map(c => `<option value="${esc(c.id)}">${esc(c.nome)}</option>`).join('')}</select></label></div>
+      <p class="muted" style="margin:8px 0 0">As pastas precisam estar no Drive de rebecka@rebeckacappello.com.br ou compartilhadas com ele.</p>
+      <div class="acts" style="justify-content:flex-start"><button class="btn pri" type="submit">Adicionar</button></div></form>
+    <div class="panel">${L.length ? `<table class="tbl"><thead><tr><th>Nome</th><th>Vale para</th><th>Pasta</th><th></th></tr></thead><tbody>${L.map(p => `<tr class="${p.ativo ? '' : 'pm-off'}"><td>${esc(p.nome)}${p.ativo ? '' : ' <span class="pill neutral">Pausada</span>'}</td><td>${p.workspace_id ? esc(nomeCli[p.workspace_id] || 'Cliente') : 'Todos os clientes'}</td>
+        <td><a href="${esc(p.url)}" target="_blank" rel="noopener">Abrir no Drive</a></td><td class="n"><button class="btn sm" data-pma="${p.id}">${p.ativo ? 'Pausar' : 'Retomar'}</button> <button class="btn sm" data-pmx="${p.id}">Tirar</button></td></tr>`).join('')}</tbody></table>`
+      : '<p style="margin:0"><b>Nenhuma pasta ainda.</b> <span class="muted">Adicione as pastas com os padrões da Mathisa.</span></p>'}</div>`;
+  $('#pmF').onsubmit = e => { e.preventDefault(); act(async () => { const f = e.target.elements; await q(sb.rpc('content_pasta_mathisa_add', { p_ws: f.ws.value || null, p_nome: f.nome.value, p_link: f.link.value.trim() })); toast('Pasta adicionada'); render(); }); };
+  m.querySelectorAll('[data-pma]').forEach(x => x.onclick = () => act(async () => { const p = L.find(y => y.id === x.dataset.pma); await q(sb.from('content_pastas_mathisa').update({ ativo: !p.ativo }).eq('id', p.id)); render(); }));
+  m.querySelectorAll('[data-pmx]').forEach(x => x.onclick = () => act(async () => { await q(sb.from('content_pastas_mathisa').delete().eq('id', x.dataset.pmx)); toast('Pasta tirada da lista (no Drive ela continua)'); render(); }));
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

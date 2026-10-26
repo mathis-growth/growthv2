@@ -100,6 +100,12 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.147] - 2026-10-25 — Só a pasta do cliente; outras pastas dele; pastas da Mathisa
+- Sai a opção **"Não tenho Google Drive"**: o cliente sempre compartilha uma pasta dele.
+- Passo 1 ganha **"Outras pastas que você já tem"**: várias pastas do Drive do cliente, compartilhadas com a Mathisa, lidas junto com a principal. O passo 3 fica com 5 tipos de material.
+- **Pastas da Mathisa** (Configurações → Growth's Content (interno)): pastas com os padrões da Mathisa, para todos os clientes ou um. A IA lê as da Mathisa como padrões e as do cliente como novidades.
+- Banco: `20261108100000_content_pastas.sql`. **Aplicado em produção em 25/10/2026**.
+
 ## [0.146] - 2026-10-25 — Estruturas de roteiro e copy; custos de IA
 - **Estruturas de roteiro e copy**: biblioteca interna (Configurações → Growth's Content (interno)) com 7 estruturas iniciais, editáveis; etapas e instruções só para a equipe.
 - O cliente escolhe as estruturas por formato na nova aba **Estruturas** do Growth's Content (e no passo 7 da configuração); vê só nome e para que serve.

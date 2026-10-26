@@ -15,8 +15,8 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.146 · 25/10/2026 (`index.html`) |
-| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.146** (25/10/2026): alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
+| **Versão da tela** | 0.147 · 25/10/2026 (`index.html`) |
+| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.147** (25/10/2026): alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta, projeto do Google e os segredos no Supabase: [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
 
@@ -26,6 +26,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.147 | 25/10/2026 | **Só a pasta do cliente** (sai o Drive da Mathisa), **outras pastas que o cliente já tem** no passo 1 e **Pastas da Mathisa** (padrões) numa tela interna. | `RODAR_v0.147_content_pastas.sql`, aplicado em 25/10/2026 |
 | 0.146 | 25/10/2026 | **Estruturas de roteiro e copy** (biblioteca interna; o cliente só escolhe por formato) e **Custos de IA** (só para a Rebecka). | `RODAR_v0.146_content_estruturas.sql`, aplicado em 25/10/2026 |
 | 0.145 | 25/10/2026 | **Canais e materiais do cliente antes da call**: configuração em 9 passos; o cliente informa o @ de cada plataforma e resolve seis tipos de material, cada um com a sua pasta. | `RODAR_v0.145_content_fontes.sql`, aplicado em 25/10/2026 |
 | 0.144 | 25/10/2026 | **Configuração em 8 passos**: o cliente **compartilha uma pasta do Drive** dele e o Growths cria a árvore de 10 pastas (gratuito); roteiro da **call de briefing** na tela; lista de **materiais**; pesquisa, tese e dossiê em construção. | `RODAR_v0.144_content_setup_v2.sql` + função `content-drive`, aplicado em 25/10/2026 |

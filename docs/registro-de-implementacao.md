@@ -1,5 +1,10 @@
 
 
+## Pastas do cliente e da Mathisa (v0.147)
+- `g147.js`: `csDrive2` (só a pasta compartilhada; "Outras pastas que você já tem" com adicionar, salvar e tirar), tira "links" do `CS_MAT`, `vPastasMathisa` (tela interna). `integra147.py`: menu, `TELAS_INT`, rota `cfg-pastas`, passo 1 usando `csDrive2`.
+- Migração `20261108100000_content_pastas.sql` (aplicada em produção em 25/10/2026).
+- Testes: `t147` (novo), `t143` (passo 1 e 5 materiais), `t146`, `t140`, `t141`, `t133`, `t134`, `t135` — 0 falhas.
+
 ## Estruturas e custos de IA (v0.146)
 - `g146.js`: `vEstruturas` e `esModal` (biblioteca, etapas com subir/tirar), `tabEstruturas` (escolha do cliente por formato; aba nova e passo 7), `vCustos` (período, câmbio, por cliente e mês, por tipo de uso). `integra146.py`: menu "Growth's Content (interno)", `TELAS_INT` no lugar do `cfg-pacotes` fixo, `S.verCustos` no início, rotas e a aba. `g146.css` com `body #main` / `body #modalRoot`.
 - Câmbio com `data-money="0"` para não cair na máscara de moeda.

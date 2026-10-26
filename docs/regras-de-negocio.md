@@ -1,5 +1,11 @@
 
 
+## v0.147 — Pastas
+- O cliente só configura a pasta compartilhando uma pasta do Drive dele com a Mathisa (Editor). As pastas extras podem ser como Leitor.
+- Passo 3 pronto com os 5 tipos de material resolvidos (documentos, identidade visual, reuniões gravadas, aulas e cursos, depoimentos e provas).
+- Pastas da Mathisa: só a equipe interna cadastra; link precisa ser de pasta do Drive; valem para todos os clientes ou para um; pausada não é lida.
+- Leitura pela IA: Mathisa = padrões; cliente = novidades; em conflito, a novidade do cliente vale para aquele cliente.
+
 ## v0.146 — Estruturas e custos
 - O cliente nunca recebe etapas nem instruções das estruturas; só nome, para que serve e formatos das ativas.
 - Escolha só por formato que a estrutura aceita; estrutura desativada some das opções.

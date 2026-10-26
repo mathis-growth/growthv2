@@ -1,5 +1,15 @@
 
 
+## v0.147 — Sem o Drive da Mathisa para o cliente; outras pastas do cliente; pastas da Mathisa
+**Pedido da Rebecka (25/10)**: tirar a opção de criar no Drive da Mathisa; o cliente sempre compartilha a pasta dele e pode acrescentar várias pastas que já tem organizadas; a Mathisa coloca pastas dela, com as informações dela, que a IA também lê. Regra: nas pastas da Mathisa ficam os padrões (muda pouco); na pasta do cliente, as novidades (metodologia nova, estudo novo). Não precisa estar escrito para o cliente.
+Decisões:
+- "Não tenho Google Drive" sai da tela (a função deixa de poder ser chamada pela tela). Clientes antigos com pasta no Drive da Mathisa continuam funcionando.
+- Passo 1: a pasta principal (onde a árvore é criada) + "Outras pastas que você já tem" (várias, compartilhadas como Leitor, com uma descrição). "Links de outros Drives" sai do passo 3, que fica com 5 tipos de material.
+- Configurações → Growth's Content (interno) → Pastas da Mathisa: nome, link e "vale para" (todos os clientes ou um cliente); pausar e tirar. Só a equipe interna vê.
+- Regra para a IA (vai no pedido de cada leitura, não aparece para o cliente): pastas da Mathisa = padrões, base de todos os clientes; pastas do cliente = novidades; em conflito sobre o mesmo assunto, a novidade do cliente vale para ele.
+- A migração da v0.146 foi aplicada pela Rebecka no SQL Editor (a ferramenta estava sem permissão naquele momento); a da v0.147 aplicou normalmente.
+**Pendente**: chave da API da Claude e a rotina diária (lendo pastas da Mathisa, pasta principal e pastas extras do cliente, canais e web); pesquisa, tese e dossiê (falta o formato das seções); conexão das outras plataformas; limites por plano.
+
 ## v0.146 — Estruturas de roteiro e copy (internas) e custos de IA só para a Rebecka
 **Pedido da Rebecka (25/10)**: estruturas de roteiro e de copy para escolher; a construção é interna, o cliente só vê a opção e escolhe a que quer; os custos só aparecem para ela. Sem limite de plano por enquanto (ela vai testar e medir o gasto de tokens).
 Decisões:

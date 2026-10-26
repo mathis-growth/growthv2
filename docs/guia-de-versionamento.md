@@ -1,5 +1,8 @@
 
 
+## v0.147
+- index.html: 0.146 → 0.147 (`integra147.py`, que roda o `integra146.py`; novos `g147.js` e `g147.css`; `csDrive2` no lugar do `csDrive`, `CS_MAT` sem "links", tela `cfg-pastas`). Novo: `20261108100000_content_pastas.sql`, `RODAR_v0.147_content_pastas.sql`, teste `t147_pastas.py`; `t143` ajustado. Aplicado em produção.
+
 ## v0.146
 - index.html: 0.145 → 0.146 (`integra146.py`, que roda o `integra145.py`; novos `g146.js` e `g146.css`; menu, `TELAS_INT`, `S.verCustos`, aba Estruturas). Novo: `20261107100000_content_estruturas.sql`, `RODAR_v0.146_content_estruturas.sql`, teste `t146_estruturas_custos.py`. Aplicado em produção (pelo SQL Editor). Ficou numa branch separada (`v0.146-pendente`) até o banco ser aplicado, para a tela não ir ao ar antes.
 

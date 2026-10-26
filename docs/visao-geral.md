@@ -1,3 +1,6 @@
+## v0.147
+**Só a pasta do cliente, mais as pastas que ele já tem e as pastas da Mathisa.** A opção de criar a pasta no Drive da Mathisa saiu: o cliente sempre compartilha uma pasta do Drive dele, onde o Growths cria a árvore, e pode acrescentar outras pastas que já tem organizadas, só compartilhando cada uma. A equipe Mathisa cadastra as próprias pastas (para todos os clientes ou para um) numa tela interna. A IA vai ler as pastas da Mathisa como os padrões e as do cliente como as novidades — regra que o cliente não vê.
+
 ## v0.146
 **Estruturas de roteiro e copy, e os custos de IA só para a Rebecka.** A equipe Mathisa mantém uma biblioteca interna de estruturas (AIDA, PAS, Antes-depois-ponte, Gancho para Reels, Carrossel educativo, Storytelling, 5 níveis de consciência e as que criar), com as etapas e as instruções que a IA segue. O cliente vê só o nome e para que serve cada uma e escolhe quais usar em cada formato, na aba Estruturas do Growth's Content. A tela Custos de IA, que só a Rebecka vê, mostra por cliente e por mês quanto a IA usou de tokens e buscas e quanto custou, em dólar e, com o câmbio informado, em reais.
 

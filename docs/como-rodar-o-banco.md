@@ -1,5 +1,9 @@
 
 
+## v0.147 — Só a pasta do cliente; pastas da Mathisa
+1. `supabase/RODAR_v0.147_content_pastas.sql` (aplicado em produção em 25/10/2026).
+2. As pastas da Mathisa precisam estar no Drive de rebecka@rebeckacappello.com.br (a conta que roda o Apps Script) ou compartilhadas com ela.
+
 ## v0.146 — Estruturas de roteiro e copy; custos de IA
 1. `supabase/RODAR_v0.146_content_estruturas.sql` (aplicado em produção em 25/10/2026 pela Rebecka, no SQL Editor; a ferramenta de migração estava sem permissão de escrita).
 2. Quem vê os custos: `sistema_config.custos_emails` (e-mails separados por vírgula; hoje só rebecka@rebeckacappello.com.br). Precisa também ser da equipe interna.
