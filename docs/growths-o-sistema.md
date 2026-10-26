@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 26/10/2026, versão 0.157.
+**Última atualização:** 26/10/2026, versão 0.158.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -377,6 +377,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - **Números num padrão só.** Sinal de menos verdadeiro, reais abreviados em cartões e completos em tabelas, pontos percentuais para taxas, ROAS com uma casa (4,5x) e LTV:CAC como razão (3,2:1). "—" quer dizer sem dado; zero quer dizer zero.
 - **Gráficos limpos.** Verde e vermelho saem das linhas e barras comuns e ficam para o que é bom ou ruim. Meta, limite e saldo mínimo aparecem como linha tracejada com o valor escrito. Na cascata do resultado, receitas, deduções e despesas ficam neutras e só o resultado ganha cor.
 - **Frases que vêm do banco, não da cabeça da IA.** Cada frase de análise é um modelo guardado numa tabela, com código, versão e aprovação. A tela só preenche os números que ela mesma calculou; se faltar um número, a frase não aparece. Mudar o texto cria uma versão nova, que volta para "proposta" até ser aprovada, e a antiga fica no histórico. O Dicionário de métricas mostra todas as frases e quais estão aprovadas. O Dashboard financeiro é o primeiro a usar.
+- **Painéis em blocos.** O Dashboard e o Dashboard financeiro são divididos em blocos lado a lado, como um painel de BI, para nenhum gráfico tomar a tela inteira. O gráfico mais importante fica maior e os de apoio ficam ao lado; cada gráfico é desenhado no tamanho do seu bloco, para a letra continuar legível, e no celular tudo vira uma coluna.
 - **Menu em níveis**, com recuo e linha guia.
 - **Gráficos com função.** Cada gráfico responde uma pergunta: o tipo é escolhido pelo número (linha no tempo, cascata, composição, barras por dia, medidor).
 - **Campos de moeda com máscara** (R$ 1.234,56).
@@ -433,6 +434,8 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - A ponte do resultado: o gráfico que responde "por que meu lucro piorou" em uma olhada.
 - Possível fator não é causa: como um dashboard deve falar de hipótese.
 - Versão e aprovação para frases: governança de texto num sistema de dados.
+- Um gráfico por tela é desperdício: como montar um painel em blocos que se lê em um minuto.
+- O backup antes da mudança: por que toda versão do Growths tem caminho de volta.
 
 ---
 
@@ -482,3 +485,4 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - **26/10:**
   - auditoria de Data Storytelling e a camada de leitura dos dados em todo o sistema: cores com significado, zero como limite dos saldos, números padronizados, comparações com a base escrita, gráficos sem cor pelo sinal, frases que contam o que aconteceu, alertas em quatro categorias e o dicionário com direção e referência.
   - biblioteca de visualizações, banco de narrativas e auditoria das telas; as frases de análise passam a morar numa tabela no banco, com versão e aprovação, começando pelo Dashboard financeiro (frase da cascata corrigida, ponte do resultado, caixa e saldo mínimo juntos).
+  - Dashboard e Dashboard financeiro em blocos lado a lado (grade de painel de BI), com backup da versão anterior.

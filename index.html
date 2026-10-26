@@ -387,7 +387,20 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.157 banco de narrativas */
+<style id="v122">/* v0.158 telas em grade */
+#main.grade158{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;align-content:start;align-items:stretch}
+#main.grade158 .cols,#main.grade158 .gc-sec{display:contents}
+#main.grade158>*,#main.grade158 .cols>*,#main.grade158 .gc-sec>*{grid-column:span var(--sp,12);margin:0!important;min-width:0}
+#main.grade158 .secl{margin:8px 0 -6px!important}
+#main.grade158 .panel{display:flex;flex-direction:column}
+#main.grade158 .panel>.gc-fonte,#main.grade158 .panel>.muted:last-child{margin-top:auto}
+#main.grade158 .head{margin-bottom:0!important}
+#main.grade158[data-tela="fin-dash"]>.kpis{grid-template-columns:repeat(auto-fit,minmax(138px,1fr))}
+#main.grade158[data-tela="fin-dash"]>.kpis .kpi .v{font-size:clamp(15px,1.15vw,18px)}
+@media (max-width:1100px){#main.grade158>*,#main.grade158 .cols>*,#main.grade158 .gc-sec>*{grid-column:span var(--sp2,12)}}
+@media (max-width:760px){#main.grade158>*,#main.grade158 .cols>*,#main.grade158 .gc-sec>*{grid-column:1/-1}}
+#main.grade158 .funnel .row{grid-template-columns:120px minmax(0,1fr) auto}
+/* v0.157 banco de narrativas */
 body #main #narDic td{vertical-align:top}
 body #main #narDic td:nth-child(4){min-width:280px}
 body #main #finSmin .gc-lead .sem-p{margin-right:4px}
@@ -1093,7 +1106,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.157 · 26/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.158 · 26/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -1587,6 +1600,7 @@ async function render() {
   m.innerHTML = '<div class="muted">Carregando…</div>';
   await act(async () => {
     const vk = CASA_MAP[S.view] || S.view;
+    gradeLiga(m, vk);
     if (VIEWS[vk]) await VIEWS[vk](m);
     else if (ENT[vk.replace('cad-', '')]) await vCad(m, vk.replace('cad-', ''));
     if (casaV && casaW) { casaFaixa(m); if (S.view === 'casa-dash') await casaTransfPainel(m); }
@@ -8652,7 +8666,7 @@ async function vFinDash(m) {
   </div>
   <div class="cols">
     <div class="panel" id="finSmin"><h2>Caixa projetado, próximos 30 dias</h2><div class="muted">Calculando…</div></div>
-    <div class="panel"><h2>Resultado por mês</h2><span class="muted">Até o mês atual (${mesFmt(h.slice(0, 7))}, ainda incompleto). Meses futuros com lançamentos já feitos ficam fora da linha.</span>${meses.length ? linhas(meses.map(x => mesFmt(x.slice(0, 7))), null, meses.map(x => resPorMes[x]), fK, true) : '<div class="empty">Sem lançamentos ainda.</div>'}</div>
+    <div class="panel"><h2>Resultado por mês</h2><span class="muted">Até o mês atual (${mesFmt(h.slice(0, 7))}, ainda incompleto). Meses futuros com lançamentos já feitos ficam fora da linha.</span>${meses.length ? linhas(meses.map(x => mesFmt(x.slice(0, 7))), null, meses.map(x => resPorMes[x]), fK, true, gradeLarg(4, 640)) : '<div class="empty">Sem lançamentos ainda.</div>'}</div>
   </div>
   <div class="cols">
     <div class="panel"><h2>Próximos a receber</h2>${F.proximos_receber.length ? `<div class="tw"><table><thead><tr><th>Vence</th><th>Venda</th><th class="n">Valor</th></tr></thead><tbody>${F.proximos_receber.map(r => `<tr><td>${dd(r.vencimento)}${r.atr ? ' <span class="pill bad">atraso</span>' : ''}</td><td>${esc(r.nome)}<br><span class="muted">${esc(r.descr || '')}</span></td><td class="n">${brl(r.valor)}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">Nada a receber.</div>'}</div>
@@ -12493,7 +12507,7 @@ async function finResBanco(m, F) {
     const R = ms.map(k => res[k] ?? 0), C = ms.map(k => cx[k] ?? 0), k = ms.length - 2, dif = R[k] - C[k];
     el.innerHTML = `<h2>Resultado × dinheiro no banco · últimos 6 meses</h2>
       <p class="gc-lead">Em ${gcMesRot(ms[k])}, o resultado foi ${GC.fmtK(R[k])} e o saldo das contas ${C[k] >= 0 ? 'aumentou' : 'diminuiu'} ${GC.fmtK(Math.abs(C[k]))}${Math.abs(dif) >= 1 ? ` — ${GC.fmtK(Math.abs(dif))} de diferença` : ''}.</p>
-      ${gcBarrasV({ rotulos: ms.map(gcMesRot), series: [{ nome: 'Resultado (competência)', valores: R, cor: 'var(--accent)' }, { nome: 'Variação do saldo no banco', valores: C, cor: 'var(--gc-c3)' }], parcial: true, W: 900, altura: 240 })}
+      ${gcBarrasV({ rotulos: ms.map(gcMesRot), series: [{ nome: 'Resultado (competência)', valores: R, cor: 'var(--accent)' }, { nome: 'Variação do saldo no banco', valores: C, cor: 'var(--gc-c3)' }], parcial: true, W: gradeLarg(4, 900), altura: 240 })}
       <span class="muted" style="font-size:12px">A diferença costuma vir de vendas parceladas ainda a receber, contas pagas em mês diferente do da competência, transferências e retiradas. Para achar a de um mês, compare o extrato com a DRE daquele mês.</span>
       ${GC.fonte('Resultado: DRE gerencial por competência (a mesma de "Resultado por mês"). Banco: entradas − saídas das contas bancárias no mês, sem cartões de crédito.')}`;
   } catch (e) { el.innerHTML = '<h2>Resultado × dinheiro no banco</h2>' + GC.vazio(e.message || String(e)); }
@@ -12817,7 +12831,7 @@ async function painelNovosExist(box) {
     const nov = {}, ex = {}; V.forEach(v => { const d = gcDia(v.data_venda); if (d < ini || d > h) return; const k = d.slice(0, 7); (prim[v.pessoa_id] && prim[v.pessoa_id] < d ? ex : nov)[k] = ((prim[v.pessoa_id] && prim[v.pessoa_id] < d ? ex : nov)[k] || 0) + Number(v.valor_bruto || 0); });
     const p0 = ms.findIndex(k => nov[k] || ex[k]), mz = p0 > 0 ? ms.slice(p0) : ms, n = mz.map(k => nov[k] || 0), e = mz.map(k => ex[k] || 0), i = mz.length - 2, tot = i >= 0 ? n[i] + e[i] : 0;
     el.innerHTML = `<h2>Receita de clientes novos × existentes</h2>${tot ? `<p class="gc-lead">Em ${gcMesRot(mz[i])}, ${(e[i] / tot * 100).toFixed(0)}% da receita das vendas veio de quem já era cliente.</p>` : ''}
-      ${gcPilha({ rotulos: mz.map(gcMesRot), series: [{ nome: 'Clientes novos (primeira compra)', valores: n, cor: 'var(--accent)' }, { nome: 'Clientes existentes (recompra)', valores: e, cor: 'var(--gc-c3)' }], parcial: true, altura: 200, W: 900 })}
+      ${gcPilha({ rotulos: mz.map(gcMesRot), series: [{ nome: 'Clientes novos (primeira compra)', valores: n, cor: 'var(--accent)' }, { nome: 'Clientes existentes (recompra)', valores: e, cor: 'var(--gc-c3)' }], parcial: true, altura: 200, W: gradeLarg(4, 900) })}
       ${GC.fonte('Vendas aprovadas pelo valor bruto. Venda no dia da primeira compra do cliente (venda ou contrato) = novo; depois disso = existente. Parcelas de contrato não entram aqui.')}`;
   } catch (e) { el.innerHTML = '<h2>Receita de clientes novos × existentes</h2>' + GC.vazio(e.message || String(e)); }
 }
@@ -16866,19 +16880,19 @@ function varMes(serie, meses, parcial, menorMelhor) {
 
 /* ================= v0.154 — gráficos: escala certa (inclusive negativos), referências fixas, séries sem verde/vermelho ================= */
 /* gráfico de linhas antigo (meta tracejada × realizado), refeito: aceita negativos, eixo com passos redondos, buraco onde não há dado, vazio quando não há nada */
-function linhas(rotulos, metas, reais, fmt, semMeta) {
+function linhas(rotulos, metas, reais, fmt, semMeta, W0 = 640) {
   const vr = (reais || []).filter(v => v != null && isFinite(v)), vm = (!semMeta && metas ? metas : []).filter(v => v != null && isFinite(v));
   if (!vr.length && !vm.length) return GC.vazio('Sem dados no período para desenhar a linha.');
-  const W = 640, H = 220, L = 64, R = 12, T = 12, B = 26, n = rotulos.length;
+  const W = W0, H = 220, L = 64, R = 12, T = 12, B = 26, n = rotulos.length;
   let mn = Math.min(0, ...vr, ...vm), mx = Math.max(0, ...vr, ...vm); if (mx === mn) mx = mn + 1;
   const st = GC.passo((mx - mn) / 4), y0 = Math.floor(mn / st) * st, y1 = Math.ceil(mx / st) * st || st;
   const X = i => n > 1 ? L + i * (W - L - R) / (n - 1) : (L + W - R) / 2, Y = v => T + (H - T - B) * (y1 - v) / ((y1 - y0) || 1);
   const ticks = []; for (let v = y0; v <= y1 + st / 2; v += st) ticks.push(Math.abs(v) < st / 1e6 ? 0 : v);
   const segs = arr => { const out = []; let cur = []; arr.forEach((v, i) => { if (v == null || !isFinite(v)) { if (cur.length) out.push(cur); cur = []; } else cur.push(`${X(i).toFixed(1)},${Y(v).toFixed(1)}`); }); if (cur.length) out.push(cur); return out; };
   const pts = (arr, cor) => arr.map((v, i) => v == null || !isFinite(v) ? '' : `<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="${n > 20 ? 2 : 3}" style="fill:${cor}"><title>${esc(String(rotulos[i]))}: ${esc(fmt(v))}</title></circle>`).join('');
-  const grade = ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" style="stroke:var(--line)"${v === 0 ? ' stroke-width="1.6"' : ' stroke-dasharray="2 4"'}/><text x="${L - 6}" y="${Y(v) + 3}" text-anchor="end">${fmt(v)}</text>`).join('');
+  const grade = ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" style="stroke:var(--line)"${v === 0 ? ' stroke-width="1.6"' : ' stroke-dasharray="2 4"'}/><text x="${L - 6}" y="${Y(v) + 3}" text-anchor="end">${v < 0 ? '−' + fmt(-v) : fmt(v)}</text>`).join('');
   const passo = Math.ceil(n / 12);
-  const eixo = rotulos.map((r, i) => i % passo === 0 ? `<text x="${X(i)}" y="${H - 8}" text-anchor="middle">${r}</text>` : '').join('');
+  const eixo = rotulos.map((r, i) => i % passo === 0 ? `<text x="${X(i)}" y="${H - 8}" text-anchor="${n > 1 && i === n - 1 ? 'end' : 'middle'}">${r}</text>` : '').join('');
   const temMeta = vm.length > 0;
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Gráfico de linhas por período">${grade}${eixo}
     ${temMeta ? segs(metas).map(sg => `<polyline points="${sg.join(' ')}" style="fill:none;stroke:var(--ink);stroke-width:1.5;stroke-dasharray:6 4;opacity:.7"/>`).join('') : ''}
@@ -16952,11 +16966,11 @@ const narB = (v, k) => `<b class="sem-d sem-${k || 'neu'}">${v}</b>`;
 const narPerRot = (ini, fim) => ini.slice(8, 10) === '01' && ini.slice(0, 7) === fim.slice(0, 7) && fim === coFimMes(fim.slice(0, 7)) ? semMesRot(ini.slice(0, 7)) : dd(ini).slice(0, 5) + ' a ' + dd(fim).slice(0, 5);
 
 /* cascata: o mesmo desenho da v0.154, com rótulos em até duas linhas e, na ponte, as duas pontas (resultado anterior e atual) na cor do saldo (regra 2a) */
-function gcCascata({ passos, un = 'brl', pontas = false }) {
+function gcCascata({ passos, un = 'brl', pontas = false, W: W0 = 900 }) {
   const P = passos.filter((p, i) => p.tipo === 'base' || p.tipo === 'total' || Number(p.valor));
   if (P.length < 2) return GC.vazio('Sem lançamentos no período.');
   let acc = 0; const B = P.map(p => { const v = Number(p.valor) || 0; let de, ate; if (p.tipo === 'base') { de = 0; ate = v; acc = v; } else if (p.tipo === 'total') { de = 0; ate = v; } else { de = acc; ate = acc + (p.tipo === 'sai' ? -Math.abs(v) : Math.abs(v)); acc = ate; } return { ...p, de, ate }; });
-  const W = 900, H = 244, L = 64, R = 12, T = 22, Bm = 48, mx = Math.max(0, ...B.map(b => Math.max(b.de, b.ate))), mn = Math.min(0, ...B.map(b => Math.min(b.de, b.ate)));
+  const W = W0, H = 244, L = 64, R = 12, T = 22, Bm = 48, mx = Math.max(0, ...B.map(b => Math.max(b.de, b.ate))), mn = Math.min(0, ...B.map(b => Math.min(b.de, b.ate)));
   const st = GC.passo((mx - mn) / 4 || 1), y0v = Math.floor(mn / st) * st, y1v = Math.ceil(mx / st) * st || st, y = v => T + (y1v - v) / ((y1v - y0v) || 1) * (H - T - Bm), bw = (W - L - R) / B.length;
   const ticks = []; for (let v = y0v; v <= y1v + st / 2; v += st) ticks.push(v);
   const saldo = b => b.ate >= 0 ? 'var(--s-fav)' : 'var(--s-desf)';
@@ -16985,7 +16999,7 @@ async function finCascata(m, PER) {
     passos.push({ rotulo: 'Resultado', valor: Number(N.valor) || 0, tipo: 'total', no: 'fin.lucro', par: { ini, fim } });
     const rec = F[0] ? Number(F[0].valor) || 0 : 0, res = Number(N.valor) || 0, st = semStatus(res, 'resultado'), k = st ? st.k : 'neu';
     const frase = rec > 0 ? narr('NAR-D02', { receita: semBRL(rec), abs_resultado: semBRL(Math.abs(res)), resultado: narB(semBRL(res), k), margem: narB(semFmt(res / rec, 'pct'), k) }, [res >= 0 ? 0 : 1]) : '';
-    el.innerHTML = `<h2>Como se formou o resultado · ${perR}</h2><p class="gc-lead">${frase ? frase + ' ' : ''}<span class="muted">Clique numa barra para ver os lançamentos.</span></p>${gcCascata({ passos })}${GC.fonte('Fonte: DRE gerencial (competência), a mesma conta do cartão "Resultado no período".')}`;
+    el.innerHTML = `<h2>Como se formou o resultado · ${perR}</h2><p class="gc-lead">${frase ? frase + ' ' : ''}<span class="muted">Clique numa barra para ver os lançamentos.</span></p>${gcCascata({ passos, W: gradeLarg(5, 900) })}${GC.fonte('Fonte: DRE gerencial (competência), a mesma conta do cartão "Resultado no período".')}`;
     gcLiga(el);
   } catch (e) { el.innerHTML = '<h2>Como se formou o resultado</h2>' + GC.vazio(e.message || String(e)); }
 }
@@ -17029,7 +17043,7 @@ async function finPonte(m, PER, h) {
       if (maior && fator !== 'a conta ' + maior.rotulo) fr.push(narr('NAR-I01', { conta: `<b>${esc(maior.rotulo)}</b>`, valor: semBRL(maior.cur) }));
     }
     const frases = fr.filter(Boolean);
-    el.innerHTML = `${tit}${frases.length ? `<p class="gc-lead">${frases.join(' ')}</p>` : ''}<span class="muted">Do resultado de ${esc(PA.rot)} ao do período: cada barra cinza é quanto a receita ou uma conta mexeu no resultado (para cima melhorou, para baixo piorou). As contas que mais mexeram aparecem uma a uma; o resto fica em "Outras contas". Clique numa barra para ver os lançamentos.</span>${gcCascata({ passos, pontas: true })}${GC.fonte('Fonte: DRE gerencial (competência), as mesmas contas da cascata acima, nos dois períodos.')}`;
+    el.innerHTML = `${tit}${frases.length ? `<p class="gc-lead">${frases.join(' ')}</p>` : ''}<span class="muted">Do resultado de ${esc(PA.rot)} ao do período: cada barra cinza é quanto a receita ou uma conta mexeu no resultado (para cima melhorou, para baixo piorou). As contas que mais mexeram aparecem uma a uma; o resto fica em "Outras contas". Clique numa barra para ver os lançamentos.</span>${gcCascata({ passos, pontas: true, W: gradeLarg(7, 900) })}${GC.fonte('Fonte: DRE gerencial (competência), as mesmas contas da cascata acima, nos dois períodos.')}`;
     gcLiga(el);
   } catch (e) { el.innerHTML = '<h2>O que mudou no resultado</h2>' + GC.vazio(e.message || String(e)); }
 }
@@ -17055,7 +17069,7 @@ async function finSaldoMin(m, F) {
   el.innerHTML = `<div class="head" style="margin:0"><h2 style="margin:0">Caixa projetado, próximos 30 dias</h2><div class="acts"><label style="flex-direction:row;align-items:center;gap:6px">Saldo mínimo (R$)<input id="smV" type="number" min="0" step="100" value="${SM.v ?? ''}" style="width:120px" placeholder="ex.: 20000"></label><button class="btn sm" id="smSalva">Salvar</button></div></div>
     ${frase ? `<p class="gc-lead">${pil} ${frase}</p>` : ''}
     ${SM.v == null ? '<p class="muted" style="margin:4px 0 0">Informe o saldo que o caixa não pode furar (reserva para folha, impostos e imprevistos). Sem ele, o aviso usa o zero como limite.</p>' : ''}
-    ${gcLinhas({ series: [{ nome: 'Caixa projetado', valores: proj }], ref: SM.v != null ? { v: SM.v, rot: 'Saldo mínimo' } : null, rotulos: dias.map(d => dd(d).slice(0, 5)), altura: 200, W: 640, zero: true })}
+    ${gcLinhas({ series: [{ nome: 'Caixa projetado', valores: proj }], ref: SM.v != null ? { v: SM.v, rot: 'Saldo mínimo' } : null, rotulos: dias.map(d => dd(d).slice(0, 5)), altura: 200, W: gradeLarg(4, 640), zero: true })}
     <span class="muted">Parte do saldo de hoje e soma o que vence a receber e a pagar. Contas em atraso entram no dia de hoje. Esta curva é sempre de 30 dias; o período acima muda os cartões e as listas.</span>
     ${GC.fonte(SM.banco ? 'O mínimo fica salvo no cadastro da empresa e vale para toda a equipe.' : 'O mínimo está salvo só neste navegador até rodar a atualização do banco (supabase/RODAR_v0.127_saldo_minimo.sql); depois disso vale para toda a equipe.')}`;
   el.querySelector('#smSalva').onclick = () => act(async () => { const x = el.querySelector('#smV').value.trim(), v = x === '' ? null : Number(x); if (v != null && (!isFinite(v) || v < 0)) throw new Error('Informe um valor em reais, zero ou maior.'); const b = await saldoMinGrava(v); toast(b ? 'Saldo mínimo salvo' : 'Saldo mínimo salvo neste navegador'); render(); });
@@ -17092,6 +17106,86 @@ async function vMetricas157(m) {
     ${L.map(x => `<tr data-nar-cod="${esc(x.codigo)}"><td class="mono">${esc(x.codigo)}</td><td>${semPilula(NAR_ST[x.status])}</td><td>${esc(NAR_CAT[x.categoria] || x.categoria)}<br><span class="muted">${esc(String(x.evidencia).split('+').map(e => NAR_EV[e] || e).join(' + '))}</span></td><td>${esc(x.modelo)}</td><td class="muted">${esc(x.ativa_quando || '')}</td><td class="muted">${esc(x.nao_usar || '')}</td><td class="n">${x.versao}</td></tr>`).join('')}
     </tbody></table></div>`;
   m.appendChild(el);
+}
+
+/* ================= v0.158 — Telas em grade (Dashboard e Dashboard financeiro) =================
+   Pedido da Rebecka (26/10): dividir a tela em blocos lado a lado, como um painel de BI, para nenhum gráfico tomar a tela inteira.
+   Só muda a disposição: os painéis continuam os mesmos (mesmos ids, mesmos dados, mesmas frases). Cada tela tem um plano
+   (ordem e largura em 12 colunas); o que o plano não conhece entra no fim, na largura inteira. No celular, tudo volta a uma coluna.
+   Os textos dos gráficos são compensados quando o gráfico fica mais estreito do que foi desenhado, para não ficarem miúdos. */
+const GRADE_TELAS = {
+  'adm-painel': [
+    ['.head', 12],
+    [m => [...m.children].find(e => e.querySelector && e.querySelector('#pgPer')), m => m.querySelector(':scope > .dq88') ? 8 : 12],
+    ['.dq88', 4],
+    [m => GR_secl(m, 'O que importa'), 12], ['.kpis.hero', 12],
+    [m => GR_secl(m, 'Funil, vendas'), 12], ['.kpis.mini', 12],
+    ['.gc-obs', 12],
+    [m => GR_secl(m, 'Evolução e meta'), 12], ['#pgEvo', 8], ['#pgRit', 4],
+    [m => GR_secl(m, 'De onde vem a receita'), 12], ['#pgNovEx', 4], ['#pgProd', 4], ['#pgCampR', 4],
+    [m => GR_painel(m, 'Funil'), 4], [m => GR_painel(m, 'Métricas financeiras'), 8],
+    [m => GR_painel(m, 'Campanhas: meta e realizado'), 5], [m => GR_painel(m, 'Campanhas ativas'), 7],
+    ['#pgCac', 12],
+    [m => GR_secl(m, 'Tabelas completas'), 12]
+  ],
+  'fin-dash': [
+    [m => m.querySelector('#navVoltar') && m.querySelector('#navVoltar').parentElement, 12],
+    ['.head', 12], ['.filters', 12], ['.sem-recado', 12], ['.kpis', 12],
+    ['#finCasc', 5], ['#finPonte', 7],
+    ['#finSmin', 4], [m => GR_painel(m, 'Resultado por mês'), 4], [m => GR_painel(m, 'Resultado × dinheiro'), 4],
+    [m => GR_painel(m, 'Maiores despesas'), 7], [m => GR_painel(m, 'Saldo por conta'), 5],
+    [m => GR_painel(m, 'Próximos a receber'), 6], [m => GR_painel(m, 'Próximos a pagar'), 6]
+  ]
+};
+const GR_titulo = e => ((e.querySelector(':scope > h2, :scope > summary') || {}).textContent || '').trim();
+const GR_itens = m => [...m.children].flatMap(e => e.matches('.cols, .gc-sec') ? GR_itens(e) : [e]);
+const GR_secl = (m, t) => GR_itens(m).find(e => e.matches('.secl') && e.textContent.trim().startsWith(t));
+const GR_painel = (m, t) => GR_itens(m).find(e => e.matches('.panel') && GR_titulo(e).startsWith(t));
+function gradeAplica(m, semTexto) {
+  const plano = GRADE_TELAS[m.dataset.tela]; if (!plano) return;
+  m.classList.add('grade158');
+  const usados = new Set();
+  plano.forEach(([sel, sp], i) => {
+    const e = typeof sel === 'function' ? sel(m) : GR_itens(m).find(x => x.matches(sel));
+    if (!e || usados.has(e)) return; usados.add(e);
+    const n = typeof sp === 'function' ? sp(m) : sp; e.style.order = i + 1; e.style.setProperty('--sp', n); e.style.setProperty('--sp2', Math.max(6, n));
+  });
+  GR_itens(m).forEach(e => { if (!usados.has(e)) { e.style.order = 900; e.style.setProperty('--sp', 12); e.style.setProperty('--sp2', 12); } });
+  if (!semTexto) gradeTextos(m);
+}
+/* gráfico desenhado para 640 de largura e mostrado em 360 encolhe o texto junto; aqui o texto volta perto do tamanho de leitura
+   (até 1,5× o tamanho desenhado, para não atropelar os rótulos vizinhos). Guarda o tamanho original para recalcular. */
+function gradeTextos(m) {
+  m.querySelectorAll('svg[viewBox]').forEach(svg => {
+    if (svg.closest('.kpi') || svg.classList.contains('spk')) return;
+    const vb = svg.viewBox && svg.viewBox.baseVal, w = svg.getBoundingClientRect().width;
+    if (!vb || !vb.width || !w) return;
+    const k = Math.min(1.5, Math.max(1, vb.width / w));
+    svg.querySelectorAll('text').forEach(t => {
+      if (!t.dataset.fs0) t.dataset.fs0 = parseFloat(getComputedStyle(t).fontSize) || 11;
+      const novo = k > 1.02 ? (Number(t.dataset.fs0) * k).toFixed(1) + 'px' : '';
+      if (t.style.fontSize !== novo) t.style.fontSize = novo;
+    });
+  });
+}
+let GR_obs = null, GR_t = null;
+function gradeLiga(m, vk) {
+  m.dataset.tela = vk;
+  m.classList.toggle('grade158', !!GRADE_TELAS[vk]);
+  if (!GR_obs) {
+    const agenda = () => { const mm = $('#main'); if (!mm || !GRADE_TELAS[mm.dataset.tela]) return; gradeAplica(mm, true); clearTimeout(GR_t); GR_t = setTimeout(() => gradeTextos(mm), 80); };
+    GR_obs = new MutationObserver(agenda);
+    GR_obs.observe(m, { childList: true, subtree: true });
+    if (window.ResizeObserver) new ResizeObserver(agenda).observe(m);
+  }
+  if (GRADE_TELAS[vk]) gradeAplica(m);
+}
+/* largura útil (px) de um bloco de sp colunas na tela em grade; fora da grade, a largura de desenho de sempre */
+function gradeLarg(sp, def) {
+  const m = $('#main'); if (!m || !m.classList.contains('grade158') || !m.clientWidth) return def;
+  const vw = window.innerWidth; if (vw <= 760) sp = 12; else if (vw <= 1100) sp = Math.max(6, sp);
+  const col = (m.clientWidth - 11 * 16) / 12;
+  return Math.max(300, Math.round(col * sp + 16 * (sp - 1) - 40));
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

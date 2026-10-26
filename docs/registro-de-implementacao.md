@@ -1,5 +1,10 @@
 
 
+## Telas em grade (v0.158)
+- `g158.js`: `GRADE_TELAS` (plano do Dashboard e do Dashboard financeiro: ordem e colunas de cada bloco), `gradeLiga` (marca a tela no `#main` e observa as mudanças), `gradeAplica` (põe ordem e largura; `.cols` e `.gc-sec` viram parte da grade), `gradeLarg` (largura útil do bloco para desenhar o gráfico), `gradeTextos` (compensa a letra de gráficos desenhados mais largos que o bloco).
+- `g158.css`: grade de 12 colunas, blocos com a mesma altura na linha, pontos de quebra em 1100 e 760 px.
+- Teste `t158_grade.py`: posições lado a lado, 7 cartões numa linha, letra mínima dos gráficos ≥ 9,5 px, gráficos na largura do bloco, frases do banco nos mesmos blocos, outras telas sem grade, celular em uma coluna, tela média. 0 falhas.
+
 ## Banco de narrativas (v0.157)
 - `g157.js`: `narrCarrega` (lê os modelos aprovados uma vez), `narr(codigo, campos, alternativas)` (monta a frase, põe `data-nar` e `data-nar-v`; sem modelo ou sem campo, devolve vazio); Financeiro: `finContexto` (NAR-E07), `finCascata` + `gcCascata` (NAR-D02, "sobraram/faltaram"), `finPonte` (ponte ago → set, NAR-H01 e NAR-I01), `finSaldoMin` (caixa + saldo mínimo, NAR-A01, A02, D06, D07); `vMetricas157` (Dicionário com as frases do sistema e a situação de cada uma).
 - Banco: `20261113100000_narrativa_modelos.sql` gerado de `nar_modelos.py` (fonte única dos 39 modelos).

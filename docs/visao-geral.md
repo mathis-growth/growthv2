@@ -1,3 +1,6 @@
+## v0.158
+**O Dashboard e o Dashboard financeiro viraram painéis em blocos.** Em vez de um gráfico embaixo do outro, cada um na tela toda, os gráficos ficam lado a lado, como num painel de BI: no Financeiro, a cascata do resultado ao lado do que mudou do mês anterior; caixa, resultado por mês e resultado contra o banco numa linha; as maiores despesas ao lado do saldo por conta. No Dashboard, a evolução ocupa dois terços com o ritmo da meta ao lado, e a origem da receita vem em três colunas. Os gráficos são desenhados no tamanho do bloco, então a letra continua legível; no celular tudo volta a uma coluna.
+
 ## v0.157
 **As frases do sistema passam a morar no banco.** Cada frase de análise virou um modelo com código, versão e aprovação, guardado numa tabela; a tela só põe no lugar os números que ela mesma calculou e, se faltar algum, não mostra a frase. O Dashboard financeiro é o primeiro a usar: a frase da cascata agora diz "faltaram" quando o resultado é negativo, um gráfico novo mostra o que mudou do mês anterior para este (de −R$ 28,3 mil para −R$ 102,5 mil na base de demonstração, com as comissões como maior peso) e o caixa projetado e o saldo mínimo ficaram num painel só. O Dicionário de métricas mostra todas as frases e quais estão aprovadas.
 

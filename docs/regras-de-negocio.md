@@ -1,5 +1,8 @@
 
 
+## v0.158
+Sem regra de negócio nova: só a disposição das telas.
+
 ## v0.157 — Banco de narrativas
 - Frase de análise só aparece se o modelo estiver aprovado e todos os `{campos}` tiverem número calculado pelo sistema. Faltou: nada aparece (não há frase de reserva).
 - `[a/b]` escolhe a palavra pela direção do número (ex.: sobraram/faltaram pelo sinal do resultado).

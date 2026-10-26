@@ -2,6 +2,16 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.158 — Telas em grade (26/10/2026)
+- **Dashboard e Dashboard financeiro em blocos lado a lado** (grade de 12 colunas, como painel de BI), a pedido da Rebecka com imagem de referência. Mesmas cores e fonte; os painéis, dados e frases não mudam.
+- Financeiro: 7 cartões numa linha; cascata (5/12) e ponte (7/12) lado a lado; caixa projetado, resultado por mês e resultado × banco numa linha; maiores despesas e saldo por conta; próximos a receber e a pagar.
+- Dashboard: período e qualidade do dado lado a lado; evolução (2/3) e ritmo da meta (1/3); novos × existentes, por produto e por campanha em três colunas; funil e métricas financeiras; as duas tabelas de campanha; CAC.
+- Gráficos desenhados na largura do bloco (texto legível); tela média com blocos de meia largura; celular em uma coluna.
+- Gráfico de linhas antigo: sinal de menos antes do R$ no eixo e último rótulo sem corte. Lista "Maiores despesas" com o valor dentro do bloco.
+- Backup antes da mudança: branches `backup-v0.157` e `backup-v0.156` no GitHub.
+- Testes: `t158_grade.py` (0 falhas). Regressão da v0.157 (35 testes de tela): 32 passam; t116/t117 (cartão abreviado × árvore) e t146 (custos de IA) já falhavam na v0.151.
+- Sem mudança no banco.
+
 ## v0.157 — Banco de narrativas (26/10/2026)
 - **Frases no banco**: tabela `narrativa_modelos` com 39 modelos (os 36 do documento de auditoria + NAR-D06, D07 e E07), código estável, versão, status (proposto, aprovado, descontinuado), quem aprovou e quando; histórico em `narrativa_modelos_historico`. O banco sobe a versão quando o texto muda, devolve o modelo para "proposto", não deixa apagar nem trocar código e só aceita `{campo}` e `[a/b]`. Usuário do sistema só lê.
 - **A tela só preenche**: `narr()` monta a frase com números já calculados; modelo não aprovado ou campo faltando = sem frase (não há texto de reserva no código). Cada frase leva `data-nar` com o código.

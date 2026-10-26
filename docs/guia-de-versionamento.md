@@ -1,5 +1,8 @@
 
 
+## v0.158
+- index.html: 0.157 → 0.158 (`integra158.py`, que roda o `integra157.py`; novos `g158.js` e `g158.css`; `gradeLiga` no `render`; `gcCascata` e `linhas` ganham a largura de desenho). Teste novo `t158_grade.py`. Backup antes da mudança: branches `backup-v0.157` e `backup-v0.156`.
+
 ## v0.157
 - index.html: 0.156 → 0.157 (`integra157.py`, que roda o `integra156.py`; novos `g157.js` e `g157.css`). Funções trocadas: `gcCascata`, `finCascata`, `finSaldoMin`, `finContexto`; novas: `narrCarrega`, `narr`, `finPonte`, `vMetricas157`. Novo: `20261113100000_narrativa_modelos.sql`, `RODAR_v0.157_narrativas.sql` (gerados por `gera_mig157.py` a partir de `nar_modelos.py`); teste `t157_narrativas.py`; `t127` ajustado aos textos novos do saldo mínimo. Banco ainda não aplicado em produção.
 

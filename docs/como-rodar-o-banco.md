@@ -1,5 +1,8 @@
 
 
+## v0.158
+Nada a rodar no banco (só tela). Continua pendente o `RODAR_v0.157_narrativas.sql`.
+
 ## v0.157 — Banco de narrativas
 1. `supabase/RODAR_v0.157_narrativas.sql`: cria `narrativa_modelos` e `narrativa_modelos_historico`, a regra de versão (gatilho `narrativa_modelos_regras`) e os 39 modelos (9 aprovados). **Ainda não aplicado em produção**: a aplicação pelo conector foi cancelada em 26/10/2026. Rodar no SQL Editor do Supabase ou autorizar de novo.
 2. Sem a tabela, a tela continua funcionando: as frases do piloto não aparecem e o Dicionário avisa que falta a atualização.

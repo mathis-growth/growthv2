@@ -1,5 +1,8 @@
 
 
+## v0.158
+Sem mudança no banco.
+
 ## v0.157
 - `narrativa_modelos` (codigo NAR-X00 chave, versao, status proposto/aprovado/descontinuado, categoria, evidencia F/C/A/H/R, modelo, campos tirados do texto, ativa_quando, precisa, cor, nao_usar, telas, investigar, observacao, aprovado_por, aprovado_em, criado_em, atualizado_em). Gatilho `narrativa_modelos_regras`: versão, volta para proposto, histórico, sem apagar, código fixo, marcação válida, aprovação com responsável.
 - `narrativa_modelos_historico` (codigo, versao, status, modelo, ativa_quando, precisa, cor, nao_usar, aprovado_por, aprovado_em, substituido_em).

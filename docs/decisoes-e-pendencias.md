@@ -1,5 +1,15 @@
 
 
+## v0.158 — Telas em grade
+**Pedido da Rebecka (26/10)**, com uma imagem de referência de painel de BI: dividir as telas em blocos lado a lado, para nenhum gráfico tomar a tela inteira. Antes, backup da versão atual (branches `backup-v0.157` e `backup-v0.156` no GitHub; as tags não passaram pelo proxy).
+Decisões da Rebecka: começar pelo Dashboard e pelo Dashboard financeiro; manter cores e fonte do Growths (só a divisão muda, o tema escuro da imagem não foi adotado).
+Decisões técnicas:
+- Grade de 12 colunas só nas duas telas; cada tela tem um plano (ordem e largura de cada bloco). O que o plano não conhece vai para o fim, na largura inteira. Os painéis, ids, dados e frases não mudam.
+- Gráficos desenhados na largura real do bloco (`gradeLarg`), para o texto não encolher; nos outros gráficos o texto é compensado até 1,5×.
+- Tela média (até 1100 px): blocos estreitos viram meia largura. Celular (até 760 px): uma coluna.
+- Ajustes junto: eixo do gráfico de linhas antigo com sinal de menos antes do R$ e último rótulo sem corte; valores da lista "Maiores despesas" sem sair do bloco.
+Pendências: levar a grade às outras telas de dashboard depois da aprovação da Rebecka; aplicar o `RODAR_v0.157_narrativas.sql` (o conector cancelou duas vezes).
+
 ## v0.157 — Banco de narrativas e piloto no Financeiro
 **Pedido da Rebecka (26/10)**, depois do documento "Growths — Biblioteca de visualizações, banco de narrativas e auditoria contextual": aprovar o piloto; o banco de frases vai direto para uma tabela no banco (não fica no código), por segurança e para a IA não calcular "a partir do nada"; sem etapa separada de aprovação do piloto, só as telas para ela olhar.
 Decisões técnicas:
