@@ -1,5 +1,14 @@
 
 
+## v0.150 — Ficha de produto simples; produtos e esteira no questionário
+**Pedido da Rebecka (25/10)**: não criar oferta nem produto do cadastro dentro do conteúdo; só uma ficha de produto: qual produto, o valor e o histórico. Ficar só com a primeira tela (a lista), sem o formulário longo. No questionário, perguntas sobre os produtos e como a esteira funciona.
+Decisões:
+- Os produtos do conteúdo viram uma lista própria do Growth's Content (`content_produtos`), separada do cadastro comercial: quem só usa o módulo de conteúdo também cadastra. Se o cliente tiver produtos no cadastro comercial e nenhum aqui, a tela oferece "Trazer do cadastro" (nome e valor).
+- Ficha: produto, valor e histórico (texto livre: como surgiu, turmas, resultados, o momento de agora). Ativo ou inativo.
+- A ficha longa da v0.149 saiu (tabela e função removidas; não havia dado). As ideias continuam podendo ser ligadas a um produto.
+- Questionário da call ganha o bloco **Produtos e esteira** (3º bloco): produtos e valores, como funciona a esteira, carro-chefe e o que quer vender mais, como a venda acontece, histórico dos produtos. Com isso, o passo da call fica pronto com 14 das 27 perguntas.
+**Próximo pacote (pedido)**: botão "Fazer a pesquisa" — lê as pastas (do cliente, extras e da Mathisa), as respostas da call, os produtos e os canais, pesquisa na web e entrega um relatório para a Rebecka ler; depois, "Gerar o dossiê". Depende da chave da API da Claude e de uma atualização do Apps Script (ler os arquivos das pastas).
+
 ## v0.149 — Produtos dentro da Estratégia de conteúdo
 **Pedido da Rebecka (25/10)**: dentro da estratégia de conteúdo, colocar as informações sobre os produtos, para entender cada produto e fazer conteúdo em cima dele.
 Decisões:

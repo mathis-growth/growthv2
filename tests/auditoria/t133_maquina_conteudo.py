@@ -192,7 +192,7 @@ with sync_playwright() as pw:
     chk('fechada em' in pg.inner_text('#main') and 'Fechamentos anteriores' in pg.inner_text('#main'), 'semana aparece como fechada e no histórico')
     # persona
     front.vai(pg, 'mkt-cont', "S.ct.tab = 'persona';", 3000)
-    chk(pg.locator('#pForm textarea').count() == 21 and pg.locator('#pForm input[name=objetivos]').count() == 11, 'questionário: 21 perguntas abertas e os 11 objetivos')
+    chk(pg.locator('#pForm textarea').count() == 26 and pg.locator('#pForm input[name=objetivos]').count() == 11, 'questionário: 26 perguntas abertas (com produtos e esteira) e os 11 objetivos')
     for k, v in [('nicho', 'Educação online'), ('publico', 'Professores'), ('dores', 'Alunos desistem'), ('acredita', 'Aprender é rotina'), ('discorda', 'Curso longo demais'), ('formatos', 'Falando para a câmera')]: pg.fill(f'#pForm [name={k}]', v)
     pg.check('#pForm input[value="Atrair clientes"]'); pg.click('#pForm .pri'); pg.wait_for_timeout(2500)
     rr = json.loads(sql(f"select respostas from conteudo_personas where workspace_id = '{WS}'"))

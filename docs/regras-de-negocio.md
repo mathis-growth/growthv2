@@ -1,5 +1,10 @@
 
 
+## v0.150 — Produtos e questionário
+- Produto: nome obrigatório (até 120 caracteres), valor opcional (zero ou mais), histórico até 8.000 caracteres.
+- "Trazer do cadastro" aparece só quando não há nenhum produto no conteúdo e existe produto ativo no cadastro comercial.
+- Passo da call pronto com metade das perguntas respondidas: 14 de 27.
+
 ## v0.149 — Ficha de conteúdo dos produtos
 - % da ficha = campos principais preenchidos ÷ 12 (frase, para quem é, dor, transformação, método, entregáveis, diferenciais, provas, objeções, momento de venda, chamada, página de vendas).
 - Objeções: uma por linha, "objeção | resposta".

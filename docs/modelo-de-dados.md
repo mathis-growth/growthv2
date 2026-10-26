@@ -1,5 +1,11 @@
 
 
+## v0.150
+- `content_produtos` (id, workspace_id, nome, valor, historico, ativo, ordem, produto_id opcional do cadastro comercial). Lê quem é do cliente ou da equipe interna; grava quem configura o Growth's Content.
+- `conteudos.produto_id` passa a apontar para `content_produtos`.
+- Saem `content_produto_fichas` e `content_produto_ficha_salvar` (v0.149).
+- Respostas novas do questionário em `conteudo_personas.respostas`: `produtos_lista`, `esteira`, `carro_chefe`, `como_vende`, `historico_produtos`.
+
 ## v0.149
 - `content_produto_fichas` (produto_id, workspace_id, ficha jsonb, atualizado_em, atualizado_por): ficha de conteúdo por produto; o cliente lê a dele; grava só por `content_produto_ficha_salvar(produto, ficha)` (28 campos conhecidos, até 4000 caracteres; momento, papel na escada e nível de consciência validados).
 - `conteudos.produto_id` (opcional): a ideia ou pauta é sobre aquele produto.

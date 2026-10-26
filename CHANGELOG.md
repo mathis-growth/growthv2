@@ -100,6 +100,12 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Botão "Fechar a campanha" / "Fechar o ciclo" (perpétuo): guarda uma foto do planejado x realizado (campanha_fechamentos), opcionalmente finaliza.
 - Fechamento: planejado x realizado (leads, vendas, receita, conversão, CAC, investimento), por canal, funil, debriefing e melhorias por sprint (campanha_melhorias) com sugestões por regra fixa e "Criar experimento".
 
+## [0.150] - 2026-10-25 — Ficha de produto simples; produtos e esteira no questionário
+- Aba **Produtos** enxuta: cada produto com **nome, valor e histórico**, cadastrado ali mesmo ou trazido do cadastro comercial. Sai a ficha longa da v0.149.
+- Ideias continuam ligadas a um produto ("Nova ideia sobre este produto").
+- Questionário da call: novo bloco **Produtos e esteira** (produtos e valores, esteira, carro-chefe, como vende, histórico).
+- Banco: `20261110100000_content_produtos_v2.sql`. **Aplicado em produção em 25/10/2026**.
+
 ## [0.149] - 2026-10-25 — Produtos na Estratégia de conteúdo
 - Nova aba **Produtos** no Growth's Content: cada produto do cadastro ganha a **ficha de conteúdo** (para quem é, dor, transformação, método, entregáveis, provas, objeções, momento de venda, chamada, temas, palavras do público).
 - Cartão com a frase do produto, o momento de venda, % da ficha preenchida e quantos conteúdos falam dele; "Ver ficha" para ler.

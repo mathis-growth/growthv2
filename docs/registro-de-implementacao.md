@@ -1,5 +1,10 @@
 
 
+## Ficha de produto simples (v0.150)
+- `g150.js`: bloco Produtos no questionário (`PERSONA_BLOCOS`, `PERSONA_P`), `prModal` (produto, valor, histórico, ativo), `tabProdutos2` (lista, trazer do cadastro, nova ideia sobre o produto, histórico recolhido com "Ler o histórico inteiro"). `integra150.py` troca as consultas do `dadosConteudo` e a aba.
+- Migração `20261110100000_content_produtos_v2.sql` (aplicada em produção em 25/10/2026).
+- Testes: `t150` (novo), `t143`, `t148`, `t147`, `t146`, `t140`, `t141`, `t133`, `t134`, `t135` — 0 falhas.
+
 ## Ficha de conteúdo dos produtos (v0.149)
 - `g149.js`: `PF_SECOES` (7 partes), `pfModal` (formulário), `pfLeitura` (ver ficha), `tabProdutos` (cartões com % preenchido e conteúdos ligados). `integra149.py`: produtos e fichas no `dadosConteudo`, campo Produto no `modalConteudo` (com score e com notas), aba Produtos.
 - Links da página e do checkout aceitos sem "https://" (o sistema completa).

@@ -74,7 +74,7 @@ with sync_playwright() as pw:
     pg.screenshot(path=SHOT + '4_call.png')
     pg.click('#ccProx'); pg.wait_for_timeout(2500)
     chk(pg.locator('.cc-blocos button.on').inner_text().startswith('2.'), 'próximo bloco')
-    sql(f"update conteudo_personas set respostas = respostas || (select jsonb_object_agg(k, 'resposta ' || k) from unnest(array['publico','publico_valoriza','dores','repetido','lacunas','atrair_agora','objetivo_comercial','ofertas','por_que','acredita','discorda']) k) where workspace_id = '{WS}'")
+    sql(f"update conteudo_personas set respostas = respostas || (select jsonb_object_agg(k, 'resposta ' || k) from unnest(array['publico','publico_valoriza','dores','repetido','lacunas','atrair_agora','objetivo_comercial','ofertas','por_que','acredita','discorda','produtos_lista','esteira','carro_chefe']) k) where workspace_id = '{WS}'")
     front.vai(pg, 'mkt-cont', "S.ct.csEtapa = 5;", 3000)
     chk('Passo 5 de 9' in pg.inner_text('#main') and 'em construção' in pg.inner_text('#main').lower() and not pg.locator('#csSegue').is_disabled(), 'passos 5 e 6 em construção: dá para seguir')
     sql(f"select conteudo_instalar_v18('{WS}')")

@@ -1,3 +1,6 @@
+## v0.150
+**Ficha de produto simples e a esteira no questionário.** A aba Produtos do Growth's Content ficou enxuta: cada produto tem nome, valor e histórico, cadastrados ali mesmo (ou trazidos do cadastro comercial), e as ideias podem ser ligadas a ele. O questionário da call de briefing ganhou o bloco Produtos e esteira: quais produtos e valores, como a esteira funciona, o carro-chefe, como a venda acontece e o histórico dos produtos.
+
 ## v0.149
 **Os produtos dentro da Estratégia de conteúdo.** Uma aba Produtos mostra cada produto do cliente com a sua ficha de conteúdo: para quem é e para quem não é, a dor e a transformação, o método, o que a pessoa recebe, diferenciais e provas, as objeções com as respostas, o momento de venda e a chamada, e o que ajuda a criar (temas, palavras do público, o que evitar). Cada ideia pode ser ligada a um produto, e o cartão mostra quantos conteúdos já falam dele.
 

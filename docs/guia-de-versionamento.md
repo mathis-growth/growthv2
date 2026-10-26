@@ -1,5 +1,8 @@
 
 
+## v0.150
+- index.html: 0.149 → 0.150 (`integra150.py`, que roda o `integra149.py`; novos `g150.js` e `g150.css`; `dadosConteudo` lê `content_produtos`; aba Produtos usa `tabProdutos2`; `PERSONA_P` e `PERSONA_BLOCOS` ganham o bloco Produtos). Novo: `20261110100000_content_produtos_v2.sql`, `RODAR_v0.150_content_produtos_v2.sql`, teste `t150_produtos_simples.py` (substitui o `t149`); `t143` com as respostas novas. Aplicado em produção.
+
 ## v0.149
 - index.html: 0.148 → 0.149 (`integra149.py`, que roda o `integra148.py`; novos `g149.js` e `g149.css`; `dadosConteudo` traz produtos e fichas; `modalConteudo` com o campo Produto; aba `produtos`). Novo: `20261109100000_content_produtos.sql`, `RODAR_v0.149_content_produtos.sql`, teste `t149_produtos_conteudo.py`. Aplicado em produção.
 

@@ -387,7 +387,14 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.149 ficha de conteúdo dos produtos */
+<style id="v122">/* v0.150 ficha de produto simples */
+body #main .panel.pf-cab{display:flex;flex-direction:row;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+body #main .pf-cab p{flex:1 1 420px}
+.pf-hist{margin:0;font-size:14px;line-height:1.55;white-space:pre-line;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.pf-hist.aberto{display:block;-webkit-line-clamp:unset}
+body #main button.pf-mais{all:unset;cursor:pointer;color:var(--accent);font-size:12.5px;align-self:flex-start}
+body #main button.pf-mais:focus-visible{outline:2px solid var(--accent)}
+/* v0.149 ficha de conteúdo dos produtos */
 .pf-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px;align-items:start}
 .pf-card{display:flex;flex-direction:column;gap:8px}
 .pf-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
@@ -1025,7 +1032,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.149 · 25/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.150 · 25/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -14654,14 +14661,14 @@ async function dadosConteudo() {
     ctOpc(sb.from('conteudo_fechamentos').select('id,semana_ini,objetivo_proxima,atualizado_em').eq('workspace_id', w).order('semana_ini', { ascending: false }).limit(20)),
     ctOpc(sb.from('conteudo_personas').select('*').eq('workspace_id', w).order('criado_em')),
     ctOpc(sb.from('conteudo_linha_propostas').select('*').eq('workspace_id', w).order('criado_em', { ascending: false }).limit(20)),
-    ctOpc(sb.from('produtos').select('id,nome,tipo,preco,ativo,nivel_escada').eq('workspace_id', w).order('nome')),
-    ctOpc(sb.from('content_produto_fichas').select('*').eq('workspace_id', w))
+    ctOpc(sb.from('content_produtos').select('*').eq('workspace_id', w).order('ordem').order('nome')),
+    ctOpc(sb.from('produtos').select('id,nome,preco,ativo').eq('workspace_id', w).order('nome'))
   ]);
   const c0 = cfg[0] || {};
   const C = { metodo: c0.metodo || 'notas5', criterios: c0.criterios || CRIT_PADRAO, score: c0.criterios_score || ['Timing / pauta quente', 'Potencial estratégico', 'Potencial de impacto', 'Facilidade de execução', 'Robustez da evidência', 'Novidade / pouco explorado no Brasil'],
     destinos: c0.destinos || [], canaisAtivos: c0.canais_ativos || ['instagram'], canaisPorTag: c0.canais_por_tag || {}, meta: c0.meta_semanal, diaFech: c0.dia_fechamento || 6, tags: c0.tags || [], linha: c0.linha || {}, modelo: c0.modelo || '', tem: 'metodo' in c0 || formatos.length > 0 };
   const fmts = formatos.filter(f => f.grupo === 'formato'), quadros = formatos.filter(f => f.grupo === 'quadro');
-  return { produtos, fichas: Object.fromEntries(fichas.map(x => [x.produto_id, x])), PR: Object.fromEntries(produtos.map(p => [p.id, p])), linhas, temas, cont, metas, pubs, crit: C.criterios, cfg: C, eq, conta, formatos, fmts, quadros, fech, personas, propostas,
+  return { produtos, prodCad: fichas, fichas: {}, PR: Object.fromEntries(produtos.map(p => [p.id, p])), linhas, temas, cont, metas, pubs, crit: C.criterios, cfg: C, eq, conta, formatos, fmts, quadros, fech, personas, propostas,
     T: Object.fromEntries(temas.map(t => [t.id, t])), L: Object.fromEntries(linhas.map(l => [l.id, l])), F: Object.fromEntries(formatos.map(f => [f.id, f])) };
 }
 function mqComeco(D) {
@@ -15434,7 +15441,7 @@ async function vConteudoAbas(m) {
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { if (canal) C.tabCanal[canal] = b.dataset.t; else C.tab = b.dataset.t; render(); });
   if (!canal) cdPillModulo(m);
   const el = $('#ctTab');
-  if (!canal) return ({ dash: tabDashCanais, kanban: tabKanban, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, persona: tabPersona, produtos: tabProdutos, linhas: tabLinhas, estruturas: tabEstruturas, canais: tabCanais }[tabK] || tabDashCanais)(el, D, C);
+  if (!canal) return ({ dash: tabDashCanais, kanban: tabKanban, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, persona: tabPersona, produtos: tabProdutos2, linhas: tabLinhas, estruturas: tabEstruturas, canais: tabCanais }[tabK] || tabDashCanais)(el, D, C);
   if (tabK === 'insta') return tabInsta(el, D, C);
   if (tabK === 'dms') return tabDMs(el, D, C);
   const K = C.porCanal = C.porCanal || {}; const CK = K[canal] = K[canal] || { tema: '', formato: '', arq: false, terr: '', fmt: '', dest: '', tag: '' };
@@ -16518,6 +16525,59 @@ function tabProdutos(el, D, C) {
   el.querySelectorAll('[data-pfv]').forEach(b => b.onclick = () => { C.pfAbre[b.dataset.pfv] = !C.pfAbre[b.dataset.pfv]; render(); });
   el.querySelectorAll('[data-pfi]').forEach(b => b.onclick = () => modalConteudo(null, D, { produto_id: b.dataset.pfi }));
   if ($('#pfCad')) $('#pfCad').onclick = () => { S.view = 'cad-produtos'; abreMenu(S.view); render(); };
+}
+
+/* ===================== v0.150 — Growth's Content: ficha de produto simples e perguntas de produto e esteira no questionário ===================== */
+// questionário da call: bloco "Produtos e esteira", logo depois de "Objetivo"
+(() => {
+  if (!PERSONA_BLOCOS.some(b => b[0] === 'Produtos')) PERSONA_BLOCOS.splice(2, 0, ['Produtos', 'O que você vende e como a esteira funciona']);
+  const novas = [['produtos_lista', 'Produtos', 'Quais produtos ou serviços você tem hoje? Diga o nome e o valor de cada um.'],
+    ['esteira', 'Produtos', 'Como funciona a sua esteira hoje? Por qual produto a pessoa entra e o que ela compra depois?'],
+    ['carro_chefe', 'Produtos', 'Qual produto mais vende hoje e qual você quer vender mais agora?'],
+    ['como_vende', 'Produtos', 'Como a venda acontece? (lançamento, perpétuo, direct, comercial, indicação, evento)'],
+    ['historico_produtos', 'Produtos', 'Como esses produtos surgiram e como foram as vendas até aqui? (turmas, lançamentos, resultados, o que mudou)']];
+  if (!PERSONA_P.some(p => p[0] === 'esteira')) { const i = PERSONA_P.findIndex(p => p[1] === 'Tese'); PERSONA_P.splice(i < 0 ? PERSONA_P.length : i, 0, ...novas); }
+})();
+
+/* ----- aba Produtos: produto, valor e histórico ----- */
+function prModal(p) {
+  const r = p || {};
+  modal(p ? `Produto · ${p.nome}` : 'Novo produto', `<div class="grid2">
+      <label>Produto<input name="nome" required maxlength="120" value="${esc(r.nome || '')}" placeholder="Ex.: Mentoria em grupo"></label>
+      <label>Valor (R$)<input type="number" name="valor" step="0.01" min="0" value="${r.valor ?? ''}"></label>
+      <label class="pf-full">Histórico do produto<textarea name="historico" rows="8" placeholder="Como surgiu, turmas e lançamentos, quantos alunos ou clientes, resultados, o que mudou de uma versão para outra, o momento de agora (aberto, fechado, próxima turma)">${esc(r.historico || '')}</textarea></label>
+      ${p ? `<label class="cs-sem pf-full"><input type="checkbox" name="ativo"${r.ativo ? ' checked' : ''}> Produto ativo (vendendo ou para vender)</label>` : ''}</div>`,
+  async (d, f) => {
+    const row = { nome: d.nome.trim(), valor: d.valor === '' || d.valor == null ? null : Number(d.valor), historico: (d.historico || '').trim() || null, atualizado_em: new Date().toISOString() };
+    if (row.valor != null && !(row.valor >= 0)) throw new Error('O valor precisa ser um número, zero ou maior.');
+    if (p) { row.ativo = f.elements.ativo.checked; await q(sb.from('content_produtos').update(row).eq('id', p.id)); }
+    else await q(sb.from('content_produtos').insert({ ...row, workspace_id: S.ws }));
+    toast('Produto salvo');
+  }, 'Salvar', true);
+}
+async function tabProdutos2(el, D, C) {
+  const P = D.produtos || [], ativos = P.filter(p => p.ativo), inativos = P.filter(p => !p.ativo), cad = (D.prodCad || []).filter(x => x.ativo && !P.some(p => p.produto_id === x.id));
+  let pode = false; try { pode = await q(sb.rpc('content_pode_configurar', { p_ws: S.ws })); } catch (e) { /* sem permissão */ }
+  C.pfAbre = C.pfAbre || {};
+  const conts = id => D.cont.filter(c => c.produto_id === id && c.status !== 'arquivado');
+  const card = p => {
+    const X = conts(p.id), n = k => X.filter(c => k.includes(c.status)).length, aberto = !!C.pfAbre[p.id], h = p.historico || '';
+    return `<article class="panel pf-card">
+      <div class="pf-top"><div><h3>${esc(p.nome)}</h3><span class="muted">${p.valor != null ? brl(p.valor) : 'Sem valor informado'}${p.ativo ? '' : ' · inativo'}</span></div></div>
+      ${h ? `<p class="pf-hist${aberto ? ' aberto' : ''}">${esc(h)}</p>${h.length > 220 ? `<button type="button" class="pf-mais" data-pfv="${p.id}">${aberto ? 'Mostrar menos' : 'Ler o histórico inteiro'}</button>` : ''}` : '<p class="muted pf-frase">Sem histórico ainda.</p>'}
+      <p class="muted pf-conts">${X.length ? `${n(['ideia', 'pauta'])} ideia(s) ou pauta(s), ${n(['producao', 'pronto', 'agendado'])} em produção, ${n(['publicado'])} publicado(s) sobre este produto` : 'Nenhum conteúdo ligado a este produto ainda.'}</p>
+      <div class="cs-matbt">${pode ? `<button class="btn sm" data-pre="${p.id}">Editar</button>` : ''}<button class="btn sm" data-pfi="${p.id}">Nova ideia sobre este produto</button></div></article>`;
+  };
+  el.innerHTML = `<div class="panel cs-cliente pf-cab"><p style="margin:0"><b>Os produtos do cliente.</b> O nome, o valor e o histórico de cada produto. Serve para entender o que se vende e para a IA criar conteúdo que leva ao produto certo.</p>${pode ? '<button class="btn pri" id="prNovo">Novo produto</button>' : ''}</div>
+    ${pode && cad.length && !P.length ? `<div class="panel"><b>${cad.length} produto(s) no cadastro comercial.</b> <span class="muted">Dá para trazer o nome e o valor deles para cá e completar o histórico.</span> <button class="btn sm" id="prTraz">Trazer do cadastro</button></div>` : ''}
+    ${ativos.length ? `<div class="pf-lista">${ativos.map(card).join('')}</div>` : (P.length ? '' : '<div class="panel muted">Nenhum produto ainda.</div>')}
+    ${inativos.length ? `<details class="panel"><summary><b>Produtos inativos</b> <span class="muted">(${inativos.length})</span></summary><div class="pf-lista" style="margin-top:12px">${inativos.map(card).join('')}</div></details>` : ''}`;
+  const por = id => P.find(p => p.id === id);
+  if ($('#prNovo')) $('#prNovo').onclick = () => prModal(null);
+  if ($('#prTraz')) $('#prTraz').onclick = () => act(async () => { await q(sb.from('content_produtos').insert(cad.map((x, i) => ({ workspace_id: S.ws, nome: x.nome, valor: x.preco, produto_id: x.id, ordem: i })))); toast(`${cad.length} produto(s) trazido(s)`); render(); });
+  el.querySelectorAll('[data-pre]').forEach(b => b.onclick = () => prModal(por(b.dataset.pre)));
+  el.querySelectorAll('[data-pfv]').forEach(b => b.onclick = () => { C.pfAbre[b.dataset.pfv] = !C.pfAbre[b.dataset.pfv]; render(); });
+  el.querySelectorAll('[data-pfi]').forEach(b => b.onclick = () => modalConteudo(null, D, { produto_id: b.dataset.pfi }));
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

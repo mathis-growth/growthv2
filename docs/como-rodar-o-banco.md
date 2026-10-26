@@ -1,5 +1,8 @@
 
 
+## v0.150 — Ficha de produto simples
+1. `supabase/RODAR_v0.150_content_produtos_v2.sql` (aplicado em produção em 25/10/2026). Tira a ficha longa da v0.149 (sem nenhum dado) e cria `content_produtos`.
+
 ## v0.149 — Ficha de conteúdo dos produtos
 1. `supabase/RODAR_v0.149_content_produtos.sql` (aplicado em produção em 25/10/2026).
 

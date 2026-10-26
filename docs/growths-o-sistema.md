@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 25/10/2026, versão 0.149.
+**Última atualização:** 25/10/2026, versão 0.150.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -167,8 +167,8 @@ Enquanto o cliente não estiver configurado, o módulo abre num passo a passo de
    - reuniões gravadas, com a transcrição se houver;
    - aulas e cursos, inclusive os de plataforma de venda, baixados e subidos;
    - depoimentos e provas.
-4. **Call de briefing.** O roteiro da call aparece na tela, um bloco de perguntas por vez, salvando sozinho enquanto a pessoa digita. Tem data da call e anotações livres.
-5. **Pesquisa e tese** (em construção). A IA lê tudo, faz a pesquisa e monta a tese: diferencial, mecanismo do problema e da solução, construção do produto, narrativa e voz.
+4. **Call de briefing.** O roteiro da call aparece na tela, um bloco de perguntas por vez, salvando sozinho enquanto a pessoa digita: nicho, objetivo, **produtos e esteira** (quais produtos e valores, como a esteira funciona, o carro-chefe, como a venda acontece e o histórico), tese, repertório e formatos. Tem data da call e anotações livres.
+5. **Pesquisa e tese** (em construção). Um botão "Fazer a pesquisa": a IA lê as pastas (do cliente e da Mathisa), as respostas da call, os produtos e os canais, pesquisa na web e entrega um relatório para ler. Dele sai a tese: diferencial, mecanismo do problema e da solução, construção do produto, narrativa e voz.
 6. **Dossiê e aprovação** (em construção). O dossiê da marca na tela e em PDF para o cliente aprovar. Aprovado, vira o padrão editável e gera a "skill do cliente".
 7. **Linha editorial e formatos.** A IA propõe territórios, frentes e formatos a partir da call. Aqui também se escolhem as estruturas de roteiro e copy.
 8. **Onde publicar.** Os canais em uso e as regras de canal por frente e etiqueta.
@@ -192,16 +192,7 @@ Enquanto o cliente não estiver configurado, o módulo abre num passo a passo de
 - **Semana.** Os dias da semana com o que está marcado, a fila de validadas sem data (arrasta para o dia), formatos com frequência fixa e metas por tipo de mídia.
 - **Fechamento de sábado.** Retrospectiva (o que funcionou, o que repetir, o que melhorar, que tese ganhou força, o que ficou repetitivo, o que descartar) e a pré-pauta da semana seguinte.
 - **Persona.** Questionário completo, base para a IA propor a linha editorial de qualquer cliente.
-- **Produtos.** Cada produto do cliente ganha uma ficha de conteúdo, em 7 partes:
-  - o que é: o produto em uma frase, para quem é e para quem não é;
-  - problema e transformação: a dor principal, o que a pessoa já tentou, o resultado e em quanto tempo;
-  - método e entrega: o método ou mecanismo, as etapas, o que a pessoa recebe, bônus e formato;
-  - diferenciais e provas: por que este e não outro, provas reais (dizendo onde estão) e garantia;
-  - objeções, cada uma com a resposta;
-  - oferta e momento de venda: perpétuo, lançamento, carrinho aberto ou fechado, próxima abertura, condições, página e checkout, a chamada que o conteúdo deve fazer, o papel na escada de produtos e o nível de consciência de quem compra;
-  - para o conteúdo: os temas que levam ao produto, as palavras que o público usa, o que evitar dizer e onde estão os materiais.
-  
-  O cartão de cada produto mostra quanto da ficha está preenchido e quantos conteúdos já falam dele. Cada ideia pode ser ligada a um produto, e a IA vai usar a ficha para criar conteúdo que leva ao produto certo.
+- **Produtos.** A lista dos produtos do cliente, cada um com o nome, o valor e o histórico (como surgiu, turmas e lançamentos, resultados, o momento de agora). Cadastrados ali mesmo, ou trazidos do cadastro comercial. O cartão de cada produto mostra quantos conteúdos já falam dele, e cada ideia pode ser ligada a um produto.
 - **Estruturas.** O cliente escolhe as estruturas de roteiro e copy que quer em cada formato (veja 4.4).
 - **Canais.** O canal de cada frente e de cada etiqueta.
 - **Ideias pelo ChatGPT.** A pessoa dita a ideia num GPT no celular e ela cai direto no Kanban, já com título, ângulo, formato e tema.
@@ -249,7 +240,8 @@ Enquanto o cliente não estiver configurado, o módulo abre num passo a passo de
   - registrar o custo de cada rodada.
 - **Leitura dos outros canais** (YouTube, TikTok, LinkedIn, Threads) pela conexão.
 - **Pesquisa, tese, dossiê e skill do cliente**, com aprovação.
-- **A rotina de ideias usando a ficha de cada produto** e o momento de venda (ex.: mais conteúdo do produto perto da abertura do carrinho).
+- **Pesquisa com um botão**: leitura das pastas, da call e dos produtos, pesquisa na web e um relatório para ler; depois, o dossiê.
+- **A rotina de ideias usando os produtos** e o histórico de cada um.
 - **Planos por faixa**, com limites de produção e ferramentas de vídeo e arte. Começa pelo básico: cortar pausas.
 - A IA trabalha pela API da Claude: cada cliente separado e nada passando por contas pessoais.
 
@@ -414,7 +406,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - DM que vira lead: o caminho do Instagram ao CRM.
 - Order bump, upsell e downsell medidos com o denominador certo.
 - Cenário ruim, bom e ótimo: margem como meta de gestão.
-- A ficha do produto: as 7 perguntas que todo conteúdo de venda precisa responder antes de ir ao ar.
+- A esteira explicada: por onde o cliente entra e o que compra depois.
 - Objeção com resposta: transformar o "não tenho tempo" em pauta.
 - Construir um sistema em 140 versões: o bastidor da Mathisa.
 
@@ -461,4 +453,4 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - Máquina de Conteúdo; Instagram (dashboard, DMs, insights);
   - Growth's Content com pasta no Drive, configuração em 9 passos, estruturas de roteiro e copy, custos de IA, pastas da Mathisa;
   - painel da produção no Kanban;
-  - ficha de conteúdo de cada produto, com as ideias ligadas a ele.
+  - produtos no conteúdo (nome, valor e histórico), com as ideias ligadas a eles, e o bloco Produtos e esteira no questionário.
