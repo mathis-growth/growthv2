@@ -134,7 +134,8 @@ Responda SÓ com JSON, sem nada antes ou depois: {"secoes":[{"titulo":"...","tex
 
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
-  if (req.method === 'GET') return json({ chave: !!env('ANTHROPIC_API_KEY') });
+  // só diz se os segredos existem, nunca o valor
+  if (req.method === 'GET') return json({ chave: !!env('ANTHROPIC_API_KEY'), google: { client_id: !!env('GOOGLE_CLIENT_ID'), client_secret: !!env('GOOGLE_CLIENT_SECRET') } });
   try {
     const corpo = await req.json().catch(() => ({}));
     const jwt = (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');

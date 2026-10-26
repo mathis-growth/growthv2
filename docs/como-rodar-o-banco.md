@@ -1,8 +1,8 @@
 
 
 ## v0.151 — Pesquisa e dossiê
-1. `supabase/RODAR_v0.151_content_pesquisa.sql` — **PENDENTE** (a confirmação da ferramenta expirou em 25/10/2026; aplicar com a Rebecka ou colar no SQL Editor).
-2. `supabase functions deploy content-pesquisa --no-verify-jwt` — **PENDENTE** (depois do banco).
+1. `supabase/RODAR_v0.151_content_pesquisa.sql` (aplicado em produção em 25/10/2026).
+2. `supabase functions deploy content-pesquisa --no-verify-jwt` (publicada em 25/10/2026, versão 2; o GET diz só se os segredos existem).
 3. Segredo `ANTHROPIC_API_KEY` (Supabase → Edge Functions → Secrets), com a chave criada em console.anthropic.com. Sem ele, a tela avisa e o botão fica desligado.
 4. Apps Script: colar o código novo de `integracoes/apps-script/growths-drive.gs` (com a senha real) e reimplantar como nova versão. Ele pede de novo a autorização da conta (agora lê Documentos, Planilhas e Apresentações).
 5. Opcional: `sistema_config.ia_precos` com o preço por milhão de tokens do modelo e por mil buscas, para o custo ser calculado; vazio = "sem custo calculado".

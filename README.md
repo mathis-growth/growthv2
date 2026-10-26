@@ -15,10 +15,10 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.151 · 25/10/2026 (branch `v0.151-pendente`; no ar segue a 0.150) (`index.html`) |
-| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.150** (25/10/2026): alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
+| **Versão da tela** | 0.151 · 25/10/2026 (`index.html`) |
+| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.151** (25/10/2026): alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
-| **Falta configurar** | app do Meta, projeto do Google e os segredos no Supabase: [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
+| **Falta configurar** | app do Meta e a chave da Claude (`ANTHROPIC_API_KEY`); o app do Google já existe (segredos conferidos em 25/10/2026): [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
 
 ## Registro de versões
 
@@ -26,7 +26,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
-| 0.151 | 25/10/2026 | **Pesquisa com um botão** (pastas + call + produtos + canais + web, relatório para ler) e o **dossiê** em seções. | `RODAR_v0.151_content_pesquisa.sql` + função `content-pesquisa`, **pendente** |
+| 0.151 | 25/10/2026 | **Pesquisa com um botão** (pastas + call + produtos + canais + web, relatório para ler) e o **dossiê** em seções. | `RODAR_v0.151_content_pesquisa.sql` + função `content-pesquisa`, aplicado em 25/10/2026 (falta a chave da API e reimplantar o Apps Script) |
 | 0.150 | 25/10/2026 | **Ficha de produto simples** (nome, valor, histórico) no Growth's Content e o bloco **Produtos e esteira** no questionário da call. | `RODAR_v0.150_content_produtos_v2.sql`, aplicado em 25/10/2026 |
 | 0.149 | 25/10/2026 | **Produtos na Estratégia de conteúdo**: ficha de conteúdo de cada produto (público, dor, transformação, método, provas, objeções, momento de venda) e ideias ligadas a um produto. | `RODAR_v0.149_content_produtos.sql`, aplicado em 25/10/2026 |
 | 0.148 | 25/10/2026 | **Painel da produção no Kanban**: total por etapa, prontos da semana contra a meta e calendário das próximas semanas (completas ou quanto falta). | Só tela |

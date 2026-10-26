@@ -104,7 +104,7 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - Passo 5 **Pesquisa**: "Fazer a pesquisa" lê as pastas (cliente, outras do cliente e as da Mathisa), junta call, produtos e canais, pesquisa na web e entrega o relatório com fontes e a lista de arquivos lidos e não lidos.
 - Passo 6 **Dossiê**: "Li o relatório, gerar o dossiê" gera o dossiê em 9 seções; "Dossiê ok, seguir".
 - Função `content-pesquisa` (Claude com busca na web) e Apps Script com a leitura das pastas. Custo em Custos de IA.
-- Banco: `20261111100000_content_pesquisa.sql`. **Pendente em produção** (confirmação expirou); falta a chave da API e reimplantar o Apps Script.
+- Banco: `20261111100000_content_pesquisa.sql` e função `content-pesquisa`. **Aplicados em produção em 25/10/2026**. Para funcionar: a chave da API (`ANTHROPIC_API_KEY`) no Supabase e o Apps Script novo reimplantado.
 
 ## [0.150] - 2026-10-25 — Ficha de produto simples; produtos e esteira no questionário
 - Aba **Produtos** enxuta: cada produto com **nome, valor e histórico**, cadastrado ali mesmo ou trazido do cadastro comercial. Sai a ficha longa da v0.149.

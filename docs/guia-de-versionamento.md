@@ -1,7 +1,7 @@
 
 
 ## v0.151
-- index.html: 0.150 → 0.151 (`integra151.py`, que roda o `integra150.py`; novos `g151.js` e `g151.css`; passos 5 e 6 com `csPesquisa` e `csDossie`; `mdHtml`). Novo: `20261111100000_content_pesquisa.sql`, `RODAR_v0.151_content_pesquisa.sql`, função `content-pesquisa` (index.ts, logica.ts, logica_test.ts), Apps Script com a ação `ler`; testes `t151_pesquisa_dossie.py` e `tests/edge/pesquisa/teste_pesquisa.ts`; `t143` ajustado. **Pendente em produção** (branch `v0.151-pendente`).
+- index.html: 0.150 → 0.151 (`integra151.py`, que roda o `integra150.py`; novos `g151.js` e `g151.css`; passos 5 e 6 com `csPesquisa` e `csDossie`; `mdHtml`). Novo: `20261111100000_content_pesquisa.sql`, `RODAR_v0.151_content_pesquisa.sql`, função `content-pesquisa` (index.ts, logica.ts, logica_test.ts), Apps Script com a ação `ler`; testes `t151_pesquisa_dossie.py` e `tests/edge/pesquisa/teste_pesquisa.ts`; `t143` ajustado. Aplicado em produção (ficou na branch `v0.151-pendente` até o banco ser aplicado).
 
 ## v0.150
 - index.html: 0.149 → 0.150 (`integra150.py`, que roda o `integra149.py`; novos `g150.js` e `g150.css`; `dadosConteudo` lê `content_produtos`; aba Produtos usa `tabProdutos2`; `PERSONA_P` e `PERSONA_BLOCOS` ganham o bloco Produtos). Novo: `20261110100000_content_produtos_v2.sql`, `RODAR_v0.150_content_produtos_v2.sql`, teste `t150_produtos_simples.py` (substitui o `t149`); `t143` com as respostas novas. Aplicado em produção.

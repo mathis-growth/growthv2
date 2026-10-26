@@ -2,7 +2,7 @@
 
 ## Pesquisa e dossiê (v0.151)
 - Apps Script: ação `ler` (Docs, Planilhas, Apresentações, texto, PDF em base64; limites de arquivos e de texto; pastas sem acesso listadas).
-- Função `content-pesquisa`: GET (chave configurada?), POST `pesquisar` e `dossie`; responde na hora e segue em segundo plano (`EdgeRuntime.waitUntil`); continua a conversa se a IA pausar (`pause_turn`); grava em `ia_uso`. `logica.ts` com as regras puras (6 testes Deno).
+- Função `content-pesquisa` (publicada em 25/10/2026, versão 2): GET (diz se `ANTHROPIC_API_KEY`, `GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET` existem, nunca o valor), POST `pesquisar` e `dossie`; responde na hora e segue em segundo plano (`EdgeRuntime.waitUntil`); continua a conversa se a IA pausar (`pause_turn`); grava em `ia_uso`. `logica.ts` com as regras puras (6 testes Deno).
 - Teste de ponta a ponta `tests/edge/pesquisa/teste_pesquisa.ts`: a função de verdade contra o banco local, com a Claude e o Apps Script simulados (18 verificações: permissões, o que vai para a IA, gravação, fontes, arquivos, custo com e sem preço, dossiê).
 - `g151.js`: `csPesquisa` (o que a pesquisa usa, acompanhamento, relatório, fontes, arquivos), `csDossie` (seções com índice), `mdHtml` (Markdown escapado), atualização sozinha a cada 4 s enquanto roda.
 - Testes de tela: `t151` (novo), `t143`, `t150`, `t148`, `t147`, `t146`, `t140`, `t141`, `t133`, `t134`, `t135` — 0 falhas.

@@ -11,7 +11,8 @@ Decisões:
 - "Li o relatório, gerar o dossiê" marca a leitura e gera o dossiê (rascunho, com versão) nas seções padrão: Diferencial, Mecanismo do problema, Mecanismo da solução, Construção do produto, Narrativa, Voz, Persona, Concorrência, Oportunidades de conteúdo (editáveis em `sistema_config.content_dossie_secoes`). "Dossiê ok, seguir" fecha o passo.
 - O custo de cada pesquisa e de cada dossiê vai para Custos de IA (só a Rebecka vê); a tela do cliente não mostra custo. Sem preço cadastrado, o custo fica "sem custo calculado" — nada inventado.
 - Modelo: `claude-sonnet-5-5` (configurável em `sistema_config.ia_modelo_pesquisa`).
-**Pendente**: aplicar o banco e publicar a função (a confirmação expirou); a chave da API (`ANTHROPIC_API_KEY`); colar e reimplantar o Apps Script; preços para o custo; aprovação do cliente, PDF e skill do cliente; a rotina diária de ideias.
+- **Google Cloud**: o app OAuth da Mathisa existe (segredos `GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET` conferidos no Supabase em 25/10/2026; tela de consentimento do tipo Externo, URI de redirecionamento da `content-google` cadastrada). Os docs antigos diziam que faltava; corrigido. Decisão da Rebecka (25/10): **seguir com o Apps Script** para criar e ler as pastas. A leitura pela API do Drive com a conta da Mathisa fica como opção futura (Externo exige o app em produção; em teste, o Google desconecta a cada 7 dias).
+**Pendente**: a chave da API (`ANTHROPIC_API_KEY`, conferida em 25/10: ainda não está no Supabase); colar e reimplantar o Apps Script; preços para o custo; aprovação do cliente, PDF e skill do cliente; a rotina diária de ideias.
 **Risco conhecido**: pastas muito grandes podem passar do tempo da função no servidor; nesse caso a tela mostra "não terminou" e dá para tentar de novo (limites de 80 arquivos e 600 mil caracteres por leitura).
 
 ## v0.150 — Ficha de produto simples; produtos e esteira no questionário
