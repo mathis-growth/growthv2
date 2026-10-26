@@ -1,5 +1,21 @@
 
 
+## v0.152 a v0.156 — Data Storytelling: cor pelo significado, números padronizados
+**Pedido da Rebecka (26/10)**: aplicar uma camada de Data Storytelling (Knaflic, IBCS adaptado, Gestalt) sem mudar a identidade visual; primeiro a auditoria (documento "Growths — Data Storytelling: auditoria e plano (fase 1)") e depois "pode aplicar todas as outras etapas".
+Decisões da Rebecka:
+- **Saldos negativos em vermelho, positivos em verde (26/10).** Virou a regra 2a: em lucro, resultado, margem, ROI, saldo e caixa o zero é limite. Referência mais exigente (cenário de margem, saldo mínimo) vale mais que o zero: acima de zero e abaixo dela = âmbar. Azul não é usado para "positivo".
+- Demais decisões abertas na auditoria seguiram a recomendação: piloto no Dashboard; âmbar #B88432/#916828 no claro (o #C28B35 não passa contraste); cores novas no sistema inteiro; sem brilho neon nos números; tolerâncias que já existiam no código (5% para colorir variação); direções da tabela da auditoria; mês cheio contra mês cheio; colunas novas no dicionário.
+Decisões técnicas:
+- Cores: tokens `--s-fav`, `--s-desf`, `--s-aten`, `--s-info` (marca, texto e suave, claro e escuro) e `--good`, `--bad`, `--warn`, `--info` apontando para eles.
+- Nunca pelo sinal: `marcaSinais` só colore as métricas de saldo; variações usam a direção da métrica (`semVar`), com tolerância de 5%.
+- Variação de quem cruza o zero ou tem base ≤ 0: em reais. Taxas: em pontos percentuais.
+- Período anterior: mês cheio contra mês cheio; mês até hoje contra os mesmos dias do mês anterior; período livre contra a janela de mesmo tamanho.
+- Cartão de receita do Dashboard: a variação e a linha passaram a ser das vendas (antes vinham da receita da DRE).
+- Cenário de margem só vale como referência quando foi cadastrado (os 20/30/40% da tela de Custos são padrão, não cadastro).
+- Marketing: leads, investimento e CPL comparados com o período anterior; clientes, CAC, receita, ROAS, ROI e LTV não, porque acompanham os leads até hoje e o período anterior teve mais tempo para converter.
+- Alertas: alta = Desfavorável, "mudou para melhor" = Favorável, mudança brusca sem direção = Informativo, o resto = Atenção.
+**Pendente**: o gráfico de várias métricas da campanha (v0.129) continua com uma escala por linha, como foi pedido; selo "parcial" já existia (⚠ nos cartões afetados pelo aviso de qualidade). Testes antigos de `t111` estão desatualizados (escritos para outra base de dados).
+
 ## v0.151 — Pesquisa com um botão e o dossiê
 **Pedido da Rebecka (25/10)**: um botão que faz a pesquisa de tudo o que foi levantado: lê a pasta, pesquisa na web, ela lê o que veio e então sai o dossiê.
 Decisões:

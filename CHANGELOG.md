@@ -2,6 +2,16 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.152 a v0.156 — Data Storytelling (26/10/2026)
+- **Camada semântica**: quatro cores só para dados (favorável #27836A, desfavorável #C64B54, atenção #B88432/#C28B35, informação #3974AB), com tons de texto que passam contraste AA no claro e no escuro; sempre com seta, símbolo e palavra.
+- **Regra 2a** (decisão da Rebecka): lucro, resultado, margem, ROI, saldo e caixa negativos em vermelho, positivos em verde; âmbar acima de zero e abaixo da referência cadastrada. As outras métricas seguem a direção (maior, menor, faixa, neutra) com tolerância de 5%.
+- **Números**: formatador único (sinal de menos verdadeiro, "—" para sem dado, mil/mi, p.p. para taxas, ROAS 1 casa, LTV:CAC como razão); escala única por linha de cartões.
+- **Comparações**: mês cheio contra mês cheio; mês até hoje contra os mesmos dias; a base sempre escrita. Cartão de receita do Dashboard com a variação das vendas (antes, da DRE). Lucro varia em reais.
+- **Gráficos**: gráfico de linhas antigo refeito (os dois do Financeiro que ficavam vazios com negativos voltaram); cascata neutra com resultado com sinal; meta, cenário e saldo mínimo como linha de referência; séries sem verde/vermelho; rótulos sem sobreposição; título repetido removido.
+- **Módulos**: frases-recado e contexto no Financeiro, Marketing e Vendas.
+- **Alertas** em quatro categorias; **Dicionário de métricas** com unidade, direção, zero como limite e referência.
+- Banco: `20261112100000_metricas_semantica.sql` / `RODAR_v0.156_metricas_semantica.sql` (aplicado em produção em 26/10/2026).
+
 ## v0.24 — Permissões por ação e rateio de custos
 - **Permissões por ação**: além do nível do módulo, cada função (e cada pessoa) pode liberar ou bloquear **Ver, Criar só lead, Criar, Editar e Excluir** em Clientes e leads, Vendas, Contratos, Alunos, Contas a receber, Contas a pagar, Campanhas, Produtos e Projetos. Ex.: ver clientes, não cadastrar cliente, mas cadastrar lead.
 - **Por pessoa**: em Equipe e acessos, botão **Permissões** (só administrador): muda o nível de qualquer módulo e as ações só para aquela pessoa; vence a função. Ordem: pessoa > função > nível do módulo.

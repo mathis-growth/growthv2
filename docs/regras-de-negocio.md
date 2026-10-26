@@ -1,5 +1,15 @@
 
 
+## v0.152 a v0.156 — Data Storytelling
+- Cor só com critério: direção cadastrada + referência válida (meta, limite, guardrail, cenário cadastrado ou período anterior comparável). Sem isso, neutro.
+- Regra 2a: lucro, resultado, margem, ROI, saldo e caixa: < 0 vermelho; ≥ 0 e abaixo da referência cadastrada âmbar; acima dela (ou > 0 sem referência) verde.
+- Variação abaixo de 5% fica neutra. Taxas variam em p.p. Saldos com base ≤ 0 ou que cruzam o zero variam em reais.
+- Investimento, custos, despesas, a pagar, a receber e frequência são neutros (não ganham cor pela variação).
+- Período anterior: mês cheio → mês cheio anterior; dia 1 até hoje → mesmos dias do mês anterior; outro período → janela de mesmo tamanho logo antes.
+- Reais: completos em tabelas e tooltips; abreviados (mil a partir de R$ 10 mil, mi a partir de R$ 1 mi) em cartões e rótulos; uma escala por linha de cartões.
+- Alertas: alta → Desfavorável; info → Favorável; mudança brusca sem direção → Informativo; demais → Atenção.
+- Campanha abaixo da meta: Atenção enquanto está no ar, Desfavorável depois que acaba.
+
 ## v0.151 — Pesquisa e dossiê
 - Uma pesquisa por vez por cliente (se houver uma andando há menos de 10 minutos, o botão mostra a que já existe). Andando há mais de 8 minutos sem atualizar = "não terminou", com "Tentar de novo".
 - Passo 5 pronto quando o relatório foi lido ("Li o relatório"); passo 6 pronto com "Dossiê ok".

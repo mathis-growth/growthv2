@@ -1,5 +1,9 @@
 
 
+## v0.156
+- `metricas_definicoes` ganhou `unidade` (brl, pct, x, razao, numero, dias, texto), `casas`, `direcao` (maior, menor, faixa, neutra), `zero_limite` (o zero é limite: negativo vermelho, positivo verde) e `referencia` (onde está a meta ou o limite que dá a cor). Linhas novas: `lucro`, `margem`, `roi`, `caixa_projetado`, `ctr`.
+- A tela lê o dicionário e usa a direção, as casas e o zero como limite (`semDoDicionario`).
+
 ## v0.151
 - `content_pesquisas`: workspace, status (fila, lendo, pesquisando, pronto, erro), etapa, erro, relatório (Markdown), fontes da web, arquivos (lidos e não lidos com o motivo, sem o conteúdo), modelo, tokens, buscas, quem pediu, datas.
 - `content_dossies`: workspace, pesquisa, versão, status (gerando, rascunho, aprovado, erro), seções [{titulo, texto}], modelo, tokens.

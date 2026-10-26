@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 25/10/2026, versão 0.151.
+**Última atualização:** 26/10/2026, versão 0.156.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -57,7 +57,9 @@ A tela inicial. Mostra o negócio inteiro num período escolhido:
 
 O desenho é em camadas: 4 cartões grandes com tendência e, abaixo, cartões menores com números compactos. Saldo em banco, a receber e a pagar abrem o extrato e as listas na hora.
 
-**Observações automáticas.** Até 4 avisos do que mudou contra o período anterior, cada um separado em fato, conta, hipótese e onde investigar.
+**Observações automáticas.** Até 4 avisos do que mudou contra o período anterior, cada um com a categoria (favorável, desfavorável ou atenção) e separado em fato, conta, referência, hipótese e onde investigar. Quando o período é um mês inteiro, a comparação é com o mês anterior inteiro: assim uma despesa lançada no dia 1 não some da conta e não cria uma queda de margem que não existiu.
+
+**Cada número diz contra o quê.** O cartão da receita mostra a variação das próprias vendas contra o mês anterior, com o valor de antes. O lucro mostra a diferença em reais (porcentagem sobre um lucro negativo não tem leitura) e fica vermelho quando está negativo. O saldo em banco também. Os cartões pequenos da mesma linha usam a mesma escala ("mil" em todos), com o valor completo ao passar o mouse.
 
 ### Pergunte ao Growths
 Um chat em português. Pergunte "como foi meu dia ontem?" e a resposta vem com os números exatos do dia e a comparação com a semana. Para perguntas abertas, a IA (Claude ou ChatGPT):
@@ -359,7 +361,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   
   Depois vem o de-para campo a campo. Colunas sem campo viram campos personalizados.
 - **Qualidade dos dados.** 10 verificações automáticas, como venda sem origem, mais cliques que impressões, dias sem dado de mídia e mídia dos anúncios diferente do financeiro. Os dashboards marcam com ⚠ os números afetados.
-- **Dicionário de métricas.** A definição oficial de cada indicador, com o ⓘ nos cartões.
+- **Dicionário de métricas.** A definição oficial de cada indicador, com o ⓘ nos cartões. Para cada número: a unidade, quantas casas, a direção (quanto maior melhor, quanto menor melhor, faixa ou neutra), se o zero é limite e de onde vem a referência que dá a cor.
 - **Auditoria.** Quem incluiu, alterou ou excluiu, com antes e depois. Ninguém altera nem apaga a auditoria.
 - **Uso da plataforma.** Que telas se usam, por quanto tempo, onde as pessoas desistem de formulários e onde aparecem erros, sem gravar dados de clientes.
 - **Equipe, funções e permissões.** Por módulo e por ação (ver, criar só lead, criar, editar, excluir), por função e por pessoa.
@@ -370,7 +372,10 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 11. Visual e experiência
 
-- **Claro como padrão e escuro como opção.** Verde no que é bom, vermelho no negativo, uma ação principal por tela.
+- **Claro como padrão e escuro como opção.** Uma ação principal por tela.
+- **Cor com significado (Data Storytelling).** Quatro cores só para leitura de dados: verde (favorável), vermelho (desfavorável), âmbar (atenção) e azul (informação e comparação). A cor nunca vem sozinha: sempre com seta ou símbolo (▲ ▼ ✓ ✕ ⚠) e uma palavra, porque verde e vermelho se confundem para quem tem daltonismo. Lucro, resultado, margem, ROI e saldo têm o zero como limite: negativo em vermelho, positivo em verde, âmbar quando passa de zero mas não chega na meta ou no cenário cadastrado. As outras métricas só ganham cor quando há meta, limite ou período anterior comparável, e cada uma tem a sua direção: CAC caindo é bom, margem caindo é ruim, investimento subindo é neutro. Variações abaixo de 5% ficam neutras.
+- **Números num padrão só.** Sinal de menos verdadeiro, reais abreviados em cartões e completos em tabelas, pontos percentuais para taxas, ROAS com uma casa (4,5x) e LTV:CAC como razão (3,2:1). "—" quer dizer sem dado; zero quer dizer zero.
+- **Gráficos limpos.** Verde e vermelho saem das linhas e barras comuns e ficam para o que é bom ou ruim. Meta, limite e saldo mínimo aparecem como linha tracejada com o valor escrito. Na cascata do resultado, receitas, deduções e despesas ficam neutras e só o resultado ganha cor.
 - **Menu em níveis**, com recuo e linha guia.
 - **Gráficos com função.** Cada gráfico responde uma pergunta: o tipo é escolhido pelo número (linha no tempo, cascata, composição, barras por dia, medidor).
 - **Campos de moeda com máscara** (R$ 1.234,56).
@@ -382,7 +387,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 12. Como o Growths é construído (bastidores)
 
-- **Ritmo.** Mais de 140 versões em 3 semanas (de 05/10 a 25/10/2026), cada uma com registro do que mudou, por quê e como foi testada.
+- **Ritmo.** Mais de 150 versões em 3 semanas (de 05/10 a 26/10/2026), cada uma com registro do que mudou, por quê e como foi testada.
 - **Testes de verdade.** Cada versão roda testes que abrem a tela real ligada a um banco completo e conferem número por número. Existe uma empresa fictícia, a Escola Aurora, com lançamento, anúncios, leads e vendas coerentes, para testar com dado realista.
 - **Auditoria de consistência.** Uma rodada comparou o mesmo número em todas as telas. O lucro do mesmo mês aparecia de três jeitos; foi corrigido para um lucro só.
 - **Decisões documentadas.** O sistema guarda cada decisão com o pedido que a originou. Exemplos:
@@ -416,6 +421,12 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - Fato, hipótese ou recomendação: como ler uma pesquisa feita por IA.
 - Objeção com resposta: transformar o "não tenho tempo" em pauta.
 - Construir um sistema em 140 versões: o bastidor da Mathisa.
+- "Seu dashboard pinta de verde o que não é bom": a cor tem que seguir a direção da métrica, não o sinal.
+- CAC caiu 40%: verde. Investimento subiu 40%: nem verde nem vermelho. Por quê.
+- Ponto percentual não é porcentagem: a margem que cai de 25% para 20% caiu 5 p.p. e 20%.
+- O dia 1 que sumiu da conta: como uma janela de comparação mal escolhida inventa uma queda de margem.
+- Lucro negativo não cai "242%": quando falar em reais e não em porcentagem.
+- Cor nunca sozinha: dashboards que funcionam para quem tem daltonismo.
 
 ---
 
@@ -462,3 +473,5 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - painel da produção no Kanban;
   - produtos no conteúdo (nome, valor e histórico), com as ideias ligadas a eles, e o bloco Produtos e esteira no questionário;
   - pesquisa com um botão (pastas, call, produtos, canais e web) e o dossiê em seções.
+- **26/10:**
+  - auditoria de Data Storytelling e a camada de leitura dos dados em todo o sistema: cores com significado, zero como limite dos saldos, números padronizados, comparações com a base escrita, gráficos sem cor pelo sinal, frases que contam o que aconteceu, alertas em quatro categorias e o dicionário com direção e referência.

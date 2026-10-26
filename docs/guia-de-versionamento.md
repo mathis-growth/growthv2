@@ -1,5 +1,8 @@
 
 
+## v0.152 a v0.156
+- index.html: 0.151 → 0.156 (`integra152.py` a `integra156.py`, encadeados; novos `g152.js` a `g156.js` e `g152.css` a `g156.css`). Funções antigas trocadas por novas: `painelHero`, `saldoHero`, `compactaKpis` (0.152), `marcaSinais`, `varMes`, `kpiD`, `dgDeltaG` (0.153), `linhas` (0.154). Novo: `20261112100000_metricas_semantica.sql`, `RODAR_v0.156_metricas_semantica.sql`; testes `t152_semantica.py`, `t153_cores_globais.py`, `t154_graficos.py`, `t155_modulos.py`, `t156_alertas_dicionario.py`. Banco aplicado em produção em 26/10/2026.
+
 ## v0.151
 - index.html: 0.150 → 0.151 (`integra151.py`, que roda o `integra150.py`; novos `g151.js` e `g151.css`; passos 5 e 6 com `csPesquisa` e `csDossie`; `mdHtml`). Novo: `20261111100000_content_pesquisa.sql`, `RODAR_v0.151_content_pesquisa.sql`, função `content-pesquisa` (index.ts, logica.ts, logica_test.ts), Apps Script com a ação `ler`; testes `t151_pesquisa_dossie.py` e `tests/edge/pesquisa/teste_pesquisa.ts`; `t143` ajustado. Aplicado em produção (ficou na branch `v0.151-pendente` até o banco ser aplicado).
 

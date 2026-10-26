@@ -102,7 +102,7 @@ with sync_playwright() as pw:
     chk(sql(f"select ligado::text || resumo_hora from alertas_config where workspace_id = '{WS}'") == 'true7', 'botão liga alertas e resumo às 7h')
     sql(f"insert into alertas (workspace_id, chave, tipo, regra, severidade, titulo, mensagem, dia) values ('{WS}', 't132:a', 'brusco', 'brusco_leads', 'alta', 'Leads caíram 50% ontem', 'Teste', '2026-10-14'), ('{WS}', 't132:b', 'operacional', 'contas_vencidas', 'media', '2 conta(s) a pagar vencida(s)', 'Teste', '2026-10-15')")
     front.vai(pg, 'ia-alertas', "", 5000)
-    chk(pg.locator('.al-c').count() == 2 and pg.locator('.al-c.alta .al-s.alta').count() == 1, 'lista os alertas abertos com a cor da importância')
+    chk(pg.locator('.al-c').count() == 2 and pg.locator('.al-c.alta .sem-p-desf').count() == 1 and pg.locator('.al-c.media .sem-p-aten').count() == 1, 'lista os alertas abertos com a categoria (v0.156: Desfavorável e Atenção)')
     pg.locator('[data-resolve]').first.click(); pg.wait_for_timeout(2500)
     chk(pg.locator('.al-c').count() == 1 and sql(f"select count(*) from alertas where workspace_id = '{WS}' and resolvido_em is not null") == '1', 'marcar como resolvido tira da lista de abertos')
     chk(sql(f"select count(*) from alertas where workspace_id = '{WS}' and visto_em is null") == '0', 'abrir a tela marca os alertas como vistos')

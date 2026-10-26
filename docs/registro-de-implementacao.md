@@ -1,5 +1,13 @@
 
 
+## Data Storytelling (v0.152 a v0.156)
+- `g152.js`: `SEM` (dicionário de apresentação), `semFmt`/`semBRL`/`semEscala` (formatador único, sinal de menos verdadeiro, "—" para sem dado), `semVar` (variação com direção, tolerância, p.p. e reais), `semStatus` (regra 2a e referências), `semPerAnt` (período anterior), `semCenarioMargem`; Dashboard: `painelHero`, `painelRecVendas`, `painelSemRefs`, `saldoHero`, `compactaKpis` (escala única por linha); observações com categoria e Referência.
+- `g153.js`: `marcaSinais` (só saldos; tabelas pela coluna ou linha de saldo), `kpiD`, `dgDeltaG`, `varMes` com a camada nova; `brl` com "—" e sinal de menos; ROAS com 1 casa; LTV ÷ CAC como razão; cores de status do sistema = camada semântica; sem neon nos números.
+- `g154.js`: `linhas` refeito (negativos, buracos, vazio); `gcLinhas` com `ref` e pontos na cor da série; cascata neutra com resultado com sinal; séries sem verde/vermelho; saldo mínimo e cenário como linha de referência; dispersão sem sobreposição; título repetido em Mídia paga.
+- `g155.js`: contexto e frase-recado no Financeiro (`finContexto`), Marketing (`mktContexto`) e Vendas; custos neutros; mês até hoje contra os mesmos dias.
+- `g156.js`: `alCat` (quatro categorias nos alertas), dicionário com unidade, direção e referência.
+- Testes novos t152 a t156: 0 falhas. Bateria de tela anterior (t113 a t151, 31 testes): 0 falhas depois de ajustar t121, t127 e t132 às classes e ao sinal de menos novos. Falhas que já existiam na v0.151 (conferidas rodando a v0.151): t116/t117 (o teste compara o cartão abreviado com o valor completo da árvore), t146 (custos de IA) e 6 px de sobra no celular nas tabelas do Dashboard. t111 está desatualizado (outra base de dados). Uma venda de setembro da base de teste virou reembolso durante a bateria (t120); os testes novos calculam o esperado a partir do banco.
+
 ## Pesquisa e dossiê (v0.151)
 - Apps Script: ação `ler` (Docs, Planilhas, Apresentações, texto, PDF em base64; limites de arquivos e de texto; pastas sem acesso listadas).
 - Função `content-pesquisa` (publicada em 25/10/2026, versão 2): GET (diz se `ANTHROPIC_API_KEY`, `GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET` existem, nunca o valor), POST `pesquisar` e `dossie`; responde na hora e segue em segundo plano (`EdgeRuntime.waitUntil`); continua a conversa se a IA pausar (`pause_turn`); grava em `ia_uso`. `logica.ts` com as regras puras (6 testes Deno).

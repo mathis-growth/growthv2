@@ -1,5 +1,9 @@
 
 
+## v0.152 a v0.156 — Data Storytelling
+1. `supabase/RODAR_v0.156_metricas_semantica.sql` (aplicado em produção em 26/10/2026): colunas `unidade`, `casas`, `direcao`, `zero_limite` e `referencia` em `metricas_definicoes` e as linhas novas Lucro, Margem, ROI, Caixa projetado e CTR.
+2. As versões 0.152 a 0.155 são só tela.
+
 ## v0.151 — Pesquisa e dossiê
 1. `supabase/RODAR_v0.151_content_pesquisa.sql` (aplicado em produção em 25/10/2026).
 2. `supabase functions deploy content-pesquisa --no-verify-jwt` (publicada em 25/10/2026, versão 2; o GET diz só se os segredos existem).

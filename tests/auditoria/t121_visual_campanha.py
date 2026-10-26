@@ -38,7 +38,7 @@ with sync_playwright() as p:
     fin = pg.evaluate("() => [...document.querySelectorAll('.panel')].find(p => /Métricas financeiras/.test(p.querySelector('h2')?.textContent || ''))?.innerText || ''")
     chk('ROI' in fin and '\nLucro' not in fin, 'Métricas financeiras sem repetir o Lucro (está no alto)')
     luc = pg.evaluate("() => { const k = [...document.querySelectorAll('.kpis.hero .kpi')][1]; return [k.querySelector('.v').textContent, k.querySelector('.v').className] }")
-    chk(('vneg' in luc[1]) == luc[0].strip().startswith(('-', '−')) and ('vpos' in luc[1] or 'vneg' in luc[1] or luc[0].strip() in ('R$ 0,00',)), 'lucro em verde se positivo e vermelho se negativo: ' + luc[0])
+    chk(('sem-v-desf' in luc[1]) == luc[0].strip().startswith(('-', '−')) and ('sem-v-fav' in luc[1] or 'sem-v-desf' in luc[1] or luc[0].strip() in ('R$ 0,00',)), 'lucro em verde se positivo e vermelho se negativo (v0.152: classes da camada semântica): ' + luc[0])
     chk(pg.locator('.kpis.hero .kpi.arvk').count() >= 2, 'cartões grandes de receita e lucro continuam abrindo a árvore')
     pg.click('#pgCacK'); pg.wait_for_timeout(900)
     chk(pg.evaluate("() => Math.abs(document.getElementById('pgCac').getBoundingClientRect().top) < 120"), 'cartão do CAC leva ao painel "CAC: o que é de mídia e o que é total"')
@@ -46,7 +46,7 @@ with sync_playwright() as p:
     chk(all(('mil' in v or 'mi' in v) == bool(tt) for v, tt in mini if v.startswith('R$')), 'valores de 10 mil para cima ficam compactos e o exato aparece no mouse')
     pg.evaluate("() => { const d = document.createElement('div'); d.className = 'kpis'; d.id = 'tNeg'; d.innerHTML = '<div class=\"kpi\"><span class=\"l\">Resultado no período</span><span class=\"v\">-R$ 1.234,00</span></div><div class=\"kpi\"><span class=\"l\">Margem</span><span class=\"v\">12,0%</span></div>'; document.querySelector('.main').appendChild(d); }")
     pg.wait_for_timeout(300)
-    chk(pg.evaluate("() => { const k = document.querySelectorAll('#tNeg .kpi'); return k[0].classList.contains('kneg') && k[0].querySelector('.v').classList.contains('vneg') && k[1].querySelector('.v').classList.contains('vpos'); }"), 'qualquer cartão: negativo em vermelho, resultado positivo em verde')
+    chk(pg.evaluate("() => { const k = document.querySelectorAll('#tNeg .kpi'); return k[0].querySelector('.v').classList.contains('sem-v-desf') && k[1].querySelector('.v').classList.contains('sem-v-fav') && k[0].querySelector('.v').textContent.startsWith('−'); }"), 'cartão de saldo: negativo em vermelho (com sinal de menos verdadeiro), positivo em verde (v0.153)')
     # ---------------- Nova campanha em etapas ----------------
     front.vai(pg, 'mkt-camp', "S.tabMkt = 'campanhas'; S.campSel = null", 3500)
     pg.click('#novaCamp'); pg.wait_for_timeout(1500)

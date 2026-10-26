@@ -15,8 +15,8 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.151 · 25/10/2026 (`index.html`) |
-| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.151** (25/10/2026): alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
+| **Versão da tela** | 0.156 · 26/10/2026 (`index.html`) |
+| **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.156** (26/10/2026): dicionário de métricas com direção e referência; alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta e a chave da Claude (`ANTHROPIC_API_KEY`); o app do Google já existe (segredos conferidos em 25/10/2026): [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
 
@@ -26,6 +26,11 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.156 | 26/10/2026 | **Alertas em quatro categorias** (favorável, desfavorável, atenção, informativo) e **Dicionário de métricas** com unidade, direção, zero como limite e referência. | `RODAR_v0.156_metricas_semantica.sql`, aplicado em 26/10/2026 |
+| 0.155 | 26/10/2026 | **Contexto e frase-recado** no Financeiro, Marketing e Vendas (contra o período anterior, com a base escrita); custos neutros. | Só tela |
+| 0.154 | 26/10/2026 | **Gráficos**: negativos na escala (dois gráficos do Financeiro voltaram), cascata com custos neutros e resultado com sinal, meta e saldo mínimo como linha de referência, séries sem verde/vermelho. | Só tela |
+| 0.153 | 26/10/2026 | **Cor pelo significado em todas as telas**: zero como limite só nos saldos, variações pela direção com tolerância de 5%, cores de status novas, sem neon nos números, sinal de menos verdadeiro. | Só tela |
+| 0.152 | 26/10/2026 | **Data Storytelling no Dashboard (piloto)**: camada semântica (tokens, dicionário, formatador), receita com a variação das vendas, lucro em reais e vermelho, escala única nos cartões, mês cheio contra mês cheio. | Só tela |
 | 0.151 | 25/10/2026 | **Pesquisa com um botão** (pastas + call + produtos + canais + web, relatório para ler) e o **dossiê** em seções. | `RODAR_v0.151_content_pesquisa.sql` + função `content-pesquisa`, aplicado em 25/10/2026 (falta a chave da API e reimplantar o Apps Script) |
 | 0.150 | 25/10/2026 | **Ficha de produto simples** (nome, valor, histórico) no Growth's Content e o bloco **Produtos e esteira** no questionário da call. | `RODAR_v0.150_content_produtos_v2.sql`, aplicado em 25/10/2026 |
 | 0.149 | 25/10/2026 | **Produtos na Estratégia de conteúdo**: ficha de conteúdo de cada produto (público, dor, transformação, método, provas, objeções, momento de venda) e ideias ligadas a um produto. | `RODAR_v0.149_content_produtos.sql`, aplicado em 25/10/2026 |
