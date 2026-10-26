@@ -172,6 +172,8 @@ Enquanto o cliente não estiver configurado, o módulo abre num passo a passo de
    - cada afirmação marcada como fato, hipótese ou recomendação;
    - as fontes de cada fato;
    - a lista do que foi lido e do que não foi lido (por exemplo, vídeo sem transcrição), com o motivo.
+
+   Como a leitura funciona: as pastas da Mathisa são lidas primeiro, e cada pasta tem a sua própria cota de arquivos e de texto, para que uma pasta grande do cliente não tome o lugar dos padrões. Documentos, planilhas e apresentações do Google, Word, Excel e PowerPoint (convertidos na hora) e PDFs entram; fontes, arquivos compactados e e-books são pulados sem gastar a cota.
 6. **Dossiê.** Depois de ler o relatório, um clique gera o dossiê da marca em seções: diferencial, mecanismo do problema, mecanismo da solução, construção do produto, narrativa, voz, persona, concorrência e oportunidades de conteúdo. Cada nova geração é uma versão. A aprovação do cliente, o PDF e a skill do cliente vêm na sequência.
 7. **Linha editorial e formatos.** A IA propõe territórios, frentes e formatos a partir da call. Aqui também se escolhem as estruturas de roteiro e copy.
 8. **Onde publicar.** Os canais em uso e as regras de canal por frente e etiqueta.

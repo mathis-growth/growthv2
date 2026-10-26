@@ -5,6 +5,7 @@
 - Passo 5 pronto quando o relatório foi lido ("Li o relatório"); passo 6 pronto com "Dossiê ok".
 - Custo = tokens de entrada e saída × preço do modelo + buscas × preço por mil, só com os preços cadastrados.
 - Quem pode pedir: quem configura o Growth's Content do cliente ou a equipe interna.
+- Leitura das pastas (Apps Script v4): pastas da Mathisa primeiro, depois a do cliente, depois as extras. Cada pasta: até 30 arquivos, 150 mil caracteres e 3 PDFs. Por arquivo: 60 mil caracteres; PDF até 4 MB. No total: 120 arquivos, 600 mil caracteres e 12 MB de PDF. Fontes, .zip/.rar/.7z, executáveis e e-books são pulados e não contam. Word, Excel e PowerPoint viram uma cópia do Google, são lidos e a cópia vai para a lixeira.
 
 ## v0.150 — Produtos e questionário
 - Produto: nome obrigatório (até 120 caracteres), valor opcional (zero ou mais), histórico até 8.000 caracteres.
