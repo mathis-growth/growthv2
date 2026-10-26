@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 26/10/2026, versão 0.158.
+**Última atualização:** 26/10/2026, versão 0.159.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -145,6 +145,18 @@ De onde vem quem compra: canal, UTM e campanha até a venda. O rastreamento guar
 ## 4. Growth's Content: o módulo de conteúdo
 
 O Growth's Content leva para dentro do Growths a metodologia de conteúdo da Rebecka. Ele serve para a Mathisa e para os clientes que contratam o módulo. Fica em Marketing → Growth's Content, com duas entradas: **Estratégia de conteúdo** e **Instagram**.
+
+### 4.0 O módulo em cinco abas (desde a v0.159)
+
+O Growth's Content agora segue a ordem do trabalho, sem a configuração em 9 passos na frente:
+
+- **Base do cliente:** a pasta no Drive, o dossiê pronto (PDF na pasta) e a ficha do cliente (narrativa, para quem fala, tom de voz, produtos e esteira, diferencial, pilares, o que nunca dizer). A ficha é aprovada uma vez e tem versões: mudar a aprovada cria uma nova, que precisa de aprovação.
+- **Identidade visual:** cores com o papel de cada uma, fontes, pasta com logos e fotos, referências, o que nunca fazer e os formatos usados, com uma prévia.
+- **Ideias:** aprovar ou descartar.
+- **Produção:** cada peça passa por Roteiro, Peça, Aprovada e Agendada. O roteiro é aprovado antes de qualquer arte ou vídeo; a arte ou o vídeo tem versões e pedidos de ajuste; a aprovada vai para o calendário.
+- **Mais ferramentas:** as abas de antes (dashboard, quadro completo, priorização, máquina, semana, fechamento, persona, produtos, linha editorial, estruturas, canais).
+
+A Claude vai escrever a ficha a partir do dossiê, sugerir ideias, escrever roteiros e produzir arte, capa e edição de vídeo, sempre com aprovação. Os botões já estão no lugar e ficam desligados até a conta da API ter crédito.
 
 ### 4.1 Começa pela configuração
 Enquanto o cliente não estiver configurado, o módulo abre num passo a passo de 9 passos, que guarda onde a pessoa parou. Só depois de concluído aparecem as abas de trabalho.
@@ -435,6 +447,9 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - Possível fator não é causa: como um dashboard deve falar de hipótese.
 - Versão e aprovação para frases: governança de texto num sistema de dados.
 - Um gráfico por tela é desperdício: como montar um painel em blocos que se lê em um minuto.
+- Do dossiê à peça agendada: quatro aprovações e nenhuma arte antes do roteiro.
+- Menos abas, mais entrega: como simplificar um módulo sem apagar nada.
+- Identidade visual como regra, não como inspiração: cores com papel, fontes reais e o que nunca fazer.
 - O backup antes da mudança: por que toda versão do Growths tem caminho de volta.
 
 ---
@@ -486,3 +501,4 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - auditoria de Data Storytelling e a camada de leitura dos dados em todo o sistema: cores com significado, zero como limite dos saldos, números padronizados, comparações com a base escrita, gráficos sem cor pelo sinal, frases que contam o que aconteceu, alertas em quatro categorias e o dicionário com direção e referência.
   - biblioteca de visualizações, banco de narrativas e auditoria das telas; as frases de análise passam a morar numa tabela no banco, com versão e aprovação, começando pelo Dashboard financeiro (frase da cascata corrigida, ponte do resultado, caixa e saldo mínimo juntos).
   - Dashboard e Dashboard financeiro em blocos lado a lado (grade de painel de BI), com backup da versão anterior.
+  - Growth's Content em cinco abas: base do cliente com dossiê e ficha aprovada, identidade visual, ideias, produção com roteiro, versões e aprovação; as ferramentas de antes em Mais ferramentas.

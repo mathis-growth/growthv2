@@ -1,5 +1,9 @@
 
 
+## v0.159 — Growth's Content simplificado
+1. `supabase/RODAR_v0.159_content_simples.sql`: cria `content_fichas`, `content_identidade`, `content_versoes`; colunas de roteiro, aprovação da peça e vídeo bruto em `conteudos`; método "simples" em `conteudo_config` (vira o padrão e é aplicado às configurações existentes); regra nova em `conteudo_valida`. **Ainda não aplicado em produção.** Em 26/10/2026 a produção tinha 1 configuração (score6) e nenhum conteúdo.
+2. Sem ele, as abas novas avisam que falta a atualização do banco; Mais ferramentas continua funcionando.
+
 ## v0.158
 Nada a rodar no banco (só tela). Continua pendente o `RODAR_v0.157_narrativas.sql`.
 

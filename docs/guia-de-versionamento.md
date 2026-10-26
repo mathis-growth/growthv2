@@ -1,5 +1,8 @@
 
 
+## v0.159
+- index.html: 0.158 → 0.159 (`integra159.py`, que roda o `integra158.py`; novos `g159.js` e `g159.css`). `MQ_EST` com as 5 abas novas; `vConteudo` sem a trava da configuração; abas `tabBase`, `tabIdentidade`, `tabIdeias`, `tabProducao` (+ `ctPeca`), `tabMais`. Novo: `20261114100000_content_simples.sql`, `RODAR_v0.159_content_simples.sql`; teste `t159_content_simples.py`.
+
 ## v0.158
 - index.html: 0.157 → 0.158 (`integra158.py`, que roda o `integra157.py`; novos `g158.js` e `g158.css`; `gradeLiga` no `render`; `gcCascata` e `linhas` ganham a largura de desenho). Teste novo `t158_grade.py`. Backup antes da mudança: branches `backup-v0.157` e `backup-v0.156`.
 

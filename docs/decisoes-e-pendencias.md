@@ -1,5 +1,16 @@
 
 
+## v0.159 — Growth's Content simplificado
+**Pedido da Rebecka (26/10)**: o módulo de conteúdo ficou complexo; partir do dossiê pronto, identidade visual por cliente e produção pedida e aprovada no Growths (documento "Growth's Content: dossiê, identidade visual e produção pela Claude"). Sem crédito na API por enquanto: "vamos parar por aqui e só ajustar as telas e o processo no Growth".
+Decisões técnicas:
+- Cinco abas na ordem do trabalho: Base do cliente, Identidade visual, Ideias, Produção, Mais ferramentas. As 11 abas antigas ficam em Mais ferramentas (nada foi apagado).
+- A configuração em 9 passos deixa de travar o módulo; a pasta do Drive fica em Base do cliente.
+- Ficha com versões: mudar a ficha aprovada cria a versão seguinte em rascunho; a aprovada continua valendo até a nova ser aprovada.
+- Método "simples" (novo padrão): sem notas de ideia e pauta; o banco exige roteiro aprovado para ir à Peça e peça aprovada para ficar Pronta. Notas5 e score6 continuam para quem escolher. A configuração existente em produção passa para "simples" ao rodar o SQL.
+- Arquivos ficam na pasta do cliente no Drive; o Growths guarda os links (vídeo bruto, versões, capa). Versão nova substitui a anterior sem apagar.
+- Botões da Claude aparecem desligados, com o motivo (sem crédito na API).
+Pendências: crédito na API; ligar a Claude (ficha pelo dossiê, ideias, roteiro, arte, capa, vídeo) conforme o plano; aplicar `RODAR_v0.159_content_simples.sql` e `RODAR_v0.157_narrativas.sql`.
+
 ## v0.158 — Telas em grade
 **Pedido da Rebecka (26/10)**, com uma imagem de referência de painel de BI: dividir as telas em blocos lado a lado, para nenhum gráfico tomar a tela inteira. Antes, backup da versão atual (branches `backup-v0.157` e `backup-v0.156` no GitHub; as tags não passaram pelo proxy).
 Decisões da Rebecka: começar pelo Dashboard e pelo Dashboard financeiro; manter cores e fonte do Growths (só a divisão muda, o tema escuro da imagem não foi adotado).

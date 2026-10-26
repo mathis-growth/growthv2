@@ -15,9 +15,9 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.158 · 26/10/2026 (`index.html`) |
+| **Versão da tela** | 0.159 · 26/10/2026 (`index.html`) |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.156** (26/10/2026): dicionário de métricas com direção e referência; alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
-| **Falta aplicar no banco** | `supabase/RODAR_v0.157_narrativas.sql` (banco de narrativas); sem ele, as frases do Financeiro não aparecem |
+| **Falta aplicar no banco** | `supabase/RODAR_v0.157_narrativas.sql` (banco de narrativas; sem ele, as frases do Financeiro não aparecem) e `supabase/RODAR_v0.159_content_simples.sql` (Growth's Content simplificado; sem ele, as abas novas avisam) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta; crédito na conta da API da Anthropic (a chave `ANTHROPIC_API_KEY` está cadastrada e funciona, mas as pesquisas de 25 e 26/10 voltaram com "credit balance is too low"); o app do Google já existe (segredos conferidos em 25/10/2026): [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
 
@@ -27,6 +27,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.159 | 26/10/2026 | **Growth's Content simplificado**: cinco abas (Base do cliente, Identidade visual, Ideias, Produção, Mais ferramentas), ficha do dossiê com versões, identidade com prévia, roteiro aprovado antes da peça, versões e ajustes. Botões da Claude desligados até haver crédito na API. | `RODAR_v0.159_content_simples.sql`, **ainda não aplicado** |
 | 0.158 | 26/10/2026 | **Telas em grade**: Dashboard e Dashboard financeiro em blocos lado a lado, gráficos no tamanho do bloco, uma coluna no celular. Backup antes: branches `backup-v0.157` e `backup-v0.156`. | Só tela |
 | 0.157 | 26/10/2026 | **Banco de narrativas**: as frases de análise passam a morar na tabela `narrativa_modelos` (código, versão, aprovação, histórico); a tela só preenche números calculados. Piloto no **Dashboard financeiro**: frase da cascata com "sobraram/faltaram", ponte do resultado (mês anterior → atual), caixa projetado e saldo mínimo num painel só. Dicionário mostra as frases. | `RODAR_v0.157_narrativas.sql`, **ainda não aplicado** em produção |
 | 0.156 | 26/10/2026 | **Alertas em quatro categorias** (favorável, desfavorável, atenção, informativo) e **Dicionário de métricas** com unidade, direção, zero como limite e referência. | `RODAR_v0.156_metricas_semantica.sql`, aplicado em 26/10/2026 |

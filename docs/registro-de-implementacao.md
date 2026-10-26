@@ -1,5 +1,10 @@
 
 
+## Growth's Content simplificado (v0.159)
+- `g159.js`: `tabBase` (pasta do Drive via `csDrive2`, link do dossiê, ficha com versões e aprovação), `tabIdentidade` (cores com papel, fontes, prévia, pasta, referências, limites, formatos, aprovação), `tabIdeias` (aprovar ou descartar), `tabProducao` (quadro Roteiro/Peça/Aprovada/Agendada) e `ctPeca` (roteiro com aprovação; arte ou vídeo com versões, ajuste e aprovação; capa; agendamento), `tabMais` (as abas antigas). `CT_BTN_IA`: botão da Claude desligado com o motivo.
+- Banco: `20261114100000_content_simples.sql` (tabelas, colunas, método simples, `conteudo_valida` com a regra nova).
+- Teste `t159_content_simples.py`: 25 verificações, 0 falhas (abas, ficha e versões, identidade e prévia, ideias, produção, peça, vídeo, Mais ferramentas, regras do banco, celular).
+
 ## Telas em grade (v0.158)
 - `g158.js`: `GRADE_TELAS` (plano do Dashboard e do Dashboard financeiro: ordem e colunas de cada bloco), `gradeLiga` (marca a tela no `#main` e observa as mudanças), `gradeAplica` (põe ordem e largura; `.cols` e `.gc-sec` viram parte da grade), `gradeLarg` (largura útil do bloco para desenhar o gráfico), `gradeTextos` (compensa a letra de gráficos desenhados mais largos que o bloco).
 - `g158.css`: grade de 12 colunas, blocos com a mesma altura na linha, pontos de quebra em 1100 e 760 px.

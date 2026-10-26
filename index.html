@@ -387,7 +387,33 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.158 telas em grade */
+<style id="v122">/* v0.159 Growth's Content simplificado */
+body #main .ct-intro{font-size:14px;line-height:1.5}
+body #main .ct-iab{display:flex;flex-direction:column;align-items:flex-start;gap:4px}body #main .ct-ia{font-size:12px;max-width:360px}body #main .ct-intro p{margin:0 0 6px}body #main .ct-intro p:last-child{margin:0}
+body #main .ct-ficha{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+body #main .ct-ficha label{display:flex;flex-direction:column;gap:6px}
+body #main .ct-ficha textarea{width:100%}
+body #main .ct-cor{display:grid;grid-template-columns:44px 96px minmax(0,1fr) 120px auto;gap:8px;align-items:center;margin-bottom:8px}
+body #main .ct-cor input[type=color]{width:44px;height:36px;padding:2px;border-radius:8px}
+body #main .ct-amostra{border-radius:14px;padding:28px;min-height:200px;display:flex;flex-direction:column;gap:10px;border:1px solid var(--line)}
+body #main .ct-amostra span{align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:6px}
+body #main .ct-amostra b{font-size:26px;line-height:1.15}
+body #main .ct-amostra p{margin:0;font-size:14px}
+body #main .ct-fmts{border:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px}
+body #main .ct-ideias{display:flex;flex-direction:column}
+body #main .ct-ideia{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+body #main .ct-ideia:first-child{border-top:0}
+body #main .ct-quadro{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:start}
+body #main .ct-col{background:var(--panel2,rgba(0,0,0,.03));border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:120px}
+body #main .ct-col-h{padding:2px 4px 6px}
+body #main .ct-card{all:unset;box-sizing:border-box;cursor:pointer;background:var(--panel,#fff);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+body #main .ct-card:hover,body #main .ct-card:focus-visible{border-color:var(--accent);outline:none}
+body #main .ct-vazio{padding:6px 4px}
+body #main .ct-sub{margin-top:-4px}
+body #main .ct-nova{margin:10px 0}
+@media (max-width:900px){body #main .ct-quadro{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){body #main .ct-quadro{grid-template-columns:1fr}body #main .ct-ideia{flex-direction:column;align-items:flex-start}body #main .ct-cor{grid-template-columns:44px 90px minmax(0,1fr)}body #main .ct-cor select{grid-column:2/4}}
+/* v0.158 telas em grade */
 #main.grade158{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;align-content:start;align-items:stretch}
 #main.grade158 .cols,#main.grade158 .gc-sec{display:contents}
 #main.grade158>*,#main.grade158 .cols>*,#main.grade158 .gc-sec>*{grid-column:span var(--sp,12);margin:0!important;min-width:0}
@@ -1106,7 +1132,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.158 · 26/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.159 · 26/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -15410,24 +15436,24 @@ async function vDMsCrm(m) {
    Estratégia: Dashboard dos canais (eficiência e melhores posts de cada canal), ideias, priorização, máquina, semana,
    fechamento, persona, linha editorial e canais. Instagram: Dashboard (conta + posts), Ideias do Instagram e DMs.
    Nada de importar à mão: os números vêm da conexão do Instagram. */
-const MQ_EST = [['dash', 'Dashboard'], ['kanban', 'Ideias e pautas'], ['prior', 'Priorização'], ['maquina', 'Máquina'], ['plano', 'Semana'], ['fech', 'Fechamento'], ['persona', 'Persona'], ['produtos', 'Produtos'], ['linhas', 'Linha editorial'], ['estruturas', 'Estruturas'], ['canais', 'Canais']];
+const MQ_EST = [['base', 'Base do cliente'], ['identidade', 'Identidade visual'], ['ideias', 'Ideias'], ['producao', 'Produção'], ['mais', 'Mais ferramentas']];
 const MQ_CANAL = { instagram: [['insta', 'Dashboard'], ['ideias', 'Ideias do Instagram'], ['dms', 'DMs']] };
 const MQ_VIEW_CANAL = { 'mkt-insta': 'instagram' };
 const MQ_CANAL_VIEW = { instagram: 'mkt-insta' };
 async function vConteudoAbas(m) {
-  const C = S.ct = S.ct || { tab: 'dash', tema: '', canal: '', formato: '', arq: false, dias: 30 };
+  const C = S.ct = S.ct || { tab: 'base', tema: '', canal: '', formato: '', arq: false, dias: 30 };
   Object.assign(C, { terr: C.terr || '', fmt: C.fmt || '', dest: C.dest || '', tag: C.tag || '', destP: C.destP || '', sem: C.sem || segundaDe(hoje()) });
   const canal = MQ_VIEW_CANAL[S.view] || null;
   const D = await dadosConteudo();
   let subs, tabK;
   if (canal) { subs = MQ_CANAL[canal] || [['ideias', 'Ideias do canal']]; C.tabCanal = C.tabCanal || {}; tabK = C.tabCanal[canal] = subs.some(s => s[0] === C.tabCanal[canal]) ? C.tabCanal[canal] : subs[0][0]; }
-  else { subs = MQ_EST; if (!subs.some(s => s[0] === C.tab)) C.tab = 'dash'; tabK = C.tab; }
-  m.innerHTML = `<div class="head"><div><h1>${canal ? esc(CANAL_N[canal]) : 'Growth\'s Content'}</h1><span class="muted">${canal ? 'A sua conta: números gerais, cada post, o que performa melhor por tema e formato, e as conversas.' : 'Estratégia de conteúdo: como cada canal está indo, as ideias, os canais de cada tema e a produção da semana.'}</span></div>${D.cfg.modelo && !canal ? `<span class="pill info" title="Linha editorial instalada">Linha: ${esc(D.cfg.modelo)}</span>` : ''}</div>
+  else { subs = MQ_EST; if (MQ_MAIS.some(s => s[0] === C.tab) && !MQ_EST.some(s => s[0] === C.tab)) { C.tabMais = C.tab; C.tab = 'mais'; } if (!subs.some(s => s[0] === C.tab)) C.tab = 'base'; if (C.tab !== 'producao') C.peca = null; tabK = C.tab; }
+  m.innerHTML = `<div class="head"><div><h1>${canal ? esc(CANAL_N[canal]) : 'Growth\'s Content'}</h1><span class="muted">${canal ? 'A sua conta: números gerais, cada post, o que performa melhor por tema e formato, e as conversas.' : 'O conteúdo do cliente, na ordem do trabalho: a base (dossiê e ficha), a identidade visual, as ideias e a produção.'}</span></div>${D.cfg.modelo && !canal ? `<span class="pill info" title="Linha editorial instalada">Linha: ${esc(D.cfg.modelo)}</span>` : ''}</div>
   <div class="tabs">${subs.map(([k, l]) => `<button data-t="${k}" class="${tabK === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="ctTab" style="display:flex;flex-direction:column;gap:16px"></div>`;
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { if (canal) C.tabCanal[canal] = b.dataset.t; else C.tab = b.dataset.t; render(); });
   if (!canal) cdPillModulo(m);
   const el = $('#ctTab');
-  if (!canal) return ({ dash: tabDashCanais, kanban: tabKanban, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, persona: tabPersona, produtos: tabProdutos2, linhas: tabLinhas, estruturas: tabEstruturas, canais: tabCanais }[tabK] || tabDashCanais)(el, D, C);
+  if (!canal) return ({ base: tabBase, identidade: tabIdentidade, ideias: tabIdeias, producao: tabProducao, mais: tabMais, dash: tabDashCanais, kanban: tabKanban, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, persona: tabPersona, produtos: tabProdutos2, linhas: tabLinhas, estruturas: tabEstruturas, canais: tabCanais }[tabK] || tabDashCanais)(el, D, C);
   if (tabK === 'insta') return tabInsta(el, D, C);
   if (tabK === 'dms') return tabDMs(el, D, C);
   const K = C.porCanal = C.porCanal || {}; const CK = K[canal] = K[canal] || { tema: '', formato: '', arq: false, terr: '', fmt: '', dest: '', tag: '' };
@@ -15928,9 +15954,7 @@ async function vConteudo(m) {
   try { E = await q(sb.rpc('content_setup_estado', { p_ws: S.ws })); }
   catch (e) { return vConteudoAbas(m); }   // sem a migração da v0.143: segue como antes
   csRetornoGoogle();
-  if (E && E.concluido_em) return vConteudoAbas(m);
-  const D = await dadosConteudo();
-  return csWizard(m, D, E);
+  return vConteudoAbas(m);   // v0.159: sem a configuração passo a passo na frente; a pasta do Drive fica em Base do cliente
 }
 /* volta do login do Google: avisa e limpa o endereço */
 function csRetornoGoogle() {
@@ -15941,7 +15965,7 @@ function csRetornoGoogle() {
   try { history.replaceState(null, '', location.pathname + (p.toString() ? '?' + p : '')); } catch (e) { /* */ }
 }
 async function csWizard(m, D, E) {
-  const C = S.ct = S.ct || { tab: 'dash', tema: '', canal: '', formato: '', arq: false, dias: 30 };
+  const C = S.ct = S.ct || { tab: 'base', tema: '', canal: '', formato: '', arq: false, dias: 30 };
   Object.assign(C, { terr: C.terr || '', fmt: C.fmt || '', dest: C.dest || '', tag: C.tag || '', destP: C.destP || '', sem: C.sem || segundaDe(hoje()) });
   if (C.csEtapa == null) C.csEtapa = E.etapa || 0;
   const n = Math.max(0, Math.min(CS_PASSOS.length, C.csEtapa)), feito = CS_PASSOS.map(p => !!p.ok(D, E)), todos = CS_PASSOS.every((p, i) => p.emBreve || feito[i]);
@@ -17186,6 +17210,214 @@ function gradeLarg(sp, def) {
   const vw = window.innerWidth; if (vw <= 760) sp = 12; else if (vw <= 1100) sp = Math.max(6, sp);
   const col = (m.clientWidth - 11 * 16) / 12;
   return Math.max(300, Math.round(col * sp + 16 * (sp - 1) - 40));
+}
+
+/* ================= v0.159 — Growth's Content simplificado =================
+   Pedido da Rebecka (26/10): o dossiê chega pronto; o módulo fica em 5 abas na ordem do trabalho:
+   Base do cliente (pasta, dossiê e ficha aprovada) → Identidade visual → Ideias → Produção (roteiro → peça → aprovada → agendada) → Mais ferramentas.
+   As abas antigas continuam dentro de "Mais ferramentas". Sem chamada à Claude por enquanto (a conta da API está sem crédito):
+   os botões da Claude aparecem desligados, com o motivo. Arquivos ficam na pasta do cliente no Drive; aqui, os links. */
+const MQ_MAIS = [['dash', 'Dashboard'], ['kanban', 'Quadro completo'], ['prior', 'Priorização'], ['maquina', 'Máquina'], ['plano', 'Semana'], ['fech', 'Fechamento'], ['persona', 'Persona'], ['produtos', 'Produtos'], ['linhas', 'Linha editorial'], ['estruturas', 'Estruturas'], ['canais', 'Canais']];
+const CT_SEM_IA = 'Fica disponível quando a conta da API da Anthropic tiver crédito e a integração for ligada.';
+const CT_BTN_IA = (txt) => `<span class="ct-iab"><button class="btn" disabled title="${esc(CT_SEM_IA)}">${txt}</button><span class="muted ct-ia">${CT_SEM_IA}</span></span>`;
+const CT_FICHA = [
+  ['narrativa', 'Narrativa e história', 'De onde a marca vem, o que defende, a virada do cliente.', true],
+  ['persona', 'Para quem fala', 'Quem é a pessoa, o que quer, o que trava, como fala.', true],
+  ['tom', 'Tom de voz', 'Como a marca escreve e fala; palavras que usa e que evita.', true],
+  ['produtos', 'Produtos e esteira', 'O que vende, por quanto, a porta de entrada e o que vem depois.', false],
+  ['diferencial', 'Diferencial e mecanismos', 'Por que comprar desta marca; métodos e nomes próprios.', false],
+  ['pilares', 'Pilares de conteúdo', 'Os 3 a 5 assuntos de que a marca fala, um por linha.', true],
+  ['nunca', 'O que nunca dizer', 'Promessas, temas e palavras proibidos.', false]];
+const CT_PAPEL = [['fundo', 'Fundo'], ['texto', 'Texto'], ['destaque', 'Destaque'], ['apoio', 'Apoio']];
+const CT_FMT_ID = [['feed', 'Post do feed · 1080 × 1350'], ['carrossel', 'Carrossel · 1080 × 1350 por lâmina'], ['story', 'Story e capa de reels · 1080 × 1920'], ['youtube', 'Capa de YouTube · 1280 × 720']];
+const CT_VIDEO = f => ['video', 'reels', 'live'].includes(f);
+const CT_ETAPAS_P = [['pauta', 'Roteiro', 'escrever e aprovar'], ['producao', 'Peça', 'arte ou vídeo'], ['pronto', 'Aprovada', 'pronta para agendar'], ['agendado', 'Agendada', '']];
+const ctQuem = () => (S.user && S.user.email) || 'usuário';
+const ctQuando = t => t ? new Date(t).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+const ctLink = u => u && /^https?:\/\//.test(u) ? `<a class="btn sm" href="${esc(u)}" target="_blank" rel="noopener">Abrir</a>` : '';
+function ctSemBanco(el, nome) { el.innerHTML = `<div class="panel"><h2>${nome}</h2><p class="muted">Esta aba precisa da atualização do banco <span class="mono">supabase/RODAR_v0.159_content_simples.sql</span>.</p></div>`; }
+async function ctPode() { try { return !!(await q(sb.rpc('content_pode_configurar', { p_ws: S.ws }))); } catch (e) { return false; } }
+
+/* ---------- 1. Base do cliente: pasta, dossiê e ficha ---------- */
+async function tabBase(el, D, C) {
+  let F, E, pode;
+  try { [F, E, pode] = await Promise.all([q(sb.from('content_fichas').select('*').eq('workspace_id', S.ws).order('versao', { ascending: false })), q(sb.rpc('content_setup_estado', { p_ws: S.ws })).catch(() => null), ctPode()]); }
+  catch (e) { return ctSemBanco(el, 'Base do cliente'); }
+  const atual = F[0] || null, aprov = F.find(x => x.status === 'aprovada') || null, s = (atual && atual.secoes) || {};
+  const situ = aprov ? `<span class="pill sem-p sem-p-fav">✓ Ficha aprovada · versão ${aprov.versao}</span> <span class="muted">por ${esc(aprov.aprovado_por)} em ${ctQuando(aprov.aprovado_em)}</span>` : '<span class="pill sem-p sem-p-aten">⚠ Ficha ainda não aprovada</span> <span class="muted">As ideias e os roteiros usam a ficha aprovada.</span>';
+  el.innerHTML = `<div class="panel ct-intro"><p><b>Como funciona:</b> você entrega o dossiê pronto, a ficha resume o que importa dele e, depois de aprovada, vale para todas as ideias, roteiros e peças deste cliente.</p><p>${situ}</p></div>
+    <div class="cols"><div class="panel" id="ctDrive"><h2>Pasta do cliente no Drive</h2><div class="muted">Carregando…</div></div>
+    <div class="panel"><h2>Dossiê</h2><p class="muted">Coloque o PDF do dossiê na pasta do cliente e cole aqui o link dele.</p>
+      <label>Link do PDF no Drive<input id="ctDossie" placeholder="https://drive.google.com/…" value="${esc((atual && atual.dossie_url) || '')}"${pode ? '' : ' disabled'}></label>
+      <div class="acts">${ctLink(atual && atual.dossie_url)}</div>
+      <div class="acts">${CT_BTN_IA('Preencher a ficha pela Claude')}</div></div></div>
+    <div class="panel"><div class="ig-head"><div><h2 style="margin:0">Ficha do cliente</h2><span class="muted">${atual ? `Versão ${atual.versao} · ${atual.status === 'aprovada' ? 'aprovada' : 'rascunho'}` : 'Ainda sem ficha: preencha e salve.'}${atual && atual.status === 'aprovada' ? ' · mudar o texto cria a versão seguinte, que precisa de nova aprovação' : ''}</span></div></div>
+      <div class="ct-ficha">${CT_FICHA.map(([k, t, aj, obr]) => `<label><span><b>${t}</b>${obr ? ' <span class="muted">(obrigatório)</span>' : ''}<br><span class="muted">${aj}</span></span><textarea data-sec="${k}" rows="${k === 'narrativa' ? 5 : 3}"${pode ? '' : ' disabled'}>${esc(s[k] || '')}</textarea></label>`).join('')}</div>
+      ${pode ? `<div class="acts"><button class="btn" id="ctSalva">Salvar rascunho</button><button class="btn pri" id="ctAprova">Aprovar ficha</button></div>` : '<p class="muted">Você pode ver a ficha; só quem edita o Marketing deste cliente pode mudar.</p>'}</div>
+    ${F.length ? `<details class="panel"><summary><b>Versões da ficha</b> · ${F.length}</summary><div class="tw"><table><thead><tr><th>Versão</th><th>Situação</th><th>Aprovada por</th><th>Quando</th></tr></thead><tbody>${F.map(x => `<tr><td>${x.versao}</td><td>${x.status === 'aprovada' ? 'aprovada' : 'rascunho'}</td><td>${esc(x.aprovado_por || '—')}</td><td>${ctQuando(x.aprovado_em || x.atualizado_em)}</td></tr>`).join('')}</tbody></table></div></details>` : ''}`;
+  const dv = el.querySelector('#ctDrive');
+  if (E && typeof csDrive2 === 'function') { dv.innerHTML = '<h2>Pasta do cliente no Drive</h2>'; const b = document.createElement('div'); dv.appendChild(b); try { csDrive2(b, E); } catch (e) { b.innerHTML = '<p class="muted">Não foi possível mostrar a pasta.</p>'; } }
+  else dv.innerHTML = '<h2>Pasta do cliente no Drive</h2><p class="muted">A pasta é criada pela configuração do Drive (atualização da v0.143).</p>';
+  if (!pode) return;
+  const ler = () => Object.fromEntries([...el.querySelectorAll('[data-sec]')].map(t => [t.dataset.sec, t.value.trim()]));
+  const salva = async aprovar => {
+    const sec = ler(), url = el.querySelector('#ctDossie').value.trim() || null;
+    if (url && !/^https?:\/\//.test(url)) throw new Error('O link do dossiê precisa começar com https://');
+    if (aprovar) { const falta = CT_FICHA.filter(x => x[3] && !sec[x[0]]).map(x => x[1]); if (falta.length) throw new Error('Para aprovar, preencha: ' + falta.join(', ') + '.'); }
+    const mudou = !atual || JSON.stringify(sec) !== JSON.stringify(atual.secoes || {}) || url !== (atual.dossie_url || null);
+    const ap = aprovar ? { status: 'aprovada', aprovado_por: ctQuem(), aprovado_em: new Date().toISOString() } : {};
+    if (!atual || (atual.status === 'aprovada' && mudou)) {
+      if (!mudou && !aprovar) return toast('Nada mudou.');
+      await q(sb.from('content_fichas').insert({ workspace_id: S.ws, versao: (atual ? atual.versao : 0) + 1, secoes: sec, dossie_url: url, status: 'rascunho', ...ap }));
+    } else if (atual.status === 'aprovada' && aprovar) return toast('Esta versão já está aprovada.');
+    else await q(sb.from('content_fichas').update({ secoes: sec, dossie_url: url, atualizado_em: new Date().toISOString(), ...ap }).eq('id', atual.id));
+    toast(aprovar ? 'Ficha aprovada.' : 'Rascunho salvo.'); render();
+  };
+  el.querySelector('#ctSalva').onclick = () => act(() => salva(false));
+  el.querySelector('#ctAprova').onclick = () => act(() => salva(true));
+}
+
+/* ---------- 2. Identidade visual ---------- */
+async function tabIdentidade(el, D, C) {
+  let I, pode;
+  try { [I, pode] = await Promise.all([q(sb.from('content_identidade').select('*').eq('workspace_id', S.ws)), ctPode()]); I = I[0] || null; }
+  catch (e) { return ctSemBanco(el, 'Identidade visual'); }
+  const cores = (I && I.cores && I.cores.length) ? I.cores : [{ nome: 'Fundo', hex: '#FFFFFF', papel: 'fundo' }, { nome: 'Texto', hex: '#1A1A1A', papel: 'texto' }, { nome: 'Destaque', hex: '#3974AB', papel: 'destaque' }];
+  const fmts = new Set((I && I.formatos) || ['feed', 'carrossel', 'story']), dis = pode ? '' : ' disabled';
+  const linhaCor = (c, i) => `<div class="ct-cor" data-i="${i}"><input type="color" value="${esc(/^#[0-9a-f]{6}$/i.test(c.hex) ? c.hex : '#000000')}" data-k="hexp"${dis}><input data-k="hex" value="${esc(c.hex || '')}" maxlength="7" placeholder="#000000"${dis}><input data-k="nome" value="${esc(c.nome || '')}" placeholder="Nome"${dis}><select data-k="papel"${dis}>${CT_PAPEL.map(([k, l]) => `<option value="${k}"${c.papel === k ? ' selected' : ''}>${l}</option>`).join('')}</select>${pode ? '<button class="btn sm" data-tira type="button" aria-label="Tirar a cor">✕</button>' : ''}</div>`;
+  const situ = I && I.aprovado_em ? `<span class="pill sem-p sem-p-fav">✓ Identidade aprovada</span> <span class="muted">por ${esc(I.aprovado_por)} em ${ctQuando(I.aprovado_em)}</span>` : '<span class="pill sem-p sem-p-aten">⚠ Identidade ainda não aprovada</span>';
+  el.innerHTML = `<div class="panel ct-intro"><p><b>Como funciona:</b> a arte é montada com estas cores, fontes e referências e sai em PNG ou PDF na pasta do cliente.</p><p>${situ}</p></div>
+    <div class="cols"><div class="panel"><h2>Cores</h2><p class="muted">Só estas cores entram nas peças. Diga o papel de cada uma.</p><div id="ctCores">${cores.map(linhaCor).join('')}</div>${pode ? '<div class="acts"><button class="btn sm" id="ctMaisCor" type="button">+ Cor</button></div>' : ''}
+      <h2 style="margin-top:16px">Fontes</h2><div class="grid2"><label>Fonte do título<input id="ctFt" value="${esc((I && I.fonte_titulo) || '')}" placeholder="ex.: Poppins Bold"${dis}></label><label>Fonte do texto<input id="ctFx" value="${esc((I && I.fonte_texto) || '')}" placeholder="ex.: Inter"${dis}></label></div>
+      <p class="muted">Os arquivos das fontes (.ttf ou .otf) ficam na pasta de identidade, para a arte usar a fonte real.</p></div>
+    <div class="panel"><h2>Prévia</h2><p class="muted">Como as cores combinam. A fonte aparece se estiver instalada neste computador; na arte final vale o arquivo da pasta.</p><div id="ctPrev"></div><div class="acts">${CT_BTN_IA('Gerar peça de teste pela Claude')}</div></div></div>
+    <div class="panel"><h2>Pasta, referências e limites</h2>
+      <label>Pasta de identidade no Drive (logos, fontes, fotos)<input id="ctPasta" value="${esc((I && I.pasta_url) || '')}" placeholder="https://drive.google.com/…"${dis}></label><div class="acts">${ctLink(I && I.pasta_url)}</div>
+      <label>Referências: posts, carrosséis e capas que o cliente aprova (um link por linha)<textarea id="ctRefs" rows="4"${dis}>${esc((I && I.referencias) || '')}</textarea></label>
+      <label>O que nunca fazer<textarea id="ctNunca" rows="3" placeholder="ex.: nunca fundo preto; nada de emoji"${dis}>${esc((I && I.nunca_fazer) || '')}</textarea></label>
+      <fieldset class="ct-fmts"><legend>Formatos que este cliente usa</legend>${CT_FMT_ID.map(([k, l]) => `<label class="chk"><input type="checkbox" value="${k}"${fmts.has(k) ? ' checked' : ''}${dis}> ${l}</label>`).join('')}</fieldset>
+      ${pode ? '<div class="acts"><button class="btn" id="ctISalva">Salvar</button><button class="btn pri" id="ctIAprova">Aprovar identidade</button></div>' : ''}</div>`;
+  const lerCores = () => [...el.querySelectorAll('.ct-cor')].map(r => ({ nome: r.querySelector('[data-k=nome]').value.trim(), hex: r.querySelector('[data-k=hex]').value.trim().toUpperCase(), papel: r.querySelector('[data-k=papel]').value }));
+  const prev = () => {
+    const cs = lerCores(), por = p => (cs.find(c => c.papel === p && /^#[0-9A-F]{6}$/.test(c.hex)) || {}).hex;
+    const fundo = por('fundo') || '#FFFFFF', texto = por('texto') || '#1A1A1A', dest = por('destaque') || texto, apoio = por('apoio') || dest;
+    const ft = el.querySelector('#ctFt').value.trim(), fx = el.querySelector('#ctFx').value.trim();
+    el.querySelector('#ctPrev').innerHTML = `<div class="ct-amostra" style="background:${fundo};color:${texto};font-family:${fx ? `'${esc(fx.replace(/\s+(Bold|Regular|Light|Medium|Black)$/i, ''))}',` : ''}system-ui"><span style="background:${apoio};color:${fundo}">PILAR</span><b style="color:${dest};font-family:${ft ? `'${esc(ft.replace(/\s+(Bold|Regular|Light|Medium|Black)$/i, ''))}',` : ''}system-ui">Título da peça em duas linhas</b><p>Texto de apoio com a fonte e a cor do texto, para ver o contraste.</p></div>`;
+  };
+  const liga = () => el.querySelectorAll('.ct-cor').forEach(r => {
+    const p = r.querySelector('[data-k=hexp]'), h = r.querySelector('[data-k=hex]');
+    p.oninput = () => { h.value = p.value.toUpperCase(); prev(); };
+    h.oninput = () => { if (/^#[0-9a-f]{6}$/i.test(h.value)) p.value = h.value; prev(); };
+    r.querySelector('[data-k=papel]').onchange = prev;
+    const t = r.querySelector('[data-tira]'); if (t) t.onclick = () => { r.remove(); prev(); };
+  });
+  liga(); prev();
+  ['#ctFt', '#ctFx'].forEach(s => el.querySelector(s).oninput = prev);
+  if (!pode) return;
+  el.querySelector('#ctMaisCor').onclick = () => { el.querySelector('#ctCores').insertAdjacentHTML('beforeend', linhaCor({ nome: '', hex: '#000000', papel: 'apoio' }, el.querySelectorAll('.ct-cor').length)); liga(); prev(); };
+  const salva = async aprovar => {
+    const cs = lerCores().filter(c => c.hex || c.nome);
+    const ruim = cs.find(c => !/^#[0-9A-F]{6}$/.test(c.hex)); if (ruim) throw new Error(`Cor "${ruim.nome || ruim.hex}" com código inválido: use #RRGGBB.`);
+    const url = el.querySelector('#ctPasta').value.trim() || null; if (url && !/^https?:\/\//.test(url)) throw new Error('O link da pasta precisa começar com https://');
+    if (aprovar && (!cs.length || !cs.some(c => c.papel === 'fundo') || !cs.some(c => c.papel === 'texto'))) throw new Error('Para aprovar, informe pelo menos a cor de fundo e a de texto.');
+    if (aprovar && !el.querySelector('#ctFt').value.trim()) throw new Error('Para aprovar, informe a fonte do título.');
+    const row = { workspace_id: S.ws, cores: cs, fonte_titulo: el.querySelector('#ctFt').value.trim() || null, fonte_texto: el.querySelector('#ctFx').value.trim() || null, pasta_url: url,
+      referencias: el.querySelector('#ctRefs').value.trim() || null, nunca_fazer: el.querySelector('#ctNunca').value.trim() || null,
+      formatos: [...el.querySelectorAll('.ct-fmts input:checked')].map(x => x.value), atualizado_em: new Date().toISOString(),
+      ...(aprovar ? { aprovado_por: ctQuem(), aprovado_em: new Date().toISOString() } : { aprovado_por: null, aprovado_em: null }) };
+    await q(sb.from('content_identidade').upsert(row, { onConflict: 'workspace_id' }));
+    toast(aprovar ? 'Identidade aprovada.' : 'Identidade salva. Mudou algo? Ela volta a precisar de aprovação.'); render();
+  };
+  el.querySelector('#ctISalva').onclick = () => act(() => salva(false));
+  el.querySelector('#ctIAprova').onclick = () => act(() => salva(true));
+}
+
+/* ---------- 3. Ideias: aprovar ou descartar ---------- */
+function tabIdeias(el, D, C) {
+  const L = D.cont.filter(c => c.status === 'ideia').sort((a, b) => (Number(notaCt(b, D)) || 0) - (Number(notaCt(a, D)) || 0));
+  el.innerHTML = `<div class="panel ct-intro"><p><b>Como funciona:</b> aprove a ideia e ela vai para a Produção, onde o roteiro é escrito e aprovado antes de qualquer arte ou vídeo. Descartar arquiva a ideia (dá para ver no Quadro completo, em Mais ferramentas).</p></div>
+    <div class="acts"><button class="btn pri" id="ctNova">Nova ideia</button>${CT_BTN_IA('Sugerir ideias pela Claude')}</div>
+    <div class="panel"><h2>Ideias a avaliar · ${L.length}</h2>${L.length ? `<div class="ct-ideias">${L.map(c => `<div class="ct-ideia" data-id="${c.id}"><div><b>${esc(c.titulo)}</b><br><span class="muted">${esc(FORM_N[c.formato] || c.formato || '')}${c.tema_id && D.T[c.tema_id] ? ' · ' + esc(D.T[c.tema_id].nome) : ''}${c.objetivo ? ' · ' + esc(c.objetivo) : ''}${notaCt(c, D) != null ? ' · nota ' + String(Math.round(Number(notaCt(c, D)) * 10) / 10).replace('.', ',') : ''}</span>${c.hook ? `<br><span>${esc(c.hook)}</span>` : ''}</div>
+      <div class="acts"><button class="btn sm" data-ver>Abrir</button><button class="btn sm" data-desc>Descartar</button><button class="btn sm pri" data-ok>Aprovar</button></div></div>`).join('')}</div>` : '<div class="empty">Nenhuma ideia esperando avaliação.</div>'}</div>`;
+  el.querySelector('#ctNova').onclick = () => modalConteudo(null, D, { status: 'ideia' });
+  el.querySelectorAll('.ct-ideia').forEach(r => {
+    const c = D.cont.find(x => x.id === r.dataset.id);
+    r.querySelector('[data-ver]').onclick = () => modalConteudo(c, D);
+    r.querySelector('[data-ok]').onclick = () => act(async () => { await q(sb.from('conteudos').update({ status: 'pauta' }).eq('id', c.id)); toast('Ideia aprovada: foi para Produção → Roteiro.'); render(); });
+    r.querySelector('[data-desc]').onclick = () => act(async () => { await q(sb.from('conteudos').update({ status: 'arquivado' }).eq('id', c.id)); toast('Ideia descartada.'); render(); });
+  });
+}
+
+/* ---------- 4. Produção: roteiro → peça → aprovada → agendada ---------- */
+async function tabProducao(el, D, C) {
+  if (C.peca) { const c = D.cont.find(x => x.id === C.peca); if (c) return ctPeca(el, D, C, c); C.peca = null; }
+  let V = [];
+  try { V = await q(sb.from('content_versoes').select('conteudo_id,status').eq('workspace_id', S.ws)); } catch (e) { return ctSemBanco(el, 'Produção'); }
+  const nV = id => V.filter(v => v.conteudo_id === id).length, aj = id => V.some(v => v.conteudo_id === id && v.status === 'ajuste_pedido');
+  const col = ([st, nome, sub]) => { const L = D.cont.filter(c => c.status === st); return `<div class="ct-col"><div class="ct-col-h"><b>${nome}</b> <span class="muted">${L.length}${sub ? ' · ' + sub : ''}</span></div>${L.length ? L.map(c => `<button class="ct-card" data-id="${c.id}" type="button"><b>${esc(c.titulo)}</b><span class="muted">${esc(FORM_N[c.formato] || c.formato || '')}${c.prazo ? ' · até ' + dd(c.prazo) : ''}${c.data_publicacao ? ' · publica ' + dd(c.data_publicacao) : ''}</span>${c.roteiro_aprovado_em ? '<span class="pill sem-p sem-p-fav">✓ roteiro</span>' : c.roteiro ? '<span class="pill">roteiro em rascunho</span>' : ''}${nV(c.id) ? `<span class="pill">${nV(c.id)} versão(ões)</span>` : ''}${aj(c.id) ? '<span class="pill sem-p sem-p-aten">⚠ ajuste pedido</span>' : ''}</button>`).join('') : '<div class="muted ct-vazio">—</div>'}</div>`; };
+  el.innerHTML = `<div class="panel ct-intro"><p><b>Como funciona:</b> cada peça passa por Roteiro (você aprova o texto), Peça (a arte ou o vídeo, com versões e pedidos de ajuste), Aprovada e Agendada. Clique numa peça para abrir.</p></div><div class="ct-quadro">${CT_ETAPAS_P.map(col).join('')}</div>`;
+  el.querySelectorAll('.ct-card').forEach(b => b.onclick = () => { C.peca = b.dataset.id; render(); });
+}
+async function ctPeca(el, D, C, c) {
+  let V, pode;
+  try { [V, pode] = await Promise.all([q(sb.from('content_versoes').select('*').eq('conteudo_id', c.id).order('criado_em', { ascending: false })), ctPode()]); }
+  catch (e) { return ctSemBanco(el, 'Peça'); }
+  const video = CT_VIDEO(c.formato), tipoP = video ? 'video' : 'arte', dis = pode ? '' : ' disabled', st = c.status;
+  const etapa = (CT_ETAPAS_P.find(e => e[0] === st) || [st, ETAPAS_C.find(e => e[0] === st) ? ETAPAS_C.find(e => e[0] === st)[1] : st])[1];
+  const roteiroOk = !!c.roteiro_aprovado_em, pecaOk = !!c.peca_aprovada_em;
+  const vers = t => V.filter(v => v.tipo === t);
+  const lstV = t => vers(t).length ? `<div class="tw"><table><thead><tr><th>Versão</th><th>Arquivo</th><th>Nota</th><th>Ajuste pedido</th><th>Situação</th></tr></thead><tbody>${vers(t).map(v => `<tr data-v="${v.id}"><td>${v.n}</td><td>${ctLink(v.arquivo_url) || '—'}</td><td>${esc(v.nota || '')}</td><td>${esc(v.ajuste || '')}</td><td>${{ nova: 'nova', ajuste_pedido: 'ajuste pedido', aprovada: 'aprovada', substituida: 'substituída' }[v.status]}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">Nenhuma versão ainda.</p>';
+  const ultima = t => vers(t)[0] || null;
+  el.innerHTML = `<div class="acts"><button class="btn sm" id="ctVolta">← Produção</button></div>
+    <div class="panel"><div class="ig-head"><div><h2 style="margin:0">${esc(c.titulo)}</h2><span class="muted">${esc(FORM_N[c.formato] || c.formato || '')} · etapa: ${esc(etapa)}${c.prazo ? ' · prazo ' + dd(c.prazo) : ''}</span></div><button class="btn sm" id="ctEdit">Dados da ideia</button></div></div>
+    <div class="cols"><div class="panel"><h2>Roteiro ${roteiroOk ? '<span class="pill sem-p sem-p-fav">✓ aprovado</span>' : ''}</h2>
+        ${roteiroOk ? `<p class="muted">Aprovado por ${esc(c.roteiro_aprovado_por || '')} em ${ctQuando(c.roteiro_aprovado_em)}. Mudar o texto tira a aprovação.</p>` : '<p class="muted">Aprove o roteiro antes de produzir a peça.</p>'}
+        <textarea id="ctRot" rows="14"${pode && !pecaOk ? '' : ' disabled'}>${esc(c.roteiro || '')}</textarea>
+        ${pode && !pecaOk ? `<div class="acts"><button class="btn" id="ctRotSalva">Salvar</button>${roteiroOk ? '' : '<button class="btn pri" id="ctRotOk">Aprovar roteiro</button>'}</div>` : ''}${pecaOk ? '' : `<div class="acts">${CT_BTN_IA('Escrever o roteiro pela Claude')}</div>`}</div>
+      <div class="panel"><h2>${video ? 'Vídeo' : 'Arte'} ${pecaOk ? '<span class="pill sem-p sem-p-fav">✓ aprovada</span>' : ''}</h2>
+        ${!roteiroOk ? '<div class="empty">A peça é produzida depois que o roteiro for aprovado.</div>' : `
+        ${video ? `<label>Vídeo bruto (link na pasta do cliente)<input id="ctBruto" value="${esc(c.video_bruto_url || '')}" placeholder="https://drive.google.com/…"${dis}></label><div class="acts">${ctLink(c.video_bruto_url)}${pode ? '<button class="btn sm" id="ctBrutoS">Salvar link</button>' : ''}</div>
+          <h3>Cortes e legenda</h3><p class="muted">A Claude transcreve, propõe os cortes e a legenda aqui; você aprova antes da edição.</p><div class="acts">${CT_BTN_IA('Propor cortes pela Claude')}</div>` : `${pecaOk ? '' : `<div class="acts">${CT_BTN_IA('Produzir a arte pela Claude')}</div>`}`}
+        <h3>Versões</h3>${lstV(tipoP)}
+        ${pode && !pecaOk ? `<details class="ct-nova"><summary>Registrar uma versão (arquivo já na pasta)</summary><label>Link do arquivo<input id="ctVUrl" placeholder="https://drive.google.com/…"></label><label>Nota (opcional)<input id="ctVNota"></label><div class="acts"><button class="btn" id="ctVAdd">Registrar versão</button></div></details>
+          ${ultima(tipoP) ? `<label>Pedir ajuste na versão ${ultima(tipoP).n}<textarea id="ctAj" rows="2" placeholder='ex.: "troca o título", "fundo mais claro", "corta o começo"'></textarea></label><div class="acts"><button class="btn" id="ctAjS">Pedir ajuste</button><button class="btn pri" id="ctPecaOk">Aprovar ${video ? 'vídeo' : 'arte'}</button></div>` : ''}` : ''}`}
+        ${video && roteiroOk ? `<h3>Capa</h3>${lstV('capa')}<div class="acts">${CT_BTN_IA('Fazer a capa pela Claude')}</div>${pode && !pecaOk ? '<details class="ct-nova"><summary>Registrar uma capa</summary><label>Link do arquivo<input id="ctCUrl" placeholder="https://drive.google.com/…"></label><div class="acts"><button class="btn" id="ctCAdd">Registrar capa</button></div></details>' : ''}` : ''}
+        ${pecaOk ? `<p class="muted">Aprovada por ${esc(c.peca_aprovada_por || '')} em ${ctQuando(c.peca_aprovada_em)}.</p>${st === 'pronto' && pode ? `<label>Data de publicação<input type="date" id="ctPub" value="${esc(c.data_publicacao || '')}"></label><div class="acts"><button class="btn pri" id="ctAgenda">Agendar</button></div>` : ''}${st === 'agendado' ? `<p>Agendada para <b>${dd(c.data_publicacao)}</b>.</p>` : ''}` : ''}
+      </div></div>`;
+  el.querySelector('#ctVolta').onclick = () => { C.peca = null; render(); };
+  el.querySelector('#ctEdit').onclick = () => modalConteudo(c, D);
+  if (!pode) return;
+  const up = (o, msg) => act(async () => { await q(sb.from('conteudos').update(o).eq('id', c.id)); toast(msg); render(); });
+  const rot = () => el.querySelector('#ctRot').value;
+  if (el.querySelector('#ctRotSalva')) el.querySelector('#ctRotSalva').onclick = () => { const mudou = rot() !== (c.roteiro || ''); up({ roteiro: rot(), ...(mudou && roteiroOk ? { roteiro_aprovado_em: null, roteiro_aprovado_por: null, status: 'pauta' } : {}) }, mudou && roteiroOk ? 'Roteiro salvo; precisa de nova aprovação.' : 'Roteiro salvo.'); };
+  if (el.querySelector('#ctRotOk')) el.querySelector('#ctRotOk').onclick = () => { if (!rot().trim()) return toast('Escreva o roteiro antes de aprovar.', true); up({ roteiro: rot(), roteiro_aprovado_em: new Date().toISOString(), roteiro_aprovado_por: ctQuem(), status: ['pauta', 'ideia'].includes(st) ? 'producao' : st }, 'Roteiro aprovado: a peça pode ser produzida.'); };
+  const b = s => el.querySelector(s);
+  if (b('#ctBrutoS')) b('#ctBrutoS').onclick = () => { const u = b('#ctBruto').value.trim(); if (u && !/^https?:\/\//.test(u)) return toast('O link precisa começar com https://', true); up({ video_bruto_url: u || null }, 'Link do vídeo salvo.'); };
+  const addV = (tipo, url, nota) => act(async () => {
+    if (!/^https?:\/\//.test(url)) throw new Error('Cole o link do arquivo na pasta (começa com https://).');
+    const n = (vers(tipo)[0] ? vers(tipo)[0].n : 0) + 1;
+    if (vers(tipo)[0] && vers(tipo)[0].status !== 'substituida') await q(sb.from('content_versoes').update({ status: 'substituida', atualizado_em: new Date().toISOString() }).eq('id', vers(tipo)[0].id));
+    await q(sb.from('content_versoes').insert({ workspace_id: S.ws, conteudo_id: c.id, n, tipo, arquivo_url: url, nota: nota || null, criado_por: ctQuem() }));
+    toast(`Versão ${n} registrada.`); render();
+  });
+  if (b('#ctVAdd')) b('#ctVAdd').onclick = () => addV(tipoP, b('#ctVUrl').value.trim(), b('#ctVNota').value.trim());
+  if (b('#ctCAdd')) b('#ctCAdd').onclick = () => addV('capa', b('#ctCUrl').value.trim(), '');
+  if (b('#ctAjS')) b('#ctAjS').onclick = () => act(async () => { const t = b('#ctAj').value.trim(); if (!t) throw new Error('Escreva o ajuste que você quer.'); await q(sb.from('content_versoes').update({ ajuste: t, status: 'ajuste_pedido', atualizado_em: new Date().toISOString() }).eq('id', ultima(tipoP).id)); toast('Ajuste registrado na versão ' + ultima(tipoP).n + '.'); render(); });
+  if (b('#ctPecaOk')) b('#ctPecaOk').onclick = () => act(async () => {
+    await q(sb.from('content_versoes').update({ status: 'aprovada', atualizado_em: new Date().toISOString() }).eq('id', ultima(tipoP).id));
+    await q(sb.from('conteudos').update({ peca_aprovada_em: new Date().toISOString(), peca_aprovada_por: ctQuem(), status: 'pronto', midia_url: ultima(tipoP).arquivo_url }).eq('id', c.id));
+    toast((video ? 'Vídeo' : 'Arte') + ' aprovada: pronta para agendar.'); render();
+  });
+  if (b('#ctAgenda')) b('#ctAgenda').onclick = () => { const d = b('#ctPub').value; if (!d) return toast('Escolha a data de publicação.', true); up({ data_publicacao: d, status: 'agendado' }, 'Agendada para ' + dd(d) + '.'); };
+}
+
+/* ---------- 5. Mais ferramentas: as abas de antes ---------- */
+function tabMais(el, D, C) {
+  if (!MQ_MAIS.some(s => s[0] === C.tabMais)) C.tabMais = 'dash';
+  el.innerHTML = `<div class="tabs ct-sub">${MQ_MAIS.map(([k, l]) => `<button data-tm="${k}" class="${C.tabMais === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="ctMais" style="display:flex;flex-direction:column;gap:16px"></div>`;
+  el.querySelectorAll('[data-tm]').forEach(b => b.onclick = () => { C.tabMais = b.dataset.tm; render(); });
+  const fn = { dash: tabDashCanais, kanban: tabKanban, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, persona: tabPersona, produtos: tabProdutos2, linhas: tabLinhas, estruturas: tabEstruturas, canais: tabCanais }[C.tabMais];
+  return fn(el.querySelector('#ctMais'), D, C);
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

@@ -1,3 +1,6 @@
+## v0.159
+**O Growth's Content ficou simples.** O módulo agora tem cinco abas, na ordem do trabalho. Em Base do cliente fica a pasta no Drive, o dossiê pronto e a ficha do cliente, que é aprovada uma vez e tem versões. Em Identidade visual ficam as cores, as fontes, as referências e o que nunca fazer, com uma prévia. Em Ideias você aprova ou descarta. Em Produção, cada peça passa por roteiro aprovado, arte ou vídeo com versões e pedidos de ajuste, aprovação e agendamento. As ferramentas de antes continuam em Mais ferramentas. Os botões que vão chamar a Claude já estão no lugar, desligados até a conta da API ter crédito.
+
 ## v0.158
 **O Dashboard e o Dashboard financeiro viraram painéis em blocos.** Em vez de um gráfico embaixo do outro, cada um na tela toda, os gráficos ficam lado a lado, como num painel de BI: no Financeiro, a cascata do resultado ao lado do que mudou do mês anterior; caixa, resultado por mês e resultado contra o banco numa linha; as maiores despesas ao lado do saldo por conta. No Dashboard, a evolução ocupa dois terços com o ritmo da meta ao lado, e a origem da receita vem em três colunas. Os gráficos são desenhados no tamanho do bloco, então a letra continua legível; no celular tudo volta a uma coluna.
 

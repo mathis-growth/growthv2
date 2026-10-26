@@ -1,5 +1,12 @@
 
 
+## v0.159 — Growth's Content
+- Ficha: para aprovar, narrativa, persona, tom de voz e pilares preenchidos. Mudar a aprovada cria nova versão em rascunho.
+- Identidade: para aprovar, cor de fundo, cor de texto e fonte do título. Salvar sem aprovar tira a aprovação.
+- Ideia aprovada vai para Produção → Roteiro; descartada é arquivada.
+- Método simples: Peça só com roteiro aprovado; Pronta só com peça aprovada; Agendada só com data de publicação. Mudar o roteiro aprovado tira a aprovação e volta para Roteiro; depois da peça aprovada o roteiro fica só leitura.
+- Peça aprovada grava o arquivo da versão aprovada como mídia do conteúdo.
+
 ## v0.158
 Sem regra de negócio nova: só a disposição das telas.
 

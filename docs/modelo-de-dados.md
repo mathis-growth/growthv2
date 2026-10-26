@@ -1,5 +1,12 @@
 
 
+## v0.159
+- `content_fichas` (workspace, versão, status rascunho/aprovada, dossie_url, secoes jsonb: narrativa, persona, tom, produtos, diferencial, pilares, nunca; aprovado_por, aprovado_em).
+- `content_identidade` (uma por workspace: cores [{nome, hex, papel}], fonte_titulo, fonte_texto, pasta_url, referencias, nunca_fazer, formatos, aprovado_por, aprovado_em).
+- `content_versoes` (conteúdo, n, tipo arte/capa/video, arquivo_url, nota, ajuste pedido, status nova/ajuste_pedido/aprovada/substituida, criado_por).
+- `conteudos` ganhou `roteiro`, `roteiro_aprovado_por/em`, `peca_aprovada_por/em`, `video_bruto_url`.
+- `conteudo_config.metodo` aceita `simples` (padrão). As três tabelas novas: vê quem é do cliente ou da equipe interna; grava quem configura o Growth's Content.
+
 ## v0.158
 Sem mudança no banco.
 

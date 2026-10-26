@@ -2,6 +2,17 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.159 — Growth's Content simplificado (26/10/2026)
+- **Cinco abas na ordem do trabalho**: Base do cliente, Identidade visual, Ideias, Produção, Mais ferramentas. A configuração em 9 passos deixa de travar o módulo; as 11 abas antigas ficam em Mais ferramentas.
+- **Base do cliente**: pasta no Drive, link do dossiê em PDF e ficha do cliente (narrativa, para quem fala, tom, produtos e esteira, diferencial, pilares, o que nunca dizer) com aprovação e versões.
+- **Identidade visual**: cores com papel, fontes, pasta, referências, o que nunca fazer, formatos, prévia e aprovação.
+- **Ideias**: aprovar (vai para Produção) ou descartar.
+- **Produção**: quadro Roteiro → Peça → Aprovada → Agendada; a peça abre com o roteiro (aprovação), a arte ou o vídeo (link do bruto, versões, pedido de ajuste, aprovação), a capa e o agendamento.
+- **Método simples** no banco: sem notas; roteiro aprovado libera a peça e peça aprovada libera o Pronto.
+- Botões da Claude no lugar, desligados até a conta da API ter crédito.
+- Banco: `20261114100000_content_simples.sql` / `RODAR_v0.159_content_simples.sql` (**ainda não aplicado em produção**).
+- Teste: `t159_content_simples.py` (0 falhas).
+
 ## v0.158 — Telas em grade (26/10/2026)
 - **Dashboard e Dashboard financeiro em blocos lado a lado** (grade de 12 colunas, como painel de BI), a pedido da Rebecka com imagem de referência. Mesmas cores e fonte; os painéis, dados e frases não mudam.
 - Financeiro: 7 cartões numa linha; cascata (5/12) e ponte (7/12) lado a lado; caixa projetado, resultado por mês e resultado × banco numa linha; maiores despesas e saldo por conta; próximos a receber e a pagar.
