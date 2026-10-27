@@ -4,7 +4,7 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 
 ## v0.159 — Growth's Content simplificado (26/10/2026)
 - **Cinco abas na ordem do trabalho**: Base do cliente, Identidade visual, Ideias, Produção, Mais ferramentas. A configuração em 9 passos deixa de travar o módulo; as 11 abas antigas ficam em Mais ferramentas.
-- **Base do cliente**: pasta no Drive, link do dossiê em PDF e ficha do cliente (narrativa, para quem fala, tom, produtos e esteira, diferencial, pilares, o que nunca dizer) com aprovação e versões.
+- **Base do cliente**: pasta no Drive, link do dossiê em PDF, botão para a configuração guiada (para quem não tem dossiê) e ficha do cliente (narrativa, para quem fala, tom, produtos e esteira, diferencial, pilares, o que nunca dizer) com aprovação e versões.
 - **Identidade visual**: cores com papel, fontes, pasta, referências, o que nunca fazer, formatos, prévia e aprovação.
 - **Ideias**: aprovar (vai para Produção) ou descartar.
 - **Produção**: quadro Roteiro → Peça → Aprovada → Agendada; a peça abre com o roteiro (aprovação), a arte ou o vídeo (link do bruto, versões, pedido de ajuste, aprovação), a capa e o agendamento.

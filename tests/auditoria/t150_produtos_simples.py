@@ -47,7 +47,7 @@ with sync_playwright() as pw:
     pg.screenshot(path=SHOT + '2_lista.png')
     # questionário da call
     sql(f"update workspaces set content_setup_em = null where id = '{WS}'")
-    front.vai(pg, 'mkt-cont', "S.ct = { csEtapa: 4, csBloco: 2 };", 3500)
+    front.vai(pg, 'mkt-cont', "S.ct = { csEtapa: 4, csBloco: 2, csAntigo: true };", 3500)
     t = pg.inner_text('#main')
     chk('3. Produtos' in t and 'Como funciona a sua esteira hoje' in t and 'Quais produtos ou serviços você tem hoje' in t, 'call de briefing: bloco Produtos e esteira com as perguntas novas')
     pg.fill('#cc_esteira', 'Entra pelo e-book, depois curso e mentoria'); pg.wait_for_timeout(2200)

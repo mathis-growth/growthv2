@@ -37,7 +37,7 @@ def funcao(route):
 with sync_playwright() as pw:
     b = pw.chromium.launch(); ctx, pg = front.abre(b, hoje='2026-10-25', vw=1440, vh=1100)
     ctx.route('http://audit.local/functions/v1/content-pesquisa', funcao)
-    t = front.vai(pg, 'mkt-cont', "S.ct = { csEtapa: 5 };", 3500)
+    t = front.vai(pg, 'mkt-cont', "S.ct = { csEtapa: 5, csAntigo: true };", 3500)
     chk('Passo 5 de 9' in t and 'Pesquisa' in t and 'O que a pesquisa usa' in t and 'outra(s) pasta(s) do cliente' in t and 'Os produtos (1)' in t and pg.locator('#csSegue').is_disabled(), 'passo 5: mostra o que a pesquisa usa; sem ler o relatório não segue')
     chk(not pg.locator('#cpVai').is_disabled() and 'em construção' not in t.lower(), 'com a chave da IA: botão "Fazer a pesquisa" liberado; nada mais em construção')
     CHAVE['v'] = False; front.vai(pg, 'mkt-cont', '', 3000)

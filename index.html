@@ -15447,7 +15447,7 @@ async function vConteudoAbas(m) {
   const D = await dadosConteudo();
   let subs, tabK;
   if (canal) { subs = MQ_CANAL[canal] || [['ideias', 'Ideias do canal']]; C.tabCanal = C.tabCanal || {}; tabK = C.tabCanal[canal] = subs.some(s => s[0] === C.tabCanal[canal]) ? C.tabCanal[canal] : subs[0][0]; }
-  else { subs = MQ_EST; if (MQ_MAIS.some(s => s[0] === C.tab) && !MQ_EST.some(s => s[0] === C.tab)) { C.tabMais = C.tab; C.tab = 'mais'; } if (!subs.some(s => s[0] === C.tab)) C.tab = 'base'; if (C.tab !== 'producao') C.peca = null; tabK = C.tab; }
+  else { subs = MQ_EST; if (!subs.some(s => s[0] === C.tab) && !MQ_MAIS.some(s => s[0] === C.tab)) C.tab = 'base'; if (C.tab !== 'producao') C.peca = null; tabK = MQ_MAIS.some(s => s[0] === C.tab) && !MQ_EST.some(s => s[0] === C.tab) ? 'mais' : C.tab; }
   m.innerHTML = `<div class="head"><div><h1>${canal ? esc(CANAL_N[canal]) : 'Growth\'s Content'}</h1><span class="muted">${canal ? 'A sua conta: números gerais, cada post, o que performa melhor por tema e formato, e as conversas.' : 'O conteúdo do cliente, na ordem do trabalho: a base (dossiê e ficha), a identidade visual, as ideias e a produção.'}</span></div>${D.cfg.modelo && !canal ? `<span class="pill info" title="Linha editorial instalada">Linha: ${esc(D.cfg.modelo)}</span>` : ''}</div>
   <div class="tabs">${subs.map(([k, l]) => `<button data-t="${k}" class="${tabK === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="ctTab" style="display:flex;flex-direction:column;gap:16px"></div>`;
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { if (canal) C.tabCanal[canal] = b.dataset.t; else C.tab = b.dataset.t; render(); });
@@ -15954,7 +15954,8 @@ async function vConteudo(m) {
   try { E = await q(sb.rpc('content_setup_estado', { p_ws: S.ws })); }
   catch (e) { return vConteudoAbas(m); }   // sem a migração da v0.143: segue como antes
   csRetornoGoogle();
-  return vConteudoAbas(m);   // v0.159: sem a configuração passo a passo na frente; a pasta do Drive fica em Base do cliente
+  if (S.ct && S.ct.csAntigo) { const D = await dadosConteudo(); await csWizard(m, D, E); if (S.ct.csAntigo) { m.insertAdjacentHTML('afterbegin', '<div class="acts"><button class="btn sm" id="csSai">← Voltar às abas do Growth\'s Content</button></div>'); $('#csSai').onclick = () => { S.ct.csAntigo = false; render(); }; } return; }
+  return vConteudoAbas(m);   // v0.159: a configuração guiada só abre quando pedida (Base do cliente → sem dossiê); a pasta do Drive fica em Base do cliente
 }
 /* volta do login do Google: avisa e limpa o endereço */
 function csRetornoGoogle() {
@@ -15991,7 +15992,7 @@ async function csWizard(m, D, E) {
   if ($('#csSegue')) $('#csSegue').onclick = () => vai(n + 1);
   if ($('#csFim')) $('#csFim').onclick = () => act(async () => {
     await q(sb.rpc('content_setup_salvar', { p_ws: S.ws, p_etapa: n, p_concluir: true }));
-    C.tab = 'dash'; C.csEtapa = null; toast('Growth\'s Content configurado. Bem-vinda às abas do módulo!'); render();
+    C.tab = 'base'; C.csEtapa = null; C.csAntigo = false; toast('Growth\'s Content configurado. Bem-vinda às abas do módulo!'); render();
   });
   if (ultimo && !todos) $('#csPasso').insertAdjacentHTML('afterend', `<div class="panel cs-aviso">Para concluir, falta: ${CS_PASSOS.filter((p, i) => !p.emBreve && !feito[i]).map(p => `<b>${p.t}</b>`).join(', ')}.</div>`);
   const box = $('#csPasso');
@@ -17250,11 +17251,13 @@ async function tabBase(el, D, C) {
     <div class="panel"><h2>Dossiê</h2><p class="muted">Coloque o PDF do dossiê na pasta do cliente e cole aqui o link dele.</p>
       <label>Link do PDF no Drive<input id="ctDossie" placeholder="https://drive.google.com/…" value="${esc((atual && atual.dossie_url) || '')}"${pode ? '' : ' disabled'}></label>
       <div class="acts">${ctLink(atual && atual.dossie_url)}</div>
-      <div class="acts">${CT_BTN_IA('Preencher a ficha pela Claude')}</div></div></div>
+      <div class="acts">${CT_BTN_IA('Preencher a ficha pela Claude')}</div>
+      <p class="muted">Sem dossiê pronto? A configuração guiada faz a call de briefing, junta os materiais e monta a pesquisa e o dossiê.</p><div class="acts"><button class="btn sm" id="ctGuiada">Abrir a configuração guiada</button></div></div></div>
     <div class="panel"><div class="ig-head"><div><h2 style="margin:0">Ficha do cliente</h2><span class="muted">${atual ? `Versão ${atual.versao} · ${atual.status === 'aprovada' ? 'aprovada' : 'rascunho'}` : 'Ainda sem ficha: preencha e salve.'}${atual && atual.status === 'aprovada' ? ' · mudar o texto cria a versão seguinte, que precisa de nova aprovação' : ''}</span></div></div>
       <div class="ct-ficha">${CT_FICHA.map(([k, t, aj, obr]) => `<label><span><b>${t}</b>${obr ? ' <span class="muted">(obrigatório)</span>' : ''}<br><span class="muted">${aj}</span></span><textarea data-sec="${k}" rows="${k === 'narrativa' ? 5 : 3}"${pode ? '' : ' disabled'}>${esc(s[k] || '')}</textarea></label>`).join('')}</div>
       ${pode ? `<div class="acts"><button class="btn" id="ctSalva">Salvar rascunho</button><button class="btn pri" id="ctAprova">Aprovar ficha</button></div>` : '<p class="muted">Você pode ver a ficha; só quem edita o Marketing deste cliente pode mudar.</p>'}</div>
     ${F.length ? `<details class="panel"><summary><b>Versões da ficha</b> · ${F.length}</summary><div class="tw"><table><thead><tr><th>Versão</th><th>Situação</th><th>Aprovada por</th><th>Quando</th></tr></thead><tbody>${F.map(x => `<tr><td>${x.versao}</td><td>${x.status === 'aprovada' ? 'aprovada' : 'rascunho'}</td><td>${esc(x.aprovado_por || '—')}</td><td>${ctQuando(x.aprovado_em || x.atualizado_em)}</td></tr>`).join('')}</tbody></table></div></details>` : ''}`;
+  el.querySelector('#ctGuiada').onclick = () => { C.csAntigo = true; render(); };
   const dv = el.querySelector('#ctDrive');
   if (E && typeof csDrive2 === 'function') { dv.innerHTML = '<h2>Pasta do cliente no Drive</h2>'; const b = document.createElement('div'); dv.appendChild(b); try { csDrive2(b, E); } catch (e) { b.innerHTML = '<p class="muted">Não foi possível mostrar a pasta.</p>'; } }
   else dv.innerHTML = '<h2>Pasta do cliente no Drive</h2><p class="muted">A pasta é criada pela configuração do Drive (atualização da v0.143).</p>';
@@ -17413,9 +17416,11 @@ async function ctPeca(el, D, C, c) {
 
 /* ---------- 5. Mais ferramentas: as abas de antes ---------- */
 function tabMais(el, D, C) {
+  // as abas antigas guardam o próprio nome em C.tab (o código de antes continua mandando para 'plano', 'kanban'…)
+  if (MQ_MAIS.some(s => s[0] === C.tab)) C.tabMais = C.tab;
   if (!MQ_MAIS.some(s => s[0] === C.tabMais)) C.tabMais = 'dash';
   el.innerHTML = `<div class="tabs ct-sub">${MQ_MAIS.map(([k, l]) => `<button data-tm="${k}" class="${C.tabMais === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="ctMais" style="display:flex;flex-direction:column;gap:16px"></div>`;
-  el.querySelectorAll('[data-tm]').forEach(b => b.onclick = () => { C.tabMais = b.dataset.tm; render(); });
+  el.querySelectorAll('[data-tm]').forEach(b => b.onclick = () => { C.tab = C.tabMais = b.dataset.tm; render(); });
   const fn = { dash: tabDashCanais, kanban: tabKanban, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, persona: tabPersona, produtos: tabProdutos2, linhas: tabLinhas, estruturas: tabEstruturas, canais: tabCanais }[C.tabMais];
   return fn(el.querySelector('#ctMais'), D, C);
 }

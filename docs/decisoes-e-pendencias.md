@@ -4,7 +4,8 @@
 **Pedido da Rebecka (26/10)**: o módulo de conteúdo ficou complexo; partir do dossiê pronto, identidade visual por cliente e produção pedida e aprovada no Growths (documento "Growth's Content: dossiê, identidade visual e produção pela Claude"). Sem crédito na API por enquanto: "vamos parar por aqui e só ajustar as telas e o processo no Growth".
 Decisões técnicas:
 - Cinco abas na ordem do trabalho: Base do cliente, Identidade visual, Ideias, Produção, Mais ferramentas. As 11 abas antigas ficam em Mais ferramentas (nada foi apagado).
-- A configuração em 9 passos deixa de travar o módulo; a pasta do Drive fica em Base do cliente.
+- A configuração em 9 passos deixa de travar o módulo; a pasta do Drive fica em Base do cliente. Quem não tem dossiê abre a configuração guiada por um botão na Base do cliente (call de briefing, materiais, pesquisa e dossiê continuam lá).
+- As abas antigas guardam o próprio nome (o código de antes continua mandando para "plano", "kanban"…) e aparecem dentro de Mais ferramentas.
 - Ficha com versões: mudar a ficha aprovada cria a versão seguinte em rascunho; a aprovada continua valendo até a nova ser aprovada.
 - Método "simples" (novo padrão): sem notas de ideia e pauta; o banco exige roteiro aprovado para ir à Peça e peça aprovada para ficar Pronta. Notas5 e score6 continuam para quem escolher. A configuração existente em produção passa para "simples" ao rodar o SQL.
 - Arquivos ficam na pasta do cliente no Drive; o Growths guarda os links (vídeo bruto, versões, capa). Versão nova substitui a anterior sem apagar.

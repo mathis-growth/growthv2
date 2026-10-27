@@ -150,7 +150,7 @@ O Growth's Content leva para dentro do Growths a metodologia de conteúdo da Reb
 
 O Growth's Content agora segue a ordem do trabalho, sem a configuração em 9 passos na frente:
 
-- **Base do cliente:** a pasta no Drive, o dossiê pronto (PDF na pasta) e a ficha do cliente (narrativa, para quem fala, tom de voz, produtos e esteira, diferencial, pilares, o que nunca dizer). A ficha é aprovada uma vez e tem versões: mudar a aprovada cria uma nova, que precisa de aprovação.
+- **Base do cliente:** a pasta no Drive, o dossiê pronto (PDF na pasta) e a ficha do cliente. Quem ainda não tem dossiê abre a configuração guiada (call de briefing, materiais, pesquisa e dossiê) por um botão ali mesmo. A ficha reúne narrativa, para quem fala, tom de voz, produtos e esteira, diferencial, pilares, o que nunca dizer. Ela é aprovada uma vez e tem versões: mudar a aprovada cria uma nova, que precisa de aprovação.
 - **Identidade visual:** cores com o papel de cada uma, fontes, pasta com logos e fotos, referências, o que nunca fazer e os formatos usados, com uma prévia.
 - **Ideias:** aprovar ou descartar.
 - **Produção:** cada peça passa por Roteiro, Peça, Aprovada e Agendada. O roteiro é aprovado antes de qualquer arte ou vídeo; a arte ou o vídeo tem versões e pedidos de ajuste; a aprovada vai para o calendário.

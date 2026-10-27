@@ -20,8 +20,8 @@ SHOT = '/tmp/claude-0/-home-claude/6d4aa2ee-cf0f-5c9b-bd48-3047ac34b6ff/scratchp
 import os; os.makedirs(SHOT, exist_ok=True)
 with sync_playwright() as pw:
     b = pw.chromium.launch(); ctx, pg = front.abre(b, hoje='2026-10-25', vw=1440, vh=1000)
-    t = front.vai(pg, 'mkt-cont', "S.ct = null;", 3500)
-    chk('Vamos configurar o Growth\'s Content' in t and pg.locator('#main .tabs').count() == 0, 'sem configuração: abre na configuração, sem as abas')
+    t = front.vai(pg, 'mkt-cont', "S.ct = { csAntigo: true };", 3500)
+    chk('Vamos configurar o Growth\'s Content' in t and pg.locator('#main .tabs').count() == 0, 'v0.159: a configuração guiada abre quando pedida, sem as abas')
     pg.screenshot(path=SHOT + '0_inicio.png')
     pg.click('#csComeca'); pg.wait_for_timeout(2500)
     t = pg.inner_text('#main')
@@ -90,7 +90,7 @@ with sync_playwright() as pw:
     chk(not pg.locator('#csFim').is_disabled(), 'tudo pronto libera "Concluir a configuração"')
     pg.screenshot(path=SHOT + '5_rotina.png')
     pg.click('#csFim'); pg.wait_for_timeout(3500)
-    chk(pg.locator('#main .tabs button').count() >= 8 and sql(f"select content_setup_em is not null from workspaces where id = '{WS}'") == 't', 'concluída: abre nas abas de sempre')
+    chk(pg.locator('#main > .tabs button').count() == 5 and sql(f"select content_setup_em is not null from workspaces where id = '{WS}'") == 't', 'concluída: abre nas abas de sempre')
     chk(not pg.errs, 'sem erro de JavaScript ' + str(pg.errs[:2]))
     b.close()
 # só quem configura pode concluir; concluir sem pasta é recusado
