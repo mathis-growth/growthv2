@@ -90,7 +90,7 @@ with sync_playwright() as pw:
     chk(not pg.locator('#csFim').is_disabled(), 'tudo pronto libera "Concluir a configuração"')
     pg.screenshot(path=SHOT + '5_rotina.png')
     pg.click('#csFim'); pg.wait_for_timeout(3500)
-    chk(pg.locator('#main > .tabs button').count() == 5 and sql(f"select content_setup_em is not null from workspaces where id = '{WS}'") == 't', 'concluída: abre nas abas de sempre')
+    chk(pg.locator('#main > .tabs button').count() == 6 and sql(f"select content_setup_em is not null from workspaces where id = '{WS}'") == 't', 'concluída: abre nas abas de sempre')
     chk(not pg.errs, 'sem erro de JavaScript ' + str(pg.errs[:2]))
     b.close()
 # só quem configura pode concluir; concluir sem pasta é recusado

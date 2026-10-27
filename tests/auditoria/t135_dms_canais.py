@@ -63,7 +63,7 @@ with sync_playwright() as pw:
     chk("subs: [{ g: 'Growth\\'s Content', mod: 'mkt', items: [['mkt-cont', 'Estratégia de conteúdo'], ['mkt-insta', 'Instagram']] }]" in pg.content(), 'menu: Marketing → Máquina de Conteúdo → Estratégia de conteúdo e Instagram')
     pg.evaluate("abreMenu('mkt-insta'); desenhaNav()")
     chk(pg.locator('#nav .grp .lv2 .sublist button[data-v="mkt-insta"]').count() == 1, 'menu em níveis: Instagram dentro de Máquina de Conteúdo, dentro de Marketing')
-    chk(pg.locator('#main > .tabs button').all_inner_texts() == ['Base do cliente', 'Identidade visual', 'Ideias', 'Produção', 'Mais ferramentas'], 'v0.159: abas do Growth\'s Content')
+    chk(pg.locator('#main > .tabs button').all_inner_texts() == ['Base do cliente', 'Linha editorial', 'Identidade visual', 'Ideias', 'Produção', 'Mais ferramentas'], 'v0.159: abas do Growth\'s Content')
     front.vai(pg, 'mkt-cont', "S.ct.tab = 'canais';", 3000)
     fid = sql(f"select id from conteudo_temas where workspace_id = '{WS}' and nome = 'Empreendedorismo'")
     pg.check(f'[data-ft="{fid}|instagram"]'); pg.check(f'[data-ft="{fid}|linkedin"]'); pg.click('#caFrentes'); pg.wait_for_timeout(2500)

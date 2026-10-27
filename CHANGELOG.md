@@ -8,7 +8,7 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - **Aprovar ideia** pede linha e tema, subtema, formato, tipo de mídia, prazo e data de publicação (tema e data obrigatórios, também no banco).
 - Cartão de conteúdo com subtema e formato; sem notas no método simples; filtro de subtema no Kanban; opção "Simples" em Método e configuração.
 - Banco: `20261115100000_content_segmentos.sql` / `RODAR_v0.160_content_segmentos.sql` (**ainda não aplicado em produção**).
-- Teste: `t159_content_simples.py` atualizado (46 verificações, 0 falhas).
+- Testes: `t159_content_simples.py` atualizado (46 verificações, 0 falhas); t133, t135 e t143 ajustados às seis abas e à data obrigatória; bateria de conteúdo (t133 a t159, 11 testes): 0 falhas.
 
 ## v0.159 — Growth's Content simplificado (26/10/2026)
 - **Cinco abas na ordem do trabalho**: Base do cliente, Identidade visual, Ideias, Produção, Mais ferramentas. A configuração em 9 passos deixa de travar o módulo; as 11 abas antigas ficam em Mais ferramentas.

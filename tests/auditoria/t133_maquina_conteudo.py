@@ -30,8 +30,8 @@ sql(f"update workspaces set content_setup_em = now() where id = '{WS}'")  # v0.1
 A = sql("insert into workspaces (nome) values ('T133 Antigo') returning id").split('\n')[0]
 ta = sql(f"insert into conteudo_temas (workspace_id, nome) values ('{A}', 'Growth') returning id").split('\n')[0]
 ca = sql(f"insert into conteudos (workspace_id, titulo, tema_id) values ('{A}', 'Velho', '{ta}') returning id").split('\n')[0]
-chk(erro(f"update conteudos set status = 'pauta' where id = '{ca}'") == '', 'v0.159: quem não instalou a Máquina usa o método simples (ideia vira pauta sem notas)')
-sql(f"update conteudos set ideia_n1=8, ideia_n2=8, ideia_n3=8, ideia_n4=8, ideia_n5=8, status='pauta', destino='Qualquer', tags=array[' Case ', 'Case', ''] where id = '{ca}'")
+chk('data de publicação' in erro(f"update conteudos set status = 'pauta' where id = '{ca}'"), 'v0.160: quem não instalou a Máquina usa o método simples (sem notas; aprovar pede a data de publicação)')
+sql(f"update conteudos set ideia_n1=8, ideia_n2=8, ideia_n3=8, ideia_n4=8, ideia_n5=8, status='pauta', data_publicacao='2026-11-02', destino='Qualquer', tags=array[' Case ', 'Case', ''] where id = '{ca}'")
 chk(sql(f"select status || ' ' || destino || ' ' || array_to_string(tags, '|') from conteudos where id = '{ca}'") == 'pauta Qualquer Case', 'método antigo: pauta aprovada com 5 notas; sem destinos cadastrados, destino é livre; etiquetas limpas e sem repetição')
 
 T = sql("insert into workspaces (nome) values ('T133 Máquina') returning id").split('\n')[0]
@@ -126,7 +126,7 @@ with sync_playwright() as pw:
     t = front.vai(pg, 'mkt-cont', "S.ct = { tab: 'dash' };", 4000)
     chk("g: 'Growth\\'s Content'" in pg.content() and "['mkt-cont', 'Planejamento" not in pg.content(), 'menu: "Máquina de Conteúdo" no lugar de "Planejamento de conteúdo"')
     chk('\nGrowth\'s Content\n' in t and 'Monte a sua Máquina' in t, 'título novo e começo guiado quando não há territórios')
-    chk(pg.locator('#main > .tabs button').all_inner_texts() == ['Base do cliente', 'Identidade visual', 'Ideias', 'Produção', 'Mais ferramentas'] and pg.locator('.ct-sub button').all_inner_texts() == ['Dashboard', 'Quadro completo', 'Priorização', 'Máquina', 'Semana', 'Fechamento', 'Persona', 'Produtos', 'Linha editorial', 'Estruturas', 'Canais'], 'v0.159: cinco abas; o Dashboard dos canais e as abas da Máquina em Mais ferramentas')
+    chk(pg.locator('#main > .tabs button').all_inner_texts() == ['Base do cliente', 'Linha editorial', 'Identidade visual', 'Ideias', 'Produção', 'Mais ferramentas'] and pg.locator('.ct-sub button').all_inner_texts() == ['Dashboard', 'Semana', 'Priorização', 'Máquina', 'Fechamento', 'Persona', 'Produtos', 'Estruturas', 'Canais'], 'v0.160: seis abas; o Dashboard dos canais e as abas da Máquina em Mais ferramentas')
     pg.locator('[data-mq-v18]').first.click(); pg.wait_for_timeout(500); pg.click('#modalRoot .pri'); pg.wait_for_timeout(3500)
     chk(sql(f"select count(*) from conteudo_linhas where workspace_id = '{WS}'") == '4' and 'Linha: V18' in pg.inner_text('#main'), 'instala o modelo V18 pela tela')
     # nova pauta com score e VALIDAR
