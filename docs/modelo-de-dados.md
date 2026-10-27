@@ -1,5 +1,8 @@
 
 
+## v0.161
+Sem mudança no banco: o modelo usa `pesquisas` e `pesquisa_perguntas` (papel `pmf`, `secao`).
+
 ## v0.160
 - `conteudo_temas.tema_pai_id` (subtema; dois níveis, herda `linha_id` do tema; gatilho `conteudo_tema_valida`).
 - `conteudos.subtema_id` (precisa ser subtema do `tema_id`).

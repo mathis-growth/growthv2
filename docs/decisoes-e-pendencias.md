@@ -1,5 +1,13 @@
 
 
+## v0.161 — Pesquisa must-have da consultoria
+**Pedido da Rebecka (26/10)**: um formulário para saber se a consultoria de desenvolvimento de produto (pesquisa, construção do produto, narrativa, página de vendas e desenho da estratégia de venda, que a cliente não executou) é must-have, feito dentro do módulo de Pesquisas e com base no que já estava definido no Drive ("03 - Roteiro de Diagnóstico - Must-Have ao Aha e North Star").
+Decisões técnicas:
+- Novo modelo em Pesquisas → "Começar de um modelo": "Must-have: consultoria de desenvolvimento de produto", 25 perguntas em 6 passos (o essencial, cada entrega, o valor sentido, a estratégia de venda, indicação e melhoria, próximos passos). Criada desativada e manual, como os outros modelos.
+- A grade "quanto valeu cada entrega" virou uma pergunta por entrega (o módulo não tem pergunta em grade).
+- Resultados: a pergunta de papel PMF passa a mostrar as três faixas do roteiro (40% ou mais, 25% a 40%, menos de 25%) com a ação sugerida, e tira "Não se aplica" da base, como no método original. Vale para todas as pesquisas com pergunta PMF.
+- O mesmo questionário ficou também no documento "Pesquisa must-have: consultoria de desenvolvimento de produto" (com a tabela de leitura e o roteiro da conversa de 20 minutos).
+
 ## v0.160 — Kanban com calendário na Produção, linha editorial e subtemas
 **Pedido da Rebecka (26/10)**: manter o Kanban com as datas e o calendário (onde ela vê o que publica quando), com os aprovados e os pendentes de aprovação; a aprovação da v0.159 "está ótima, só precisa cair nesse Kanban"; na configuração inicial, cadastrar a linha editorial, os temas, os formatos e, se quiser, subtemas, para os conteúdos nascerem segmentados e os relatórios saírem por eles.
 Decisões técnicas:

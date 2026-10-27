@@ -1,5 +1,9 @@
 
 
+## Pesquisa must-have da consultoria (v0.161)
+- `g161.js`: modelo `must_servico` (25 perguntas, 6 passos, primeira de papel PMF com 4 opções, a última "Não se aplica"); `pqLeituraPmf` (percentual sem "Não se aplica", faixas 40% e 25%, pílula de cor e ação sugerida).
+- Teste `t161_must_have.py`: modelo na lista, 25 perguntas em 6 passos, pesquisa desativada e manual, 50% (3 de 6) sem o "Não se aplica" em verde, 16,7% em vermelho. 0 falhas. t129, t130 e t131 (pesquisas): 0 falhas.
+
 ## Kanban, linha editorial e subtemas (v0.160)
 - `g160.js`: `tabProducao160` (Kanban de sempre + pílulas de aprovação + "Roteiro e peça" em cada cartão; abre `ctPeca`), `modalAprovaIdeia` (tema, subtema, formato, tipo de mídia, prazo, data), `tabLinhas160` (tela de antes + subtemas + conteúdos por segmento), `modalSubtemas`, `mqOptSub`, `mqLigaSub`, `ehSimples`, `CT_SUB_SIMPLES` (subtítulos das colunas).
 - Kanban: filtro de subtema quando o tema tem subtemas; colunas dizem o que falta aprovar no método simples.

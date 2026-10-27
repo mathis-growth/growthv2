@@ -1,5 +1,8 @@
 
 
+## v0.161
+Nada a rodar no banco (só tela). Continuam pendentes os SQL da v0.157, v0.159 e v0.160.
+
 ## v0.160 — Subtemas e datas no Kanban
 1. `supabase/RODAR_v0.160_content_segmentos.sql` (depois do da v0.159): subtemas (`conteudo_temas.tema_pai_id`), `conteudos.subtema_id`, gatilho `conteudo_tema_valida` e a regra nova em `conteudo_valida` (no método simples, aprovar a ideia exige tema e data de publicação). **Ainda não aplicado em produção.**
 2. Ordem para rodar: `RODAR_v0.157_narrativas.sql`, `RODAR_v0.159_content_simples.sql`, `RODAR_v0.160_content_segmentos.sql`.

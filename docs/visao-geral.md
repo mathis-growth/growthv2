@@ -1,3 +1,6 @@
+## v0.161
+**Pesquisa must-have para a consultoria, pronta em Pesquisas.** Um modelo novo cria, com um clique, o questionário que mede se a consultoria de desenvolvimento de produto foi essencial para a cliente: quão desapontada ela ficaria sem ela, o que faria no lugar, quanto valeu cada entrega, o maior benefício, quando valeu a pena, o que travou a estratégia de venda e como ela indicaria. Nos resultados, o must-have aparece com a faixa do método (40% ou mais, 25% a 40%, menos de 25%) e o que fazer a seguir.
+
 ## v0.160
 **O Kanban e o calendário voltaram para o centro da produção.** A aba Produção é o Kanban de sempre, com o painel da semana, o calendário das próximas semanas e as colunas por etapa; cada cartão diz se o roteiro ou a peça ainda precisa de aprovação e abre a aprovação com um clique. Aprovar uma ideia agora pede o tema, o subtema (opcional), o formato e a data de publicação, então ela entra no calendário já segmentada. A Linha editorial virou parte da configuração, com subtemas e uma tabela de conteúdos por linha, tema, subtema e formato.
 

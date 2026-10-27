@@ -1136,7 +1136,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.160 · 26/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.161 · 26/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -13945,6 +13945,50 @@ const PQ_MODELOS = {
     ['Como você se sentiria se não pudesse mais usar este produto?', 'escolha', ['Muito desapontado', 'Um pouco desapontado', 'Nada desapontado'], 'pmf'], ['Qual o principal benefício que você tira dele?', 'texto', [], 'valor'],
     ['Em que momento você sentiu que valeu a pena?', 'texto', [], 'valor'], ['O que você faz que mais te aproxima do resultado?', 'multipla', ['Assistir às aulas', 'Aplicar os exercícios', 'Participar da comunidade', 'Tirar dúvidas ao vivo', 'Acompanhar o material'], 'alavanca'], ['O que melhoraria?', 'texto', [], 'livre', false]] }
 };
+/* ================= v0.161 — Pesquisas: modelo "Must-have de consultoria ou serviço" =================
+   Pedido da Rebecka (26/10): medir se a consultoria de desenvolvimento de produto é must-have, dentro do módulo de Pesquisas.
+   Base: o roteiro "Must-Have ao Aha e North Star" da Consultoria Estratégica (Drive). A pergunta de desapontamento é a de papel PMF;
+   "Não se aplica" fica fora da base do cálculo (como no método original). Grade de entregas vira uma pergunta por entrega. */
+const PQ_ENTREGA = ['Essencial', 'Ajudou', 'Ajudou pouco', 'Não usei'];
+const PQ_NA = /^(n\/a|não se aplica)/i;
+PQ_MODELOS.must_servico = { nome: 'Must-have: consultoria de desenvolvimento de produto', tipo: 'outra', gatilho: 'manual',
+  descricao: 'Oi! Quero entender, com toda a sinceridade, o quanto a consultoria fez diferença para você e para o seu produto. Não existe resposta certa: as críticas me ajudam tanto quanto os elogios. Leva uns 8 minutos.',
+  perguntas: [
+    ['Imagine que a consultoria de desenvolvimento do seu produto não tivesse existido. Quão desapontada você ficaria?', 'escolha', ['Muito desapontada', 'Um pouco desapontada', 'Não ficaria desapontada: não achei tão útil', 'Não se aplica: ainda não usei o que foi entregue'], 'pmf', true, 'O essencial'],
+    ['Se você não tivesse feito a consultoria, o que teria feito no lugar?', 'escolha', ['Provavelmente ainda não teria o produto', 'Teria feito sozinha, do meu jeito', 'Teria contratado outro profissional ou agência', 'Teria feito um curso ou mentoria', 'Outro'], 'livre', true, 'O essencial'],
+    ['Se respondeu outro profissional, agência, curso ou outro: qual?', 'texto', [], 'livre', false, 'O essencial'],
+    ['A consultoria foi essencial para você começar?', 'escolha', ['Sim: sem ela eu não teria começado', 'Em parte: eu começaria, mas bem mais tarde', 'Em parte: eu começaria no mesmo tempo, mas com mais erros', 'Não: eu teria começado do mesmo jeito'], 'valor', true, 'O essencial'],
+    ['Por quê? Conte com as suas palavras.', 'texto', [], 'valor', false, 'O essencial'],
+    ['Quanto valeu para você a pesquisa (público, mercado e concorrência)?', 'escolha', PQ_ENTREGA, 'valor', true, 'Cada entrega'],
+    ['Quanto valeu para você a construção do produto (formato, conteúdo, entrega)?', 'escolha', PQ_ENTREGA, 'valor', true, 'Cada entrega'],
+    ['Quanto valeu para você a narrativa do produto (história, promessa, mensagem)?', 'escolha', PQ_ENTREGA, 'valor', true, 'Cada entrega'],
+    ['Quanto valeu para você a página de vendas?', 'escolha', PQ_ENTREGA, 'valor', true, 'Cada entrega'],
+    ['Quanto valeu para você o desenho da estratégia de venda?', 'escolha', PQ_ENTREGA, 'valor', true, 'Cada entrega'],
+    ['Se pudesse manter só uma dessas entregas, qual seria?', 'escolha', ['Pesquisa', 'Construção do produto', 'Narrativa', 'Página de vendas', 'Estratégia de venda'], 'valor', true, 'Cada entrega'],
+    ['E por que essa?', 'texto', [], 'valor', false, 'Cada entrega'],
+    ['Qual foi o maior benefício que você teve com a consultoria?', 'texto', [], 'valor', true, 'O valor que você sentiu'],
+    ['Em que momento você percebeu que tinha valido a pena? O que aconteceu?', 'texto', [], 'valor', false, 'O valor que você sentiu'],
+    ['Que tipo de mudança você mais sentiu? (marque até duas)', 'multipla', ['Clareza: entendi o meu produto, o meu público e o que vender', 'Execução: consegui tirar o produto do papel', 'Resultado: vendas, retorno ou dinheiro economizado', 'Segurança diante do público: me sinto mais preparada para apresentar e vender', 'Identidade: me vejo de outro jeito como especialista ou empreendedora'], 'valor', true, 'O valor que você sentiu'],
+    ['Você colocou em prática a estratégia de venda que desenhamos?', 'escolha', ['Sim, toda', 'Sim, uma parte', 'Ainda não, mas pretendo', 'Não pretendo'], 'alavanca', true, 'A estratégia de venda'],
+    ['Se não colocou tudo em prática, o que atrapalhou?', 'multipla', ['Falta de tempo', 'Falta de equipe ou de quem executasse', 'Não tinha verba para anúncios', 'Não ficou claro como executar', 'Insegurança para vender', 'Outras prioridades', 'Outro'], 'alavanca', false, 'A estratégia de venda'],
+    ['O que ajudaria você a executar?', 'texto', [], 'alavanca', false, 'A estratégia de venda'],
+    ['Você já recomendou a consultoria para alguém?', 'sim_nao', [], 'livre', true, 'Indicação e melhoria'],
+    ['Como você descreveria a consultoria para uma amiga, em uma ou duas frases?', 'texto', [], 'valor', true, 'Indicação e melhoria'],
+    ['Para que tipo de pessoa essa consultoria faz mais diferença?', 'texto', [], 'livre', false, 'Indicação e melhoria'],
+    ['O que eu poderia ter feito melhor?', 'texto', [], 'alavanca', false, 'Indicação e melhoria'],
+    ['Podemos conversar por 20 minutos para eu entender melhor algumas respostas?', 'sim_nao', [], 'livre', true, 'Próximos passos'],
+    ['Posso usar a sua resposta como depoimento?', 'escolha', ['Sim, com o meu nome', 'Sim, sem o meu nome', 'Não'], 'livre', true, 'Próximos passos'],
+    ['Seu nome e o nome do produto', 'texto', [], 'livre', false, 'Próximos passos']
+  ] };
+/* leitura do must-have: tira "Não se aplica" da base e usa as três faixas do roteiro (≥ 40%, 25% a 40%, < 25%) */
+function pqLeituraPmf(x) {
+  const dist = x.distribuicao || [], base = dist.filter(d => !PQ_NA.test(d.k)).reduce((a, d) => a + d.n, 0), na = dist.filter(d => PQ_NA.test(d.k)).reduce((a, d) => a + d.n, 0);
+  const prim = (dist.find(d => d.k === x.opcoes[0]) || { n: 0 }).n;
+  if (!base) return `<div class="panel"><b>Must-have:</b> ainda sem respostas válidas${na ? ` (${na} marcou "Não se aplica")` : ''}.</div>`;
+  const pc = Math.round(prim / base * 1000) / 10, st = pc >= 40 ? ['fav', 'Sinal de must-have (40% ou mais)', 'Avançar: entender para quem o valor é mais forte e o que gera esse valor.'] : pc >= 25 ? ['aten', 'Há valor, com espaço de ajuste (25% a 40%)', 'Investigar produto, mensagem, compreensão de uso e fricções.'] : ['desf', 'Sinal de baixo must-have (menos de 25%)', 'Rever público, promessa, experiência e produto antes de acelerar a venda.'];
+  return `<div class="panel pq-pmf"><div>${semPilula({ k: st[0], txt: st[1] })}</div><p style="margin:8px 0 4px"><b>${String(pc).replace('.', ',')}%</b> marcaram "${esc(x.opcoes[0])}" (${prim} de ${base} respostas${na ? `; ${na} "Não se aplica" fora da base` : ''}).</p><p class="muted" style="margin:0">${st[2]} Com poucas respostas, leia como sinal, não como prova: aprofunde em conversas com quem respondeu.</p></div>`;
+}
+
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;
 const fonteLink = () => location.protocol === 'file:' ? '<div class="panel"><b>Atenção:</b> o arquivo está aberto do seu computador, então o link de resposta não funciona para outras pessoas. Hospede o arquivo (por exemplo no GitHub Pages) antes de enviar.</div>' : '';
 
@@ -14045,7 +14089,7 @@ async function pqResultados(el, p, perg) {
   const cardQ = x => `<div class="panel"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><h2 style="margin:0">${esc(x.texto)}</h2><span class="muted">${num(x.n)} resposta(s) · ${PQ_PAPEL[x.papel]}</span></div>
     ${x.tipo === 'nps' && x.n ? `<div class="kpis">${kpi('NPS', String(x.nps).replace('.', ','), 'promotores − detratores')}${kpi('Promotores', num(x.promotores), '9 e 10')}${kpi('Neutros', num(x.neutros), '7 e 8')}${kpi('Detratores', num(x.detratores), '0 a 6')}</div>` : ''}
     ${x.tipo === 'escala' && x.n ? `<span>Média: <b>${Number(x.media).toFixed(2).replace('.', ',')}</b> de 5</span>` : ''}
-    ${x.pmf != null ? `<div class="panel" style="background:${x.pmf >= 40 ? 'var(--accent-soft)' : 'transparent'}"><b>PMF: ${String(x.pmf).replace('.', ',')}%</b> marcaram "${esc(x.opcoes[0])}". ${x.pmf >= 40 ? 'Acima da referência de 40%.' : 'Abaixo da referência de 40%.'}</div>` : ''}
+    ${x.papel === 'pmf' && x.tipo === 'escolha' ? pqLeituraPmf(x) : ''}
     ${x.tipo !== 'texto' && x.distribuicao.length ? `<div>${x.distribuicao.map(d => `<div class="cell2" style="margin:3px 0"><span style="min-width:150px">${esc(d.k)}</span>${bar(d.n, x.n)}</div>`).join('')}</div>` : ''}
     ${x.tipo === 'texto' ? (x.textos.length ? `<ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px">${x.textos.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : '<span class="muted">Sem respostas.</span>') : ''}
     <div class="acts"><button class="btn sm" data-ins="${x.id}">Registrar insight</button></div></div>`;

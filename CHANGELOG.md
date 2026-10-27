@@ -2,6 +2,11 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.161 — Pesquisa must-have da consultoria (26/10/2026)
+- Pesquisas → Começar de um modelo → **Must-have: consultoria de desenvolvimento de produto**: 25 perguntas em 6 passos, a partir do roteiro "Must-Have ao Aha e North Star" do Drive (desapontamento, o que faria no lugar, se foi essencial para começar, valor de cada entrega, maior benefício, momento em que valeu a pena, tipo de mudança, estratégia de venda e o que travou, indicação, melhoria, conversa e depoimento).
+- Resultados: leitura do must-have em três faixas (40% ou mais, 25% a 40%, menos de 25%) com a ação sugerida, sem contar "Não se aplica" na base. Vale para toda pesquisa com pergunta PMF.
+- Teste: `t161_must_have.py` (0 falhas); t129 a t131 sem falhas. Sem mudança no banco.
+
 ## v0.160 — Kanban com calendário, linha editorial e subtemas (26/10/2026)
 - **Produção = o Kanban de sempre**: painel da semana, calendário das próximas semanas, seis colunas e filtros. Cada cartão mostra subtema, data e o que falta aprovar (roteiro, peça, ajuste pedido) e tem o botão **Roteiro e peça**, que abre a aprovação da v0.159. Colunas do método simples dizem o que falta: roteiro a aprovar, peça a aprovar, aprovada a agendar.
 - **Linha editorial na configuração** (aba própria): territórios, temas, formatos e quadros como antes, mais **subtemas** e a tabela **conteúdos por linha, tema, subtema e formato**.

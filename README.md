@@ -15,7 +15,7 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.160 · 26/10/2026 (`index.html`) |
+| **Versão da tela** | 0.161 · 26/10/2026 (`index.html`) |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.156** (26/10/2026): dicionário de métricas com direção e referência; alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
 | **Falta aplicar no banco** | `supabase/RODAR_v0.157_narrativas.sql` (banco de narrativas; sem ele, as frases do Financeiro não aparecem) e `supabase/RODAR_v0.159_content_simples.sql` + `supabase/RODAR_v0.160_content_segmentos.sql` (Growth's Content; sem eles, as abas novas avisam) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
@@ -27,6 +27,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.161 | 26/10/2026 | **Pesquisa must-have da consultoria** (modelo em Pesquisas, 25 perguntas em 6 passos) e leitura do must-have em três faixas nos Resultados. | Só tela |
 | 0.160 | 26/10/2026 | **Produção = Kanban com calendário** e a aprovação em cada cartão; **Linha editorial** com subtemas e conteúdos por segmento; ideia aprovada com tema, subtema, formato e data. | `RODAR_v0.160_content_segmentos.sql`, **ainda não aplicado** |
 | 0.159 | 26/10/2026 | **Growth's Content simplificado**: cinco abas (Base do cliente, Identidade visual, Ideias, Produção, Mais ferramentas), ficha do dossiê com versões, identidade com prévia, roteiro aprovado antes da peça, versões e ajustes. Botões da Claude desligados até haver crédito na API. | `RODAR_v0.159_content_simples.sql`, **ainda não aplicado** |
 | 0.158 | 26/10/2026 | **Telas em grade**: Dashboard e Dashboard financeiro em blocos lado a lado, gráficos no tamanho do bloco, uma coluna no celular. Backup antes: branches `backup-v0.157` e `backup-v0.156`. | Só tela |

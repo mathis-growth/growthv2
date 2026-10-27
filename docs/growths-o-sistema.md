@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 26/10/2026, versão 0.160.
+**Última atualização:** 26/10/2026, versão 0.161.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -346,9 +346,9 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - quando rompem, geram alerta com a ação sugerida. Nada é pausado sozinho.
 - **Resultados e aprendizados.** Baseline, projeção e realizado de cada teste, com a decisão: escalar, iterar ou interromper.
 - **Pesquisas:**
-  - construtor de perguntas, com modelos de lead, onboarding, jornada e descoberta da North Star;
+  - construtor de perguntas, com modelos de lead, onboarding, jornada, descoberta da North Star e **must-have de consultoria** (o cliente diz quão desapontado ficaria sem a consultoria, o que faria no lugar, quanto valeu cada entrega e o que travou a execução);
   - página pública de resposta;
-  - NPS, PMF e insights;
+  - NPS, PMF e insights; o must-have aparece em três faixas (40% ou mais, 25% a 40%, menos de 25%) com o próximo passo, sem contar quem marcou "Não se aplica";
   - **qualificação por pontos:** cada resposta vale pontos e tags, e a nota de corte decide quem é qualificado na hora;
   - **formulário de captação** com a cara do cliente (fontes e cores), em passos, que coloca quem responde direto no funil de leads;
   - a aba "Quem respondeu".
@@ -453,6 +453,8 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - Identidade visual como regra, não como inspiração: cores com papel, fontes reais e o que nunca fazer.
 - Linha, tema e subtema: segmentar o conteúdo no nascimento para o relatório fazer sentido depois.
 - Aprovação sem perder o calendário: o Kanban que mostra o que falta aprovar e quando publica.
+- Sua consultoria é must-have? A pergunta do desapontamento aplicada a um serviço.
+- "O que você teria feito no lugar?": descobrir o concorrente real de uma consultoria.
 - O backup antes da mudança: por que toda versão do Growths tem caminho de volta.
 
 ---
@@ -506,3 +508,4 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - Dashboard e Dashboard financeiro em blocos lado a lado (grade de painel de BI), com backup da versão anterior.
   - Growth's Content em cinco abas: base do cliente com dossiê e ficha aprovada, identidade visual, ideias, produção com roteiro, versões e aprovação; as ferramentas de antes em Mais ferramentas.
   - Produção de volta ao Kanban com calendário, com a aprovação dentro de cada cartão; linha editorial com subtemas na configuração; ideia aprovada já com tema e data.
+  - modelo de pesquisa must-have para consultoria, com a leitura em três faixas nos resultados.

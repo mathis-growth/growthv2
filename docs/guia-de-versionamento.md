@@ -1,5 +1,8 @@
 
 
+## v0.161
+- index.html: 0.160 → 0.161 (`integra161.py`, que roda o `integra160.py`; novo `g161.js`): `PQ_MODELOS.must_servico`, `pqLeituraPmf` no lugar do quadro de PMF dos Resultados. Teste novo `t161_must_have.py`.
+
 ## v0.160
 - index.html: 0.159 → 0.160 (`integra160.py`, que roda o `integra159.py`; novos `g160.js` e `g160.css`). Abas `linhas` e `kanban` viram principais (`tabLinhas160`, `tabProducao160`); `modalAprovaIdeia`, `modalSubtemas`, `mqOptSub`, `mqLigaSub`; `dadosConteudo` separa `subtemas`; cartão simples com subtema e formato. Novo: `20261115100000_content_segmentos.sql`, `RODAR_v0.160_content_segmentos.sql`; `t159_content_simples.py` atualizado para o fluxo novo (46 verificações).
 

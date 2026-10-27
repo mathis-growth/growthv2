@@ -1,5 +1,8 @@
 
 
+## v0.161
+- Must-have (pergunta de papel PMF): % de quem marcou a primeira opção, sobre as respostas que não são "Não se aplica"/"N/A". 40% ou mais = sinal de must-have; 25% a 40% = há valor, com ajuste; menos de 25% = baixo must-have. Com poucas respostas, sinal e não prova.
+
 ## v0.160
 - Aprovar ideia (método simples): tema e data de publicação obrigatórios; subtema opcional; prazo de produção não pode ser depois da data de publicação.
 - Subtema pertence a um tema e herda a linha; nome único no cliente; tirar da lista desativa (não apaga).
