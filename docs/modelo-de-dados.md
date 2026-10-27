@@ -1,5 +1,10 @@
 
 
+## v0.160
+- `conteudo_temas.tema_pai_id` (subtema; dois níveis, herda `linha_id` do tema; gatilho `conteudo_tema_valida`).
+- `conteudos.subtema_id` (precisa ser subtema do `tema_id`).
+- `conteudo_valida`: no método simples, `pauta` em diante exige `tema_id` e `data_publicacao`.
+
 ## v0.159
 - `content_fichas` (workspace, versão, status rascunho/aprovada, dossie_url, secoes jsonb: narrativa, persona, tom, produtos, diferencial, pilares, nunca; aprovado_por, aprovado_em).
 - `content_identidade` (uma por workspace: cores [{nome, hex, papel}], fonte_titulo, fonte_texto, pasta_url, referencias, nunca_fazer, formatos, aprovado_por, aprovado_em).

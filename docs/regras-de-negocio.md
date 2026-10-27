@@ -1,5 +1,10 @@
 
 
+## v0.160
+- Aprovar ideia (método simples): tema e data de publicação obrigatórios; subtema opcional; prazo de produção não pode ser depois da data de publicação.
+- Subtema pertence a um tema e herda a linha; nome único no cliente; tirar da lista desativa (não apaga).
+- Kanban (método simples): Ideias (aprovar em Ideias) → Pautas aprovadas (roteiro a aprovar) → Em produção (peça a aprovar) → Pronto (aprovada, a agendar) → Agendado → Publicado.
+
 ## v0.159 — Growth's Content
 - Ficha: para aprovar, narrativa, persona, tom de voz e pilares preenchidos. Mudar a aprovada cria nova versão em rascunho.
 - Identidade: para aprovar, cor de fundo, cor de texto e fonte do título. Salvar sem aprovar tira a aprovação.

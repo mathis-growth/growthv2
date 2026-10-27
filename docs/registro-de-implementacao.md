@@ -1,5 +1,10 @@
 
 
+## Kanban, linha editorial e subtemas (v0.160)
+- `g160.js`: `tabProducao160` (Kanban de sempre + pílulas de aprovação + "Roteiro e peça" em cada cartão; abre `ctPeca`), `modalAprovaIdeia` (tema, subtema, formato, tipo de mídia, prazo, data), `tabLinhas160` (tela de antes + subtemas + conteúdos por segmento), `modalSubtemas`, `mqOptSub`, `mqLigaSub`, `ehSimples`, `CT_SUB_SIMPLES` (subtítulos das colunas).
+- Kanban: filtro de subtema quando o tema tem subtemas; colunas dizem o que falta aprovar no método simples.
+- Teste `t159_content_simples.py` (46 verificações, 0 falhas) cobre banco, abas, ficha, subtemas, identidade, aprovação de ideia, Kanban com calendário, peça, vídeo, Mais ferramentas e celular.
+
 ## Growth's Content simplificado (v0.159)
 - `g159.js`: `tabBase` (pasta do Drive via `csDrive2`, link do dossiê, ficha com versões e aprovação), `tabIdentidade` (cores com papel, fontes, prévia, pasta, referências, limites, formatos, aprovação), `tabIdeias` (aprovar ou descartar), `tabProducao` (quadro Roteiro/Peça/Aprovada/Agendada) e `ctPeca` (roteiro com aprovação; arte ou vídeo com versões, ajuste e aprovação; capa; agendamento), `tabMais` (as abas antigas). `CT_BTN_IA`: botão da Claude desligado com o motivo.
 - Banco: `20261114100000_content_simples.sql` (tabelas, colunas, método simples, `conteudo_valida` com a regra nova).

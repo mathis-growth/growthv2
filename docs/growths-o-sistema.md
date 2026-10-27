@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 26/10/2026, versão 0.159.
+**Última atualização:** 26/10/2026, versão 0.160.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -146,15 +146,16 @@ De onde vem quem compra: canal, UTM e campanha até a venda. O rastreamento guar
 
 O Growth's Content leva para dentro do Growths a metodologia de conteúdo da Rebecka. Ele serve para a Mathisa e para os clientes que contratam o módulo. Fica em Marketing → Growth's Content, com duas entradas: **Estratégia de conteúdo** e **Instagram**.
 
-### 4.0 O módulo em cinco abas (desde a v0.159)
+### 4.0 O módulo em seis abas (desde a v0.159, ajustado na v0.160)
 
 O Growth's Content agora segue a ordem do trabalho, sem a configuração em 9 passos na frente:
 
 - **Base do cliente:** a pasta no Drive, o dossiê pronto (PDF na pasta) e a ficha do cliente. Quem ainda não tem dossiê abre a configuração guiada (call de briefing, materiais, pesquisa e dossiê) por um botão ali mesmo. A ficha reúne narrativa, para quem fala, tom de voz, produtos e esteira, diferencial, pilares, o que nunca dizer. Ela é aprovada uma vez e tem versões: mudar a aprovada cria uma nova, que precisa de aprovação.
+- **Linha editorial:** as linhas (territórios), os temas (frentes), os subtemas opcionais e os formatos. Todo conteúdo nasce com essa segmentação, e uma tabela mostra quantos conteúdos há em cada linha, tema, subtema e formato, de ideia a publicado.
 - **Identidade visual:** cores com o papel de cada uma, fontes, pasta com logos e fotos, referências, o que nunca fazer e os formatos usados, com uma prévia.
-- **Ideias:** aprovar ou descartar.
-- **Produção:** cada peça passa por Roteiro, Peça, Aprovada e Agendada. O roteiro é aprovado antes de qualquer arte ou vídeo; a arte ou o vídeo tem versões e pedidos de ajuste; a aprovada vai para o calendário.
-- **Mais ferramentas:** as abas de antes (dashboard, quadro completo, priorização, máquina, semana, fechamento, persona, produtos, linha editorial, estruturas, canais).
+- **Ideias:** aprovar ou descartar. Aprovar pede o tema, o subtema, o formato e a data de publicação, e a ideia entra no calendário.
+- **Produção:** o Kanban com o painel da semana, o calendário das próximas semanas e as colunas por etapa. Cada cartão diz se o roteiro ou a peça falta aprovar; o botão Roteiro e peça abre a aprovação: o roteiro é aprovado antes de qualquer arte ou vídeo, a arte ou o vídeo tem versões e pedidos de ajuste, e a aprovada vai para a data.
+- **Mais ferramentas:** as outras abas de antes (dashboard, semana, priorização, máquina, fechamento, persona, produtos, estruturas, canais).
 
 A Claude vai escrever a ficha a partir do dossiê, sugerir ideias, escrever roteiros e produzir arte, capa e edição de vídeo, sempre com aprovação. Os botões já estão no lugar e ficam desligados até a conta da API ter crédito.
 
@@ -450,6 +451,8 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - Do dossiê à peça agendada: quatro aprovações e nenhuma arte antes do roteiro.
 - Menos abas, mais entrega: como simplificar um módulo sem apagar nada.
 - Identidade visual como regra, não como inspiração: cores com papel, fontes reais e o que nunca fazer.
+- Linha, tema e subtema: segmentar o conteúdo no nascimento para o relatório fazer sentido depois.
+- Aprovação sem perder o calendário: o Kanban que mostra o que falta aprovar e quando publica.
 - O backup antes da mudança: por que toda versão do Growths tem caminho de volta.
 
 ---
@@ -502,3 +505,4 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - biblioteca de visualizações, banco de narrativas e auditoria das telas; as frases de análise passam a morar numa tabela no banco, com versão e aprovação, começando pelo Dashboard financeiro (frase da cascata corrigida, ponte do resultado, caixa e saldo mínimo juntos).
   - Dashboard e Dashboard financeiro em blocos lado a lado (grade de painel de BI), com backup da versão anterior.
   - Growth's Content em cinco abas: base do cliente com dossiê e ficha aprovada, identidade visual, ideias, produção com roteiro, versões e aprovação; as ferramentas de antes em Mais ferramentas.
+  - Produção de volta ao Kanban com calendário, com a aprovação dentro de cada cartão; linha editorial com subtemas na configuração; ideia aprovada já com tema e data.

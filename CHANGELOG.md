@@ -2,6 +2,14 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.160 — Kanban com calendário, linha editorial e subtemas (26/10/2026)
+- **Produção = o Kanban de sempre**: painel da semana, calendário das próximas semanas, seis colunas e filtros. Cada cartão mostra subtema, data e o que falta aprovar (roteiro, peça, ajuste pedido) e tem o botão **Roteiro e peça**, que abre a aprovação da v0.159. Colunas do método simples dizem o que falta: roteiro a aprovar, peça a aprovar, aprovada a agendar.
+- **Linha editorial na configuração** (aba própria): territórios, temas, formatos e quadros como antes, mais **subtemas** e a tabela **conteúdos por linha, tema, subtema e formato**.
+- **Aprovar ideia** pede linha e tema, subtema, formato, tipo de mídia, prazo e data de publicação (tema e data obrigatórios, também no banco).
+- Cartão de conteúdo com subtema e formato; sem notas no método simples; filtro de subtema no Kanban; opção "Simples" em Método e configuração.
+- Banco: `20261115100000_content_segmentos.sql` / `RODAR_v0.160_content_segmentos.sql` (**ainda não aplicado em produção**).
+- Teste: `t159_content_simples.py` atualizado (46 verificações, 0 falhas).
+
 ## v0.159 — Growth's Content simplificado (26/10/2026)
 - **Cinco abas na ordem do trabalho**: Base do cliente, Identidade visual, Ideias, Produção, Mais ferramentas. A configuração em 9 passos deixa de travar o módulo; as 11 abas antigas ficam em Mais ferramentas.
 - **Base do cliente**: pasta no Drive, link do dossiê em PDF, botão para a configuração guiada (para quem não tem dossiê) e ficha do cliente (narrativa, para quem fala, tom, produtos e esteira, diferencial, pilares, o que nunca dizer) com aprovação e versões.

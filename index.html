@@ -387,7 +387,11 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.159 Growth's Content simplificado */
+<style id="v122">/* v0.160 */
+body #main .ct-apr .pill{font-size:11px}
+body #main .gcard [data-peca]{white-space:nowrap}
+body #main #ctSeg tr.ct-seg-t td{border-top:2px solid var(--line)}
+/* v0.159 Growth's Content simplificado */
 body #main .ct-intro{font-size:14px;line-height:1.5}
 body #main .ct-iab{display:flex;flex-direction:column;align-items:flex-start;gap:4px}body #main .ct-ia{font-size:12px;max-width:360px}body #main .ct-intro p{margin:0 0 6px}body #main .ct-intro p:last-child{margin:0}
 body #main .ct-ficha{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
@@ -1132,7 +1136,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.159 · 26/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.160 · 26/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -14677,10 +14681,10 @@ async function dadosConteudo() {
     ctOpc(sb.from('produtos').select('id,nome,preco,ativo').eq('workspace_id', w).order('nome'))
   ]);
   const c0 = cfg[0] || {};
-  const C = { metodo: c0.metodo || 'notas5', criterios: c0.criterios || CRIT_PADRAO, score: c0.criterios_score || ['Timing / pauta quente', 'Potencial estratégico', 'Potencial de impacto', 'Facilidade de execução', 'Robustez da evidência', 'Novidade / pouco explorado no Brasil'],
+  const C = { metodo: c0.metodo || 'simples', criterios: c0.criterios || CRIT_PADRAO, score: c0.criterios_score || ['Timing / pauta quente', 'Potencial estratégico', 'Potencial de impacto', 'Facilidade de execução', 'Robustez da evidência', 'Novidade / pouco explorado no Brasil'],
     destinos: c0.destinos || [], canaisAtivos: c0.canais_ativos || ['instagram'], canaisPorTag: c0.canais_por_tag || {}, meta: c0.meta_semanal, diaFech: c0.dia_fechamento || 6, tags: c0.tags || [], linha: c0.linha || {}, modelo: c0.modelo || '', tem: 'metodo' in c0 || formatos.length > 0 };
   const fmts = formatos.filter(f => f.grupo === 'formato'), quadros = formatos.filter(f => f.grupo === 'quadro');
-  return { produtos, prodCad: fichas, fichas: {}, PR: Object.fromEntries(produtos.map(p => [p.id, p])), linhas, temas, cont, metas, pubs, crit: C.criterios, cfg: C, eq, conta, formatos, fmts, quadros, fech, personas, propostas,
+  return { produtos, prodCad: fichas, fichas: {}, PR: Object.fromEntries(produtos.map(p => [p.id, p])), linhas, temas: temas.filter(t => !t.tema_pai_id), subtemas: temas.filter(t => t.tema_pai_id), cont, metas, pubs, crit: C.criterios, cfg: C, eq, conta, formatos, fmts, quadros, fech, personas, propostas,
     T: Object.fromEntries(temas.map(t => [t.id, t])), L: Object.fromEntries(linhas.map(l => [l.id, l])), F: Object.fromEntries(formatos.map(f => [f.id, f])) };
 }
 function mqComeco(D) {
@@ -14769,7 +14773,7 @@ function modalConteudo(row, D, pre) {
     ${c({ k: 'decisao', l: 'Decisão', t: 'select', opts: DECISAO_C })}
     ${c({ k: 'aprendizado', l: 'Aprendizado', t: 'textarea' })}
   </div>` : `<div class="grid2">${[{ k: 'titulo', l: 'Título da ideia ou pauta', req: 1, full: 1 }, { k: 'descricao', l: 'Descrição e ângulo', t: 'textarea' }].map(c).join('')}
-    <label>Tema<select name="tema_id">${mqOptTemas(D, r.tema_id)}</select></label>
+    <label>Linha e tema<select name="tema_id">${mqOptTemas(D, r.tema_id)}</select></label><label>Subtema<select name="subtema_id">${mqOptSub(D, r.tema_id, r.subtema_id)}</select></label>${D.fmts.length ? c({ k: 'formato_id', l: 'Formato', t: 'select', opts: fmtOpts }) : ''}
     ${c({ k: 'produto_id', l: 'Produto', t: 'select', opts: (D.produtos || []).filter(p => p.ativo || p.id === r.produto_id).map(p => [p.id, p.nome]) })}
     ${c({ k: 'formato', l: 'Formato', t: 'select', req: 1, def: 'carrossel', opts: FORM_C })}${c({ k: 'status', l: 'Etapa', t: 'select', req: 1, def: 'ideia', opts: [...ETAPAS_C.map(e => [e[0], e[1]]), ['arquivado', 'Arquivado']] })}
     ${c({ k: 'responsavel_id', l: 'Responsável', t: 'select', opts: sel(D.eq, 'id', 'nome') })}
@@ -14777,9 +14781,9 @@ function modalConteudo(row, D, pre) {
     ${c({ k: 'dia_semana', l: 'Dia da semana', t: 'select', opts: DIAS_C.map(d => [d[0], d[2]]) })}
     ${c({ k: 'prazo', l: 'Prazo de produção', t: 'date' })}${c({ k: 'data_publicacao', l: 'Data de publicação', t: 'date', hint: 'Obrigatória para agendar.' })}
     ${c({ k: 'copy_url', l: 'Link da copy (Google Docs)', t: 'url', ph: 'https://docs.google.com/…', full: 1 })}${c({ k: 'midia_url', l: 'Link da mídia (Google Drive)', t: 'url', ph: 'https://drive.google.com/…', full: 1, hint: 'Copy e mídia são obrigatórias para marcar como pronto.' })}${c({ k: 'fonte_url', l: 'Fonte da ideia', t: 'url', full: 1 })}
-    ${notas(NOTAS_I, 'Nota da ideia (a média decide o que vira pauta)')}${notas(NOTAS_P, 'Nota da pauta (a média decide o que produzir)')}</div>`;
+    ${ehSimples(D) ? '' : notas(NOTAS_I, 'Nota da ideia (a média decide o que vira pauta)') + notas(NOTAS_P, 'Nota da pauta (a média decide o que produzir)')}</div>`;
   const campos = sc ? ['titulo', 'descricao', 'tema_id', 'produto_id', 'formato_id', 'quadro_id', 'destino', 'status', 'formato', 'palavra_chave', 'intencao', 'entidade', 'problema', 'achado', 'classificacao', 'fundamento', 'evidencia', 'fonte_url', 'score_notas', 'hook', 'tese', 'objetivo', 'cta', 'estrutura', 'dia_semana', 'responsavel_id', 'prazo', 'data_publicacao', 'copy_url', 'midia_url', 'obs_producao', 'decisao', 'aprendizado']
-    : ['titulo', 'descricao', 'tema_id', 'produto_id', 'formato', 'status', 'responsavel_id', 'dia_semana', 'prazo', 'data_publicacao', 'copy_url', 'midia_url', 'fonte_url'];
+    : ['titulo', 'descricao', 'tema_id', 'subtema_id', 'formato_id', 'produto_id', 'formato', 'status', 'responsavel_id', 'dia_semana', 'prazo', 'data_publicacao', 'copy_url', 'midia_url', 'fonte_url'];
   const f = modal(row ? 'Editar conteúdo' : 'Nova ideia', html, async (_d, form) => {
     const v = lerCampos(campos.map(k => ({ k, t: k === 'dia_semana' ? 'number' : undefined })), form);
     v.canais = [...form.querySelectorAll('input[name=canal]:checked')].map(x => x.value);
@@ -14792,7 +14796,7 @@ function modalConteudo(row, D, pre) {
       const pn = {}; form.querySelectorAll('[data-passo]').forEach(t => { if (t.value.trim()) pn[t.dataset.passo] = t.value.trim(); });
       v.estrutura_notas = { ...(r.estrutura_notas || {}), ...pn };
       Object.keys(v.estrutura_notas).forEach(k => { if (!pn[k] && (ESTR_PASSOS[v.estrutura] || []).includes(k)) delete v.estrutura_notas[k]; });
-    } else {
+    } else if (!ehSimples(D)) {
       Object.assign(v, lerCampos([...NOTAS_I, ...NOTAS_P].map(k => ({ k, t: 'number' })), form));
       for (const k of [...NOTAS_I, ...NOTAS_P]) if (v[k] != null && (!Number.isInteger(v[k]) || v[k] < 1 || v[k] > 10)) throw new Error('As notas são números inteiros de 1 a 10.');
     }
@@ -14808,13 +14812,14 @@ function modalConteudo(row, D, pre) {
     const es = f.elements.estrutura; es.onchange = () => { const at = {}; f.querySelectorAll('[data-passo]').forEach(t => { at[t.dataset.passo] = t.value; }); $('#mqPassos').innerHTML = mqPassos(es.value, { ...(r.estrutura_notas || {}), ...at }); };
   }
   f.querySelectorAll('[data-tag]').forEach(b => b.onclick = () => { const i = f.elements.tags, L = separa(i.value, /[,;]/); if (!L.includes(b.dataset.tag)) L.push(b.dataset.tag); i.value = L.join(', '); });
+  mqLigaSub(f, D);
   if (!row) mqCanaisAuto(f, D);
   if (row && row.id) botaoExcluir(f, 'conteudos', row.id, 'Conteúdo excluído');
 }
 
 /* ----- Kanban ----- */
 function mqFiltra(D, C) {
-  return D.cont.filter(c => (!C.tema || c.tema_id === C.tema) && (!C.canal || (c.canais || []).includes(C.canal)) && (!C.formato || c.formato === C.formato)
+  return D.cont.filter(c => (!C.tema || c.tema_id === C.tema) && (!C.sub || (D.T[C.sub] || {}).tema_pai_id !== C.tema || c.subtema_id === C.sub) && (!C.canal || (c.canais || []).includes(C.canal)) && (!C.formato || c.formato === C.formato)
     && (!C.terr || (terrDe(c, D) || {}).id === C.terr) && (!C.fmt || c.formato_id === C.fmt) && (!C.dest || (C.dest === '-' ? !c.destino : c.destino === C.dest)) && (!C.tag || (c.tags || []).includes(C.tag)));
 }
 function mqCard(c, D) {
@@ -14822,7 +14827,7 @@ function mqCard(c, D) {
   const dia = c.dia_semana ? DIAS_C[c.dia_semana - 1][1] : '';
   return `<div class="card gcard${c.validado ? ' mq-val' : ''}" draggable="true" data-id="${c.id}">
     <b>${c.validado ? '<span class="mq-check" title="Validada">☑</span> ' : ''}${esc(c.titulo)}</b>
-    <div class="ca">${sc ? pillTerr(l) : ''}${t ? `<span class="pill neutral" style="border-left:4px solid ${esc(t.cor)}">${esc(t.nome)}</span>${sc ? '' : `<span class="pill ${PRI_C[t.prioridade][0]}">${PRI_C[t.prioridade][1]}</span>`}` : (sc ? '' : '<span class="pill neutral">sem tema</span>')}${n != null ? `<span class="pill info" title="${sc ? 'Score total' : 'Média das 5 notas'}">${sc ? 'Score' : 'Nota'} ${n}</span>` : '<span class="pill neutral">sem nota</span>'}${atraso ? '<span class="pill bad">atrasado</span>' : ''}</div>
+    <div class="ca">${sc ? pillTerr(l) : ''}${t ? `<span class="pill neutral" style="border-left:4px solid ${esc(t.cor)}">${esc(t.nome)}</span>${sc ? '' : `<span class="pill ${PRI_C[t.prioridade][0]}">${PRI_C[t.prioridade][1]}</span>`}` : (sc ? '' : '<span class="pill neutral">sem tema</span>')}${n != null ? `<span class="pill info" title="${sc ? 'Score total' : 'Média das 5 notas'}">${sc ? 'Score' : 'Nota'} ${n}</span>` : ehSimples(D) ? '' : '<span class="pill neutral">sem nota</span>'}${atraso ? '<span class="pill bad">atrasado</span>' : ''}</div>
     <div class="ca">${pillFmt(D.F[c.formato_id])}${pillDest(c.destino)}<span class="pill neutral">${esc(FORM_N[c.formato] || c.formato)}</span>${(c.canais || []).map(x => `<span class="pill info">${esc(CANAL_N[x] || x)}</span>`).join('')}${c.origem === 'ia' ? '<span class="pill info" title="Veio da IA (ex.: ChatGPT do celular)">pela IA</span>' : ''}</div>
     ${(c.tags || []).length ? `<div class="ca">${c.tags.map(x => `<span class="chip">${esc(x)}</span>`).join('')}</div>` : ''}
     ${c.palavra_chave ? `<small class="muted">Palavra-chave: ${esc(c.palavra_chave)}</small>` : ''}
@@ -14834,7 +14839,7 @@ function mqFiltrosHtml(D, C, comMidia = true) {
   const dests = [...new Set([...D.cfg.destinos, ...D.cont.map(c => c.destino).filter(Boolean)])];
   return `<div class="filters">
     ${D.linhas.length ? `<label>Território<select id="cfTe"><option value="">Todos</option>${opts(D.linhas, 'id', 'nome', C.terr)}</select></label>` : ''}
-    <label>${ehScore(D) ? 'Frente' : 'Tema'}<select id="cfT"><option value="">Todas</option>${opts(D.temas, 'id', 'nome', C.tema)}</select></label>
+    <label>${ehScore(D) ? 'Frente' : 'Tema'}<select id="cfT"><option value="">Todas</option>${opts(D.temas, 'id', 'nome', C.tema)}</select></label>${C.tema && subtemasDe(D, C.tema).length ? `<label>Subtema<select id="cfS"><option value="">Todos</option>${opts(subtemasDe(D, C.tema), 'id', 'nome', C.sub)}</select></label>` : ''}
     ${D.fmts.length ? `<label>Formato<select id="cfFm"><option value="">Todos</option>${opts(D.fmts, 'id', 'nome', C.fmt)}</select></label>` : ''}
     ${dests.length ? `<label>Destino<select id="cfD"><option value="">Todos</option>${dests.map(d => `<option${C.dest === d ? ' selected' : ''}>${esc(d)}</option>`).join('')}<option value="-"${C.dest === '-' ? ' selected' : ''}>Sem destino</option></select></label>` : ''}
     ${tags.length ? `<label>Etiqueta<select id="cfG"><option value="">Todas</option>${tags.map(t => `<option${C.tag === t ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select></label>` : ''}
@@ -14844,8 +14849,8 @@ function mqFiltrosHtml(D, C, comMidia = true) {
 }
 function mqLigaFiltros(el, C) {
   const liga = (id, k) => { const x = el.querySelector('#' + id); if (x) x.onchange = e => { C[k] = e.target.value; render(); }; };
-  liga('cfTe', 'terr'); liga('cfT', 'tema'); liga('cfFm', 'fmt'); liga('cfD', 'dest'); liga('cfG', 'tag'); liga('cfC', 'canal'); liga('cfF', 'formato');
-  const lp = el.querySelector('#cfLimpa'); if (lp) lp.onclick = () => { Object.assign(C, { terr: '', tema: '', fmt: '', dest: '', tag: '', canal: '', formato: '' }); render(); };
+  liga('cfTe', 'terr'); liga('cfT', 'tema'); liga('cfS', 'sub'); liga('cfFm', 'fmt'); liga('cfD', 'dest'); liga('cfG', 'tag'); liga('cfC', 'canal'); liga('cfF', 'formato');
+  const lp = el.querySelector('#cfLimpa'); if (lp) lp.onclick = () => { Object.assign(C, { terr: '', tema: '', sub: '', fmt: '', dest: '', tag: '', canal: '', formato: '' }); render(); };
 }
 function tabKanban(el, D, C) {
   const lim = diaMais(hoje(), -29), L = mqFiltra(D, C), sc = ehScore(D);
@@ -14856,7 +14861,7 @@ function tabKanban(el, D, C) {
   ${mqFiltrosHtml(D, C)}<div class="filters" style="margin-top:-8px"><label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="cfA" style="width:auto"${C.arq ? ' checked' : ''}> Mostrar arquivados</label></div>
   ${kbPainel(L, D)}
   ${!D.temas.length && D.linhas.length ? '<div class="panel">Cadastre as frentes de cada território na aba <b>Linha editorial</b>. Depois as ideias ganham território, frente e etiquetas.</div>' : ''}
-  <div class="board" style="grid-auto-columns:minmax(250px,1fr)">${etapas.map(([k, nome, sub]) => { const X = L.filter(c => c.status === k).sort(cmp); return `<div class="colk" data-col="${k}"><h3><span>${nome} <small class="muted">${esc(sc && k === 'pauta' ? 'validar para produzir' : sub)}</small></span><span class="mono">${X.length}</span></h3>${X.map(c => mqCard(c, D)).join('') || '<small class="muted">Vazio</small>'}</div>`; }).join('')}</div>`;
+  <div class="board" style="grid-auto-columns:minmax(250px,1fr)">${etapas.map(([k, nome, sub]) => { const X = L.filter(c => c.status === k).sort(cmp); return `<div class="colk" data-col="${k}"><h3><span>${nome} <small class="muted">${esc(sc && k === 'pauta' ? 'validar para produzir' : (ehSimples(D) ? (CT_SUB_SIMPLES[k] ?? sub) : sub))}</small></span><span class="mono">${X.length}</span></h3>${X.map(c => mqCard(c, D)).join('') || '<small class="muted">Vazio</small>'}</div>`; }).join('')}</div>`;
   mqLigaComeco(el, C); mqLigaFiltros(el, C); kbLiga(el, C);
   const pre = {}; if (C.tema) pre.tema_id = C.tema; if (C.fmt) pre.formato_id = C.fmt; if (C.dest && C.dest !== '-') pre.destino = C.dest;
   $('#cNovo').onclick = () => modalConteudo(null, D, pre);
@@ -15142,7 +15147,7 @@ function modalNucleo(D) {
 function modalMetodo(D) {
   const c = D.cfg;
   modal('Método e configuração', `<div class="grid2">
-    <label style="grid-column:1/-1">Método de nota<select name="metodo"><option value="score6"${c.metodo === 'score6' ? ' selected' : ''}>Score V18: 6 critérios de 1 a 5, VALIDAR e destino</option><option value="notas5"${c.metodo !== 'score6' ? ' selected' : ''}>Antigo: 5 notas de 1 a 10 na ideia e na pauta</option></select><span style="font-weight:400">Trocar não apaga notas: as duas ficam guardadas em cada conteúdo.</span></label>
+    <label style="grid-column:1/-1">Método de nota<select name="metodo"><option value="simples"${ehSimples(D) ? ' selected' : ''}>Simples: sem notas; a ideia aprovada ganha tema e data, e o roteiro e a peça aprovados liberam as etapas</option><option value="score6"${c.metodo === 'score6' ? ' selected' : ''}>Score V18: 6 critérios de 1 a 5, VALIDAR e destino</option><option value="notas5"${c.metodo === 'notas5' ? ' selected' : ''}>Antigo: 5 notas de 1 a 10 na ideia e na pauta</option></select><span style="font-weight:400">Trocar não apaga notas: as duas ficam guardadas em cada conteúdo.</span></label>
     <label style="grid-column:1/-1">Destinos (marcas ou perfis que publicam, separados por vírgula)<input name="destinos" value="${esc(listaTxt(c.destinos))}" placeholder="Rebecka, Mathisa, Ambas"></label>
     <label>Meta mínima por semana<input name="meta" type="number" min="0" step="1" value="${c.meta ?? ''}"></label>
     <label>Dia do fechamento<select name="dia">${DIAS_C.map(([n, , l]) => `<option value="${n}"${c.diaFech === n ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
@@ -15167,7 +15172,7 @@ function tabLinhas(el, D, C) {
     ${nucleo.length ? `<dl>${nucleo.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl>` : '<p class="muted">Ainda vazio. Ele vem da proposta aplicada (aba Persona) ou do modelo V18, e pode ser editado aqui.</p>'}
     ${(L.estruturas || []).length ? `<p style="margin:8px 0 0"><b>Estruturas:</b> ${L.estruturas.map(esc).join(' · ')}</p>` : ''}${(L.lentes || []).length ? `<p style="margin:4px 0 0"><b>Lentes transversais:</b> ${L.lentes.map(esc).join(' · ')}</p>` : ''}
     ${(L.frases || []).length ? `<details style="margin-top:8px"><summary><b>Banco de frases</b> (${L.frases.length})</summary><ul class="mq-frases">${L.frases.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>` : ''}</div>
-  <div class="panel mq-nucleo"><h2 style="margin:0">Método</h2><dl><dt>Nota</dt><dd>${sc ? `Score V18 — ${D.cfg.score.map(esc).join(' · ')} (1 a 5 cada, total 6 a 30). VALIDAR obrigatório para produzir.` : `5 notas de 1 a 10 — ${D.crit.map(esc).join(' · ')}.`}</dd><dt>Destinos</dt><dd>${D.cfg.destinos.length ? D.cfg.destinos.map(pillDest).join(' ') : '—'}</dd><dt>Meta</dt><dd>${D.cfg.meta ?? '—'} conteúdos por semana</dd><dt>Fechamento</dt><dd>${DIAS_C[D.cfg.diaFech - 1][2]}</dd></dl></div>
+  <div class="panel mq-nucleo"><h2 style="margin:0">Método</h2><dl><dt>Nota</dt><dd>${ehSimples(D) ? 'Simples: sem notas. A ideia aprovada ganha tema, formato e data; o roteiro e a peça aprovados liberam as etapas.' : sc ? `Score V18 — ${D.cfg.score.map(esc).join(' · ')} (1 a 5 cada, total 6 a 30). VALIDAR obrigatório para produzir.` : `5 notas de 1 a 10 — ${D.crit.map(esc).join(' · ')}.`}</dd><dt>Destinos</dt><dd>${D.cfg.destinos.length ? D.cfg.destinos.map(pillDest).join(' ') : '—'}</dd><dt>Meta</dt><dd>${D.cfg.meta ?? '—'} conteúdos por semana</dd><dt>Fechamento</dt><dd>${DIAS_C[D.cfg.diaFech - 1][2]}</dd></dl></div>
   <h2 class="mq-h">Territórios e frentes</h2>
   ${D.linhas.map(l => `<div class="panel mq-terrp" style="--c:${esc(corDe(l.cor, '#521F32'))}"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center"><div><h2 style="margin:0">${esc(l.nome)} ${l.ativo ? '' : '<span class="pill neutral">inativo</span>'}</h2>${l.pergunta_central ? `<span class="muted">${esc(l.pergunta_central)}</span>` : l.descricao ? `<span class="muted">${esc(l.descricao)}</span>` : ''}</div><div class="acts"><button class="btn sm" data-linha="${l.id}">Editar território</button><button class="btn sm" data-novotema="${l.id}">Nova frente neste território</button></div></div>
     ${l.funcao || l.papel_funil || l.entra || l.nao_entra ? `<div class="mq-lim">${l.funcao ? `<div><b>Função</b><span>${esc(l.funcao)}</span></div>` : ''}${l.papel_funil ? `<div><b>Papel no funil</b><span>${esc(l.papel_funil)}</span></div>` : ''}${l.entra ? `<div><b>Entra</b><span>${esc(l.entra)}</span></div>` : ''}${l.nao_entra ? `<div><b>Não entra</b><span>${esc(l.nao_entra)}</span></div>` : ''}</div>` : ''}
@@ -15436,7 +15441,7 @@ async function vDMsCrm(m) {
    Estratégia: Dashboard dos canais (eficiência e melhores posts de cada canal), ideias, priorização, máquina, semana,
    fechamento, persona, linha editorial e canais. Instagram: Dashboard (conta + posts), Ideias do Instagram e DMs.
    Nada de importar à mão: os números vêm da conexão do Instagram. */
-const MQ_EST = [['base', 'Base do cliente'], ['identidade', 'Identidade visual'], ['ideias', 'Ideias'], ['producao', 'Produção'], ['mais', 'Mais ferramentas']];
+const MQ_EST = [['base', 'Base do cliente'], ['linhas', 'Linha editorial'], ['identidade', 'Identidade visual'], ['ideias', 'Ideias'], ['kanban', 'Produção'], ['mais', 'Mais ferramentas']];
 const MQ_CANAL = { instagram: [['insta', 'Dashboard'], ['ideias', 'Ideias do Instagram'], ['dms', 'DMs']] };
 const MQ_VIEW_CANAL = { 'mkt-insta': 'instagram' };
 const MQ_CANAL_VIEW = { instagram: 'mkt-insta' };
@@ -15447,13 +15452,13 @@ async function vConteudoAbas(m) {
   const D = await dadosConteudo();
   let subs, tabK;
   if (canal) { subs = MQ_CANAL[canal] || [['ideias', 'Ideias do canal']]; C.tabCanal = C.tabCanal || {}; tabK = C.tabCanal[canal] = subs.some(s => s[0] === C.tabCanal[canal]) ? C.tabCanal[canal] : subs[0][0]; }
-  else { subs = MQ_EST; if (!subs.some(s => s[0] === C.tab) && !MQ_MAIS.some(s => s[0] === C.tab)) C.tab = 'base'; if (C.tab !== 'producao') C.peca = null; tabK = MQ_MAIS.some(s => s[0] === C.tab) && !MQ_EST.some(s => s[0] === C.tab) ? 'mais' : C.tab; }
+  else { subs = MQ_EST; if (!subs.some(s => s[0] === C.tab) && !MQ_MAIS.some(s => s[0] === C.tab)) C.tab = 'base'; if (C.tab !== 'producao' && C.tab !== 'kanban') C.peca = null; tabK = MQ_MAIS.some(s => s[0] === C.tab) && !MQ_EST.some(s => s[0] === C.tab) ? 'mais' : C.tab; }
   m.innerHTML = `<div class="head"><div><h1>${canal ? esc(CANAL_N[canal]) : 'Growth\'s Content'}</h1><span class="muted">${canal ? 'A sua conta: números gerais, cada post, o que performa melhor por tema e formato, e as conversas.' : 'O conteúdo do cliente, na ordem do trabalho: a base (dossiê e ficha), a identidade visual, as ideias e a produção.'}</span></div>${D.cfg.modelo && !canal ? `<span class="pill info" title="Linha editorial instalada">Linha: ${esc(D.cfg.modelo)}</span>` : ''}</div>
   <div class="tabs">${subs.map(([k, l]) => `<button data-t="${k}" class="${tabK === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="ctTab" style="display:flex;flex-direction:column;gap:16px"></div>`;
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { if (canal) C.tabCanal[canal] = b.dataset.t; else C.tab = b.dataset.t; render(); });
   if (!canal) cdPillModulo(m);
   const el = $('#ctTab');
-  if (!canal) return ({ base: tabBase, identidade: tabIdentidade, ideias: tabIdeias, producao: tabProducao, mais: tabMais, dash: tabDashCanais, kanban: tabKanban, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, persona: tabPersona, produtos: tabProdutos2, linhas: tabLinhas, estruturas: tabEstruturas, canais: tabCanais }[tabK] || tabDashCanais)(el, D, C);
+  if (!canal) return ({ base: tabBase, identidade: tabIdentidade, ideias: tabIdeias, producao: tabProducao160, mais: tabMais, dash: tabDashCanais, kanban: tabProducao160, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, persona: tabPersona, produtos: tabProdutos2, linhas: tabLinhas160, estruturas: tabEstruturas, canais: tabCanais }[tabK] || tabDashCanais)(el, D, C);
   if (tabK === 'insta') return tabInsta(el, D, C);
   if (tabK === 'dms') return tabDMs(el, D, C);
   const K = C.porCanal = C.porCanal || {}; const CK = K[canal] = K[canal] || { tema: '', formato: '', arq: false, terr: '', fmt: '', dest: '', tag: '' };
@@ -16418,7 +16423,7 @@ function kbPainel(L, D) {
   const pct = meta ? Math.min(100, Math.round(prontosS / meta * 100)) : 0;
   const semana = `<div class="kb-sem"><h3>Esta semana <small class="muted">${dd(ini0).slice(0, 5)} a ${dd(fimS).slice(0, 5)}</small></h3>
     <p class="kb-big"><b>${num(prontosS)}</b>${meta ? ` de ${num(meta)}` : ''} <span>prontos para publicar</span></p>
-    ${meta ? `<div class="kb-prog" role="img" aria-label="${pct}% da meta da semana pronta"><i style="width:${pct}%"></i></div>` : '<p class="muted" style="margin:0">Sem meta semanal definida (passo Rotina da semana).</p>'}
+    ${meta ? `<div class="kb-prog" role="img" aria-label="${pct}% da meta da semana pronta"><i style="width:${pct}%"></i></div>` : '<p class="muted" style="margin:0">Sem meta semanal definida (Linha editorial → Método e configuração).</p>'}
     <ul class="kb-sl"><li><b>${num(prodS)}</b> em produção com data nesta semana</li><li><b>${num(filaS)}</b> com data nesta semana, ainda como ideia ou pauta</li><li><b>${num(semData)}</b> sem data marcada (pautas, em produção ou prontos)</li></ul></div>`;
   // calendário: semana atual + 5
   const sems = [0, 1, 2, 3, 4, 5].map(i => { const a = diaMais(ini0, i * 7); return { a, b: diaMais(a, 6) }; });
@@ -17218,7 +17223,7 @@ function gradeLarg(sp, def) {
    Base do cliente (pasta, dossiê e ficha aprovada) → Identidade visual → Ideias → Produção (roteiro → peça → aprovada → agendada) → Mais ferramentas.
    As abas antigas continuam dentro de "Mais ferramentas". Sem chamada à Claude por enquanto (a conta da API está sem crédito):
    os botões da Claude aparecem desligados, com o motivo. Arquivos ficam na pasta do cliente no Drive; aqui, os links. */
-const MQ_MAIS = [['dash', 'Dashboard'], ['kanban', 'Quadro completo'], ['prior', 'Priorização'], ['maquina', 'Máquina'], ['plano', 'Semana'], ['fech', 'Fechamento'], ['persona', 'Persona'], ['produtos', 'Produtos'], ['linhas', 'Linha editorial'], ['estruturas', 'Estruturas'], ['canais', 'Canais']];
+const MQ_MAIS = [['dash', 'Dashboard'], ['plano', 'Semana'], ['prior', 'Priorização'], ['maquina', 'Máquina'], ['fech', 'Fechamento'], ['persona', 'Persona'], ['produtos', 'Produtos'], ['estruturas', 'Estruturas'], ['canais', 'Canais']];
 const CT_SEM_IA = 'Fica disponível quando a conta da API da Anthropic tiver crédito e a integração for ligada.';
 const CT_BTN_IA = (txt) => `<span class="ct-iab"><button class="btn" disabled title="${esc(CT_SEM_IA)}">${txt}</button><span class="muted ct-ia">${CT_SEM_IA}</span></span>`;
 const CT_FICHA = [
@@ -17338,7 +17343,7 @@ async function tabIdentidade(el, D, C) {
 /* ---------- 3. Ideias: aprovar ou descartar ---------- */
 function tabIdeias(el, D, C) {
   const L = D.cont.filter(c => c.status === 'ideia').sort((a, b) => (Number(notaCt(b, D)) || 0) - (Number(notaCt(a, D)) || 0));
-  el.innerHTML = `<div class="panel ct-intro"><p><b>Como funciona:</b> aprove a ideia e ela vai para a Produção, onde o roteiro é escrito e aprovado antes de qualquer arte ou vídeo. Descartar arquiva a ideia (dá para ver no Quadro completo, em Mais ferramentas).</p></div>
+  el.innerHTML = `<div class="panel ct-intro"><p><b>Como funciona:</b> aprove a ideia e ela vai para a Produção, onde o roteiro é escrito e aprovado antes de qualquer arte ou vídeo. Aprovar pede o tema, o formato e a data de publicação: a ideia entra no Kanban e no calendário. Descartar arquiva (dá para ver na Produção, em Mostrar arquivados).</p></div>
     <div class="acts"><button class="btn pri" id="ctNova">Nova ideia</button>${CT_BTN_IA('Sugerir ideias pela Claude')}</div>
     <div class="panel"><h2>Ideias a avaliar · ${L.length}</h2>${L.length ? `<div class="ct-ideias">${L.map(c => `<div class="ct-ideia" data-id="${c.id}"><div><b>${esc(c.titulo)}</b><br><span class="muted">${esc(FORM_N[c.formato] || c.formato || '')}${c.tema_id && D.T[c.tema_id] ? ' · ' + esc(D.T[c.tema_id].nome) : ''}${c.objetivo ? ' · ' + esc(c.objetivo) : ''}${notaCt(c, D) != null ? ' · nota ' + String(Math.round(Number(notaCt(c, D)) * 10) / 10).replace('.', ',') : ''}</span>${c.hook ? `<br><span>${esc(c.hook)}</span>` : ''}</div>
       <div class="acts"><button class="btn sm" data-ver>Abrir</button><button class="btn sm" data-desc>Descartar</button><button class="btn sm pri" data-ok>Aprovar</button></div></div>`).join('')}</div>` : '<div class="empty">Nenhuma ideia esperando avaliação.</div>'}</div>`;
@@ -17346,7 +17351,7 @@ function tabIdeias(el, D, C) {
   el.querySelectorAll('.ct-ideia').forEach(r => {
     const c = D.cont.find(x => x.id === r.dataset.id);
     r.querySelector('[data-ver]').onclick = () => modalConteudo(c, D);
-    r.querySelector('[data-ok]').onclick = () => act(async () => { await q(sb.from('conteudos').update({ status: 'pauta' }).eq('id', c.id)); toast('Ideia aprovada: foi para Produção → Roteiro.'); render(); });
+    r.querySelector('[data-ok]').onclick = () => modalAprovaIdeia(c, D);
     r.querySelector('[data-desc]').onclick = () => act(async () => { await q(sb.from('conteudos').update({ status: 'arquivado' }).eq('id', c.id)); toast('Ideia descartada.'); render(); });
   });
 }
@@ -17423,6 +17428,112 @@ function tabMais(el, D, C) {
   el.querySelectorAll('[data-tm]').forEach(b => b.onclick = () => { C.tab = C.tabMais = b.dataset.tm; render(); });
   const fn = { dash: tabDashCanais, kanban: tabKanban, prior: tabPrior, maquina: tabMaquina, plano: tabPlano, fech: tabFechamento, persona: tabPersona, produtos: tabProdutos2, linhas: tabLinhas, estruturas: tabEstruturas, canais: tabCanais }[C.tabMais];
   return fn(el.querySelector('#ctMais'), D, C);
+}
+
+/* ================= v0.160 — Growth's Content: linha editorial na configuração, subtemas e o Kanban com calendário na Produção =================
+   Pedido da Rebecka (26/10): manter o Kanban com as datas e o calendário que já existiam (é ali que ela vê o que publica quando),
+   com os conteúdos aprovados e os pendentes de aprovação; a aprovação de roteiro e peça da v0.159 fica e passa a abrir de dentro do Kanban.
+   A configuração inicial ganha a linha editorial (linhas, temas, subtemas e formatos), para cada conteúdo nascer segmentado e os relatórios
+   saírem por linha, tema, subtema e formato. Ideia aprovada pede tema, formato e data de publicação: entra no Kanban já no calendário. */
+const ehSimples = D => !D.cfg.metodo || D.cfg.metodo === 'simples';
+const CT_SUB_SIMPLES = { ideia: 'aprovar em Ideias', pauta: 'roteiro a aprovar', producao: 'peça a aprovar', pronto: 'aprovada, a agendar', agendado: 'no calendário', publicado: '' };
+const subtemasDe = (D, temaId, atual) => (D.subtemas || []).filter(s => s.tema_pai_id === temaId && (s.ativo || s.id === atual));
+function mqOptSub(D, temaId, atual) {
+  const L = subtemasDe(D, temaId, atual);
+  return `<option value="">${temaId ? (L.length ? '— (opcional)' : 'Este tema não tem subtemas') : 'Escolha o tema primeiro'}</option>${L.map(s => `<option value="${s.id}"${s.id === atual ? ' selected' : ''}>${esc(s.nome)}</option>`).join('')}`;
+}
+/* liga o select de subtema ao de tema dentro de um formulário */
+function mqLigaSub(f, D) {
+  const t = f.elements.tema_id, s = f.elements.subtema_id; if (!t || !s) return;
+  t.addEventListener('change', () => { s.innerHTML = mqOptSub(D, t.value, null); });
+}
+
+/* ---------- Produção = o Kanban de sempre (painel, calendário, colunas), com a aprovação ---------- */
+async function tabProducao160(el, D, C) {
+  if (C.peca) { const c = D.cont.find(x => x.id === C.peca); if (c) return ctPeca(el, D, C, c); C.peca = null; }
+  tabKanban(el, D, C);
+  el.insertAdjacentHTML('afterbegin', `<div class="panel ct-intro"><p><b>Como funciona:</b> as ideias aprovadas entram aqui com tema, formato e data, e aparecem no calendário. Cada conteúdo passa por roteiro a aprovar, peça a aprovar, aprovada, agendada e publicada. Em cada cartão, <b>Roteiro e peça</b> abre a aprovação; <b>Abrir</b> mostra todos os dados.</p></div>`);
+  let V = []; try { V = await q(sb.from('content_versoes').select('conteudo_id,status').eq('workspace_id', S.ws)); } catch (e) { V = []; }
+  const ajuste = new Set(V.filter(v => v.status === 'ajuste_pedido').map(v => v.conteudo_id));
+  el.querySelectorAll('.gcard[data-id]').forEach(card => {
+    const c = D.cont.find(x => x.id === card.dataset.id); if (!c || card.querySelector('.ct-apr')) return;
+    const st = c.status, pills = [];
+    if (c.subtema_id && D.T[c.subtema_id]) pills.push(`<span class="pill neutral" title="Subtema">↳ ${esc(D.T[c.subtema_id].nome)}</span>`);
+    if (['pauta', 'producao', 'pronto', 'agendado', 'publicado'].includes(st)) pills.push(c.roteiro_aprovado_em ? '<span class="pill sem-p sem-p-fav">✓ roteiro</span>' : '<span class="pill sem-p sem-p-aten">⚠ roteiro a aprovar</span>');
+    if (['producao', 'pronto', 'agendado', 'publicado'].includes(st)) pills.push(c.peca_aprovada_em ? '<span class="pill sem-p sem-p-fav">✓ peça</span>' : ajuste.has(c.id) ? '<span class="pill sem-p sem-p-aten">⚠ ajuste pedido</span>' : '<span class="pill sem-p sem-p-aten">⚠ peça a aprovar</span>');
+    if (pills.length) card.querySelector('b').insertAdjacentHTML('afterend', `<div class="ca ct-apr">${pills.join('')}</div>`);
+    if (st !== 'ideia' && st !== 'arquivado') {
+      const acts = [...card.querySelectorAll('.ca')].pop();
+      if (acts) { acts.insertAdjacentHTML('afterbegin', `<button class="btn sm pri" data-peca="${c.id}" type="button">Roteiro e peça</button>`); acts.querySelector('[data-peca]').onclick = () => { C.peca = c.id; render(); }; }
+    }
+  });
+}
+
+/* ---------- Ideias: aprovar pede tema, subtema, formato e data ---------- */
+function modalAprovaIdeia(c, D) {
+  const fmtOpts = D.fmts.filter(f => f.ativo || f.id === c.formato_id);
+  const f = modal('Aprovar ideia', `<p class="muted" style="margin:0 0 8px"><b>${esc(c.titulo)}</b><br>Com tema, formato e data, o conteúdo entra no Kanban e no calendário já segmentado para os relatórios.</p><div class="grid2">
+    <label>Linha e tema<select name="tema_id" required>${mqOptTemas(D, c.tema_id)}</select></label>
+    <label>Subtema<select name="subtema_id">${mqOptSub(D, c.tema_id, c.subtema_id)}</select></label>
+    ${fmtOpts.length ? `<label>Formato<select name="formato_id"><option value="">—</option>${fmtOpts.map(x => `<option value="${x.id}"${x.id === c.formato_id ? ' selected' : ''}>${esc(x.nome)}</option>`).join('')}</select></label>` : ''}
+    <label>Tipo de mídia<select name="formato" required>${FORM_C.map(([k, l]) => `<option value="${k}"${(c.formato || 'carrossel') === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+    <label>Prazo de produção<input type="date" name="prazo" value="${esc(c.prazo || '')}"></label>
+    <label>Data de publicação<input type="date" name="data_publicacao" required value="${esc(c.data_publicacao || '')}"></label></div>`, async (d) => {
+    if (!d.tema_id) throw new Error('Escolha o tema.');
+    if (!d.data_publicacao) throw new Error('Informe a data de publicação: é ela que põe o conteúdo no calendário.');
+    if (d.prazo && d.prazo > d.data_publicacao) throw new Error('O prazo de produção fica antes da data de publicação.');
+    const v = { tema_id: d.tema_id, subtema_id: d.subtema_id || null, formato: d.formato, prazo: d.prazo || null, data_publicacao: d.data_publicacao, status: 'pauta' };
+    if (fmtOpts.length) v.formato_id = d.formato_id || null;
+    await q(sb.from('conteudos').update(v).eq('id', c.id));
+    await sincPubs(c.id, { ...c, ...v });
+    toast('Ideia aprovada: está no Kanban em ' + dd(d.data_publicacao) + '.');
+  }, 'Aprovar');
+  mqLigaSub(f, D);
+}
+
+/* ---------- Linha editorial: a tela de antes + subtemas + conteúdos por segmento ---------- */
+function tabLinhas160(el, D, C) {
+  tabLinhas(el, D, C);
+  const temas = D.temas.filter(t => !t.transversal && (t.ativo || subtemasDe(D, t.id).length));
+  const vivo = D.cont.filter(c => c.status !== 'arquivado');
+  const conta = X => ({ ideia: X.filter(c => c.status === 'ideia').length, prod: X.filter(c => ['pauta', 'producao', 'pronto'].includes(c.status)).length, agend: X.filter(c => c.status === 'agendado').length, pub: X.filter(c => c.status === 'publicado').length, tot: X.length });
+  const celulas = n => `<td class="n">${n.ideia}</td><td class="n">${n.prod}</td><td class="n">${n.agend}</td><td class="n">${n.pub}</td><td class="n"><b>${n.tot}</b></td>`;
+  const linhasSeg = [];
+  const porLinha = [...D.linhas, { id: null, nome: 'Sem linha' }];
+  porLinha.forEach(l => {
+    const ts = temas.filter(t => (l.id ? t.linha_id === l.id : (!t.linha_id || !D.L[t.linha_id])));
+    ts.forEach(t => {
+      const X = vivo.filter(c => c.tema_id === t.id);
+      linhasSeg.push(`<tr class="ct-seg-t"><td>${l.id ? pillTerr(l) : '<span class="muted">—</span>'}</td><td><b>${esc(t.nome)}</b></td><td></td>${celulas(conta(X))}</tr>`);
+      subtemasDe(D, t.id).forEach(s => { linhasSeg.push(`<tr><td></td><td></td><td>↳ ${esc(s.nome)}</td>${celulas(conta(X.filter(c => c.subtema_id === s.id)))}</tr>`); });
+      const semSub = X.filter(c => !c.subtema_id); if (subtemasDe(D, t.id).length && semSub.length) linhasSeg.push(`<tr><td></td><td></td><td class="muted">sem subtema</td>${celulas(conta(semSub))}</tr>`);
+    });
+  });
+  const semTema = vivo.filter(c => !c.tema_id);
+  const fmtLinhas = [...D.fmts.filter(f => f.ativo).map(f => [f.nome, vivo.filter(c => c.formato_id === f.id)]), ...FORM_C.map(([k, n]) => [n + ' (tipo de mídia)', vivo.filter(c => c.formato === k)])].filter(([, X]) => X.length);
+  el.insertAdjacentHTML('beforeend', `<div class="panel" id="ctSubtemas"><div class="ig-head"><div><h2 style="margin:0">Subtemas</h2><span class="muted">Opcional. Um nível abaixo do tema, para segmentar mais os conteúdos e os relatórios. Cada nome é único neste cliente.</span></div></div>
+      ${temas.length ? `<div class="tw"><table><thead><tr><th>Linha</th><th>Tema</th><th>Subtemas</th><th></th></tr></thead><tbody>${temas.map(t => `<tr><td>${t.linha_id && D.L[t.linha_id] ? pillTerr(D.L[t.linha_id]) : '—'}</td><td><b>${esc(t.nome)}</b></td><td>${subtemasDe(D, t.id).map(s => `<span class="chip">${esc(s.nome)}</span>`).join(' ') || '<span class="muted">nenhum</span>'}</td><td><button class="btn sm" data-sub="${t.id}" type="button">Editar subtemas</button></td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">Cadastre os temas acima; depois os subtemas aparecem aqui.</p>'}</div>
+    <div class="panel" id="ctSeg"><h2>Conteúdos por linha, tema e subtema</h2><span class="muted">Fora os arquivados. Em produção = roteiro, peça ou aprovada esperando data.</span>
+      <div class="tw"><table><thead><tr><th>Linha</th><th>Tema</th><th>Subtema</th><th class="n">Ideias</th><th class="n">Em produção</th><th class="n">Agendados</th><th class="n">Publicados</th><th class="n">Total</th></tr></thead><tbody>${linhasSeg.join('')}${semTema.length ? `<tr><td colspan="3" class="muted">Sem tema</td>${celulas(conta(semTema))}</tr>` : ''}</tbody></table></div>
+      ${fmtLinhas.length ? `<h2 style="margin-top:16px">Por formato</h2><div class="tw"><table><thead><tr><th>Formato</th><th class="n">Ideias</th><th class="n">Em produção</th><th class="n">Agendados</th><th class="n">Publicados</th><th class="n">Total</th></tr></thead><tbody>${fmtLinhas.map(([n, X]) => `<tr><td>${esc(n)}</td>${celulas(conta(X))}</tr>`).join('')}</tbody></table></div>` : ''}</div>`);
+  el.querySelectorAll('[data-sub]').forEach(b => b.onclick = () => modalSubtemas(D.T[b.dataset.sub], D));
+}
+function modalSubtemas(t, D) {
+  const atuais = subtemasDe(D, t.id);
+  modal('Subtemas de ' + t.nome, `<label>Um subtema por linha<textarea name="lista" rows="8" placeholder="ex.: Precificação&#10;Lançamento&#10;Perpétuo">${esc(atuais.map(s => s.nome).join('\n'))}</textarea></label><p class="muted" style="margin:6px 0 0">Tirar um nome da lista desativa o subtema; os conteúdos que já usam continuam com ele.</p>`, async d => {
+    const nomes = [...new Map(String(d.lista || '').split('\n').map(x => x.trim()).filter(Boolean).map(x => [x.toLowerCase(), x])).values()];
+    if (nomes.some(n => n.length > 80)) throw new Error('Cada subtema tem até 80 letras.');
+    const todos = (D.subtemas || []).filter(s => s.tema_pai_id === t.id);
+    for (const n of nomes) {
+      const ja = todos.find(s => s.nome.toLowerCase() === n.toLowerCase());
+      if (ja) { if (!ja.ativo || ja.nome !== n) await q(sb.from('conteudo_temas').update({ ativo: true, nome: n }).eq('id', ja.id)); continue; }
+      const outro = [...D.temas, ...(D.subtemas || [])].find(x => x.nome.toLowerCase() === n.toLowerCase());
+      if (outro) throw new Error(`"${n}" já é ${outro.tema_pai_id ? 'subtema de ' + ((D.T[outro.tema_pai_id] || {}).nome || 'outro tema') : 'um tema'} neste cliente. Use outro nome.`);
+      await q(sb.from('conteudo_temas').insert({ workspace_id: S.ws, nome: n, tema_pai_id: t.id, linha_id: t.linha_id || null, prioridade: t.prioridade || 2, cor: corDe(t.cor, '#0a6b5b') }));
+    }
+    for (const s of todos) if (s.ativo && !nomes.some(n => n.toLowerCase() === s.nome.toLowerCase())) await q(sb.from('conteudo_temas').update({ ativo: false }).eq('id', s.id));
+    toast('Subtemas salvos.'); render();
+  }, 'Salvar');
 }
 
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');

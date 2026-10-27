@@ -1,3 +1,6 @@
+## v0.160
+**O Kanban e o calendário voltaram para o centro da produção.** A aba Produção é o Kanban de sempre, com o painel da semana, o calendário das próximas semanas e as colunas por etapa; cada cartão diz se o roteiro ou a peça ainda precisa de aprovação e abre a aprovação com um clique. Aprovar uma ideia agora pede o tema, o subtema (opcional), o formato e a data de publicação, então ela entra no calendário já segmentada. A Linha editorial virou parte da configuração, com subtemas e uma tabela de conteúdos por linha, tema, subtema e formato.
+
 ## v0.159
 **O Growth's Content ficou simples.** O módulo agora tem cinco abas, na ordem do trabalho. Em Base do cliente fica a pasta no Drive, o dossiê pronto e a ficha do cliente, que é aprovada uma vez e tem versões. Em Identidade visual ficam as cores, as fontes, as referências e o que nunca fazer, com uma prévia. Em Ideias você aprova ou descarta. Em Produção, cada peça passa por roteiro aprovado, arte ou vídeo com versões e pedidos de ajuste, aprovação e agendamento. As ferramentas de antes continuam em Mais ferramentas. Os botões que vão chamar a Claude já estão no lugar, desligados até a conta da API ter crédito.
 

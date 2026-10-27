@@ -1,5 +1,15 @@
 
 
+## v0.160 — Kanban com calendário na Produção, linha editorial e subtemas
+**Pedido da Rebecka (26/10)**: manter o Kanban com as datas e o calendário (onde ela vê o que publica quando), com os aprovados e os pendentes de aprovação; a aprovação da v0.159 "está ótima, só precisa cair nesse Kanban"; na configuração inicial, cadastrar a linha editorial, os temas, os formatos e, se quiser, subtemas, para os conteúdos nascerem segmentados e os relatórios saírem por eles.
+Decisões técnicas:
+- Seis abas: Base do cliente, Linha editorial, Identidade visual, Ideias, Produção, Mais ferramentas. A Produção é o Kanban de antes (painel, calendário das próximas semanas, seis colunas, filtros); cada cartão mostra o que falta aprovar e tem o botão "Roteiro e peça", que abre a aprovação da v0.159. O quadro de 4 colunas da v0.159 saiu.
+- Linha editorial é a tela de antes (territórios, frentes/temas, formatos, quadros, método), com os painéis novos de subtemas e de conteúdos por linha, tema, subtema e formato.
+- Subtema = tema com `tema_pai_id` (dois níveis), herda a linha do tema. O nome continua único no cliente (para não confundir as importações que procuram o tema pelo nome). Se uma importação apontar um subtema como tema, o banco o põe no lugar certo.
+- Aprovar a ideia abre um formulário com linha e tema, subtema, formato, tipo de mídia, prazo e data de publicação (tema e data obrigatórios, também no banco).
+- Método "simples" ganha opção no Método e configuração e é o padrão sem configuração; os cartões não mostram "sem nota".
+Pendências: aplicar os três SQL em produção; crédito na API para ligar a Claude.
+
 ## v0.159 — Growth's Content simplificado
 **Pedido da Rebecka (26/10)**: o módulo de conteúdo ficou complexo; partir do dossiê pronto, identidade visual por cliente e produção pedida e aprovada no Growths (documento "Growth's Content: dossiê, identidade visual e produção pela Claude"). Sem crédito na API por enquanto: "vamos parar por aqui e só ajustar as telas e o processo no Growth".
 Decisões técnicas:

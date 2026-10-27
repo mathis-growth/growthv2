@@ -1,5 +1,8 @@
 
 
+## v0.160
+- index.html: 0.159 → 0.160 (`integra160.py`, que roda o `integra159.py`; novos `g160.js` e `g160.css`). Abas `linhas` e `kanban` viram principais (`tabLinhas160`, `tabProducao160`); `modalAprovaIdeia`, `modalSubtemas`, `mqOptSub`, `mqLigaSub`; `dadosConteudo` separa `subtemas`; cartão simples com subtema e formato. Novo: `20261115100000_content_segmentos.sql`, `RODAR_v0.160_content_segmentos.sql`; `t159_content_simples.py` atualizado para o fluxo novo (46 verificações).
+
 ## v0.159
 - index.html: 0.158 → 0.159 (`integra159.py`, que roda o `integra158.py`; novos `g159.js` e `g159.css`). `MQ_EST` com as 5 abas novas; `vConteudo` sem a trava da configuração; abas `tabBase`, `tabIdentidade`, `tabIdeias`, `tabProducao` (+ `ctPeca`), `tabMais`. Novo: `20261114100000_content_simples.sql`, `RODAR_v0.159_content_simples.sql`; teste `t159_content_simples.py`.
 
