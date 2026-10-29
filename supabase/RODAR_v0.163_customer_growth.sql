@@ -15,7 +15,6 @@ begin
   if to_regprocedure('public.heavyops_painel(uuid, integer)') is null or to_regprocedure('public.funil_analise(uuid, date, date, uuid, uuid)') is null then falta := falta || 'migrações do RevOps (heavy_ops e funil_pos_compra)'::text; end if;
   if cardinality(falta) > 0 then raise exception 'Antes de rodar a v0.163, aplique: %', array_to_string(falta, '; '); end if;
 end $pre$;
-
 -- ===================== 20261116100000_pesquisa_etapa_aluno.sql =====================
 -- v0.163 — Pesquisa disparada quando o aluno entra numa etapa da jornada (Customer Growth, etapa B1).
 -- Antes: o gatilho "etapa" só ouvia as etapas do FUNIL (pessoa_funil_historico); uma pesquisa de jornada do aluno nunca disparava sozinha.
@@ -191,7 +190,16 @@ grant select, insert, update, delete on jornadas to authenticated;
 -- ---------- etapas ----------
 alter table etapas_kanban add column if not exists jornada_id uuid references jornadas(id) on delete cascade;
 create index if not exists etapas_kanban_jornada on etapas_kanban (jornada_id, ordem);
-alter table etapas_kanban drop constraint if exists etapas_kanban_workspace_id_quadro_nome_key;
+-- a trava antiga (workspace, quadro, nome) sai, pelo nome que tiver no banco
+do $u$
+declare c text;
+begin
+  for c in select con.conname from pg_constraint con
+            where con.conrelid = 'public.etapas_kanban'::regclass and con.contype = 'u'
+              and (select array_agg(a.attname::text order by a.attname) from unnest(con.conkey) k join pg_attribute a on a.attrelid = con.conrelid and a.attnum = k) = array['nome', 'quadro', 'workspace_id'] loop
+    execute format('alter table etapas_kanban drop constraint %I', c);
+  end loop;
+end $u$;
 create unique index if not exists etapas_kanban_geral_uq on etapas_kanban (workspace_id, quadro, nome) where jornada_id is null;
 create unique index if not exists etapas_kanban_jornada_uq on etapas_kanban (jornada_id, nome) where jornada_id is not null;
 

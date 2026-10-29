@@ -62,7 +62,16 @@ grant select, insert, update, delete on jornadas to authenticated;
 -- ---------- etapas ----------
 alter table etapas_kanban add column if not exists jornada_id uuid references jornadas(id) on delete cascade;
 create index if not exists etapas_kanban_jornada on etapas_kanban (jornada_id, ordem);
-alter table etapas_kanban drop constraint if exists etapas_kanban_workspace_id_quadro_nome_key;
+-- a trava antiga (workspace, quadro, nome) sai, pelo nome que tiver no banco
+do $u$
+declare c text;
+begin
+  for c in select con.conname from pg_constraint con
+            where con.conrelid = 'public.etapas_kanban'::regclass and con.contype = 'u'
+              and (select array_agg(a.attname::text order by a.attname) from unnest(con.conkey) k join pg_attribute a on a.attrelid = con.conrelid and a.attnum = k) = array['nome', 'quadro', 'workspace_id'] loop
+    execute format('alter table etapas_kanban drop constraint %I', c);
+  end loop;
+end $u$;
 create unique index if not exists etapas_kanban_geral_uq on etapas_kanban (workspace_id, quadro, nome) where jornada_id is null;
 create unique index if not exists etapas_kanban_jornada_uq on etapas_kanban (jornada_id, nome) where jornada_id is not null;
 
