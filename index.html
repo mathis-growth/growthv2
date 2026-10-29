@@ -1546,7 +1546,7 @@ $('#nav').onclick = e => {
     desenhaNav();
     return;
   }
-  S.view = b.dataset.v; S.projSel = null; S.modSel = null; S.pqSel = null; S.campSel = null;
+  S.view = b.dataset.v; S.projSel = null; S.modSel = null; S.pqSel = null; S.campSel = null; S.jpProd = null;
   abreMenu(S.view);
   render();
 };
@@ -2700,8 +2700,12 @@ function modalResponsavel(tabela, id, atual, eqs, rotulo) {
 }
 const msgEtapa = (txt, nome) => String(txt || '').replace(/\{nome\}/gi, nome || '').replace(/\{primeiro_nome\}/gi, String(nome || '').split(' ')[0]);
 async function gerirEtapas(quadro) {
-  const rot = quadro === 'leads' ? 'Funil de leads (CRM)' : quadro === 'oportunidades' ? 'Oportunidades' : 'Alunos';
-  const et = await q(sb.from('etapas_kanban').select('*').eq('workspace_id', S.ws).eq('quadro', quadro).order('ordem'));
+  const cgJ = quadro === 'alunos' && await temColuna('etapas_kanban', 'jornada_id');
+  const rot = quadro === 'leads' ? 'Funil de leads (CRM)' : quadro === 'oportunidades' ? 'Oportunidades' : cgJ ? 'Jornada geral (alunos)' : 'Alunos';
+  // v0.163: em Alunos, aqui ficam só as etapas da Jornada geral; as de cada produto ficam na Jornada do produto
+  let qe = sb.from('etapas_kanban').select('*').eq('workspace_id', S.ws).eq('quadro', quadro);
+  if (cgJ) qe = qe.is('jornada_id', null);
+  const et = await q(qe.order('ordem'));
   const reabre = async () => { await render(); gerirEtapas(quadro); };
   const protegida = e => quadro === 'leads' && e.nome === 'Cliente';
   const f = modal('Etapas: ' + rot, `<span class="muted">Crie, renomeie e reordene as etapas. Em cada uma você diz o que precisa acontecer, deixa uma mensagem padrão e escolhe se o responsável é avisado quando um cartão chegar. ${quadro === 'leads' ? 'A etapa "Cliente" é usada pelo sistema (vendas e contratos) e não pode ser renomeada nem apagada.' : 'O aluno nasce na primeira etapa quando a venda é aprovada.'}</span>
@@ -2880,33 +2884,227 @@ async function vCrmOport(m) {
   };
 }
 
+/* ================= v0.163 — Customer Growth: Jornada do produto =================
+   Cada produto pode ter a sua jornada de depois da compra (etapas com versão); sem ela, o aluno anda pela Jornada geral (as etapas de sempre).
+   No quadro de Alunos você escolhe a jornada (geral ou de um produto) e vê as colunas dela; quem comprou dois produtos aparece em cada um. */
+const JORNADA_SUGESTOES = {
+  mentoria: { nome: 'Mentoria (sugestão do Growths)', etapas: [['Boas-vindas', 'Enviar o acesso e agendar a primeira reunião.'], ['Diagnóstico', 'Reunião de diagnóstico e definição do objetivo.'], ['Plano de ação', 'Entregar o plano com metas e prazos.'],
+    ['Execução', 'Acompanhar as entregas combinadas.'], ['Primeiro resultado', 'Registrar o primeiro resultado do aluno.'], ['Renovação ou próximo passo', 'Conversar sobre renovação ou o próximo produto.']] },
+  curso: { nome: 'Curso online (sugestão do Growths)', etapas: [['Acesso liberado', 'Conferir se o aluno entrou na plataforma.'], ['Primeiras aulas', 'Assistiu às aulas do primeiro módulo.'], ['Meio do curso', 'Metade das aulas concluídas.'],
+    ['Trabalho final', 'Entregou o projeto ou exercício final.'], ['Concluiu', 'Terminou o curso.'], ['Próximo produto', 'Oferta do próximo passo da escada.']] }
+};
+const JOR_ST = { rascunho: ['warn', 'rascunho'], publicada: ['good', 'em uso'], anterior: ['neutral', 'versão anterior'], arquivada: ['neutral', 'arquivada'] };
+const pillJor = s => `<span class="pill ${(JOR_ST[s] || ['neutral'])[0]}">${esc((JOR_ST[s] || [0, s])[1])}</span>`;
+const nomeJor = (j, P) => j ? `${esc((P[j.produto_id] || {}).nome || j.nome)} · v${j.versao}` : 'Jornada geral';
+
 async function vCrmAlunos(m) {
-  const w = S.ws;
-  const [etapas, alu, eqs] = await Promise.all([
+  if (S.jpProd) return vJornadaProduto(m, S.jpProd);
+  const w = S.ws, cg = await temColuna('alunos', 'jornada_id');
+  const [etapasT, alu, eqs, jors, prods] = await Promise.all([
     q(sb.from('etapas_kanban').select('*').eq('workspace_id', w).eq('quadro', 'alunos').order('ordem')),
-    q(sb.from('alunos').select('id,pessoa_id,tag,status,etapa_kanban_id,entrou_em,responsavel_cs_id,pessoas(nome,email,telefone),produtos(nome)').eq('workspace_id', w).limit(2000)),
-    equipeAtiva()
+    q(sb.from('alunos').select('id,pessoa_id,produto_id,tag,status,etapa_kanban_id,entrou_em,responsavel_cs_id' + (cg ? ',jornada_id' : '') + ',pessoas(nome,email,telefone),produtos(nome)').eq('workspace_id', w).limit(2000)),
+    equipeAtiva(),
+    cg ? q(sb.from('jornadas').select('id,produto_id,nome,versao,status,modelo').eq('workspace_id', w).eq('modelo', false)).catch(() => []) : [],
+    q(sb.from('produtos').select('id,nome').eq('workspace_id', w).order('nome'))
   ]);
+  const P = Object.fromEntries(prods.map(p => [p.id, p])), J = Object.fromEntries(jors.map(j => [j.id, j]));
+  // jornadas que aparecem no seletor: a geral e cada produto com versão publicada (ou com alunos numa versão anterior)
+  const prodComJ = prods.filter(p => jors.some(j => j.produto_id === p.id && (j.status === 'publicada' || (j.status === 'anterior' && alu.some(a => a.jornada_id === j.id)))));
+  const temGeral = !cg || alu.some(a => !a.jornada_id) || !prodComJ.length;
+  let sj = S.alJ || (temGeral ? 'geral' : 'p:' + prodComJ[0].id);
+  if (sj.startsWith('p:') && !prodComJ.some(p => 'p:' + p.id === sj)) sj = 'geral';
+  S.alJ = sj;
   const RA = S.respA = S.respA || '';
-  const tags = [...new Set(alu.map(a => a.tag))].sort(), ft = S.f.tag || '';
-  const lista = alu.filter(a => (!ft || a.tag === ft) && passaResp(a.responsavel_cs_id, RA, eqs));
-  m.innerHTML = `<div class="head"><h1>Alunos</h1><div class="acts">${filtroRespHtml('raF', eqs, RA, 'CS responsável')}<button class="btn" id="gEt">Gerenciar etapas</button><select id="fTag" style="width:auto"><option value="">Todos os produtos</option>${tags.map(t => `<option${t === ft ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select></div></div>
-  <span class="muted">Jornada de cada aluno por produto. O aluno nasce na primeira etapa quando a venda é aprovada.</span>
-  <div class="panel">${quadro(etapas, lista, a => `<div class="card" draggable="true" data-id="${a.id}"><button type="button" class="btn sm" style="text-align:left;border:0;padding:0;font-weight:700;font-size:13.5px;background:none" data-f="${a.pessoa_id}">${esc((one(a.pessoas) || {}).nome)}</button>
-    ${(one(a.pessoas) || {}).email ? `<div class="muted" style="font-size:12px">${esc(one(a.pessoas).email)}</div>` : ''}${(one(a.pessoas) || {}).telefone ? `<div class="muted" style="font-size:12px">${esc(one(a.pessoas).telefone)}</div>` : ''}
-    <small><span class="pill info">${esc(a.tag)}</span> ${esc((one(a.produtos) || {}).nome)}</small><small>desde ${dtt(a.entrou_em)}</small>
-    <div class="ca"><span class="pill ${a.status === 'ativo' ? 'good' : 'neutral'}">${esc(a.status)}</span><button class="btn sm" data-st="${a.id}">Situação</button><button class="btn sm" data-resp="${a.id}" title="CS responsável">${a.responsavel_cs_id ? '👤 ' + esc((nomeEq(eqs, a.responsavel_cs_id) || '?').split(' ')[0]) : '+ CS'}</button></div></div>`, 'alunos')}</div>`;
-  ligaArrastar(m);
-  $('#fTag').onchange = e => { S.f.tag = e.target.value; render(); };
-  $('#gEt').onclick = () => gerirEtapas('alunos');
-  $('#raF').onchange = e => { S.respA = e.target.value; render(); };
-  m.onclick = e => {
-    const rs = e.target.closest('[data-resp]'); if (rs) { const aa = alu.find(x => x.id === rs.dataset.resp); return modalResponsavel('alunos', aa.id, aa.responsavel_cs_id, eqs, 'CS responsável'); }
+  const sel2 = (id, opts, v) => `<select id="${id}" style="width:auto">${opts.map(([o, l]) => `<option value="${esc(o)}"${o === v ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>`;
+  const optJ = [['geral', 'Jornada geral'], ...prodComJ.map(p => ['p:' + p.id, 'Jornada do produto: ' + p.nome]), ...(cg ? [['lista', 'Todos os produtos (lista)']] : [])];
+  const cab = (acts, sub) => `<div class="head"><h1>Alunos</h1><div class="acts">${cg ? `<label>Jornada ${sel2('alJ', optJ, sj)}</label>` : ''}${acts}${filtroRespHtml('raF', eqs, RA, 'CS responsável')}</div></div><span class="muted">${sub}</span>`;
+  const liga = () => {
+    if ($('#alJ')) $('#alJ').onchange = e => { S.alJ = e.target.value; S.alV = null; render(); };
+    $('#raF').onchange = e => { S.respA = e.target.value; render(); };
+  };
+  const cartaoAcoes = (m2, lista) => m2.onclick = e => {
+    const rs = e.target.closest('[data-resp]'); if (rs) { const aa = lista.find(x => x.id === rs.dataset.resp); return modalResponsavel('alunos', aa.id, aa.responsavel_cs_id, eqs, 'CS responsável'); }
     const fa = e.target.closest('[data-f]'); if (fa) return fichaPessoa(fa.dataset.f);
+    const ej = e.target.closest('[data-jp]'); if (ej) { S.jpProd = ej.dataset.jp; return render(); }
     const b = e.target.closest('[data-st]'); if (!b) return;
-    const a = alu.find(x => x.id === b.dataset.st);
+    const a = lista.find(x => x.id === b.dataset.st);
     abrirForm('Situação do aluno', 'alunos', [{ k: 'status', l: 'Situação', t: 'select', req: 1, opts: ['ativo', 'inativo', 'cancelado'].map(x => [x, x]) }], a);
   };
+  const cartao = a => `<div class="card" draggable="true" data-id="${a.id}"><button type="button" class="btn sm" style="text-align:left;border:0;padding:0;font-weight:700;font-size:13.5px;background:none" data-f="${a.pessoa_id}">${esc((one(a.pessoas) || {}).nome)}</button>
+    ${(one(a.pessoas) || {}).email ? `<div class="muted" style="font-size:12px">${esc(one(a.pessoas).email)}</div>` : ''}${(one(a.pessoas) || {}).telefone ? `<div class="muted" style="font-size:12px">${esc(one(a.pessoas).telefone)}</div>` : ''}
+    <small><span class="pill info">${esc(a.tag)}</span> ${esc((one(a.produtos) || {}).nome)}</small><small>desde ${dtt(a.entrou_em)}</small>
+    <div class="ca"><span class="pill ${a.status === 'ativo' ? 'good' : 'neutral'}">${esc(a.status)}</span><button class="btn sm" data-st="${a.id}">Situação</button><button class="btn sm" data-resp="${a.id}" title="CS responsável">${a.responsavel_cs_id ? '👤 ' + esc((nomeEq(eqs, a.responsavel_cs_id) || '').split(' ')[0]) : '👤 CS'}</button></div></div>`;
+
+  if (sj === 'lista') {
+    const ids = alu.map(a => a.id);
+    const hist = ids.length ? await q(sb.from('aluno_historico').select('aluno_id,em,tipo').eq('workspace_id', w).in('tipo', ['etapa', 'jornada']).order('em', { ascending: false }).limit(10000)).catch(() => []) : [];
+    const desde = {}; hist.forEach(h => { if (!desde[h.aluno_id]) desde[h.aluno_id] = h.em; });
+    const ET = Object.fromEntries(etapasT.map(e => [e.id, e]));
+    const lista = alu.filter(a => passaResp(a.responsavel_cs_id, RA, eqs)).sort((a, b) => String((one(a.produtos) || {}).nome).localeCompare(String((one(b.produtos) || {}).nome)) || String((one(a.pessoas) || {}).nome).localeCompare(String((one(b.pessoas) || {}).nome)));
+    const dias = a => { const t = desde[a.id] || a.entrou_em; return t ? Math.max(0, Math.floor((Date.now() - new Date(t)) / 864e5)) : null; };
+    m.innerHTML = cab('', 'Cada linha é uma matrícula: quem comprou dois produtos aparece uma vez em cada um, com a jornada daquele produto.') + `
+    <div class="panel"><div class="tw"><table><thead><tr><th>Aluno</th><th>Produto</th><th>Jornada</th><th>Etapa</th><th class="n">Na etapa há</th><th>CS</th><th>Situação</th></tr></thead><tbody>
+    ${lista.map(a => { const d = dias(a); return `<tr><td><a href="#" data-f="${a.pessoa_id}">${esc((one(a.pessoas) || {}).nome)}</a></td><td>${esc((one(a.produtos) || {}).nome)}</td><td>${nomeJor(J[a.jornada_id], P)}</td>
+      <td>${esc((ET[a.etapa_kanban_id] || {}).nome || '—')}</td><td class="n">${d == null ? '—' : d + (d === 1 ? ' dia' : ' dias')}</td><td>${esc(nomeEq(eqs, a.responsavel_cs_id) || '—')}</td><td><span class="pill ${a.status === 'ativo' ? 'good' : 'neutral'}">${esc(a.status)}</span></td></tr>`; }).join('') || '<tr><td colspan="7" class="empty">Nenhum aluno.</td></tr>'}
+    </tbody></table></div></div>`;
+    liga(); m.querySelectorAll('a[data-f]').forEach(x => x.onclick = e => { e.preventDefault(); fichaPessoa(x.dataset.f); });
+    return;
+  }
+
+  if (sj === 'geral') {
+    const etapas = etapasT.filter(e => !e.jornada_id);
+    const base = alu.filter(a => !a.jornada_id);
+    const tags = [...new Set(base.map(a => a.tag))].sort(), ft = S.f.tag || '';
+    const lista = base.filter(a => (!ft || a.tag === ft) && passaResp(a.responsavel_cs_id, RA, eqs));
+    m.innerHTML = cab(`<button class="btn" id="gEt">Gerenciar etapas</button><select id="fTag" style="width:auto"><option value="">Todos os produtos</option>${tags.map(t => `<option${t === ft ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select>`,
+      cg ? 'Jornada geral: as etapas de quem comprou um produto que ainda não tem jornada própria. Para dar etapas próprias a um produto, abra Produtos → Jornada do produto.' : 'Jornada de cada aluno por produto. O aluno nasce na primeira etapa quando a venda é aprovada.') +
+      `<div class="panel">${quadro(etapas, lista, cartao, 'alunos')}</div>`;
+    ligaArrastar(m); liga();
+    $('#fTag').onchange = e => { S.f.tag = e.target.value; render(); };
+    $('#gEt').onclick = () => gerirEtapas('alunos');
+    cartaoAcoes(m, lista);
+    return;
+  }
+
+  // jornada de um produto: a versão em uso e, se houver alunos nelas, as anteriores
+  const pid = sj.slice(2), vers = jors.filter(j => j.produto_id === pid && (j.status === 'publicada' || (j.status === 'anterior' && alu.some(a => a.jornada_id === j.id)))).sort((a, b) => b.versao - a.versao);
+  const atual = vers.find(j => j.status === 'publicada') || vers[0];
+  const jv = vers.find(j => j.id === S.alV) || atual; S.alV = jv.id;
+  const etapas = etapasT.filter(e => e.jornada_id === jv.id);
+  const lista = alu.filter(a => a.jornada_id === jv.id && passaResp(a.responsavel_cs_id, RA, eqs));
+  const naGeral = alu.filter(a => a.produto_id === pid && !a.jornada_id && a.status === 'ativo').length;
+  m.innerHTML = cab(`${vers.length > 1 ? `<label>Versão ${sel2('alV', vers.map(j => [j.id, 'v' + j.versao + (j.status === 'publicada' ? ' (em uso)' : ' (anterior)')]), jv.id)}</label>` : ''}<button class="btn" data-jp="${pid}">Editar jornada</button>`,
+    `Jornada do produto ${esc((P[pid] || {}).nome || '')}, versão ${jv.versao}${jv.status === 'anterior' ? ' (anterior: matrículas novas entram na versão em uso)' : ''}. As colunas são as etapas desta versão.`) +
+    (naGeral ? `<div class="panel" style="border-left:4px solid var(--warn)">${naGeral} ${naGeral === 1 ? 'aluno ativo deste produto ainda está' : 'alunos ativos deste produto ainda estão'} na Jornada geral. <button class="btn sm" data-jp="${pid}">Transferir para esta jornada</button></div>` : '') +
+    `<div class="panel">${quadro(etapas, lista, cartao, 'alunos')}</div>`;
+  ligaArrastar(m); liga();
+  if ($('#alV')) $('#alV').onchange = e => { S.alV = e.target.value; render(); };
+  cartaoAcoes(m, lista);
+}
+
+/* ---------- Página da jornada de um produto (Produtos → Jornada do produto, ou Alunos → Editar jornada) ---------- */
+async function vJornadaProduto(m, pid) {
+  const w = S.ws, T = S.jpTab = S.jpTab || 'jornada';
+  if (!(await temColuna('alunos', 'jornada_id'))) { S.jpProd = null; m.innerHTML = '<div class="panel" style="border-left:4px solid var(--warn)"><b>A jornada do produto ainda não está no banco.</b> <span class="muted">Rode supabase/RODAR_v0.163_customer_growth.sql no SQL Editor do Supabase e recarregue.</span></div>'; return; }
+  const [pr, jors, mods, etG, alu] = await Promise.all([
+    q(sb.from('produtos').select('*').eq('id', pid)).then(r => r[0]),
+    q(sb.from('jornadas').select('*').eq('produto_id', pid).order('versao', { ascending: false })),
+    q(sb.from('jornadas').select('id,nome').eq('workspace_id', w).eq('modelo', true).neq('status', 'arquivada').order('nome')),
+    q(sb.from('etapas_kanban').select('id,nome,ordem').eq('workspace_id', w).eq('quadro', 'alunos').is('jornada_id', null).order('ordem')),
+    q(sb.from('alunos').select('id,jornada_id,etapa_kanban_id,status').eq('workspace_id', w).eq('produto_id', pid).limit(5000))
+  ]);
+  if (!pr) { S.jpProd = null; return render(); }
+  const ids = jors.map(j => j.id);
+  const etJ = ids.length ? await q(sb.from('etapas_kanban').select('*').in('jornada_id', ids).order('ordem')) : [];
+  const etDe = jid => (jid ? etJ.filter(e => e.jornada_id === jid) : etG).slice().sort((a, b) => a.ordem - b.ordem);
+  const ativos = jid => alu.filter(a => (a.jornada_id || null) === (jid || null) && a.status === 'ativo').length;
+  const rasc = jors.find(j => j.status === 'rascunho'), pub = jors.find(j => j.status === 'publicada');
+  const volta = () => { S.jpProd = null; S.jpTab = null; render(); };
+  const recarrega = () => render();
+  const tabs = `<div class="tabs">${[['jornada', 'Jornada do produto'], ['dados', 'Dados do produto']].map(([k, l]) => `<button data-jt="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div>`;
+  const cab = `<div class="head"><div><button class="btn sm" id="jpVolta">← Voltar</button><h1 style="margin-top:8px">${esc(pr.nome)}</h1><span class="muted">Jornada do produto: as etapas por onde o aluno passa depois da compra.</span></div></div>${tabs}`;
+  if (T === 'dados') {
+    const lin = (l, v) => `<div><span class="muted" style="font-size:11px">${l}</span><br>${v == null || v === '' ? '<span class="muted">—</span>' : esc(String(v))}</div>`;
+    m.innerHTML = cab + `<div class="panel"><div class="infog">${lin('Nome', pr.nome)}${lin('Tag', pr.tag)}${lin('Tipo', pr.tipo)}${lin('Categoria', pr.categoria)}${lin('Preço', brl(pr.preco))}${lin('Nível na escada', pr.nivel_escada)}${lin('Recorrência', pr.recorrente ? pr.periodicidade : 'avulso')}</div>
+      <div style="margin-top:10px"><button class="btn" id="jpCad">Editar no cadastro de produtos</button></div></div>`;
+    $('#jpCad').onclick = () => { S.jpProd = null; S.jpTab = null; S.view = 'cad-produtos'; abreMenu(S.view); render(); };
+  } else {
+    const linhaEt = (e, i, n, edit) => `<div class="card" style="cursor:default"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="muted mono">${i + 1}</span><b style="flex:1">${esc(e.nome)}</b>${e.alertar_responsavel ? '<span class="pill info">avisa o CS</span>' : ''}
+      ${edit ? `<button type="button" class="btn sm" data-up="${e.id}"${i === 0 ? ' disabled' : ''} title="Subir">↑</button><button type="button" class="btn sm" data-dn="${e.id}"${i === n - 1 ? ' disabled' : ''} title="Descer">↓</button><button type="button" class="btn sm bad" data-del="${e.id}">Excluir</button>` : ''}
+      <button type="button" class="btn sm" data-ed="${e.id}">${edit ? 'Editar' : 'Instruções'}</button></div>${e.descricao ? `<small>O que fazer: ${esc(e.descricao)}</small>` : ''}</div>`;
+    const lista = (jid, edit) => { const L = etDe(jid); return `<div style="display:flex;flex-direction:column;gap:6px;margin-top:8px" data-lista="${jid}">${L.map((e, i) => linhaEt(e, i, L.length, edit)).join('') || '<div class="empty">Nenhuma etapa ainda.</div>'}</div>`; };
+    const optBase = [...mods.map(x => ['m:' + x.id, x.nome]), ...Object.entries(JORNADA_SUGESTOES).map(([k, s]) => ['s:' + k, s.nome])];
+    const comeco = `<div class="acts" style="margin-top:10px"><button class="btn pri" data-novo="geral">Começar da Jornada geral (${etG.length} ${etG.length === 1 ? 'etapa' : 'etapas'})</button><button class="btn" data-novo="zero">Começar do zero</button>
+      <label style="flex-direction:row;align-items:center;gap:6px">ou de um modelo <select id="jpMod" style="width:auto"><option value="">—</option>${optBase.map(([o, l]) => `<option value="${o}">${esc(l)}</option>`).join('')}</select></label></div>`;
+    const versoes = jors.length ? `<div class="panel"><h2>Versões</h2><div class="tw"><table><thead><tr><th>Versão</th><th>Situação</th><th>Publicada em</th><th class="n">Alunos ativos</th><th></th></tr></thead><tbody>
+      ${jors.map(j => `<tr><td>v${j.versao}</td><td>${pillJor(j.status)}</td><td>${j.publicada_em ? dtt(j.publicada_em) : '—'}</td><td class="n">${ativos(j.id)}</td><td style="white-space:nowrap">${j.status === 'anterior' && ativos(j.id) && pub ? `<button class="btn sm" data-tr="${j.id}">Transferir alunos para a v${pub.versao}</button> ` : ''}${j.status !== 'rascunho' ? `<button class="btn sm" data-modelo="${j.id}">Salvar como modelo</button>` : ''}</td></tr>`).join('')}
+      <tr><td colspan="2" class="muted">Jornada geral</td><td>—</td><td class="n">${ativos(null)}</td><td>${ativos(null) && pub ? `<button class="btn sm" data-tr="geral">Transferir alunos para a v${pub.versao}</button>` : ''}</td></tr></tbody></table></div></div>` : '';
+    m.innerHTML = cab + (!jors.length ? `<div class="panel"><h2>Este produto usa a Jornada geral</h2><span class="muted">Quem compra ${esc(pr.nome)} hoje anda pelas etapas gerais de Alunos. Crie a jornada própria do produto: ela fica em rascunho até você publicar.</span>${comeco}</div>` : '') +
+      (rasc ? `<div class="panel" style="border-left:4px solid var(--warn)"><div class="head"><div><h2>Versão ${rasc.versao} · rascunho</h2><span class="muted">Crie, renomeie e reordene as etapas. Matrículas novas só entram nela depois de publicada.</span></div>
+        <div class="acts"><button class="btn pri" id="jpPub">Publicar versão ${rasc.versao}</button><button class="btn bad" id="jpDesc">Descartar rascunho</button></div></div>${lista(rasc.id, true)}<div style="margin-top:10px"><button class="btn" data-nova="${rasc.id}">Nova etapa</button></div></div>` : '') +
+      (pub ? `<div class="panel"><div class="head"><div><h2>Versão ${pub.versao} · em uso</h2><span class="muted">Etapas publicadas não mudam de nome nem de ordem; as instruções e o aviso ao CS podem ser ajustados. Para mudar as etapas, crie uma nova versão.</span></div>
+        <div class="acts">${rasc ? '' : `<button class="btn" id="jpNova">Nova versão</button>`}</div></div>${lista(pub.id, false)}</div>` : '') + versoes;
+    // começar
+    m.querySelectorAll('[data-novo]').forEach(b => b.onclick = () => act(async () => { await q(sb.rpc('jornada_rascunho', { p_produto: pid, p_base: null, p_da_geral: b.dataset.novo === 'geral' })); recarrega(); }, 'Rascunho criado'));
+    if ($('#jpMod')) $('#jpMod').onchange = e => act(async () => {
+      const v = e.target.value; if (!v) return;
+      if (v.startsWith('m:')) await q(sb.rpc('jornada_rascunho', { p_produto: pid, p_base: v.slice(2), p_da_geral: false }));
+      else { const sg = JORNADA_SUGESTOES[v.slice(2)], nid = await q(sb.rpc('jornada_rascunho', { p_produto: pid, p_base: null, p_da_geral: false }));
+        await q(sb.from('etapas_kanban').insert(sg.etapas.map(([nome, descricao], i) => ({ workspace_id: w, quadro: 'alunos', jornada_id: nid, nome, descricao, ordem: i + 1 })))); }
+      recarrega();
+    }, 'Rascunho criado');
+    if ($('#jpNova')) $('#jpNova').onclick = () => act(async () => { await q(sb.rpc('jornada_rascunho', { p_produto: pid, p_base: pub.id, p_da_geral: false })); recarrega(); }, 'Nova versão em rascunho');
+    if ($('#jpDesc')) $('#jpDesc').onclick = () => act(async () => { if (!confirm('Descartar o rascunho da versão ' + rasc.versao + '? As etapas dele são apagadas.')) return; await q(sb.from('jornadas').delete().eq('id', rasc.id)); recarrega(); }, 'Rascunho descartado');
+    if ($('#jpPub')) $('#jpPub').onclick = () => modalPublicarJornada(rasc, pub, etDe(rasc.id), pub ? etDe(pub.id) : etG, pub ? ativos(pub.id) : ativos(null), recarrega);
+    // etapas
+    const formEt = (row, jid, so) => {
+      const campos = [{ k: 'nome', l: 'Nome da etapa', req: 1, full: 1 }, { k: 'descricao', l: 'O que precisa acontecer nesta etapa', t: 'textarea', hint: 'Ex.: reunião de diagnóstico feita e objetivo combinado.' },
+        { k: 'mensagem_padrao', l: 'Mensagem padrão', t: 'textarea', hint: 'Use {nome} ou {primeiro_nome}.' }, { k: 'alertar_responsavel', l: 'Avisar o CS responsável quando um aluno chegar a esta etapa', t: 'check' }];
+      const m2 = modal(row ? 'Editar etapa' : 'Nova etapa', `<div class="grid2">${campos.map(c => campoHtml(c, row ? row[c.k] : undefined)).join('')}</div>`, async (_d, fm) => {
+        const v = lerCampos(campos, fm); if (so) delete v.nome;
+        if (row) await q(sb.from('etapas_kanban').update(v).eq('id', row.id));
+        else await q(sb.from('etapas_kanban').insert({ ...v, workspace_id: w, quadro: 'alunos', jornada_id: jid, ordem: etDe(jid).reduce((a, x) => Math.max(a, x.ordem || 0), 0) + 1 }));
+        toast('Etapa salva'); setTimeout(recarrega, 50);
+      });
+      if (so) m2.nome.readOnly = true;
+    };
+    m.querySelectorAll('[data-nova]').forEach(b => b.onclick = () => formEt(null, b.dataset.nova, false));
+    m.querySelectorAll('[data-ed]').forEach(b => b.onclick = () => { const e = etJ.find(x => x.id === b.dataset.ed); formEt(e, e.jornada_id, e.jornada_id !== (rasc || {}).id); });
+    const mover = (id, d) => act(async () => {
+      const L = etDe(rasc.id), ix = L.map(x => x.id), i = ix.indexOf(id), j = i + d; if (j < 0 || j >= ix.length) return;
+      [ix[i], ix[j]] = [ix[j], ix[i]];
+      await Promise.all(ix.map((x, k) => q(sb.from('etapas_kanban').update({ ordem: k + 1 }).eq('id', x)))); recarrega();
+    });
+    m.querySelectorAll('[data-up]').forEach(b => b.onclick = () => mover(b.dataset.up, -1));
+    m.querySelectorAll('[data-dn]').forEach(b => b.onclick = () => mover(b.dataset.dn, 1));
+    m.querySelectorAll('[data-del]').forEach(b => b.onclick = () => act(async () => { const e = etJ.find(x => x.id === b.dataset.del); if (!confirm('Excluir a etapa "' + e.nome + '"?')) return; await q(sb.from('etapas_kanban').delete().eq('id', e.id)); recarrega(); }, 'Etapa excluída'));
+    m.querySelectorAll('[data-tr]').forEach(b => b.onclick = () => { const de = b.dataset.tr === 'geral' ? null : b.dataset.tr; modalTransferirJornada(de, pub, de ? etDe(de) : etG, etDe(pub.id), ativos(de), de ? 'v' + (jors.find(j => j.id === de) || {}).versao : 'Jornada geral', pid, recarrega); });
+    m.querySelectorAll('[data-modelo]').forEach(b => b.onclick = () => { const j = jors.find(x => x.id === b.dataset.modelo);
+      const f = modal('Salvar como modelo', `<label>Nome do modelo<input name="nome" required value="${esc(pr.nome)}"></label><span class="muted">O modelo guarda as etapas e as instruções desta versão. Depois dá para criar a jornada de outro produto a partir dele.</span>`,
+        async (_d, fm) => { await q(sb.rpc('jornada_salvar_modelo', { p_jornada: j.id, p_nome: fm.nome.value })); toast('Modelo salvo'); recarrega(); }); });
+  }
+  $('#jpVolta').onclick = volta;
+  m.querySelectorAll('[data-jt]').forEach(b => b.onclick = () => { S.jpTab = b.dataset.jt; render(); });
+}
+
+// Mapa de etapas: cada etapa antiga escolhe a etapa equivalente da nova (já sugere pelo nome) ou "não levar".
+function mapaEtapasHtml(antigas, novas, padrao) {
+  const sug = e => (novas.find(n => n.nome.trim().toLowerCase() === e.nome.trim().toLowerCase()) || (padrao ? novas[0] : null) || {}).id || '';
+  return `<div class="tw"><table><thead><tr><th>Etapa de agora</th><th>Vai para</th></tr></thead><tbody>${antigas.map(e => `<tr><td>${esc(e.nome)}</td><td><select name="m_${e.id}" style="width:auto"><option value="">Não levar (fica onde está)</option>${novas.map(n => `<option value="${n.id}"${n.id === sug(e) ? ' selected' : ''}>${esc(n.nome)}</option>`).join('')}</select></td></tr>`).join('')}</tbody></table></div>`;
+}
+const lerMapa = (f, antigas) => Object.fromEntries(antigas.map(e => [e.id, f['m_' + e.id].value]).filter(([, v]) => v));
+
+function modalPublicarJornada(rasc, pub, novas, antigas, nAtivos, depois) {
+  const origem = pub ? 'na versão ' + pub.versao : 'na Jornada geral';
+  const f = modal('Publicar versão ' + rasc.versao, `${nAtivos ? `<p><b>${nAtivos} ${nAtivos === 1 ? 'aluno ativo está' : 'alunos ativos estão'} ${origem}.</b> O que fazer com eles?</p>
+      <label style="flex-direction:row;align-items:center;gap:8px;color:var(--ink)"><input type="radio" name="modo" value="continuar" checked style="width:auto"> Continuam ${origem} (só quem entrar daqui para a frente usa a versão ${rasc.versao})</label>
+      <label style="flex-direction:row;align-items:center;gap:8px;color:var(--ink)"><input type="radio" name="modo" value="transferir" style="width:auto"> Transferir para a versão ${rasc.versao}</label>
+      <div id="jpMapa" style="display:none;margin-top:8px"><span class="muted">Escolha para qual etapa nova vai quem está em cada etapa de agora. "Não levar" deixa esses alunos onde estão (dá para levar depois).</span>${mapaEtapasHtml(antigas, novas, true)}</div>`
+    : `<p>Nenhum aluno ativo ${origem}. A partir de agora, quem comprar entra na primeira etapa da versão ${rasc.versao}.</p>`}
+    <span class="muted">Depois de publicada, as etapas desta versão não mudam de nome nem de ordem. As pesquisas ligadas às etapas de antes passam para a etapa equivalente da nova.</span>`,
+    async (_d, fm) => {
+      const modo = nAtivos ? fm.querySelector('[name=modo]:checked').value : 'continuar';
+      const r = await q(sb.rpc('jornada_publicar', { p_jornada: rasc.id, p_modo: modo, p_mapa: modo === 'transferir' ? lerMapa(fm, antigas) : {} }));
+      toast('Versão ' + rasc.versao + ' publicada' + (r && r.transferidos ? ' · ' + r.transferidos + ' aluno(s) transferido(s)' : '')); depois();
+    }, 'Publicar', true);
+  f.querySelectorAll('[name=modo]').forEach(x => x.onchange = () => { $('#jpMapa').style.display = f.querySelector('[name=modo]:checked').value === 'transferir' ? '' : 'none'; });
+}
+
+function modalTransferirJornada(de, pub, antigas, novas, nAtivos, rotDe, pid, depois) {
+  modal('Transferir alunos para a versão ' + pub.versao, `<p>${nAtivos} ${nAtivos === 1 ? 'aluno ativo' : 'alunos ativos'} em ${esc(rotDe)}. Escolha para qual etapa da versão ${pub.versao} vai quem está em cada etapa. "Não levar" deixa esses alunos onde estão.</p>${mapaEtapasHtml(antigas, novas, true)}`,
+    async (_d, fm) => { const n = await q(sb.rpc('jornada_transferir', { p_de: de, p_para: pub.id, p_mapa: lerMapa(fm, antigas), p_produto: pid })); toast((n || 0) + ' aluno(s) transferido(s)'); depois(); }, 'Transferir', true);
+}
+
+/* Produtos → painel "Jornada do produto": onde está cada produto e o botão para abrir a jornada. */
+async function jornadasProdutos(el) {
+  if (!(await temColuna('alunos', 'jornada_id'))) { el.remove(); return; }
+  const w = S.ws;
+  const [prods, jors] = await Promise.all([q(sb.from('produtos').select('id,nome,ativo').eq('workspace_id', w).order('nome')), q(sb.from('jornadas').select('id,produto_id,versao,status').eq('workspace_id', w).eq('modelo', false))]);
+  const est = p => { const js = jors.filter(j => j.produto_id === p.id), pb = js.find(j => j.status === 'publicada'), rs = js.find(j => j.status === 'rascunho');
+    return (pb ? `<span class="pill good">v${pb.versao} em uso</span>` : '<span class="pill neutral">Jornada geral</span>') + (rs ? ` <span class="pill warn">v${rs.versao} em rascunho</span>` : ''); };
+  el.innerHTML = `<h2>Jornada do produto</h2><span class="muted">As etapas por onde o aluno passa depois da compra. Produto sem jornada própria usa a Jornada geral (Alunos → Gerenciar etapas).</span>
+    <div class="tw"><table><thead><tr><th>Produto</th><th>Jornada</th><th></th></tr></thead><tbody>${prods.map(p => `<tr><td>${esc(p.nome)}${p.ativo === false ? ' <span class="muted">(desativado)</span>' : ''}</td><td>${est(p)}</td><td><button class="btn sm" data-jp="${p.id}">Abrir jornada</button></td></tr>`).join('') || '<tr><td colspan="3" class="empty">Nenhum produto.</td></tr>'}</tbody></table></div>`;
+  el.querySelectorAll('[data-jp]').forEach(b => b.onclick = () => { S.jpProd = b.dataset.jp; S.jpTab = 'jornada'; render(); });
 }
 
 /* ================= FINANCEIRO ================= */
@@ -4320,9 +4518,10 @@ async function renderCad(el, key) {
   el.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => abrir(rows.find(r => r.id === b.dataset.edit)));
 }
 async function vCad(m, key) {
-  m.innerHTML = '<div class="head"><h1>Cadastros</h1></div><div class="panel" id="c1"></div>' + (key === 'produtos' ? '<div class="panel" id="c2"></div>' : '');
+  if (key === 'produtos' && S.jpProd) return vJornadaProduto(m, S.jpProd);
+  m.innerHTML = '<div class="head"><h1>Cadastros</h1></div><div class="panel" id="c1"></div>' + (key === 'produtos' ? '<div class="panel" id="c3"></div><div class="panel" id="c2"></div>' : '');
   await renderCad($('#c1'), key);
-  if (key === 'produtos') await ofertasProduto($('#c2'));
+  if (key === 'produtos') { await jornadasProdutos($('#c3')); await ofertasProduto($('#c2')); }
 }
 async function vPlataformas(m) {
   m.innerHTML = '<div class="head"><h1>Cadastros</h1></div><div class="panel" id="c1"></div><div class="panel" id="c2"></div>';
@@ -14037,7 +14236,10 @@ async function modalPesquisa(row) {
   const [funis, et, cgA] = await Promise.all([q(sb.from('funis').select('id,nome').eq('workspace_id', S.ws).order('nome')), q(sb.from('funil_etapas').select('nome,ordem').eq('workspace_id', S.ws).order('ordem')), temColuna('pesquisas', 'etapa_aluno_id')]);
   const nomesEt = [...new Set(et.map(e => e.nome))];
   // v0.163: gatilho pela etapa da jornada do aluno e filtro por produto (só com o banco atualizado)
-  const [etA, prodA] = cgA ? await Promise.all([q(sb.from('etapas_kanban').select('id,nome,ordem').eq('workspace_id', S.ws).eq('quadro', 'alunos').order('ordem')), q(sb.from('produtos').select('id,nome').eq('workspace_id', S.ws).order('nome'))]) : [[], []];
+  const [etA0, prodA, jorA] = cgA ? await Promise.all([q(sb.from('etapas_kanban').select('*').eq('workspace_id', S.ws).eq('quadro', 'alunos').order('ordem')), q(sb.from('produtos').select('id,nome').eq('workspace_id', S.ws).order('nome')),
+    q(sb.from('jornadas').select('id,produto_id,nome,versao,status,modelo').eq('workspace_id', S.ws).eq('modelo', false)).catch(() => [])]) : [[], [], []];
+  const JA = Object.fromEntries(jorA.map(j => [j.id, j])), PA = Object.fromEntries(prodA.map(p => [p.id, p]));
+  const etA = etA0.filter(e => !e.jornada_id || (JA[e.jornada_id] && JA[e.jornada_id].status !== 'arquivada')).map(e => ({ id: e.id, nome: e.jornada_id ? nomeJor(JA[e.jornada_id], PA).replace(/&amp;/g, '&') + ' · ' + e.nome + (JA[e.jornada_id].status === 'rascunho' ? ' (rascunho)' : '') : (jorA.length ? 'Jornada geral · ' : '') + e.nome }));
   const gats = Object.entries(PQ_GAT).filter(([k]) => cgA || k !== 'etapa_aluno');
   const campos = [{ k: 'nome', l: 'Nome da pesquisa', req: 1, full: 1 }, { k: 'tipo', l: 'Tipo', t: 'select', req: 1, def: 'lead', opts: Object.entries(PQ_TIPO) }, { k: 'descricao', l: 'Texto de abertura (a pessoa vê)', t: 'textarea' },
     { k: 'gatilho', l: 'Quando enviar', t: 'select', req: 1, def: 'manual', opts: gats },
