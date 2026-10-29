@@ -20,6 +20,12 @@ SEED = {
     'caixa': {'saldo': 18500, 'a_receber': 9000, 'a_pagar': 4000, 'atraso_receber': 1200, 'atraso_pagar': 0},
     'resultado': {'receita': 24000, 'lucro': -1500, 'margem': -0.0625},
     'recorrencia': {'mrr': 3500}, 'cac': {'cac_total': 450, 'novos': 12}, 'fluxo': {'entrou': 15000, 'saiu': 9000}},
+  'projetos': ws([dict(id='pj1', status='em_andamento'), dict(id='pj2', status='em_andamento'), dict(id='pj3', status='planejado')]),
+  'projeto_atividades': ws([dict(id='a1', status='liberada', prazo='2026-10-01'), dict(id='a2', status='em_andamento', prazo='2099-01-01'), dict(id='a3', status='bloqueada'),
+                            dict(id='a4', status='concluida', concluida_em='2026-10-20T10:00:00Z'), dict(id='a5', status='liberada', pai_id=None), dict(id='a6', status='concluida', pai_id='a5', concluida_em='2026-10-21T10:00:00Z')]),
+  'growth_metricas': ws([dict(id='n1', nome='Alunos com resultado', tipo='north_star', fonte='manual', unidade='numero', direcao='sobe', meta=40, valor_manual=30)]),
+  'growth_experimentos': ws([dict(id='e1', etapa='ideia'), dict(id='e2', etapa='rodando'), dict(id='e3', etapa='analise'), dict(id='e4', etapa='concluido', resultado='venceu'), dict(id='e5', etapa='concluido', resultado='perdeu')]),
+  'rpc:growth_metricas_auto': {},
   'rpc:growths_serie': [dict(dia='2026-10-%02d' % d, leads=d % 5 + 1, qualificados=1, vendas=d % 2, receita=(d % 3) * 1000) for d in range(1, 30)],
   'v_dre_mensal': ws([dict(mes=m + '-01', tipo=t, valor=v) for m in ['2026-08', '2026-09', '2026-10'] for t, v in [('receita', 20000), ('custo', 8000), ('despesa', 9000 if m != '2026-10' else 16000)]]),
   'rpc:cg_indicadores': {'matriculas': {'ativas': 522, 'novas': 30, 'sairam': 4, 'sem_cs': 484}, 'alertas': {'parado': 340, 'sem_cs': 484},
@@ -42,7 +48,9 @@ with sync_playwright() as p:
     pg.goto('file:///' + HTML.replace('\\', '/')); pg.wait_for_timeout(1200)
     chk(pg.evaluate("S.view") == 'cockpit', 'o Growths abre no Cockpit', pg.evaluate("S.view"))
     pg.evaluate("window.provisionaAuto = async () => {}; S.ws = 'w1'; S.view = 'cockpit'; render();"); pg.wait_for_timeout(1300)
-    chk(pg.evaluate("[...document.querySelectorAll('.ck-card h2')].map(h => h.textContent)") == ['Geral', 'Marketing', 'Vendas', 'Financeiro', 'Clientes (CS)'], 'cinco painéis na ordem')
+    chk(pg.evaluate("[...document.querySelectorAll('.ck-card h2')].map(h => h.textContent)") == ['Geral', 'Marketing', 'Vendas', 'Financeiro', 'Projetos', 'Growth', 'Clientes (CS)'], 'painéis na ordem: Geral, Marketing, Vendas, Financeiro, Projetos, Growth, Clientes')
+    chk(pg.evaluate("(() => { const a = document.querySelector('.ck-mkt').getBoundingClientRect(), b = document.querySelector('.ck-ven').getBoundingClientRect(), c = document.querySelector('.ck-fin').getBoundingClientRect(), d = document.querySelector('.ck-prj').getBoundingClientRect(); return Math.abs(a.top - b.top) < 2 && b.left > a.right && Math.abs(c.top - d.top) < 2 && c.top > a.bottom; })()"), 'Marketing e Vendas lado a lado; Financeiro e Projetos lado a lado, embaixo')
+    chk(pg.evaluate("document.querySelector('.ck-mkt').getBoundingClientRect().height") < 330, 'painel compacto (menos de 330 px de altura)', pg.evaluate("document.querySelector('.ck-mkt').getBoundingClientRect().height"))
     chk(pg.evaluate("!!document.querySelector('#nav [data-v=cockpit]')"), 'Cockpit no menu')
     g = card(pg, 'geral')
     chk(all(x in g for x in ['Saldo em caixa', 'R$ 18.500,00', 'Receita', 'R$ 24.000,00', 'Vendas 12', 'Margem', '−6,3%', 'Lucro', '−R$ 1.500,00']), 'Geral: caixa, receita, vendas, margem e lucro', g)
@@ -55,6 +63,11 @@ with sync_playwright() as p:
     chk('A receber R$ 9.000,00' in f and 'R$ 1.200,00 em atraso' in f and 'A pagar R$ 4.000,00' in f and 'entrou − saiu): R$ 6.000,00' in f and 'MRR R$ 3.500,00' in f, 'Financeiro: saldo, receber, pagar, fluxo e MRR', f)
     c = card(pg, 'cs')
     chk('Alunos ativos 522' in c and 'Alertas abertos 824' in c and 'Intervenções abertas 3' in c and 'NPS dos alunos 43' in c and 'Sem CS responsável: 484' in c, 'Clientes: ativos, alertas, intervenções, NPS e sem CS', c)
+    pj = card(pg, 'prj')
+    chk('Projetos em andamento 2' in pj and '1 planejados' in pj and 'Para fazer agora 2' in pj and 'Atrasadas 1' in pj and 'Concluídas 2' in pj, 'Projetos: andamento, para fazer, atrasadas e concluídas', pj)
+    gr = card(pg, 'gro')
+    chk('North Star 30' in gr and 'Alunos com resultado' in gr and 'Da meta 75%' in gr and 'Experimentos rodando 1' in gr and 'Venceram 50%' in gr, 'Growth: North Star, meta, experimentos e vitórias', gr)
+    chk(pg.evaluate("[...document.querySelectorAll('.ck-gro .ck-hb-r')].map(x => x.textContent)") == ['Ideias', 'Priorizados', 'Rodando', 'Em análise', 'Concluídos'], 'Growth: experimentos por etapa')
     # gráficos
     chk(pg.evaluate("['geral','mkt','ven'].every(k => document.querySelector('.ck-' + k + ' svg.ck-svg path'))"), 'Geral, Marketing e Vendas têm gráfico de colunas')
     chk(pg.evaluate("[...document.querySelectorAll('.ck-geral .ck-leg span')].map(x => x.textContent)") == ['Receita', 'Lucro'], 'gráfico do Geral com legenda Receita e Lucro')
@@ -69,7 +82,7 @@ with sync_playwright() as p:
     chk(pg.evaluate("document.querySelectorAll('.ck-mkt .ck-hit').length") == 1 and pg.evaluate("document.querySelector('.ck-mkt .ck-gt').textContent") == 'Leads por mês', 'no Ano, os gráficos juntam por mês')
     pg.click('.ck-cs'); pg.wait_for_timeout(1200)
     chk(pg.evaluate("S.view") == 'ho-cg' and pg.evaluate("S.cg.aba") == 'indicadores', 'clicar em Clientes abre Customer Growth nos indicadores')
-    for k, tela in [('mkt', 'mkt-dash'), ('fin', 'fin-dash'), ('ven', 'crm-dash'), ('geral', 'adm-painel')]:
+    for k, tela in [('mkt', 'mkt-dash'), ('fin', 'fin-dash'), ('ven', 'crm-dash'), ('prj', 'prj-lista'), ('gro', 'gro-modelo'), ('geral', 'adm-painel')]:
         pg.evaluate("S.view = 'cockpit'; render();"); pg.wait_for_timeout(900)
         pg.evaluate("k => document.querySelector('.ck-' + k).click()", k); pg.wait_for_timeout(400)
         chk(pg.evaluate("S.view") == tela, 'clicar em ' + k + ' abre ' + tela)

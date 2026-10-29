@@ -3,8 +3,10 @@
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
 ## v0.164 — Cockpit na entrada (29/10/2026)
-- O Growths passa a abrir no **Cockpit** (primeiro item do menu): um painel por área, bem separado dos outros, com até cinco números do período escolhido (7 dias, 30 dias, mês atual ou ano) e um gráfico.
-- **Gráficos:** Geral = receita e lucro por mês (últimos 6 meses, ou o ano); Marketing = leads por dia (por mês no Ano); Vendas = faturamento por dia; Financeiro = entrou × saiu no período e a receber × a pagar em aberto; Clientes = alunos ativos por etapa. Passar o mouse mostra o valor. Cores azul e laranja validadas para daltonismo no modo claro e no escuro.
+- O Growths passa a abrir no **Cockpit** (primeiro item do menu): um painel compacto por área, bem separado dos outros, com quatro números do período escolhido (7 dias, 30 dias, mês atual ou ano) e um gráfico. Cabem dois painéis lado a lado (três em tela larga): Marketing e Vendas; Financeiro e Projetos; Growth e Clientes. O Geral fica numa faixa no topo, com os números e o gráfico ao lado.
+  - **Projetos:** projetos em andamento, atividades para fazer agora, atrasadas e concluídas no período; gráfico de atividades por situação.
+  - **Growth:** valor da North Star e % da meta, experimentos rodando e % que venceram; gráfico de experimentos por etapa.
+- **Gráficos:** Geral = receita e lucro por mês (últimos 6 meses, ou o ano); Marketing = leads por dia (por mês no Ano); Vendas = faturamento por dia; Financeiro = entrou × saiu no período e a receber × a pagar em aberto; Clientes = alunos ativos por etapa; Projetos = atividades por situação; Growth = experimentos por etapa. Passar o mouse mostra o valor. Cores azul e laranja validadas para daltonismo no modo claro e no escuro.
   - **Geral:** saldo em caixa, receita, vendas, margem e lucro.
   - **Marketing:** campanhas ativas (e planejadas), leads no período e qualificados, leads em andamento e CAC.
   - **Vendas:** vendas aprovadas, faturamento, ticket médio, conversão lead → cliente e oportunidades abertas.
@@ -12,7 +14,7 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
   - **Clientes (CS):** alunos ativos, alertas abertos, intervenções abertas, NPS dos alunos e matrículas sem CS.
 - Clicar num painel abre o dashboard do módulo (Dashboard, Marketing, Vendas, Financeiro, Customer Growth → Indicadores). Valor negativo em vermelho; ponto de atenção com marca amarela.
 - Os números vêm das mesmas funções do banco que os dashboards usam (`painel_gerencial`, `cg_indicadores`): batem com eles. Cada painel só aparece para quem tem acesso ao módulo.
-- Teste: `tests/tela/t164_cockpit.py` (26 verificações, 0 falhas); t162 e t163 sem falhas. Sem mudança no banco.
+- Teste: `tests/tela/t164_cockpit.py` (32 verificações, 0 falhas); t162 e t163 sem falhas. Sem mudança no banco.
 
 ## v0.163 — Customer Growth: jornada e evolução do aluno (29/10/2026)
 - **Jornada do produto** (Produtos → Jornada do produto, ou Alunos → Editar jornada): cada produto pode ter as suas etapas de depois da compra, com versão. Rascunho → publicar; ao publicar, a tela pergunta se quem já está dentro **continua** na versão atual ou é **transferido** (cada etapa antiga escolhe a equivalente; "não levar" deixa onde está). Botão **Transferir alunos** para levar depois. **Salvar como modelo** e começar de um modelo (dois modelos sugeridos: Mentoria e Curso online). Produto sem jornada própria continua na **Jornada geral** (as etapas de hoje).

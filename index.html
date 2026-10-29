@@ -1111,48 +1111,49 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
 <style id="v164">/* v0.164 — Cockpit: um painel por área, com números e um gráfico, clicável */
 :root{--ck-s1:#3b82f6;--ck-s2:#d97706}
 :root[data-theme="light"]{--ck-s1:#1d4ed8;--ck-s2:#d97706}
-.ck-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:stretch}
-.ck-card{cursor:pointer;display:flex;flex-direction:column;background:var(--panel,var(--surface,#fff));border:1px solid var(--line);border-radius:16px;box-shadow:0 2px 10px rgba(15,23,42,.06);overflow:hidden;transition:border-color .15s,box-shadow .15s,transform .15s}
-.ck-card:hover,.ck-card:focus-visible{border-color:var(--accent);box-shadow:0 10px 28px rgba(var(--accent-rgb),.16);transform:translateY(-2px);outline:none}
+.ck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:16px;align-items:stretch}
+.ck-card{cursor:pointer;display:flex;flex-direction:column;background:var(--panel,var(--surface,#fff));border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 8px rgba(15,23,42,.06);overflow:hidden;transition:border-color .15s,box-shadow .15s,transform .15s}
+.ck-card:hover,.ck-card:focus-visible{border-color:var(--accent);box-shadow:0 8px 22px rgba(var(--accent-rgb),.16);transform:translateY(-1px);outline:none}
 .ck-geral{grid-column:1/-1}
-.ck-h{display:flex;gap:12px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,rgba(var(--accent-rgb),.07),transparent 70%)}
-.ck-h h2{margin:0;font-size:17px}
-.ck-h>div{flex:1;min-width:0}
-.ck-d{font-size:12.5px;color:var(--muted)}
-.ck-ic{width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none}
-.ck-ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.ck-ir{font-size:12.5px;font-weight:600;color:var(--accent);white-space:nowrap}
-.ck-b{padding:16px 20px 18px;display:flex;flex-direction:column;gap:16px;flex:1}
-.ck-is{display:grid;grid-template-columns:1fr 1fr;row-gap:14px}
-.ck-geral .ck-is{grid-template-columns:repeat(5,minmax(0,1fr))}
-.ck-i{display:flex;flex-direction:column;gap:3px;padding:2px 14px;border-left:1px solid var(--line)}
-.ck-is>.ck-i:nth-child(2n+1){padding-left:0;border-left:0}
-.ck-geral .ck-is>.ck-i{padding-left:14px;border-left:1px solid var(--line)}
-.ck-geral .ck-is>.ck-i:first-child{padding-left:0;border-left:0}
-.ck-i .l{font-size:12px;color:var(--muted);font-weight:600}
-.ck-i .v{font-size:22px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
-.ck-i .s{font-size:11.5px;color:var(--muted)}
+.ck-h{display:flex;gap:10px;align-items:center;padding:9px 14px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,rgba(var(--accent-rgb),.07),transparent 70%)}
+.ck-h h2{margin:0;font-size:15px}
+.ck-h>div{flex:1;min-width:0;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.ck-d{font-size:11.5px;color:var(--muted)}
+.ck-ic{width:28px;height:28px;border-radius:8px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none}
+.ck-ic svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ck-ir{font-size:11.5px;font-weight:600;color:var(--accent);white-space:nowrap}
+.ck-b{padding:10px 14px 12px;display:flex;flex-direction:column;gap:10px;flex:1}
+.ck-geral .ck-b{flex-direction:row;align-items:center;gap:18px}
+.ck-geral .ck-b>.ck-is{flex:2.2;grid-template-columns:repeat(5,minmax(0,1fr))}
+.ck-geral .ck-i{overflow:hidden}
+.ck-geral .ck-b>.ck-g{flex:1;border-top:0;border-left:1px dashed var(--line);padding:0 0 0 16px;margin:0}
+.ck-is{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));row-gap:8px}
+.ck-i{display:flex;flex-direction:column;gap:1px;padding:0 10px;border-left:1px solid var(--line);min-width:0}
+.ck-is>.ck-i:first-child{padding-left:0;border-left:0}
+.ck-i .l{font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ck-i .v{font-size:17px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+.ck-i .s{font-size:10.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ck-i.ck-neg .v,.ck-txneg{color:var(--bad)}
 .ck-i.ck-atn .l::after{content:" ●";color:var(--warn)}
-.ck-g{border-top:1px dashed var(--line);padding-top:12px;margin-top:auto}
-.ck-gt{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
-.ck-gn{font-size:12.5px;color:var(--muted);margin-top:6px}
+.ck-g{border-top:1px dashed var(--line);padding-top:8px;margin-top:auto}
+.ck-gt{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
+.ck-gn{font-size:11.5px;color:var(--muted);margin-top:4px}
 .ck-svg{width:100%;height:auto;display:block}
 .ck-svg .ck-base{stroke:var(--line);stroke-width:1}
-.ck-svg .ck-ax{font-size:12px;fill:var(--muted)}
+.ck-svg .ck-ax{font-size:11px;fill:var(--muted)}
 .ck-svg .ck-hit:hover{fill:rgba(var(--accent-rgb),.07)}
-.ck-leg{display:flex;gap:14px;font-size:12px;color:var(--muted);margin:2px 0 4px}
+.ck-leg{display:flex;gap:12px;font-size:11px;color:var(--muted);margin:0 0 2px}
 .ck-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
-.ck-hb{display:flex;flex-direction:column;gap:8px}
-.ck-hb-l{display:grid;grid-template-columns:minmax(110px,38%) 1fr auto;gap:10px;align-items:center;font-size:12.5px}
+.ck-hb{display:flex;flex-direction:column;gap:5px}
+.ck-hb-l{display:grid;grid-template-columns:minmax(100px,36%) 1fr auto;gap:8px;align-items:center;font-size:11.5px}
 .ck-hb-r{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
-.ck-hb-t{height:12px;background:var(--surface-2,rgba(127,127,127,.12));border-radius:99px;overflow:hidden}
+.ck-hb-t{height:9px;background:var(--surface-2,rgba(127,127,127,.12));border-radius:99px;overflow:hidden}
 .ck-hb-t i{display:block;height:100%;border-radius:0 4px 4px 0}
 .ck-hb-v{font-weight:600;white-space:nowrap}
-.ck-vazio{font-size:12.5px;color:var(--muted);padding:18px 0;text-align:center}
+.ck-vazio{font-size:11.5px;color:var(--muted);padding:10px 0;text-align:center}
 .ck-tip{position:fixed;z-index:60;pointer-events:none;background:var(--ink,#0f172a);color:var(--bg,#fff);font-size:12px;padding:6px 9px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.2);max-width:280px}
 .seg{display:flex;gap:4px;flex-wrap:wrap}
-@media (max-width:900px){.ck-grid{grid-template-columns:1fr;gap:18px}.ck-geral .ck-is{grid-template-columns:1fr 1fr}.ck-geral .ck-is>.ck-i:nth-child(2n+1){padding-left:0;border-left:0}}
+@media (max-width:900px){.ck-grid{grid-template-columns:1fr}.ck-geral .ck-b{flex-direction:column;align-items:stretch}.ck-geral .ck-b>.ck-g{border-left:0;border-top:1px dashed var(--line);padding:8px 0 0}}
 </style>
 <style id="v162">/* v0.162 — Mapa de métricas: North Star em destaque e as alavancas agrupadas embaixo dela */
 .gtree .gn.ns{max-width:680px;padding:16px 18px;gap:7px;border:2px solid var(--accent);background:radial-gradient(120% 90% at 100% 0%,rgba(8,145,178,.10),transparent 55%),var(--surface);box-shadow:0 10px 30px rgba(var(--accent-rgb),.18)}
@@ -3447,8 +3448,8 @@ function ckBaldes(serie, campo, porMes) {
 const ckDinheiroCurto = v => { const n = Number(v || 0), a = Math.abs(n), s = n < 0 ? '−' : '';
   return a >= 1e6 ? s + 'R$ ' + (a / 1e6).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mi' : a >= 1e3 ? s + 'R$ ' + (a / 1e3).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mil' : s + 'R$ ' + Math.round(a).toLocaleString('pt-BR'); };
 /* Colunas (1 ou 2 séries, mesma unidade, um eixo). series = [{nome, cor, vals: [..]}]; rots = rótulos do eixo x. */
-function ckColunas(rots, series, fmt, fmtCurto, W = 560) {
-  const H = 170, pl = 6, pr = 6, pt = 14, pb = 22, n = rots.length || 1;
+function ckColunas(rots, series, fmt, fmtCurto, W = 560, H = 104) {
+  const pl = 6, pr = 6, pt = 14, pb = 22, n = rots.length || 1;
   const todos = series.flatMap(s => s.vals.map(Number)), mx = Math.max(0, ...todos), mn = Math.min(0, ...todos);
   if (!(mx > 0 || mn < 0)) return '<div class="ck-vazio">Sem movimento no período.</div>';
   const y = v => pt + (mx - v) / ((mx - mn) || 1) * (H - pt - pb), y0 = y(0), bw = (W - pl - pr) / n, gap = Math.min(6, bw * .25), k = series.length;
@@ -3464,7 +3465,6 @@ function ckColunas(rots, series, fmt, fmtCurto, W = 560) {
     if (i % passo === 0 || i === n - 1 && n <= 12) g += `<text x="${x0 + (bw - gap) / 2}" y="${H - 6}" class="ck-ax" text-anchor="middle">${esc(r)}</text>`;
   });
   g += `<text x="${W - pr}" y="${pt - 3}" class="ck-ax" text-anchor="end">${esc(fmtCurto(mx))}</text>`;
-  if (mn < 0) g += `<text x="${W - pr}" y="${H - pb + 12}" class="ck-ax" text-anchor="end">${esc(fmtCurto(mn))}</text>`;
   const leg = series.length > 1 ? `<div class="ck-leg">${series.map(s => `<span><i style="background:${s.cor}"></i>${esc(s.nome)}</span>`).join('')}</div>` : '';
   return `${leg}<svg viewBox="0 0 ${W} ${H}" class="ck-svg" role="img" aria-label="${esc(series.map(s => s.nome).join(' e '))} por período">${g}</svg>`;
 }
@@ -3483,23 +3483,30 @@ async function vCockpit(m) {
     { k: 'geral', t: 'Geral', mod: 'adm', tela: 'adm-painel', d: 'Como está a empresa' },
     { k: 'mkt', t: 'Marketing', mod: 'mkt', tela: 'mkt-dash', d: 'Campanhas e leads' },
     { k: 'ven', t: 'Vendas', mod: 'vendas', tela: 'crm-dash', d: 'Vendas e oportunidades' },
-    { k: 'fin', t: 'Financeiro', mod: 'fin', tela: 'fin-dash', d: 'Dinheiro em caixa e em aberto' },
+    { k: 'fin', t: 'Financeiro', mod: 'fin', tela: 'fin-dash', d: 'Caixa e contas em aberto' },
+    { k: 'prj', t: 'Projetos', mod: 'prj', tela: 'prj-lista', d: 'Projetos e atividades' },
+    { k: 'gro', t: 'Growth', mod: 'gro', tela: 'gro-modelo', d: 'North Star e experimentos' },
     { k: 'cs', t: 'Clientes (CS)', mod: 'revops', tela: 'ho-cg', d: 'Alunos e acompanhamento' }
   ].filter(a => pode(a.mod, a.tela));
   const quer = k => AREAS.some(a => a.k === k);
   const pega = p => p.then(r => r, () => null);
   const mes6 = (() => { const d = new Date(h.slice(0, 7) + '-01T12:00:00'); d.setMonth(d.getMonth() - (porMes ? Number(h.slice(5, 7)) - 1 : 5)); return d.toISOString().slice(0, 7) + '-01'; })();
-  const [P, camps, ops, CG, SER, DRE] = await Promise.all([
+  const [P, camps, ops, CG, SER, DRE, PRJ, ATV, GM, EXP, GA] = await Promise.all([
     quer('geral') || quer('mkt') || quer('ven') || quer('fin') ? pega(q(sb.rpc('painel_gerencial', { p_ws: w, p_ini: Pd.ini, p_fim: Pd.fim, p_hoje: h }))) : null,
     quer('mkt') ? pega(q(sb.from('campanhas').select('id,status').eq('workspace_id', w))) : null,
     quer('ven') ? pega(q(sb.from('oportunidades').select('id,status,valor_estimado').eq('workspace_id', w).eq('status', 'aberta'))) : null,
     quer('cs') ? pega(q(sb.rpc('cg_indicadores', { p_ws: w, p_produto: null, p_ini: Pd.ini, p_fim: Pd.fim })).catch(() => q(sb.rpc('heavyops_painel', { p_ws: w, p_dias: 30 })).then(x => ({ _ho: x })))) : null,
     quer('mkt') || quer('ven') ? pega(q(sb.rpc('growths_serie', { p_ws: w, p_ini: Pd.ini, p_fim: Pd.fim }))) : null,
-    quer('geral') ? pega(q(sb.from('v_dre_mensal').select('mes,tipo,valor').eq('workspace_id', w).gte('mes', mes6).limit(5000))) : null
+    quer('geral') ? pega(q(sb.from('v_dre_mensal').select('mes,tipo,valor').eq('workspace_id', w).gte('mes', mes6).limit(5000))) : null,
+    quer('prj') ? pega(q(sb.from('projetos').select('id,status').eq('workspace_id', w))) : null,
+    quer('prj') ? pega(q(sb.from('projeto_atividades').select('id,status,prazo,concluida_em,pai_id').eq('workspace_id', w).limit(20000))) : null,
+    quer('gro') ? pega(q(sb.from('growth_metricas').select('id,nome,tipo,fonte,chave_auto,unidade,direcao,meta,valor_manual').eq('workspace_id', w).eq('tipo', 'north_star'))) : null,
+    quer('gro') ? pega(q(sb.from('growth_experimentos').select('id,etapa,resultado,concluido_em').eq('workspace_id', w).limit(5000))) : null,
+    quer('gro') ? pega(q(sb.rpc('growth_metricas_auto', { p_ws: w, p_ini: Pd.ini, p_fim: Pd.fim }))) : null
   ]);
   const G = P || {}, FU = G.funil || {}, VE = G.vendas || {}, CX = G.caixa || {}, RS = G.resultado || {}, RC = G.recorrencia || {}, CA = G.cac || {}, FX = G.fluxo || {};
   const pct = v => semFmt(v, 'pct'), dinheiro = v => brl(v), neg = v => v != null && isFinite(Number(v)) && Number(v) < 0;
-  const ind = (l, v, s, est) => `<div class="ck-i${est ? ' ck-' + est : ''}"><span class="l">${l}</span><span class="v">${v}</span>${s ? `<span class="s">${s}</span>` : ''}</div>`;
+  const ind = (l, v, s, est) => `<div class="ck-i${est ? ' ck-' + est : ''}" title="${esc(String(l + ': ' + v + (s ? ' · ' + s : '')).replace(/<[^>]+>/g, ''))}"><span class="l">${l}</span><span class="v">${v}</span>${s ? `<span class="s">${s}</span>` : ''}</div>`;
   const graf = (tit, html, nota) => `<div class="ck-g"><div class="ck-gt">${tit}</div>${html}${nota ? `<div class="ck-gn">${nota}</div>` : ''}</div>`;
   const semDado = '<div class="ck-vazio">Sem dados para este período.</div>';
   const S1 = 'var(--ck-s1)', S2 = 'var(--ck-s2)', serie = Array.isArray(SER) ? SER : [];
@@ -3512,7 +3519,7 @@ async function vCockpit(m) {
       const rec = meses.map(mm => soma(mm, 'receita')), luc = meses.map((mm, i) => rec[i] - soma(mm, 'deducao') - soma(mm, 'custo') - soma(mm, 'despesa'));
       return `<div class="ck-is">${[ind('Saldo em caixa', dinheiro(CX.saldo), '', neg(CX.saldo) && 'neg'), ind('Receita', dinheiro(RS.receita), Pd.rot), ind('Vendas', num(VE.aprovadas), dinheiro(VE.bruto) + ' faturados'),
         ind('Margem', pct(RS.margem), 'lucro ÷ receita', neg(RS.margem) && 'neg'), ind('Lucro', dinheiro(RS.lucro), Pd.rot, neg(RS.lucro) && 'neg')].join('')}</div>` +
-        graf(porMes ? 'Receita e lucro por mês, ' + h.slice(0, 4) : 'Receita e lucro nos últimos 6 meses', meses.length ? ckColunas(meses.map(mm => CK_MES[Number(mm.slice(5, 7)) - 1]), [{ nome: 'Receita', cor: S1, vals: rec }, { nome: 'Lucro', cor: S2, vals: luc }], dinheiro, ckDinheiroCurto, 1100) : semDado);
+        graf(porMes ? 'Receita e lucro por mês, ' + h.slice(0, 4) : 'Receita e lucro nos últimos 6 meses', meses.length ? ckColunas(meses.map(mm => CK_MES[Number(mm.slice(5, 7)) - 1]), [{ nome: 'Receita', cor: S1, vals: rec }, { nome: 'Lucro', cor: S2, vals: luc }], dinheiro, ckDinheiroCurto, 340, 92) : semDado);
     },
     mkt: () => P ? `<div class="ck-is">${[ind('Campanhas ativas', camps ? num(camps.filter(c => c.status === 'ativa').length) : '—', camps ? num(camps.filter(c => c.status === 'planejada').length) + ' planejadas' : ''),
         ind('Leads no período', num(FU.total), num(FU.qualificados) + ' qualificados (' + pct(FU.pct_qualificados) + ')'), ind('Leads em andamento', num(FU.leads), 'ainda não compraram'),
@@ -3526,7 +3533,29 @@ async function vCockpit(m) {
       return `<div class="ck-is">${[ind('Saldo em banco', dinheiro(CX.saldo), '', neg(CX.saldo) && 'neg'), ind('A receber', dinheiro(CX.a_receber), CX.atraso_receber ? dinheiro(CX.atraso_receber) + ' em atraso' : 'nada em atraso', CX.atraso_receber ? 'atn' : ''),
         ind('A pagar', dinheiro(CX.a_pagar), CX.atraso_pagar ? dinheiro(CX.atraso_pagar) + ' em atraso' : 'nada em atraso', CX.atraso_pagar ? 'atn' : ''), ind('MRR', dinheiro(RC.mrr), 'receita recorrente mensal')].join('')}</div>` +
         graf('Entra e sai', ckBarras([{ rot: 'Entrou no período', v: FX.entrou, cor: S1 }, { rot: 'Saiu no período', v: FX.saiu, cor: S2 }, { rot: 'A receber (em aberto)', v: CX.a_receber, cor: S1 }, { rot: 'A pagar (em aberto)', v: CX.a_pagar, cor: S2 }], dinheiro),
-          'Saldo do período (entrou − saiu): <b class="' + (sp < 0 ? 'ck-txneg' : '') + '">' + dinheiro(sp) + '</b>') + `<div class="ck-leg"><span><i style="background:${S1}"></i>Entra</span><span><i style="background:${S2}"></i>Sai</span></div>`; },
+          'Saldo do período (entrou − saiu): <b class="' + (sp < 0 ? 'ck-txneg' : '') + '">' + dinheiro(sp) + '</b> · <span class="ck-leg" style="display:inline-flex"><span><i style="background:' + S1 + '"></i>Entra</span><span><i style="background:' + S2 + '"></i>Sai</span></span>'); },
+    prj: () => {
+      if (!PRJ || !ATV) return semDado;
+      const pais = new Set(ATV.filter(a => a.pai_id).map(a => a.pai_id)), A = ATV.filter(a => !pais.has(a.id));
+      const abertas = A.filter(a => a.status === 'liberada' || a.status === 'em_andamento'), atras = A.filter(a => !['concluida', 'cancelada'].includes(a.status) && a.prazo && a.prazo < h);
+      const feitas = A.filter(a => a.status === 'concluida' && a.concluida_em && String(a.concluida_em).slice(0, 10) >= Pd.ini);
+      return `<div class="ck-is">${[ind('Projetos em andamento', num(PRJ.filter(x => x.status === 'em_andamento').length), num(PRJ.filter(x => x.status === 'planejado').length) + ' planejados'),
+        ind('Para fazer agora', num(abertas.length), 'liberadas e em andamento'), ind('Atrasadas', num(atras.length), 'prazo vencido', atras.length ? 'atn' : ''), ind('Concluídas', num(feitas.length), Pd.rot)].join('')}</div>` +
+        graf('Atividades por situação', ckBarras([{ rot: 'Liberadas', v: A.filter(a => a.status === 'liberada').length }, { rot: 'Em andamento', v: A.filter(a => a.status === 'em_andamento').length },
+          { rot: 'Aguardando outras', v: A.filter(a => a.status === 'bloqueada').length }, { rot: 'Concluídas no período', v: feitas.length }].map(x => ({ ...x, cor: S1 })), v => num(v)));
+    },
+    gro: () => {
+      if (!GM && !EXP) return semDado;
+      const ns = (GM || [])[0], auto = GA || {}, val = ns ? (ns.fonte === 'auto' ? auto[ns.chave_auto] : ns.valor_manual) : null;
+      const fmtU = v => v == null ? '—' : ns && ns.unidade === 'brl' ? dinheiro(v) : ns && ns.unidade === 'pct' ? semNum(Number(v), 1) + '%' : ns && ns.unidade === 'x' ? semNum(Number(v), 2) + 'x' : semNum(Number(v), Number(v) % 1 ? 1 : 0);
+      const at = ns && val != null && Number(ns.meta) ? (ns.direcao === 'desce' ? Number(ns.meta) / Number(val) : Number(val) / Number(ns.meta)) : null;
+      const E = EXP || [], fim = E.filter(x => x.etapa === 'concluido' && x.resultado), venc = fim.filter(x => x.resultado === 'venceu').length;
+      const et = [['Ideias', ['ideia', 'avaliacao']], ['Priorizados', ['priorizado', 'preparacao']], ['Rodando', ['rodando']], ['Em análise', ['analise']], ['Concluídos', ['concluido']]];
+      return `<div class="ck-is">${[ind('North Star', ns ? fmtU(val) : '—', ns ? esc(ns.nome) : 'defina no Growth Model'), ind('Da meta', at == null ? '—' : semNum(at * 100, 0) + '%', ns && ns.meta != null ? 'meta ' + fmtU(ns.meta) : 'sem meta', at != null && at < 1 ? 'atn' : ''),
+        ind('Experimentos rodando', num(E.filter(x => x.etapa === 'rodando').length), num(E.filter(x => x.etapa === 'analise').length) + ' em análise'),
+        ind('Venceram', fim.length ? semNum(venc / fim.length * 100, 0) + '%' : '—', num(venc) + ' de ' + num(fim.length) + ' concluídos')].join('')}</div>` +
+        graf('Experimentos por etapa', ckBarras(et.map(([rot, ks]) => ({ rot, v: E.filter(x => ks.includes(x.etapa)).length, cor: S1 })), v => num(v)));
+    },
     cs: () => {
       if (!CG) return semDado;
       if (CG._ho) { const T = (CG._ho || {}).totais || {}; return `<div class="ck-is">${[ind('Alunos ativos', num(T.ativos), ''), ind('Matrículas', num(T.matriculas), '')].join('')}</div>`; }

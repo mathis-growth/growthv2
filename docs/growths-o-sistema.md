@@ -48,7 +48,7 @@ A ideia central: o dono do negócio e a consultoria olham para os mesmos número
 ## 2. Administrativo: a visão do negócio
 
 ### Cockpit
-A tela inicial. Um painel pequeno por área (Geral, Marketing, Vendas, Financeiro e Clientes), cada um com os números que mais importam no período: caixa, receita, margem e lucro; campanhas e leads; vendas, ticket e conversão; a receber, a pagar e MRR; alunos ativos, alertas e satisfação. Cada painel traz também um gráfico: receita e lucro por mês, leads e faturamento por dia, o que entra e o que sai, alunos por etapa. Clicar num painel abre o dashboard daquela área, com tudo em detalhe. Cada pessoa só vê os painéis das áreas a que tem acesso.
+A tela inicial. Um painel pequeno por área (Geral, Marketing, Vendas, Financeiro, Projetos, Growth e Clientes), dois lado a lado, cada um com os números que mais importam no período: caixa, receita, margem e lucro; campanhas e leads; vendas, ticket e conversão; a receber, a pagar e MRR; projetos e atividades atrasadas; North Star e experimentos; alunos ativos, alertas e satisfação. Cada painel traz também um gráfico: receita e lucro por mês, leads e faturamento por dia, o que entra e o que sai, alunos por etapa. Clicar num painel abre o dashboard daquela área, com tudo em detalhe. Cada pessoa só vê os painéis das áreas a que tem acesso.
 
 ### Dashboard geral
 O detalhe do painel Geral do Cockpit. Mostra o negócio inteiro num período escolhido:
