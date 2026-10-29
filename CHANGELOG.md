@@ -21,7 +21,7 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
   - **Lista**: o quadro de blocos de antes e a lista das ligações. As duas vistas mostram os mesmos dados.
 - **Versões**: "Publicar versão" grava uma foto imutável da estratégia (blocos, métricas e ligações). A campanha guarda a versão que usou; mudar a estratégia depois não mexe nas campanhas que já existem. Campanha criada de uma estratégia nunca publicada publica a v1 sozinha. "Versões" lista cada versão, a nota e as campanhas que a usam.
 - Copiar a estratégia para a campanha leva também as posições, as propriedades, os blocos de lógica e as ligações. Duplicar a estratégia leva o mapa junto.
-- Banco: `20261124100000_strategy_canvas.sql` (**ainda não aplicado em produção**). Novas tabelas `estrategia_conexoes`, `campanha_conexoes`, `estrategia_versoes`; novas colunas em `funis`, `estrategia_blocos`, `campanha_blocos` e `campanha_estrategias`; `estrategia_publicar` e `campanha_aplicar_estrategia` atualizada; tela `mkt-estrategias` no controle de acesso.
+- Banco: `20261124100000_strategy_canvas.sql` (aplicado em produção em 29/10/2026 como `v0165_strategy_canvas`). Novas tabelas `estrategia_conexoes`, `campanha_conexoes`, `estrategia_versoes`; novas colunas em `funis`, `estrategia_blocos`, `campanha_blocos` e `campanha_estrategias`; `estrategia_publicar` e `campanha_aplicar_estrategia` atualizada; tela `mkt-estrategias` no controle de acesso.
 - Testes: banco `tests/banco/canvas_s1_s3_cenarios.sql` (OK, com `jornada_b2` sem falhas); tela `tests/tela/t165_strategy_canvas.py` (32 verificações, 0 falhas).
 - Próximas etapas (S4 a S9: campanha ⇄ estratégia nos dois sentidos, execução, comparação planejado × real) dependem de aprovação.
 
