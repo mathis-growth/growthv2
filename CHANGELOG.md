@@ -2,6 +2,12 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.168 — Funil inteiro por fase no Canvas e correção do workspace (29/10/2026)
+- **Correção:** trocar de workspace com uma estratégia aberta deixava a estratégia do workspace anterior na tela, e os blocos novos eram gravados no workspace novo. Ao ligar esses blocos, o banco recusava com "Os dois blocos precisam ser desta estratégia". Agora trocar de workspace fecha a estratégia aberta, e uma estratégia de outro workspace não abre.
+- **Funil inteiro num mapa só, dividido por fase:** cada card tem a cor da fase (Captação azul, Aquecimento laranja, Vendas verde, Pós-venda/CS roxo), e cada fase ganha uma faixa tracejada em volta dos seus blocos, com o nome. As ligações valem entre fases: da captação até as vendas e das vendas ao CS.
+- **Legenda das fases** no canto do mapa, com quantos blocos cada uma tem. Clicar numa fase destaca só os blocos e as setas dela; clicar de novo mostra tudo.
+- Sem mudança no banco. Teste `tests/tela/t168_canvas_fases.py` (13 verificações, 0 falhas); t164 a t167 sem falhas.
+
 ## v0.167 — Ajustar os cards do Canvas (29/10/2026)
 - **Mover:** o card se arrasta por qualquer ponto, não só pela faixa de cima, e encaixa numa grade de 20 px para alinhar fácil. Com Alt apertado, ele solta livre. Clicar sem arrastar continua abrindo as propriedades. Os pontinhos do fundo acompanham o zoom e o movimento do mapa.
 - **Tamanho:** cada card tem um canto (embaixo, à direita) para aumentar ou diminuir, de 60% a 200%. O tamanho fica salvo no bloco, e as setas e o "Ajustar" levam o tamanho em conta.

@@ -1,3 +1,6 @@
+## v0.168
+- index.html: 0.167 → 0.168. `#wsSel` limpa `S.estSel`, `S.cvSel` e `S.cvView`; `vEstrategia` volta para a lista se `funis.workspace_id <> S.ws`. Novos `CV_FASE` e `cvFase`; no `cvMapa`: `data-fase` e `--fc` no card, faixas `#cvBandas` (refeitas ao mover ou mudar o tamanho), legenda `.cv-legs` com `S.cvFase` e `foco()`. "Ajustar" deixa espaço para a barra e as faixas. Teste `t168_canvas_fases.py`. Sem migração.
+
 ## v0.167
 - index.html: 0.166 → 0.167. Novas `cvTam`, `cvOrganiza`, `CV_GRADE` (20 px). No `cvMapa`: arrastar o card inteiro (`.cv-mov`, limiar de 4 px antes de contar como arrastar; Alt sem grade), canto `[data-rs]` muda `props.tam` (0,6 a 2, `transform: scale` com origem no canto de cima), setas e "Ajustar" usam o tamanho, botão `#cvOrg`, fundo do palco acompanha zoom e posição, e o palco volta a `scrollLeft/scrollTop = 0` se o navegador o rolar. Teste `t167_canvas_ajuste.py`. Sem migração.
 

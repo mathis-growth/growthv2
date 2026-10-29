@@ -1199,7 +1199,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.167 · 29/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.168 · 29/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -1629,7 +1629,7 @@ const ncModalV140 = () => { modal('Novo cliente', `<label>Nome do cliente<input 
   async d => { const id = await q(sb.rpc('criar_workspace_cliente', { p_nome: d.nome, p_modo: d.tipo === 'starter' ? 'starter' : 'completo' })); if (d.content) { try { await q(sb.rpc('content_definir', { p_ws: id, p_ativo: true })); } catch (e) { toast('Cliente criado, mas o Growth\'s Content não foi ligado: ' + e.message, true); } } if (d.pacote) { try { await q(sb.rpc('workspace_definir_acesso', { p_ws: id, p_pacote: d.pacote, p_liga: [], p_desliga: [] })); } catch (e) { toast('Cliente criado, mas o pacote não foi aplicado: ' + e.message, true); } }
     S.ws = S.wsBase = id; S.perm = null; S.permWs = null; S.view = d.tipo === 'starter' ? 'st-dash' : 'cockpit'; await boot(); toast('Cliente criado'); }, 'Criar cliente');
   sb.from('pacotes_acesso').select('id,nome,ativo').order('nome').then(r => { const sel = $('#ncPac'); if (!sel || r.error || !r.data) { if (sel) sel.closest('label').style.display = 'none'; return; } sel.insertAdjacentHTML('beforeend', r.data.filter(p => p.ativo).map(p => `<option value="${p.id}">${esc(p.nome)}</option>`).join('')); }); };
-$('#wsSel').onchange = e => { S.ws = S.wsBase = e.target.value; if (ehCasaV(S.view)) S.view = 'fin-dash'; S.perm = null; S.permWs = null; render(); };
+$('#wsSel').onchange = e => { S.ws = S.wsBase = e.target.value; S.estSel = null; S.cvSel = null; S.cvView = null; if (ehCasaV(S.view)) S.view = 'fin-dash'; S.perm = null; S.permWs = null; render(); };
 
 const VIEWS = {
   'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'ho-cg': vCustomerGrowth, 'cockpit': vCockpit, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': vConteudo, 'cfg-estruturas': vEstruturas, 'cfg-pastas': vPastasMathisa, 'cfg-custos': vCustos, 'crm-dms': vDMsCrm,
@@ -9682,7 +9682,7 @@ async function vEstrategia(m) {
     q(sb.from('campanhas').select('id,nome,status,data_inicio,data_fim,modelo').eq('funil_id', id)), q(sb.from('produtos').select('id,nome').eq('workspace_id', w).order('nome')),
     q(sb.from('etapas_catalogo').select('*').eq('workspace_id', w)).catch(() => []),
     q(sb.from('estrategia_blocos').select('*').eq('funil_id', id).order('ordem')).catch(() => null)]);
-  const f = fs[0]; if (!f) { S.estSel = null; return vFunis(m); }
+  const f = fs[0]; if (!f || f.workspace_id !== S.ws) { S.estSel = null; return vFunis(m); }
   const cvOk = !!BL && await temColuna('estrategia_blocos', 'x');
   const [CN, of, eqs, ce, vs] = cvOk ? await Promise.all([q(sb.from('estrategia_conexoes').select('*').eq('funil_id', id)).catch(() => []), q(sb.from('ofertas').select('id,nome').eq('workspace_id', w).order('nome')).catch(() => []),
     equipeAtiva().catch(() => []), q(sb.from('campanha_estrategias').select('campanha_id,versao_id').eq('funil_id', id)).catch(() => []), q(sb.from('estrategia_versoes').select('id,versao').eq('funil_id', id)).catch(() => [])]) : [[], [], [], [], []];
@@ -10040,6 +10040,8 @@ const CV_LOGICA = ['condicao', 'decisao', 'divisao', 'evento', 'gatilho'];
 const CV_ST = [['', '—'], ['planejado', 'Planejado'], ['implementando', 'Implementando'], ['pronto', 'Pronto'], ['pausado', 'Pausado']];
 const CV_CON = [['segue', 'Segue'], ['sim', 'Sim'], ['nao', 'Não'], ['divisao', 'Divisão (%)']];
 const CV_W = 190, CV_GRADE = 20, CV_COLX = { aquisicao: 40, aquecimento: 320, conversao: 600, retencao: 880 };
+const CV_FASE = { aquisicao: ['Captação', '#2563eb'], aquecimento: ['Aquecimento', '#d97706'], conversao: ['Vendas', '#16a34a'], retencao: ['Pós-venda (CS)', '#9333ea'] };
+const cvFase = f => CV_FASE[f] || [(EST_FASES.find(x => x[0] === f) || [0, f])[1], '#64748b'];
 const cvTam = b => { const t = Number((b.props || {}).tam); return t >= .6 && t <= 2 ? t : 1; };
 // Organizar: uma coluna por fase (largura = maior bloco da fase), blocos um embaixo do outro na ordem, tudo na grade de 20 px
 function cvOrganiza(BL, T, hs) {
@@ -10142,7 +10144,7 @@ function cvMapa(el, f, ctx) {
   const princ = b => { const et = L.filter(e => e.bloco_id === b.id); return et.find(e => e.papel === 'principal') || et[0]; };
   const T = {}; BL.forEach(b => { T[b.id] = cvTam(b); });
   const no = b => { const p = P[b.id], pr = princ(b), lg = CV_LOGICA.includes(b.tipo), st = (b.props || {}).status;
-    return `<div class="cv-no${lg ? ' cv-lg' : ''}${sel && sel.id === b.id ? ' on' : ''}${edita ? ' cv-mov' : ''}" data-no="${b.id}" style="left:${p.x}px;top:${p.y}px${T[b.id] !== 1 ? ';transform:scale(' + T[b.id] + ')' : ''}">
+    return `<div class="cv-no${lg ? ' cv-lg' : ''}${sel && sel.id === b.id ? ' on' : ''}${edita ? ' cv-mov' : ''}" data-no="${b.id}" data-fase="${esc(b.fase)}" style="--fc:${cvFase(b.fase)[1]};left:${p.x}px;top:${p.y}px${T[b.id] !== 1 ? ';transform:scale(' + T[b.id] + ')' : ''}">
       <div class="cv-nh" data-arr="${b.id}"><span class="cv-tp">${esc(cvTipoNome(b.tipo))}</span>${st ? `<span class="cv-st cv-st-${st}">${esc((CV_ST.find(x => x[0] === st) || [0, st])[1])}</span>` : ''}</div>
       ${cvArte(b)}<b class="cv-nm">${esc(b.nome)}</b>
       ${b.tipo === 'api' || b.tipo === 'grupo' ? `<div class="cv-sw">${[['api', 'API'], ['grupo', 'Grupo']].map(([k, l]) => `<button type="button" data-wa="${k}" class="${b.tipo === k ? 'on' : ''}"${edita ? '' : ' disabled'}>${l}</button>`).join('')}</div>`
@@ -10160,7 +10162,8 @@ function cvMapa(el, f, ctx) {
   el.innerHTML = `<div class="cv">${edita ? `<aside class="cv-pal"><div class="cv-pt">Componentes</div><span class="muted" style="font-size:11.5px">Arraste para o mapa ou clique para adicionar.</span>${pal}</aside>` : ''}
     <div class="cv-palco" id="cvPalco"><div class="cv-ctl"><button class="btn sm" data-z="1" title="Aproximar">+</button><button class="btn sm" data-z="-1" title="Afastar">−</button><button class="btn sm" data-z="0">Ajustar</button>
       ${edita && BL.length > 1 ? '<button class="btn sm" id="cvOrg" title="Arruma os blocos em colunas por fase">Organizar</button>' : ''}${edita && !CN.length && BL.length > 1 ? '<button class="btn sm" id="cvLiga">Ligar na ordem</button>' : ''}<span class="muted" id="cvSalvo"></span></div>
-      <div class="cv-mundo" id="cvMundo" style="transform:translate(${V.x}px,${V.y}px) scale(${V.z})">
+      ${BL.length ? `<span class="cv-legs">${EST_FASES.map(x => x[0]).filter(k => BL.some(b => b.fase === k)).map(k => `<button type="button" class="cv-leg${S.cvFase === k ? ' on' : ''}" data-fl="${k}" style="--fc:${cvFase(k)[1]}" title="Destacar a fase">${esc(cvFase(k)[0])} <b>${BL.filter(b => b.fase === k).length}</b></button>`).join('')}</span>` : ''}
+      <div class="cv-mundo" id="cvMundo" style="transform:translate(${V.x}px,${V.y}px) scale(${V.z})"><div id="cvBandas"></div>
         <svg class="cv-svg" width="4000" height="3000"><defs><marker id="cvSeta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="cv-mk"/></marker></defs>${CN.map(seta).join('')}<path id="cvTemp" class="cv-ln cv-temp" d=""/></svg>
         ${BL.map(no).join('')}</div>
       ${BL.length ? '' : '<div class="cv-vazio">Arraste um componente da esquerda para começar o mapa.</div>'}</div>
@@ -10169,9 +10172,20 @@ function cvMapa(el, f, ctx) {
   const aplica = () => { mundo.style.transform = `translate(${V.x}px,${V.y}px) scale(${V.z})`; palco.style.backgroundSize = `${CV_GRADE * V.z}px ${CV_GRADE * V.z}px`; palco.style.backgroundPosition = `${V.x}px ${V.y}px`; };
   const mundoXY = e => { const r = palco.getBoundingClientRect(); return { x: (e.clientX - r.left - V.x) / V.z, y: (e.clientY - r.top - V.y) / V.z }; };
   const ajusta = () => { if (!BL.length) { V.x = 0; V.y = 0; V.z = 1; return aplica(); } const xs = BL.map(b => P[b.id].x), ys = BL.map(b => P[b.id].y), r = palco.getBoundingClientRect();
-    const w = Math.max(...BL.map(b => P[b.id].x + CV_W * T[b.id])) - Math.min(...xs) + 90, h = Math.max(...BL.map(b => P[b.id].y + alt(b.id))) - Math.min(...ys) + 84; V.z = Math.max(.35, Math.min(1.2, Math.min(r.width / w, r.height / h)));
-    V.x = -Math.min(...xs) * V.z + 24; V.y = -Math.min(...ys) * V.z + 60; aplica(); };
+    const w = Math.max(...BL.map(b => P[b.id].x + CV_W * T[b.id])) - Math.min(...xs) + 120, h = Math.max(...BL.map(b => P[b.id].y + alt(b.id))) - Math.min(...ys) + 120; V.z = Math.max(.35, Math.min(1.2, Math.min(r.width / w, r.height / h)));
+    V.x = -Math.min(...xs) * V.z + 36; V.y = -Math.min(...ys) * V.z + 96; aplica(); };
   // o navegador às vezes rola o palco (foco, clique perto da borda): o mapa só se move pelo próprio arrastar
+  // faixa de cada fase: a área que os blocos da fase ocupam, com o nome em cima
+  const bandas = () => { const box = $('#cvBandas'); if (!box) return;
+    box.innerHTML = EST_FASES.map(x => x[0]).concat([...new Set(BL.map(b => b.fase))].filter(k => !EST_FASES.some(e => e[0] === k))).map(k => { const bs = BL.filter(b => b.fase === k); if (!bs.length) return '';
+      const x0 = Math.min(...bs.map(b => P[b.id].x)) - 18, y0 = Math.min(...bs.map(b => P[b.id].y)) - 40, x1 = Math.max(...bs.map(b => P[b.id].x + CV_W * T[b.id])) + 18, y1 = Math.max(...bs.map(b => P[b.id].y + alt(b.id))) + 18, [nm, cor] = cvFase(k);
+      return `<div class="cv-banda${S.cvFase && S.cvFase !== k ? ' cv-fora' : ''}" data-banda="${esc(k)}" style="--fc:${cor};left:${x0}px;top:${y0}px;width:${x1 - x0}px;height:${y1 - y0}px"><span>${esc(nm)}</span></div>`; }).join(''); };
+  const foco = () => { const fz = S.cvFase; mundo.querySelectorAll('.cv-no').forEach(n => n.classList.toggle('cv-fora', !!fz && n.dataset.fase !== fz));
+    CN.forEach(c => { const g = mundo.querySelector(`[data-ar="${c.id}"]`), fa = (BL.find(b => b.id === c.de_bloco) || {}).fase, fb = (BL.find(b => b.id === c.para_bloco) || {}).fase; if (g) g.classList.toggle('cv-fora', !!fz && fa !== fz && fb !== fz); });
+    el.querySelectorAll('[data-fl]').forEach(b => b.classList.toggle('on', b.dataset.fl === fz)); bandas(); };
+  el.querySelectorAll('[data-fl]').forEach(b => b.onclick = () => { S.cvFase = S.cvFase === b.dataset.fl ? null : b.dataset.fl; foco(); });
+  if (S.cvFase && !BL.some(b => b.fase === S.cvFase)) S.cvFase = null;
+  foco();
   palco.addEventListener('scroll', () => { if (palco.scrollLeft || palco.scrollTop) { palco.scrollLeft = 0; palco.scrollTop = 0; } });
   if (!S.cvView.ajustado) { S.cvView.ajustado = true; ajusta(); }
   palco.querySelectorAll('[data-z]').forEach(b => b.onclick = () => { const d = Number(b.dataset.z); if (!d) return ajusta(); V.z = Math.max(.3, Math.min(2, V.z * (d > 0 ? 1.2 : 1 / 1.2))); aplica(); });
@@ -10201,9 +10215,9 @@ function cvMapa(el, f, ctx) {
     if (arr.tipo === 'liga') { const a = H(arr.de); $('#cvTemp').setAttribute('d', `M${a.x},${a.y} L${w.x},${w.y}`); } };
   const solta = e => { if (!arr) return; const a = arr; arr = null; palco.classList.remove('arrasta'); $('#cvTemp') && $('#cvTemp').setAttribute('d', '');
     if (a.tipo === 'no' && a.mexeu) { const n = mundo.querySelector(`[data-no="${a.id}"]`); if (n) { n.classList.remove('cv-arr'); n.dataset.solto = '1'; setTimeout(() => { delete n.dataset.solto; }, 0); }
-      act(async () => { await q(sb.from('estrategia_blocos').update({ x: P[a.id].x, y: P[a.id].y }).eq('id', a.id)); const b = BL.find(x => x.id === a.id); b.x = P[a.id].x; b.y = P[a.id].y; salvo('Posição salva'); }); }
+      act(async () => { await q(sb.from('estrategia_blocos').update({ x: P[a.id].x, y: P[a.id].y }).eq('id', a.id)); const b = BL.find(x => x.id === a.id); b.x = P[a.id].x; b.y = P[a.id].y; salvo('Posição salva'); }); bandas(); }
     else if (a.tipo === 'tam') { const b = BL.find(x => x.id === a.id); if (a.mexeu && b) act(async () => { const pz = { ...(b.props || {}) }; if (T[a.id] === 1) delete pz.tam; else pz.tam = T[a.id];
-      await q(sb.from('estrategia_blocos').update({ props: pz }).eq('id', a.id)); b.props = pz; salvo('Tamanho salvo: ' + Math.round(T[a.id] * 100) + '%'); }); }
+      await q(sb.from('estrategia_blocos').update({ props: pz }).eq('id', a.id)); b.props = pz; salvo('Tamanho salvo: ' + Math.round(T[a.id] * 100) + '%'); }); bandas(); }
     else if (a.tipo === 'no') { sel = { t: 'no', id: a.id }; S.cvSel = sel; mundo.querySelectorAll('.cv-no').forEach(n => n.classList.toggle('on', n.dataset.no === a.id)); prop(); }
     if (a.tipo === 'liga') { const alvo = document.elementFromPoint(e.clientX, e.clientY), nb = alvo && alvo.closest('[data-no]');
       if (nb && nb.dataset.no !== a.de) act(async () => { const de = BL.find(b => b.id === a.de), saem = CN.filter(c => c.de_bloco === a.de);
@@ -10237,7 +10251,7 @@ function cvMapa(el, f, ctx) {
     const rows = ord.slice(1).map((b, i) => ({ workspace_id: S.ws, funil_id: f.id, de_bloco: ord[i].id, para_bloco: b.id, tipo: 'segue' })); if (rows.length) await q(sb.from('estrategia_conexoes').insert(rows)); render(); }, 'Blocos ligados na ordem das fases');
   // painel de propriedades
   const prop = () => { const box = $('#cvProp'); if (!box) return;
-    if (!sel) { box.innerHTML = `<div class="cv-pt">Propriedades</div><span class="muted">Clique num bloco ou numa seta para editar. Arraste o bloco para mover (ele encaixa na grade; segure Alt para soltar livre), o canto de baixo para mudar o tamanho e o ponto da direita para ligar a outro bloco. "Organizar" arruma tudo por fase.</span>
+    if (!sel) { box.innerHTML = `<div class="cv-pt">Propriedades</div><span class="muted">Clique num bloco ou numa seta para editar. Arraste o bloco para mover (ele encaixa na grade; segure Alt para soltar livre), o canto de baixo para mudar o tamanho e o ponto da direita para ligar a outro bloco. "Organizar" arruma tudo por fase.<br><br>O funil inteiro fica num mapa só: cada bloco tem a cor da fase (Captação, Aquecimento, Vendas, Pós-venda/CS) e cada fase ganha uma faixa em volta dos seus blocos. Clique no nome da fase, em cima do mapa, para destacar só ela. A fase de um bloco muda no campo Fase.</span>
       <div class="cv-res"><b>${BL.length}</b> blocos · <b>${CN.length}</b> ligações</div>`; return; }
     if (sel.t === 'ar') { const c = CN.find(x => x.id === sel.id); if (!c) return; const de = BL.find(b => b.id === c.de_bloco), pa = BL.find(b => b.id === c.para_bloco);
       box.innerHTML = `<div class="cv-pt">Ligação</div><span class="muted">${esc(de ? de.nome : '')} → ${esc(pa ? pa.nome : '')}</span>
@@ -10352,6 +10366,12 @@ const CV_CSS = `<style id="cvCss">.cv{display:grid;grid-template-columns:200px m
 .cv-sw{display:flex;border:1px solid var(--line);border-radius:99px;overflow:hidden;align-self:flex-start}.cv-sw button{border:0;background:none;color:var(--muted);font:inherit;font-size:11px;padding:2px 10px;cursor:pointer}
 .cv-sw button.on{background:#25D366;color:#053b1c;font-weight:700}.cv-sw button:disabled{cursor:default}
 .cv-prop .cv-sec label{display:block;margin-top:6px}
+.cv-no{border-top:4px solid var(--fc,var(--line))}.cv-no.cv-fora,.cv-ar.cv-fora{opacity:.22}.cv-no,.cv-ar{transition:opacity .15s}
+#cvBandas{position:absolute;left:0;top:0}.cv-banda{position:absolute;border:1.5px dashed var(--fc);border-radius:16px;background:color-mix(in srgb,var(--fc) 7%,transparent);pointer-events:none}
+.cv-banda span{position:absolute;left:12px;top:8px;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--fc)}.cv-banda.cv-fora{opacity:.25}
+.cv-legs{display:flex;gap:4px;flex-wrap:wrap}.cv-leg{border:1px solid var(--line);background:var(--panel,var(--surface));color:inherit;border-radius:99px;padding:2px 9px 2px 7px;font:inherit;font-size:11.5px;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.cv-leg::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--fc)}.cv-leg b{color:var(--muted);font-weight:600}.cv-leg.on{border-color:var(--fc);box-shadow:0 0 0 2px color-mix(in srgb,var(--fc) 30%,transparent)}
+.cv-legs{position:absolute;right:10px;top:10px;z-index:2;justify-content:flex-end;max-width:52%}
 @media (max-width:1100px){.cv{grid-template-columns:minmax(0,1fr);height:auto}.cv-palco{height:520px}.cv-pal{max-height:220px}}</style>`;
 
 /* Versões da estratégia */
