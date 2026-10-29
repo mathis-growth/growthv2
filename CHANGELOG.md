@@ -2,6 +2,13 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.170 — Criar a estratégia pelo mapa (29/10/2026)
+- **Marketing → Estratégias → Criar no mapa** (botão principal): abre um mapa em branco, como rascunho, para montar o funil arrastando os componentes. Cada bloco já cria as etapas (métricas) dele.
+- **Publicar versão** num rascunho pede nome, tipo, categoria, produto e objetivo e publica a versão 1. A estratégia entra na lista pronta para as campanhas, com as etapas que você montou. Não publica com o mapa vazio, com nome repetido ou com o nome de rascunho.
+- Rascunho vazio e sem nome some sozinho ao voltar para a lista. Estratégia já publicada continua pedindo só o que mudou.
+- Criar a partir de um modelo pronto continua em "Nova a partir de modelo".
+- Sem mudança no banco: usa `funis.status = 'rascunho'` e `estrategia_publicar` da v0.165, com a mesma permissão de antes (editar Marketing ou Growth). Teste `tests/tela/t170_canvas_criar_no_mapa.py` (19 verificações, 0 falhas); t164 a t169 sem falhas.
+
 ## v0.169 — Lixeira nos cards do Canvas (29/10/2026)
 - Cada card do Mapa tem uma **lixeira** no canto de cima: um clique exclui o bloco na hora, junto com as métricas e as ligações dele, sem janela de confirmação.
 - No topo do mapa aparece "Bloco … excluído · **Desfazer**" por 8 segundos. Desfazer devolve o bloco no mesmo lugar, com as métricas e as ligações (tipo, rótulo e condição).

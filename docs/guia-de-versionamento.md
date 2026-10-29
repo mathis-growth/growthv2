@@ -1,3 +1,6 @@
+## v0.170
+- index.html: 0.169 → 0.170. `vFunis`: botão `#estMapa` cria `funis` com `status = 'rascunho'`, `tipo = 'outro'` e nome `CV_RASC` e abre o mapa; `#estNova` vira "Nova a partir de modelo". `vEstrategia`: aviso `.cv-rasc`, pill de rascunho, voltar apaga rascunho vazio sem nome e sem campanha. `cvPublicar(f, { pr, nBlocos })`: no rascunho pede nome, tipo, categoria, produto e objetivo, grava e chama `estrategia_publicar`. Teste `t170_canvas_criar_no_mapa.py`. Sem migração.
+
 ## v0.169
 - index.html: 0.168 → 0.169. No `cvMapa`: botão `.cv-lx[data-lx]` no cabeçalho do card (fora do arrastar), exclui etapas e bloco (as ligações saem pelo `on delete cascade`) e guarda `S.cvDesfaz` (bloco, etapas, ligações, prazo de 8 s); aviso `#cvDesf` no topo do palco com `#cvDesfBt`, que insere de volta com os mesmos ids. Teste `t169_canvas_lixeira.py`. Sem migração.
 

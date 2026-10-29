@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 29/10/2026, versão 0.169.
+**Última atualização:** 29/10/2026, versão 0.170.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -108,7 +108,7 @@ A campanha é uma página com abas: dashboard, estratégia e etapas, metas, capt
   
   Produto, estratégia e canal se cadastram sem sair dali, e uma faixa de rascunho mostra o que falta.
 - **Estratégia em blocos.** O funil da campanha é montado com blocos prontos em 4 fases (Aquisição, Aquecimento, Conversão, Retenção): conteúdo do Instagram, tráfego pago, página de captura, indicação, grupo de WhatsApp, disparo, e-mail, pesquisa, aula/webinário, VSL, checkout, comercial, recompra e assinatura. Cada bloco traz as métricas certas, com uma principal e as de diagnóstico. Há modelos prontos: lançamento clássico, perpétuo, webinário, disparo, recompra, comercial e social selling.
-- **Estratégias (Canvas).** Em Marketing → Estratégias (Canvas), cada estratégia pode ser vista como mapa: blocos arrastáveis, setas com sim, não e divisão em %, e um painel com objetivo, canal, responsável, oferta e métricas de cada bloco. "Publicar versão" congela a estratégia; a campanha guarda a versão que usou, e mudar a estratégia depois não mexe nela. Cada bloco mostra o desenho do que é: a página de captura ou de vendas vira uma mini página com a foto e os textos que você define, o anúncio leva o símbolo da Meta ou do Google, e o WhatsApp tem o símbolo e a escolha entre API e grupo. Os cards se arrastam por qualquer ponto e se alinham numa grade, cada um pode ficar maior ou menor pelo canto, e o botão Organizar arruma tudo em colunas por fase. O funil inteiro (da captação às vendas e depois o CS) fica num mapa só: cada fase tem uma cor e uma faixa em volta dos seus blocos, e clicar no nome da fase destaca só ela.
+- **Estratégias (Canvas).** Em Marketing → Estratégias (Canvas), dá para começar pelo mapa ("Criar no mapa"): monta o funil e, ao publicar, dá o nome e a estratégia entra na lista. cada estratégia pode ser vista como mapa: blocos arrastáveis, setas com sim, não e divisão em %, e um painel com objetivo, canal, responsável, oferta e métricas de cada bloco. "Publicar versão" congela a estratégia; a campanha guarda a versão que usou, e mudar a estratégia depois não mexe nela. Cada bloco mostra o desenho do que é: a página de captura ou de vendas vira uma mini página com a foto e os textos que você define, o anúncio leva o símbolo da Meta ou do Google, e o WhatsApp tem o símbolo e a escolha entre API e grupo. Os cards se arrastam por qualquer ponto e se alinham numa grade, cada um pode ficar maior ou menor pelo canto, e o botão Organizar arruma tudo em colunas por fase. O funil inteiro (da captação às vendas e depois o CS) fica num mapa só: cada fase tem uma cor e uma faixa em volta dos seus blocos, e clicar no nome da fase destaca só ela.
 - **Campanha híbrida, só paga ou só orgânica.** Cada canal é uma execução, com a própria estratégia e o próprio custo de produção.
 - **Metas:**
   - de leads por dia, por mês e por canal;
@@ -469,6 +469,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **29/10 (v0.170):** Criar a estratégia direto no mapa: monta o funil e, ao publicar, dá o nome e ela entra na lista com as etapas.
 - **29/10 (v0.169):** Lixeira nos cards do Canvas, com Desfazer por alguns segundos.
 - **29/10 (v0.168):** Canvas por fase: o funil inteiro num mapa só, com cor e faixa para Captação, Aquecimento, Vendas e Pós-venda (CS).
 - **29/10 (v0.167):** Ajustar os cards do Canvas: arrastar por qualquer ponto, mudar o tamanho pelo canto e Organizar por fase.

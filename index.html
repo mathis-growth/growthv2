@@ -1199,7 +1199,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.169 · 29/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.170 · 29/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -9631,7 +9631,7 @@ async function vFunis(m) {
     q(sb.from('campanhas').select('id,funil_id').eq('workspace_id', w)), q(sb.from('produtos').select('id,nome').eq('workspace_id', w).order('nome'))]);
   const ets = ets0 || [], cats = [...new Set(fs0.map(f => f.categoria).filter(Boolean))].sort();
   const fs = fs0.filter(f => (!FL.cat || f.categoria === FL.cat) && (FL.st === 'todas' || (FL.st === 'ativas' ? f.ativo !== false : f.ativo === false)));
-  m.innerHTML = (ets0 ? '' : EST_SEM_BANCO) + `<div class="head"><div><h1>${noMkt ? 'Estratégias' : 'Estratégias e funis'}</h1><span class="muted">A estratégia desenha o funil de venda em fases e etapas. Cada campanha escolhe uma estratégia e recebe uma cópia das etapas.</span></div><div class="acts"><button class="btn pri" id="estNova">Nova estratégia</button></div></div>
+  m.innerHTML = (ets0 ? '' : EST_SEM_BANCO) + `<div class="head"><div><h1>${noMkt ? 'Estratégias' : 'Estratégias e funis'}</h1><span class="muted">A estratégia desenha o funil de venda em fases e etapas. Cada campanha escolhe uma estratégia e recebe uma cópia das etapas.</span></div><div class="acts">${cvB ? '<button class="btn pri" id="estMapa">Criar no mapa</button><button class="btn" id="estNova">Nova a partir de modelo</button>' : '<button class="btn pri" id="estNova">Nova estratégia</button>'}</div></div>
     ${cvB ? `<div class="filters"><label>Categoria<select id="estFc"><option value="">Todas</option>${cats.map(c => `<option${c === FL.cat ? ' selected' : ''}>${esc(c)}</option>`).join('')}</select></label>
       <label>Situação<select id="estFs">${[['ativas', 'Em uso'], ['arquivadas', 'Arquivadas'], ['todas', 'Todas']].map(([k, l]) => `<option value="${k}"${FL.st === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label></div>` : ''}
     <div class="panel"><div class="tw"><table><thead><tr><th>Estratégia</th>${cvB ? '<th>Categoria</th>' : ''}<th>Tipo</th><th>Produto</th>${cvB ? '<th class="n">Versão</th>' : ''}<th class="n">Etapas</th><th class="n">Campanhas</th><th>Situação</th><th></th></tr></thead><tbody>
@@ -9642,6 +9642,9 @@ async function vFunis(m) {
   m.querySelectorAll('[data-estdup]').forEach(b => b.onclick = ev => { ev.stopPropagation(); estNova(pr, fs0.find(x => x.id === b.dataset.estdup)); });
   m.querySelectorAll('[data-est]').forEach(b => b.onclick = ev => { ev.stopPropagation(); S.estSel = b.dataset.est; render(); });
   $('#estNova').onclick = () => estNova(pr);
+  if ($('#estMapa')) $('#estMapa').onclick = () => act(async () => { const id = crypto.randomUUID(); let n = 1; while (fs0.some(f => f.nome === CV_RASC + (n > 1 ? ' ' + n : ''))) n++;
+    await q(sb.from('funis').insert({ id, workspace_id: S.ws, nome: CV_RASC + (n > 1 ? ' ' + n : ''), tipo: 'outro', status: 'rascunho', ativo: true }));
+    S.estSel = id; S.estVista = 'mapa'; S.cvView = null; S.cvSel = null; render(); });
   if (noMkt) return;
   ENT.etapas_funil.titulo = 'Etapas do Kanban da jornada'; ENT.listas_funil.titulo = 'Listas (grupo, API)';
   await Promise.all([renderCad($('#c2'), 'etapas_funil'), renderCad($('#c3'), 'listas_funil')]);
@@ -9689,7 +9692,8 @@ async function vEstrategia(m) {
   const vista = cvOk ? (S.estVista || 'mapa') : 'lista';
   const R = await estRefs(f.id), Lo = estOrdena(L), avulsas = BL ? Lo.filter(e => !e.bloco_id) : Lo;
   m.innerHTML = `<div class="head"><div><button class="btn sm" id="estVolta">← Estratégias</button><h1 style="margin-top:8px">${esc(f.nome)}</h1>
-      <span class="muted">${esc(EST_TIPO[f.tipo] || f.tipo)} · ${f.produto_id ? 'produto: ' + esc((pr.find(p => p.id === f.produto_id) || {}).nome || '') : 'qualquer produto'}${f.modelo_pronto && EST_MOD[f.modelo_pronto] ? ' · começou do modelo ' + esc(EST_MOD[f.modelo_pronto].nome) : ''} · ${pillAtivo(f.ativo)}</span></div>
+      <span class="muted">${esc(EST_TIPO[f.tipo] || f.tipo)} · ${f.produto_id ? 'produto: ' + esc((pr.find(p => p.id === f.produto_id) || {}).nome || '') : 'qualquer produto'}${f.modelo_pronto && EST_MOD[f.modelo_pronto] ? ' · começou do modelo ' + esc(EST_MOD[f.modelo_pronto].nome) : ''} · ${f.status === 'rascunho' ? '<span class="pill warn">rascunho</span>' : pillAtivo(f.ativo)}</span></div>
+      ${f.status === 'rascunho' && !f.versao_atual ? '<div class="cv-rasc">Monte o funil no mapa e clique em <b>Publicar versão</b>: aí você dá o nome, e a estratégia entra na lista pronta para as campanhas, com as etapas que você montou.</div>' : ''}
       ${cvOk ? `<br><span class="muted">${f.categoria ? 'Categoria: ' + esc(f.categoria) + ' · ' : ''}${f.versao_atual ? '<b>versão ' + f.versao_atual + '</b>' : 'ainda não publicada'}${f.objetivo ? ' · ' + esc(f.objetivo) : ''}</span>` : ''}</div>
       <div class="acts">${cvOk ? '<button class="btn pri" id="estPub">Publicar versão</button><button class="btn" id="estVers">Versões</button>' : ''}<button class="btn" id="estEd">Editar dados</button><button class="btn" id="estDup">Duplicar</button>${vista === 'lista' ? `<button class="btn${BL ? '' : ' pri'}" id="estAdd">+ Etapa avulsa</button>` : ''}</div></div>
     ${cvOk ? `<div class="tabs">${[['mapa', 'Mapa (Canvas)'], ['lista', 'Lista']].map(([k, l]) => `<button data-ev="${k}" class="${vista === k ? 'on' : ''}">${l}</button>`).join('')}</div>` : ''}
@@ -9698,7 +9702,7 @@ async function vEstrategia(m) {
     ${vista === 'lista' && cvOk ? `<div class="panel"><h2>Ligações entre os blocos</h2><span class="muted">As mesmas setas do mapa. Para criar ou mudar uma ligação, use o Mapa.</span>${CN.length ? `<div class="tw"><table><thead><tr><th>De</th><th>Para</th><th>Tipo</th><th>Condição ou nota</th></tr></thead><tbody>${CN.map(c => `<tr><td>${esc((BL.find(b => b.id === c.de_bloco) || {}).nome || '')}</td><td>${esc((BL.find(b => b.id === c.para_bloco) || {}).nome || '')}</td><td>${esc((CV_CON.find(x => x[0] === c.tipo) || [0, c.tipo])[1])}${c.tipo === 'divisao' && c.peso != null ? ' ' + c.peso + '%' : ''}</td><td>${esc(c.condicao || c.nota || c.rotulo || '—')}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">Sem ligações: o caminho segue a ordem das fases.</div>'}</div>` : ''}
     ${vista === 'lista' && (!BL || avulsas.length) ? `<div class="panel"><h2>${BL ? 'Etapas avulsas' : 'Funil da estratégia'}</h2><span class="muted">${BL ? 'Etapas que não pertencem a nenhum bloco (criadas antes dos blocos ou à mão). Continuam valendo.' : 'Fases na ordem: Aquisição, Aquecimento, Conversão, Retenção. Uma fase sem etapas não aparece. Mudanças aqui valem para as próximas campanhas; as que já existem mantêm a cópia delas.'}</span>${estTabelaEtapas(avulsas, R, 'est')}</div>` : ''}
     <div class="panel"><h2>Campanhas que usam esta estratégia</h2>${cs.length ? `<div class="tw"><table><thead><tr><th>Campanha</th>${cvOk ? '<th>Versão</th>' : ''}<th>Status</th><th>Período</th></tr></thead><tbody>${cs.map(c => `<tr class="clk" data-camp="${c.id}"><td><b>${esc(c.nome)}</b></td>${cvOk ? `<td>${(v => v ? 'v' + v : '<span class="muted">antes das versões</span>')((vs.find(v => v.id === (ce.find(x => x.campanha_id === c.id) || {}).versao_id) || {}).versao)}</td>` : ''}<td>${esc(c.status)}</td><td><small>${dd(c.data_inicio)}${c.data_fim ? ' a ' + dd(c.data_fim) : c.modelo === 'perpetuo' ? ' (sem fim)' : ''}</small></td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">Nenhuma campanha ainda. Ao criar uma campanha, escolha esta estratégia.</div>'}</div>`;
-  $('#estVolta').onclick = () => { S.estSel = null; render(); };
+  $('#estVolta').onclick = () => act(async () => { if (f.status === 'rascunho' && !f.versao_atual && (f.nome || '').startsWith(CV_RASC) && !(BL || []).length && !cs.length) await q(sb.from('funis').delete().eq('id', f.id)); S.estSel = null; render(); });
   $('#estDup').onclick = () => estNova(pr, f);
   $('#estEd').onclick = () => abrirForm('Editar estratégia', 'funis', [{ k: 'nome', l: 'Nome', req: 1, full: 1 }, { k: 'tipo', l: 'Tipo', t: 'select', req: 1, opts: EST_TIPOS },
     { k: 'produto_id', l: 'Produto (vazio = qualquer produto)', t: 'select', opts: sel(pr, 'id', 'nome') },
@@ -9706,7 +9710,7 @@ async function vEstrategia(m) {
       { k: 'objetivo', l: 'Objetivo geral', t: 'textarea' }, { k: 'criterios', l: 'Critérios de sucesso', t: 'textarea', hint: 'O que precisa acontecer para considerar a estratégia um sucesso.' }] : []),
     { k: 'descricao', l: 'Descrição', t: 'textarea' }, ...(cvOk ? [] : [{ k: 'ativo', l: 'Ativa', t: 'check' }])], f, { ok: 'Estratégia salva' });
   if (cvOk) { m.querySelectorAll('[data-ev]').forEach(b => b.onclick = () => { S.estVista = b.dataset.ev; render(); });
-    $('#estPub').onclick = () => cvPublicar(f); $('#estVers').onclick = () => cvVersoes(f);
+    $('#estPub').onclick = () => cvPublicar(f, { pr, nBlocos: BL.length }); $('#estVers').onclick = () => cvVersoes(f);
     if (vista === 'mapa') cvMapa($('#cvBox'), f, { BL, CN, L, R, cat, pr, of, eq: eqs }); }
   const prox = (Lo.length ? Math.max(...Lo.map(e => e.ordem || 0)) : 0) + 10;
   const abrirEd = row => estModalEtapa({ titulo: row ? 'Editar etapa' : 'Adicionar etapa', tabela: 'estrategia_etapas', extra: { funil_id: f.id }, row, R, catalogo: cat, proxOrdem: prox, usadas: L.map(e => e.chave) });
@@ -10377,6 +10381,7 @@ const CV_CSS = `<style id="cvCss">.cv{display:grid;grid-template-columns:200px m
 .cv-lx{margin-left:auto;flex:none;width:22px;height:22px;border:0;border-radius:6px;background:none;color:var(--muted);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;opacity:.55}
 .cv-lx svg{width:14px;height:14px}.cv-no:hover .cv-lx,.cv-no.on .cv-lx{opacity:1}.cv-lx:hover{background:color-mix(in srgb,var(--bad) 16%,transparent);color:var(--bad)}
 .cv-desf{position:absolute;left:50%;top:50px;transform:translateX(-50%);z-index:3;display:flex;align-items:center;gap:10px;background:var(--panel,var(--surface));border:1px solid var(--line);border-radius:10px;padding:7px 8px 7px 14px;box-shadow:0 6px 18px rgba(15,23,42,.22);font-size:13px;white-space:nowrap}
+.cv-rasc{margin-top:8px;padding:8px 12px;border:1px dashed var(--warn,#d97706);border-radius:10px;font-size:13px;max-width:720px}
 .cv-sw button.on{background:#25D366;color:#053b1c;font-weight:700}.cv-sw button:disabled{cursor:default}
 .cv-prop .cv-sec label{display:block;margin-top:6px}
 .cv-no{border-top:4px solid var(--fc,var(--line))}.cv-no.cv-fora,.cv-ar.cv-fora{opacity:.22}.cv-no,.cv-ar{transition:opacity .15s}
@@ -10388,7 +10393,23 @@ const CV_CSS = `<style id="cvCss">.cv{display:grid;grid-template-columns:200px m
 @media (max-width:1100px){.cv{grid-template-columns:minmax(0,1fr);height:auto}.cv-palco{height:520px}.cv-pal{max-height:220px}}</style>`;
 
 /* Versões da estratégia */
-function cvPublicar(f) {
+const CV_RASC = 'Nova estratégia (rascunho)';
+function cvPublicar(f, ctx = {}) {
+  if (ctx.nBlocos === 0) return toast('Coloque pelo menos um bloco no mapa antes de publicar.', true);
+  if (f.status === 'rascunho' && !f.versao_atual) {
+    const nm = (f.nome || '').startsWith(CV_RASC) ? '' : f.nome;
+    return modal('Publicar a estratégia', `<p>A estratégia entra na lista de estratégias com as etapas do mapa (${ctx.nBlocos} ${ctx.nBlocos === 1 ? 'bloco' : 'blocos'}) e fica pronta para as campanhas. Esta é a versão 1.</p>
+      <div class="grid2"><label class="full">Nome<input name="nome" required maxlength="80" value="${esc(nm)}" placeholder="Ex.: Lançamento com aulas ao vivo"></label>
+      <label>Tipo<select name="tipo">${EST_TIPOS.map(([k, l]) => `<option value="${k}"${f.tipo === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+      <label>Categoria<input name="categoria" maxlength="60" value="${esc(f.categoria || '')}" placeholder="Ex.: Lançamento, Perpétuo"></label>
+      <label class="full">Produto (vazio = qualquer produto)<select name="produto_id"><option value="">—</option>${(ctx.pr || []).map(x => `<option value="${x.id}"${f.produto_id === x.id ? ' selected' : ''}>${esc(x.nome)}</option>`).join('')}</select></label>
+      <label class="full">Objetivo<textarea name="objetivo" rows="2" placeholder="O que esta estratégia quer alcançar">${esc(f.objetivo || '')}</textarea></label></div>`, async d => {
+      const nome = (d.nome || '').trim(); if (!nome) throw new Error('Dê um nome para a estratégia.');
+      if (nome.startsWith(CV_RASC)) throw new Error('Troque o nome de rascunho por um nome de verdade.');
+      const ja = await q(sb.from('funis').select('id').eq('workspace_id', f.workspace_id).eq('nome', nome)); if (ja.some(x => x.id !== f.id)) throw new Error('Já existe uma estratégia com esse nome.');
+      await q(sb.from('funis').update({ nome, tipo: d.tipo, categoria: (d.categoria || '').trim() || null, produto_id: d.produto_id || null, objetivo: (d.objetivo || '').trim() || null }).eq('id', f.id));
+      const v = await q(sb.rpc('estrategia_publicar', { p_funil: f.id, p_nota: 'Criada no mapa' })); toast('Estratégia publicada (versão ' + v + ')'); }, 'Publicar estratégia');
+  }
   modal('Publicar versão ' + ((f.versao_atual || 0) + 1), `<p>A versão guarda o mapa como está agora (blocos, ligações e métricas). As próximas campanhas com esta estratégia usam esta versão; as que já existem continuam com a delas.</p>
     <label>O que mudou (opcional)<input name="nota" maxlength="1000" placeholder="Ex.: entrou o grupo de WhatsApp antes da aula"></label>`, async d => {
     const v = await q(sb.rpc('estrategia_publicar', { p_funil: f.id, p_nota: d.nota || null })); toast('Versão ' + v + ' publicada'); }, 'Publicar');
