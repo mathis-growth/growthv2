@@ -5,7 +5,7 @@
 Quando a tela RevOps → Customer Growth estiver no ar: `select cg_ligar_alertas();` (registra o que já acontece sem avisar ninguém e liga). **Feito em 29/10/2026**, com a v0.163 no ar: 824 alertas abertos (340 parados, 484 sem CS) em Escola Aurora, Growths — Demo e Mathisa — Operação, sem aviso enviado.
 1. Confira antes que a v0.132 (alertas e agendador) está aplicada: o arquivo verifica e para com uma mensagem se faltar algo, sem gravar nada.
 2. `supabase/RODAR_v0.163_customer_growth.sql` no SQL Editor do Supabase: é tudo ou nada e pode ser rodado de novo. **Ainda não aplicado em produção.**
-3. Publicar de novo a edge function `leads` (sem verificação de JWT) para receber eventos da plataforma do curso: `supabase functions deploy leads --no-verify-jwt`.
+3. Publicar de novo a edge function `leads` (sem verificação de JWT) para receber eventos da plataforma do curso: `supabase functions deploy leads --no-verify-jwt`. **Feito em 29/10/2026** (versão 6, pelo conector).
 4. Sem o SQL, as telas novas avisam que falta a atualização do banco e o resto do Growths continua igual.
 
 ## v0.161
