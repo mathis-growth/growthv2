@@ -123,10 +123,11 @@ begin
   select pg_get_functiondef('public.growths_rodar_agendado(timestamptz)'::regprocedure) into d;
   d := replace(d, E'\r\n', E'\n');
   if position('cg_rodar_agendado' in d) = 0 then
-    n := replace(d, '  -- pede o envio de e-mails e WhatsApps que estão na fila',
+    -- o ponto de inserção é a contagem da fila (existe com ou sem os comentários da versão original)
+    n := replace(d, '  select count(*) into pend from notificacoes',
       '  -- v0.163: acompanhamento dos alunos (check-ins do dia e alertas de CS), antes de pedir o envio da fila
   begin perform cg_rodar_agendado(p_ref); exception when others then raise warning ''growths_rodar_agendado (acompanhamento): %'', sqlerrm; end;
-  -- pede o envio de e-mails e WhatsApps que estão na fila');
+  select count(*) into pend from notificacoes');
     if n = d then raise exception 'growths_rodar_agendado: ponto de inserção não encontrado'; end if;
     execute n;
   end if;
