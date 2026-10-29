@@ -2,6 +2,12 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.169 — Lixeira nos cards do Canvas (29/10/2026)
+- Cada card do Mapa tem uma **lixeira** no canto de cima: um clique exclui o bloco na hora, junto com as métricas e as ligações dele, sem janela de confirmação.
+- No topo do mapa aparece "Bloco … excluído · **Desfazer**" por 8 segundos. Desfazer devolve o bloco no mesmo lugar, com as métricas e as ligações (tipo, rótulo e condição).
+- A lixeira só aparece para quem pode editar. O botão "Excluir bloco" do painel continua, com confirmação.
+- Sem mudança no banco. Teste `tests/tela/t169_canvas_lixeira.py` (13 verificações, 0 falhas); t165 a t168 sem falhas.
+
 ## v0.168 — Funil inteiro por fase no Canvas e correção do workspace (29/10/2026)
 - **Correção:** trocar de workspace com uma estratégia aberta deixava a estratégia do workspace anterior na tela, e os blocos novos eram gravados no workspace novo. Ao ligar esses blocos, o banco recusava com "Os dois blocos precisam ser desta estratégia". Agora trocar de workspace fecha a estratégia aberta, e uma estratégia de outro workspace não abre.
 - **Funil inteiro num mapa só, dividido por fase:** cada card tem a cor da fase (Captação azul, Aquecimento laranja, Vendas verde, Pós-venda/CS roxo), e cada fase ganha uma faixa tracejada em volta dos seus blocos, com o nome. As ligações valem entre fases: da captação até as vendas e das vendas ao CS.

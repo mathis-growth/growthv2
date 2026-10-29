@@ -15,7 +15,7 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.168 · 29/10/2026 (`index.html`) |
+| **Versão da tela** | 0.169 · 29/10/2026 (`index.html`) |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.156** (26/10/2026): dicionário de métricas com direção e referência; alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
 | **Falta aplicar no banco** | `supabase/RODAR_v0.157_narrativas.sql` (banco de narrativas; sem ele, as frases do Financeiro não aparecem) e `supabase/RODAR_v0.159_content_simples.sql` + `supabase/RODAR_v0.160_content_segmentos.sql` (Growth's Content; sem eles, as abas novas avisam) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
@@ -27,6 +27,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.169 | 29/10/2026 | **Lixeira nos cards do Canvas**: um clique exclui o bloco, e o mapa oferece Desfazer por 8 segundos. | Sem mudança no banco |
 | 0.168 | 29/10/2026 | **Canvas por fase**: o funil inteiro num mapa só, com cor e faixa por fase (Captação, Aquecimento, Vendas, Pós-venda/CS) e legenda que destaca uma fase. Correção: trocar de workspace com uma estratégia aberta gravava os blocos no workspace errado. | Sem mudança no banco |
 | 0.167 | 29/10/2026 | **Ajustar os cards do Canvas**: arrastar o card por qualquer ponto (encaixa na grade), mudar o tamanho de cada card pelo canto e botão **Organizar** (colunas por fase, sem encostar). | Sem mudança no banco |
 | 0.166 | 29/10/2026 | **Desenhos no Canvas**: cada bloco mostra o que é (mini página com foto e textos, anúncio com o símbolo da Meta ou do Google, WhatsApp com a escolha API ou Grupo, vídeo, e-mail, lógica). | Sem mudança no banco |

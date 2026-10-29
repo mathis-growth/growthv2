@@ -1199,7 +1199,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.168 · 29/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.169 · 29/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -10145,7 +10145,7 @@ function cvMapa(el, f, ctx) {
   const T = {}; BL.forEach(b => { T[b.id] = cvTam(b); });
   const no = b => { const p = P[b.id], pr = princ(b), lg = CV_LOGICA.includes(b.tipo), st = (b.props || {}).status;
     return `<div class="cv-no${lg ? ' cv-lg' : ''}${sel && sel.id === b.id ? ' on' : ''}${edita ? ' cv-mov' : ''}" data-no="${b.id}" data-fase="${esc(b.fase)}" style="--fc:${cvFase(b.fase)[1]};left:${p.x}px;top:${p.y}px${T[b.id] !== 1 ? ';transform:scale(' + T[b.id] + ')' : ''}">
-      <div class="cv-nh" data-arr="${b.id}"><span class="cv-tp">${esc(cvTipoNome(b.tipo))}</span>${st ? `<span class="cv-st cv-st-${st}">${esc((CV_ST.find(x => x[0] === st) || [0, st])[1])}</span>` : ''}</div>
+      <div class="cv-nh" data-arr="${b.id}"><span class="cv-tp">${esc(cvTipoNome(b.tipo))}</span>${st ? `<span class="cv-st cv-st-${st}">${esc((CV_ST.find(x => x[0] === st) || [0, st])[1])}</span>` : ''}${edita ? `<button type="button" class="cv-lx" data-lx="${b.id}" title="Excluir bloco" aria-label="Excluir ${esc(b.nome)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></button>` : ''}</div>
       ${cvArte(b)}<b class="cv-nm">${esc(b.nome)}</b>
       ${b.tipo === 'api' || b.tipo === 'grupo' ? `<div class="cv-sw">${[['api', 'API'], ['grupo', 'Grupo']].map(([k, l]) => `<button type="button" data-wa="${k}" class="${b.tipo === k ? 'on' : ''}"${edita ? '' : ' disabled'}>${l}</button>`).join('')}</div>`
         : (b.props || {}).canal && !cvLogoDe(b.tipo, b.nome, b.props.canal) ? `<small>${esc(b.props.canal)}</small>` : ''}
@@ -10166,7 +10166,8 @@ function cvMapa(el, f, ctx) {
       <div class="cv-mundo" id="cvMundo" style="transform:translate(${V.x}px,${V.y}px) scale(${V.z})"><div id="cvBandas"></div>
         <svg class="cv-svg" width="4000" height="3000"><defs><marker id="cvSeta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="cv-mk"/></marker></defs>${CN.map(seta).join('')}<path id="cvTemp" class="cv-ln cv-temp" d=""/></svg>
         ${BL.map(no).join('')}</div>
-      ${BL.length ? '' : '<div class="cv-vazio">Arraste um componente da esquerda para começar o mapa.</div>'}</div>
+      ${BL.length ? '' : '<div class="cv-vazio">Arraste um componente da esquerda para começar o mapa.</div>'}
+      ${S.cvDesfaz && S.cvDesfaz.f === f.id && Date.now() < S.cvDesfaz.ate ? `<div class="cv-desf" id="cvDesf"><span>Bloco <b>${esc(S.cvDesfaz.b.nome)}</b> excluído</span><button type="button" class="btn sm" id="cvDesfBt">Desfazer</button></div>` : ''}</div>
     <aside class="cv-prop" id="cvProp"></aside></div>`;
   const palco = $('#cvPalco'), mundo = $('#cvMundo'), salvo = t => { const s = $('#cvSalvo'); if (s) { s.textContent = t; clearTimeout(cvMapa._t); cvMapa._t = setTimeout(() => { if (s.isConnected) s.textContent = ''; }, 1800); } };
   const aplica = () => { mundo.style.transform = `translate(${V.x}px,${V.y}px) scale(${V.z})`; palco.style.backgroundSize = `${CV_GRADE * V.z}px ${CV_GRADE * V.z}px`; palco.style.backgroundPosition = `${V.x}px ${V.y}px`; };
@@ -10196,7 +10197,7 @@ function cvMapa(el, f, ctx) {
   palco.addEventListener('pointerdown', e => {
     const pino = e.target.closest('[data-pino]'), cab = e.target.closest('[data-arr]'), nob = e.target.closest('[data-no]');
     if (pino && edita) { arr = { tipo: 'liga', de: pino.dataset.pino }; e.preventDefault(); return; }
-    if (e.target.closest('[data-wa]')) return;
+    if (e.target.closest('[data-wa]') || e.target.closest('[data-lx]')) return;
     const rs = e.target.closest('[data-rs]');
     if (rs && edita) { arr = { tipo: 'tam', id: rs.dataset.rs, s0: T[rs.dataset.rs] }; e.preventDefault(); return; }
     if (nob && edita) { const id = nob.dataset.no, w = mundoXY(e); arr = { tipo: 'no', id, dx: w.x - P[id].x, dy: w.y - P[id].y, cx: e.clientX, cy: e.clientY, mexeu: false }; e.preventDefault(); return; }
@@ -10227,6 +10228,15 @@ function cvMapa(el, f, ctx) {
   window.addEventListener('pointermove', move); window.addEventListener('pointerup', solta, { once: false });
   const limpa = new MutationObserver(() => { if (!palco.isConnected) { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', solta); limpa.disconnect(); } });
   limpa.observe(document.body, { childList: true, subtree: true });
+  // lixeira no card: exclui na hora; o aviso no mapa deixa desfazer por alguns segundos
+  mundo.querySelectorAll('[data-lx]').forEach(x => x.addEventListener('click', e => { e.stopPropagation(); const b = BL.find(y => y.id === x.dataset.lx); if (!b || !edita) return;
+    act(async () => { const ets = L.filter(e2 => e2.bloco_id === b.id), cns = CN.filter(c => c.de_bloco === b.id || c.para_bloco === b.id);
+      await q(sb.from('estrategia_etapas').delete().eq('bloco_id', b.id)); await q(sb.from('estrategia_blocos').delete().eq('id', b.id));
+      S.cvDesfaz = { f: f.id, b, ets, cns, ate: Date.now() + 8000 }; if (S.cvSel && S.cvSel.id === b.id) S.cvSel = null; render();
+      clearTimeout(cvMapa._desf); cvMapa._desf = setTimeout(() => { const d = $('#cvDesf'); if (d) d.remove(); }, 8000); }); }));
+  if ($('#cvDesfBt')) $('#cvDesfBt').onclick = () => { const D = S.cvDesfaz; if (!D) return; S.cvDesfaz = null;
+    act(async () => { await q(sb.from('estrategia_blocos').insert(D.b)); if (D.ets.length) await q(sb.from('estrategia_etapas').insert(D.ets));
+      if (D.cns.length) await q(sb.from('estrategia_conexoes').insert(D.cns)); S.cvSel = { t: 'no', id: D.b.id }; render(); }, 'Bloco de volta'); };
   mundo.querySelectorAll('[data-wa]').forEach(x => x.addEventListener('click', e => { e.stopPropagation(); const b = BL.find(y => y.id === x.closest('[data-no]').dataset.no);
     if (!edita || b.tipo === x.dataset.wa) return; act(async () => { await cvTrocaTipo(f, ctx, b, x.dataset.wa); S.cvSel = { t: 'no', id: b.id }; render(); }, x.dataset.wa === 'grupo' ? 'Agora é grupo de WhatsApp' : 'Agora é disparo pela API'); }));
   mundo.querySelectorAll('[data-no]').forEach(n => n.addEventListener('click', e => { if (n.dataset.solto || e.target.closest('[data-pino]') || e.target.closest('[data-rs]') || e.target.closest('[data-arr]') || e.target.closest('[data-wa]')) return; sel = { t: 'no', id: n.dataset.no }; S.cvSel = sel; mundo.querySelectorAll('.cv-no').forEach(x => x.classList.toggle('on', x === n)); prop(); }));
@@ -10364,6 +10374,9 @@ const CV_CSS = `<style id="cvCss">.cv{display:grid;grid-template-columns:200px m
 .cv-em{height:100%;border:1px solid var(--line);border-radius:7px;background:var(--cvp);display:flex;align-items:center;gap:6px;padding:5px 7px}.cv-em .cv-lg-svg{width:30px;height:30px}.cv-em .cv-tx{flex:1}
 .cv-lgc,.cv-ico{height:100%;display:flex;align-items:center;justify-content:center;color:var(--accent)}.cv-lgc svg{width:70px;height:46px}.cv-ico .cv-lg-svg,.cv-ico .cv-pict{width:38px;height:38px}.cv-art-logica,.cv-art-icone{height:54px}
 .cv-sw{display:flex;border:1px solid var(--line);border-radius:99px;overflow:hidden;align-self:flex-start}.cv-sw button{border:0;background:none;color:var(--muted);font:inherit;font-size:11px;padding:2px 10px;cursor:pointer}
+.cv-lx{margin-left:auto;flex:none;width:22px;height:22px;border:0;border-radius:6px;background:none;color:var(--muted);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;opacity:.55}
+.cv-lx svg{width:14px;height:14px}.cv-no:hover .cv-lx,.cv-no.on .cv-lx{opacity:1}.cv-lx:hover{background:color-mix(in srgb,var(--bad) 16%,transparent);color:var(--bad)}
+.cv-desf{position:absolute;left:50%;top:50px;transform:translateX(-50%);z-index:3;display:flex;align-items:center;gap:10px;background:var(--panel,var(--surface));border:1px solid var(--line);border-radius:10px;padding:7px 8px 7px 14px;box-shadow:0 6px 18px rgba(15,23,42,.22);font-size:13px;white-space:nowrap}
 .cv-sw button.on{background:#25D366;color:#053b1c;font-weight:700}.cv-sw button:disabled{cursor:default}
 .cv-prop .cv-sec label{display:block;margin-top:6px}
 .cv-no{border-top:4px solid var(--fc,var(--line))}.cv-no.cv-fora,.cv-ar.cv-fora{opacity:.22}.cv-no,.cv-ar{transition:opacity .15s}

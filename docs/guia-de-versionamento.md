@@ -1,3 +1,6 @@
+## v0.169
+- index.html: 0.168 → 0.169. No `cvMapa`: botão `.cv-lx[data-lx]` no cabeçalho do card (fora do arrastar), exclui etapas e bloco (as ligações saem pelo `on delete cascade`) e guarda `S.cvDesfaz` (bloco, etapas, ligações, prazo de 8 s); aviso `#cvDesf` no topo do palco com `#cvDesfBt`, que insere de volta com os mesmos ids. Teste `t169_canvas_lixeira.py`. Sem migração.
+
 ## v0.168
 - index.html: 0.167 → 0.168. `#wsSel` limpa `S.estSel`, `S.cvSel` e `S.cvView`; `vEstrategia` volta para a lista se `funis.workspace_id <> S.ws`. Novos `CV_FASE` e `cvFase`; no `cvMapa`: `data-fase` e `--fc` no card, faixas `#cvBandas` (refeitas ao mover ou mudar o tamanho), legenda `.cv-legs` com `S.cvFase` e `foco()`. "Ajustar" deixa espaço para a barra e as faixas. Teste `t168_canvas_fases.py`. Sem migração.
 

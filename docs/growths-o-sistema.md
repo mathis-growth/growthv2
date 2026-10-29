@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 29/10/2026, versão 0.168.
+**Última atualização:** 29/10/2026, versão 0.169.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -469,6 +469,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **29/10 (v0.169):** Lixeira nos cards do Canvas, com Desfazer por alguns segundos.
 - **29/10 (v0.168):** Canvas por fase: o funil inteiro num mapa só, com cor e faixa para Captação, Aquecimento, Vendas e Pós-venda (CS).
 - **29/10 (v0.167):** Ajustar os cards do Canvas: arrastar por qualquer ponto, mudar o tamanho pelo canto e Organizar por fase.
 - **29/10 (v0.166):** Desenhos nos blocos do Canvas: mini páginas com foto e textos, anúncios com o símbolo da Meta e do Google, WhatsApp com API ou Grupo.
