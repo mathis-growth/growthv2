@@ -1,3 +1,6 @@
+## v0.166
+- index.html: 0.165 → 0.166. Novas `cvArte`, `cvTipoArte`, `cvLogoDe`, `CV_LOGO`, `CV_PICT`, `cvIcoPal`, `cvFotoReduz`, `cvTrocaTipo`; `blkEtapasDe` sai de dentro de `blkCria` (mesmas métricas, agora reaproveitadas na troca API ⇄ grupo). Bloco mais alto: ligações saem a 62 px do topo, organização por fase a cada 200 px. Paleta com um WhatsApp só. Teste `t166_canvas_desenhos.py`. Sem migração.
+
 ## v0.165
 - index.html: 0.164 → 0.165. Novas `cvMapa`, `cvCriaBloco`, `cvPos`, `cvPublicar`, `cvVersoes`, `cvCopiaMapa`, `CV_GRUPOS`, `CV_CON`, `CV_CSS`; rota e item de menu `mkt-estrategias` (usa `vFunis`; liberada para quem vê `mkt-camp` ou `cad-funis`); `vFunis` com categoria, versão, filtros e duplicar; `estNova` com categoria e objetivo; `vEstrategia` com Mapa/Lista (`S.estVista`), Publicar versão, Versões e versão em "Campanhas que usam". Sem as colunas novas no banco, a tela fica como na v0.164.
 - Migração `20261124100000_strategy_canvas.sql` (idempotente; desfazer no fim do arquivo). Teste `t165_strategy_canvas.py`; banco `canvas_s1_s3_cenarios.sql`.

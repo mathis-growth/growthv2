@@ -2,6 +2,17 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.166 — Desenhos nos blocos do Canvas (29/10/2026)
+- No Mapa da estratégia, cada bloco mostra o desenho do que é:
+  - **Páginas:** página de captura, landing page, página de vendas, de obrigado e checkout aparecem como uma mini página (barra do navegador, foto, título, campos, preço e botão).
+  - **Anúncios:** tráfego pago aparece como um anúncio com o símbolo da plataforma (Meta, Google, YouTube). O Instagram aparece como um post.
+  - **Vídeo:** VSL e webinar viram um player; o webinar tem a marca AO VIVO.
+  - **Comunicação e lógica:** e-mail com envelope e assunto; condição, decisão e divisão como losango.
+- **Foto e textos do desenho:** no painel do bloco, título (ou assunto, ou mensagem), texto do botão, preço e foto ou print da página, por link `https://` ou enviando a imagem. A imagem é reduzida para 360 px antes de ser guardada no bloco.
+- **WhatsApp:** um bloco só, com o símbolo do WhatsApp e a escolha **API | Grupo** no próprio bloco (ou no painel). Trocar troca também as métricas do bloco pelas do outro tipo.
+- A paleta de componentes mostra os símbolos (Meta, Google, YouTube, Instagram, WhatsApp, e-mail) e um ícone para cada tipo.
+- Sem mudança no banco: os textos e a foto ficam em `props` do bloco, que a v0.165 criou. Teste `tests/tela/t166_canvas_desenhos.py` (23 verificações, 0 falhas); t165 e t164 sem falhas.
+
 ## v0.165 — Strategy Canvas, etapas S1 a S3 (29/10/2026)
 - **Marketing → Estratégias (Canvas)**: biblioteca das estratégias com categoria, objetivo, versão publicada, data de criação, situação (rascunho, em uso, arquivada) e filtros por categoria e situação; duplicar direto da lista. Nova estratégia pede categoria e objetivo. Em Cadastros → Estratégias e funis continua a mesma tela, com os quadros do Kanban.
 - **Mapa (Canvas)**: a estratégia vira um mapa visual. Os blocos que já existiam aparecem organizados por fase; arraste pelo topo para mover (a posição fica salva), arraste do ponto da direita até outro bloco para ligar, use a roda do mouse para aproximar e o fundo para mover o mapa. Componentes na esquerda (Aquisição, Páginas, Comunicação, Conversão, Pós-venda, Lógica e Personalizado): arraste ou clique para criar o bloco, com as mesmas métricas dos blocos de antes.

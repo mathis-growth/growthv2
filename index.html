@@ -1199,7 +1199,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.165 · 29/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.166 · 29/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -9892,12 +9892,15 @@ async function blkCria({ tabB, tabE, dono, tipo, nome, ordem, ref, chavesUsadas 
   const B = EST_BLOCOS[tipo]; if (!B) throw new Error('Bloco desconhecido: ' + tipo);
   const id = crypto.randomUUID(), base = tabB === 'estrategia_blocos' ? { funil_id: dono } : { campanha_id: dono };
   await q(sb.from(tabB).insert({ id, workspace_id: S.ws, ...base, ordem, fase: B.fase, tipo, nome, origem_ref: ref || null }));
+  await q(sb.from(tabE).insert(blkEtapasDe({ tabB, dono, id, tipo, nome, ordem, ref, chavesUsadas })));
+  return id;
+}
+function blkEtapasDe({ tabB, dono, id, tipo, nome, ordem, ref, chavesUsadas, fase }) {
+  const B = EST_BLOCOS[tipo], base = tabB === 'estrategia_blocos' ? { funil_id: dono } : { campanha_id: dono };
   let n = 1; const usadas = new Set(chavesUsadas || []); while (B.metricas.some(x => usadas.has(tipo + n + '_' + x.k))) n++;
-  const et = B.metricas.map((x, i) => ({ workspace_id: S.ws, ...base, bloco_id: id, papel: x.papel, fonte: x.fonte || B.fonte, ordem: ordem * 10 + i, fase: B.fase,
+  return B.metricas.map((x, i) => ({ workspace_id: S.ws, ...base, bloco_id: id, papel: x.papel, fonte: x.fonte || B.fonte, ordem: ordem * 10 + i, fase: fase || B.fase,
     chave: tipo + n + '_' + x.k, nome: nome + ' · ' + x.nome, unidade: x.un || 'numero', origem: x.origem, metrica: x.metrica || null,
     origem_ref: EST_REF[x.origem] && B.ref === EST_REF[x.origem] ? ref || null : null, conta_como: x.conta || null, taxa_esperada: null }));
-  await q(sb.from(tabE).insert(et));
-  return id;
 }
 /* nome sugerido: "Aula 3" se já houver duas aulas */
 const blkNomeSugerido = (tipo, blocos) => { const B = EST_BLOCOS[tipo], n = blocos.filter(b => b.tipo === tipo).length; return tipo === 'aula' ? 'Aula ' + (n + 1) : n ? B.curto + ' ' + (n + 1) : B.curto; };
@@ -10023,7 +10026,7 @@ const CV_GRUPOS = [
   ['Aquisição', [['trafego', 'Meta Ads', { canal: 'Meta Ads' }], ['trafego', 'Google Ads', { canal: 'Google Ads' }], ['trafego', 'YouTube Ads', { canal: 'YouTube' }], ['conteudo', 'Instagram', { canal: 'Instagram' }],
     ['conteudo', 'Tráfego orgânico', { canal: 'Orgânico' }], ['indicacao', 'Afiliados', { canal: 'Afiliados' }], ['indicacao', 'Indicação / parceria', {}]]],
   ['Páginas', [['captura', 'Landing page', {}], ['captura', 'Página de captura', {}], ['pagina', 'Página de vendas', { fase: 'conversao' }], ['pagina', 'Página de obrigado', { fase: 'aquecimento' }], ['vsl', 'VSL', {}], ['aula', 'Webinar', {}]]],
-  ['Comunicação', [['api', 'WhatsApp', { canal: 'WhatsApp' }], ['grupo', 'Grupo de WhatsApp', {}], ['email', 'E-mail', {}], ['comunicacao', 'Chatbot', {}], ['comunicacao', 'Automação', {}], ['comunicacao', 'Notificação', {}]]],
+  ['Comunicação', [['api', 'WhatsApp', { canal: 'WhatsApp' }], ['email', 'E-mail', {}], ['comunicacao', 'Chatbot', {}], ['comunicacao', 'Automação', {}], ['comunicacao', 'Notificação', {}]]],
   ['Conversão', [['pesquisa', 'Formulário', {}], ['checkout', 'Checkout', {}], ['pagina', 'Pagamento', { fase: 'conversao' }], ['comercial', 'Agendamento', {}], ['comercial', 'Atendimento comercial', {}]]],
   ['Pós-venda', [['posvenda', 'Onboarding', {}], ['posvenda', 'Área de membros', {}], ['posvenda', 'Consumo do produto', {}], ['posvenda', 'Ativação', {}], ['posvenda', 'Acompanhamento', {}],
     ['recompra', 'Upsell', {}], ['recompra', 'Cross-sell', {}], ['assinatura', 'Renovação', {}], ['recompra', 'Recompra', {}]]],
@@ -10038,10 +10041,80 @@ const CV_ST = [['', '—'], ['planejado', 'Planejado'], ['implementando', 'Imple
 const CV_CON = [['segue', 'Segue'], ['sim', 'Sim'], ['nao', 'Não'], ['divisao', 'Divisão (%)']];
 const CV_W = 190, CV_COLX = { aquisicao: 40, aquecimento: 320, conversao: 600, retencao: 880 };
 const cvTipoNome = t => (EST_BLOCOS[t] || {}).nome || (CV_SIMPLES[t] || [t])[0];
+/* v0.166: cada bloco do mapa ganha um desenho do que ele é (mini página, anúncio, vídeo, conversa) e o símbolo da plataforma */
+const CV_LOGO = {
+  meta: '<svg viewBox="0 0 24 24" class="cv-lg-svg"><path d="M12 12c-1.8-2.8-3.4-5-5.3-5C4.6 7 3 9.6 3 12.6 3 15 4.2 17 6.1 17c2 0 3.6-2.4 5.9-5s3.9-5 5.9-5c1.9 0 3.1 2 3.1 4.4 0 3-1.6 5.6-3.7 5.6-1.9 0-3.5-2.2-5.3-5" fill="none" stroke="#0866FF" stroke-width="2.6" stroke-linecap="round"/></svg>',
+  google: '<svg viewBox="0 0 24 24" class="cv-lg-svg"><g fill="none" stroke-width="3.4"><path d="M18.13 6.86A8 8 0 0 0 5.07 8" stroke="#EA4335"/><path d="M5.07 8a8 8 0 0 0 0 8" stroke="#FBBC05"/><path d="M5.07 16a8 8 0 0 0 13.06 1.14" stroke="#34A853"/><path d="M18.13 17.14A8 8 0 0 0 20 12h-7.5" stroke="#4285F4"/></g></svg>',
+  youtube: '<svg viewBox="0 0 24 24" class="cv-lg-svg"><rect x="2" y="5" width="20" height="14" rx="4.5" fill="#FF0000"/><path d="M10 9l5.2 3-5.2 3z" fill="#fff"/></svg>',
+  instagram: '<svg viewBox="0 0 24 24" class="cv-lg-svg"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="#E1306C"/><rect x="6.2" y="6.2" width="11.6" height="11.6" rx="3.6" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="2.8" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="16.6" cy="7.4" r="1" fill="#fff"/></svg>',
+  whatsapp: '<svg viewBox="0 0 24 24" class="cv-lg-svg"><path d="M12 2.6a9.4 9.4 0 0 0-8.1 14.1L2.6 21.4l4.8-1.3A9.4 9.4 0 1 0 12 2.6z" fill="#25D366"/><path d="M8.6 7.3c.3-.6.6-.6.9-.6h.6c.2 0 .4.1.6.5l.8 1.9c.1.3 0 .5-.1.7l-.5.6c-.2.2-.2.4-.1.6.5.9 1.2 1.7 2.1 2.3.3.2.5.2.7 0l.6-.7c.2-.2.4-.3.7-.1l1.8.9c.3.1.4.3.4.5 0 .6-.3 1.4-1 1.8-.6.3-1.4.5-3.3-.3-2-.9-3.6-2.9-4.1-3.9-.6-1.1-.6-2.1-.2-3.2z" fill="#fff"/></svg>',
+  email: '<svg viewBox="0 0 24 24" class="cv-lg-svg"><rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="#64748b"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5" fill="none" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/></svg>'
+};
+const cvLogoDe = (tipo, nome, canal) => { const s = ((nome || '') + ' ' + (canal || '')).toLowerCase();
+  if (tipo === 'api' || tipo === 'grupo' || s.includes('whatsapp')) return 'whatsapp';
+  if (s.includes('google')) return 'google'; if (s.includes('youtube')) return 'youtube'; if (s.includes('instagram')) return 'instagram';
+  if (s.includes('meta') || s.includes('facebook')) return 'meta'; if (tipo === 'email' || s.includes('e-mail')) return 'email'; return null; };
+// que desenho cada bloco recebe
+const cvTipoArte = (tipo, nome) => { const s = (nome || '').toLowerCase();
+  if (tipo === 'trafego') return 'anuncio'; if (tipo === 'conteudo') return 'post'; if (tipo === 'captura') return 'captura';
+  if (tipo === 'pagina') return s.includes('obrigado') ? 'obrigado' : s.includes('pagamento') ? 'checkout' : 'vendas';
+  if (tipo === 'checkout') return 'checkout'; if (tipo === 'vsl') return 'vsl'; if (tipo === 'aula') return 'live';
+  if (tipo === 'api' || tipo === 'grupo') return 'whats'; if (tipo === 'email') return 'email'; if (tipo === 'pesquisa') return 'form';
+  if (CV_LOGICA.includes(tipo)) return 'logica'; return 'icone'; };
+const CV_PAGINAS = ['captura', 'vendas', 'obrigado', 'checkout', 'vsl', 'live'];
+const cvTemDesenho = b => !['logica', 'icone'].includes(cvTipoArte(b.tipo, b.nome));
+const cvTemBotao = b => ['captura', 'vendas', 'checkout', 'anuncio', 'form'].includes(cvTipoArte(b.tipo, b.nome));
+const cvTemFoto = b => ['captura', 'vendas', 'vsl', 'live', 'anuncio', 'post'].includes(cvTipoArte(b.tipo, b.nome));
+const CV_BOTAO = { captura: 'Quero participar', vendas: 'Comprar agora', checkout: 'Finalizar compra', anuncio: 'Saiba mais' };
+const cvImgOk = u => typeof u === 'string' && (/^https:\/\//i.test(u) || /^data:image\/(png|jpe?g|webp|gif);base64,/i.test(u));
+const CV_PICT = { indicacao: '<circle cx="9" cy="8" r="3"/><circle cx="16.5" cy="9" r="2.5"/><path d="M3.5 19c.6-3.3 2.8-5 5.5-5s4.9 1.7 5.5 5M14 14.4c2.6-.4 5.6.9 6.3 4.6"/>',
+  comercial: '<path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M19 19c0 1.5-2 2.5-5 2.5"/>',
+  posvenda: '<path d="M3 9l9-4.5L21 9l-9 4.5z"/><path d="M7 11v4.5c1.4 1.3 3 2 5 2s3.6-.7 5-2V11"/>', recompra: '<path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"/>',
+  assinatura: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4M9 15l2 2 4-4"/>', comunicacao: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>',
+  conteudo: '<rect x="6" y="2.5" width="12" height="19" rx="2.5"/><rect x="8.5" y="6" width="7" height="7" rx="1"/><path d="M9 16.5h6"/>', video: '<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M10 9.2l5 2.8-5 2.8z"/>',
+  personalizado: '<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>', pagina: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 8h18M7 12h10M7 15.5h6"/>' };
+const cvPict = (tipo, cls = 'cv-pict') => `<svg viewBox="0 0 24 24" class="${cls}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${CV_PICT[tipo] || CV_PICT.personalizado}</svg>`;
+// ícone pequeno da paleta
+const cvIcoPal = (tipo, nome, extra) => { const lg = cvLogoDe(tipo, nome, (extra || {}).canal); if (lg) return `<span class="cv-pic">${CV_LOGO[lg]}</span>`;
+  const a = cvTipoArte(tipo, nome); return `<span class="cv-pic cv-pic-${a}">${a === 'logica' ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l9 9-9 9-9-9z"/></svg>'
+    : a === 'vsl' || a === 'live' ? cvPict('video', '') : CV_PAGINAS.includes(a) ? cvPict('pagina', '') : cvPict(CV_PICT[tipo] ? tipo : 'personalizado', '')}</span>`; };
+function cvArte(b) {
+  const p = b.props || {}, a = cvTipoArte(b.tipo, b.nome), lg = cvLogoDe(b.tipo, b.nome, p.canal), tit = esc(p.titulo || b.nome), bt = esc(p.botao || CV_BOTAO[a] || 'Continuar');
+  const foto = cvImgOk(p.imagem) ? `<img src="${esc(p.imagem)}" alt="" draggable="false">` : '<span class="cv-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 8"/></svg></span>';
+  const nav = '<div class="cv-brb"><i></i><i></i><i></i><span></span></div>', l = (w, c = '') => `<span class="cv-l${c}" style="width:${w}%"></span>`;
+  let h;
+  if (a === 'captura') h = `<div class="cv-br">${nav}<div class="cv-pg cv-pg-2"><div class="cv-im">${foto}</div><div class="cv-tx"><b>${tit}</b>${l(80)}<span class="cv-in"></span><span class="cv-in"></span><span class="cv-bt">${bt}</span></div></div></div>`;
+  else if (a === 'vendas') h = `<div class="cv-br">${nav}<div class="cv-pg cv-pg-2"><div class="cv-tx"><b>${tit}</b>${l(90)}${l(70)}<span class="cv-pr">${p.preco ? esc(p.preco) : 'R$ ---'}</span><span class="cv-bt">${bt}</span></div><div class="cv-im">${foto}</div></div></div>`;
+  else if (a === 'obrigado') h = `<div class="cv-br">${nav}<div class="cv-pg cv-pg-c"><span class="cv-ok">✓</span><b>${esc(p.titulo || 'Obrigado!')}</b>${l(60)}</div></div>`;
+  else if (a === 'checkout') h = `<div class="cv-br">${nav}<div class="cv-pg cv-pg-2"><div class="cv-tx"><b>${tit}</b><span class="cv-in cv-cc"></span><span class="cv-in"></span><span class="cv-bt">${bt}</span></div><div class="cv-tx cv-res2">${l(80)}${l(60)}<span class="cv-pr">${p.preco ? esc(p.preco) : 'Total'}</span></div></div></div>`;
+  else if (a === 'vsl' || a === 'live') h = `<div class="cv-vid">${cvImgOk(p.imagem) ? foto : ''}<span class="cv-play"></span>${a === 'live' ? '<span class="cv-aov">AO VIVO</span>' : ''}<span class="cv-bar"><i></i></span><b>${tit}</b></div>`;
+  else if (a === 'anuncio') h = `<div class="cv-ad"><div class="cv-adh">${lg ? CV_LOGO[lg] : ''}<span>${esc(p.canal || 'Anúncio')}</span><small>Patrocinado</small></div><div class="cv-ad2"><div class="cv-im">${foto}</div><div class="cv-tx">${p.titulo ? `<b>${esc(p.titulo)}</b>` : l(95) + l(70)}${l(85)}<span class="cv-bt">${bt}</span></div></div></div>`;
+  else if (a === 'post') h = `<div class="cv-ad"><div class="cv-adh">${lg ? CV_LOGO[lg] : cvPict('comunicacao', 'cv-lg-svg')}<span>${esc(p.canal || b.nome)}</span></div><div class="cv-ad2"><div class="cv-im">${foto}</div><div class="cv-tx"><b>${tit}</b>${l(80)}<span class="cv-hrt">♥ 💬 ↗</span></div></div></div>`;
+  else if (a === 'whats') h = `<div class="cv-wa">${CV_LOGO.whatsapp}<div class="cv-chat">${b.tipo === 'grupo' ? '<span class="cv-bb cv-bb-o">Bem-vindos ao grupo!</span><span class="cv-bb">Aula hoje às 20h</span>' : `<span class="cv-bb">${esc(p.titulo || 'Oi! Sua aula começa em 1h')}</span><span class="cv-bb cv-bb-o">Quero!</span>`}</div></div>`;
+  else if (a === 'email') h = `<div class="cv-em">${CV_LOGO.email}<div class="cv-tx"><b>${esc(p.titulo || 'Assunto: ' + b.nome)}</b>${l(90)}${l(75)}${l(50)}</div></div>`;
+  else if (a === 'form') h = `<div class="cv-br">${nav}<div class="cv-pg cv-pg-c cv-pg-f"><b>${tit}</b><span class="cv-ck"><i></i>${l(60, '')}</span><span class="cv-ck"><i></i>${l(45, '')}</span><span class="cv-bt">${bt}</span></div></div>`;
+  else if (a === 'logica') h = `<div class="cv-lgc"><svg viewBox="0 0 60 40"><path d="M30 3l26 17-26 17L4 20z" fill="none" stroke="currentColor" stroke-width="2"/>${b.tipo === 'divisao' ? '<path d="M18 20h10M28 20l7-6M28 20l7 6" stroke="currentColor" stroke-width="2" fill="none"/>' : b.tipo === 'evento' || b.tipo === 'gatilho' ? '<path d="M32 9l-7 12h6l-3 10 8-13h-6z" fill="currentColor"/>' : '<text x="30" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="currentColor">?</text>'}</svg></div>`;
+  else h = `<div class="cv-ico">${lg ? CV_LOGO[lg] : cvPict(CV_PICT[b.tipo] ? b.tipo : 'personalizado')}</div>`;
+  return `<div class="cv-art cv-art-${a}">${h}</div>`;
+}
+// foto ou print da página: reduz para 360 px de largura antes de guardar no bloco
+const cvFotoReduz = file => new Promise((ok, erro) => { if (!/^image\//.test(file.type)) return erro(new Error('Escolha uma imagem (JPG, PNG ou WEBP).'));
+  const r = new FileReader(); r.onerror = () => erro(new Error('Não consegui ler a imagem.')); r.onload = () => { const im = new Image(); im.onerror = () => erro(new Error('Imagem inválida.'));
+    im.onload = () => { const w = Math.min(360, im.width), h = Math.round(im.height * w / im.width), c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').drawImage(im, 0, 0, w, h); ok(c.toDataURL('image/jpeg', .72)); };
+    im.src = r.result; }; r.readAsDataURL(file); });
+// WhatsApp: trocar entre API e grupo troca as métricas do bloco pelas do outro tipo
+async function cvTrocaTipo(f, ctx, b, novo) {
+  if (b.tipo === novo || !EST_BLOCOS[novo]) return;
+  const padrao = ['whatsapp', 'grupo de whatsapp', 'disparo whatsapp'].includes(b.nome.trim().toLowerCase()), nome = padrao ? (novo === 'grupo' ? 'Grupo de WhatsApp' : 'WhatsApp') : b.nome;
+  if (nome !== b.nome && ctx.BL.some(x => x.id !== b.id && x.nome.trim().toLowerCase() === nome.toLowerCase())) throw new Error('Já existe um bloco chamado ' + nome + '.');
+  await q(sb.from('estrategia_etapas').delete().eq('bloco_id', b.id));
+  await q(sb.from('estrategia_blocos').update({ tipo: novo, nome, props: { ...(b.props || {}), canal: 'WhatsApp' } }).eq('id', b.id));
+  await q(sb.from('estrategia_etapas').insert(blkEtapasDe({ tabB: 'estrategia_blocos', dono: f.id, id: b.id, tipo: novo, nome, ordem: b.ordem, fase: b.fase, ref: null, chavesUsadas: ctx.L.filter(e => e.bloco_id !== b.id).map(e => e.chave) })));
+}
 function cvPos(blocos) { // posição salva ou arrumada por fase e ordem
   const P = {}, porFase = {};
   blocos.slice().sort((a, b) => a.ordem - b.ordem).forEach(b => { if (b.x != null && b.y != null) { P[b.id] = { x: Number(b.x), y: Number(b.y) }; return; }
-    const i = (porFase[b.fase] = (porFase[b.fase] || 0) + 1) - 1; P[b.id] = { x: CV_COLX[b.fase] ?? 40, y: 40 + i * 130 }; });
+    const i = (porFase[b.fase] = (porFase[b.fase] || 0) + 1) - 1; P[b.id] = { x: CV_COLX[b.fase] ?? 40, y: 40 + i * 200 }; });
   return P;
 }
 async function cvCriaBloco(f, ctx, tipo, nome, extra, x, y) {
@@ -10061,16 +10134,18 @@ function cvMapa(el, f, ctx) {
   const no = b => { const p = P[b.id], pr = princ(b), lg = CV_LOGICA.includes(b.tipo), st = (b.props || {}).status;
     return `<div class="cv-no${lg ? ' cv-lg' : ''}${sel && sel.id === b.id ? ' on' : ''}" data-no="${b.id}" style="left:${p.x}px;top:${p.y}px">
       <div class="cv-nh" data-arr="${b.id}"><span class="cv-tp">${esc(cvTipoNome(b.tipo))}</span>${st ? `<span class="cv-st cv-st-${st}">${esc((CV_ST.find(x => x[0] === st) || [0, st])[1])}</span>` : ''}</div>
-      <b class="cv-nm">${esc(b.nome)}</b>${(b.props || {}).canal ? `<small>${esc(b.props.canal)}</small>` : ''}
+      ${cvArte(b)}<b class="cv-nm">${esc(b.nome)}</b>
+      ${b.tipo === 'api' || b.tipo === 'grupo' ? `<div class="cv-sw">${[['api', 'API'], ['grupo', 'Grupo']].map(([k, l]) => `<button type="button" data-wa="${k}" class="${b.tipo === k ? 'on' : ''}"${edita ? '' : ' disabled'}>${l}</button>`).join('')}</div>`
+        : (b.props || {}).canal && !cvLogoDe(b.tipo, b.nome, b.props.canal) ? `<small>${esc(b.props.canal)}</small>` : ''}
       ${pr ? `<small class="cv-kpi"><span class="blk-dot"></span>${esc(blkCurto(pr, b))}</small>` : lg ? '' : '<small class="muted">sem métrica</small>'}
       ${edita ? `<span class="cv-pino" data-pino="${b.id}" title="Arraste até outro bloco para ligar"></span>` : ''}</div>`; };
-  const H = b => ({ x: P[b].x + CV_W, y: P[b].y + 34 }), E = b => ({ x: P[b].x, y: P[b].y + 34 });
+  const H = b => ({ x: P[b].x + CV_W, y: P[b].y + 62 }), E = b => ({ x: P[b].x, y: P[b].y + 62 });
   const seta = c => { if (!P[c.de_bloco] || !P[c.para_bloco]) return ''; const a = H(c.de_bloco), z = E(c.para_bloco), dx = Math.max(40, Math.abs(z.x - a.x) / 2);
     const d = `M${a.x},${a.y} C${a.x + dx},${a.y} ${z.x - dx},${z.y} ${z.x},${z.y}`, mx = (a.x + z.x) / 2, my = (a.y + z.y) / 2;
     const rot = c.rotulo || (c.tipo === 'sim' ? 'Sim' : c.tipo === 'nao' ? 'Não' : c.tipo === 'divisao' ? (c.peso != null ? c.peso + '%' : 'Divisão') : '');
     return `<g class="cv-ar${sel && sel.id === c.id ? ' on' : ''} cv-t-${c.tipo}" data-ar="${c.id}"><path d="${d}" class="cv-hit"/><path d="${d}" class="cv-ln" marker-end="url(#cvSeta)"/>
       ${rot || c.nota || c.condicao ? `<foreignObject x="${mx - 60}" y="${my - 12}" width="120" height="24"><div class="cv-rot">${esc(rot || (c.nota ? '📝' : '?'))}</div></foreignObject>` : ''}</g>`; };
-  const pal = CV_GRUPOS.map(([g, its]) => `<details class="cv-g" ${g === 'Aquisição' || g === 'Páginas' ? 'open' : ''}><summary>${g}</summary>${its.map(([t, n, x], i) => `<div class="cv-pi" draggable="${edita}" data-pt="${t}" data-pn="${esc(n)}" data-px='${esc(JSON.stringify(x))}' title="${esc(cvTipoNome(t))}">${esc(n)}</div>`).join('')}</details>`).join('');
+  const pal = CV_GRUPOS.map(([g, its]) => `<details class="cv-g" ${g === 'Aquisição' || g === 'Páginas' ? 'open' : ''}><summary>${g}</summary>${its.map(([t, n, x], i) => `<div class="cv-pi" draggable="${edita}" data-pt="${t}" data-pn="${esc(n)}" data-px='${esc(JSON.stringify(x))}' title="${esc(cvTipoNome(t))}">${cvIcoPal(t, n, x)}<span>${esc(n)}</span></div>`).join('')}</details>`).join('');
   el.innerHTML = `<div class="cv">${edita ? `<aside class="cv-pal"><div class="cv-pt">Componentes</div><span class="muted" style="font-size:11.5px">Arraste para o mapa ou clique para adicionar.</span>${pal}</aside>` : ''}
     <div class="cv-palco" id="cvPalco"><div class="cv-ctl"><button class="btn sm" data-z="1" title="Aproximar">+</button><button class="btn sm" data-z="-1" title="Afastar">−</button><button class="btn sm" data-z="0">Ajustar</button>
       ${edita && !CN.length && BL.length > 1 ? '<button class="btn sm" id="cvLiga">Ligar na ordem</button>' : ''}<span class="muted" id="cvSalvo"></span></div>
@@ -10083,7 +10158,7 @@ function cvMapa(el, f, ctx) {
   const aplica = () => { mundo.style.transform = `translate(${V.x}px,${V.y}px) scale(${V.z})`; };
   const mundoXY = e => { const r = palco.getBoundingClientRect(); return { x: (e.clientX - r.left - V.x) / V.z, y: (e.clientY - r.top - V.y) / V.z }; };
   const ajusta = () => { if (!BL.length) { V.x = 0; V.y = 0; V.z = 1; return aplica(); } const xs = BL.map(b => P[b.id].x), ys = BL.map(b => P[b.id].y), r = palco.getBoundingClientRect();
-    const w = Math.max(...xs) + CV_W - Math.min(...xs) + 90, h = Math.max(...ys) + 110 - Math.min(...ys) + 84; V.z = Math.max(.35, Math.min(1.2, Math.min(r.width / w, r.height / h)));
+    const w = Math.max(...xs) + CV_W - Math.min(...xs) + 90, h = Math.max(...ys) + 175 - Math.min(...ys) + 84; V.z = Math.max(.35, Math.min(1.2, Math.min(r.width / w, r.height / h)));
     V.x = -Math.min(...xs) * V.z + 24; V.y = -Math.min(...ys) * V.z + 60; aplica(); };
   if (!S.cvView.ajustado) { S.cvView.ajustado = true; ajusta(); }
   palco.querySelectorAll('[data-z]').forEach(b => b.onclick = () => { const d = Number(b.dataset.z); if (!d) return ajusta(); V.z = Math.max(.3, Math.min(2, V.z * (d > 0 ? 1.2 : 1 / 1.2))); aplica(); });
@@ -10094,6 +10169,7 @@ function cvMapa(el, f, ctx) {
   palco.addEventListener('pointerdown', e => {
     const pino = e.target.closest('[data-pino]'), cab = e.target.closest('[data-arr]'), nob = e.target.closest('[data-no]');
     if (pino && edita) { arr = { tipo: 'liga', de: pino.dataset.pino }; e.preventDefault(); return; }
+    if (e.target.closest('[data-wa]')) return;
     if (cab && edita) { const id = cab.dataset.arr, w = mundoXY(e); arr = { tipo: 'no', id, dx: w.x - P[id].x, dy: w.y - P[id].y, mexeu: false }; e.preventDefault(); return; }
     if (!nob && !e.target.closest('[data-ar]') && !e.target.closest('.cv-ctl')) { arr = { tipo: 'mapa', x0: e.clientX - V.x, y0: e.clientY - V.y }; palco.classList.add('arrasta'); }
   });
@@ -10114,7 +10190,9 @@ function cvMapa(el, f, ctx) {
   window.addEventListener('pointermove', move); window.addEventListener('pointerup', solta, { once: false });
   const limpa = new MutationObserver(() => { if (!palco.isConnected) { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', solta); limpa.disconnect(); } });
   limpa.observe(document.body, { childList: true, subtree: true });
-  mundo.querySelectorAll('[data-no]').forEach(n => n.addEventListener('click', e => { if (e.target.closest('[data-pino]') || e.target.closest('[data-arr]')) return; sel = { t: 'no', id: n.dataset.no }; S.cvSel = sel; mundo.querySelectorAll('.cv-no').forEach(x => x.classList.toggle('on', x === n)); prop(); }));
+  mundo.querySelectorAll('[data-wa]').forEach(x => x.addEventListener('click', e => { e.stopPropagation(); const b = BL.find(y => y.id === x.closest('[data-no]').dataset.no);
+    if (!edita || b.tipo === x.dataset.wa) return; act(async () => { await cvTrocaTipo(f, ctx, b, x.dataset.wa); S.cvSel = { t: 'no', id: b.id }; render(); }, x.dataset.wa === 'grupo' ? 'Agora é grupo de WhatsApp' : 'Agora é disparo pela API'); }));
+  mundo.querySelectorAll('[data-no]').forEach(n => n.addEventListener('click', e => { if (e.target.closest('[data-pino]') || e.target.closest('[data-arr]') || e.target.closest('[data-wa]')) return; sel = { t: 'no', id: n.dataset.no }; S.cvSel = sel; mundo.querySelectorAll('.cv-no').forEach(x => x.classList.toggle('on', x === n)); prop(); }));
   mundo.addEventListener('click', e => { const g = e.target.closest('[data-ar]'); if (!g) return; sel = { t: 'ar', id: g.dataset.ar }; S.cvSel = sel; prop(); });
   // biblioteca: arrastar ou clicar
   el.querySelectorAll('[data-pt]').forEach(it => {
@@ -10154,7 +10232,14 @@ function cvMapa(el, f, ctx) {
       <label>Fase<select name="fase"${edita ? '' : ' disabled'}>${EST_FASES.map(([k, l]) => `<option value="${k}"${b.fase === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
       <label>Objetivo da etapa<textarea name="objetivo" rows="2"${edita ? '' : ' disabled'}>${esc(pr0.objetivo || '')}</textarea></label>
       <label>Descrição<textarea name="descricao" rows="2"${edita ? '' : ' disabled'}>${esc(pr0.descricao || '')}</textarea></label>
-      <label>Canal ou plataforma<input name="canal" maxlength="80" value="${esc(pr0.canal || '')}"${edita ? '' : ' disabled'}></label>
+      <label>Canal ou plataforma<input name="canal" maxlength="80" value="${esc(pr0.canal || '')}" placeholder="Ex.: Meta Ads, Google Ads"${edita ? '' : ' disabled'}></label>
+      ${b.tipo === 'api' || b.tipo === 'grupo' ? `<label>WhatsApp<select name="wa"${edita ? '' : ' disabled'}><option value="api"${b.tipo === 'api' ? ' selected' : ''}>API (disparo)</option><option value="grupo"${b.tipo === 'grupo' ? ' selected' : ''}>Grupo</option></select></label>` : ''}
+      ${cvTemDesenho(b) ? `<div class="cv-sec"><b>No desenho do bloco</b>
+        <label>${cvTipoArte(b.tipo, b.nome) === 'email' ? 'Assunto' : cvTipoArte(b.tipo, b.nome) === 'whats' ? 'Mensagem' : 'Título'}<input name="titulo" maxlength="80" value="${esc(pr0.titulo || '')}" placeholder="${esc(b.nome)}"${edita ? '' : ' disabled'}></label>
+        ${cvTemBotao(b) ? `<label>Texto do botão<input name="botao" maxlength="30" value="${esc(pr0.botao || '')}" placeholder="${esc(CV_BOTAO[cvTipoArte(b.tipo, b.nome)] || 'Continuar')}"${edita ? '' : ' disabled'}></label>` : ''}
+        ${['vendas', 'checkout'].includes(cvTipoArte(b.tipo, b.nome)) ? `<label>Preço<input name="preco" maxlength="30" value="${esc(pr0.preco || '')}" placeholder="Ex.: 12x R$ 99"${edita ? '' : ' disabled'}></label>` : ''}
+        ${cvTemFoto(b) ? `<label>Foto ou print (link)<input name="imagem" maxlength="600" value="${esc(cvImgOk(pr0.imagem) && !pr0.imagem.startsWith('data:') ? pr0.imagem : '')}" placeholder="https://..."${edita ? '' : ' disabled'}></label>
+        ${edita ? `<div class="acts"><label class="btn sm" style="cursor:pointer">Enviar foto<input type="file" accept="image/*" id="cvFoto" hidden></label>${pr0.imagem ? '<button class="btn sm" type="button" id="cvFotoTira">Tirar foto</button>' : ''}</div>` : ''}` : ''}</div>` : ''}
       <label>Produto<select name="produto_id"${edita ? '' : ' disabled'}><option value="">—</option>${ctx.pr.map(p => `<option value="${p.id}"${pr0.produto_id === p.id ? ' selected' : ''}>${esc(p.nome)}</option>`).join('')}</select></label>
       <label>Oferta<select name="oferta_id"${edita ? '' : ' disabled'}><option value="">—</option>${ctx.of.map(o => `<option value="${o.id}"${pr0.oferta_id === o.id ? ' selected' : ''}>${esc(o.nome)}</option>`).join('')}</select></label>
       <label>Responsável<select name="responsavel_id"${edita ? '' : ' disabled'}><option value="">—</option>${ctx.eq.map(x => `<option value="${x.id}"${pr0.responsavel_id === x.id ? ' selected' : ''}>${esc(x.nome)}</option>`).join('')}</select></label>
@@ -10173,12 +10258,17 @@ function cvMapa(el, f, ctx) {
       const props = { ...pr0, objetivo: fb.objetivo.value.trim() || null, descricao: fb.descricao.value.trim() || null, canal: fb.canal.value.trim() || null, produto_id: fb.produto_id.value || null,
         oferta_id: fb.oferta_id.value || null, responsavel_id: fb.responsavel_id.value || null, status: fb.status.value || null, meta: fb.meta.value.trim() || null,
         eventos: fb.eventos.value.split(',').map(x => x.trim()).filter(Boolean), notas: fb.notas.value.trim() || null };
+      ['titulo', 'botao', 'preco'].forEach(k => { if (fb[k]) props[k] = fb[k].value.trim() || null; });
+      if (fb.imagem) { const u = fb.imagem.value.trim(); if (u && !cvImgOk(u)) throw new Error('O link da foto precisa começar com https://'); if (u) props.imagem = u; else if (!String(pr0.imagem || '').startsWith('data:')) props.imagem = null; }
       Object.keys(props).forEach(k => { if (props[k] == null || (Array.isArray(props[k]) && !props[k].length)) delete props[k]; });
       await q(sb.from('estrategia_blocos').update({ nome, fase: fb.fase.value, props }).eq('id', b.id));
+      if (fb.wa && fb.wa.value !== b.tipo) await cvTrocaTipo(f, ctx, { ...b, nome, fase: fb.fase.value, props }, fb.wa.value);
       for (const e of et) { const v = {}; if (nome !== b.nome && e.nome.startsWith(b.nome + ' · ')) v.nome = nome + ' · ' + e.nome.slice(b.nome.length + 3); if (fb.fase.value !== b.fase) v.fase = fb.fase.value; if (Object.keys(v).length) await q(sb.from('estrategia_etapas').update(v).eq('id', e.id)); }
       render(); }, 'Bloco salvo'); };
+    if ($('#cvFoto')) $('#cvFoto').onchange = e => { const fl = e.target.files[0]; if (fl) act(async () => { const u = await cvFotoReduz(fl); await q(sb.from('estrategia_blocos').update({ props: { ...pr0, imagem: u } }).eq('id', b.id)); render(); }, 'Foto no bloco'); };
+    if ($('#cvFotoTira')) $('#cvFotoTira').onclick = () => act(async () => { const pz = { ...pr0 }; delete pz.imagem; await q(sb.from('estrategia_blocos').update({ props: pz }).eq('id', b.id)); render(); }, 'Foto retirada');
     if ($('#cvMet')) $('#cvMet').onclick = () => blkModalAbrir({ b, L, R: ctx.R, tabB: 'estrategia_blocos', tabE: 'estrategia_etapas', dono: f.id, blocos: BL, catalogo: ctx.cat });
-    if ($('#cvDup')) $('#cvDup').onclick = () => act(async () => { const id = await cvCriaBloco(f, ctx, b.tipo, b.nome, { fase: b.fase, canal: pr0.canal }, P[b.id].x + 30, P[b.id].y + 140);
+    if ($('#cvDup')) $('#cvDup').onclick = () => act(async () => { const id = await cvCriaBloco(f, ctx, b.tipo, b.nome, { fase: b.fase, canal: pr0.canal }, P[b.id].x + 30, P[b.id].y + 200);
       await q(sb.from('estrategia_blocos').update({ props: { ...pr0 } }).eq('id', id)); S.cvSel = { t: 'no', id }; render(); }, 'Bloco duplicado');
     if ($('#cvDel')) $('#cvDel').onclick = () => modal('Excluir bloco', `<p>Excluir <b>${esc(b.nome)}</b>, as ${et.length} métricas e as ligações dele? As campanhas que já copiaram este bloco continuam com ele.</p>`, async () => {
       await q(sb.from('estrategia_etapas').delete().eq('bloco_id', b.id)); await q(sb.from('estrategia_blocos').delete().eq('id', b.id)); S.cvSel = null; toast('Bloco excluído'); }, 'Excluir');
@@ -10200,10 +10290,39 @@ const CV_CSS = `<style id="cvCss">.cv{display:grid;grid-template-columns:200px m
 .cv-tp{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cv-st{font-size:10px;padding:1px 6px;border-radius:99px;border:1px solid var(--line);white-space:nowrap}.cv-st-pronto{color:var(--good)}.cv-st-implementando{color:var(--accent)}.cv-st-pausado{color:var(--muted)}
 .cv-nm{font-size:13.5px;line-height:1.25;overflow-wrap:anywhere}.cv-no small{font-size:11.5px;color:var(--muted)}.cv-kpi{color:var(--ink)!important}
-.cv-pino{position:absolute;right:-8px;top:27px;width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid var(--panel,#fff);cursor:crosshair}
+.cv-pino{position:absolute;right:-8px;top:55px;width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid var(--panel,#fff);cursor:crosshair}
 .cv-ctl{position:absolute;left:10px;top:10px;z-index:2;display:flex;gap:4px;align-items:center}.cv-vazio{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);pointer-events:none}
 .cv-prop form{display:flex;flex-direction:column;gap:6px;margin-top:8px}.cv-prop label{font-size:12px}.cv-sec{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);font-size:12.5px}
 .cv-mt{margin:6px 0;padding-left:16px}.cv-res{margin-top:10px;font-size:12.5px}
+.cv{--cvp:#101a33;--cvpb:#18244a;--cvl:rgba(148,163,184,.4);--cvh:#e2e8f0;--cvin:rgba(148,163,184,.16);--cvbt:#2563eb;--cvph:rgba(148,163,184,.14)}
+:root[data-theme="light"] .cv{--cvp:#fff;--cvpb:#eef2f8;--cvl:#cbd5e1;--cvh:#1e293b;--cvin:#f1f5f9;--cvbt:#1d4ed8;--cvph:#e2e8f0}
+.cv-pi{display:flex;align-items:center;gap:7px}.cv-pic{width:18px;height:18px;flex:none;display:inline-flex;color:var(--muted)}.cv-pic svg{width:18px;height:18px}
+.cv-art{height:78px;margin:6px 0 2px;border-radius:8px;overflow:hidden;position:relative;pointer-events:none;font-size:7px;line-height:1.2;color:var(--cvh)}
+.cv-art b{font-size:8.5px;font-weight:700;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cv-lg-svg{width:22px;height:22px;flex:none}
+.cv-br{height:100%;border:1px solid var(--line);border-radius:7px;background:var(--cvp);display:flex;flex-direction:column;overflow:hidden}
+.cv-brb{height:10px;flex:none;background:var(--cvpb);display:flex;gap:2.5px;align-items:center;padding:0 5px}.cv-brb i{width:4px;height:4px;border-radius:50%;background:var(--cvl)}.cv-brb span{flex:1;height:4px;margin-left:5px;border-radius:9px;background:var(--cvin)}
+.cv-pg{flex:1;padding:5px 6px;display:flex;gap:6px;min-height:0}.cv-pg-2>*{flex:1;min-width:0}.cv-pg-c{flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center}
+.cv-tx{display:flex;flex-direction:column;gap:3px;min-width:0}.cv-l{display:block;height:3px;border-radius:9px;background:var(--cvl)}
+.cv-im{border-radius:5px;overflow:hidden;background:var(--cvph);display:flex;min-height:0}.cv-im img,.cv-vid img{width:100%;height:100%;object-fit:cover;display:block}
+.cv-ph{flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted)}.cv-ph svg{width:20px;height:20px;opacity:.7}
+.cv-in{display:block;height:7px;border-radius:3px;border:1px solid var(--cvl);background:var(--cvin)}.cv-cc{background:linear-gradient(90deg,var(--cvin) 0 70%,transparent 70%)}
+.cv-bt{display:block;margin-top:auto;background:var(--cvbt);color:#fff;border-radius:4px;padding:2px 3px;text-align:center;font-weight:700;font-size:6.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cv-pr{font-weight:800;font-size:8px;color:var(--good)}.cv-ok{width:20px;height:20px;border-radius:50%;background:var(--good);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+.cv-pg-f{align-items:stretch}.cv-ck{display:flex;align-items:center;gap:4px}.cv-ck i{width:6px;height:6px;border:1px solid var(--cvl);border-radius:2px}.cv-ck .cv-l{flex:none}
+.cv-vid{height:100%;border-radius:7px;background:#0b1020;position:relative;display:flex;align-items:center;justify-content:center;color:#f8fafc}.cv-vid img{position:absolute;inset:0;opacity:.55}
+.cv-vid b{position:absolute;left:6px;right:6px;bottom:9px;font-size:8px;-webkit-line-clamp:1}.cv-play{width:0;height:0;border-style:solid;border-width:9px 0 9px 15px;border-color:transparent transparent transparent #fff;position:relative;margin-bottom:8px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
+.cv-aov{position:absolute;left:6px;top:5px;background:#dc2626;color:#fff;font-weight:800;border-radius:3px;padding:1px 4px;font-size:6.5px}.cv-bar{position:absolute;left:6px;right:6px;bottom:4px;height:2.5px;background:rgba(255,255,255,.3);border-radius:9px}.cv-bar i{display:block;width:35%;height:100%;background:#ef4444;border-radius:9px}
+.cv-ad{height:100%;border:1px solid var(--line);border-radius:7px;background:var(--cvp);padding:4px 5px;display:flex;flex-direction:column;gap:3px}.cv-adh{display:flex;align-items:center;gap:4px;font-weight:700;font-size:8px}.cv-adh small{margin-left:auto;color:var(--muted);font-size:6.5px;font-weight:500}.cv-adh .cv-lg-svg{width:16px;height:16px}
+.cv-ad2{flex:1;display:flex;gap:5px;min-height:0}.cv-ad2 .cv-im{width:42%;flex:none}.cv-ad2 .cv-tx{flex:1}.cv-hrt{margin-top:auto;color:var(--muted);font-size:7px;letter-spacing:2px}
+.cv-wa{height:100%;border-radius:7px;background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.35);display:flex;align-items:center;gap:6px;padding:5px 6px}.cv-wa .cv-lg-svg{width:30px;height:30px}
+.cv-chat{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}.cv-bb{align-self:flex-start;max-width:100%;background:var(--cvp);border-radius:6px 6px 6px 1px;padding:2.5px 5px;font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 1px 1px rgba(0,0,0,.12)}
+.cv-bb-o{align-self:flex-end;background:#25D366;color:#053b1c;border-radius:6px 6px 1px 6px;font-weight:600}
+.cv-em{height:100%;border:1px solid var(--line);border-radius:7px;background:var(--cvp);display:flex;align-items:center;gap:6px;padding:5px 7px}.cv-em .cv-lg-svg{width:30px;height:30px}.cv-em .cv-tx{flex:1}
+.cv-lgc,.cv-ico{height:100%;display:flex;align-items:center;justify-content:center;color:var(--accent)}.cv-lgc svg{width:70px;height:46px}.cv-ico .cv-lg-svg,.cv-ico .cv-pict{width:38px;height:38px}.cv-art-logica,.cv-art-icone{height:54px}
+.cv-sw{display:flex;border:1px solid var(--line);border-radius:99px;overflow:hidden;align-self:flex-start}.cv-sw button{border:0;background:none;color:var(--muted);font:inherit;font-size:11px;padding:2px 10px;cursor:pointer}
+.cv-sw button.on{background:#25D366;color:#053b1c;font-weight:700}.cv-sw button:disabled{cursor:default}
+.cv-prop .cv-sec label{display:block;margin-top:6px}
 @media (max-width:1100px){.cv{grid-template-columns:minmax(0,1fr);height:auto}.cv-palco{height:520px}.cv-pal{max-height:220px}}</style>`;
 
 /* Versões da estratégia */
