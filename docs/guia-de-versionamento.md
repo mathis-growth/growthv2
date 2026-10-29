@@ -1,3 +1,6 @@
+## v0.167
+- index.html: 0.166 → 0.167. Novas `cvTam`, `cvOrganiza`, `CV_GRADE` (20 px). No `cvMapa`: arrastar o card inteiro (`.cv-mov`, limiar de 4 px antes de contar como arrastar; Alt sem grade), canto `[data-rs]` muda `props.tam` (0,6 a 2, `transform: scale` com origem no canto de cima), setas e "Ajustar" usam o tamanho, botão `#cvOrg`, fundo do palco acompanha zoom e posição, e o palco volta a `scrollLeft/scrollTop = 0` se o navegador o rolar. Teste `t167_canvas_ajuste.py`. Sem migração.
+
 ## v0.166
 - index.html: 0.165 → 0.166. Novas `cvArte`, `cvTipoArte`, `cvLogoDe`, `CV_LOGO`, `CV_PICT`, `cvIcoPal`, `cvFotoReduz`, `cvTrocaTipo`; `blkEtapasDe` sai de dentro de `blkCria` (mesmas métricas, agora reaproveitadas na troca API ⇄ grupo). Bloco mais alto: ligações saem a 62 px do topo, organização por fase a cada 200 px. Paleta com um WhatsApp só. Teste `t166_canvas_desenhos.py`. Sem migração.
 

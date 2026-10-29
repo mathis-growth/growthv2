@@ -1199,7 +1199,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.166 · 29/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.167 · 29/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -10039,7 +10039,16 @@ const CV_SIMPLES = { pagina: ['Página', 'aquisicao'], comunicacao: ['Comunicaç
 const CV_LOGICA = ['condicao', 'decisao', 'divisao', 'evento', 'gatilho'];
 const CV_ST = [['', '—'], ['planejado', 'Planejado'], ['implementando', 'Implementando'], ['pronto', 'Pronto'], ['pausado', 'Pausado']];
 const CV_CON = [['segue', 'Segue'], ['sim', 'Sim'], ['nao', 'Não'], ['divisao', 'Divisão (%)']];
-const CV_W = 190, CV_COLX = { aquisicao: 40, aquecimento: 320, conversao: 600, retencao: 880 };
+const CV_W = 190, CV_GRADE = 20, CV_COLX = { aquisicao: 40, aquecimento: 320, conversao: 600, retencao: 880 };
+const cvTam = b => { const t = Number((b.props || {}).tam); return t >= .6 && t <= 2 ? t : 1; };
+// Organizar: uma coluna por fase (largura = maior bloco da fase), blocos um embaixo do outro na ordem, tudo na grade de 20 px
+function cvOrganiza(BL, T, hs) {
+  const g = v => Math.ceil(v / CV_GRADE) * CV_GRADE, N = {}; let x = 40;
+  EST_FASES.map(f => f[0]).concat([...new Set(BL.map(b => b.fase))].filter(f => !EST_FASES.some(e => e[0] === f))).forEach(f => {
+    const bs = BL.filter(b => b.fase === f).sort((a, b) => a.ordem - b.ordem); if (!bs.length) return;
+    let y = 40; bs.forEach(b => { N[b.id] = { x, y }; y = g(y + hs[b.id] + 40); }); x = g(x + Math.max(...bs.map(b => CV_W * T[b.id])) + 90); });
+  return N;
+}
 const cvTipoNome = t => (EST_BLOCOS[t] || {}).nome || (CV_SIMPLES[t] || [t])[0];
 /* v0.166: cada bloco do mapa ganha um desenho do que ele é (mini página, anúncio, vídeo, conversa) e o símbolo da plataforma */
 const CV_LOGO = {
@@ -10131,15 +10140,17 @@ function cvMapa(el, f, ctx) {
   const { BL, CN, L } = ctx, P = cvPos(BL), V = S.cvView = S.cvView && S.cvView.f === f.id ? S.cvView : { f: f.id, x: 0, y: 0, z: 1 }, edita = nivelMod('mkt') === 'editar' || nivelMod('gro') === 'editar';
   let sel = S.cvSel && (BL.some(b => b.id === S.cvSel.id) || CN.some(c => c.id === S.cvSel.id)) ? S.cvSel : null;
   const princ = b => { const et = L.filter(e => e.bloco_id === b.id); return et.find(e => e.papel === 'principal') || et[0]; };
+  const T = {}; BL.forEach(b => { T[b.id] = cvTam(b); });
   const no = b => { const p = P[b.id], pr = princ(b), lg = CV_LOGICA.includes(b.tipo), st = (b.props || {}).status;
-    return `<div class="cv-no${lg ? ' cv-lg' : ''}${sel && sel.id === b.id ? ' on' : ''}" data-no="${b.id}" style="left:${p.x}px;top:${p.y}px">
+    return `<div class="cv-no${lg ? ' cv-lg' : ''}${sel && sel.id === b.id ? ' on' : ''}${edita ? ' cv-mov' : ''}" data-no="${b.id}" style="left:${p.x}px;top:${p.y}px${T[b.id] !== 1 ? ';transform:scale(' + T[b.id] + ')' : ''}">
       <div class="cv-nh" data-arr="${b.id}"><span class="cv-tp">${esc(cvTipoNome(b.tipo))}</span>${st ? `<span class="cv-st cv-st-${st}">${esc((CV_ST.find(x => x[0] === st) || [0, st])[1])}</span>` : ''}</div>
       ${cvArte(b)}<b class="cv-nm">${esc(b.nome)}</b>
       ${b.tipo === 'api' || b.tipo === 'grupo' ? `<div class="cv-sw">${[['api', 'API'], ['grupo', 'Grupo']].map(([k, l]) => `<button type="button" data-wa="${k}" class="${b.tipo === k ? 'on' : ''}"${edita ? '' : ' disabled'}>${l}</button>`).join('')}</div>`
         : (b.props || {}).canal && !cvLogoDe(b.tipo, b.nome, b.props.canal) ? `<small>${esc(b.props.canal)}</small>` : ''}
       ${pr ? `<small class="cv-kpi"><span class="blk-dot"></span>${esc(blkCurto(pr, b))}</small>` : lg ? '' : '<small class="muted">sem métrica</small>'}
-      ${edita ? `<span class="cv-pino" data-pino="${b.id}" title="Arraste até outro bloco para ligar"></span>` : ''}</div>`; };
-  const H = b => ({ x: P[b].x + CV_W, y: P[b].y + 62 }), E = b => ({ x: P[b].x, y: P[b].y + 62 });
+      ${edita ? `<span class="cv-pino" data-pino="${b.id}" title="Arraste até outro bloco para ligar"></span><span class="cv-rs" data-rs="${b.id}" title="Arraste para mudar o tamanho"></span>` : ''}</div>`; };
+  const H = b => ({ x: P[b].x + CV_W * T[b], y: P[b].y + 62 * T[b] }), E = b => ({ x: P[b].x, y: P[b].y + 62 * T[b] });
+  const alt = id => { const n = mundo.querySelector(`[data-no="${id}"]`); return (n ? n.offsetHeight : 175) * T[id]; };
   const seta = c => { if (!P[c.de_bloco] || !P[c.para_bloco]) return ''; const a = H(c.de_bloco), z = E(c.para_bloco), dx = Math.max(40, Math.abs(z.x - a.x) / 2);
     const d = `M${a.x},${a.y} C${a.x + dx},${a.y} ${z.x - dx},${z.y} ${z.x},${z.y}`, mx = (a.x + z.x) / 2, my = (a.y + z.y) / 2;
     const rot = c.rotulo || (c.tipo === 'sim' ? 'Sim' : c.tipo === 'nao' ? 'Não' : c.tipo === 'divisao' ? (c.peso != null ? c.peso + '%' : 'Divisão') : '');
@@ -10148,18 +10159,20 @@ function cvMapa(el, f, ctx) {
   const pal = CV_GRUPOS.map(([g, its]) => `<details class="cv-g" ${g === 'Aquisição' || g === 'Páginas' ? 'open' : ''}><summary>${g}</summary>${its.map(([t, n, x], i) => `<div class="cv-pi" draggable="${edita}" data-pt="${t}" data-pn="${esc(n)}" data-px='${esc(JSON.stringify(x))}' title="${esc(cvTipoNome(t))}">${cvIcoPal(t, n, x)}<span>${esc(n)}</span></div>`).join('')}</details>`).join('');
   el.innerHTML = `<div class="cv">${edita ? `<aside class="cv-pal"><div class="cv-pt">Componentes</div><span class="muted" style="font-size:11.5px">Arraste para o mapa ou clique para adicionar.</span>${pal}</aside>` : ''}
     <div class="cv-palco" id="cvPalco"><div class="cv-ctl"><button class="btn sm" data-z="1" title="Aproximar">+</button><button class="btn sm" data-z="-1" title="Afastar">−</button><button class="btn sm" data-z="0">Ajustar</button>
-      ${edita && !CN.length && BL.length > 1 ? '<button class="btn sm" id="cvLiga">Ligar na ordem</button>' : ''}<span class="muted" id="cvSalvo"></span></div>
+      ${edita && BL.length > 1 ? '<button class="btn sm" id="cvOrg" title="Arruma os blocos em colunas por fase">Organizar</button>' : ''}${edita && !CN.length && BL.length > 1 ? '<button class="btn sm" id="cvLiga">Ligar na ordem</button>' : ''}<span class="muted" id="cvSalvo"></span></div>
       <div class="cv-mundo" id="cvMundo" style="transform:translate(${V.x}px,${V.y}px) scale(${V.z})">
         <svg class="cv-svg" width="4000" height="3000"><defs><marker id="cvSeta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="cv-mk"/></marker></defs>${CN.map(seta).join('')}<path id="cvTemp" class="cv-ln cv-temp" d=""/></svg>
         ${BL.map(no).join('')}</div>
       ${BL.length ? '' : '<div class="cv-vazio">Arraste um componente da esquerda para começar o mapa.</div>'}</div>
     <aside class="cv-prop" id="cvProp"></aside></div>`;
   const palco = $('#cvPalco'), mundo = $('#cvMundo'), salvo = t => { const s = $('#cvSalvo'); if (s) { s.textContent = t; clearTimeout(cvMapa._t); cvMapa._t = setTimeout(() => { if (s.isConnected) s.textContent = ''; }, 1800); } };
-  const aplica = () => { mundo.style.transform = `translate(${V.x}px,${V.y}px) scale(${V.z})`; };
+  const aplica = () => { mundo.style.transform = `translate(${V.x}px,${V.y}px) scale(${V.z})`; palco.style.backgroundSize = `${CV_GRADE * V.z}px ${CV_GRADE * V.z}px`; palco.style.backgroundPosition = `${V.x}px ${V.y}px`; };
   const mundoXY = e => { const r = palco.getBoundingClientRect(); return { x: (e.clientX - r.left - V.x) / V.z, y: (e.clientY - r.top - V.y) / V.z }; };
   const ajusta = () => { if (!BL.length) { V.x = 0; V.y = 0; V.z = 1; return aplica(); } const xs = BL.map(b => P[b.id].x), ys = BL.map(b => P[b.id].y), r = palco.getBoundingClientRect();
-    const w = Math.max(...xs) + CV_W - Math.min(...xs) + 90, h = Math.max(...ys) + 175 - Math.min(...ys) + 84; V.z = Math.max(.35, Math.min(1.2, Math.min(r.width / w, r.height / h)));
+    const w = Math.max(...BL.map(b => P[b.id].x + CV_W * T[b.id])) - Math.min(...xs) + 90, h = Math.max(...BL.map(b => P[b.id].y + alt(b.id))) - Math.min(...ys) + 84; V.z = Math.max(.35, Math.min(1.2, Math.min(r.width / w, r.height / h)));
     V.x = -Math.min(...xs) * V.z + 24; V.y = -Math.min(...ys) * V.z + 60; aplica(); };
+  // o navegador às vezes rola o palco (foco, clique perto da borda): o mapa só se move pelo próprio arrastar
+  palco.addEventListener('scroll', () => { if (palco.scrollLeft || palco.scrollTop) { palco.scrollLeft = 0; palco.scrollTop = 0; } });
   if (!S.cvView.ajustado) { S.cvView.ajustado = true; ajusta(); }
   palco.querySelectorAll('[data-z]').forEach(b => b.onclick = () => { const d = Number(b.dataset.z); if (!d) return ajusta(); V.z = Math.max(.3, Math.min(2, V.z * (d > 0 ? 1.2 : 1 / 1.2))); aplica(); });
   palco.addEventListener('wheel', e => { e.preventDefault(); const r = palco.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top, z0 = V.z;
@@ -10170,17 +10183,27 @@ function cvMapa(el, f, ctx) {
     const pino = e.target.closest('[data-pino]'), cab = e.target.closest('[data-arr]'), nob = e.target.closest('[data-no]');
     if (pino && edita) { arr = { tipo: 'liga', de: pino.dataset.pino }; e.preventDefault(); return; }
     if (e.target.closest('[data-wa]')) return;
-    if (cab && edita) { const id = cab.dataset.arr, w = mundoXY(e); arr = { tipo: 'no', id, dx: w.x - P[id].x, dy: w.y - P[id].y, mexeu: false }; e.preventDefault(); return; }
+    const rs = e.target.closest('[data-rs]');
+    if (rs && edita) { arr = { tipo: 'tam', id: rs.dataset.rs, s0: T[rs.dataset.rs] }; e.preventDefault(); return; }
+    if (nob && edita) { const id = nob.dataset.no, w = mundoXY(e); arr = { tipo: 'no', id, dx: w.x - P[id].x, dy: w.y - P[id].y, cx: e.clientX, cy: e.clientY, mexeu: false }; e.preventDefault(); return; }
+    if (cab && edita) return;
     if (!nob && !e.target.closest('[data-ar]') && !e.target.closest('.cv-ctl')) { arr = { tipo: 'mapa', x0: e.clientX - V.x, y0: e.clientY - V.y }; palco.classList.add('arrasta'); }
   });
   const move = e => { if (!arr) return;
     if (arr.tipo === 'mapa') { V.x = e.clientX - arr.x0; V.y = e.clientY - arr.y0; aplica(); return; }
     const w = mundoXY(e);
-    if (arr.tipo === 'no') { arr.mexeu = true; P[arr.id] = { x: Math.round(w.x - arr.dx), y: Math.round(w.y - arr.dy) }; const n = mundo.querySelector(`[data-no="${arr.id}"]`); n.style.left = P[arr.id].x + 'px'; n.style.top = P[arr.id].y + 'px';
-      CN.filter(c => c.de_bloco === arr.id || c.para_bloco === arr.id).forEach(c => { const g = mundo.querySelector(`[data-ar="${c.id}"]`); if (g) g.outerHTML = seta(c); }); return; }
+    const refaz = id => CN.filter(c => c.de_bloco === id || c.para_bloco === id).forEach(c => { const g = mundo.querySelector(`[data-ar="${c.id}"]`); if (g) g.outerHTML = seta(c); });
+    if (arr.tipo === 'no') { if (!arr.mexeu && Math.hypot(e.clientX - arr.cx, e.clientY - arr.cy) < 4) return; arr.mexeu = true;
+      const g = v => e.altKey ? Math.round(v) : Math.round(v / CV_GRADE) * CV_GRADE; P[arr.id] = { x: g(w.x - arr.dx), y: g(w.y - arr.dy) };
+      const n = mundo.querySelector(`[data-no="${arr.id}"]`); n.style.left = P[arr.id].x + 'px'; n.style.top = P[arr.id].y + 'px'; n.classList.add('cv-arr'); refaz(arr.id); return; }
+    if (arr.tipo === 'tam') { const sz = Math.max(.6, Math.min(2, Math.round((w.x - P[arr.id].x) / CV_W * 20) / 20)); if (sz === T[arr.id]) return; T[arr.id] = sz; arr.mexeu = true;
+      const n = mundo.querySelector(`[data-no="${arr.id}"]`); n.style.transform = sz === 1 ? '' : `scale(${sz})`; refaz(arr.id); salvo(Math.round(sz * 100) + '%'); return; }
     if (arr.tipo === 'liga') { const a = H(arr.de); $('#cvTemp').setAttribute('d', `M${a.x},${a.y} L${w.x},${w.y}`); } };
   const solta = e => { if (!arr) return; const a = arr; arr = null; palco.classList.remove('arrasta'); $('#cvTemp') && $('#cvTemp').setAttribute('d', '');
-    if (a.tipo === 'no' && a.mexeu) act(async () => { await q(sb.from('estrategia_blocos').update({ x: P[a.id].x, y: P[a.id].y }).eq('id', a.id)); const b = BL.find(x => x.id === a.id); b.x = P[a.id].x; b.y = P[a.id].y; salvo('Posição salva'); });
+    if (a.tipo === 'no' && a.mexeu) { const n = mundo.querySelector(`[data-no="${a.id}"]`); if (n) { n.classList.remove('cv-arr'); n.dataset.solto = '1'; setTimeout(() => { delete n.dataset.solto; }, 0); }
+      act(async () => { await q(sb.from('estrategia_blocos').update({ x: P[a.id].x, y: P[a.id].y }).eq('id', a.id)); const b = BL.find(x => x.id === a.id); b.x = P[a.id].x; b.y = P[a.id].y; salvo('Posição salva'); }); }
+    else if (a.tipo === 'tam') { const b = BL.find(x => x.id === a.id); if (a.mexeu && b) act(async () => { const pz = { ...(b.props || {}) }; if (T[a.id] === 1) delete pz.tam; else pz.tam = T[a.id];
+      await q(sb.from('estrategia_blocos').update({ props: pz }).eq('id', a.id)); b.props = pz; salvo('Tamanho salvo: ' + Math.round(T[a.id] * 100) + '%'); }); }
     else if (a.tipo === 'no') { sel = { t: 'no', id: a.id }; S.cvSel = sel; mundo.querySelectorAll('.cv-no').forEach(n => n.classList.toggle('on', n.dataset.no === a.id)); prop(); }
     if (a.tipo === 'liga') { const alvo = document.elementFromPoint(e.clientX, e.clientY), nb = alvo && alvo.closest('[data-no]');
       if (nb && nb.dataset.no !== a.de) act(async () => { const de = BL.find(b => b.id === a.de), saem = CN.filter(c => c.de_bloco === a.de);
@@ -10192,7 +10215,7 @@ function cvMapa(el, f, ctx) {
   limpa.observe(document.body, { childList: true, subtree: true });
   mundo.querySelectorAll('[data-wa]').forEach(x => x.addEventListener('click', e => { e.stopPropagation(); const b = BL.find(y => y.id === x.closest('[data-no]').dataset.no);
     if (!edita || b.tipo === x.dataset.wa) return; act(async () => { await cvTrocaTipo(f, ctx, b, x.dataset.wa); S.cvSel = { t: 'no', id: b.id }; render(); }, x.dataset.wa === 'grupo' ? 'Agora é grupo de WhatsApp' : 'Agora é disparo pela API'); }));
-  mundo.querySelectorAll('[data-no]').forEach(n => n.addEventListener('click', e => { if (e.target.closest('[data-pino]') || e.target.closest('[data-arr]') || e.target.closest('[data-wa]')) return; sel = { t: 'no', id: n.dataset.no }; S.cvSel = sel; mundo.querySelectorAll('.cv-no').forEach(x => x.classList.toggle('on', x === n)); prop(); }));
+  mundo.querySelectorAll('[data-no]').forEach(n => n.addEventListener('click', e => { if (n.dataset.solto || e.target.closest('[data-pino]') || e.target.closest('[data-rs]') || e.target.closest('[data-arr]') || e.target.closest('[data-wa]')) return; sel = { t: 'no', id: n.dataset.no }; S.cvSel = sel; mundo.querySelectorAll('.cv-no').forEach(x => x.classList.toggle('on', x === n)); prop(); }));
   mundo.addEventListener('click', e => { const g = e.target.closest('[data-ar]'); if (!g) return; sel = { t: 'ar', id: g.dataset.ar }; S.cvSel = sel; prop(); });
   // biblioteca: arrastar ou clicar
   el.querySelectorAll('[data-pt]').forEach(it => {
@@ -10206,11 +10229,15 @@ function cvMapa(el, f, ctx) {
       <label>Fase<select name="fase">${EST_FASES.map(([k, l]) => `<option value="${k}">${l}</option>`).join('')}</select></label><span class="muted full">Depois, no painel do bloco, adicione as métricas dele.</span></div>`,
       async d => { const id = await cvCriaBloco(f, ctx, 'personalizado', d.nome.trim(), { fase: d.fase }, x, y); S.cvSel = { t: 'no', id }; toast('Bloco criado'); }, 'Criar');
     act(async () => { const id = await cvCriaBloco(f, ctx, tipo, nome, extra, x, y); S.cvSel = { t: 'no', id }; render(); }, 'Bloco adicionado'); };
+  if ($('#cvOrg')) $('#cvOrg').onclick = () => { const hs = {}; BL.forEach(b => { hs[b.id] = alt(b.id); });
+    modal('Organizar o mapa', '<p>Os blocos vão para colunas por fase (Aquisição, Aquecimento, Conversão, Retenção), na ordem de cada fase, alinhados na grade e sem encostar um no outro. O tamanho de cada bloco continua o mesmo.</p><p class="muted">As posições de agora são trocadas.</p>', async () => {
+      const N = cvOrganiza(BL, T, hs); for (const b of BL) if (N[b.id].x !== P[b.id].x || N[b.id].y !== P[b.id].y) await q(sb.from('estrategia_blocos').update({ x: N[b.id].x, y: N[b.id].y }).eq('id', b.id));
+      S.cvView.ajustado = false; toast('Mapa organizado'); }, 'Organizar'); };
   if ($('#cvLiga')) $('#cvLiga').onclick = () => act(async () => { const ord = BL.slice().sort((a, b) => (CV_COLX[a.fase] - CV_COLX[b.fase]) || a.ordem - b.ordem);
     const rows = ord.slice(1).map((b, i) => ({ workspace_id: S.ws, funil_id: f.id, de_bloco: ord[i].id, para_bloco: b.id, tipo: 'segue' })); if (rows.length) await q(sb.from('estrategia_conexoes').insert(rows)); render(); }, 'Blocos ligados na ordem das fases');
   // painel de propriedades
   const prop = () => { const box = $('#cvProp'); if (!box) return;
-    if (!sel) { box.innerHTML = `<div class="cv-pt">Propriedades</div><span class="muted">Clique num bloco ou numa seta para editar. Arraste pelo topo do bloco para mover e pelo ponto da direita para ligar a outro bloco.</span>
+    if (!sel) { box.innerHTML = `<div class="cv-pt">Propriedades</div><span class="muted">Clique num bloco ou numa seta para editar. Arraste o bloco para mover (ele encaixa na grade; segure Alt para soltar livre), o canto de baixo para mudar o tamanho e o ponto da direita para ligar a outro bloco. "Organizar" arruma tudo por fase.</span>
       <div class="cv-res"><b>${BL.length}</b> blocos · <b>${CN.length}</b> ligações</div>`; return; }
     if (sel.t === 'ar') { const c = CN.find(x => x.id === sel.id); if (!c) return; const de = BL.find(b => b.id === c.de_bloco), pa = BL.find(b => b.id === c.para_bloco);
       box.innerHTML = `<div class="cv-pt">Ligação</div><span class="muted">${esc(de ? de.nome : '')} → ${esc(pa ? pa.nome : '')}</span>
@@ -10279,12 +10306,14 @@ const CV_CSS = `<style id="cvCss">.cv{display:grid;grid-template-columns:200px m
 .cv-pal,.cv-prop{border:1px solid var(--line);border-radius:12px;background:var(--panel,var(--surface));padding:10px;overflow:auto}
 .cv-pt{font-weight:700;font-size:13px;margin-bottom:4px}.cv-g{margin-top:8px}.cv-g summary{cursor:pointer;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 .cv-pi{margin-top:5px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;cursor:grab;background:var(--surface-2,var(--bg))}.cv-pi:hover{border-color:var(--accent)}
-.cv-palco{position:relative;overflow:hidden;border:2px solid var(--line);border-radius:12px;background-color:var(--bg);background-image:radial-gradient(rgba(127,127,127,.25) 1px,transparent 1px);background-size:22px 22px;cursor:grab;touch-action:none}
+.cv-palco{position:relative;overflow:hidden;border:2px solid var(--line);border-radius:12px;background-color:var(--bg);background-image:radial-gradient(rgba(127,127,127,.25) 1px,transparent 1px);background-size:20px 20px;cursor:grab;touch-action:none}
 .cv-palco.arrasta{cursor:grabbing}.cv-mundo{position:absolute;left:0;top:0;transform-origin:0 0}.cv-svg{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
 .cv-svg .cv-ar{pointer-events:auto;cursor:pointer}.cv-hit{stroke:transparent;stroke-width:14;fill:none}.cv-ln{stroke:var(--muted);stroke-width:2;fill:none}.cv-mk{fill:var(--muted)}
 .cv-ar:hover .cv-ln,.cv-ar.on .cv-ln{stroke:var(--accent);stroke-width:2.5}.cv-t-sim .cv-ln{stroke:var(--good)}.cv-t-nao .cv-ln{stroke:var(--bad);stroke-dasharray:6 4}.cv-t-divisao .cv-ln{stroke-dasharray:2 4}
 .cv-temp{stroke:var(--accent);stroke-dasharray:5 4}.cv-rot{font-size:11px;background:var(--panel,var(--surface));border:1px solid var(--line);border-radius:99px;padding:1px 8px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cv-no{position:absolute;width:${CV_W}px;background:var(--panel,var(--surface));border:2px solid var(--line);border-radius:12px;padding:0 10px 9px;box-shadow:0 2px 8px rgba(15,23,42,.08);display:flex;flex-direction:column;gap:3px;cursor:pointer}
+.cv-no{transform-origin:0 0}.cv-no.cv-mov{cursor:grab}.cv-no.cv-arr{cursor:grabbing;z-index:5;box-shadow:0 10px 24px rgba(15,23,42,.28)}
+.cv-rs{position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:.55;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%,var(--muted) 58%,transparent 58%,transparent 70%,var(--muted) 70%,var(--muted) 78%,transparent 78%)}.cv-no:hover .cv-rs,.cv-no.on .cv-rs{opacity:1}
 .cv-no.on{border-color:var(--accent);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.18)}.cv-no.cv-lg{border-style:dashed;border-radius:18px}
 .cv-nh{display:flex;justify-content:space-between;align-items:center;gap:6px;margin:0 -10px 2px;padding:5px 10px;border-bottom:1px solid var(--line);cursor:move;border-radius:10px 10px 0 0;background:rgba(var(--accent-rgb),.06)}
 .cv-tp{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

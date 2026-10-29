@@ -2,6 +2,13 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.167 — Ajustar os cards do Canvas (29/10/2026)
+- **Mover:** o card se arrasta por qualquer ponto, não só pela faixa de cima, e encaixa numa grade de 20 px para alinhar fácil. Com Alt apertado, ele solta livre. Clicar sem arrastar continua abrindo as propriedades. Os pontinhos do fundo acompanham o zoom e o movimento do mapa.
+- **Tamanho:** cada card tem um canto (embaixo, à direita) para aumentar ou diminuir, de 60% a 200%. O tamanho fica salvo no bloco, e as setas e o "Ajustar" levam o tamanho em conta.
+- **Organizar:** botão no mapa que arruma todos os blocos em colunas por fase (Aquisição, Aquecimento, Conversão, Retenção), na ordem de cada fase, alinhados e sem encostar um no outro. Pede confirmação, porque troca as posições de agora; o tamanho de cada card continua.
+- **Correção:** o navegador podia rolar o mapa por dentro (ao clicar num card perto da borda), e aí arrastar e ligar pegavam o lugar errado. Agora o mapa só se move quando você o arrasta.
+- Sem mudança no banco: o tamanho fica em `props.tam`. Teste `tests/tela/t167_canvas_ajuste.py` (20 verificações, 0 falhas); t164, t165 e t166 sem falhas.
+
 ## v0.166 — Desenhos nos blocos do Canvas (29/10/2026)
 - No Mapa da estratégia, cada bloco mostra o desenho do que é:
   - **Páginas:** página de captura, landing page, página de vendas, de obrigado e checkout aparecem como uma mini página (barra do navegador, foto, título, campos, preço e botão).
