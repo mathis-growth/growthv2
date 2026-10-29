@@ -1,5 +1,5 @@
 ## v0.164
-- Sem mudança no banco. O Cockpit lê `painel_gerencial`, `cg_indicadores`, `campanhas` (situação) e `oportunidades` abertas.
+- Sem mudança no banco. O Cockpit lê `painel_gerencial`, `growths_serie` (série por dia), `v_dre_mensal` (receita e lucro por mês), `cg_indicadores`, `campanhas` (situação) e `oportunidades` abertas.
 
 ## v0.163 — Customer Growth
 - `jornadas` (workspace, produto ou vazio quando é modelo, nome, `modelo`, `versao`, `status` rascunho/publicada/anterior/arquivada, `baseada_em`, publicada_em/por). Uma publicada e um rascunho por produto.

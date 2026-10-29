@@ -1108,26 +1108,51 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
 #arvRoot .arv-rosca li:hover{background:var(--accent-soft)} #arvRoot .arv-rosca li i{width:10px;height:10px;border-radius:3px}
 #arvRoot .arv-rosca li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
-<style id="v164">/* v0.164 — Cockpit: um painel pequeno por área, clicável */
-.ck-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.ck-card{cursor:pointer;margin:0;display:flex;flex-direction:column;gap:12px;transition:border-color .15s,box-shadow .15s,transform .15s}
-.ck-card:hover,.ck-card:focus-visible{border-color:var(--accent);box-shadow:0 6px 20px rgba(var(--accent-rgb),.12);transform:translateY(-1px);outline:none}
+<style id="v164">/* v0.164 — Cockpit: um painel por área, com números e um gráfico, clicável */
+:root{--ck-s1:#3b82f6;--ck-s2:#d97706}
+:root[data-theme="light"]{--ck-s1:#1d4ed8;--ck-s2:#d97706}
+.ck-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:stretch}
+.ck-card{cursor:pointer;display:flex;flex-direction:column;background:var(--panel,var(--surface,#fff));border:1px solid var(--line);border-radius:16px;box-shadow:0 2px 10px rgba(15,23,42,.06);overflow:hidden;transition:border-color .15s,box-shadow .15s,transform .15s}
+.ck-card:hover,.ck-card:focus-visible{border-color:var(--accent);box-shadow:0 10px 28px rgba(var(--accent-rgb),.16);transform:translateY(-2px);outline:none}
 .ck-geral{grid-column:1/-1}
-.ck-h{display:flex;gap:12px;align-items:flex-start}
-.ck-h h2{margin:0 0 2px}
+.ck-h{display:flex;gap:12px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,rgba(var(--accent-rgb),.07),transparent 70%)}
+.ck-h h2{margin:0;font-size:17px}
 .ck-h>div{flex:1;min-width:0}
-.ck-ic{width:36px;height:36px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none}
+.ck-d{font-size:12.5px;color:var(--muted)}
+.ck-ic{width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none}
 .ck-ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .ck-ir{font-size:12.5px;font-weight:600;color:var(--accent);white-space:nowrap}
-.ck-is{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.ck-i{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2,var(--bg))}
-.ck-i .l{font-size:11.5px;color:var(--muted)}
-.ck-i .v{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.ck-b{padding:16px 20px 18px;display:flex;flex-direction:column;gap:16px;flex:1}
+.ck-is{display:grid;grid-template-columns:1fr 1fr;row-gap:14px}
+.ck-geral .ck-is{grid-template-columns:repeat(5,minmax(0,1fr))}
+.ck-i{display:flex;flex-direction:column;gap:3px;padding:2px 14px;border-left:1px solid var(--line)}
+.ck-is>.ck-i:nth-child(2n+1){padding-left:0;border-left:0}
+.ck-geral .ck-is>.ck-i{padding-left:14px;border-left:1px solid var(--line)}
+.ck-geral .ck-is>.ck-i:first-child{padding-left:0;border-left:0}
+.ck-i .l{font-size:12px;color:var(--muted);font-weight:600}
+.ck-i .v{font-size:22px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
 .ck-i .s{font-size:11.5px;color:var(--muted)}
-.ck-i.ck-neg .v{color:var(--bad)}
-.ck-i.ck-atn{border-left:3px solid var(--warn)}
+.ck-i.ck-neg .v,.ck-txneg{color:var(--bad)}
+.ck-i.ck-atn .l::after{content:" ●";color:var(--warn)}
+.ck-g{border-top:1px dashed var(--line);padding-top:12px;margin-top:auto}
+.ck-gt{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
+.ck-gn{font-size:12.5px;color:var(--muted);margin-top:6px}
+.ck-svg{width:100%;height:auto;display:block}
+.ck-svg .ck-base{stroke:var(--line);stroke-width:1}
+.ck-svg .ck-ax{font-size:12px;fill:var(--muted)}
+.ck-svg .ck-hit:hover{fill:rgba(var(--accent-rgb),.07)}
+.ck-leg{display:flex;gap:14px;font-size:12px;color:var(--muted);margin:2px 0 4px}
+.ck-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.ck-hb{display:flex;flex-direction:column;gap:8px}
+.ck-hb-l{display:grid;grid-template-columns:minmax(110px,38%) 1fr auto;gap:10px;align-items:center;font-size:12.5px}
+.ck-hb-r{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
+.ck-hb-t{height:12px;background:var(--surface-2,rgba(127,127,127,.12));border-radius:99px;overflow:hidden}
+.ck-hb-t i{display:block;height:100%;border-radius:0 4px 4px 0}
+.ck-hb-v{font-weight:600;white-space:nowrap}
+.ck-vazio{font-size:12.5px;color:var(--muted);padding:18px 0;text-align:center}
+.ck-tip{position:fixed;z-index:60;pointer-events:none;background:var(--ink,#0f172a);color:var(--bg,#fff);font-size:12px;padding:6px 9px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.2);max-width:280px}
 .seg{display:flex;gap:4px;flex-wrap:wrap}
-@media (max-width:900px){.ck-grid{grid-template-columns:1fr}}
+@media (max-width:900px){.ck-grid{grid-template-columns:1fr;gap:18px}.ck-geral .ck-is{grid-template-columns:1fr 1fr}.ck-geral .ck-is>.ck-i:nth-child(2n+1){padding-left:0;border-left:0}}
 </style>
 <style id="v162">/* v0.162 — Mapa de métricas: North Star em destaque e as alavancas agrupadas embaixo dela */
 .gtree .gn.ns{max-width:680px;padding:16px 18px;gap:7px;border:2px solid var(--accent);background:radial-gradient(120% 90% at 100% 0%,rgba(8,145,178,.10),transparent 55%),var(--surface);box-shadow:0 10px 30px rgba(var(--accent-rgb),.18)}
@@ -3401,67 +3426,133 @@ async function jornadasProdutos(el) {
 }
 
 /* ================= v0.164 — Cockpit (tela de entrada) =================
-   Um painel pequeno por área: Geral, Marketing, Vendas, Financeiro e Clientes (CS). Clicar no painel abre o dashboard do módulo,
-   com os números detalhados. Os números vêm das mesmas funções do banco que os dashboards já usam (painel_gerencial e
-   cg_indicadores), então batem com eles. Cada painel só aparece para quem tem acesso ao módulo. */
+   Um painel por área: Geral, Marketing, Vendas, Financeiro e Clientes (CS). Cada painel tem até cinco números e um gráfico;
+   clicar no painel abre o dashboard do módulo. Os números vêm das mesmas funções do banco que os dashboards já usam
+   (painel_gerencial, growths_serie, v_dre_mensal, cg_indicadores), então batem com eles. Cada painel só aparece para quem
+   tem acesso ao módulo. Cores dos gráficos: --ck-s1 (azul) e --ck-s2 (laranja), validadas para daltonismo no claro e no escuro. */
 const CK_PER = [['7d', '7 dias'], ['30d', '30 dias'], ['mes', 'Mês atual'], ['ano', 'Ano']];
+const CK_MES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
 function ckPeriodo(per) {
   const h = hoje();
   const ini = per === '7d' ? diaMais(h, -6) : per === '30d' ? diaMais(h, -29) : per === 'ano' ? h.slice(0, 4) + '-01-01' : h.slice(0, 7) + '-01';
   return { ini, fim: h, rot: { '7d': 'últimos 7 dias', '30d': 'últimos 30 dias', mes: 'mês atual', ano: 'ano ' + h.slice(0, 4) }[per] || 'mês atual' };
 }
+// junta a série diária em dias (até 31) ou em meses (ano)
+function ckBaldes(serie, campo, porMes) {
+  const B = []; const idx = {};
+  serie.forEach(d => { const k = porMes ? String(d.dia).slice(0, 7) : String(d.dia).slice(0, 10);
+    if (!(k in idx)) { idx[k] = B.length; B.push({ k, v: 0 }); } B[idx[k]].v += Number(d[campo] || 0); });
+  return B.map(b => ({ ...b, rot: porMes ? CK_MES[Number(b.k.slice(5, 7)) - 1] : b.k.slice(8, 10) + '/' + b.k.slice(5, 7) }));
+}
+const ckDinheiroCurto = v => { const n = Number(v || 0), a = Math.abs(n), s = n < 0 ? '−' : '';
+  return a >= 1e6 ? s + 'R$ ' + (a / 1e6).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mi' : a >= 1e3 ? s + 'R$ ' + (a / 1e3).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mil' : s + 'R$ ' + Math.round(a).toLocaleString('pt-BR'); };
+/* Colunas (1 ou 2 séries, mesma unidade, um eixo). series = [{nome, cor, vals: [..]}]; rots = rótulos do eixo x. */
+function ckColunas(rots, series, fmt, fmtCurto, W = 560) {
+  const H = 170, pl = 6, pr = 6, pt = 14, pb = 22, n = rots.length || 1;
+  const todos = series.flatMap(s => s.vals.map(Number)), mx = Math.max(0, ...todos), mn = Math.min(0, ...todos);
+  if (!(mx > 0 || mn < 0)) return '<div class="ck-vazio">Sem movimento no período.</div>';
+  const y = v => pt + (mx - v) / ((mx - mn) || 1) * (H - pt - pb), y0 = y(0), bw = (W - pl - pr) / n, gap = Math.min(6, bw * .25), k = series.length;
+  const cw = Math.min(44, Math.max(1.5, (bw - gap) / k - (k > 1 ? 2 : 0))), passo = Math.ceil(n / 8), lado = (bw - gap - (cw * k + (k - 1) * 2)) / 2;
+  let g = `<line x1="${pl}" x2="${W - pr}" y1="${y0}" y2="${y0}" class="ck-base"/>`;
+  rots.forEach((r, i) => {
+    const x0 = pl + i * bw + gap / 2;
+    series.forEach((s, j) => { const v = Number(s.vals[i] || 0), yy = y(v), hgt = Math.max(v ? 1 : 0, Math.abs(yy - y0)), rx = Math.min(4, cw / 2, hgt / 2);
+      const top = v >= 0 ? yy : y0, x = x0 + lado + j * (cw + 2);
+      g += hgt ? `<path d="${v >= 0 ? `M${x},${y0}V${top + rx}Q${x},${top} ${x + rx},${top}H${x + cw - rx}Q${x + cw},${top} ${x + cw},${top + rx}V${y0}Z` : `M${x},${y0}V${top + hgt - rx}Q${x},${top + hgt} ${x + rx},${top + hgt}H${x + cw - rx}Q${x + cw},${top + hgt} ${x + cw},${top + hgt - rx}V${y0}Z`}" fill="${s.cor}"/>` : ''; });
+    const dica = esc(r) + ' · ' + series.map(s => esc(s.nome) + ': ' + esc(fmt(s.vals[i]))).join(' · ');
+    g += `<rect x="${pl + i * bw}" y="0" width="${bw}" height="${H}" fill="transparent" class="ck-hit" data-dica="${dica}"/>`;
+    if (i % passo === 0 || i === n - 1 && n <= 12) g += `<text x="${x0 + (bw - gap) / 2}" y="${H - 6}" class="ck-ax" text-anchor="middle">${esc(r)}</text>`;
+  });
+  g += `<text x="${W - pr}" y="${pt - 3}" class="ck-ax" text-anchor="end">${esc(fmtCurto(mx))}</text>`;
+  if (mn < 0) g += `<text x="${W - pr}" y="${H - pb + 12}" class="ck-ax" text-anchor="end">${esc(fmtCurto(mn))}</text>`;
+  const leg = series.length > 1 ? `<div class="ck-leg">${series.map(s => `<span><i style="background:${s.cor}"></i>${esc(s.nome)}</span>`).join('')}</div>` : '';
+  return `${leg}<svg viewBox="0 0 ${W} ${H}" class="ck-svg" role="img" aria-label="${esc(series.map(s => s.nome).join(' e '))} por período">${g}</svg>`;
+}
+/* Barras horizontais: itens = [{rot, v, cor}] na mesma unidade. */
+function ckBarras(itens, fmt) {
+  const mx = Math.max(0, ...itens.map(i => Number(i.v || 0)));
+  if (!(mx > 0)) return '<div class="ck-vazio">Sem dados no período.</div>';
+  return `<div class="ck-hb">${itens.map(i => { const v = Number(i.v || 0), pc = Math.max(v > 0 ? 1.5 : 0, v / mx * 100);
+    return `<div class="ck-hb-l" data-dica="${esc(i.rot + ': ' + fmt(v))}"><span class="ck-hb-r" title="${esc(i.rot)}">${esc(i.rot)}</span><span class="ck-hb-t"><i style="width:${pc}%;background:${i.cor || 'var(--ck-s1)'}"></i></span><span class="ck-hb-v">${esc(fmt(v))}</span></div>`; }).join('')}</div>`;
+}
 async function vCockpit(m) {
   await provisionaAuto();
-  const w = S.ws, C = S.ck = S.ck || { per: 'mes' }, h = hoje(), Pd = ckPeriodo(C.per);
+  const w = S.ws, C = S.ck = S.ck || { per: 'mes' }, h = hoje(), Pd = ckPeriodo(C.per), porMes = C.per === 'ano';
   const pode = (mod, tela) => nivelMod(mod) !== 'nenhum' && telaLiberada(tela);
   const AREAS = [
-    { k: 'geral', t: 'Geral', mod: 'adm', tela: 'adm-painel', d: 'A empresa: caixa, vendas, receita, margem e lucro.' },
-    { k: 'mkt', t: 'Marketing', mod: 'mkt', tela: 'mkt-dash', d: 'Campanhas, leads e custo de aquisição.' },
-    { k: 'ven', t: 'Vendas', mod: 'vendas', tela: 'crm-dash', d: 'Vendas, faturamento, conversão e oportunidades.' },
-    { k: 'fin', t: 'Financeiro', mod: 'fin', tela: 'fin-dash', d: 'Saldo, a receber, a pagar e o que entrou e saiu.' },
-    { k: 'cs', t: 'Clientes (CS)', mod: 'revops', tela: 'ho-cg', d: 'Alunos ativos, alertas, intervenções e satisfação.' }
+    { k: 'geral', t: 'Geral', mod: 'adm', tela: 'adm-painel', d: 'Como está a empresa' },
+    { k: 'mkt', t: 'Marketing', mod: 'mkt', tela: 'mkt-dash', d: 'Campanhas e leads' },
+    { k: 'ven', t: 'Vendas', mod: 'vendas', tela: 'crm-dash', d: 'Vendas e oportunidades' },
+    { k: 'fin', t: 'Financeiro', mod: 'fin', tela: 'fin-dash', d: 'Dinheiro em caixa e em aberto' },
+    { k: 'cs', t: 'Clientes (CS)', mod: 'revops', tela: 'ho-cg', d: 'Alunos e acompanhamento' }
   ].filter(a => pode(a.mod, a.tela));
   const quer = k => AREAS.some(a => a.k === k);
   const pega = p => p.then(r => r, () => null);
-  const [P, camps, ops, CG] = await Promise.all([
+  const mes6 = (() => { const d = new Date(h.slice(0, 7) + '-01T12:00:00'); d.setMonth(d.getMonth() - (porMes ? Number(h.slice(5, 7)) - 1 : 5)); return d.toISOString().slice(0, 7) + '-01'; })();
+  const [P, camps, ops, CG, SER, DRE] = await Promise.all([
     quer('geral') || quer('mkt') || quer('ven') || quer('fin') ? pega(q(sb.rpc('painel_gerencial', { p_ws: w, p_ini: Pd.ini, p_fim: Pd.fim, p_hoje: h }))) : null,
     quer('mkt') ? pega(q(sb.from('campanhas').select('id,status').eq('workspace_id', w))) : null,
     quer('ven') ? pega(q(sb.from('oportunidades').select('id,status,valor_estimado').eq('workspace_id', w).eq('status', 'aberta'))) : null,
-    quer('cs') ? pega(q(sb.rpc('cg_indicadores', { p_ws: w, p_produto: null, p_ini: Pd.ini, p_fim: Pd.fim })).catch(() => q(sb.rpc('heavyops_painel', { p_ws: w, p_dias: 30 })).then(x => ({ _ho: x })))) : null
+    quer('cs') ? pega(q(sb.rpc('cg_indicadores', { p_ws: w, p_produto: null, p_ini: Pd.ini, p_fim: Pd.fim })).catch(() => q(sb.rpc('heavyops_painel', { p_ws: w, p_dias: 30 })).then(x => ({ _ho: x })))) : null,
+    quer('mkt') || quer('ven') ? pega(q(sb.rpc('growths_serie', { p_ws: w, p_ini: Pd.ini, p_fim: Pd.fim }))) : null,
+    quer('geral') ? pega(q(sb.from('v_dre_mensal').select('mes,tipo,valor').eq('workspace_id', w).gte('mes', mes6).limit(5000))) : null
   ]);
   const G = P || {}, FU = G.funil || {}, VE = G.vendas || {}, CX = G.caixa || {}, RS = G.resultado || {}, RC = G.recorrencia || {}, CA = G.cac || {}, FX = G.fluxo || {};
-  const pct = v => semFmt(v, 'pct'), dinheiro = v => brl(v), cor = v => v == null || !isFinite(Number(v)) ? '' : Number(v) < 0 ? ' ck-neg' : '';
-  const ind = (l, v, s, cls) => `<div class="ck-i${cls || ''}"><span class="l">${l}</span><span class="v">${v}</span>${s ? `<span class="s">${s}</span>` : ''}</div>`;
-  const semDado = '<div class="muted" style="font-size:12.5px">Sem dados para este período.</div>';
+  const pct = v => semFmt(v, 'pct'), dinheiro = v => brl(v), neg = v => v != null && isFinite(Number(v)) && Number(v) < 0;
+  const ind = (l, v, s, est) => `<div class="ck-i${est ? ' ck-' + est : ''}"><span class="l">${l}</span><span class="v">${v}</span>${s ? `<span class="s">${s}</span>` : ''}</div>`;
+  const graf = (tit, html, nota) => `<div class="ck-g"><div class="ck-gt">${tit}</div>${html}${nota ? `<div class="ck-gn">${nota}</div>` : ''}</div>`;
+  const semDado = '<div class="ck-vazio">Sem dados para este período.</div>';
+  const S1 = 'var(--ck-s1)', S2 = 'var(--ck-s2)', serie = Array.isArray(SER) ? SER : [];
+  const unid = porMes ? 'por mês' : 'por dia';
   const corpo = {
-    geral: () => P ? [ind('Saldo em caixa', dinheiro(CX.saldo), 'nas contas bancárias', cor(CX.saldo)), ind('Receita', dinheiro(RS.receita), Pd.rot),
-      ind('Vendas', num(VE.aprovadas), dinheiro(VE.bruto) + ' faturados'), ind('Margem', pct(RS.margem), 'lucro ÷ receita', cor(RS.margem)), ind('Lucro', dinheiro(RS.lucro), Pd.rot, cor(RS.lucro))].join('') : semDado,
-    mkt: () => P ? [ind('Campanhas ativas', camps ? num(camps.filter(c => c.status === 'ativa').length) : '—', camps ? num(camps.filter(c => c.status === 'planejada').length) + ' planejadas' : ''),
-      ind('Leads no período', num(FU.total), num(FU.qualificados) + ' qualificados (' + pct(FU.pct_qualificados) + ')'), ind('Leads em andamento', num(FU.leads), 'cadastrados que ainda não compraram'),
-      ind('CAC', CA.cac_total != null ? dinheiro(CA.cac_total) : '—', CA.novos != null ? num(CA.novos) + ' clientes novos' : '')].join('') : semDado,
-    ven: () => P ? [ind('Vendas aprovadas', num(VE.aprovadas), num(VE.nao_aprovadas || 0) + ' não aprovadas'), ind('Faturamento', dinheiro(VE.bruto), dinheiro(VE.liquido) + ' líquido'),
-      ind('Ticket médio', VE.aprovadas ? dinheiro(Number(VE.bruto || 0) / Number(VE.aprovadas)) : '—', 'por venda'), ind('Lead → cliente', FU.total ? pct(Number(FU.clientes || 0) / Number(FU.total)) : '—', num(FU.clientes) + ' viraram clientes'),
-      ind('Oportunidades abertas', ops ? num(ops.length) : '—', ops ? dinheiro(ops.reduce((t, o) => t + Number(o.valor_estimado || 0), 0)) + ' em negociação' : '')].join('') : semDado,
-    fin: () => P ? [ind('Saldo em banco', dinheiro(CX.saldo), '', cor(CX.saldo)), ind('A receber', dinheiro(CX.a_receber), CX.atraso_receber ? dinheiro(CX.atraso_receber) + ' em atraso' : 'nada em atraso'),
-      ind('A pagar', dinheiro(CX.a_pagar), CX.atraso_pagar ? dinheiro(CX.atraso_pagar) + ' em atraso' : 'nada em atraso'), ind('Entrou − saiu', dinheiro(Number(FX.entrou || 0) - Number(FX.saiu || 0)), 'entrou ' + dinheiro(FX.entrou) + ' · saiu ' + dinheiro(FX.saiu), cor(Number(FX.entrou || 0) - Number(FX.saiu || 0))),
-      ind('MRR', dinheiro(RC.mrr), 'receita recorrente mensal')].join('') : semDado,
+    geral: () => {
+      if (!P) return semDado;
+      const meses = [...new Set((DRE || []).map(r => String(r.mes).slice(0, 7)))].sort();
+      const soma = (mm, t) => (DRE || []).filter(r => String(r.mes).slice(0, 7) === mm && r.tipo === t).reduce((s, r) => s + Number(r.valor || 0), 0);
+      const rec = meses.map(mm => soma(mm, 'receita')), luc = meses.map((mm, i) => rec[i] - soma(mm, 'deducao') - soma(mm, 'custo') - soma(mm, 'despesa'));
+      return `<div class="ck-is">${[ind('Saldo em caixa', dinheiro(CX.saldo), '', neg(CX.saldo) && 'neg'), ind('Receita', dinheiro(RS.receita), Pd.rot), ind('Vendas', num(VE.aprovadas), dinheiro(VE.bruto) + ' faturados'),
+        ind('Margem', pct(RS.margem), 'lucro ÷ receita', neg(RS.margem) && 'neg'), ind('Lucro', dinheiro(RS.lucro), Pd.rot, neg(RS.lucro) && 'neg')].join('')}</div>` +
+        graf(porMes ? 'Receita e lucro por mês, ' + h.slice(0, 4) : 'Receita e lucro nos últimos 6 meses', meses.length ? ckColunas(meses.map(mm => CK_MES[Number(mm.slice(5, 7)) - 1]), [{ nome: 'Receita', cor: S1, vals: rec }, { nome: 'Lucro', cor: S2, vals: luc }], dinheiro, ckDinheiroCurto, 1100) : semDado);
+    },
+    mkt: () => P ? `<div class="ck-is">${[ind('Campanhas ativas', camps ? num(camps.filter(c => c.status === 'ativa').length) : '—', camps ? num(camps.filter(c => c.status === 'planejada').length) + ' planejadas' : ''),
+        ind('Leads no período', num(FU.total), num(FU.qualificados) + ' qualificados (' + pct(FU.pct_qualificados) + ')'), ind('Leads em andamento', num(FU.leads), 'ainda não compraram'),
+        ind('CAC', CA.cac_total != null ? dinheiro(CA.cac_total) : '—', CA.novos != null ? num(CA.novos) + ' clientes novos' : '')].join('')}</div>` +
+        graf('Leads ' + unid, serie.length ? (b => ckColunas(b.map(x => x.rot), [{ nome: 'Leads', cor: S1, vals: b.map(x => x.v) }], v => num(v), v => num(v)))(ckBaldes(serie, 'leads', porMes)) : semDado) : semDado,
+    ven: () => P ? `<div class="ck-is">${[ind('Vendas aprovadas', num(VE.aprovadas), FU.total ? pct(Number(FU.clientes || 0) / Number(FU.total)) + ' dos leads viraram clientes' : ''),
+        ind('Faturamento', dinheiro(VE.bruto), dinheiro(VE.liquido) + ' líquido'), ind('Ticket médio', VE.aprovadas ? dinheiro(Number(VE.bruto || 0) / Number(VE.aprovadas)) : '—', 'por venda'),
+        ind('Oportunidades abertas', ops ? num(ops.length) : '—', ops ? dinheiro(ops.reduce((t, o) => t + Number(o.valor_estimado || 0), 0)) + ' em negociação' : '')].join('')}</div>` +
+        graf('Faturamento ' + unid, serie.length ? (b => ckColunas(b.map(x => x.rot), [{ nome: 'Faturamento', cor: S1, vals: b.map(x => x.v) }], dinheiro, ckDinheiroCurto))(ckBaldes(serie, 'receita', porMes)) : semDado) : semDado,
+    fin: () => { if (!P) return semDado; const sp = Number(FX.entrou || 0) - Number(FX.saiu || 0);
+      return `<div class="ck-is">${[ind('Saldo em banco', dinheiro(CX.saldo), '', neg(CX.saldo) && 'neg'), ind('A receber', dinheiro(CX.a_receber), CX.atraso_receber ? dinheiro(CX.atraso_receber) + ' em atraso' : 'nada em atraso', CX.atraso_receber ? 'atn' : ''),
+        ind('A pagar', dinheiro(CX.a_pagar), CX.atraso_pagar ? dinheiro(CX.atraso_pagar) + ' em atraso' : 'nada em atraso', CX.atraso_pagar ? 'atn' : ''), ind('MRR', dinheiro(RC.mrr), 'receita recorrente mensal')].join('')}</div>` +
+        graf('Entra e sai', ckBarras([{ rot: 'Entrou no período', v: FX.entrou, cor: S1 }, { rot: 'Saiu no período', v: FX.saiu, cor: S2 }, { rot: 'A receber (em aberto)', v: CX.a_receber, cor: S1 }, { rot: 'A pagar (em aberto)', v: CX.a_pagar, cor: S2 }], dinheiro),
+          'Saldo do período (entrou − saiu): <b class="' + (sp < 0 ? 'ck-txneg' : '') + '">' + dinheiro(sp) + '</b>') + `<div class="ck-leg"><span><i style="background:${S1}"></i>Entra</span><span><i style="background:${S2}"></i>Sai</span></div>`; },
     cs: () => {
       if (!CG) return semDado;
-      if (CG._ho) { const T = (CG._ho || {}).totais || {}; return [ind('Alunos ativos', num(T.ativos), ''), ind('Matrículas', num(T.matriculas), '')].join(''); }
+      if (CG._ho) { const T = (CG._ho || {}).totais || {}; return `<div class="ck-is">${[ind('Alunos ativos', num(T.ativos), ''), ind('Matrículas', num(T.matriculas), '')].join('')}</div>`; }
       const M = CG.matriculas || {}, A = CG.alertas || {}, I = CG.intervencoes || {}, N = CG.nps || {}, abertos = Object.values(A).reduce((t, n) => t + Number(n || 0), 0);
-      return [ind('Alunos ativos', num(M.ativas), num(M.novas) + ' novos · ' + num(M.sairam) + ' saíram'), ind('Alertas abertos', num(abertos), num(A.parado || 0) + ' parados · ' + num(A.marco_atrasado || 0) + ' com marco atrasado', abertos ? ' ck-atn' : ''),
-        ind('Intervenções abertas', num(I.abertas), I.atrasadas ? num(I.atrasadas) + ' atrasadas' : 'nenhuma atrasada'), ind('NPS dos alunos', N.nps == null ? '—' : String(N.nps), num(N.respostas) + ' respostas'),
-        ind('Sem CS responsável', num(M.sem_cs), 'matrículas ativas', M.sem_cs ? ' ck-atn' : '')].join('');
+      const et = (CG.etapas || []).filter(e => Number(e.n) > 0).sort((a, b) => Number(b.n) - Number(a.n)).slice(0, 6);
+      return `<div class="ck-is">${[ind('Alunos ativos', num(M.ativas), num(M.novas) + ' novos · ' + num(M.sairam) + ' saíram'), ind('Alertas abertos', num(abertos), num(A.parado || 0) + ' parados · ' + num(M.sem_cs || 0) + ' sem CS', abertos ? 'atn' : ''),
+        ind('Intervenções abertas', num(I.abertas), I.atrasadas ? num(I.atrasadas) + ' atrasadas' : 'nenhuma atrasada', I.atrasadas ? 'atn' : ''), ind('NPS dos alunos', N.nps == null ? '—' : String(N.nps), num(N.respostas) + ' respostas')].join('')}</div>` +
+        graf('Alunos ativos por etapa', et.length ? ckBarras(et.map(e => ({ rot: (e.jornada && e.jornada !== 'Jornada geral' ? e.jornada.split(' · ')[0] + ' · ' : '') + e.etapa, v: e.n, cor: S1 })), v => num(v)) : semDado,
+          M.sem_cs ? 'Sem CS responsável: <b>' + num(M.sem_cs) + '</b> matrículas ativas' : '');
     }
   };
-  m.innerHTML = `<div class="head"><div><h1>Cockpit</h1><span class="muted">Um resumo de cada área. Clique num painel para ver os números completos.</span></div>
-    <div class="acts"><div class="seg" role="group" aria-label="Período">${CK_PER.map(([k, l]) => `<button type="button" class="btn sm${C.per === k ? ' pri' : ''}" data-ckp="${k}">${l}</button>`).join('')}</div></div></div>
-    ${AREAS.length ? `<div class="ck-grid">${AREAS.map(a => `<div class="panel ck-card ck-${a.k}" data-ckv="${a.tela}" role="link" tabindex="0" aria-label="Abrir ${esc(a.t)}">
-      <div class="ck-h"><span class="ck-ic">${ICO[a.tela] || ''}</span><div><h2>${esc(a.t)}</h2><span class="muted">${esc(a.d)}</span></div><span class="ck-ir">Abrir →</span></div>
-      <div class="ck-is">${corpo[a.k]()}</div></div>`).join('')}</div>` : '<div class="panel empty">A sua função não inclui nenhuma das áreas do cockpit.</div>'}`;
+  m.innerHTML = `<div class="head"><div><h1>Cockpit</h1><span class="muted">Um resumo de cada área no ${esc(Pd.rot)}. Clique num painel para ver tudo em detalhe.</span></div>
+    <div class="acts"><div class="seg" role="group" aria-label="Período">${CK_PER.map(([k, l]) => `<button type="button" class="btn sm${C.per === k ? ' pri' : ''}" data-ckp="${k}" aria-pressed="${C.per === k}">${l}</button>`).join('')}</div></div></div>
+    ${AREAS.length ? `<div class="ck-grid">${AREAS.map(a => `<section class="ck-card ck-${a.k}" data-ckv="${a.tela}" role="link" tabindex="0" aria-label="Abrir ${esc(a.t)}">
+      <header class="ck-h"><span class="ck-ic">${ICO[a.tela] || ''}</span><div><h2>${esc(a.t)}</h2><span class="ck-d">${esc(a.d)}</span></div><span class="ck-ir">Ver detalhes →</span></header>
+      <div class="ck-b">${corpo[a.k]()}</div></section>`).join('')}</div>` : '<div class="panel empty">A sua função não inclui nenhuma das áreas do cockpit.</div>'}
+    <div id="ckTip" class="ck-tip" role="tooltip" hidden></div>`;
   m.querySelectorAll('[data-ckp]').forEach(b => b.onclick = () => { C.per = b.dataset.ckp; render(); });
+  const tip = $('#ckTip');
+  m.querySelectorAll('[data-dica]').forEach(el => {
+    el.addEventListener('mousemove', e => { tip.textContent = el.dataset.dica; tip.hidden = false;
+      tip.style.left = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 8) + 'px'; tip.style.top = Math.min(e.clientY + 14, window.innerHeight - tip.offsetHeight - 8) + 'px'; });
+    el.addEventListener('mouseleave', () => { tip.hidden = true; });
+  });
   const abre = el => { const v = el.dataset.ckv; if (v === 'ho-cg') { S.cg = S.cg || { aba: 'evolucao', produto: '', ini: diaMais(hoje(), -89), fim: hoje() }; S.cg.aba = 'indicadores'; }
-    if (v === 'adm-painel') { S.pg = S.pg || { per: '30d', de: '', ate: '' }; Object.assign(S.pg, { per: C.per === 'mes' ? 'mes' : C.per === 'ano' ? 'ano' : C.per, de: '', ate: '' }); }
+    if (v === 'adm-painel') { S.pg = S.pg || { per: '30d', de: '', ate: '' }; Object.assign(S.pg, { per: C.per, de: '', ate: '' }); }
     S.view = v; abreMenu(v); render(); };
   m.querySelectorAll('[data-ckv]').forEach(el => { el.onclick = () => abre(el); el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abre(el); } }; });
 }

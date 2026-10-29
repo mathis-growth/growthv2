@@ -1,6 +1,7 @@
 import json, os, tempfile
 # Teste de tela da v0.164: o Growths abre no Cockpit, com um painel por área (Geral, Marketing, Vendas, Financeiro, Clientes),
-# os números vêm de painel_gerencial e cg_indicadores, cada painel abre o dashboard do módulo e só aparece para quem tem acesso.
+# cada painel tem números e um gráfico (painel_gerencial, growths_serie, v_dre_mensal, cg_indicadores), abre o dashboard do módulo
+# e só aparece para quem tem acesso.
 # Rodar: python3 tests/tela/t164_cockpit.py
 from playwright.sync_api import sync_playwright
 SP = os.path.dirname(os.path.abspath(__file__)) + '/'
@@ -19,8 +20,11 @@ SEED = {
     'caixa': {'saldo': 18500, 'a_receber': 9000, 'a_pagar': 4000, 'atraso_receber': 1200, 'atraso_pagar': 0},
     'resultado': {'receita': 24000, 'lucro': -1500, 'margem': -0.0625},
     'recorrencia': {'mrr': 3500}, 'cac': {'cac_total': 450, 'novos': 12}, 'fluxo': {'entrou': 15000, 'saiu': 9000}},
+  'rpc:growths_serie': [dict(dia='2026-10-%02d' % d, leads=d % 5 + 1, qualificados=1, vendas=d % 2, receita=(d % 3) * 1000) for d in range(1, 30)],
+  'v_dre_mensal': ws([dict(mes=m + '-01', tipo=t, valor=v) for m in ['2026-08', '2026-09', '2026-10'] for t, v in [('receita', 20000), ('custo', 8000), ('despesa', 9000 if m != '2026-10' else 16000)]]),
   'rpc:cg_indicadores': {'matriculas': {'ativas': 522, 'novas': 30, 'sairam': 4, 'sem_cs': 484}, 'alertas': {'parado': 340, 'sem_cs': 484},
-    'intervencoes': {'abertas': 3, 'atrasadas': 1}, 'nps': {'nps': 43, 'respostas': 20}},
+    'intervencoes': {'abertas': 3, 'atrasadas': 1}, 'nps': {'nps': 43, 'respostas': 20},
+    'etapas': [{'jornada': 'Jornada geral', 'etapa': 'Onboarding', 'n': 300}, {'jornada': 'Mentoria · v1', 'etapa': 'Plano', 'n': 120}, {'jornada': 'Jornada geral', 'etapa': 'Vazia', 'n': 0}]},
 }
 MOCK = open(SP + 'mockdb.js').read()
 open(HTML, 'w', encoding='utf-8').write(s[:i] + '<script>window.__SEED=' + json.dumps(SEED) + ';</script><script>' + MOCK + '</script>' + s[j:])
@@ -46,13 +50,23 @@ with sync_playwright() as p:
     mk = card(pg, 'mkt')
     chk('Campanhas ativas 2' in mk and '1 planejadas' in mk and 'Leads no período 120' in mk and 'Leads em andamento 108' in mk and 'R$ 450,00' in mk, 'Marketing: campanhas, leads e CAC', mk)
     v = card(pg, 'ven')
-    chk('Vendas aprovadas 12' in v and 'R$ 2.000,00' in v and '10,0%' in v and 'Oportunidades abertas 2' in v and 'R$ 5.000,00 em negociação' in v, 'Vendas: aprovadas, ticket, conversão e oportunidades', v)
+    chk('Vendas aprovadas 12' in v and 'R$ 2.000,00' in v and '10,0% dos leads viraram clientes' in v and 'Oportunidades abertas 2' in v and 'R$ 5.000,00 em negociação' in v, 'Vendas: aprovadas, ticket, conversão e oportunidades', v)
     f = card(pg, 'fin')
-    chk('A receber R$ 9.000,00' in f and 'R$ 1.200,00 em atraso' in f and 'A pagar R$ 4.000,00' in f and 'R$ 6.000,00' in f and 'MRR R$ 3.500,00' in f, 'Financeiro: saldo, receber, pagar, fluxo e MRR', f)
+    chk('A receber R$ 9.000,00' in f and 'R$ 1.200,00 em atraso' in f and 'A pagar R$ 4.000,00' in f and 'entrou − saiu): R$ 6.000,00' in f and 'MRR R$ 3.500,00' in f, 'Financeiro: saldo, receber, pagar, fluxo e MRR', f)
     c = card(pg, 'cs')
-    chk('Alunos ativos 522' in c and 'Alertas abertos 824' in c and 'Intervenções abertas 3' in c and 'NPS dos alunos 43' in c and 'Sem CS responsável 484' in c, 'Clientes: ativos, alertas, intervenções, NPS e sem CS', c)
+    chk('Alunos ativos 522' in c and 'Alertas abertos 824' in c and 'Intervenções abertas 3' in c and 'NPS dos alunos 43' in c and 'Sem CS responsável: 484' in c, 'Clientes: ativos, alertas, intervenções, NPS e sem CS', c)
+    # gráficos
+    chk(pg.evaluate("['geral','mkt','ven'].every(k => document.querySelector('.ck-' + k + ' svg.ck-svg path'))"), 'Geral, Marketing e Vendas têm gráfico de colunas')
+    chk(pg.evaluate("[...document.querySelectorAll('.ck-geral .ck-leg span')].map(x => x.textContent)") == ['Receita', 'Lucro'], 'gráfico do Geral com legenda Receita e Lucro')
+    chk(pg.evaluate("document.querySelectorAll('.ck-geral .ck-hit').length") == 3 and 'out · Receita: R$ 20.000,00 · Lucro: −R$ 4.000,00' in pg.evaluate("[...document.querySelectorAll('.ck-geral .ck-hit')].map(x => x.dataset.dica).join('|').replace(/\u00a0/g, ' ')"), 'Geral: 3 meses, lucro negativo de outubro', pg.evaluate("[...document.querySelectorAll('.ck-geral .ck-hit')].map(x => x.dataset.dica).join('|')"))
+    chk(pg.evaluate("document.querySelectorAll('.ck-mkt .ck-hit').length") == 29, 'Marketing: uma coluna por dia no mês')
+    chk(pg.evaluate("document.querySelectorAll('.ck-fin .ck-hb-l').length") == 4 and pg.evaluate("document.querySelectorAll('.ck-cs .ck-hb-l').length") == 2, 'Financeiro com 4 barras; Clientes com as etapas que têm alunos')
+    chk(pg.evaluate("document.querySelector('.ck-cs .ck-hb-r').textContent") == 'Onboarding' and 'Mentoria · Plano' in pg.evaluate("document.querySelector('.ck-cs').innerText"), 'etapas em ordem, com o produto na frente')
+    pg.hover('.ck-ven .ck-hit >> nth=2'); pg.wait_for_timeout(200)
+    chk(pg.evaluate("!document.querySelector('#ckTip').hidden && document.querySelector('#ckTip').textContent.startsWith('03/10 · Faturamento')"), 'passar o mouse mostra o valor do dia', pg.evaluate("document.querySelector('#ckTip').textContent"))
     pg.click('[data-ckp=ano]'); pg.wait_for_timeout(900)
     chk(pg.evaluate("__calls.filter(c => c[0] === 'rpc' && c[1] === 'painel_gerencial').pop()[2].p_ini") == pg.evaluate("hoje().slice(0, 4) + '-01-01'"), 'período Ano muda a consulta')
+    chk(pg.evaluate("document.querySelectorAll('.ck-mkt .ck-hit').length") == 1 and pg.evaluate("document.querySelector('.ck-mkt .ck-gt').textContent") == 'Leads por mês', 'no Ano, os gráficos juntam por mês')
     pg.click('.ck-cs'); pg.wait_for_timeout(1200)
     chk(pg.evaluate("S.view") == 'ho-cg' and pg.evaluate("S.cg.aba") == 'indicadores', 'clicar em Clientes abre Customer Growth nos indicadores')
     for k, tela in [('mkt', 'mkt-dash'), ('fin', 'fin-dash'), ('ven', 'crm-dash'), ('geral', 'adm-painel')]:
