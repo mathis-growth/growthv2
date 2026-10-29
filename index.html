@@ -13948,7 +13948,7 @@ function corpoPorCampanha(el, R, A) {
 
 /* ---------- Growth: pesquisas ---------- */
 const PQ_TIPO = { lead: 'Lead', onboarding: 'Onboarding', jornada: 'Jornada do aluno', nsm: 'Descoberta da NSM', outra: 'Outra' };
-const PQ_GAT = { manual: 'Manual (escolho as pessoas)', cadastro: 'Quando a pessoa se cadastra', etapa: 'Quando entra em uma etapa do funil', entrada_aluno: 'Quando vira aluno (onboarding)' };
+const PQ_GAT = { manual: 'Manual (escolho as pessoas)', cadastro: 'Quando a pessoa se cadastra', etapa: 'Quando entra em uma etapa do funil', entrada_aluno: 'Quando vira aluno (onboarding)', etapa_aluno: 'Quando o aluno entra numa etapa da jornada' };
 const PQ_TP = { nps: 'Nota de 0 a 10 (NPS)', escala: 'Escala de 1 a 5', escolha: 'Escolha uma', multipla: 'Escolha várias', sim_nao: 'Sim ou não', texto: 'Texto livre' };
 const PQ_PAPEL = { livre: 'Livre', nps: 'NPS (recomendação)', pmf: 'PMF (Sean Ellis)', valor: 'Momento ou ação de valor', alavanca: 'Alavanca da NSM', qualificacao: 'Qualificação' };
 const PQ_ST = { pendente: ['warn', 'Pendente'], enviado: ['info', 'Enviado'], respondido: ['good', 'Respondido'], dispensado: ['neutral', 'Dispensado'] };
@@ -13959,7 +13959,7 @@ const PQ_MODELOS = {
     ['Quando pretende começar?', 'escolha', ['Agora', 'Em até 30 dias', 'Ainda estou avaliando'], 'qualificacao']] },
   onboarding: { nome: 'Onboarding: primeiros dias', tipo: 'onboarding', gatilho: 'entrada_aluno', descricao: 'Para quem acabou de comprar.', perguntas: [
     ['O que fez você decidir comprar?', 'texto', [], 'valor'], ['Qual resultado você espera nos primeiros 30 dias?', 'texto', [], 'valor'], ['Como foi a compra e o acesso?', 'escala', [], 'livre'], ['Algo travou o seu início?', 'texto', [], 'alavanca', false]] },
-  jornada: { nome: 'Jornada: NPS da etapa', tipo: 'jornada', gatilho: 'manual', descricao: 'Para uma etapa da jornada do aluno. Troque o gatilho para "Quando entra em uma etapa" e escolha a etapa.', perguntas: [
+  jornada: { nome: 'Jornada: NPS da etapa', tipo: 'jornada', gatilho: 'manual', descricao: 'Para uma etapa da jornada do aluno. Troque o gatilho para "Quando o aluno entra numa etapa da jornada" e escolha a etapa.', perguntas: [
     ['De 0 a 10, quanto você recomendaria?', 'nps', [], 'nps'], ['O que mais ajudou até aqui?', 'texto', [], 'valor'], ['O que está dificultando?', 'texto', [], 'alavanca'], ['Foi fácil avançar nesta etapa?', 'escala', [], 'livre']] },
   nsm: { nome: 'NSM: descobrir o valor e as alavancas', tipo: 'nsm', gatilho: 'manual', descricao: 'Rode com alunos que já tiveram resultado. A primeira opção da primeira pergunta é a que conta para o PMF (referência: 40% ou mais).', perguntas: [
     ['Como você se sentiria se não pudesse mais usar este produto?', 'escolha', ['Muito desapontado', 'Um pouco desapontado', 'Nada desapontado'], 'pmf'], ['Qual o principal benefício que você tira dele?', 'texto', [], 'valor'],
@@ -14034,16 +14034,23 @@ function criarDeModelo(k) {
   }, 'Criar');
 }
 async function modalPesquisa(row) {
-  const [funis, et] = await Promise.all([q(sb.from('funis').select('id,nome').eq('workspace_id', S.ws).order('nome')), q(sb.from('funil_etapas').select('nome,ordem').eq('workspace_id', S.ws).order('ordem'))]);
+  const [funis, et, cgA] = await Promise.all([q(sb.from('funis').select('id,nome').eq('workspace_id', S.ws).order('nome')), q(sb.from('funil_etapas').select('nome,ordem').eq('workspace_id', S.ws).order('ordem')), temColuna('pesquisas', 'etapa_aluno_id')]);
   const nomesEt = [...new Set(et.map(e => e.nome))];
+  // v0.163: gatilho pela etapa da jornada do aluno e filtro por produto (só com o banco atualizado)
+  const [etA, prodA] = cgA ? await Promise.all([q(sb.from('etapas_kanban').select('id,nome,ordem').eq('workspace_id', S.ws).eq('quadro', 'alunos').order('ordem')), q(sb.from('produtos').select('id,nome').eq('workspace_id', S.ws).order('nome'))]) : [[], []];
+  const gats = Object.entries(PQ_GAT).filter(([k]) => cgA || k !== 'etapa_aluno');
   const campos = [{ k: 'nome', l: 'Nome da pesquisa', req: 1, full: 1 }, { k: 'tipo', l: 'Tipo', t: 'select', req: 1, def: 'lead', opts: Object.entries(PQ_TIPO) }, { k: 'descricao', l: 'Texto de abertura (a pessoa vê)', t: 'textarea' },
-    { k: 'gatilho', l: 'Quando enviar', t: 'select', req: 1, def: 'manual', opts: Object.entries(PQ_GAT) },
+    { k: 'gatilho', l: 'Quando enviar', t: 'select', req: 1, def: 'manual', opts: gats },
+    ...(cgA ? [{ k: 'etapa_aluno_id', l: 'Etapa da jornada do aluno (se o gatilho for etapa do aluno)', t: 'select', opts: sel(etA, 'id', 'nome') },
+      { k: 'produto_id', l: 'Só alunos deste produto (opcional)', t: 'select', opts: sel(prodA, 'id', 'nome'), hint: 'Vale para "Quando vira aluno" e "Quando o aluno entra numa etapa". Vazio = todos os produtos.' }] : []),
     { k: 'gatilho_etapa', l: 'Etapa do funil (se o gatilho for etapa)', t: 'select', opts: nomesEt.map(n => [n, n]) }, { k: 'funil_id', l: 'Só neste funil (opcional)', t: 'select', opts: sel(funis, 'id', 'nome') },
     { k: 'dispensa_qualificado', l: 'Não enviar a quem já chegou qualificado (a página de obrigado já qualifica)', t: 'check' },
     { k: 'canal_envio', l: 'Como vai ser enviada', t: 'select', req: 1, def: 'link', opts: [['link', 'Só o link'], ['whatsapp', 'WhatsApp'], ['email', 'E-mail']], hint: 'O disparo automático ainda não está conectado: o canal só define o botão da fila.' },
     { k: 'mensagem', l: 'Mensagem do convite', t: 'textarea', def: 'Oi {nome}! Pode responder uma pesquisa rápida? Leva 2 minutos: {link}', hint: 'Use {nome} e {link}.' },
     { k: 'aceita_link_aberto', l: 'Aceitar também o link aberto (qualquer pessoa com o link responde, ligando por e-mail)', t: 'check', hint: 'Use na página de obrigado. Sem ele, só quem recebeu o link único responde.' }, { k: 'ativa', l: 'Ativa', t: 'check', def: false }];
-  const f = abrirForm(row ? 'Editar pesquisa' : 'Nova pesquisa', 'pesquisas', campos, row, { antes: v => { if (v.gatilho === 'etapa' && !v.gatilho_etapa) throw new Error('Escolha a etapa do funil.'); if (v.gatilho !== 'etapa') v.gatilho_etapa = null; return v; }, ok: 'Pesquisa salva' });
+  const f = abrirForm(row ? 'Editar pesquisa' : 'Nova pesquisa', 'pesquisas', campos, row, { antes: v => { if (v.gatilho === 'etapa' && !v.gatilho_etapa) throw new Error('Escolha a etapa do funil.'); if (v.gatilho !== 'etapa') v.gatilho_etapa = null;
+    if (cgA) { if (v.gatilho === 'etapa_aluno' && !v.etapa_aluno_id) throw new Error('Escolha a etapa da jornada do aluno.'); if (v.gatilho !== 'etapa_aluno') v.etapa_aluno_id = null; if (!['entrada_aluno', 'etapa_aluno'].includes(v.gatilho)) v.produto_id = null; }
+    return v; }, ok: 'Pesquisa salva' });
   if (row) botaoExcluir(f, 'pesquisas', row.id, 'Pesquisa excluída');
 }
 async function vPesquisaDet(m) {
@@ -14051,7 +14058,7 @@ async function vPesquisaDet(m) {
   const [ps, perg] = await Promise.all([q(sb.from('pesquisas').select('*').eq('id', id)), q(sb.from('pesquisa_perguntas').select('*').eq('pesquisa_id', id).order('ordem').order('criado_em'))]);
   const p = ps[0]; if (!p) { S.pqSel = null; return vPesquisas(m); }
   S.pqSecao = await temColuna('pesquisa_perguntas', 'secao');
-  m.innerHTML = `<div class="head"><div><button class="btn sm" id="pqVolta">← Pesquisas</button><h1 style="margin-top:8px">${esc(p.nome)} ${pillAtivo(p.ativa)}</h1><span class="muted">${PQ_TIPO[p.tipo]} · ${esc(PQ_GAT[p.gatilho])}${p.gatilho === 'etapa' ? ': ' + esc(p.gatilho_etapa) : ''}</span></div><div class="acts"><button class="btn" id="pqEd">Configurar</button></div></div>
+  m.innerHTML = `<div class="head"><div><button class="btn sm" id="pqVolta">← Pesquisas</button><h1 style="margin-top:8px">${esc(p.nome)} ${pillAtivo(p.ativa)}</h1><span class="muted">${PQ_TIPO[p.tipo]} · ${esc(PQ_GAT[p.gatilho])}${p.gatilho === 'etapa' ? ': ' + esc(p.gatilho_etapa) : ''}${p.gatilho === 'etapa_aluno' && p.etapa_aluno_id ? ': ' + esc(((await q(sb.from('etapas_kanban').select('nome').eq('id', p.etapa_aluno_id)).catch(() => []))[0] || {}).nome || 'etapa') : ''}</span></div><div class="acts"><button class="btn" id="pqEd">Configurar</button></div></div>
   <div class="tabs">${[['perguntas', 'Perguntas'], ['form', 'Formulário e aparência'], ['qual', 'Qualificação e pontos'], ['quem', 'Quem respondeu'], ['envios', 'Fila de envio'], ['res', 'Resultados'], ['ins', 'Insights']].map(([k, l]) => `<button data-t="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="pqBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
   $('#pqVolta').onclick = () => { S.pqSel = null; render(); }; $('#pqEd').onclick = () => modalPesquisa(p);
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { S.pqTab = b.dataset.t; render(); });
