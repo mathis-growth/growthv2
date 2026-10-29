@@ -1,3 +1,6 @@
+## v0.164
+- Sem mudança no banco. O Cockpit lê `painel_gerencial`, `cg_indicadores`, `campanhas` (situação) e `oportunidades` abertas.
+
 ## v0.163 — Customer Growth
 - `jornadas` (workspace, produto ou vazio quando é modelo, nome, `modelo`, `versao`, `status` rascunho/publicada/anterior/arquivada, `baseada_em`, publicada_em/por). Uma publicada e um rascunho por produto.
 - `etapas_kanban.jornada_id`: etapa do quadro de alunos que pertence a uma jornada de produto (vazio = Jornada geral). Nome único dentro da jornada (e na geral, como antes: índices `etapas_kanban_geral_uq` e `etapas_kanban_jornada_uq` no lugar da trava antiga). Etapa de versão já publicada não muda de nome, ordem nem jornada.

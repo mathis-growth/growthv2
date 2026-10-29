@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 29/10/2026, versão 0.163.
+**Última atualização:** 29/10/2026, versão 0.164.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -47,8 +47,11 @@ A ideia central: o dono do negócio e a consultoria olham para os mesmos número
 
 ## 2. Administrativo: a visão do negócio
 
+### Cockpit
+A tela inicial. Um painel pequeno por área (Geral, Marketing, Vendas, Financeiro e Clientes), cada um com os números que mais importam no período: caixa, receita, margem e lucro; campanhas e leads; vendas, ticket e conversão; a receber, a pagar e MRR; alunos ativos, alertas e satisfação. Clicar num painel abre o dashboard daquela área, com tudo em detalhe. Cada pessoa só vê os painéis das áreas a que tem acesso.
+
 ### Dashboard geral
-A tela inicial. Mostra o negócio inteiro num período escolhido:
+O detalhe do painel Geral do Cockpit. Mostra o negócio inteiro num período escolhido:
 
 - receita, lucro e margem por mês;
 - o ritmo da meta do mês (está no caminho ou atrás?);
@@ -464,6 +467,8 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 ---
 
 ## 14. Histórico resumido
+
+- **29/10 (v0.164):** Cockpit na entrada: um painel por área (Geral, Marketing, Vendas, Financeiro e Clientes), cada um abrindo o dashboard do módulo.
 
 - **29/10 (v0.163):** Customer Growth em RevOps: jornada de cada produto com versão, marcos, check-ins, alertas e intervenções de CS e indicadores de evolução.
 

@@ -2,6 +2,17 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.164 — Cockpit na entrada (29/10/2026)
+- O Growths passa a abrir no **Cockpit** (primeiro item do menu): um painel pequeno por área, com os números do período escolhido (7 dias, 30 dias, mês atual ou ano).
+  - **Geral:** saldo em caixa, receita, vendas, margem e lucro.
+  - **Marketing:** campanhas ativas (e planejadas), leads no período e qualificados, leads em andamento e CAC.
+  - **Vendas:** vendas aprovadas, faturamento, ticket médio, conversão lead → cliente e oportunidades abertas.
+  - **Financeiro:** saldo em banco, a receber e a pagar (com atrasos), entrou − saiu e MRR.
+  - **Clientes (CS):** alunos ativos, alertas abertos, intervenções abertas, NPS dos alunos e matrículas sem CS.
+- Clicar num painel abre o dashboard do módulo (Dashboard, Marketing, Vendas, Financeiro, Customer Growth → Indicadores). Valor negativo em vermelho; ponto de atenção com marca amarela.
+- Os números vêm das mesmas funções do banco que os dashboards usam (`painel_gerencial`, `cg_indicadores`): batem com eles. Cada painel só aparece para quem tem acesso ao módulo.
+- Teste: `tests/tela/t164_cockpit.py` (18 verificações, 0 falhas); t162 e t163 sem falhas. Sem mudança no banco.
+
 ## v0.163 — Customer Growth: jornada e evolução do aluno (29/10/2026)
 - **Jornada do produto** (Produtos → Jornada do produto, ou Alunos → Editar jornada): cada produto pode ter as suas etapas de depois da compra, com versão. Rascunho → publicar; ao publicar, a tela pergunta se quem já está dentro **continua** na versão atual ou é **transferido** (cada etapa antiga escolhe a equivalente; "não levar" deixa onde está). Botão **Transferir alunos** para levar depois. **Salvar como modelo** e começar de um modelo (dois modelos sugeridos: Mentoria e Curso online). Produto sem jornada própria continua na **Jornada geral** (as etapas de hoje).
 - **Alunos**: seletor de jornada (geral, de cada produto, ou a lista de todos os produtos, uma linha por matrícula com etapa e dias na etapa). Quem comprou dois produtos aparece em cada um. A matrícula nova nasce na primeira etapa da jornada publicada do produto.

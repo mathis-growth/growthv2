@@ -1108,6 +1108,27 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
 #arvRoot .arv-rosca li:hover{background:var(--accent-soft)} #arvRoot .arv-rosca li i{width:10px;height:10px;border-radius:3px}
 #arvRoot .arv-rosca li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
+<style id="v164">/* v0.164 — Cockpit: um painel pequeno por área, clicável */
+.ck-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.ck-card{cursor:pointer;margin:0;display:flex;flex-direction:column;gap:12px;transition:border-color .15s,box-shadow .15s,transform .15s}
+.ck-card:hover,.ck-card:focus-visible{border-color:var(--accent);box-shadow:0 6px 20px rgba(var(--accent-rgb),.12);transform:translateY(-1px);outline:none}
+.ck-geral{grid-column:1/-1}
+.ck-h{display:flex;gap:12px;align-items:flex-start}
+.ck-h h2{margin:0 0 2px}
+.ck-h>div{flex:1;min-width:0}
+.ck-ic{width:36px;height:36px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none}
+.ck-ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ck-ir{font-size:12.5px;font-weight:600;color:var(--accent);white-space:nowrap}
+.ck-is{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.ck-i{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2,var(--bg))}
+.ck-i .l{font-size:11.5px;color:var(--muted)}
+.ck-i .v{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.ck-i .s{font-size:11.5px;color:var(--muted)}
+.ck-i.ck-neg .v{color:var(--bad)}
+.ck-i.ck-atn{border-left:3px solid var(--warn)}
+.seg{display:flex;gap:4px;flex-wrap:wrap}
+@media (max-width:900px){.ck-grid{grid-template-columns:1fr}}
+</style>
 <style id="v162">/* v0.162 — Mapa de métricas: North Star em destaque e as alavancas agrupadas embaixo dela */
 .gtree .gn.ns{max-width:680px;padding:16px 18px;gap:7px;border:2px solid var(--accent);background:radial-gradient(120% 90% at 100% 0%,rgba(8,145,178,.10),transparent 55%),var(--surface);box-shadow:0 10px 30px rgba(var(--accent-rgb),.18)}
 .gtree .gn.ns .gn-h b{font-size:16px}
@@ -1152,7 +1173,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.163 · 29/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.164 · 29/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -1175,6 +1196,7 @@ setTimeout(() => { if ($('#login').classList.contains('hide') && $('#app').class
 
 const NAV = [
   { g: 'Growth Starter', flat: true, starter: true, items: [['st-dash', 'Dashboard'], ['mkt-dash', 'Aquisição'], ['mkt-midia', 'Mídia'], ['crm-vendas', 'Vendas'], ['ho-retencao', 'Retenção & Expansão'], ['cad-produtos', 'Produtos'], ['crm-alunos', 'Clientes / Alunos'], ['fin-dash', 'Financeiro'], ['st-relatorios', 'Relatórios'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['gro-ciclo', 'Experimentos']] },
+  { g: 'Cockpit', flat: true, livre: true, items: [['cockpit', 'Cockpit']] },
   { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['adm-plano', 'Planejamento da empresa'], ['adm-empresa', 'Cadastro da empresa']] },
   { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários']], subs: [{ g: 'Growth\'s Content', mod: 'mkt', items: [['mkt-cont', 'Estratégia de conteúdo'], ['mkt-insta', 'Instagram']] }] },
   { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['crm-dms', 'DMs do Instagram'], ['mkt-origem', 'Leads por origem']] },
@@ -1190,7 +1212,7 @@ const NAV = [
     { g: 'Comercial e produtos', mod: 'cad', items: [['cad-clientes', 'Clientes'], ['cad-duplicados', 'Cadastros repetidos'], ['cad-produtos', 'Produtos'], ['cad-comissoes', 'Comissões'], ['cad-plataformas', 'Plataformas'], ['cad-canais', 'Canais'], ['cad-funis', 'Estratégias e funis'], ['cad-motivos', 'Motivos de ganho e perda']] },
     { g: 'Financeiro e contabilidade', mod: 'cad', items: [['cad-planocontas', 'Plano de contas'], ['cad-regras', 'Regras contábeis'], ['cad-impostos', 'Impostos'], ['cad-bancos', 'Contas bancárias'], ['cad-formaspag', 'Formas de pagamento'], ['cad-fornecedores', 'Fornecedores'], ['cad-centros', 'Centros de custo'], ['cad-rateio', 'Rateio de custos']] }] }
 ];
-const S = { user: null, workspaces: [], ws: null, view: (new URLSearchParams(location.search).get('v') || (new URLSearchParams(location.search).get('conexao') ? 'cfg-integracoes' : '')) || 'adm-painel', abertos: {}, tabMkt: 'campanhas', ano: 2026, f: { busca: '', qual: '', tipo: '' } };
+const S = { user: null, workspaces: [], ws: null, view: (new URLSearchParams(location.search).get('v') || (new URLSearchParams(location.search).get('conexao') ? 'cfg-integracoes' : '')) || 'cockpit', abertos: {}, tabMkt: 'campanhas', ano: 2026, f: { busca: '', qual: '', tipo: '' } };
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const brl = n => { if (n == null || n === '' || !isFinite(Number(n))) return '—'; const v = Number(n); return (v < 0 ? '−' : '') + 'R$\u00a0' + Math.abs(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
@@ -1488,6 +1510,7 @@ const ICO = {
   'cad-funcoes': P('<path d="M12 3l8 4v5c0 5-3.500 8-8 9-4.500-1-8-4-8-9V7z"/><path d="M9.500 12.500l1.800 1.800 3.400-3.600"/>'),
   'ho-ascensao': P('<path d="M4 20h4v-4h4v-4h4V8h4"/><path d="M16 4h4v4"/>'),
   'ho-cohort': P('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>'),
+  'cockpit': P('<circle cx="12" cy="13" r="8"/><path d="M12 13l4-4"/><path d="M7 17h10"/>'),
   'ho-cg': P('<path d="M4 19h16"/><path d="M6 15l4-5 3 3 5-7"/><circle cx="18" cy="6" r="1.6"/>'),
   'ho-retencao': P('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/>'),
   'ho-dash': P('<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>'),
@@ -1532,7 +1555,7 @@ function desenhaNav() {
   const grp = g => {
     if (!!g.starter !== ehStarter() && !(ehStarter() && g.g === 'Configurações')) return '';
     if (g.casa) return casaDe(S.wsBase) ? `<div class="grp">${gh(g.g)}${isOpen(g.g) ? `<div class="lv2">${btns(g.items)}</div>` : ''}</div>` : '';
-    if (g.flat) return nivelMod(MOD_GRUPO[g.g]) === 'nenhum' ? '' : `<div class="grp">${btns(g.items.filter(i => telaLiberada(i[0])))}</div>`;
+    if (g.flat) return !g.livre && nivelMod(MOD_GRUPO[g.g]) === 'nenhum' ? '' : `<div class="grp">${btns(g.items.filter(i => telaLiberada(i[0])))}</div>`;
     const vis = items => items.filter(i => (!SO_ADMIN.includes(i[0]) || souAdmin()) && telaLiberada(i[0]) && (!TELAS_INT.includes(i[0]) || S.interno) && (i[0] !== 'cfg-custos' || S.verCustos));
     const okG = g.items.length ? nivelMod(MOD_GRUPO[g.g]) !== 'nenhum' && vis(g.items).length > 0 : false, subs = subsDe(g).filter(x => nivelMod(modSub(x)) !== 'nenhum' && vis(x.items).length);
     if (!okG && !subs.length) return '';
@@ -1577,12 +1600,12 @@ async function boot() {
 $('#novoCli').onclick = () => ncModal();
 const ncModalV140 = () => { modal('Novo cliente', `<label>Nome do cliente<input name="nome" required></label><label>Tipo de acesso<select name="tipo"><option value="starter">Growth Starter (consultoria: só diagnóstico e relatórios)</option><option value="completo">Growths completo (operação inteira)</option></select></label><label>Pacote de acesso<select name="pacote" id="ncPac"><option value="">— sem pacote (acesso a tudo) —</option></select></label><label class="chk"><input type="checkbox" name="content"> Usa o Growth's Content (cria a pasta do cliente no Google Drive)</label><p class="muted">Cada cliente tem o seu banco separado. No Growth Starter você importa as planilhas dele, confere o de-para e puxa os relatórios. Dá para ver os dados do cliente só depois de importar.</p>`,
   async d => { const id = await q(sb.rpc('criar_workspace_cliente', { p_nome: d.nome, p_modo: d.tipo === 'starter' ? 'starter' : 'completo' })); if (d.content) { try { await q(sb.rpc('content_definir', { p_ws: id, p_ativo: true })); } catch (e) { toast('Cliente criado, mas o Growth\'s Content não foi ligado: ' + e.message, true); } } if (d.pacote) { try { await q(sb.rpc('workspace_definir_acesso', { p_ws: id, p_pacote: d.pacote, p_liga: [], p_desliga: [] })); } catch (e) { toast('Cliente criado, mas o pacote não foi aplicado: ' + e.message, true); } }
-    S.ws = S.wsBase = id; S.perm = null; S.permWs = null; S.view = d.tipo === 'starter' ? 'st-dash' : 'adm-painel'; await boot(); toast('Cliente criado'); }, 'Criar cliente');
+    S.ws = S.wsBase = id; S.perm = null; S.permWs = null; S.view = d.tipo === 'starter' ? 'st-dash' : 'cockpit'; await boot(); toast('Cliente criado'); }, 'Criar cliente');
   sb.from('pacotes_acesso').select('id,nome,ativo').order('nome').then(r => { const sel = $('#ncPac'); if (!sel || r.error || !r.data) { if (sel) sel.closest('label').style.display = 'none'; return; } sel.insertAdjacentHTML('beforeend', r.data.filter(p => p.ativo).map(p => `<option value="${p.id}">${esc(p.nome)}</option>`).join('')); }); };
 $('#wsSel').onchange = e => { S.ws = S.wsBase = e.target.value; if (ehCasaV(S.view)) S.view = 'fin-dash'; S.perm = null; S.permWs = null; render(); };
 
 const VIEWS = {
-  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'ho-cg': vCustomerGrowth, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': vConteudo, 'cfg-estruturas': vEstruturas, 'cfg-pastas': vPastasMathisa, 'cfg-custos': vCustos, 'crm-dms': vDMsCrm,
+  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'ho-cg': vCustomerGrowth, 'cockpit': vCockpit, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': vConteudo, 'cfg-estruturas': vEstruturas, 'cfg-pastas': vPastasMathisa, 'cfg-custos': vCustos, 'crm-dms': vDMsCrm,
   'crm-leads': vCrmLeads, 'crm-oport': vCrmOport, 'crm-vendas': vVendas, 'crm-contratos': vContratos, 'crm-comissoes': vComissoes, 'cad-comissoes': vComissoes, 'crm-alunos': vCrmAlunos,
   'fin-receber': vReceber,  'cfg-uso': vUso, 'fin-pagar': vPagar, 'fin-custo': vCustoOp, 'fin-lanc': vLanc, 'adm-painel': vPainel, 'adm-plano': vPlano,
   'cad-clientes': vClientes, 'cad-plataformas': vPlataformas, 'cad-funis': vFunis, 'cad-regras': vRegras,
@@ -1633,7 +1656,7 @@ async function render() {
     return;
   }
   { const stv = ehStarter(), liberadas = new Set(NAV.filter(g => g.starter || g.g === 'Configurações').flatMap(g => itensDe(g).map(i => i[0])));
-    if (stv && !liberadas.has(S.view)) S.view = 'st-dash'; else if (!stv && /^st-/.test(S.view)) S.view = 'adm-painel'; }
+    if (stv && !liberadas.has(S.view)) S.view = 'st-dash'; else if (!stv && /^st-/.test(S.view)) S.view = 'cockpit'; }
   if (!casaV && S.permWs !== S.ws) { await carregaPerm(); desenhaNav(); }
   const modV = moduloDaView(S.view), bloq = (modV && nivelMod(modV) === 'nenhum') || (SO_ADMIN.includes(S.view) && !souAdmin()) || !telaLiberada(S.view) || (TELAS_INT.includes(S.view) && !S.interno) || (S.view === 'cfg-custos' && !S.verCustos);
   if (bloq) {
@@ -3375,6 +3398,72 @@ async function jornadasProdutos(el) {
   el.innerHTML = `<h2>Jornada do produto</h2><span class="muted">As etapas por onde o aluno passa depois da compra. Produto sem jornada própria usa a Jornada geral (Alunos → Gerenciar etapas).</span>
     <div class="tw"><table><thead><tr><th>Produto</th><th>Jornada</th><th></th></tr></thead><tbody>${prods.map(p => `<tr><td>${esc(p.nome)}${p.ativo === false ? ' <span class="muted">(desativado)</span>' : ''}</td><td>${est(p)}</td><td><button class="btn sm" data-jp="${p.id}">Abrir jornada</button></td></tr>`).join('') || '<tr><td colspan="3" class="empty">Nenhum produto.</td></tr>'}</tbody></table></div>`;
   el.querySelectorAll('[data-jp]').forEach(b => b.onclick = () => { S.jpProd = b.dataset.jp; S.jpTab = 'jornada'; render(); });
+}
+
+/* ================= v0.164 — Cockpit (tela de entrada) =================
+   Um painel pequeno por área: Geral, Marketing, Vendas, Financeiro e Clientes (CS). Clicar no painel abre o dashboard do módulo,
+   com os números detalhados. Os números vêm das mesmas funções do banco que os dashboards já usam (painel_gerencial e
+   cg_indicadores), então batem com eles. Cada painel só aparece para quem tem acesso ao módulo. */
+const CK_PER = [['7d', '7 dias'], ['30d', '30 dias'], ['mes', 'Mês atual'], ['ano', 'Ano']];
+function ckPeriodo(per) {
+  const h = hoje();
+  const ini = per === '7d' ? diaMais(h, -6) : per === '30d' ? diaMais(h, -29) : per === 'ano' ? h.slice(0, 4) + '-01-01' : h.slice(0, 7) + '-01';
+  return { ini, fim: h, rot: { '7d': 'últimos 7 dias', '30d': 'últimos 30 dias', mes: 'mês atual', ano: 'ano ' + h.slice(0, 4) }[per] || 'mês atual' };
+}
+async function vCockpit(m) {
+  await provisionaAuto();
+  const w = S.ws, C = S.ck = S.ck || { per: 'mes' }, h = hoje(), Pd = ckPeriodo(C.per);
+  const pode = (mod, tela) => nivelMod(mod) !== 'nenhum' && telaLiberada(tela);
+  const AREAS = [
+    { k: 'geral', t: 'Geral', mod: 'adm', tela: 'adm-painel', d: 'A empresa: caixa, vendas, receita, margem e lucro.' },
+    { k: 'mkt', t: 'Marketing', mod: 'mkt', tela: 'mkt-dash', d: 'Campanhas, leads e custo de aquisição.' },
+    { k: 'ven', t: 'Vendas', mod: 'vendas', tela: 'crm-dash', d: 'Vendas, faturamento, conversão e oportunidades.' },
+    { k: 'fin', t: 'Financeiro', mod: 'fin', tela: 'fin-dash', d: 'Saldo, a receber, a pagar e o que entrou e saiu.' },
+    { k: 'cs', t: 'Clientes (CS)', mod: 'revops', tela: 'ho-cg', d: 'Alunos ativos, alertas, intervenções e satisfação.' }
+  ].filter(a => pode(a.mod, a.tela));
+  const quer = k => AREAS.some(a => a.k === k);
+  const pega = p => p.then(r => r, () => null);
+  const [P, camps, ops, CG] = await Promise.all([
+    quer('geral') || quer('mkt') || quer('ven') || quer('fin') ? pega(q(sb.rpc('painel_gerencial', { p_ws: w, p_ini: Pd.ini, p_fim: Pd.fim, p_hoje: h }))) : null,
+    quer('mkt') ? pega(q(sb.from('campanhas').select('id,status').eq('workspace_id', w))) : null,
+    quer('ven') ? pega(q(sb.from('oportunidades').select('id,status,valor_estimado').eq('workspace_id', w).eq('status', 'aberta'))) : null,
+    quer('cs') ? pega(q(sb.rpc('cg_indicadores', { p_ws: w, p_produto: null, p_ini: Pd.ini, p_fim: Pd.fim })).catch(() => q(sb.rpc('heavyops_painel', { p_ws: w, p_dias: 30 })).then(x => ({ _ho: x })))) : null
+  ]);
+  const G = P || {}, FU = G.funil || {}, VE = G.vendas || {}, CX = G.caixa || {}, RS = G.resultado || {}, RC = G.recorrencia || {}, CA = G.cac || {}, FX = G.fluxo || {};
+  const pct = v => semFmt(v, 'pct'), dinheiro = v => brl(v), cor = v => v == null || !isFinite(Number(v)) ? '' : Number(v) < 0 ? ' ck-neg' : '';
+  const ind = (l, v, s, cls) => `<div class="ck-i${cls || ''}"><span class="l">${l}</span><span class="v">${v}</span>${s ? `<span class="s">${s}</span>` : ''}</div>`;
+  const semDado = '<div class="muted" style="font-size:12.5px">Sem dados para este período.</div>';
+  const corpo = {
+    geral: () => P ? [ind('Saldo em caixa', dinheiro(CX.saldo), 'nas contas bancárias', cor(CX.saldo)), ind('Receita', dinheiro(RS.receita), Pd.rot),
+      ind('Vendas', num(VE.aprovadas), dinheiro(VE.bruto) + ' faturados'), ind('Margem', pct(RS.margem), 'lucro ÷ receita', cor(RS.margem)), ind('Lucro', dinheiro(RS.lucro), Pd.rot, cor(RS.lucro))].join('') : semDado,
+    mkt: () => P ? [ind('Campanhas ativas', camps ? num(camps.filter(c => c.status === 'ativa').length) : '—', camps ? num(camps.filter(c => c.status === 'planejada').length) + ' planejadas' : ''),
+      ind('Leads no período', num(FU.total), num(FU.qualificados) + ' qualificados (' + pct(FU.pct_qualificados) + ')'), ind('Leads em andamento', num(FU.leads), 'cadastrados que ainda não compraram'),
+      ind('CAC', CA.cac_total != null ? dinheiro(CA.cac_total) : '—', CA.novos != null ? num(CA.novos) + ' clientes novos' : '')].join('') : semDado,
+    ven: () => P ? [ind('Vendas aprovadas', num(VE.aprovadas), num(VE.nao_aprovadas || 0) + ' não aprovadas'), ind('Faturamento', dinheiro(VE.bruto), dinheiro(VE.liquido) + ' líquido'),
+      ind('Ticket médio', VE.aprovadas ? dinheiro(Number(VE.bruto || 0) / Number(VE.aprovadas)) : '—', 'por venda'), ind('Lead → cliente', FU.total ? pct(Number(FU.clientes || 0) / Number(FU.total)) : '—', num(FU.clientes) + ' viraram clientes'),
+      ind('Oportunidades abertas', ops ? num(ops.length) : '—', ops ? dinheiro(ops.reduce((t, o) => t + Number(o.valor_estimado || 0), 0)) + ' em negociação' : '')].join('') : semDado,
+    fin: () => P ? [ind('Saldo em banco', dinheiro(CX.saldo), '', cor(CX.saldo)), ind('A receber', dinheiro(CX.a_receber), CX.atraso_receber ? dinheiro(CX.atraso_receber) + ' em atraso' : 'nada em atraso'),
+      ind('A pagar', dinheiro(CX.a_pagar), CX.atraso_pagar ? dinheiro(CX.atraso_pagar) + ' em atraso' : 'nada em atraso'), ind('Entrou − saiu', dinheiro(Number(FX.entrou || 0) - Number(FX.saiu || 0)), 'entrou ' + dinheiro(FX.entrou) + ' · saiu ' + dinheiro(FX.saiu), cor(Number(FX.entrou || 0) - Number(FX.saiu || 0))),
+      ind('MRR', dinheiro(RC.mrr), 'receita recorrente mensal')].join('') : semDado,
+    cs: () => {
+      if (!CG) return semDado;
+      if (CG._ho) { const T = (CG._ho || {}).totais || {}; return [ind('Alunos ativos', num(T.ativos), ''), ind('Matrículas', num(T.matriculas), '')].join(''); }
+      const M = CG.matriculas || {}, A = CG.alertas || {}, I = CG.intervencoes || {}, N = CG.nps || {}, abertos = Object.values(A).reduce((t, n) => t + Number(n || 0), 0);
+      return [ind('Alunos ativos', num(M.ativas), num(M.novas) + ' novos · ' + num(M.sairam) + ' saíram'), ind('Alertas abertos', num(abertos), num(A.parado || 0) + ' parados · ' + num(A.marco_atrasado || 0) + ' com marco atrasado', abertos ? ' ck-atn' : ''),
+        ind('Intervenções abertas', num(I.abertas), I.atrasadas ? num(I.atrasadas) + ' atrasadas' : 'nenhuma atrasada'), ind('NPS dos alunos', N.nps == null ? '—' : String(N.nps), num(N.respostas) + ' respostas'),
+        ind('Sem CS responsável', num(M.sem_cs), 'matrículas ativas', M.sem_cs ? ' ck-atn' : '')].join('');
+    }
+  };
+  m.innerHTML = `<div class="head"><div><h1>Cockpit</h1><span class="muted">Um resumo de cada área. Clique num painel para ver os números completos.</span></div>
+    <div class="acts"><div class="seg" role="group" aria-label="Período">${CK_PER.map(([k, l]) => `<button type="button" class="btn sm${C.per === k ? ' pri' : ''}" data-ckp="${k}">${l}</button>`).join('')}</div></div></div>
+    ${AREAS.length ? `<div class="ck-grid">${AREAS.map(a => `<div class="panel ck-card ck-${a.k}" data-ckv="${a.tela}" role="link" tabindex="0" aria-label="Abrir ${esc(a.t)}">
+      <div class="ck-h"><span class="ck-ic">${ICO[a.tela] || ''}</span><div><h2>${esc(a.t)}</h2><span class="muted">${esc(a.d)}</span></div><span class="ck-ir">Abrir →</span></div>
+      <div class="ck-is">${corpo[a.k]()}</div></div>`).join('')}</div>` : '<div class="panel empty">A sua função não inclui nenhuma das áreas do cockpit.</div>'}`;
+  m.querySelectorAll('[data-ckp]').forEach(b => b.onclick = () => { C.per = b.dataset.ckp; render(); });
+  const abre = el => { const v = el.dataset.ckv; if (v === 'ho-cg') { S.cg = S.cg || { aba: 'evolucao', produto: '', ini: diaMais(hoje(), -89), fim: hoje() }; S.cg.aba = 'indicadores'; }
+    if (v === 'adm-painel') { S.pg = S.pg || { per: '30d', de: '', ate: '' }; Object.assign(S.pg, { per: C.per === 'mes' ? 'mes' : C.per === 'ano' ? 'ano' : C.per, de: '', ate: '' }); }
+    S.view = v; abreMenu(v); render(); };
+  m.querySelectorAll('[data-ckv]').forEach(el => { el.onclick = () => abre(el); el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abre(el); } }; });
 }
 
 /* ================= FINANCEIRO ================= */
@@ -10450,7 +10539,7 @@ async function gmAbas(m, aba, fn) {
 /* ===== v0.85 — Pacotes de acesso por cliente ===== */
 /* A equipe interna monta pacotes (Disparo, Consultoria, Mentoria...) com as telas liberadas e escolhe um para cada cliente,
    podendo ligar ou desligar telas só para aquele cliente. As funções de cada pessoa continuam valendo por cima. */
-const PAC_SEMPRE = ['cad-equipe', 'cad-funcoes'];
+const PAC_SEMPRE = ['cad-equipe', 'cad-funcoes', 'cockpit'];
 /* v0.108: telas que saíram do menu (aposentadas ou que viraram aba de outra) */
 const TELAS_FORA_DO_MENU = ['gro-lucro', 'gro-analise', 'gro-cenarios', 'ho-cohort', 'ho-ascensao'];
 const PAC_SEM_BANCO = '<div class="panel" style="border-left:4px solid var(--warn)"><b>Os pacotes de acesso ainda não estão no banco.</b> <span class="muted">Execute supabase/migrations/20261010230000_pacotes_acesso.sql no SQL Editor do Supabase (depois da migração de segurança) e recarregue.</span></div>';

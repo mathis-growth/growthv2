@@ -1,3 +1,6 @@
+## v0.164
+- index.html: 0.163 → 0.164. Novo bloco `<style id="v164">`; novas `vCockpit`, `ckPeriodo`, `CK_PER`; menu com o grupo `Cockpit` (`livre`, aparece para todos), rota `cockpit`, `PAC_SEMPRE` com `cockpit`, tela inicial `cockpit` (era `adm-painel`). Teste `t164_cockpit.py`. Sem migração.
+
 ## v0.163
 - index.html: 0.162 → 0.163 (editado direto, sem script de integração). Novas: `vCustomerGrowth` (+ `cgCheckins`, `cgAlertas`, `cgRetencao`, `cgIndicadores`, `modalIntervencao`), `vJornadaProduto`, `modalPublicarJornada`, `modalTransferirJornada`, `jornadasProdutos`, `marcosHtml`, `modalMarco`, `modalReceberEventos`, `fichaJornada`; trocada: `vCrmAlunos` (seletor de jornada); ajustadas: `gerirEtapas`, `modalPesquisa`, `modalOport`, `vMinhas`, `vCad`, `fichaPessoa`, menu, rotas e `telaLiberada`. Novas migrações `20261116100000` a `20261122100000` e `RODAR_v0.163_customer_growth.sql`. Testes de banco `jornada_b*_cenarios.sql` (PGlite, ver `tests/banco/LEIA.md`) e de tela `t163_*.py`.
 
