@@ -134,6 +134,17 @@ begin
 end $m$;
 revoke all on function public.growths_rodar_agendado(timestamptz) from public, anon, authenticated;
 
+-- Primeira passada sem avisar ninguém: o que já está acontecendo hoje (alunos parados há tempo, sem CS…) fica registrado como alerta,
+-- mas o CS não recebe dezenas de avisos de uma vez. Daqui em diante, só o caso novo avisa.
+do $s$
+declare w record;
+begin
+  for w in select distinct workspace_id from alunos where status = 'ativo' and saiu_em is null loop
+    begin perform cg_verificar_alertas(w.workspace_id, now(), false);
+    exception when others then raise warning 'primeira passada %: %', w.workspace_id, sqlerrm; end;
+  end loop;
+end $s$;
+
 -- ---------- B8: intervenções de CS ----------
 create table if not exists cs_intervencoes (
   id uuid primary key default gen_random_uuid(),

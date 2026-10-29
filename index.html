@@ -15114,7 +15114,7 @@ async function vAlertas(m) {
   const w = S.ws, F = S.alF = S.alF || 'abertos';
   const [cfgs, als, res, eqs, envs] = await Promise.all([
     q(sb.from('alertas_config').select('*').eq('workspace_id', w)),
-    q(sb.from('alertas').select('*').eq('workspace_id', w).order('criado_em', { ascending: false }).limit(200)),
+    q(sb.from('alertas').select('*').eq('workspace_id', w).neq('tipo', 'cs').order('criado_em', { ascending: false }).limit(200)),  // v0.163: os de CS ficam em RevOps → Customer Growth
     q(sb.from('resumos_diarios').select('dia,texto,avisado_em').eq('workspace_id', w).order('dia', { ascending: false }).limit(14)),
     q(sb.from('equipe').select('id,nome,email,telefone,ativo,acesso_ativo,avisar_app,avisar_email,avisar_whatsapp').eq('workspace_id', w).eq('ativo', true).order('nome')),
     q(sb.from('notificacoes').select('id,tipo,canal,titulo,status,erro,criada_em,destinatario_id').eq('workspace_id', w).in('tipo', ['alerta', 'resumo', 'teste']).order('criada_em', { ascending: false }).limit(30))

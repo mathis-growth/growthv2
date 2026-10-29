@@ -253,7 +253,7 @@ revoke execute on function public._jornada_copiar_etapas(uuid, uuid, boolean, uu
 alter table chaves_api drop constraint if exists chaves_api_escopo_check;
 alter table chaves_api add constraint chaves_api_escopo_check check (escopo in ('ideias', 'leads', 'vendas', 'eventos'));
 alter table pessoa_toques drop constraint if exists pessoa_toques_origem_check;
-alter table pessoa_toques add constraint pessoa_toques_origem_check check (origem in ('sistema', 'sendflow', 'manual', 'importacao', 'integracao'));
+alter table pessoa_toques add constraint pessoa_toques_origem_check check (origem in ('sistema', 'sendflow', 'manual', 'importacao', 'captura', 'integracao'));  -- 'captura' veio da v0.135 (DMs do Instagram)
 create or replace function public.chave_api_criar_escopo(p_ws uuid, p_nome text, p_escopo text) returns text
 language plpgsql security definer set search_path = public as $$
 declare k text;

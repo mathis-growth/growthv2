@@ -1,6 +1,6 @@
 -- =====================================================================
 -- v0.163 — Customer Growth: Jornada e Inteligência do Cliente (RevOps).
--- Junta, na ordem, as migrações 20261116100000 a 20261122100000. Tudo ou nada: se algo falhar, nada fica gravado.
+-- Junta, na ordem, as migrações 20261116100000 a 20261123100000. Tudo ou nada: se algo falhar, nada fica gravado.
 -- Pode ser rodado de novo sem erro. Precisa da v0.132 (alertas) e da v0.113 (chaves de API por escopo) já aplicadas.
 -- Depois de rodar: recarregar o Growths. A tela nova fica em RevOps → Customer Growth.
 -- =====================================================================
@@ -728,7 +728,7 @@ revoke execute on function public._jornada_copiar_etapas(uuid, uuid, boolean, uu
 alter table chaves_api drop constraint if exists chaves_api_escopo_check;
 alter table chaves_api add constraint chaves_api_escopo_check check (escopo in ('ideias', 'leads', 'vendas', 'eventos'));
 alter table pessoa_toques drop constraint if exists pessoa_toques_origem_check;
-alter table pessoa_toques add constraint pessoa_toques_origem_check check (origem in ('sistema', 'sendflow', 'manual', 'importacao', 'integracao'));
+alter table pessoa_toques add constraint pessoa_toques_origem_check check (origem in ('sistema', 'sendflow', 'manual', 'importacao', 'captura', 'integracao'));  -- 'captura' veio da v0.135 (DMs do Instagram)
 create or replace function public.chave_api_criar_escopo(p_ws uuid, p_nome text, p_escopo text) returns text
 language plpgsql security definer set search_path = public as $$
 declare k text;
@@ -1047,6 +1047,17 @@ begin
 end $m$;
 revoke all on function public.growths_rodar_agendado(timestamptz) from public, anon, authenticated;
 
+-- Primeira passada sem avisar ninguém: o que já está acontecendo hoje (alunos parados há tempo, sem CS…) fica registrado como alerta,
+-- mas o CS não recebe dezenas de avisos de uma vez. Daqui em diante, só o caso novo avisa.
+do $s$
+declare w record;
+begin
+  for w in select distinct workspace_id from alunos where status = 'ativo' and saiu_em is null loop
+    begin perform cg_verificar_alertas(w.workspace_id, now(), false);
+    exception when others then raise warning 'primeira passada %: %', w.workspace_id, sqlerrm; end;
+  end loop;
+end $s$;
+
 -- ---------- B8: intervenções de CS ----------
 create table if not exists cs_intervencoes (
   id uuid primary key default gen_random_uuid(),
@@ -1236,6 +1247,74 @@ end $s$;
 
 -- Para desfazer: drop function if exists public.cg_indicadores(uuid, uuid, date, date); delete from acesso_telas where tela = 'ho-cg';
 -- delete from metricas_definicoes where codigo like 'cg\_%';
+
+-- ===================== 20261123100000_cg_alertas_chave.sql =====================
+-- v0.163 — Alertas de CS só depois de ligados, e fora do resumo do dia e do "Pergunte ao Growths".
+-- Motivo: em produção, a primeira passada criou centenas de alertas de CS (alunos parados e sem CS) de uma vez. A tela antiga
+-- "Alertas e resumo do dia" mostra os 200 mais recentes de todos os tipos e o resumo do dia lista todos os do dia: os de CS
+-- tomariam o lugar dos alertas de negócio.
+-- 1. sistema_config 'cg_alertas' ('sim' | 'nao', padrão 'nao'): o agendador só gera alertas de CS com 'sim'. Os check-ins continuam.
+-- 2. cg_ligar_alertas(): registra em silêncio o que já está acontecendo (sem avisar ninguém) e liga. Rodar quando a tela
+--    RevOps → Customer Growth estiver no ar.
+-- 3. Os alertas de CS saem do resumo do dia (growths_fatos_dia) e dos alertas abertos do "Pergunte ao Growths" (growths_ia_extra);
+--    eles têm a tela própria em Customer Growth.
+-- 4. Apaga os alertas de CS gerados antes de ligar (eram só o acúmulo da primeira passada; nada aponta para eles).
+-- Rode depois de 20261122100000_customer_growth_indicadores.sql. Idempotente.
+
+insert into sistema_config (chave, valor) values ('cg_alertas', 'nao') on conflict (chave) do nothing;
+
+create or replace function public.cg_rodar_agendado(p_ref timestamptz default now()) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare w record; n int := 0; ck int := 0; liga boolean := coalesce((select valor from sistema_config where chave = 'cg_alertas'), 'nao') = 'sim';
+begin
+  begin ck := pesquisa_checkins_gerar(p_ref, null); exception when others then raise warning 'cg_rodar_agendado (check-ins): %', sqlerrm; end;
+  if liga then
+    for w in select distinct workspace_id from alunos where status = 'ativo' and saiu_em is null loop
+      begin perform cg_verificar_alertas(w.workspace_id, p_ref, true); n := n + 1;
+      exception when others then raise warning 'cg_rodar_agendado %: %', w.workspace_id, sqlerrm; end;
+    end loop;
+  end if;
+  return jsonb_build_object('clientes', n, 'checkins', ck, 'alertas_cs', liga);
+end $$;
+revoke all on function public.cg_rodar_agendado(timestamptz) from public, anon, authenticated;
+
+create or replace function public.cg_ligar_alertas() returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare w record; n int := 0;
+begin
+  if not (session_user in ('postgres', 'supabase_admin') or coalesce(auth.role(), '') = 'service_role' or sou_equipe_interna()) then raise exception 'Só a equipe interna liga os alertas de CS'; end if;
+  for w in select distinct workspace_id from alunos where status = 'ativo' and saiu_em is null loop
+    begin perform cg_verificar_alertas(w.workspace_id, now(), false); n := n + 1;
+    exception when others then raise warning 'cg_ligar_alertas %: %', w.workspace_id, sqlerrm; end;
+  end loop;
+  insert into sistema_config (chave, valor) values ('cg_alertas', 'sim') on conflict (chave) do update set valor = 'sim';
+  return jsonb_build_object('clientes', n, 'alertas_abertos', (select count(*) from alertas where tipo = 'cs' and resolvido_em is null));
+end $$;
+revoke all on function public.cg_ligar_alertas() from public, anon;
+grant execute on function public.cg_ligar_alertas() to authenticated;
+
+do $m$
+declare d text; n text;
+begin
+  select replace(pg_get_functiondef('public.growths_fatos_dia(uuid, date)'::regprocedure), E'\r\n', E'\n') into d;
+  if position('tipo <> ''cs''' in d) = 0 then
+    n := replace(d, 'from alertas where workspace_id = p_ws and dia = p_dia)', 'from alertas where workspace_id = p_ws and dia = p_dia and tipo <> ''cs'')');
+    if n = d then raise exception 'growths_fatos_dia: trecho dos alertas do dia não encontrado'; end if;
+    execute n;
+  end if;
+  select replace(pg_get_functiondef('public.growths_ia_extra(uuid, date, date)'::regprocedure), E'\r\n', E'\n') into d;
+  if position('tipo <> ''cs''' in d) = 0 then
+    n := replace(d, 'from alertas where workspace_id = p_ws and resolvido_em is null order by', 'from alertas where workspace_id = p_ws and resolvido_em is null and tipo <> ''cs'' order by');
+    if n = d then raise exception 'growths_ia_extra: trecho dos alertas abertos não encontrado'; end if;
+    execute n;
+  end if;
+end $m$;
+
+delete from alertas a where a.tipo = 'cs' and coalesce((select valor from sistema_config where chave = 'cg_alertas'), 'nao') <> 'sim'
+  and not exists (select 1 from cs_intervencoes i where i.alerta_id = a.id);
+
+-- Para desfazer: cg_rodar_agendado de 20261121100000 (sem a chave); drop function cg_ligar_alertas(); tirar "and tipo <> 'cs'" das duas funções;
+-- delete from sistema_config where chave = 'cg_alertas'.
 
 commit;
 select 'v0.163 aplicada' as resultado;
