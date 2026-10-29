@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 26/10/2026, versão 0.161.
+**Última atualização:** 29/10/2026, versão 0.162.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -337,6 +337,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - amarelo é o que se mexeu, azul é o que mudou por consequência;
   - resultado do período, um bloco por produto e uma seção por loop ou campanha;
   - comparar até 3 cenários lado a lado.
+- **Mapa de métricas e North Star.** A árvore que liga a North Star às métricas que a movem. A NSM fica em destaque, com o evento que conta, quem entra na conta e a frequência; logo abaixo, as **alavancas que movem a NSM**, cada uma com o papel (driver ou input), a meta e quanto mudou contra o período anterior. O sistema aponta o gargalo sugerido (a alavanca mais longe da meta) e dali já se cria o experimento.
 - **Cenários com ciclo de vida.** Em estudo, descartado (com motivo, e dá para reabrir), aprovado, ativo, encerrado, cancelado.
 - **Decisão.** ICE (impacto, confiança, facilidade) com justificativa. A aprovação congela o cenário e gera o documento de decisão imutável (contexto, hipótese, baseline contra projeção, riscos, responsável) e a ideia no Kanban.
 - **Ciclo de Growth (Kanban de experimentos).** Ideias → em avaliação → priorizadas → preparação → em teste → análise → concluídas. Cada experimento tem o desenho do teste: métrica-alvo, público, intervenção, critério de sucesso.
@@ -509,3 +510,5 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - Growth's Content em cinco abas: base do cliente com dossiê e ficha aprovada, identidade visual, ideias, produção com roteiro, versões e aprovação; as ferramentas de antes em Mais ferramentas.
   - Produção de volta ao Kanban com calendário, com a aprovação dentro de cada cartão; linha editorial com subtemas na configuração; ideia aprovada já com tema e data.
   - modelo de pesquisa must-have para consultoria, com a leitura em três faixas nos resultados.
+- **29/10:**
+  - Mapa de métricas com a North Star em destaque e as alavancas que movem a NSM agrupadas embaixo dela.

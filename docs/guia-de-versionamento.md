@@ -1,5 +1,8 @@
 
 
+## v0.162
+- index.html: 0.161 → 0.162. Novo bloco `<style id="v162">` (fim do `<head>`) e a função `no` de `vGrowthModeloCorpo` (aba `mapa`) com `TIPO_G`, o grupo `ul.alav` e o título `.gn-lab`. Teste novo `tests/tela/t162_growth_model_nsm.py` (banco de mentira `mockdb.js`). Sem migração.
+
 ## v0.161
 - index.html: 0.160 → 0.161 (`integra161.py`, que roda o `integra160.py`; novo `g161.js`): `PQ_MODELOS.must_servico`, `pqLeituraPmf` no lugar do quadro de PMF dos Resultados. Teste novo `t161_must_have.py`.
 

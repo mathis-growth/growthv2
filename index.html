@@ -1108,6 +1108,22 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
 #arvRoot .arv-rosca li:hover{background:var(--accent-soft)} #arvRoot .arv-rosca li i{width:10px;height:10px;border-radius:3px}
 #arvRoot .arv-rosca li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
+<style id="v162">/* v0.162 — Mapa de métricas: North Star em destaque e as alavancas agrupadas embaixo dela */
+.gtree .gn.ns{max-width:680px;padding:16px 18px;gap:7px;border:2px solid var(--accent);background:radial-gradient(120% 90% at 100% 0%,rgba(8,145,178,.10),transparent 55%),var(--surface);box-shadow:0 10px 30px rgba(var(--accent-rgb),.18)}
+.gtree .gn.ns .gn-h b{font-size:16px}
+.gtree .gn.ns .gn-v{font-size:38px;font-weight:700;letter-spacing:-.02em;line-height:1.1;background:var(--grad-txt,none);-webkit-background-clip:text;background-clip:text;color:var(--accent)}
+:root[data-estilo="azul"] .gtree .gn.ns .gn-v{color:transparent}
+.gtree .gn.ns .bar{height:8px;border-radius:99px;border:0;background:var(--surface-2,var(--bg))}
+.gtree .gn.ns .bar i{border-radius:99px;background:var(--grad,var(--accent))}
+.gtree .gn-vr{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.gtree .gn-vr .gn-v{font-size:24px;font-weight:700;letter-spacing:-.02em}
+.gtree .gn-d{font-size:12.5px;white-space:nowrap}
+.gtree .gn-lab{font-size:11px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;color:var(--accent);margin:14px 0 -2px 26px}
+.gtree ul.alav{border-left-color:rgba(var(--accent-rgb),.35)}
+.gtree ul.alav>li::before{border-top-color:rgba(var(--accent-rgb),.35)}
+.gtree ul.alav>li>.gn{border-left:3px solid rgba(var(--accent-rgb),.45)}
+.gtree ul.alav>li>.gn.gar{border:2px solid var(--bad)}
+</style>
 </head>
 <body>
 
@@ -1136,7 +1152,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.161 · 26/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.162 · 29/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -10721,17 +10737,21 @@ async function vGrowthModeloCorpo(m) {
   const emAlerta = mets.filter(x => x.alertas.length);
   const cand = mets.filter(x => x.tipo !== 'north_star' && x.at != null && x.at < 1).sort((a, b) => a.at - b.at), gargalo = cand[0] || null;
   const filhos = id => mets.filter(x => x.pai_id === id), raizes = mets.filter(x => !x.pai_id || !mets.find(y => y.id === x.pai_id));
+  /* v0.162: a North Star em destaque; as filhas dela aparecem como "Alavancas que movem a NSM", com o papel de cada uma */
+  const TIPO_G = { driver: ['Driver (alavanca)', 'good'], input: ['Input', 'info'] };
   const no = x => {
-    const d = deltaPct(x.v, x.va), bom = x.direcao === 'sobe';
-    const tD = d == null ? '' : `<span style="color:${(d >= 0) === bom ? 'var(--good)' : 'var(--bad)'}">${d >= 0 ? '▲' : '▼'} ${Math.abs(d * 100).toFixed(1).replace('.', ',')}%</span> <span class="muted">vs. período anterior</span>`;
-    return `<li><div class="gn${x.tipo === 'north_star' ? ' ns' : ''}${gargalo && gargalo.id === x.id ? ' gar' : ''}${x.alertas.length ? ' alerta' : ''}">
-      <div class="gn-h"><b>${esc(x.nome)}</b>${x.tipo === 'north_star' ? ' <span class="pill info">North Star</span>' : ''}${gargalo && gargalo.id === x.id ? ' <span class="pill bad">Gargalo sugerido</span>' : ''} <span class="pill neutral">${x.fonte === 'auto' ? 'automático' : 'manual'}</span></div>
-      <div class="gn-v mono"${x.alertas.length ? ' style="color:var(--bad)"' : ''}>${fmtG(x.v, x.unidade)}</div>
+    const d = deltaPct(x.v, x.va), bom = x.direcao === 'sobe', ns = x.tipo === 'north_star';
+    const tD = d == null ? '' : `<span class="gn-d"><span style="color:${(d >= 0) === bom ? 'var(--good)' : 'var(--bad)'}">${d >= 0 ? '▲' : '▼'} ${Math.abs(d * 100).toFixed(1).replace('.', ',')}%</span> <span class="muted">vs. período anterior</span></span>`;
+    const papel = !ns && TIPO_G[x.tipo] ? ` <span class="pill ${TIPO_G[x.tipo][1]}">${TIPO_G[x.tipo][0]}</span>` : '';
+    const fs = filhos(x.id);
+    return `<li><div class="gn${ns ? ' ns' : ''}${gargalo && gargalo.id === x.id ? ' gar' : ''}${x.alertas.length ? ' alerta' : ''}">
+      <div class="gn-h"><b>${ns ? '★ ' : ''}${esc(x.nome)}</b>${ns ? ' <span class="pill info">North Star</span>' : papel}${gargalo && gargalo.id === x.id ? ' <span class="pill bad">Gargalo sugerido</span>' : ''} <span class="pill neutral">${x.fonte === 'auto' ? 'automático' : 'manual'}</span>${ns && x.nsm_frequencia ? ` <span class="pill neutral">${esc(x.nsm_frequencia)}</span>` : ''}</div>
+      ${ns ? `<div class="gn-v mono"${x.alertas.length ? ' style="color:var(--bad);-webkit-text-fill-color:var(--bad)"' : ''}>${fmtG(x.v, x.unidade)}</div>` : `<div class="gn-vr"><span class="gn-v mono"${x.alertas.length ? ' style="color:var(--bad)"' : ''}>${fmtG(x.v, x.unidade)}</span>${tD}</div>`}
       ${x.alertas.length ? `<div style="color:var(--bad);font-size:12px">⚠ ${x.alertas.map(esc).join('<br>⚠ ')}</div>` : ''}
       ${x.meta != null ? `<div class="bar"><i class="${x.at != null && x.at >= 1 ? 'over' : ''}" style="width:${Math.min(100, Math.round((x.at || 0) * 100))}%"></i></div><span class="muted">meta ${fmtG(Number(x.meta), x.unidade)}${x.at != null ? ' · ' + Math.round(x.at * 100) + '% atingido' : ''}</span>` : '<span class="muted">sem meta</span>'}
-      <div>${tD}</div>${x.formula ? `<div class="muted">${esc(x.formula)}</div>` : ''}${x.descricao ? `<div class="muted">${esc(x.descricao)}</div>` : ''}
-      ${x.tipo === 'north_star' && x.nsm_evento ? `<div class="muted">Conta: ${esc(x.nsm_evento)}${x.nsm_populacao ? ' · entre ' + esc(x.nsm_populacao) : ''}${x.nsm_frequencia ? ' · ' + esc(x.nsm_frequencia) : ''}</div>` : ''}<div class="gn-a"><button class="btn sm" data-ed="${x.id}">Editar</button><button class="btn sm" data-fi="${x.id}">+ Métrica filha</button><button class="btn sm" data-ex="${x.id}">Novo experimento${x.exp ? ' (' + x.exp + ' ativo' + (x.exp > 1 ? 's' : '') + ')' : ''}</button></div></div>
-      ${filhos(x.id).length ? `<ul>${filhos(x.id).map(no).join('')}</ul>` : ''}</li>`;
+      ${ns && tD ? `<div>${tD}</div>` : ''}${x.formula ? `<div class="muted">${esc(x.formula)}</div>` : ''}${x.descricao ? `<div class="muted">${esc(x.descricao)}</div>` : ''}
+      ${ns && x.nsm_evento ? `<div class="muted">Conta: ${esc(x.nsm_evento)}${x.nsm_populacao ? ' · entre ' + esc(x.nsm_populacao) : ''}</div>` : ''}<div class="gn-a"><button class="btn sm" data-ed="${x.id}">Editar</button><button class="btn sm" data-fi="${x.id}">${ns ? '+ Alavanca' : '+ Métrica filha'}</button><button class="btn sm" data-ex="${x.id}">Novo experimento${x.exp ? ' (' + x.exp + ' ativo' + (x.exp > 1 ? 's' : '') + ')' : ''}</button></div></div>
+      ${fs.length ? (ns ? `<div class="gn-lab">Alavancas que movem a NSM</div><ul class="alav">` : '<ul>') + fs.map(no).join('') + '</ul>' : ''}</li>`;
   };
   m.innerHTML = `<div class="head"><div><h1>Growth Model</h1><span class="muted">O mapa das métricas que movem o resultado. Medir é o primeiro passo do ciclo MIRA: medir, identificar o gargalo, rodar experimento e analisar.</span></div><div class="acts"><button class="btn pri" id="gNova">Nova métrica</button><button class="btn" id="gBench">Benchmarks do mercado</button><button class="btn" id="gCiclo">Ir para o ciclo de experimentos</button></div></div>
   ${gTabs()}

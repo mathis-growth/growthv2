@@ -2,6 +2,13 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.162 — Mapa de métricas com a North Star em destaque (29/10/2026)
+- Growth Model → **Mapa de métricas e North Star**: a NSM ganha destaque (★ no nome, valor grande, barra da meta em degradê, etiqueta da frequência). O evento e a população continuam na linha "Conta".
+- As filhas diretas da NSM aparecem sob o título **"Alavancas que movem a NSM"**, ligadas por linhas na cor de destaque. Cada métrica mostra o **papel** que já era gravado e não aparecia: Driver (alavanca) ou Input.
+- Valor e variação contra o período anterior na mesma linha, nas métricas abaixo da NSM. Na NSM, o botão "+ Métrica filha" vira **"+ Alavanca"** (abre Nova métrica já abaixo dela).
+- Gargalo sugerido, alertas e botões continuam iguais. Funciona no modo claro, no escuro e no celular.
+- Teste: `tests/tela/t162_growth_model_nsm.py` (14 verificações, 0 falhas). Sem mudança no banco.
+
 ## v0.161 — Pesquisa must-have da consultoria (26/10/2026)
 - Pesquisas → Começar de um modelo → **Must-have: consultoria de desenvolvimento de produto**: 25 perguntas em 6 passos, a partir do roteiro "Must-Have ao Aha e North Star" do Drive (desapontamento, o que faria no lugar, se foi essencial para começar, valor de cada entrega, maior benefício, momento em que valeu a pena, tipo de mudança, estratégia de venda e o que travou, indicação, melhoria, conversa e depoimento).
 - Resultados: leitura do must-have em três faixas (40% ou mais, 25% a 40%, menos de 25%) com a ação sugerida, sem contar "Não se aplica" na base. Vale para toda pesquisa com pergunta PMF.
