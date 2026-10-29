@@ -3,7 +3,7 @@
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
 ## v0.164 — Cockpit na entrada (29/10/2026)
-- O Growths passa a abrir no **Cockpit** (primeiro item do menu): um painel compacto por área, bem separado dos outros, com quatro números do período escolhido (7 dias, 30 dias, mês atual ou ano) e um gráfico. Cabem dois painéis lado a lado (três em tela larga): Marketing e Vendas; Financeiro e Projetos; Growth e Clientes. O Geral fica numa faixa no topo, com os números e o gráfico ao lado.
+- O Growths passa a abrir no **Cockpit** (primeiro item do menu): um painel compacto por área, com borda em volta toda para separar bem uma área da outra, com quatro números do período escolhido (7 dias, 30 dias, mês atual ou ano) e um gráfico. Cabem dois painéis lado a lado (três em tela larga): Marketing e Vendas; Financeiro e Projetos; Growth e Clientes. O Geral fica numa faixa no topo, com os números e o gráfico ao lado.
   - **Projetos:** projetos em andamento, atividades para fazer agora, atrasadas e concluídas no período; gráfico de atividades por situação.
   - **Growth:** valor da North Star e % da meta, experimentos rodando e % que venceram; gráfico de experimentos por etapa.
 - **Gráficos:** Geral = receita e lucro por mês (últimos 6 meses, ou o ano); Marketing = leads por dia (por mês no Ano); Vendas = faturamento por dia; Financeiro = entrou × saiu no período e a receber × a pagar em aberto; Clientes = alunos ativos por etapa; Projetos = atividades por situação; Growth = experimentos por etapa. Passar o mouse mostra o valor. Cores azul e laranja validadas para daltonismo no modo claro e no escuro.
