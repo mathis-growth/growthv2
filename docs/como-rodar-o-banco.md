@@ -2,7 +2,7 @@
 
 ## v0.163 — Customer Growth
 **Situação em 29/10/2026:** as migrações 20261116100000 a 20261123100000 foram aplicadas em produção pelo conector (registradas como `v0163_1` a `v0163_8`). A última (`RODAR_v0.163_contencao_alertas.sql`) desliga os alertas de CS (`sistema_config.cg_alertas = 'nao'`), apaga esse acúmulo e tira os alertas de CS do resumo e do "Pergunte ao Growths".
-Quando a tela RevOps → Customer Growth estiver no ar: `select cg_ligar_alertas();` (registra o que já acontece sem avisar ninguém e liga).
+Quando a tela RevOps → Customer Growth estiver no ar: `select cg_ligar_alertas();` (registra o que já acontece sem avisar ninguém e liga). **Feito em 29/10/2026**, com a v0.163 no ar: 824 alertas abertos (340 parados, 484 sem CS) em Escola Aurora, Growths — Demo e Mathisa — Operação, sem aviso enviado.
 1. Confira antes que a v0.132 (alertas e agendador) está aplicada: o arquivo verifica e para com uma mensagem se faltar algo, sem gravar nada.
 2. `supabase/RODAR_v0.163_customer_growth.sql` no SQL Editor do Supabase: é tudo ou nada e pode ser rodado de novo. **Ainda não aplicado em produção.**
 3. Publicar de novo a edge function `leads` (sem verificação de JWT) para receber eventos da plataforma do curso: `supabase functions deploy leads --no-verify-jwt`.
