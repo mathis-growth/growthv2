@@ -1,3 +1,15 @@
+## v0.163 — Customer Growth
+- `jornadas` (workspace, produto ou vazio quando é modelo, nome, `modelo`, `versao`, `status` rascunho/publicada/anterior/arquivada, `baseada_em`, publicada_em/por). Uma publicada e um rascunho por produto.
+- `etapas_kanban.jornada_id`: etapa do quadro de alunos que pertence a uma jornada de produto (vazio = Jornada geral). Nome único dentro da jornada (e na geral, como antes: índices `etapas_kanban_geral_uq` e `etapas_kanban_jornada_uq` no lugar da trava antiga). Etapa de versão já publicada não muda de nome, ordem nem jornada.
+- `alunos.jornada_id`: versão em que a matrícula anda. Gatilho `alunos_jornada_t`: matrícula nova nasce na primeira etapa da jornada publicada do produto; o aluno só anda pelas etapas da própria jornada.
+- `aluno_historico`: tipo `jornada` (troca de versão), `jornada_id`, `jornada_de`, `por_usuario`.
+- `jornada_marcos` (jornada, etapa, nome, descricao, evidencia, prazo_dias, obrigatorio, ordem, `confirmacao` manual/automatico/auto_confirmar, `regra` jsonb) e `aluno_marcos` (aluno, marco, `situacao` atingido/aguardando/recusado, `sinal` observado/declarado/validado, fonte, ref, validado_por/em, observacao).
+- `pesquisas`: `etapa_aluno_id`, `produto_id`, `checkin_dias`, `checkin_max`; gatilhos novos `etapa_aluno` e `checkin`. `pesquisa_envios`: `aluno_id` e `ciclo` (trava única passa a ser pesquisa + pessoa + ciclo).
+- `alertas.tipo` aceita `cs`. `cs_intervencoes` (aluno, pessoa, alerta, etapa, marco, resposta, tipo, descricao, responsavel, prazo, status aberta/feita/cancelada, resultado, efeito, concluida_em).
+- `oportunidades`: `aluno_id`, `origem`; tipos `expansao` e `retencao`. `chaves_api.escopo` aceita `eventos`; `pessoa_toques.origem` aceita `integracao`.
+- Funções: `jornada_rascunho`, `jornada_publicar`, `jornada_transferir`, `jornada_salvar_modelo`, `jornada_do_produto`, `jornada_primeira_etapa`, `marco_confirmar`, `marco_retroativo`, `evento_por_chave`, `pesquisa_checkins_gerar`, `cg_verificar_alertas`, `cg_rodar_agendado` (chamada por `growths_rodar_agendado`), `cg_indicadores`. Ajustadas por troca de trecho: `funil_membros`, `funil_analise`, `heavyops_painel` (ordem das etapas dentro da mesma jornada), `pesquisa_enfileira`, `pesquisa_gerar_envios`, `pesquisa_enviar_para`.
+- Auditoria ligada em `alunos`, `jornadas`, `jornada_marcos`, `aluno_marcos`, `cs_intervencoes`. `acesso_telas`: `ho-cg`.
+
 
 
 ## v0.161

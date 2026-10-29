@@ -1,5 +1,11 @@
 
 
+## v0.163 — Customer Growth
+1. Confira antes que a v0.132 (alertas e agendador) está aplicada: o arquivo verifica e para com uma mensagem se faltar algo, sem gravar nada.
+2. `supabase/RODAR_v0.163_customer_growth.sql` no SQL Editor do Supabase: é tudo ou nada e pode ser rodado de novo. **Ainda não aplicado em produção.**
+3. Publicar de novo a edge function `leads` (sem verificação de JWT) para receber eventos da plataforma do curso: `supabase functions deploy leads --no-verify-jwt`.
+4. Sem o SQL, as telas novas avisam que falta a atualização do banco e o resto do Growths continua igual.
+
 ## v0.161
 Nada a rodar no banco (só tela). Continuam pendentes os SQL da v0.157, v0.159 e v0.160.
 

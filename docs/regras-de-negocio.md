@@ -1,3 +1,15 @@
+## v0.163 — Customer Growth
+- Produto sem jornada própria usa a Jornada geral (as etapas de Alunos de antes). Só a versão publicada recebe matrículas novas; o rascunho não.
+- Publicar uma versão: a anterior vira "versão anterior". Quem já está dentro continua nela, a menos que se escolha transferir; na transferência, cada etapa antiga vai para a etapa escolhida (sugestão pelo nome) ou fica onde está. Pesquisas ligadas às etapas de antes passam para a etapa equivalente da nova.
+- Etapas de versão publicada não mudam de nome nem de ordem (o que fazer, a mensagem e o aviso ao CS podem mudar). Mudar etapas = nova versão.
+- O aluno só anda pelas etapas da jornada da matrícula dele. Na análise de funil e no Dashboard de RevOps, "chegou na etapa" compara a ordem dentro da mesma jornada.
+- Marco: manual (a equipe confirma), automático (o sistema marca) ou automático com confirmação (o sistema marca como "aguardando" e a equipe confirma). Marco recusado não volta sozinho. Resposta de pesquisa vira sinal "declarado"; o que o sistema vê, "observado"; o que a equipe confirma, "validado".
+- Evento de fora: só marca pessoa que já está no Growths (por telefone, depois e-mail); não cria cadastro.
+- Check-in: ciclo k vai quando a matrícula completa k × N dias, enquanto ativa, até o limite de vezes. Um por pessoa e ciclo, mesmo com duas matrículas do mesmo produto. Envios únicos de antes ficam no ciclo 0.
+- Alertas de CS: parado (sem mudar de etapa há 14 dias, fora a última etapa), marco obrigatório vencido, check-in sem resposta há 7 dias, nota de 0 a 6 nos últimos 30 dias, matrícula sem CS. Sensibilidade em `alertas_config.regras.cs`. Somem sozinhos quando a situação muda (a nota baixa só some à mão ou com intervenção concluída). O aviso vai ao CS da matrícula só com os alertas do cliente ligados.
+- Intervenção: concluir pede o efeito; "resolveu" ou "em andamento" resolve o alerta ligado; "não resolveu" deixa o alerta aberto.
+- Receita por cliente do Customer Growth usa a regra única de Retenção & Expansão (`revops_receitas`).
+
 
 
 ## v0.161

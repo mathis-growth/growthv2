@@ -2,6 +2,19 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.163 — Customer Growth: jornada e evolução do aluno (29/10/2026)
+- **Jornada do produto** (Produtos → Jornada do produto, ou Alunos → Editar jornada): cada produto pode ter as suas etapas de depois da compra, com versão. Rascunho → publicar; ao publicar, a tela pergunta se quem já está dentro **continua** na versão atual ou é **transferido** (cada etapa antiga escolhe a equivalente; "não levar" deixa onde está). Botão **Transferir alunos** para levar depois. **Salvar como modelo** e começar de um modelo (dois modelos sugeridos: Mentoria e Curso online). Produto sem jornada própria continua na **Jornada geral** (as etapas de hoje).
+- **Alunos**: seletor de jornada (geral, de cada produto, ou a lista de todos os produtos, uma linha por matrícula com etapa e dias na etapa). Quem comprou dois produtos aparece em cada um. A matrícula nova nasce na primeira etapa da jornada publicada do produto.
+- **Marcos** na jornada: nome, prova, etapa, prazo, obrigatório e como confirma (a equipe, o sistema sozinho, ou o sistema percebe e a equipe confirma). O sistema percebe: compra de um produto, vídeo/aula assistido, resposta de pesquisa (inclusive uma resposta específica), etapa, lista ou grupo, e **eventos de fora** (a plataforma do curso manda "e-mail + evento" para o endereço de eventos, com chave própria).
+- **Ficha da pessoa → Jornada e evolução**: um botão por produto comprado; caminho das etapas, marcos (atingido, aguardando, atrasado) com confirmar/recusar/desfazer, intervenções e histórico daquela matrícula.
+- **Pesquisas**: gatilho "Quando o aluno entra numa etapa da jornada" (antes só havia etapa do funil: a pesquisa de jornada nunca disparava sozinha) e **check-in a cada N dias** com limite de vezes; filtro por produto.
+- **Alertas de CS** de hora em hora (parado na etapa, marco atrasado, check-in sem resposta, nota baixa, sem CS), avisando o CS da matrícula; somem sozinhos quando a situação muda.
+- **Intervenções de CS** ligadas à matrícula, ao alerta, à etapa e ao marco, com resultado e efeito; concluir com "resolveu" resolve o alerta. Aparecem em Minhas atividades.
+- **Oportunidades** de expansão e retenção ligadas à matrícula, com a origem.
+- **RevOps → Customer Growth**: abas Evolução, Check-ins, Alertas e intervenções, Retenção e expansão e Indicadores (marcos atingidos e no prazo, resposta dos check-ins, NPS dos alunos, intervenções que resolveram, receita por cliente pela regra de Retenção & Expansão).
+- Banco: `20261116100000` a `20261122100000` / `RODAR_v0.163_customer_growth.sql` (**ainda não aplicado em produção**). Edge function `leads` com `?tipo=evento` (publicar de novo).
+- Testes: banco `tests/banco/jornada_b1` a `jornada_b10` (seis baterias, todas OK, também rodando o RODAR duas vezes sobre um banco da v0.162); tela `t163_pesquisa_etapa_aluno`, `t163_jornada_produto`, `t163_marcos`, `t163_customer_growth` (0 falhas) e `t162` sem falhas.
+
 ## v0.162 — Mapa de métricas com a North Star em destaque (29/10/2026)
 - Growth Model → **Mapa de métricas e North Star**: a NSM ganha destaque (★ no nome, valor grande, barra da meta em degradê, etiqueta da frequência). O evento e a população continuam na linha "Conta".
 - As filhas diretas da NSM aparecem sob o título **"Alavancas que movem a NSM"**, ligadas por linhas na cor de destaque. Cada métrica mostra o **papel** que já era gravado e não aparecia: Driver (alavanca) ou Input.

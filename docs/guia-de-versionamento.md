@@ -1,3 +1,6 @@
+## v0.163
+- index.html: 0.162 → 0.163 (editado direto, sem script de integração). Novas: `vCustomerGrowth` (+ `cgCheckins`, `cgAlertas`, `cgRetencao`, `cgIndicadores`, `modalIntervencao`), `vJornadaProduto`, `modalPublicarJornada`, `modalTransferirJornada`, `jornadasProdutos`, `marcosHtml`, `modalMarco`, `modalReceberEventos`, `fichaJornada`; trocada: `vCrmAlunos` (seletor de jornada); ajustadas: `gerirEtapas`, `modalPesquisa`, `modalOport`, `vMinhas`, `vCad`, `fichaPessoa`, menu, rotas e `telaLiberada`. Novas migrações `20261116100000` a `20261122100000` e `RODAR_v0.163_customer_growth.sql`. Testes de banco `jornada_b*_cenarios.sql` (PGlite, ver `tests/banco/LEIA.md`) e de tela `t163_*.py`.
+
 
 
 ## v0.162

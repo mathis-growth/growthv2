@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 29/10/2026, versão 0.162.
+**Última atualização:** 29/10/2026, versão 0.163.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -299,7 +299,10 @@ Enquanto o cliente não estiver configurado, o módulo abre num passo a passo de
   - **Recompra:** taxa, intervalo entre compras, frequência, ticket de recompra, receita de novos contra existentes e o papel de cada produto de entrada (expande, recompra moderada, não expande).
   - **RFM:** sete segmentos com regras editáveis, a grade R×F e o cruzamento com produto, campanha, canal e origem.
   - **Investigar:** qualquer número abre a lista de clientes com o histórico, exportável.
-- **Alunos.** Kanban do onboarding e da jornada do aluno, com CS responsável. O aluno nasce sozinho na venda ou no contrato.
+- **Alunos.** Kanban da jornada de depois da compra, com CS responsável. O aluno nasce sozinho na venda ou no contrato. Escolhe-se a jornada (a geral ou a de cada produto) ou a lista de todos os produtos, uma linha por matrícula.
+- **Jornada do produto.** Cada produto pode ter as próprias etapas (uma mentoria não anda como um curso online), com versões: ao publicar uma versão nova, decide-se se quem já está dentro continua na antiga ou é transferido. Dá para salvar uma jornada como modelo e começar outras a partir dele.
+- **Marcos.** O que o aluno precisa atingir em cada jornada, com prazo e prova. Alguns a equipe confirma; outros o sistema percebe sozinho (comprou, assistiu à aula, respondeu que teve resultado, chegou à etapa, entrou no grupo, ou um evento que a plataforma do curso manda), com ou sem confirmação da equipe.
+- **Customer Growth.** A tela de acompanhamento dos alunos: evolução por produto, check-ins que voltam a cada tantos dias, alertas para o CS (parado, marco atrasado, check-in sem resposta, nota baixa), intervenções com o efeito de cada uma, oportunidades de retenção e expansão e os indicadores de evolução. Na ficha de cada pessoa, a jornada dela em cada produto.
 - **Dashboard de RevOps.** Ativos, churn, retenção, LTV e ascensão, com semáforo contra metas.
 
 ---
@@ -461,6 +464,8 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 ---
 
 ## 14. Histórico resumido
+
+- **29/10 (v0.163):** Customer Growth em RevOps: jornada de cada produto com versão, marcos, check-ins, alertas e intervenções de CS e indicadores de evolução.
 
 - **05 a 06/10/2026:**
   - base do sistema: workspaces, pessoas, vendas com contabilidade automática, contas a receber, campanhas;

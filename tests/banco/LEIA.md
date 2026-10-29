@@ -26,3 +26,12 @@ Confere:
 - chave errada ou revogada é recusada;
 - anon não chama as funções internas.
 A edge function foi testada contra este banco com um stub do supabase-js (rpc via psql): GET contexto, POST de uma e de várias ideias, sem título (400), sem chave e com chave errada (401).
+
+## v0.163 — Customer Growth (PGlite)
+Sem Postgres instalado, dá para rodar tudo num Postgres em memória (PGlite):
+1. Numa pasta fora do repositório: `npm init -y` e `npm i @electric-sql/pglite@0.2.17`; copie `tests/banco/pglite_run.mjs` para lá.
+2. `node pglite_run.mjs <pasta do repositório> <arquivos extras...>` cria os papéis e o `auth` do Supabase de mentira, aplica todas as migrações em ordem
+   (as de Conteúdo/Instagram que precisam de pg_cron/pg_net falham e não importam aqui) e depois roda os extras.
+   Com `ATE=20261116` aplica só até a v0.162 (para testar o `RODAR_v0.163_customer_growth.sql`).
+3. Extras, na ordem: `jornada_b1_cenarios.sql`, `jornada_b2_cenarios.sql`, `jornada_b3_cenarios.sql`, `jornada_b5_cenarios.sql`, `jornada_b6_b9_cenarios.sql`, `jornada_b10_cenarios.sql`.
+   Cada um termina com "jornada_bN: tudo OK". Conferido em 29/10/2026 com as migrações e com o RODAR aplicado duas vezes sobre um banco da v0.162.

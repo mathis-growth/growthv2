@@ -1152,7 +1152,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.162 · 29/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.163 · 29/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -1178,7 +1178,7 @@ const NAV = [
   { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['adm-plano', 'Planejamento da empresa'], ['adm-empresa', 'Cadastro da empresa']] },
   { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários']], subs: [{ g: 'Growth\'s Content', mod: 'mkt', items: [['mkt-cont', 'Estratégia de conteúdo'], ['mkt-insta', 'Instagram']] }] },
   { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['crm-dms', 'DMs do Instagram'], ['mkt-origem', 'Leads por origem']] },
-  { g: 'RevOps', items: [['ho-dash', 'Dashboard'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
+  { g: 'RevOps', items: [['ho-dash', 'Dashboard'], ['ho-cg', 'Customer Growth'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
   { g: 'Financeiro', items: [['fin-dash', 'Dashboard'], ['fin-receber', 'Contas a receber'], ['fin-pagar', 'Contas a pagar'], ['fin-custo', 'Custos e margens'], ['fin-lanc', 'Lançamentos contábeis']] },
   { g: 'Casa', casa: true, items: [['casa-dash', 'Dashboard'], ['casa-receber', 'Contas a receber'], ['casa-pagar', 'Contas a pagar'], ['casa-custo', 'Custos do mês'], ['casa-lanc', 'Lançamentos contábeis'], ['casa-bancos', 'Contas bancárias e cartões'], ['casa-planocontas', 'Plano de contas'], ['casa-fornecedores', 'Fornecedores'], ['casa-formaspag', 'Formas de pagamento'], ['casa-centros', 'Centros de custo']] },
   { g: 'Projetos', items: [['prj-lista', 'Projetos'], ['prj-minhas', 'Minhas atividades'], ['prj-atividades', 'Todas as atividades'], ['prj-modelos', 'Modelos de projeto'], ['prj-avisos', 'Avisos']] },
@@ -1488,6 +1488,7 @@ const ICO = {
   'cad-funcoes': P('<path d="M12 3l8 4v5c0 5-3.500 8-8 9-4.500-1-8-4-8-9V7z"/><path d="M9.500 12.500l1.800 1.800 3.400-3.600"/>'),
   'ho-ascensao': P('<path d="M4 20h4v-4h4v-4h4V8h4"/><path d="M16 4h4v4"/>'),
   'ho-cohort': P('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>'),
+  'ho-cg': P('<path d="M4 19h16"/><path d="M6 15l4-5 3 3 5-7"/><circle cx="18" cy="6" r="1.6"/>'),
   'ho-retencao': P('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/>'),
   'ho-dash': P('<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>'),
   Growth: P('<path d="M12 21V11"/><path d="M12 11c0-4 3-7 8-7 0 5-3 8-8 8"/><path d="M12 14c0-3-2-5-6-5 0 4 2 6 6 6"/>'),
@@ -1581,7 +1582,7 @@ const ncModalV140 = () => { modal('Novo cliente', `<label>Nome do cliente<input 
 $('#wsSel').onchange = e => { S.ws = S.wsBase = e.target.value; if (ehCasaV(S.view)) S.view = 'fin-dash'; S.perm = null; S.permWs = null; render(); };
 
 const VIEWS = {
-  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': vConteudo, 'cfg-estruturas': vEstruturas, 'cfg-pastas': vPastasMathisa, 'cfg-custos': vCustos, 'crm-dms': vDMsCrm,
+  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'ho-cg': vCustomerGrowth, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': vConteudo, 'cfg-estruturas': vEstruturas, 'cfg-pastas': vPastasMathisa, 'cfg-custos': vCustos, 'crm-dms': vDMsCrm,
   'crm-leads': vCrmLeads, 'crm-oport': vCrmOport, 'crm-vendas': vVendas, 'crm-contratos': vContratos, 'crm-comissoes': vComissoes, 'cad-comissoes': vComissoes, 'crm-alunos': vCrmAlunos,
   'fin-receber': vReceber,  'cfg-uso': vUso, 'fin-pagar': vPagar, 'fin-custo': vCustoOp, 'fin-lanc': vLanc, 'adm-painel': vPainel, 'adm-plano': vPlano,
   'cad-clientes': vClientes, 'cad-plataformas': vPlataformas, 'cad-funis': vFunis, 'cad-regras': vRegras,
@@ -2818,7 +2819,7 @@ async function negociarRenovacao(id) {
     modalOport({ pessoa_id: c.pessoa_id, tipo: 'renovacao', contrato_origem_id: c.id, titulo: 'Renovação do contrato #' + c.numero, produto_id: (its[0] || {}).produto_id || null, valor_estimado: its.reduce((a, i) => a + Number(i.quantidade || 1) * Number(i.valor || 0), 0) || null });
   });
 }
-const OP_TIPO = { nova_venda: 'Nova venda', renovacao: 'Renovação', ajuste: 'Ajuste / aditivo' };
+const OP_TIPO = { nova_venda: 'Nova venda', renovacao: 'Renovação', ajuste: 'Ajuste / aditivo', expansao: 'Expansão (upsell)', retencao: 'Retenção' };
 async function etapasOport() {
   const w = S.ws;
   let et = await q(sb.from('etapas_kanban').select('*').eq('workspace_id', w).eq('quadro', 'oportunidades').order('ordem'));
@@ -2835,18 +2836,18 @@ async function modalOport(pre = {}, row = null) {
     q(sb.from('produtos').select('id,nome').eq('workspace_id', w).eq('ativo', true).order('nome')),
     equipeAtiva(), etapasOport()
   ]);
-  const r = row || pre;
+  const r = row || pre, cgO = await temColuna('oportunidades', 'origem');  // v0.163: tipos de retenção e expansão e a matrícula de origem
   abrirForm(row ? 'Editar oportunidade' : 'Nova oportunidade', 'oportunidades', [
     { k: 'pessoa_id', l: 'Cliente', t: 'select', req: 1, full: 1, novo: 'pessoas', opts: pes.map(p => [p.id, p.nome + (p.email ? ' · ' + p.email : '') + (p.status_funil === 'cliente' ? '' : ' (lead)')]), hint: 'Quem já é seu cliente (ou lead) e está negociando algo novo.' },
     { k: 'titulo', l: 'O que está sendo negociado', req: 1, full: 1, ph: 'Ex.: Mentoria de 6 meses, upgrade de plano, novo projeto' },
-    { k: 'tipo', l: 'Tipo', t: 'select', req: 1, def: 'nova_venda', opts: Object.entries(OP_TIPO) },
+    { k: 'tipo', l: 'Tipo', t: 'select', req: 1, def: 'nova_venda', opts: Object.entries(OP_TIPO).filter(([k]) => cgO || !['expansao', 'retencao'].includes(k)) },
     { k: 'etapa_kanban_id', l: 'Etapa', t: 'select', req: 1, def: (et[0] || {}).id, opts: sel(et, 'id', 'nome') },
     { k: 'produto_id', l: 'Produto / serviço', t: 'select', novo: 'produtos', opts: sel(prod, 'id', 'nome') },
     { k: 'valor_estimado', l: 'Valor estimado (R$)', t: 'number', step: '0.01' },
     { k: 'previsao_fechamento', l: 'Previsão de fechamento', t: 'date' },
     { k: 'responsavel_id', l: 'Responsável', t: 'select', novo: 'equipe', opts: sel(eqs, 'id', 'nome') },
     { k: 'observacoes', l: 'Observações', t: 'textarea' }
-  ], row, { extra: row ? {} : { contrato_origem_id: pre.contrato_origem_id || null }, ok: row ? 'Oportunidade salva' : 'Oportunidade criada', largo: true });
+  ], row, { extra: row ? {} : { contrato_origem_id: pre.contrato_origem_id || null, ...(cgO && pre.aluno_id ? { aluno_id: pre.aluno_id } : {}), ...(cgO && pre.origem ? { origem: pre.origem } : {}) }, ok: row ? 'Oportunidade salva' : 'Oportunidade criada', largo: true });
   // pré-preenchimento (nova oportunidade vinda de um contrato ou da ficha do cliente)
   if (!row) setTimeout(() => { const f = $('#modalRoot form'); if (!f) return; ['pessoa_id', 'titulo', 'tipo', 'produto_id', 'valor_estimado'].forEach(k => { if (pre[k] != null && f.elements[k]) f.elements[k].value = pre[k]; }); }, 0);
 }
@@ -2897,7 +2898,7 @@ const JOR_ST = { rascunho: ['warn', 'rascunho'], publicada: ['good', 'em uso'], 
 const pillJor = s => `<span class="pill ${(JOR_ST[s] || ['neutral'])[0]}">${esc((JOR_ST[s] || [0, s])[1])}</span>`;
 const nomeJor = (j, P) => j ? `${esc((P[j.produto_id] || {}).nome || j.nome)} · v${j.versao}` : 'Jornada geral';
 
-async function vCrmAlunos(m) {
+async function vCrmAlunos(m, opts = {}) {
   if (S.jpProd) return vJornadaProduto(m, S.jpProd);
   const w = S.ws, cg = await temColuna('alunos', 'jornada_id');
   const [etapasT, alu, eqs, jors, prods] = await Promise.all([
@@ -2917,7 +2918,7 @@ async function vCrmAlunos(m) {
   const RA = S.respA = S.respA || '';
   const sel2 = (id, opts, v) => `<select id="${id}" style="width:auto">${opts.map(([o, l]) => `<option value="${esc(o)}"${o === v ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>`;
   const optJ = [['geral', 'Jornada geral'], ...prodComJ.map(p => ['p:' + p.id, 'Jornada do produto: ' + p.nome]), ...(cg ? [['lista', 'Todos os produtos (lista)']] : [])];
-  const cab = (acts, sub) => `<div class="head"><h1>Alunos</h1><div class="acts">${cg ? `<label>Jornada ${sel2('alJ', optJ, sj)}</label>` : ''}${acts}${filtroRespHtml('raF', eqs, RA, 'CS responsável')}</div></div><span class="muted">${sub}</span>`;
+  const cab = (acts, sub) => `<div class="head">${opts.embutido ? '<div></div>' : '<h1>Alunos</h1>'}<div class="acts">${cg ? `<label>Jornada ${sel2('alJ', optJ, sj)}</label>` : ''}${acts}${filtroRespHtml('raF', eqs, RA, 'CS responsável')}</div></div><span class="muted">${sub}</span>`;
   const liga = () => {
     if ($('#alJ')) $('#alJ').onchange = e => { S.alJ = e.target.value; S.alV = null; render(); };
     $('#raF').onchange = e => { S.respA = e.target.value; render(); };
@@ -3204,6 +3205,8 @@ async function fichaJornada(el, pessoa) {
     q(sb.from('aluno_marcos').select('*').eq('aluno_id', a.id)).catch(() => []),
     q(sb.from('aluno_historico').select('*').eq('aluno_id', a.id).order('em', { ascending: false })).catch(() => []),
     marcosDados(S.ws)]);
+  const cgOk = await temColuna('cs_intervencoes', 'id');
+  const ivs = cgOk ? await q(sb.from('cs_intervencoes').select('*').eq('aluno_id', a.id).order('criado_em', { ascending: false })).catch(() => []) : [];
   const etTodas = await q(sb.from('etapas_kanban').select('id,nome,ordem,descricao,jornada_id').eq('workspace_id', S.ws).eq('quadro', 'alunos'));
   const ETN = Object.fromEntries(etTodas.map(e => [e.id, e.nome]));
   const ets = etTodas.filter(e => (e.jornada_id || null) === (a.jornada_id || null)).sort((x, y) => x.ordem - y.ordem);
@@ -3227,13 +3230,139 @@ async function fichaJornada(el, pessoa) {
       <div><span class="muted" style="font-size:11px">Matrícula</span><br>${dd(String(a.entrou_em).slice(0, 10))} · há ${dEnt} ${dEnt === 1 ? 'dia' : 'dias'}</div>${marcos.length ? `<div><span class="muted" style="font-size:11px">Marcos atingidos</span><br><b>${ating} de ${marcos.length}</b></div>` : ''}</div>
     ${caminho}
     ${marcos.length ? `<div class="tw"><table><thead><tr><th>Marco</th><th>Situação</th><th></th></tr></thead><tbody>${marcos.map(linhaMk).join('')}</tbody></table></div>` : a.jornada_id ? '<span class="muted">Esta jornada ainda não tem marcos.</span>' : '<span class="muted">Na Jornada geral não há marcos: eles ficam na jornada de cada produto.</span>'}
+    ${ivs.length ? `<div style="margin-top:8px"><b>Intervenções de CS</b>${ivs.map(x => `<div style="border-top:1px solid var(--line);padding:4px 0"><span class="pill ${x.status === 'aberta' ? 'warn' : x.status === 'feita' ? 'good' : 'neutral'}">${esc(x.status)}</span> ${esc(IV_TIPO[x.tipo] || x.tipo)} · ${esc(x.descricao)}${x.prazo ? ' · prazo ' + dd(x.prazo) : ''}${x.resultado ? '<br><small class="muted">' + esc(x.resultado) + (x.efeito ? ' (' + esc(IV_EFEITO[x.efeito]) + ')' : '') + '</small>' : ''} <button type="button" class="btn sm" data-fiv="${x.id}">${x.status === 'aberta' ? 'Concluir' : 'Abrir'}</button></div>`).join('')}</div>` : ''}
+    ${cgOk ? `<div class="acts" style="margin-top:8px"><button type="button" class="btn sm" data-fnv>Nova intervenção</button><button type="button" class="btn sm" data-fop>Nova oportunidade (expansão ou retenção)</button></div>` : ''}
     ${tl.length ? `<details style="margin-top:6px"><summary style="cursor:pointer">Histórico desta matrícula (${tl.length})</summary><div class="tl">${tl.join('')}</div></details>` : ''}`;
+  el.querySelectorAll('[data-fiv]').forEach(b => b.onclick = () => modalIntervencao({}, ivs.find(x => x.id === b.dataset.fiv), () => fichaJornada(el, pessoa)));
+  if (el.querySelector('[data-fnv]')) el.querySelector('[data-fnv]').onclick = () => modalIntervencao({ aluno_id: a.id, etapa_kanban_id: a.etapa_kanban_id }, null, () => fichaJornada(el, pessoa));
+  if (el.querySelector('[data-fop]')) el.querySelector('[data-fop]').onclick = () => act(() => modalOport({ pessoa_id: pessoa, aluno_id: a.id, origem: 'manual', tipo: 'expansao' }));
   const de = () => fichaJornada(el, pessoa);
   el.querySelectorAll('[data-fja]').forEach(b => b.onclick = () => { S.fjA = b.dataset.fja; de(); });
   const acao = (mk, ac, obs) => act(async () => { await q(sb.rpc('marco_confirmar', { p_aluno: a.id, p_marco: mk, p_acao: ac, p_obs: obs || null })); de(); }, ac === 'confirmar' ? 'Marco confirmado' : ac === 'recusar' ? 'Marco recusado' : 'Marco desfeito');
   el.querySelectorAll('[data-mkc]').forEach(b => b.onclick = () => acao(b.dataset.mkc, 'confirmar'));
   el.querySelectorAll('[data-mkr]').forEach(b => b.onclick = () => { const o = prompt('Por que recusar? (opcional)') ; if (o === null) return; acao(b.dataset.mkr, 'recusar', o); });
   el.querySelectorAll('[data-mkd]').forEach(b => b.onclick = () => acao(b.dataset.mkd, 'desfazer'));
+}
+
+/* ================= v0.163 — RevOps → Customer Growth =================
+   Uma tela para acompanhar a evolução dos alunos depois da compra, usando o que já existe: o quadro de Alunos (por jornada),
+   as Pesquisas (check-ins), os Alertas (tipo cs), as Oportunidades e a regra única de receita do RevOps.
+   Abas: Evolução, Check-ins, Alertas e intervenções, Retenção e expansão, Indicadores. */
+const CG_ABAS = [['evolucao', 'Evolução'], ['checkins', 'Check-ins'], ['alertas', 'Alertas e intervenções'], ['retencao', 'Retenção e expansão'], ['indicadores', 'Indicadores']];
+const CG_REGRA = { parado: 'Parado na etapa', marco_atrasado: 'Marco atrasado', checkin_sem_resposta: 'Check-in sem resposta', nps_baixo: 'Nota baixa', sem_cs: 'Sem CS responsável' };
+const IV_TIPO = { ligacao: 'Ligação', mensagem: 'Mensagem', reuniao: 'Reunião', conteudo: 'Conteúdo de apoio', oferta: 'Oferta', outro: 'Outro' };
+const IV_EFEITO = { resolveu: 'Resolveu', em_andamento: 'Em andamento', nao_resolveu: 'Não resolveu' };
+
+async function vCustomerGrowth(m) {
+  const w = S.ws, C = S.cg = S.cg || { aba: 'evolucao', produto: '', ini: diaMais(hoje(), -89), fim: hoje() };
+  if (!(await temColuna('cs_intervencoes', 'id'))) { m.innerHTML = '<div class="head"><h1>Customer Growth</h1></div><div class="panel" style="border-left:4px solid var(--warn)"><b>O Customer Growth ainda não está no banco.</b> <span class="muted">Rode supabase/RODAR_v0.163_customer_growth.sql no SQL Editor do Supabase e recarregue.</span></div>'; return; }
+  const prods = await q(sb.from('produtos').select('id,nome').eq('workspace_id', w).order('nome'));
+  m.innerHTML = `<div class="head"><div><h1>Customer Growth</h1><span class="muted">Jornada e evolução dos alunos depois da compra: em que etapa estão, o que já atingiram, quem precisa de atenção e onde há espaço para reter e expandir.</span></div></div>
+    <div class="tabs">${CG_ABAS.map(([k, l]) => `<button data-cga="${k}" class="${C.aba === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+    ${C.aba === 'evolucao' ? '' : `<div class="filters"><label>Produto<select id="cgP"><option value="">Todos os produtos</option>${prods.map(p => `<option value="${p.id}"${p.id === C.produto ? ' selected' : ''}>${esc(p.nome)}</option>`).join('')}</select></label>
+      ${C.aba === 'indicadores' ? `<label>De<input type="date" id="cgIni" value="${C.ini}"></label><label>Até<input type="date" id="cgFim" value="${C.fim}"></label>` : ''}</div>`}<div id="cgCorpo"></div>`;
+  m.querySelectorAll('[data-cga]').forEach(b => b.onclick = () => { C.aba = b.dataset.cga; S.jpProd = null; render(); });
+  if ($('#cgP')) $('#cgP').onchange = e => { C.produto = e.target.value; render(); };
+  if ($('#cgIni')) $('#cgIni').onchange = e => { C.ini = e.target.value; render(); };
+  if ($('#cgFim')) $('#cgFim').onchange = e => { C.fim = e.target.value; render(); };
+  const el = $('#cgCorpo');
+  if (C.aba === 'evolucao') return vCrmAlunos(el, { embutido: true });
+  if (C.aba === 'checkins') return cgCheckins(el, C);
+  if (C.aba === 'alertas') return cgAlertas(el, C);
+  if (C.aba === 'retencao') return cgRetencao(el, C);
+  return cgIndicadores(el, C);
+}
+
+async function cgCheckins(el, C) {
+  const w = S.ws;
+  const [ps, env] = await Promise.all([q(sb.from('pesquisas').select('id,nome,tipo,gatilho,checkin_dias,checkin_max,produto_id,ativa').eq('workspace_id', w).in('gatilho', ['checkin', 'etapa_aluno', 'entrada_aluno']).order('nome')),
+    q(sb.from('pesquisa_envios').select('id,pesquisa_id,pessoa_id,aluno_id,ciclo,status,gerado_em,respondido_em,pessoas(nome)').eq('workspace_id', w).order('gerado_em', { ascending: false }).limit(3000))]);
+  const alu = await q(sb.from('alunos').select('id,produto_id').eq('workspace_id', w).limit(5000));
+  const AP = Object.fromEntries(alu.map(a => [a.id, a.produto_id]));
+  const P = ps.filter(p => !C.produto || !p.produto_id || p.produto_id === C.produto), PI = Object.fromEntries(P.map(p => [p.id, p]));
+  const E = env.filter(e => PI[e.pesquisa_id] && e.aluno_id && (!C.produto || AP[e.aluno_id] === C.produto));
+  const quando = p => p.gatilho === 'checkin' ? 'a cada ' + p.checkin_dias + ' dias' + (p.checkin_max ? ' (até ' + p.checkin_max + ' vezes)' : '') : esc(PQ_GAT[p.gatilho] || p.gatilho);
+  const pend = E.filter(e => e.status === 'pendente' || e.status === 'enviado');
+  el.innerHTML = `<div class="panel"><div class="head"><div><h2>Pesquisas de acompanhamento</h2><span class="muted">Check-ins e pesquisas que disparam pela jornada do aluno. Elas são criadas e editadas em Growth → Pesquisas.</span></div><div class="acts"><button class="btn" id="cgNovaPq">Nova pesquisa de check-in</button></div></div>
+    <div class="tw"><table><thead><tr><th>Pesquisa</th><th>Quando vai</th><th class="n">Gerados</th><th class="n">Respondidos</th><th class="n">Taxa</th><th>Situação</th></tr></thead><tbody>${P.map(p => { const L = E.filter(e => e.pesquisa_id === p.id), rsp = L.filter(e => e.status === 'respondido').length, base = L.filter(e => e.status !== 'dispensado').length;
+      return `<tr><td><a href="#" data-pq="${p.id}">${esc(p.nome)}</a></td><td>${quando(p)}</td><td class="n">${L.length}</td><td class="n">${rsp}</td><td class="n">${base ? Math.round(rsp * 100 / base) + '%' : '—'}</td><td>${pillAtivo(p.ativa)}</td></tr>`; }).join('') || '<tr><td colspan="6" class="empty">Nenhuma pesquisa de acompanhamento. Crie um check-in.</td></tr>'}</tbody></table></div></div>
+    <div class="panel"><h2>Aguardando resposta (${pend.length})</h2><div class="tw"><table><thead><tr><th>Aluno</th><th>Pesquisa</th><th class="n">Nº</th><th>Gerado em</th><th>Situação</th></tr></thead><tbody>${pend.slice(0, 200).map(e => `<tr><td><a href="#" data-f="${e.pessoa_id}">${esc((one(e.pessoas) || {}).nome || '')}</a></td><td>${esc(PI[e.pesquisa_id].nome)}</td><td class="n">${e.ciclo || '—'}</td><td>${dtt(e.gerado_em)}</td><td><span class="pill ${e.status === 'pendente' ? 'warn' : 'info'}">${esc(e.status)}</span></td></tr>`).join('') || '<tr><td colspan="5" class="empty">Nada pendente.</td></tr>'}</tbody></table></div></div>`;
+  el.querySelectorAll('[data-pq]').forEach(a => a.onclick = e => { e.preventDefault(); S.pqSel = a.dataset.pq; S.view = 'gro-pesq'; abreMenu(S.view); render(); });
+  el.querySelectorAll('[data-f]').forEach(a => a.onclick = e => { e.preventDefault(); fichaPessoa(a.dataset.f); });
+  $('#cgNovaPq').onclick = () => modalPesquisa(null, { nome: 'Check-in quinzenal', tipo: 'jornada', gatilho: 'checkin', checkin_dias: 14, produto_id: C.produto || null, ativa: false });
+}
+
+async function modalIntervencao(pre, row, depois) {
+  const w = S.ws, eqs = await equipeAtiva(), r = row || pre;
+  const alu = r.aluno_id ? null : await q(sb.from('alunos').select('id,pessoas(nome),produtos(nome)').eq('workspace_id', w).eq('status', 'ativo').limit(3000));
+  const campos = [...(alu ? [{ k: 'aluno_id', l: 'Aluno (matrícula)', t: 'select', req: 1, full: 1, opts: alu.map(a => [a.id, ((one(a.pessoas) || {}).nome || '') + ' · ' + ((one(a.produtos) || {}).nome || '')]) }] : []),
+    { k: 'tipo', l: 'Tipo', t: 'select', req: 1, def: 'mensagem', opts: Object.entries(IV_TIPO) }, { k: 'prazo', l: 'Prazo', t: 'date', def: diaMais(hoje(), 2) },
+    { k: 'descricao', l: 'O que fazer', t: 'textarea', req: 1, full: 1, def: pre.descricao }, { k: 'responsavel_id', l: 'Responsável', t: 'select', opts: sel(eqs, 'id', 'nome'), hint: 'Vazio = o CS da matrícula.' },
+    ...(row ? [{ k: 'status', l: 'Situação', t: 'select', req: 1, opts: [['aberta', 'Aberta'], ['feita', 'Feita'], ['cancelada', 'Cancelada']] }, { k: 'resultado', l: 'O que aconteceu', t: 'textarea', full: 1 },
+      { k: 'efeito', l: 'Efeito', t: 'select', opts: Object.entries(IV_EFEITO) }] : [])];
+  const extra = row ? {} : { aluno_id: pre.aluno_id, alerta_id: pre.alerta_id || null, marco_id: pre.marco_id || null, etapa_kanban_id: pre.etapa_kanban_id || null, pesquisa_resposta_id: pre.pesquisa_resposta_id || null };
+  if (!row && alu) delete extra.aluno_id;
+  return abrirForm(row ? 'Intervenção de CS' : 'Nova intervenção de CS', 'cs_intervencoes', campos, row, { extra, ok: row ? 'Intervenção salva' : 'Intervenção criada', largo: true,
+    antes: v => { if (v.status === 'feita' && !v.efeito) throw new Error('Diga o efeito da intervenção (resolveu, em andamento ou não resolveu).'); return v; }, depois });
+}
+
+async function cgAlertas(el, C) {
+  const w = S.ws;
+  const [als, ivs, eqs] = await Promise.all([q(sb.from('alertas').select('*').eq('workspace_id', w).eq('tipo', 'cs').order('criado_em', { ascending: false }).limit(1000)),
+    q(sb.from('cs_intervencoes').select('*,pessoas(nome),alunos(produto_id,produtos(nome))').eq('workspace_id', w).order('criado_em', { ascending: false }).limit(1000)), equipeAtiva()]);
+  const A = als.filter(a => !C.produto || (a.dados || {}).produto_id === C.produto), abertos = A.filter(a => !a.resolvido_em);
+  const I = ivs.filter(x => !C.produto || (one(x.alunos) || {}).produto_id === C.produto);
+  const ivAb = I.filter(x => x.status === 'aberta').sort((a, b) => (a.prazo || '9999').localeCompare(b.prazo || '9999')), h = hoje();
+  const porAl = Object.fromEntries(I.filter(x => x.alerta_id).map(x => [x.alerta_id, x]));
+  el.innerHTML = `<div class="kpis">${kpi('Alertas abertos', num(abertos.length), 'de acompanhamento do aluno')}${kpi('Intervenções abertas', num(ivAb.length), '')}${kpi('Atrasadas', num(ivAb.filter(x => x.prazo && x.prazo < h).length), 'prazo vencido')}</div>
+    <div class="panel"><div class="head"><div><h2>Alertas de acompanhamento</h2><span class="muted">Gerados de hora em hora: parado na etapa, marco atrasado, check-in sem resposta, nota baixa e sem CS. Somem sozinhos quando a situação muda. Ajuste em Administrativo → Alertas e resumo do dia.</span></div>
+      <div class="acts"><button class="btn" id="cgVerif">Verificar agora</button></div></div>
+    ${abertos.map(a => { const iv = porAl[a.id]; return `<div class="card" style="cursor:default;margin-bottom:6px"><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="pill ${a.severidade === 'alta' ? 'bad' : 'warn'}">${esc(CG_REGRA[a.regra] || a.regra)}</span><b style="flex:1">${esc(a.titulo)}</b><small class="muted">${dtt(a.criado_em)}</small></div>
+      <small>${esc(a.mensagem)}</small><div class="ca">${(a.dados || {}).pessoa_id ? `<button class="btn sm" data-f="${a.dados.pessoa_id}">Abrir aluno</button>` : ''}${iv ? `<span class="pill info">intervenção ${esc(iv.status)}</span>` : (a.dados || {}).aluno_id ? `<button class="btn sm pri" data-iv="${a.id}">Criar intervenção</button>` : ''}<button class="btn sm" data-res="${a.id}">Marcar resolvido</button></div></div>`; }).join('') || '<div class="empty">Nenhum alerta aberto.</div>'}</div>
+    <div class="panel"><div class="head"><div><h2>Intervenções de CS</h2><span class="muted">Cada intervenção é de uma matrícula. Concluir com o efeito "resolveu" resolve o alerta ligado.</span></div><div class="acts"><button class="btn" id="cgNovaIv">Nova intervenção</button></div></div>
+    <div class="tw"><table><thead><tr><th>Aluno</th><th>Produto</th><th>Tipo</th><th>O que fazer</th><th>Responsável</th><th>Prazo</th><th>Situação</th><th></th></tr></thead><tbody>${[...ivAb, ...I.filter(x => x.status !== 'aberta').slice(0, 50)].map(x => `<tr><td><a href="#" data-f="${x.pessoa_id}">${esc((one(x.pessoas) || {}).nome || '')}</a></td><td>${esc((one((one(x.alunos) || {}).produtos) || {}).nome || '')}</td><td>${esc(IV_TIPO[x.tipo] || x.tipo)}</td>
+      <td>${esc(x.descricao)}${x.resultado ? `<br><small class="muted">${esc(x.resultado)}</small>` : ''}</td><td>${esc(nomeEq(eqs, x.responsavel_id) || '—')}</td><td>${x.prazo ? `<span class="${x.status === 'aberta' && x.prazo < h ? 'pill bad' : ''}">${dd(x.prazo)}</span>` : '—'}</td>
+      <td>${x.status === 'feita' ? `<span class="pill good">feita</span>${x.efeito ? ' <small>' + esc(IV_EFEITO[x.efeito]) + '</small>' : ''}` : `<span class="pill ${x.status === 'aberta' ? 'warn' : 'neutral'}">${esc(x.status)}</span>`}</td><td><button class="btn sm" data-ived="${x.id}">${x.status === 'aberta' ? 'Concluir' : 'Abrir'}</button></td></tr>`).join('') || '<tr><td colspan="8" class="empty">Nenhuma intervenção.</td></tr>'}</tbody></table></div></div>`;
+  el.querySelectorAll('[data-f]').forEach(b => b.onclick = e => { e.preventDefault(); fichaPessoa(b.dataset.f); });
+  el.querySelectorAll('[data-iv]').forEach(b => b.onclick = () => { const a = als.find(x => x.id === b.dataset.iv), d = a.dados || {};
+    modalIntervencao({ aluno_id: d.aluno_id, alerta_id: a.id, marco_id: d.marco_id, etapa_kanban_id: d.etapa_id, pesquisa_resposta_id: d.resposta_id, descricao: a.titulo }, null, () => render()); });
+  el.querySelectorAll('[data-ived]').forEach(b => b.onclick = () => { const x = ivs.find(y => y.id === b.dataset.ived); modalIntervencao({}, x, () => render()); });
+  el.querySelectorAll('[data-res]').forEach(b => b.onclick = () => act(async () => { await q(sb.from('alertas').update({ resolvido_em: new Date().toISOString() }).eq('id', b.dataset.res)); render(); }, 'Alerta resolvido'));
+  $('#cgNovaIv').onclick = () => modalIntervencao({}, null, () => render());
+  $('#cgVerif').onclick = () => act(async () => { const r = await q(sb.rpc('cg_verificar_alertas', { p_ws: w, p_ref: new Date().toISOString(), p_avisar: false })); toast((r && r.novos || 0) + ' alerta(s) novo(s), ' + (r && r.resolvidos || 0) + ' resolvido(s)'); render(); });
+}
+
+async function cgRetencao(el, C) {
+  const w = S.ws;
+  const [ops, eqs] = await Promise.all([q(sb.from('oportunidades').select('*,pessoas(nome),produtos(nome)').eq('workspace_id', w).order('criado_em', { ascending: false }).limit(2000)), equipeAtiva()]);
+  const L = ops.filter(o => (o.aluno_id || ['expansao', 'retencao'].includes(o.tipo)) && (!C.produto || o.produto_id === C.produto));
+  const abertas = L.filter(o => o.status === 'aberta'), tot = abertas.reduce((t, o) => t + Number(o.valor_estimado || 0), 0);
+  const ORIG = { manual: 'Manual', alerta: 'Alerta', rfm: 'RFM', ascensao: 'Ascensão', marco: 'Marco', intervencao: 'Intervenção' };
+  el.innerHTML = `<div class="kpis">${kpi('Oportunidades abertas', num(abertas.length), 'de retenção e expansão')}${kpi('Valor em negociação', brl(tot), '')}${kpi('Ganhas', num(L.filter(o => o.status === 'ganha').length), '')}</div>
+    <div class="panel"><div class="head"><div><h2>Retenção e expansão</h2><span class="muted">Oportunidades com alunos (as mesmas da tela Oportunidades). Para achar quem tem espaço para comprar de novo, use Retenção &amp; Expansão (RFM, recompra) e a ascensão da escada.</span></div>
+      <div class="acts"><button class="btn pri" id="cgNovaOp">Nova oportunidade</button><button class="btn" id="cgRfm">Abrir RFM</button><button class="btn" id="cgAsc">Abrir recompra e ascensão</button></div></div>
+    <div class="tw"><table><thead><tr><th>Cliente</th><th>O que</th><th>Tipo</th><th>Origem</th><th>Produto</th><th class="n">Valor</th><th>Responsável</th><th>Situação</th></tr></thead><tbody>${L.map(o => `<tr><td><a href="#" data-f="${o.pessoa_id}">${esc((one(o.pessoas) || {}).nome || '')}</a></td><td><a href="#" data-op="${o.id}">${esc(o.titulo)}</a></td><td>${esc(OP_TIPO[o.tipo] || o.tipo)}</td><td>${esc(ORIG[o.origem] || o.origem || '—')}</td>
+      <td>${esc((one(o.produtos) || {}).nome || '—')}</td><td class="n">${o.valor_estimado != null ? brl(o.valor_estimado) : '—'}</td><td>${esc(nomeEq(eqs, o.responsavel_id) || '—')}</td><td>${o.status === 'aberta' ? '<span class="pill warn">em negociação</span>' : `<span class="pill ${o.status === 'ganha' ? 'good' : 'neutral'}">${esc(o.status)}</span>`}</td></tr>`).join('') || '<tr><td colspan="8" class="empty">Nenhuma oportunidade com alunos ainda.</td></tr>'}</tbody></table></div></div>`;
+  el.querySelectorAll('[data-f]').forEach(a => a.onclick = e => { e.preventDefault(); fichaPessoa(a.dataset.f); });
+  el.querySelectorAll('[data-op]').forEach(a => a.onclick = e => { e.preventDefault(); act(() => modalOport({}, ops.find(o => o.id === a.dataset.op))); });
+  $('#cgNovaOp').onclick = () => act(() => modalOport({ tipo: 'expansao', produto_id: C.produto || null, origem: 'manual' }));
+  $('#cgRfm').onclick = () => { S.view = 'ho-retencao'; S.rxAba = 'rfm'; abreMenu(S.view); render(); };
+  $('#cgAsc').onclick = () => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; abreMenu(S.view); render(); };
+}
+
+async function cgIndicadores(el, C) {
+  const R = await q(sb.rpc('cg_indicadores', { p_ws: S.ws, p_produto: C.produto || null, p_ini: C.ini, p_fim: C.fim }));
+  if (!R) { el.innerHTML = '<div class="panel empty">Sem dados.</div>'; return; }
+  const M = R.matriculas || {}, K = R.checkins || {}, N = R.nps || {}, I = R.intervencoes || {}, RC = R.receita || {};
+  const pct = v => v == null ? '—' : Number(v).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '%';
+  const al = R.alertas || {};
+  el.innerHTML = `<div class="kpis">${kpi('Alunos ativos', num(M.ativas || 0), (M.novas || 0) + ' novos e ' + (M.sairam || 0) + ' saíram no período')}${kpi('Resposta dos check-ins', pct(K.taxa), (K.respondidos || 0) + ' de ' + (K.gerados || 0))}
+      ${kpi('NPS dos alunos', N.nps == null ? '—' : String(N.nps), (N.respostas || 0) + ' respostas · média ' + (N.media == null ? '—' : N.media))}${kpi('Intervenções que resolveram', pct(I.resolveu_pct), (I.feitas || 0) + ' feitas · ' + (I.abertas || 0) + ' abertas')}
+      ${kpi('Receita por cliente', RC.por_cliente == null ? '—' : brl(RC.por_cliente), (RC.clientes || 0) + ' clientes · regra de Retenção & Expansão')}</div>
+    <div class="grid2"><div class="panel"><h2>Alunos por etapa</h2><div class="tw"><table><thead><tr><th>Jornada</th><th>Etapa</th><th class="n">Alunos ativos</th></tr></thead><tbody>${(R.etapas || []).map(e => `<tr><td>${esc(e.jornada)}</td><td>${esc(e.etapa)}</td><td class="n">${num(e.n)}</td></tr>`).join('') || '<tr><td colspan="3" class="empty">Sem etapas.</td></tr>'}</tbody></table></div></div>
+      <div class="panel"><h2>Alertas abertos</h2><div class="tw"><table><tbody>${Object.entries(CG_REGRA).map(([k, l]) => `<tr><td>${l}</td><td class="n">${num(al[k] || 0)}</td></tr>`).join('')}<tr><td>Alunos na Jornada geral</td><td class="n">${num(M.na_jornada_geral || 0)}</td></tr><tr><td>Alunos sem CS</td><td class="n">${num(M.sem_cs || 0)}</td></tr></tbody></table></div></div></div>
+    <div class="panel"><h2>Marcos</h2><span class="muted">Atingido = confirmado pela equipe, marcado pelo sistema ou confirmado depois de o sistema perceber. No prazo = atingido até o prazo do marco.</span><div class="tw"><table><thead><tr><th>Marco</th><th class="n">Atingiram</th><th class="n">%</th><th class="n">No prazo</th><th class="n">Dias até atingir</th><th class="n">Aguardando confirmação</th><th class="n">Atrasados</th></tr></thead><tbody>
+      ${(R.marcos || []).map(x => `<tr><td>${esc(x.nome)}${x.obrigatorio ? ' <span class="pill info">obrigatório</span>' : ''}</td><td class="n">${num(x.atingidos)} de ${num(x.elegiveis)}</td><td class="n">${pct(x.pct)}</td><td class="n">${pct(x.no_prazo_pct)}</td><td class="n">${x.dias_medio == null ? '—' : x.dias_medio}</td><td class="n">${num(x.aguardando)}</td><td class="n">${x.atrasados ? `<span class="pill bad">${num(x.atrasados)}</span>` : '0'}</td></tr>`).join('') || '<tr><td colspan="7" class="empty">Nenhum marco nas jornadas publicadas.</td></tr>'}</tbody></table></div></div>`;
 }
 
 /* Produtos → painel "Jornada do produto": onde está cada produto e o botão para abrir a jornada. */
@@ -10325,7 +10454,7 @@ const PAC_SEMPRE = ['cad-equipe', 'cad-funcoes'];
 /* v0.108: telas que saíram do menu (aposentadas ou que viraram aba de outra) */
 const TELAS_FORA_DO_MENU = ['gro-lucro', 'gro-analise', 'gro-cenarios', 'ho-cohort', 'ho-ascensao'];
 const PAC_SEM_BANCO = '<div class="panel" style="border-left:4px solid var(--warn)"><b>Os pacotes de acesso ainda não estão no banco.</b> <span class="muted">Execute supabase/migrations/20261010230000_pacotes_acesso.sql no SQL Editor do Supabase (depois da migração de segurança) e recarregue.</span></div>';
-const telaLiberada = k => ehCasaV(k) || !S.acesso || S.acesso.has(k) || (k === 'ho-retencao' && (S.acesso.has('ho-cohort') || S.acesso.has('ho-ascensao'))) || (k === 'gro-cenarios' && S.acesso.has('gro-modelo')) || PAC_SEMPRE.includes(k) || TELAS_INT.includes(k);
+const telaLiberada = k => ehCasaV(k) || !S.acesso || S.acesso.has(k) || (k === 'ho-retencao' && (S.acesso.has('ho-cohort') || S.acesso.has('ho-ascensao'))) || (k === 'ho-cg' && S.acesso.has('crm-alunos')) || (k === 'gro-cenarios' && S.acesso.has('gro-modelo')) || PAC_SEMPRE.includes(k) || TELAS_INT.includes(k);
 async function carregaAcesso() {
   S.acesso = null; S.acessoInfo = null;
   try { const a = await q(sb.rpc('acesso_workspace', { p_ws: S.ws })); S.acessoInfo = a || null; S.acesso = a && Array.isArray(a.telas) ? new Set(a.telas) : null; }
@@ -13798,6 +13927,11 @@ async function vMinhas(m) {
   <div class="panel"><h2>Aguardando outras atividades</h2>${tb(espera, false)}</div>
   <div class="panel"><h2>Concluídas recentemente</h2>${tb(feitas, false)}</div>`;
   $('#mnEq').onchange = e => { S.minhaEq = e.target.value; render(); };
+  // v0.163: intervenções de CS abertas (Customer Growth) da mesma pessoa
+  const cgI = await temColuna('cs_intervencoes', 'id') ? await q(sb.from('cs_intervencoes').select('*,pessoas(nome),alunos(produtos(nome))').eq('workspace_id', w).eq('status', 'aberta').order('prazo')).catch(() => []) : [];
+  const ivs = cgI.filter(x => !S.minhaEq || x.responsavel_id === S.minhaEq);
+  if (ivs.length) { m.querySelector('.kpis').insertAdjacentHTML('afterend', `<div class="panel"><h2>Intervenções de CS <span class="pill info">CS</span></h2><span class="muted">Ações com alunos, de RevOps → Customer Growth.</span><div class="tw"><table><thead><tr><th>Aluno</th><th>Produto</th><th>O que fazer</th><th>Prazo</th><th></th></tr></thead><tbody>${ivs.map(x => `<tr><td>${esc((one(x.pessoas) || {}).nome || '')}</td><td>${esc((one((one(x.alunos) || {}).produtos) || {}).nome || '')}</td><td>${esc(x.descricao)}</td><td>${x.prazo ? `<span class="${x.prazo < h ? 'pill bad' : ''}">${dd(x.prazo)}</span>` : '—'}</td><td><button class="btn sm" data-ivm="${x.id}">Concluir</button></td></tr>`).join('')}</tbody></table></div></div>`);
+    m.querySelectorAll('[data-ivm]').forEach(b => b.onclick = () => modalIntervencao({}, ivs.find(x => x.id === b.dataset.ivm), () => render())); }
   m.querySelectorAll('[data-st]').forEach(b => b.onclick = () => act(async () => { await q(sb.from('projeto_atividades').update({ status: b.dataset.st }).eq('id', b.dataset.id)); render(); }));
   m.querySelectorAll('[data-abre]').forEach(b => b.onclick = () => { S.projSel = b.dataset.abre; S.view = 'prj-lista'; render(); });
 }
@@ -14290,7 +14424,7 @@ function corpoPorCampanha(el, R, A) {
 
 /* ---------- Growth: pesquisas ---------- */
 const PQ_TIPO = { lead: 'Lead', onboarding: 'Onboarding', jornada: 'Jornada do aluno', nsm: 'Descoberta da NSM', outra: 'Outra' };
-const PQ_GAT = { manual: 'Manual (escolho as pessoas)', cadastro: 'Quando a pessoa se cadastra', etapa: 'Quando entra em uma etapa do funil', entrada_aluno: 'Quando vira aluno (onboarding)', etapa_aluno: 'Quando o aluno entra numa etapa da jornada' };
+const PQ_GAT = { manual: 'Manual (escolho as pessoas)', cadastro: 'Quando a pessoa se cadastra', etapa: 'Quando entra em uma etapa do funil', entrada_aluno: 'Quando vira aluno (onboarding)', etapa_aluno: 'Quando o aluno entra numa etapa da jornada', checkin: 'Check-in a cada N dias (aluno ativo)' };
 const PQ_TP = { nps: 'Nota de 0 a 10 (NPS)', escala: 'Escala de 1 a 5', escolha: 'Escolha uma', multipla: 'Escolha várias', sim_nao: 'Sim ou não', texto: 'Texto livre' };
 const PQ_PAPEL = { livre: 'Livre', nps: 'NPS (recomendação)', pmf: 'PMF (Sean Ellis)', valor: 'Momento ou ação de valor', alavanca: 'Alavanca da NSM', qualificacao: 'Qualificação' };
 const PQ_ST = { pendente: ['warn', 'Pendente'], enviado: ['info', 'Enviado'], respondido: ['good', 'Respondido'], dispensado: ['neutral', 'Dispensado'] };
@@ -14375,7 +14509,7 @@ function criarDeModelo(k) {
     S.pqSel = p.id; S.pqTab = md.extra && md.extra.captacao ? 'form' : 'perguntas'; toast('Pesquisa criada, desativada. Revise e ative.');
   }, 'Criar');
 }
-async function modalPesquisa(row) {
+async function modalPesquisa(row, pre) {
   const [funis, et, cgA] = await Promise.all([q(sb.from('funis').select('id,nome').eq('workspace_id', S.ws).order('nome')), q(sb.from('funil_etapas').select('nome,ordem').eq('workspace_id', S.ws).order('ordem')), temColuna('pesquisas', 'etapa_aluno_id')]);
   const nomesEt = [...new Set(et.map(e => e.nome))];
   // v0.163: gatilho pela etapa da jornada do aluno e filtro por produto (só com o banco atualizado)
@@ -14383,18 +14517,23 @@ async function modalPesquisa(row) {
     q(sb.from('jornadas').select('id,produto_id,nome,versao,status,modelo').eq('workspace_id', S.ws).eq('modelo', false)).catch(() => [])]) : [[], [], []];
   const JA = Object.fromEntries(jorA.map(j => [j.id, j])), PA = Object.fromEntries(prodA.map(p => [p.id, p]));
   const etA = etA0.filter(e => !e.jornada_id || (JA[e.jornada_id] && JA[e.jornada_id].status !== 'arquivada')).map(e => ({ id: e.id, nome: e.jornada_id ? nomeJor(JA[e.jornada_id], PA).replace(/&amp;/g, '&') + ' · ' + e.nome + (JA[e.jornada_id].status === 'rascunho' ? ' (rascunho)' : '') : (jorA.length ? 'Jornada geral · ' : '') + e.nome }));
-  const gats = Object.entries(PQ_GAT).filter(([k]) => cgA || k !== 'etapa_aluno');
+  const cgC = cgA && await temColuna('pesquisas', 'checkin_dias');
+  const gats = Object.entries(PQ_GAT).filter(([k]) => (cgA || k !== 'etapa_aluno') && (cgC || k !== 'checkin'));
   const campos = [{ k: 'nome', l: 'Nome da pesquisa', req: 1, full: 1 }, { k: 'tipo', l: 'Tipo', t: 'select', req: 1, def: 'lead', opts: Object.entries(PQ_TIPO) }, { k: 'descricao', l: 'Texto de abertura (a pessoa vê)', t: 'textarea' },
     { k: 'gatilho', l: 'Quando enviar', t: 'select', req: 1, def: 'manual', opts: gats },
     ...(cgA ? [{ k: 'etapa_aluno_id', l: 'Etapa da jornada do aluno (se o gatilho for etapa do aluno)', t: 'select', opts: sel(etA, 'id', 'nome') },
-      { k: 'produto_id', l: 'Só alunos deste produto (opcional)', t: 'select', opts: sel(prodA, 'id', 'nome'), hint: 'Vale para "Quando vira aluno" e "Quando o aluno entra numa etapa". Vazio = todos os produtos.' }] : []),
+      { k: 'produto_id', l: 'Só alunos deste produto (opcional)', t: 'select', opts: sel(prodA, 'id', 'nome'), hint: 'Vale para "Quando vira aluno", "Quando o aluno entra numa etapa" e o check-in. Vazio = todos os produtos.' }] : []),
+    ...(cgC ? [{ k: 'checkin_dias', l: 'Check-in: a cada quantos dias', t: 'number', step: '1', hint: 'Conta desde a matrícula, enquanto o aluno estiver ativo. Ex.: 14 = na 2ª, 4ª, 6ª semana…' },
+      { k: 'checkin_max', l: 'Check-in: no máximo quantas vezes (opcional)', t: 'number', step: '1' }] : []),
     { k: 'gatilho_etapa', l: 'Etapa do funil (se o gatilho for etapa)', t: 'select', opts: nomesEt.map(n => [n, n]) }, { k: 'funil_id', l: 'Só neste funil (opcional)', t: 'select', opts: sel(funis, 'id', 'nome') },
     { k: 'dispensa_qualificado', l: 'Não enviar a quem já chegou qualificado (a página de obrigado já qualifica)', t: 'check' },
     { k: 'canal_envio', l: 'Como vai ser enviada', t: 'select', req: 1, def: 'link', opts: [['link', 'Só o link'], ['whatsapp', 'WhatsApp'], ['email', 'E-mail']], hint: 'O disparo automático ainda não está conectado: o canal só define o botão da fila.' },
     { k: 'mensagem', l: 'Mensagem do convite', t: 'textarea', def: 'Oi {nome}! Pode responder uma pesquisa rápida? Leva 2 minutos: {link}', hint: 'Use {nome} e {link}.' },
     { k: 'aceita_link_aberto', l: 'Aceitar também o link aberto (qualquer pessoa com o link responde, ligando por e-mail)', t: 'check', hint: 'Use na página de obrigado. Sem ele, só quem recebeu o link único responde.' }, { k: 'ativa', l: 'Ativa', t: 'check', def: false }];
+  if (pre && !row) campos.forEach(c => { if (c.k && pre[c.k] !== undefined) c.def = pre[c.k]; });
   const f = abrirForm(row ? 'Editar pesquisa' : 'Nova pesquisa', 'pesquisas', campos, row, { antes: v => { if (v.gatilho === 'etapa' && !v.gatilho_etapa) throw new Error('Escolha a etapa do funil.'); if (v.gatilho !== 'etapa') v.gatilho_etapa = null;
-    if (cgA) { if (v.gatilho === 'etapa_aluno' && !v.etapa_aluno_id) throw new Error('Escolha a etapa da jornada do aluno.'); if (v.gatilho !== 'etapa_aluno') v.etapa_aluno_id = null; if (!['entrada_aluno', 'etapa_aluno'].includes(v.gatilho)) v.produto_id = null; }
+    if (cgA) { if (v.gatilho === 'etapa_aluno' && !v.etapa_aluno_id) throw new Error('Escolha a etapa da jornada do aluno.'); if (v.gatilho !== 'etapa_aluno') v.etapa_aluno_id = null; if (!['entrada_aluno', 'etapa_aluno', 'checkin'].includes(v.gatilho)) v.produto_id = null; }
+    if (cgC) { if (v.gatilho === 'checkin') { v.checkin_dias = Number(v.checkin_dias); if (!(v.checkin_dias >= 1 && v.checkin_dias <= 365)) throw new Error('Diga a cada quantos dias vai o check-in (de 1 a 365).'); v.checkin_max = v.checkin_max ? Number(v.checkin_max) : null; } else { v.checkin_dias = null; v.checkin_max = null; } }
     return v; }, ok: 'Pesquisa salva' });
   if (row) botaoExcluir(f, 'pesquisas', row.id, 'Pesquisa excluída');
 }
@@ -14403,7 +14542,7 @@ async function vPesquisaDet(m) {
   const [ps, perg] = await Promise.all([q(sb.from('pesquisas').select('*').eq('id', id)), q(sb.from('pesquisa_perguntas').select('*').eq('pesquisa_id', id).order('ordem').order('criado_em'))]);
   const p = ps[0]; if (!p) { S.pqSel = null; return vPesquisas(m); }
   S.pqSecao = await temColuna('pesquisa_perguntas', 'secao');
-  m.innerHTML = `<div class="head"><div><button class="btn sm" id="pqVolta">← Pesquisas</button><h1 style="margin-top:8px">${esc(p.nome)} ${pillAtivo(p.ativa)}</h1><span class="muted">${PQ_TIPO[p.tipo]} · ${esc(PQ_GAT[p.gatilho])}${p.gatilho === 'etapa' ? ': ' + esc(p.gatilho_etapa) : ''}${p.gatilho === 'etapa_aluno' && p.etapa_aluno_id ? ': ' + esc(((await q(sb.from('etapas_kanban').select('nome').eq('id', p.etapa_aluno_id)).catch(() => []))[0] || {}).nome || 'etapa') : ''}</span></div><div class="acts"><button class="btn" id="pqEd">Configurar</button></div></div>
+  m.innerHTML = `<div class="head"><div><button class="btn sm" id="pqVolta">← Pesquisas</button><h1 style="margin-top:8px">${esc(p.nome)} ${pillAtivo(p.ativa)}</h1><span class="muted">${PQ_TIPO[p.tipo]} · ${esc(PQ_GAT[p.gatilho])}${p.gatilho === 'etapa' ? ': ' + esc(p.gatilho_etapa) : ''}${p.gatilho === 'checkin' && p.checkin_dias ? ': a cada ' + p.checkin_dias + ' dias' : ''}${p.gatilho === 'etapa_aluno' && p.etapa_aluno_id ? ': ' + esc(((await q(sb.from('etapas_kanban').select('nome').eq('id', p.etapa_aluno_id)).catch(() => []))[0] || {}).nome || 'etapa') : ''}</span></div><div class="acts"><button class="btn" id="pqEd">Configurar</button></div></div>
   <div class="tabs">${[['perguntas', 'Perguntas'], ['form', 'Formulário e aparência'], ['qual', 'Qualificação e pontos'], ['quem', 'Quem respondeu'], ['envios', 'Fila de envio'], ['res', 'Resultados'], ['ins', 'Insights']].map(([k, l]) => `<button data-t="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="pqBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
   $('#pqVolta').onclick = () => { S.pqSel = null; render(); }; $('#pqEd').onclick = () => modalPesquisa(p);
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { S.pqTab = b.dataset.t; render(); });
@@ -14859,7 +14998,7 @@ async function pqRespondentes(el, p, perg) {
 }
 
 /* ================= v0.132: "Como foi o meu dia?" e alertas automáticos ================= */
-const AL_TIPO = { brusco: 'Mudança brusca', repetido: 'Se repetindo', operacional: 'Pede ação' };
+const AL_TIPO = { brusco: 'Mudança brusca', repetido: 'Se repetindo', operacional: 'Pede ação', cs: 'Acompanhamento do aluno' };
 const AL_REGRAS = [['sem_dados', 'Dia sem nenhum dado (integração ou importação parada)'], ['brusco', 'Mudança brusca (ontem fora do normal dos 14 dias anteriores)'], ['queda_seguida', 'Leads caindo dias seguidos'], ['sem_vendas', 'Dias seguidos sem venda'],
   ['cpl_meta', 'CPL acima da meta da campanha dias seguidos'], ['reembolsos', 'Reembolsos se repetindo'], ['gasto_sem_lead', 'Mídia gastando sem trazer lead'], ['contas_vencidas', 'Contas a pagar vencidas'], ['saldo_minimo', 'Caixa abaixo do saldo mínimo']];
 const fBRL = v => v == null ? '—' : brl(v);

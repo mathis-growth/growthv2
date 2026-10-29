@@ -3,6 +3,14 @@
 Data: 29/10/2026 · Base: branch `v0.162-growth-model-nsm` (commit `6374eaa`), ainda não juntada à `main`.
 Situação: **só diagnóstico**. Nada foi implementado, nenhuma migration foi rodada, nada foi commitado.
 
+## Situação da implementação (Fase B, 29/10/2026)
+Implementado na branch `v0.163-customer-growth` (a partir da v0.162), etapas B1 a B10, com as decisões da §8:
+- Banco: migrações `20261116100000` a `20261122100000`, juntas em `supabase/RODAR_v0.163_customer_growth.sql` (tudo ou nada; confere antes se a v0.132 está aplicada). **Não aplicado em produção.**
+- Tela: Alunos por jornada, Jornada do produto (versões, continuar/transferir, modelos, marcos, eventos de fora), Jornada e evolução na ficha, check-in e gatilho por etapa do aluno em Pesquisas, RevOps → Customer Growth, intervenções em Minhas atividades.
+- Intervenções ficaram em tabela própria (`cs_intervencoes`), como decidido por último; o texto da §4.6 já está nesse formato.
+- Edge function `leads` com `?tipo=evento` (precisa ser publicada de novo).
+- Testes: seis baterias de banco (PGlite) e quatro de tela, todas sem falha. O detalhe está no CHANGELOG da v0.163.
+
 ## 0. O que foi verificado e o que não foi
 
 **Verificado (lendo o código):**
