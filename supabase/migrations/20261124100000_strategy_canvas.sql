@@ -216,7 +216,16 @@ end $$;
 revoke execute on function campanha_aplicar_estrategia(uuid, uuid, boolean) from public, anon;
 grant execute on function campanha_aplicar_estrategia(uuid, uuid, boolean) to authenticated;
 
+-- acesso_telas: 'mkt-estrategias' (biblioteca de estratégias no Marketing). Quem já vê Campanhas passa a ver também (regra na tela).
+do $a$ begin
+  if to_regclass('public.acesso_telas') is not null then
+    insert into acesso_telas (tela, modulo, nome, grupo, ordem)
+    values ('mkt-estrategias', 'mkt', 'Estratégias (Canvas)', 'Marketing', coalesce((select min(ordem) from acesso_telas where tela = 'mkt-camp'), 8))
+    on conflict (tela) do update set modulo = excluded.modulo, nome = excluded.nome, grupo = excluded.grupo;
+  end if;
+end $a$;
+
 -- Para desfazer: campanha_aplicar_estrategia de 20261010200000_blocos_e_simulador.sql; drop function estrategia_publicar(uuid, text);
 -- alter table campanha_estrategias drop column versao_id; drop table estrategia_versoes, campanha_conexoes, estrategia_conexoes;
 -- drop function conexao_valida(), estrategia_versoes_imutavel(); drop columns x, y, props (e status em campanha_blocos);
--- drop trigger funis_status_t; drop function funis_status_t(); alter table funis drop column categoria, objetivo, status, versao_atual, criterios.
+-- drop trigger funis_status_t; drop function funis_status_t(); alter table funis drop column categoria, objetivo, status, versao_atual, criterios; delete from acesso_telas where tela = 'mkt-estrategias'.

@@ -1,3 +1,7 @@
+## v0.165
+- index.html: 0.164 → 0.165. Novas `cvMapa`, `cvCriaBloco`, `cvPos`, `cvPublicar`, `cvVersoes`, `cvCopiaMapa`, `CV_GRUPOS`, `CV_CON`, `CV_CSS`; rota e item de menu `mkt-estrategias` (usa `vFunis`; liberada para quem vê `mkt-camp` ou `cad-funis`); `vFunis` com categoria, versão, filtros e duplicar; `estNova` com categoria e objetivo; `vEstrategia` com Mapa/Lista (`S.estVista`), Publicar versão, Versões e versão em "Campanhas que usam". Sem as colunas novas no banco, a tela fica como na v0.164.
+- Migração `20261124100000_strategy_canvas.sql` (idempotente; desfazer no fim do arquivo). Teste `t165_strategy_canvas.py`; banco `canvas_s1_s3_cenarios.sql`.
+
 ## v0.164
 - index.html: 0.163 → 0.164. Novo bloco `<style id="v164">`; novas `vCockpit`, `ckPeriodo`, `CK_PER`; menu com o grupo `Cockpit` (`livre`, aparece para todos), rota `cockpit`, `PAC_SEMPRE` com `cockpit`, tela inicial `cockpit` (era `adm-painel`). Teste `t164_cockpit.py`. Sem migração.
 

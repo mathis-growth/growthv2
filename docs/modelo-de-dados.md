@@ -1,3 +1,11 @@
+## v0.165 — Strategy Canvas (S1 a S3)
+- `funis`: `categoria` (texto livre), `objetivo`, `criterios` (critérios de sucesso), `status` rascunho/ativa/arquivada, `versao_atual` (0 = nunca publicada). Gatilho `funis_status_t` mantém `ativo` igual a `status <> 'arquivada'` nos dois sentidos.
+- `estrategia_blocos` e `campanha_blocos`: `x`, `y` (posição no mapa; vazio = organizar pela fase e ordem) e `props` jsonb (objetivo, descrição, canal, responsável, oferta, status). `campanha_blocos.status` planejado/implementado/pendente.
+- `estrategia_conexoes` / `campanha_conexoes`: `de_bloco`, `para_bloco`, `tipo` segue/sim/nao/divisao, `rotulo`, `condicao`, `nota`, `peso` (% só na divisão). Única por (de, para); gatilho `conexao_valida` barra bloco ligado nele mesmo e bloco de outra estratégia ou campanha.
+- `estrategia_versoes`: (funil, versao) única, `nota`, `foto` jsonb (estratégia, blocos, métricas e ligações), `publicada_em`, `publicada_por`. Não muda nem se apaga depois de gravada. `campanha_estrategias.versao_id` aponta a versão que a campanha copiou.
+- Funções: `estrategia_publicar(funil, nota)` devolve o número da versão; `campanha_aplicar_estrategia` copia também posições, propriedades, blocos sem métrica e ligações, grava a versão e publica a v1 se a estratégia nunca foi publicada.
+- `acesso_telas`: `mkt-estrategias` (Marketing). RLS: ler mkt/vendas/gro/adm, editar mkt/gro.
+
 ## v0.164
 - Sem mudança no banco. O Cockpit lê `painel_gerencial`, `growths_serie` (série por dia), `v_dre_mensal` (receita e lucro por mês), `cg_indicadores`, `campanhas` (situação), `oportunidades` abertas, `projetos` e `projeto_atividades`, `growth_metricas` (North Star), `growth_experimentos` e `growth_metricas_auto`.
 

@@ -35,3 +35,6 @@ Sem Postgres instalado, dá para rodar tudo num Postgres em memória (PGlite):
    Com `ATE=20261116` aplica só até a v0.162 (para testar o `RODAR_v0.163_customer_growth.sql`).
 3. Extras, na ordem: `jornada_b1_cenarios.sql`, `jornada_b2_cenarios.sql`, `jornada_b3_cenarios.sql`, `jornada_b5_cenarios.sql`, `jornada_b6_b9_cenarios.sql`, `jornada_b10_cenarios.sql`.
    Cada um termina com "jornada_bN: tudo OK". Conferido em 29/10/2026 com as migrações e com o RODAR aplicado duas vezes sobre um banco da v0.162.
+
+## v0.165 — Strategy Canvas (PGlite)
+Mesmo jeito da v0.163: `node pglite_run.mjs <pasta do repositório> canvas_s1_s3_cenarios.sql`. Termina com "canvas_s1_s3: tudo OK" (biblioteca, conexões com ramificação, versões imutáveis, cópia para a campanha sem misturar versões). Conferido em 29/10/2026, junto com `jornada_b2_cenarios.sql`.

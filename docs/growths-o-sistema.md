@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 29/10/2026, versão 0.164.
+**Última atualização:** 29/10/2026, versão 0.165.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -108,6 +108,7 @@ A campanha é uma página com abas: dashboard, estratégia e etapas, metas, capt
   
   Produto, estratégia e canal se cadastram sem sair dali, e uma faixa de rascunho mostra o que falta.
 - **Estratégia em blocos.** O funil da campanha é montado com blocos prontos em 4 fases (Aquisição, Aquecimento, Conversão, Retenção): conteúdo do Instagram, tráfego pago, página de captura, indicação, grupo de WhatsApp, disparo, e-mail, pesquisa, aula/webinário, VSL, checkout, comercial, recompra e assinatura. Cada bloco traz as métricas certas, com uma principal e as de diagnóstico. Há modelos prontos: lançamento clássico, perpétuo, webinário, disparo, recompra, comercial e social selling.
+- **Estratégias (Canvas).** Em Marketing → Estratégias (Canvas), cada estratégia pode ser vista como mapa: blocos arrastáveis, setas com sim, não e divisão em %, e um painel com objetivo, canal, responsável, oferta e métricas de cada bloco. "Publicar versão" congela a estratégia; a campanha guarda a versão que usou, e mudar a estratégia depois não mexe nela.
 - **Campanha híbrida, só paga ou só orgânica.** Cada canal é uma execução, com a própria estratégia e o próprio custo de produção.
 - **Metas:**
   - de leads por dia, por mês e por canal;
@@ -468,6 +469,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **29/10 (v0.165):** Strategy Canvas: biblioteca de estratégias no Marketing, mapa visual com ligações e ramificações, e versões que cada campanha guarda.
 - **29/10 (v0.164):** Cockpit na entrada: um painel por área (Geral, Marketing, Vendas, Financeiro e Clientes), cada um abrindo o dashboard do módulo.
 
 - **29/10 (v0.163):** Customer Growth em RevOps: jornada de cada produto com versão, marcos, check-ins, alertas e intervenções de CS e indicadores de evolução.

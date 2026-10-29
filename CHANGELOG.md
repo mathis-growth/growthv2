@@ -2,6 +2,18 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.165 — Strategy Canvas, etapas S1 a S3 (29/10/2026)
+- **Marketing → Estratégias (Canvas)**: biblioteca das estratégias com categoria, objetivo, versão publicada, data de criação, situação (rascunho, em uso, arquivada) e filtros por categoria e situação; duplicar direto da lista. Nova estratégia pede categoria e objetivo. Em Cadastros → Estratégias e funis continua a mesma tela, com os quadros do Kanban.
+- **Mapa (Canvas)**: a estratégia vira um mapa visual. Os blocos que já existiam aparecem organizados por fase; arraste pelo topo para mover (a posição fica salva), arraste do ponto da direita até outro bloco para ligar, use a roda do mouse para aproximar e o fundo para mover o mapa. Componentes na esquerda (Aquisição, Páginas, Comunicação, Conversão, Pós-venda, Lógica e Personalizado): arraste ou clique para criar o bloco, com as mesmas métricas dos blocos de antes.
+  - **Ligações** com tipo (segue, sim, não, divisão com %), rótulo, condição e nota; a mesma ligação não se repete e um bloco não liga nele mesmo.
+  - **Painel de propriedades**: nome, fase, objetivo, descrição, canal, responsável, oferta e métricas do bloco; duplicar e excluir.
+  - **Lista**: o quadro de blocos de antes e a lista das ligações. As duas vistas mostram os mesmos dados.
+- **Versões**: "Publicar versão" grava uma foto imutável da estratégia (blocos, métricas e ligações). A campanha guarda a versão que usou; mudar a estratégia depois não mexe nas campanhas que já existem. Campanha criada de uma estratégia nunca publicada publica a v1 sozinha. "Versões" lista cada versão, a nota e as campanhas que a usam.
+- Copiar a estratégia para a campanha leva também as posições, as propriedades, os blocos de lógica e as ligações. Duplicar a estratégia leva o mapa junto.
+- Banco: `20261124100000_strategy_canvas.sql` (**ainda não aplicado em produção**). Novas tabelas `estrategia_conexoes`, `campanha_conexoes`, `estrategia_versoes`; novas colunas em `funis`, `estrategia_blocos`, `campanha_blocos` e `campanha_estrategias`; `estrategia_publicar` e `campanha_aplicar_estrategia` atualizada; tela `mkt-estrategias` no controle de acesso.
+- Testes: banco `tests/banco/canvas_s1_s3_cenarios.sql` (OK, com `jornada_b2` sem falhas); tela `tests/tela/t165_strategy_canvas.py` (32 verificações, 0 falhas).
+- Próximas etapas (S4 a S9: campanha ⇄ estratégia nos dois sentidos, execução, comparação planejado × real) dependem de aprovação.
+
 ## v0.164 — Cockpit na entrada (29/10/2026)
 - O Growths passa a abrir no **Cockpit** (primeiro item do menu): um painel compacto por área, com borda em volta toda para separar bem uma área da outra, com quatro números do período escolhido (7 dias, 30 dias, mês atual ou ano) e um gráfico. Cabem dois painéis lado a lado (três em tela larga): Marketing e Vendas; Financeiro e Projetos; Growth e Clientes. O Geral fica numa faixa no topo, com os números e o gráfico ao lado.
   - **Projetos:** projetos em andamento, atividades para fazer agora, atrasadas e concluídas no período; gráfico de atividades por situação.

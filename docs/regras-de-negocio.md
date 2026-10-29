@@ -1,3 +1,10 @@
+## v0.165 — Strategy Canvas
+- Versão nasce em "Publicar versão". A campanha copia a estratégia como ela está e guarda a versão; se a estratégia nunca foi publicada, a cópia publica a v1 antes.
+- Mudar a estratégia não mexe nas campanhas já criadas. Aplicar de novo na mesma campanha não duplica blocos nem ligações; "substituir" refaz tudo.
+- Ligação: um bloco não liga nele mesmo e dois blocos só têm uma ligação no mesmo sentido. Bloco de condição ou decisão: a primeira ligação é "sim", a segunda "não". Bloco de divisão: ligação "divisão" com 50% até alguém mudar.
+- Arquivar a estratégia a desliga (some da escolha nas campanhas novas); religar volta para "em uso". Estratégia criada desligada já nasce arquivada.
+- Sem as colunas da v0.165 no banco, a tela mostra a estratégia como na v0.164 (só a lista de blocos).
+
 ## v0.163 — Customer Growth
 - Produto sem jornada própria usa a Jornada geral (as etapas de Alunos de antes). Só a versão publicada recebe matrículas novas; o rascunho não.
 - Publicar uma versão: a anterior vira "versão anterior". Quem já está dentro continua nela, a menos que se escolha transferir; na transferência, cada etapa antiga vai para a etapa escolhida (sugestão pelo nome) ou fica onde está. Pesquisas ligadas às etapas de antes passam para a etapa equivalente da nova.

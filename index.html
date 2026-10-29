@@ -1199,7 +1199,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.164 · 29/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.165 · 29/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -1224,7 +1224,7 @@ const NAV = [
   { g: 'Growth Starter', flat: true, starter: true, items: [['st-dash', 'Dashboard'], ['mkt-dash', 'Aquisição'], ['mkt-midia', 'Mídia'], ['crm-vendas', 'Vendas'], ['ho-retencao', 'Retenção & Expansão'], ['cad-produtos', 'Produtos'], ['crm-alunos', 'Clientes / Alunos'], ['fin-dash', 'Financeiro'], ['st-relatorios', 'Relatórios'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['gro-ciclo', 'Experimentos']] },
   { g: 'Cockpit', flat: true, livre: true, items: [['cockpit', 'Cockpit']] },
   { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['adm-plano', 'Planejamento da empresa'], ['adm-empresa', 'Cadastro da empresa']] },
-  { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários']], subs: [{ g: 'Growth\'s Content', mod: 'mkt', items: [['mkt-cont', 'Estratégia de conteúdo'], ['mkt-insta', 'Instagram']] }] },
+  { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-estrategias', 'Estratégias (Canvas)'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários']], subs: [{ g: 'Growth\'s Content', mod: 'mkt', items: [['mkt-cont', 'Estratégia de conteúdo'], ['mkt-insta', 'Instagram']] }] },
   { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['crm-dms', 'DMs do Instagram'], ['mkt-origem', 'Leads por origem']] },
   { g: 'RevOps', items: [['ho-dash', 'Dashboard'], ['ho-cg', 'Customer Growth'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
   { g: 'Financeiro', items: [['fin-dash', 'Dashboard'], ['fin-receber', 'Contas a receber'], ['fin-pagar', 'Contas a pagar'], ['fin-custo', 'Custos e margens'], ['fin-lanc', 'Lançamentos contábeis']] },
@@ -1548,6 +1548,7 @@ const ICO = {
   'gro-guard': P('<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>'),
   'gro-cenarios': P('<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>'),
   'gro-result': P('<path d="M4 20h16"/><path d="M6 16l4-5 3 3 5-7"/><circle cx="18" cy="7" r="1.5"/>'),
+  'mkt-estrategias': P('<rect x="3" y="4" width="6" height="5" rx="1.5"/><rect x="15" y="4" width="6" height="5" rx="1.5"/><rect x="9" y="15" width="6" height="5" rx="1.5"/><path d="M9 6.5h6M6 9v3.5h6V15M18 9v3.5h-6"/>'),
   'cad-funis': P('<path d="M3 5h18l-7 8v6l-4-2v-4z"/>'),
   'cad-planocontas': P('<path d="M4 5h16M8 12h12M12 19h8"/><path d="M4 5v14h4"/>'),
   'cad-motivos': P('<path d="M5 12l4 4 10-10"/><path d="M5 20h14"/>'),
@@ -1596,7 +1597,7 @@ $('#nav').onclick = e => {
     desenhaNav();
     return;
   }
-  S.view = b.dataset.v; S.projSel = null; S.modSel = null; S.pqSel = null; S.campSel = null; S.jpProd = null;
+  S.view = b.dataset.v; S.projSel = null; S.modSel = null; S.pqSel = null; S.campSel = null; S.jpProd = null; S.estSel = null;
   abreMenu(S.view);
   render();
 };
@@ -1634,7 +1635,7 @@ const VIEWS = {
   'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'ho-cg': vCustomerGrowth, 'cockpit': vCockpit, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': vConteudo, 'cfg-estruturas': vEstruturas, 'cfg-pastas': vPastasMathisa, 'cfg-custos': vCustos, 'crm-dms': vDMsCrm,
   'crm-leads': vCrmLeads, 'crm-oport': vCrmOport, 'crm-vendas': vVendas, 'crm-contratos': vContratos, 'crm-comissoes': vComissoes, 'cad-comissoes': vComissoes, 'crm-alunos': vCrmAlunos,
   'fin-receber': vReceber,  'cfg-uso': vUso, 'fin-pagar': vPagar, 'fin-custo': vCustoOp, 'fin-lanc': vLanc, 'adm-painel': vPainel, 'adm-plano': vPlano,
-  'cad-clientes': vClientes, 'cad-plataformas': vPlataformas, 'cad-funis': vFunis, 'cad-regras': vRegras,
+  'cad-clientes': vClientes, 'cad-plataformas': vPlataformas, 'cad-funis': vFunis, 'mkt-estrategias': vFunis, 'cad-regras': vRegras,
   'cfg-qualidade': vQualidade, 'cfg-metricas': vMetricas157, 'cad-auditoria': vAuditoria, 'cad-duplicados': vDuplicados, 'crm-abandonos': vAbandonos, 'prj-atividades': vTodasAtividades
 };
 /* ---------- Voltar: pilha de telas visitadas ---------- */
@@ -9624,16 +9625,24 @@ function estLigaTabela(el, L, tabela, abrirEd, msgRemover) {
 async function vFunis(m) {
   if (S.estSel) return vEstrategia(m);
   const w = S.ws;
-  const [fs, ets0, cs, pr] = await Promise.all([
+  const cvB = await temColuna('funis', 'categoria'), noMkt = S.view === 'mkt-estrategias', FL = S.estF = S.estF || { cat: '', st: 'ativas' };
+  const [fs0, ets0, cs, pr] = await Promise.all([
     q(sb.from('funis').select('*').eq('workspace_id', w).order('nome')), q(sb.from('estrategia_etapas').select('id,funil_id').eq('workspace_id', w)).catch(() => null),
     q(sb.from('campanhas').select('id,funil_id').eq('workspace_id', w)), q(sb.from('produtos').select('id,nome').eq('workspace_id', w).order('nome'))]);
-  const ets = ets0 || [];
-  m.innerHTML = (ets0 ? '' : EST_SEM_BANCO) + `<div class="head"><div><h1>Estratégias e funis</h1><span class="muted">A estratégia desenha o funil de venda em fases e etapas. Cada campanha escolhe uma estratégia e recebe uma cópia das etapas.</span></div><div class="acts"><button class="btn pri" id="estNova">Nova estratégia</button></div></div>
-    <div class="panel"><div class="tw"><table><thead><tr><th>Estratégia</th><th>Tipo</th><th>Produto</th><th class="n">Etapas</th><th class="n">Campanhas</th><th>Situação</th><th></th></tr></thead><tbody>
-    ${fs.length ? fs.map(f => `<tr class="clk" data-est="${f.id}"><td><b>${esc(f.nome)}</b>${f.descricao ? '<br><small class="muted">' + esc(f.descricao) + '</small>' : ''}</td><td>${esc(EST_TIPO[f.tipo] || f.tipo)}</td><td>${f.produto_id ? esc((pr.find(p => p.id === f.produto_id) || {}).nome || '—') : '<span class="muted">qualquer produto</span>'}</td><td class="n">${ets.filter(e => e.funil_id === f.id).length}</td><td class="n">${cs.filter(c => c.funil_id === f.id).length}</td><td>${pillAtivo(f.ativo)}</td><td><button class="btn sm" data-est="${f.id}">Abrir</button></td></tr>`).join('') : '<tr><td colspan="7" class="empty">Nenhuma estratégia ainda. Comece de um modelo pronto.</td></tr>'}</tbody></table></div></div>
-    <div class="panel" id="c2"></div><div class="panel" id="c3"></div>`;
+  const ets = ets0 || [], cats = [...new Set(fs0.map(f => f.categoria).filter(Boolean))].sort();
+  const fs = fs0.filter(f => (!FL.cat || f.categoria === FL.cat) && (FL.st === 'todas' || (FL.st === 'ativas' ? f.ativo !== false : f.ativo === false)));
+  m.innerHTML = (ets0 ? '' : EST_SEM_BANCO) + `<div class="head"><div><h1>${noMkt ? 'Estratégias' : 'Estratégias e funis'}</h1><span class="muted">A estratégia desenha o funil de venda em fases e etapas. Cada campanha escolhe uma estratégia e recebe uma cópia das etapas.</span></div><div class="acts"><button class="btn pri" id="estNova">Nova estratégia</button></div></div>
+    ${cvB ? `<div class="filters"><label>Categoria<select id="estFc"><option value="">Todas</option>${cats.map(c => `<option${c === FL.cat ? ' selected' : ''}>${esc(c)}</option>`).join('')}</select></label>
+      <label>Situação<select id="estFs">${[['ativas', 'Em uso'], ['arquivadas', 'Arquivadas'], ['todas', 'Todas']].map(([k, l]) => `<option value="${k}"${FL.st === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label></div>` : ''}
+    <div class="panel"><div class="tw"><table><thead><tr><th>Estratégia</th>${cvB ? '<th>Categoria</th>' : ''}<th>Tipo</th><th>Produto</th>${cvB ? '<th class="n">Versão</th>' : ''}<th class="n">Etapas</th><th class="n">Campanhas</th><th>Situação</th><th></th></tr></thead><tbody>
+    ${fs.length ? fs.map(f => `<tr class="clk" data-est="${f.id}"><td><b>${esc(f.nome)}</b>${f.objetivo || f.descricao ? '<br><small class="muted">' + esc(f.objetivo || f.descricao) + '</small>' : ''}${cvB ? '<br><small class="muted">criada em ' + (f.criado_em ? dd(String(f.criado_em).slice(0, 10)) : '—') + '</small>' : ''}</td>${cvB ? `<td>${esc(f.categoria || '—')}</td>` : ''}<td>${esc(EST_TIPO[f.tipo] || f.tipo)}</td><td>${f.produto_id ? esc((pr.find(p => p.id === f.produto_id) || {}).nome || '—') : '<span class="muted">qualquer produto</span>'}</td>${cvB ? `<td class="n">${f.versao_atual ? 'v' + f.versao_atual : '<span class="muted">—</span>'}</td>` : ''}<td class="n">${ets.filter(e => e.funil_id === f.id).length}</td><td class="n">${cs.filter(c => c.funil_id === f.id).length}</td><td>${cvB && f.status === 'rascunho' ? '<span class="pill warn">rascunho</span>' : pillAtivo(f.ativo)}</td><td style="white-space:nowrap"><button class="btn sm" data-est="${f.id}">Abrir</button>${cvB ? ` <button class="btn sm" data-estdup="${f.id}">Duplicar</button>` : ''}</td></tr>`).join('') : `<tr><td colspan="${cvB ? 9 : 7}" class="empty">Nenhuma estratégia ${FL.st === 'arquivadas' ? 'arquivada' : 'ainda. Comece de um modelo pronto'}.</td></tr>`}</tbody></table></div></div>
+    ${noMkt ? '' : '<div class="panel" id="c2"></div><div class="panel" id="c3"></div>'}`;
+  if ($('#estFc')) $('#estFc').onchange = e => { FL.cat = e.target.value; render(); };
+  if ($('#estFs')) $('#estFs').onchange = e => { FL.st = e.target.value; render(); };
+  m.querySelectorAll('[data-estdup]').forEach(b => b.onclick = ev => { ev.stopPropagation(); estNova(pr, fs0.find(x => x.id === b.dataset.estdup)); });
   m.querySelectorAll('[data-est]').forEach(b => b.onclick = ev => { ev.stopPropagation(); S.estSel = b.dataset.est; render(); });
   $('#estNova').onclick = () => estNova(pr);
+  if (noMkt) return;
   ENT.etapas_funil.titulo = 'Etapas do Kanban da jornada'; ENT.listas_funil.titulo = 'Listas (grupo, API)';
   await Promise.all([renderCad($('#c2'), 'etapas_funil'), renderCad($('#c3'), 'listas_funil')]);
   $('#c2 h2').insertAdjacentHTML('afterend', '<span class="muted" style="display:block;margin-bottom:6px">As colunas do Kanban por onde as pessoas andam. Uma etapa da estratégia pode contar quem chegou a uma delas.</span>');
@@ -9645,12 +9654,16 @@ function estNova(pr, dup, aoCriar) {
     ${dup ? '' : `<label class="full">Começar de<select name="modelo"><option value="">Em branco</option>${Object.entries(EST_MOD).map(([k, x]) => `<option value="${k}">Modelo pronto: ${esc(x.nome)}</option>`).join('')}</select></label>`}
     <label>Tipo<select name="tipo">${EST_TIPOS.map(([k, l]) => `<option value="${k}"${k === (dup ? dup.tipo : 'lancamento') ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
     <label>Produto<select name="produto_id"><option value="">Qualquer produto (escolhido na campanha)</option>${pr.map(p => `<option value="${p.id}"${dup && dup.produto_id === p.id ? ' selected' : ''}>${esc(p.nome)}</option>`).join('')}</select></label>
+    <label>Categoria<input name="categoria" maxlength="60" value="${dup ? esc(dup.categoria || '') : ''}" placeholder="Ex.: Lançamento, Perpétuo, Recompra"></label>
+    <label class="full">Objetivo<textarea name="objetivo" rows="2" placeholder="O que esta estratégia quer alcançar">${dup ? esc(dup.objetivo || '') : ''}</textarea></label>
     <label class="full">Descrição<textarea name="descricao">${dup ? esc(dup.descricao || '') : ''}</textarea></label>${dup ? '' : estPickHtml()}</div>`, async d => {
     const id = crypto.randomUUID(), mod = d.modelo ? EST_MOD[d.modelo] : null, pick = dup ? null : estPickLer($(raiz + ' form'));
     if (pick && !pick.length) throw new Error('Marque pelo menos uma etapa, ou escolha um modelo pronto.');
-    await q(sb.from('funis').insert({ id, workspace_id: S.ws, nome: d.nome.trim(), tipo: d.tipo, produto_id: d.produto_id || null, descricao: d.descricao || null, modelo_pronto: mod ? d.modelo : dup ? dup.modelo_pronto || null : null, ativo: true }));
+    const cvB = await temColuna('funis', 'categoria');
+    await q(sb.from('funis').insert({ id, workspace_id: S.ws, nome: d.nome.trim(), tipo: d.tipo, produto_id: d.produto_id || null, descricao: d.descricao || null, modelo_pronto: mod ? d.modelo : dup ? dup.modelo_pronto || null : null, ativo: true,
+      ...(cvB ? { categoria: (d.categoria || '').trim() || null, objetivo: (d.objetivo || '').trim() || null } : {}) }));
     const temBlocos = await (async () => { try { const r = await sb.from('estrategia_blocos').select('id').limit(1); return !r.error; } catch (e) { return false; } })();
-    if (temBlocos && dup) { await blkCopiaEstrategia(dup.id, id); fim_(id, d); toast('Estratégia duplicada'); return; }
+    if (temBlocos && dup) { await blkCopiaEstrategia(dup.id, id); if (cvB) await cvCopiaMapa(dup.id, id); fim_(id, d); toast('Estratégia duplicada'); return; }
     if (temBlocos && mod && EST_MOD_BLOCOS[d.modelo] && !pick) { await blkDoModelo(id, d.modelo); fim_(id, d); toast('Estratégia criada com blocos'); return; }
     let et = pick || [];
     if (pick) { /* etapas escolhidas na tela */ } else if (dup) et = (await q(sb.from('estrategia_etapas').select('*').eq('funil_id', dup.id))).map(e => ({ ordem: e.ordem, fase: e.fase, chave: e.chave, nome: e.nome, unidade: e.unidade, origem: e.origem, metrica: e.metrica, origem_ref: null, conta_como: e.conta_como, taxa_esperada: e.taxa_esperada }));
@@ -9670,22 +9683,36 @@ async function vEstrategia(m) {
     q(sb.from('etapas_catalogo').select('*').eq('workspace_id', w)).catch(() => []),
     q(sb.from('estrategia_blocos').select('*').eq('funil_id', id).order('ordem')).catch(() => null)]);
   const f = fs[0]; if (!f) { S.estSel = null; return vFunis(m); }
+  const cvOk = !!BL && await temColuna('estrategia_blocos', 'x');
+  const [CN, of, eqs, ce, vs] = cvOk ? await Promise.all([q(sb.from('estrategia_conexoes').select('*').eq('funil_id', id)).catch(() => []), q(sb.from('ofertas').select('id,nome').eq('workspace_id', w).order('nome')).catch(() => []),
+    equipeAtiva().catch(() => []), q(sb.from('campanha_estrategias').select('campanha_id,versao_id').eq('funil_id', id)).catch(() => []), q(sb.from('estrategia_versoes').select('id,versao').eq('funil_id', id)).catch(() => [])]) : [[], [], [], [], []];
+  const vista = cvOk ? (S.estVista || 'mapa') : 'lista';
   const R = await estRefs(f.id), Lo = estOrdena(L), avulsas = BL ? Lo.filter(e => !e.bloco_id) : Lo;
   m.innerHTML = `<div class="head"><div><button class="btn sm" id="estVolta">← Estratégias</button><h1 style="margin-top:8px">${esc(f.nome)}</h1>
       <span class="muted">${esc(EST_TIPO[f.tipo] || f.tipo)} · ${f.produto_id ? 'produto: ' + esc((pr.find(p => p.id === f.produto_id) || {}).nome || '') : 'qualquer produto'}${f.modelo_pronto && EST_MOD[f.modelo_pronto] ? ' · começou do modelo ' + esc(EST_MOD[f.modelo_pronto].nome) : ''} · ${pillAtivo(f.ativo)}</span></div>
-      <div class="acts"><button class="btn" id="estEd">Editar dados</button><button class="btn" id="estDup">Duplicar</button><button class="btn${BL ? '' : ' pri'}" id="estAdd">+ Etapa avulsa</button></div></div>
-    ${BL ? BLK_CSS + `<div class="panel" id="estQuadro"><h2>Funil da estratégia</h2><span class="muted">Monte com blocos: cada bloco já traz as métricas dele, e a métrica principal (com o ponto) passa para o próximo bloco. Clique num bloco para ver as métricas, ligar o item real, duplicar ou remover. Mudanças valem para as próximas campanhas.</span>${blkQuadroHtml(BL, L, R, true)}</div>` : EST_SEM_BANCO81}
-    ${!BL || avulsas.length ? `<div class="panel"><h2>${BL ? 'Etapas avulsas' : 'Funil da estratégia'}</h2><span class="muted">${BL ? 'Etapas que não pertencem a nenhum bloco (criadas antes dos blocos ou à mão). Continuam valendo.' : 'Fases na ordem: Aquisição, Aquecimento, Conversão, Retenção. Uma fase sem etapas não aparece. Mudanças aqui valem para as próximas campanhas; as que já existem mantêm a cópia delas.'}</span>${estTabelaEtapas(avulsas, R, 'est')}</div>` : ''}
-    <div class="panel"><h2>Campanhas que usam esta estratégia</h2>${cs.length ? `<div class="tw"><table><thead><tr><th>Campanha</th><th>Status</th><th>Período</th></tr></thead><tbody>${cs.map(c => `<tr class="clk" data-camp="${c.id}"><td><b>${esc(c.nome)}</b></td><td>${esc(c.status)}</td><td><small>${dd(c.data_inicio)}${c.data_fim ? ' a ' + dd(c.data_fim) : c.modelo === 'perpetuo' ? ' (sem fim)' : ''}</small></td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">Nenhuma campanha ainda. Ao criar uma campanha, escolha esta estratégia.</div>'}</div>`;
+      ${cvOk ? `<br><span class="muted">${f.categoria ? 'Categoria: ' + esc(f.categoria) + ' · ' : ''}${f.versao_atual ? '<b>versão ' + f.versao_atual + '</b>' : 'ainda não publicada'}${f.objetivo ? ' · ' + esc(f.objetivo) : ''}</span>` : ''}</div>
+      <div class="acts">${cvOk ? '<button class="btn pri" id="estPub">Publicar versão</button><button class="btn" id="estVers">Versões</button>' : ''}<button class="btn" id="estEd">Editar dados</button><button class="btn" id="estDup">Duplicar</button>${vista === 'lista' ? `<button class="btn${BL ? '' : ' pri'}" id="estAdd">+ Etapa avulsa</button>` : ''}</div></div>
+    ${cvOk ? `<div class="tabs">${[['mapa', 'Mapa (Canvas)'], ['lista', 'Lista']].map(([k, l]) => `<button data-ev="${k}" class="${vista === k ? 'on' : ''}">${l}</button>`).join('')}</div>` : ''}
+    ${vista === 'mapa' ? CV_CSS + BLK_CSS + '<div id="cvBox"></div>' : ''}
+    ${vista === 'lista' && BL ? BLK_CSS + `<div class="panel" id="estQuadro"><h2>Funil da estratégia</h2><span class="muted">Monte com blocos: cada bloco já traz as métricas dele, e a métrica principal (com o ponto) passa para o próximo bloco. Clique num bloco para ver as métricas, ligar o item real, duplicar ou remover. Mudanças valem para as próximas campanhas.</span>${blkQuadroHtml(BL, L, R, true)}</div>` : vista === 'lista' ? EST_SEM_BANCO81 : ''}
+    ${vista === 'lista' && cvOk ? `<div class="panel"><h2>Ligações entre os blocos</h2><span class="muted">As mesmas setas do mapa. Para criar ou mudar uma ligação, use o Mapa.</span>${CN.length ? `<div class="tw"><table><thead><tr><th>De</th><th>Para</th><th>Tipo</th><th>Condição ou nota</th></tr></thead><tbody>${CN.map(c => `<tr><td>${esc((BL.find(b => b.id === c.de_bloco) || {}).nome || '')}</td><td>${esc((BL.find(b => b.id === c.para_bloco) || {}).nome || '')}</td><td>${esc((CV_CON.find(x => x[0] === c.tipo) || [0, c.tipo])[1])}${c.tipo === 'divisao' && c.peso != null ? ' ' + c.peso + '%' : ''}</td><td>${esc(c.condicao || c.nota || c.rotulo || '—')}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">Sem ligações: o caminho segue a ordem das fases.</div>'}</div>` : ''}
+    ${vista === 'lista' && (!BL || avulsas.length) ? `<div class="panel"><h2>${BL ? 'Etapas avulsas' : 'Funil da estratégia'}</h2><span class="muted">${BL ? 'Etapas que não pertencem a nenhum bloco (criadas antes dos blocos ou à mão). Continuam valendo.' : 'Fases na ordem: Aquisição, Aquecimento, Conversão, Retenção. Uma fase sem etapas não aparece. Mudanças aqui valem para as próximas campanhas; as que já existem mantêm a cópia delas.'}</span>${estTabelaEtapas(avulsas, R, 'est')}</div>` : ''}
+    <div class="panel"><h2>Campanhas que usam esta estratégia</h2>${cs.length ? `<div class="tw"><table><thead><tr><th>Campanha</th>${cvOk ? '<th>Versão</th>' : ''}<th>Status</th><th>Período</th></tr></thead><tbody>${cs.map(c => `<tr class="clk" data-camp="${c.id}"><td><b>${esc(c.nome)}</b></td>${cvOk ? `<td>${(v => v ? 'v' + v : '<span class="muted">antes das versões</span>')((vs.find(v => v.id === (ce.find(x => x.campanha_id === c.id) || {}).versao_id) || {}).versao)}</td>` : ''}<td>${esc(c.status)}</td><td><small>${dd(c.data_inicio)}${c.data_fim ? ' a ' + dd(c.data_fim) : c.modelo === 'perpetuo' ? ' (sem fim)' : ''}</small></td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">Nenhuma campanha ainda. Ao criar uma campanha, escolha esta estratégia.</div>'}</div>`;
   $('#estVolta').onclick = () => { S.estSel = null; render(); };
   $('#estDup').onclick = () => estNova(pr, f);
   $('#estEd').onclick = () => abrirForm('Editar estratégia', 'funis', [{ k: 'nome', l: 'Nome', req: 1, full: 1 }, { k: 'tipo', l: 'Tipo', t: 'select', req: 1, opts: EST_TIPOS },
-    { k: 'produto_id', l: 'Produto (vazio = qualquer produto)', t: 'select', opts: sel(pr, 'id', 'nome') }, { k: 'descricao', l: 'Descrição', t: 'textarea' }, { k: 'ativo', l: 'Ativa', t: 'check' }], f, { ok: 'Estratégia salva' });
+    { k: 'produto_id', l: 'Produto (vazio = qualquer produto)', t: 'select', opts: sel(pr, 'id', 'nome') },
+    ...(cvOk ? [{ k: 'categoria', l: 'Categoria', ph: 'Ex.: Lançamento, Perpétuo, Recompra' }, { k: 'status', l: 'Situação', t: 'select', req: 1, opts: [['rascunho', 'Rascunho'], ['ativa', 'Em uso'], ['arquivada', 'Arquivada']] },
+      { k: 'objetivo', l: 'Objetivo geral', t: 'textarea' }, { k: 'criterios', l: 'Critérios de sucesso', t: 'textarea', hint: 'O que precisa acontecer para considerar a estratégia um sucesso.' }] : []),
+    { k: 'descricao', l: 'Descrição', t: 'textarea' }, ...(cvOk ? [] : [{ k: 'ativo', l: 'Ativa', t: 'check' }])], f, { ok: 'Estratégia salva' });
+  if (cvOk) { m.querySelectorAll('[data-ev]').forEach(b => b.onclick = () => { S.estVista = b.dataset.ev; render(); });
+    $('#estPub').onclick = () => cvPublicar(f); $('#estVers').onclick = () => cvVersoes(f);
+    if (vista === 'mapa') cvMapa($('#cvBox'), f, { BL, CN, L, R, cat, pr, of, eq: eqs }); }
   const prox = (Lo.length ? Math.max(...Lo.map(e => e.ordem || 0)) : 0) + 10;
   const abrirEd = row => estModalEtapa({ titulo: row ? 'Editar etapa' : 'Adicionar etapa', tabela: 'estrategia_etapas', extra: { funil_id: f.id }, row, R, catalogo: cat, proxOrdem: prox, usadas: L.map(e => e.chave) });
-  $('#estAdd').onclick = () => abrirEd(null);
+  if ($('#estAdd')) $('#estAdd').onclick = () => abrirEd(null);
   estLigaTabela(m, L, 'estrategia_etapas', abrirEd, 'As campanhas que já copiaram esta etapa continuam com ela.');
-  if (BL) blkLigaQuadro($('#estQuadro'), { blocos: BL, L, R, tabB: 'estrategia_blocos', tabE: 'estrategia_etapas', dono: f.id, catalogo: cat });
+  if (BL && $('#estQuadro')) blkLigaQuadro($('#estQuadro'), { blocos: BL, L, R, tabB: 'estrategia_blocos', tabE: 'estrategia_etapas', dono: f.id, catalogo: cat });
   m.querySelectorAll('[data-camp]').forEach(r => r.onclick = () => { S.campSel = r.dataset.camp; S.campTab = 'etapas'; S.view = 'mkt-camp'; S.estSel = null; render(); });
 }
 
@@ -9977,7 +10004,224 @@ async function blkCopiaEstrategia(origem, destino) {
   if (et.length) await q(sb.from('estrategia_etapas').insert(et.map(e => ({ workspace_id: S.ws, funil_id: destino, ordem: e.ordem, fase: e.fase, chave: e.chave, nome: e.nome, unidade: e.unidade, origem: e.origem, metrica: e.metrica,
     origem_ref: null, conta_como: e.conta_como, taxa_esperada: e.taxa_esperada, bloco_id: e.bloco_id ? mapa[e.bloco_id] || null : null, papel: e.papel || null, fonte: e.fonte || null }))));
 }
+/* v0.165: duplicar a estratégia leva também as posições, as propriedades e as ligações do mapa (os blocos já foram copiados, na mesma ordem) */
+async function cvCopiaMapa(origem, destino) {
+  const [a, b, cn] = await Promise.all([q(sb.from('estrategia_blocos').select('id,nome,fase,ordem,x,y,props').eq('funil_id', origem)), q(sb.from('estrategia_blocos').select('id,nome,fase,ordem').eq('funil_id', destino)),
+    q(sb.from('estrategia_conexoes').select('*').eq('funil_id', origem)).catch(() => [])]);
+  const mapa = {};
+  for (const x of a) { const y = b.find(z => z.nome === x.nome && z.fase === x.fase && z.ordem === x.ordem); if (!y) continue; mapa[x.id] = y.id;
+    if (x.x != null || Object.keys(x.props || {}).length) await q(sb.from('estrategia_blocos').update({ x: x.x, y: x.y, props: x.props || {} }).eq('id', y.id)); }
+  const rows = cn.filter(c => mapa[c.de_bloco] && mapa[c.para_bloco]).map(c => ({ workspace_id: S.ws, funil_id: destino, de_bloco: mapa[c.de_bloco], para_bloco: mapa[c.para_bloco], tipo: c.tipo, rotulo: c.rotulo, condicao: c.condicao, nota: c.nota, peso: c.peso }));
+  if (rows.length) await q(sb.from('estrategia_conexoes').insert(rows));
+}
 /* ===== fim dos blocos ===== */
+/* ================= v0.165 — Strategy Canvas (mapa da estratégia) =================
+   O mapa e a lista são duas vistas das mesmas linhas: estrategia_blocos (nós, com x, y e props), estrategia_conexoes (setas)
+   e estrategia_etapas (métricas de cada bloco). Nada é copiado entre as vistas; cada ação grava na hora.
+   Blocos sem posição aparecem arrumados por fase (colunas) e ordem. Blocos de lógica e personalizados não têm métricas. */
+const CV_GRUPOS = [
+  ['Aquisição', [['trafego', 'Meta Ads', { canal: 'Meta Ads' }], ['trafego', 'Google Ads', { canal: 'Google Ads' }], ['trafego', 'YouTube Ads', { canal: 'YouTube' }], ['conteudo', 'Instagram', { canal: 'Instagram' }],
+    ['conteudo', 'Tráfego orgânico', { canal: 'Orgânico' }], ['indicacao', 'Afiliados', { canal: 'Afiliados' }], ['indicacao', 'Indicação / parceria', {}]]],
+  ['Páginas', [['captura', 'Landing page', {}], ['captura', 'Página de captura', {}], ['pagina', 'Página de vendas', { fase: 'conversao' }], ['pagina', 'Página de obrigado', { fase: 'aquecimento' }], ['vsl', 'VSL', {}], ['aula', 'Webinar', {}]]],
+  ['Comunicação', [['api', 'WhatsApp', { canal: 'WhatsApp' }], ['grupo', 'Grupo de WhatsApp', {}], ['email', 'E-mail', {}], ['comunicacao', 'Chatbot', {}], ['comunicacao', 'Automação', {}], ['comunicacao', 'Notificação', {}]]],
+  ['Conversão', [['pesquisa', 'Formulário', {}], ['checkout', 'Checkout', {}], ['pagina', 'Pagamento', { fase: 'conversao' }], ['comercial', 'Agendamento', {}], ['comercial', 'Atendimento comercial', {}]]],
+  ['Pós-venda', [['posvenda', 'Onboarding', {}], ['posvenda', 'Área de membros', {}], ['posvenda', 'Consumo do produto', {}], ['posvenda', 'Ativação', {}], ['posvenda', 'Acompanhamento', {}],
+    ['recompra', 'Upsell', {}], ['recompra', 'Cross-sell', {}], ['assinatura', 'Renovação', {}], ['recompra', 'Recompra', {}]]],
+  ['Lógica', [['condicao', 'Condição', {}], ['decisao', 'Decisão', {}], ['divisao', 'Divisão de fluxo', {}], ['evento', 'Evento', {}], ['gatilho', 'Gatilho', {}]]],
+  ['Personalizado', [['personalizado', 'Bloco personalizado', {}]]]
+];
+// blocos sem métricas prontas (o resto vem de EST_BLOCOS, com as métricas e a fonte)
+const CV_SIMPLES = { pagina: ['Página', 'aquisicao'], comunicacao: ['Comunicação', 'aquecimento'], posvenda: ['Pós-venda', 'retencao'], condicao: ['Condição', 'aquecimento'], decisao: ['Decisão', 'aquecimento'],
+  divisao: ['Divisão de fluxo', 'aquecimento'], evento: ['Evento', 'aquecimento'], gatilho: ['Gatilho', 'aquecimento'], personalizado: ['Personalizado', 'aquisicao'] };
+const CV_LOGICA = ['condicao', 'decisao', 'divisao', 'evento', 'gatilho'];
+const CV_ST = [['', '—'], ['planejado', 'Planejado'], ['implementando', 'Implementando'], ['pronto', 'Pronto'], ['pausado', 'Pausado']];
+const CV_CON = [['segue', 'Segue'], ['sim', 'Sim'], ['nao', 'Não'], ['divisao', 'Divisão (%)']];
+const CV_W = 190, CV_COLX = { aquisicao: 40, aquecimento: 320, conversao: 600, retencao: 880 };
+const cvTipoNome = t => (EST_BLOCOS[t] || {}).nome || (CV_SIMPLES[t] || [t])[0];
+function cvPos(blocos) { // posição salva ou arrumada por fase e ordem
+  const P = {}, porFase = {};
+  blocos.slice().sort((a, b) => a.ordem - b.ordem).forEach(b => { if (b.x != null && b.y != null) { P[b.id] = { x: Number(b.x), y: Number(b.y) }; return; }
+    const i = (porFase[b.fase] = (porFase[b.fase] || 0) + 1) - 1; P[b.id] = { x: CV_COLX[b.fase] ?? 40, y: 40 + i * 130 }; });
+  return P;
+}
+async function cvCriaBloco(f, ctx, tipo, nome, extra, x, y) {
+  const fase = (extra && extra.fase) || (EST_BLOCOS[tipo] ? EST_BLOCOS[tipo].fase : (CV_SIMPLES[tipo] || [0, 'aquisicao'])[1]);
+  const ordem = ordFaseMax(ctx.BL, fase) + 10, props = {}; if (extra && extra.canal) props.canal = extra.canal;
+  if (ctx.BL.some(b => b.nome.trim().toLowerCase() === nome.trim().toLowerCase())) { let n = 2; while (ctx.BL.some(b => b.nome.toLowerCase() === (nome + ' ' + n).toLowerCase())) n++; nome = nome + ' ' + n; }
+  let id;
+  if (EST_BLOCOS[tipo]) id = await blkCria({ tabB: 'estrategia_blocos', tabE: 'estrategia_etapas', dono: f.id, tipo, nome, ordem, ref: null, chavesUsadas: ctx.L.map(e => e.chave) });
+  else { id = crypto.randomUUID(); await q(sb.from('estrategia_blocos').insert({ id, workspace_id: S.ws, funil_id: f.id, ordem, fase, tipo, nome, origem_ref: null })); }
+  await q(sb.from('estrategia_blocos').update({ x: Math.round(x), y: Math.round(y), props }).eq('id', id));
+  return id;
+}
+function cvMapa(el, f, ctx) {
+  const { BL, CN, L } = ctx, P = cvPos(BL), V = S.cvView = S.cvView && S.cvView.f === f.id ? S.cvView : { f: f.id, x: 0, y: 0, z: 1 }, edita = nivelMod('mkt') === 'editar' || nivelMod('gro') === 'editar';
+  let sel = S.cvSel && (BL.some(b => b.id === S.cvSel.id) || CN.some(c => c.id === S.cvSel.id)) ? S.cvSel : null;
+  const princ = b => { const et = L.filter(e => e.bloco_id === b.id); return et.find(e => e.papel === 'principal') || et[0]; };
+  const no = b => { const p = P[b.id], pr = princ(b), lg = CV_LOGICA.includes(b.tipo), st = (b.props || {}).status;
+    return `<div class="cv-no${lg ? ' cv-lg' : ''}${sel && sel.id === b.id ? ' on' : ''}" data-no="${b.id}" style="left:${p.x}px;top:${p.y}px">
+      <div class="cv-nh" data-arr="${b.id}"><span class="cv-tp">${esc(cvTipoNome(b.tipo))}</span>${st ? `<span class="cv-st cv-st-${st}">${esc((CV_ST.find(x => x[0] === st) || [0, st])[1])}</span>` : ''}</div>
+      <b class="cv-nm">${esc(b.nome)}</b>${(b.props || {}).canal ? `<small>${esc(b.props.canal)}</small>` : ''}
+      ${pr ? `<small class="cv-kpi"><span class="blk-dot"></span>${esc(blkCurto(pr, b))}</small>` : lg ? '' : '<small class="muted">sem métrica</small>'}
+      ${edita ? `<span class="cv-pino" data-pino="${b.id}" title="Arraste até outro bloco para ligar"></span>` : ''}</div>`; };
+  const H = b => ({ x: P[b].x + CV_W, y: P[b].y + 34 }), E = b => ({ x: P[b].x, y: P[b].y + 34 });
+  const seta = c => { if (!P[c.de_bloco] || !P[c.para_bloco]) return ''; const a = H(c.de_bloco), z = E(c.para_bloco), dx = Math.max(40, Math.abs(z.x - a.x) / 2);
+    const d = `M${a.x},${a.y} C${a.x + dx},${a.y} ${z.x - dx},${z.y} ${z.x},${z.y}`, mx = (a.x + z.x) / 2, my = (a.y + z.y) / 2;
+    const rot = c.rotulo || (c.tipo === 'sim' ? 'Sim' : c.tipo === 'nao' ? 'Não' : c.tipo === 'divisao' ? (c.peso != null ? c.peso + '%' : 'Divisão') : '');
+    return `<g class="cv-ar${sel && sel.id === c.id ? ' on' : ''} cv-t-${c.tipo}" data-ar="${c.id}"><path d="${d}" class="cv-hit"/><path d="${d}" class="cv-ln" marker-end="url(#cvSeta)"/>
+      ${rot || c.nota || c.condicao ? `<foreignObject x="${mx - 60}" y="${my - 12}" width="120" height="24"><div class="cv-rot">${esc(rot || (c.nota ? '📝' : '?'))}</div></foreignObject>` : ''}</g>`; };
+  const pal = CV_GRUPOS.map(([g, its]) => `<details class="cv-g" ${g === 'Aquisição' || g === 'Páginas' ? 'open' : ''}><summary>${g}</summary>${its.map(([t, n, x], i) => `<div class="cv-pi" draggable="${edita}" data-pt="${t}" data-pn="${esc(n)}" data-px='${esc(JSON.stringify(x))}' title="${esc(cvTipoNome(t))}">${esc(n)}</div>`).join('')}</details>`).join('');
+  el.innerHTML = `<div class="cv">${edita ? `<aside class="cv-pal"><div class="cv-pt">Componentes</div><span class="muted" style="font-size:11.5px">Arraste para o mapa ou clique para adicionar.</span>${pal}</aside>` : ''}
+    <div class="cv-palco" id="cvPalco"><div class="cv-ctl"><button class="btn sm" data-z="1" title="Aproximar">+</button><button class="btn sm" data-z="-1" title="Afastar">−</button><button class="btn sm" data-z="0">Ajustar</button>
+      ${edita && !CN.length && BL.length > 1 ? '<button class="btn sm" id="cvLiga">Ligar na ordem</button>' : ''}<span class="muted" id="cvSalvo"></span></div>
+      <div class="cv-mundo" id="cvMundo" style="transform:translate(${V.x}px,${V.y}px) scale(${V.z})">
+        <svg class="cv-svg" width="4000" height="3000"><defs><marker id="cvSeta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="cv-mk"/></marker></defs>${CN.map(seta).join('')}<path id="cvTemp" class="cv-ln cv-temp" d=""/></svg>
+        ${BL.map(no).join('')}</div>
+      ${BL.length ? '' : '<div class="cv-vazio">Arraste um componente da esquerda para começar o mapa.</div>'}</div>
+    <aside class="cv-prop" id="cvProp"></aside></div>`;
+  const palco = $('#cvPalco'), mundo = $('#cvMundo'), salvo = t => { const s = $('#cvSalvo'); if (s) { s.textContent = t; clearTimeout(cvMapa._t); cvMapa._t = setTimeout(() => { if (s.isConnected) s.textContent = ''; }, 1800); } };
+  const aplica = () => { mundo.style.transform = `translate(${V.x}px,${V.y}px) scale(${V.z})`; };
+  const mundoXY = e => { const r = palco.getBoundingClientRect(); return { x: (e.clientX - r.left - V.x) / V.z, y: (e.clientY - r.top - V.y) / V.z }; };
+  const ajusta = () => { if (!BL.length) { V.x = 0; V.y = 0; V.z = 1; return aplica(); } const xs = BL.map(b => P[b.id].x), ys = BL.map(b => P[b.id].y), r = palco.getBoundingClientRect();
+    const w = Math.max(...xs) + CV_W - Math.min(...xs) + 90, h = Math.max(...ys) + 110 - Math.min(...ys) + 84; V.z = Math.max(.35, Math.min(1.2, Math.min(r.width / w, r.height / h)));
+    V.x = -Math.min(...xs) * V.z + 24; V.y = -Math.min(...ys) * V.z + 60; aplica(); };
+  if (!S.cvView.ajustado) { S.cvView.ajustado = true; ajusta(); }
+  palco.querySelectorAll('[data-z]').forEach(b => b.onclick = () => { const d = Number(b.dataset.z); if (!d) return ajusta(); V.z = Math.max(.3, Math.min(2, V.z * (d > 0 ? 1.2 : 1 / 1.2))); aplica(); });
+  palco.addEventListener('wheel', e => { e.preventDefault(); const r = palco.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top, z0 = V.z;
+    V.z = Math.max(.3, Math.min(2, V.z * (e.deltaY < 0 ? 1.1 : 1 / 1.1))); V.x = px - (px - V.x) * V.z / z0; V.y = py - (py - V.y) * V.z / z0; aplica(); }, { passive: false });
+  // mover o mapa (fundo), mover bloco (cabeçalho), ligar (pino)
+  let arr = null;
+  palco.addEventListener('pointerdown', e => {
+    const pino = e.target.closest('[data-pino]'), cab = e.target.closest('[data-arr]'), nob = e.target.closest('[data-no]');
+    if (pino && edita) { arr = { tipo: 'liga', de: pino.dataset.pino }; e.preventDefault(); return; }
+    if (cab && edita) { const id = cab.dataset.arr, w = mundoXY(e); arr = { tipo: 'no', id, dx: w.x - P[id].x, dy: w.y - P[id].y, mexeu: false }; e.preventDefault(); return; }
+    if (!nob && !e.target.closest('[data-ar]') && !e.target.closest('.cv-ctl')) { arr = { tipo: 'mapa', x0: e.clientX - V.x, y0: e.clientY - V.y }; palco.classList.add('arrasta'); }
+  });
+  const move = e => { if (!arr) return;
+    if (arr.tipo === 'mapa') { V.x = e.clientX - arr.x0; V.y = e.clientY - arr.y0; aplica(); return; }
+    const w = mundoXY(e);
+    if (arr.tipo === 'no') { arr.mexeu = true; P[arr.id] = { x: Math.round(w.x - arr.dx), y: Math.round(w.y - arr.dy) }; const n = mundo.querySelector(`[data-no="${arr.id}"]`); n.style.left = P[arr.id].x + 'px'; n.style.top = P[arr.id].y + 'px';
+      CN.filter(c => c.de_bloco === arr.id || c.para_bloco === arr.id).forEach(c => { const g = mundo.querySelector(`[data-ar="${c.id}"]`); if (g) g.outerHTML = seta(c); }); return; }
+    if (arr.tipo === 'liga') { const a = H(arr.de); $('#cvTemp').setAttribute('d', `M${a.x},${a.y} L${w.x},${w.y}`); } };
+  const solta = e => { if (!arr) return; const a = arr; arr = null; palco.classList.remove('arrasta'); $('#cvTemp') && $('#cvTemp').setAttribute('d', '');
+    if (a.tipo === 'no' && a.mexeu) act(async () => { await q(sb.from('estrategia_blocos').update({ x: P[a.id].x, y: P[a.id].y }).eq('id', a.id)); const b = BL.find(x => x.id === a.id); b.x = P[a.id].x; b.y = P[a.id].y; salvo('Posição salva'); });
+    else if (a.tipo === 'no') { sel = { t: 'no', id: a.id }; S.cvSel = sel; mundo.querySelectorAll('.cv-no').forEach(n => n.classList.toggle('on', n.dataset.no === a.id)); prop(); }
+    if (a.tipo === 'liga') { const alvo = document.elementFromPoint(e.clientX, e.clientY), nb = alvo && alvo.closest('[data-no]');
+      if (nb && nb.dataset.no !== a.de) act(async () => { const de = BL.find(b => b.id === a.de), saem = CN.filter(c => c.de_bloco === a.de);
+        const tipo = ['condicao', 'decisao'].includes(de.tipo) ? (saem.some(c => c.tipo === 'sim') ? 'nao' : 'sim') : de.tipo === 'divisao' ? 'divisao' : 'segue';
+        if (CN.some(c => c.de_bloco === a.de && c.para_bloco === nb.dataset.no)) throw new Error('Esses dois blocos já estão ligados.');
+        await q(sb.from('estrategia_conexoes').insert({ workspace_id: S.ws, funil_id: f.id, de_bloco: a.de, para_bloco: nb.dataset.no, tipo, peso: tipo === 'divisao' ? 50 : null })); render(); }, 'Blocos ligados'); } };
+  window.addEventListener('pointermove', move); window.addEventListener('pointerup', solta, { once: false });
+  const limpa = new MutationObserver(() => { if (!palco.isConnected) { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', solta); limpa.disconnect(); } });
+  limpa.observe(document.body, { childList: true, subtree: true });
+  mundo.querySelectorAll('[data-no]').forEach(n => n.addEventListener('click', e => { if (e.target.closest('[data-pino]') || e.target.closest('[data-arr]')) return; sel = { t: 'no', id: n.dataset.no }; S.cvSel = sel; mundo.querySelectorAll('.cv-no').forEach(x => x.classList.toggle('on', x === n)); prop(); }));
+  mundo.addEventListener('click', e => { const g = e.target.closest('[data-ar]'); if (!g) return; sel = { t: 'ar', id: g.dataset.ar }; S.cvSel = sel; prop(); });
+  // biblioteca: arrastar ou clicar
+  el.querySelectorAll('[data-pt]').forEach(it => {
+    it.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', JSON.stringify({ t: it.dataset.pt, n: it.dataset.pn, x: JSON.parse(it.dataset.px || '{}') })); });
+    it.onclick = () => { const r = palco.getBoundingClientRect(); const c = { x: (r.width / 2 - V.x) / V.z - CV_W / 2, y: (r.height / 2 - V.y) / V.z - 40 };
+      novoBloco(it.dataset.pt, it.dataset.pn, JSON.parse(it.dataset.px || '{}'), c.x, c.y); };
+  });
+  palco.addEventListener('dragover', e => e.preventDefault());
+  palco.addEventListener('drop', e => { e.preventDefault(); let d; try { d = JSON.parse(e.dataTransfer.getData('text/plain')); } catch (x) { return; } const w = mundoXY(e); novoBloco(d.t, d.n, d.x, w.x - CV_W / 2, w.y - 20); });
+  const novoBloco = (tipo, nome, extra, x, y) => { if (tipo === 'personalizado') return modal('Bloco personalizado', `<div class="grid2"><label class="full">Nome<input name="nome" required maxlength="80" placeholder="Ex.: Live de lançamento"></label>
+      <label>Fase<select name="fase">${EST_FASES.map(([k, l]) => `<option value="${k}">${l}</option>`).join('')}</select></label><span class="muted full">Depois, no painel do bloco, adicione as métricas dele.</span></div>`,
+      async d => { const id = await cvCriaBloco(f, ctx, 'personalizado', d.nome.trim(), { fase: d.fase }, x, y); S.cvSel = { t: 'no', id }; toast('Bloco criado'); }, 'Criar');
+    act(async () => { const id = await cvCriaBloco(f, ctx, tipo, nome, extra, x, y); S.cvSel = { t: 'no', id }; render(); }, 'Bloco adicionado'); };
+  if ($('#cvLiga')) $('#cvLiga').onclick = () => act(async () => { const ord = BL.slice().sort((a, b) => (CV_COLX[a.fase] - CV_COLX[b.fase]) || a.ordem - b.ordem);
+    const rows = ord.slice(1).map((b, i) => ({ workspace_id: S.ws, funil_id: f.id, de_bloco: ord[i].id, para_bloco: b.id, tipo: 'segue' })); if (rows.length) await q(sb.from('estrategia_conexoes').insert(rows)); render(); }, 'Blocos ligados na ordem das fases');
+  // painel de propriedades
+  const prop = () => { const box = $('#cvProp'); if (!box) return;
+    if (!sel) { box.innerHTML = `<div class="cv-pt">Propriedades</div><span class="muted">Clique num bloco ou numa seta para editar. Arraste pelo topo do bloco para mover e pelo ponto da direita para ligar a outro bloco.</span>
+      <div class="cv-res"><b>${BL.length}</b> blocos · <b>${CN.length}</b> ligações</div>`; return; }
+    if (sel.t === 'ar') { const c = CN.find(x => x.id === sel.id); if (!c) return; const de = BL.find(b => b.id === c.de_bloco), pa = BL.find(b => b.id === c.para_bloco);
+      box.innerHTML = `<div class="cv-pt">Ligação</div><span class="muted">${esc(de ? de.nome : '')} → ${esc(pa ? pa.nome : '')}</span>
+        <form id="cvFa"><label>Tipo<select name="tipo"${edita ? '' : ' disabled'}>${CV_CON.map(([k, l]) => `<option value="${k}"${c.tipo === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+        <label data-peso>Percentual (%)<input name="peso" type="number" min="0" max="100" value="${c.peso ?? ''}"${edita ? '' : ' disabled'}></label>
+        <label>Rótulo<input name="rotulo" maxlength="80" value="${esc(c.rotulo || '')}"${edita ? '' : ' disabled'}></label>
+        <label>Condição<input name="condicao" maxlength="500" value="${esc(c.condicao || '')}" placeholder="Ex.: assistiu 30 min da aula"${edita ? '' : ' disabled'}></label>
+        <label>Nota ou decisão<textarea name="nota" rows="3"${edita ? '' : ' disabled'}>${esc(c.nota || '')}</textarea></label>
+        ${edita ? '<div class="acts"><button class="btn pri sm" type="submit">Salvar</button><button class="btn bad sm" type="button" id="cvArDel">Excluir ligação</button></div>' : ''}</form>`;
+      const fa = $('#cvFa'), vis = () => { fa.querySelector('[data-peso]').style.display = fa.tipo.value === 'divisao' ? '' : 'none'; }; fa.tipo.onchange = vis; vis();
+      fa.onsubmit = ev => { ev.preventDefault(); act(async () => { await q(sb.from('estrategia_conexoes').update({ tipo: fa.tipo.value, peso: fa.tipo.value === 'divisao' && fa.peso.value !== '' ? Number(fa.peso.value) : null,
+        rotulo: fa.rotulo.value.trim() || null, condicao: fa.condicao.value.trim() || null, nota: fa.nota.value.trim() || null }).eq('id', c.id)); render(); }, 'Ligação salva'); };
+      if ($('#cvArDel')) $('#cvArDel').onclick = () => act(async () => { await q(sb.from('estrategia_conexoes').delete().eq('id', c.id)); S.cvSel = null; render(); }, 'Ligação excluída');
+      return; }
+    const b = BL.find(x => x.id === sel.id); if (!b) return; const pr0 = b.props || {}, et = L.filter(e => e.bloco_id === b.id).sort((x, y) => x.ordem - y.ordem);
+    const dep = CN.filter(c => c.para_bloco === b.id).map(c => (BL.find(x => x.id === c.de_bloco) || {}).nome).filter(Boolean);
+    box.innerHTML = `<div class="cv-pt">${esc(cvTipoNome(b.tipo))}</div>
+      <form id="cvFb"><label>Nome<input name="nome" required maxlength="80" value="${esc(b.nome)}"${edita ? '' : ' disabled'}></label>
+      <label>Fase<select name="fase"${edita ? '' : ' disabled'}>${EST_FASES.map(([k, l]) => `<option value="${k}"${b.fase === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+      <label>Objetivo da etapa<textarea name="objetivo" rows="2"${edita ? '' : ' disabled'}>${esc(pr0.objetivo || '')}</textarea></label>
+      <label>Descrição<textarea name="descricao" rows="2"${edita ? '' : ' disabled'}>${esc(pr0.descricao || '')}</textarea></label>
+      <label>Canal ou plataforma<input name="canal" maxlength="80" value="${esc(pr0.canal || '')}"${edita ? '' : ' disabled'}></label>
+      <label>Produto<select name="produto_id"${edita ? '' : ' disabled'}><option value="">—</option>${ctx.pr.map(p => `<option value="${p.id}"${pr0.produto_id === p.id ? ' selected' : ''}>${esc(p.nome)}</option>`).join('')}</select></label>
+      <label>Oferta<select name="oferta_id"${edita ? '' : ' disabled'}><option value="">—</option>${ctx.of.map(o => `<option value="${o.id}"${pr0.oferta_id === o.id ? ' selected' : ''}>${esc(o.nome)}</option>`).join('')}</select></label>
+      <label>Responsável<select name="responsavel_id"${edita ? '' : ' disabled'}><option value="">—</option>${ctx.eq.map(x => `<option value="${x.id}"${pr0.responsavel_id === x.id ? ' selected' : ''}>${esc(x.nome)}</option>`).join('')}</select></label>
+      <label>Status de implementação<select name="status"${edita ? '' : ' disabled'}>${CV_ST.map(([k, l]) => `<option value="${k}"${(pr0.status || '') === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+      <label>Meta esperada<input name="meta" maxlength="160" value="${esc(pr0.meta || '')}" placeholder="Ex.: 2.000 leads ou 25% de conversão"${edita ? '' : ' disabled'}></label>
+      <label>Eventos de rastreamento<input name="eventos" maxlength="300" value="${esc((pr0.eventos || []).join(', '))}" placeholder="Ex.: Lead, InitiateCheckout"${edita ? '' : ' disabled'}></label>
+      <label>Observações<textarea name="notas" rows="2"${edita ? '' : ' disabled'}>${esc(pr0.notas || '')}</textarea></label>
+      ${edita ? '<div class="acts"><button class="btn pri sm" type="submit">Salvar</button></div>' : ''}</form>
+      <div class="cv-sec"><b>Depende de</b><br><span class="muted">${dep.length ? dep.map(esc).join(', ') : 'nenhum bloco (início do fluxo)'}</span></div>
+      <div class="cv-sec"><b>Métricas e fonte de dados</b>${et.length ? `<ul class="cv-mt">${et.map(e => `<li>${e.papel === 'principal' ? '<span class="blk-dot"></span><b>' + esc(blkCurto(e, b)) + '</b>' : esc(blkCurto(e, b))}<small class="muted"> · ${esc(e.fonte || EST_ORIG[e.origem] || '')} · ${blkComo(e)}</small></li>`).join('')}</ul>` : '<br><span class="muted">Sem métricas.</span>'}
+        ${edita ? '<button class="btn sm" id="cvMet" type="button">Métricas, meta e fonte</button>' : ''}</div>
+      ${edita ? '<div class="acts" style="margin-top:8px"><button class="btn sm" id="cvDup" type="button">Duplicar</button><button class="btn sm bad" id="cvDel" type="button">Excluir bloco</button></div>' : ''}`;
+    const fb = $('#cvFb');
+    fb.onsubmit = ev => { ev.preventDefault(); act(async () => { const nome = fb.nome.value.trim();
+      if (BL.some(x => x.id !== b.id && x.nome.trim().toLowerCase() === nome.toLowerCase())) throw new Error('Já existe um bloco com esse nome.');
+      const props = { ...pr0, objetivo: fb.objetivo.value.trim() || null, descricao: fb.descricao.value.trim() || null, canal: fb.canal.value.trim() || null, produto_id: fb.produto_id.value || null,
+        oferta_id: fb.oferta_id.value || null, responsavel_id: fb.responsavel_id.value || null, status: fb.status.value || null, meta: fb.meta.value.trim() || null,
+        eventos: fb.eventos.value.split(',').map(x => x.trim()).filter(Boolean), notas: fb.notas.value.trim() || null };
+      Object.keys(props).forEach(k => { if (props[k] == null || (Array.isArray(props[k]) && !props[k].length)) delete props[k]; });
+      await q(sb.from('estrategia_blocos').update({ nome, fase: fb.fase.value, props }).eq('id', b.id));
+      for (const e of et) { const v = {}; if (nome !== b.nome && e.nome.startsWith(b.nome + ' · ')) v.nome = nome + ' · ' + e.nome.slice(b.nome.length + 3); if (fb.fase.value !== b.fase) v.fase = fb.fase.value; if (Object.keys(v).length) await q(sb.from('estrategia_etapas').update(v).eq('id', e.id)); }
+      render(); }, 'Bloco salvo'); };
+    if ($('#cvMet')) $('#cvMet').onclick = () => blkModalAbrir({ b, L, R: ctx.R, tabB: 'estrategia_blocos', tabE: 'estrategia_etapas', dono: f.id, blocos: BL, catalogo: ctx.cat });
+    if ($('#cvDup')) $('#cvDup').onclick = () => act(async () => { const id = await cvCriaBloco(f, ctx, b.tipo, b.nome, { fase: b.fase, canal: pr0.canal }, P[b.id].x + 30, P[b.id].y + 140);
+      await q(sb.from('estrategia_blocos').update({ props: { ...pr0 } }).eq('id', id)); S.cvSel = { t: 'no', id }; render(); }, 'Bloco duplicado');
+    if ($('#cvDel')) $('#cvDel').onclick = () => modal('Excluir bloco', `<p>Excluir <b>${esc(b.nome)}</b>, as ${et.length} métricas e as ligações dele? As campanhas que já copiaram este bloco continuam com ele.</p>`, async () => {
+      await q(sb.from('estrategia_etapas').delete().eq('bloco_id', b.id)); await q(sb.from('estrategia_blocos').delete().eq('id', b.id)); S.cvSel = null; toast('Bloco excluído'); }, 'Excluir');
+  };
+  prop();
+}
+const CV_CSS = `<style id="cvCss">.cv{display:grid;grid-template-columns:200px minmax(0,1fr) 290px;gap:12px;height:calc(100vh - 230px);min-height:520px}
+.cv-pal,.cv-prop{border:1px solid var(--line);border-radius:12px;background:var(--panel,var(--surface));padding:10px;overflow:auto}
+.cv-pt{font-weight:700;font-size:13px;margin-bottom:4px}.cv-g{margin-top:8px}.cv-g summary{cursor:pointer;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.cv-pi{margin-top:5px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;cursor:grab;background:var(--surface-2,var(--bg))}.cv-pi:hover{border-color:var(--accent)}
+.cv-palco{position:relative;overflow:hidden;border:2px solid var(--line);border-radius:12px;background-color:var(--bg);background-image:radial-gradient(rgba(127,127,127,.25) 1px,transparent 1px);background-size:22px 22px;cursor:grab;touch-action:none}
+.cv-palco.arrasta{cursor:grabbing}.cv-mundo{position:absolute;left:0;top:0;transform-origin:0 0}.cv-svg{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.cv-svg .cv-ar{pointer-events:auto;cursor:pointer}.cv-hit{stroke:transparent;stroke-width:14;fill:none}.cv-ln{stroke:var(--muted);stroke-width:2;fill:none}.cv-mk{fill:var(--muted)}
+.cv-ar:hover .cv-ln,.cv-ar.on .cv-ln{stroke:var(--accent);stroke-width:2.5}.cv-t-sim .cv-ln{stroke:var(--good)}.cv-t-nao .cv-ln{stroke:var(--bad);stroke-dasharray:6 4}.cv-t-divisao .cv-ln{stroke-dasharray:2 4}
+.cv-temp{stroke:var(--accent);stroke-dasharray:5 4}.cv-rot{font-size:11px;background:var(--panel,var(--surface));border:1px solid var(--line);border-radius:99px;padding:1px 8px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cv-no{position:absolute;width:${CV_W}px;background:var(--panel,var(--surface));border:2px solid var(--line);border-radius:12px;padding:0 10px 9px;box-shadow:0 2px 8px rgba(15,23,42,.08);display:flex;flex-direction:column;gap:3px;cursor:pointer}
+.cv-no.on{border-color:var(--accent);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.18)}.cv-no.cv-lg{border-style:dashed;border-radius:18px}
+.cv-nh{display:flex;justify-content:space-between;align-items:center;gap:6px;margin:0 -10px 2px;padding:5px 10px;border-bottom:1px solid var(--line);cursor:move;border-radius:10px 10px 0 0;background:rgba(var(--accent-rgb),.06)}
+.cv-tp{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cv-st{font-size:10px;padding:1px 6px;border-radius:99px;border:1px solid var(--line);white-space:nowrap}.cv-st-pronto{color:var(--good)}.cv-st-implementando{color:var(--accent)}.cv-st-pausado{color:var(--muted)}
+.cv-nm{font-size:13.5px;line-height:1.25;overflow-wrap:anywhere}.cv-no small{font-size:11.5px;color:var(--muted)}.cv-kpi{color:var(--ink)!important}
+.cv-pino{position:absolute;right:-8px;top:27px;width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid var(--panel,#fff);cursor:crosshair}
+.cv-ctl{position:absolute;left:10px;top:10px;z-index:2;display:flex;gap:4px;align-items:center}.cv-vazio{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);pointer-events:none}
+.cv-prop form{display:flex;flex-direction:column;gap:6px;margin-top:8px}.cv-prop label{font-size:12px}.cv-sec{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);font-size:12.5px}
+.cv-mt{margin:6px 0;padding-left:16px}.cv-res{margin-top:10px;font-size:12.5px}
+@media (max-width:1100px){.cv{grid-template-columns:minmax(0,1fr);height:auto}.cv-palco{height:520px}.cv-pal{max-height:220px}}</style>`;
+
+/* Versões da estratégia */
+function cvPublicar(f) {
+  modal('Publicar versão ' + ((f.versao_atual || 0) + 1), `<p>A versão guarda o mapa como está agora (blocos, ligações e métricas). As próximas campanhas com esta estratégia usam esta versão; as que já existem continuam com a delas.</p>
+    <label>O que mudou (opcional)<input name="nota" maxlength="1000" placeholder="Ex.: entrou o grupo de WhatsApp antes da aula"></label>`, async d => {
+    const v = await q(sb.rpc('estrategia_publicar', { p_funil: f.id, p_nota: d.nota || null })); toast('Versão ' + v + ' publicada'); }, 'Publicar');
+}
+async function cvVersoes(f) {
+  const [vs, ce, cs] = await Promise.all([q(sb.from('estrategia_versoes').select('id,versao,nota,publicada_em,foto').eq('funil_id', f.id).order('versao', { ascending: false })),
+    q(sb.from('campanha_estrategias').select('campanha_id,versao_id').eq('funil_id', f.id)).catch(() => []), q(sb.from('campanhas').select('id,nome').eq('funil_id', f.id))]);
+  const nomeC = id => (cs.find(c => c.id === id) || {}).nome || 'campanha';
+  modal('Versões de ' + f.nome, vs.length ? `<div class="tw"><table><thead><tr><th>Versão</th><th>Publicada</th><th>O que mudou</th><th class="n">Blocos</th><th>Campanhas</th></tr></thead><tbody>${vs.map(v => {
+    const cv = ce.filter(x => x.versao_id === v.id).map(x => esc(nomeC(x.campanha_id)));
+    return `<tr><td><b>v${v.versao}</b>${v.versao === f.versao_atual ? ' <span class="pill good">atual</span>' : ''}</td><td>${dtt(v.publicada_em)}</td><td>${esc(v.nota || '—')}</td><td class="n">${((v.foto || {}).blocos || []).length}</td><td>${cv.join(', ') || '<span class="muted">—</span>'}</td></tr>`; }).join('')}</tbody></table></div>
+    <p class="muted">Cada campanha guarda a cópia das etapas da versão que usou: mudar a estratégia não muda as campanhas que já existem.</p>` : '<p class="muted">Nenhuma versão publicada ainda. A primeira é gravada no "Publicar" ou quando a primeira campanha usar esta estratégia.</p>', null, 'Fechar', true);
+}
+
 /* ===== v0.81 — Simulador de lucro (Growth Profit Simulator): motor de cálculo ===== */
 /* Funções puras: recebem as premissas (JSON) e devolvem os resultados. Nada aqui lê ou grava no banco.
    Unidade: valor esperado fracionário (100 elegíveis × 20% = 20 compras). Meses contados a partir do mês inicial (0 = primeiro mês). */
@@ -10663,7 +10907,7 @@ const PAC_SEMPRE = ['cad-equipe', 'cad-funcoes', 'cockpit'];
 /* v0.108: telas que saíram do menu (aposentadas ou que viraram aba de outra) */
 const TELAS_FORA_DO_MENU = ['gro-lucro', 'gro-analise', 'gro-cenarios', 'ho-cohort', 'ho-ascensao'];
 const PAC_SEM_BANCO = '<div class="panel" style="border-left:4px solid var(--warn)"><b>Os pacotes de acesso ainda não estão no banco.</b> <span class="muted">Execute supabase/migrations/20261010230000_pacotes_acesso.sql no SQL Editor do Supabase (depois da migração de segurança) e recarregue.</span></div>';
-const telaLiberada = k => ehCasaV(k) || !S.acesso || S.acesso.has(k) || (k === 'ho-retencao' && (S.acesso.has('ho-cohort') || S.acesso.has('ho-ascensao'))) || (k === 'ho-cg' && S.acesso.has('crm-alunos')) || (k === 'gro-cenarios' && S.acesso.has('gro-modelo')) || PAC_SEMPRE.includes(k) || TELAS_INT.includes(k);
+const telaLiberada = k => ehCasaV(k) || !S.acesso || S.acesso.has(k) || (k === 'ho-retencao' && (S.acesso.has('ho-cohort') || S.acesso.has('ho-ascensao'))) || (k === 'ho-cg' && S.acesso.has('crm-alunos')) || (k === 'mkt-estrategias' && (S.acesso.has('mkt-camp') || S.acesso.has('cad-funis'))) || (k === 'gro-cenarios' && S.acesso.has('gro-modelo')) || PAC_SEMPRE.includes(k) || TELAS_INT.includes(k);
 async function carregaAcesso() {
   S.acesso = null; S.acessoInfo = null;
   try { const a = await q(sb.rpc('acesso_workspace', { p_ws: S.ws })); S.acessoInfo = a || null; S.acesso = a && Array.isArray(a.telas) ? new Set(a.telas) : null; }
