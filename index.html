@@ -2996,6 +2996,7 @@ async function vJornadaProduto(m, pid) {
   if (!pr) { S.jpProd = null; return render(); }
   const ids = jors.map(j => j.id);
   const etJ = ids.length ? await q(sb.from('etapas_kanban').select('*').in('jornada_id', ids).order('ordem')) : [];
+  const [mks, X] = await Promise.all([ids.length ? q(sb.from('jornada_marcos').select('*').in('jornada_id', ids).order('ordem')).catch(() => []) : [], marcosDados(w)]);
   const etDe = jid => (jid ? etJ.filter(e => e.jornada_id === jid) : etG).slice().sort((a, b) => a.ordem - b.ordem);
   const ativos = jid => alu.filter(a => (a.jornada_id || null) === (jid || null) && a.status === 'ativo').length;
   const rasc = jors.find(j => j.status === 'rascunho'), pub = jors.find(j => j.status === 'publicada');
@@ -3013,6 +3014,7 @@ async function vJornadaProduto(m, pid) {
       ${edit ? `<button type="button" class="btn sm" data-up="${e.id}"${i === 0 ? ' disabled' : ''} title="Subir">↑</button><button type="button" class="btn sm" data-dn="${e.id}"${i === n - 1 ? ' disabled' : ''} title="Descer">↓</button><button type="button" class="btn sm bad" data-del="${e.id}">Excluir</button>` : ''}
       <button type="button" class="btn sm" data-ed="${e.id}">${edit ? 'Editar' : 'Instruções'}</button></div>${e.descricao ? `<small>O que fazer: ${esc(e.descricao)}</small>` : ''}</div>`;
     const lista = (jid, edit) => { const L = etDe(jid); return `<div style="display:flex;flex-direction:column;gap:6px;margin-top:8px" data-lista="${jid}">${L.map((e, i) => linhaEt(e, i, L.length, edit)).join('') || '<div class="empty">Nenhuma etapa ainda.</div>'}</div>`; };
+    const mkBloco = jid => marcosHtml(mks.filter(x => x.jornada_id === jid), { ...X, etapas: etDe(jid) }) + `<div class="acts" style="margin-top:6px"><button class="btn" data-mknovo="${jid}">Novo marco</button><button class="btn" data-ev>Receber eventos de fora</button></div>`;
     const optBase = [...mods.map(x => ['m:' + x.id, x.nome]), ...Object.entries(JORNADA_SUGESTOES).map(([k, s]) => ['s:' + k, s.nome])];
     const comeco = `<div class="acts" style="margin-top:10px"><button class="btn pri" data-novo="geral">Começar da Jornada geral (${etG.length} ${etG.length === 1 ? 'etapa' : 'etapas'})</button><button class="btn" data-novo="zero">Começar do zero</button>
       <label style="flex-direction:row;align-items:center;gap:6px">ou de um modelo <select id="jpMod" style="width:auto"><option value="">—</option>${optBase.map(([o, l]) => `<option value="${o}">${esc(l)}</option>`).join('')}</select></label></div>`;
@@ -3021,9 +3023,9 @@ async function vJornadaProduto(m, pid) {
       <tr><td colspan="2" class="muted">Jornada geral</td><td>—</td><td class="n">${ativos(null)}</td><td>${ativos(null) && pub ? `<button class="btn sm" data-tr="geral">Transferir alunos para a v${pub.versao}</button>` : ''}</td></tr></tbody></table></div></div>` : '';
     m.innerHTML = cab + (!jors.length ? `<div class="panel"><h2>Este produto usa a Jornada geral</h2><span class="muted">Quem compra ${esc(pr.nome)} hoje anda pelas etapas gerais de Alunos. Crie a jornada própria do produto: ela fica em rascunho até você publicar.</span>${comeco}</div>` : '') +
       (rasc ? `<div class="panel" style="border-left:4px solid var(--warn)"><div class="head"><div><h2>Versão ${rasc.versao} · rascunho</h2><span class="muted">Crie, renomeie e reordene as etapas. Matrículas novas só entram nela depois de publicada.</span></div>
-        <div class="acts"><button class="btn pri" id="jpPub">Publicar versão ${rasc.versao}</button><button class="btn bad" id="jpDesc">Descartar rascunho</button></div></div>${lista(rasc.id, true)}<div style="margin-top:10px"><button class="btn" data-nova="${rasc.id}">Nova etapa</button></div></div>` : '') +
+        <div class="acts"><button class="btn pri" id="jpPub">Publicar versão ${rasc.versao}</button><button class="btn bad" id="jpDesc">Descartar rascunho</button></div></div>${lista(rasc.id, true)}<div style="margin-top:10px"><button class="btn" data-nova="${rasc.id}">Nova etapa</button></div>${mkBloco(rasc.id)}</div>` : '') +
       (pub ? `<div class="panel"><div class="head"><div><h2>Versão ${pub.versao} · em uso</h2><span class="muted">Etapas publicadas não mudam de nome nem de ordem; as instruções e o aviso ao CS podem ser ajustados. Para mudar as etapas, crie uma nova versão.</span></div>
-        <div class="acts">${rasc ? '' : `<button class="btn" id="jpNova">Nova versão</button>`}</div></div>${lista(pub.id, false)}</div>` : '') + versoes;
+        <div class="acts">${rasc ? '' : `<button class="btn" id="jpNova">Nova versão</button>`}</div></div>${lista(pub.id, false)}${mkBloco(pub.id)}</div>` : '') + versoes;
     // começar
     m.querySelectorAll('[data-novo]').forEach(b => b.onclick = () => act(async () => { await q(sb.rpc('jornada_rascunho', { p_produto: pid, p_base: null, p_da_geral: b.dataset.novo === 'geral' })); recarrega(); }, 'Rascunho criado'));
     if ($('#jpMod')) $('#jpMod').onchange = e => act(async () => {
@@ -3059,6 +3061,10 @@ async function vJornadaProduto(m, pid) {
     m.querySelectorAll('[data-dn]').forEach(b => b.onclick = () => mover(b.dataset.dn, 1));
     m.querySelectorAll('[data-del]').forEach(b => b.onclick = () => act(async () => { const e = etJ.find(x => x.id === b.dataset.del); if (!confirm('Excluir a etapa "' + e.nome + '"?')) return; await q(sb.from('etapas_kanban').delete().eq('id', e.id)); recarrega(); }, 'Etapa excluída'));
     m.querySelectorAll('[data-tr]').forEach(b => b.onclick = () => { const de = b.dataset.tr === 'geral' ? null : b.dataset.tr; modalTransferirJornada(de, pub, de ? etDe(de) : etG, etDe(pub.id), ativos(de), de ? 'v' + (jors.find(j => j.id === de) || {}).versao : 'Jornada geral', pid, recarrega); });
+    m.querySelectorAll('[data-mknovo]').forEach(b => b.onclick = () => modalMarco(null, b.dataset.mknovo, etDe(b.dataset.mknovo), X, recarrega));
+    m.querySelectorAll('[data-mked]').forEach(b => b.onclick = () => { const mk = mks.find(x => x.id === b.dataset.mked); modalMarco(mk, mk.jornada_id, etDe(mk.jornada_id), X, recarrega); });
+    m.querySelectorAll('[data-mkdel]').forEach(b => b.onclick = () => act(async () => { const mk = mks.find(x => x.id === b.dataset.mkdel); if (!confirm('Excluir o marco "' + mk.nome + '"? Os registros dos alunos neste marco também saem.')) return; await q(sb.from('jornada_marcos').delete().eq('id', mk.id)); recarrega(); }, 'Marco excluído'));
+    m.querySelectorAll('[data-ev]').forEach(b => b.onclick = () => modalReceberEventos());
     m.querySelectorAll('[data-modelo]').forEach(b => b.onclick = () => { const j = jors.find(x => x.id === b.dataset.modelo);
       const f = modal('Salvar como modelo', `<label>Nome do modelo<input name="nome" required value="${esc(pr.nome)}"></label><span class="muted">O modelo guarda as etapas e as instruções desta versão. Depois dá para criar a jornada de outro produto a partir dele.</span>`,
         async (_d, fm) => { await q(sb.rpc('jornada_salvar_modelo', { p_jornada: j.id, p_nome: fm.nome.value })); toast('Modelo salvo'); recarrega(); }); });
@@ -3093,6 +3099,141 @@ function modalPublicarJornada(rasc, pub, novas, antigas, nAtivos, depois) {
 function modalTransferirJornada(de, pub, antigas, novas, nAtivos, rotDe, pid, depois) {
   modal('Transferir alunos para a versão ' + pub.versao, `<p>${nAtivos} ${nAtivos === 1 ? 'aluno ativo' : 'alunos ativos'} em ${esc(rotDe)}. Escolha para qual etapa da versão ${pub.versao} vai quem está em cada etapa. "Não levar" deixa esses alunos onde estão.</p>${mapaEtapasHtml(antigas, novas, true)}`,
     async (_d, fm) => { const n = await q(sb.rpc('jornada_transferir', { p_de: de, p_para: pub.id, p_mapa: lerMapa(fm, antigas), p_produto: pid })); toast((n || 0) + ' aluno(s) transferido(s)'); depois(); }, 'Transferir', true);
+}
+
+/* ---------- v0.163: marcos da jornada do produto ---------- */
+const MARCO_CONF = { manual: 'A equipe confirma', automatico: 'O sistema marca sozinho', auto_confirmar: 'O sistema percebe e a equipe confirma' };
+const MARCO_REGRA = { compra: 'Comprou um produto', video: 'Assistiu a um vídeo ou aula', pesquisa: 'Respondeu uma pesquisa', etapa: 'Chegou a uma etapa', lista: 'Entrou numa lista ou grupo', evento: 'Evento da plataforma do curso (de fora)' };
+const MARCO_SIT = { atingido: ['good', 'atingido'], aguardando: ['warn', 'aguardando confirmação'], recusado: ['neutral', 'recusado'] };
+const SINAL = { observado: 'o sistema viu', declarado: 'o aluno disse', validado: 'a equipe confirmou' };
+function marcoRegraTxt(mk, X) {
+  const r = mk.regra || {}, nm = (L, id) => ((L || []).find(x => x.id === id) || {}).nome || '—';
+  if (mk.confirmacao === 'manual' || !r.tipo) return 'A equipe confirma';
+  const t = r.tipo === 'compra' ? 'Comprou ' + (r.produto_id ? nm(X.prods, r.produto_id) : 'qualquer produto') : r.tipo === 'video' ? 'Assistiu a ' + nm(X.videos, r.fonte_id) + (r.minutos ? ' (' + r.minutos + ' min ou mais)' : '')
+    : r.tipo === 'pesquisa' ? 'Respondeu ' + nm(X.pesqs, r.pesquisa_id) + (r.resposta ? ' com "' + r.resposta + '"' : '') : r.tipo === 'etapa' ? 'Chegou à etapa ' + nm(X.etapas, r.etapa_kanban_id)
+    : r.tipo === 'lista' ? 'Entrou em ' + nm(X.listas, r.lista_id) : 'Evento "' + (r.evento || '') + '" da plataforma';
+  return t + (mk.confirmacao === 'auto_confirmar' ? ' · a equipe confirma' : '');
+}
+async function marcosDados(w) {
+  const [prods, videos, pesqs, listas] = await Promise.all([q(sb.from('produtos').select('id,nome').eq('workspace_id', w).order('nome')), q(sb.from('fontes_video').select('id,nome').eq('workspace_id', w).order('nome')).catch(() => []),
+    q(sb.from('pesquisas').select('id,nome').eq('workspace_id', w).order('nome')).catch(() => []), q(sb.from('funil_listas').select('id,nome').eq('workspace_id', w).order('nome')).catch(() => [])]);
+  return { prods, videos, pesqs, listas };
+}
+function marcosHtml(L, X) {
+  return `<div style="margin-top:14px"><b>Marcos</b> <span class="muted">O que o aluno precisa atingir nesta jornada. Cada marco diz como é confirmado.</span>
+    <div class="tw"><table><thead><tr><th>Marco</th><th>Etapa</th><th class="n">Prazo</th><th>Como confirma</th><th></th></tr></thead><tbody>${L.map(mk => `<tr><td><b>${esc(mk.nome)}</b>${mk.obrigatorio ? ' <span class="pill info">obrigatório</span>' : ''}${mk.evidencia ? `<br><small class="muted">Prova: ${esc(mk.evidencia)}</small>` : ''}</td>
+      <td>${esc(((X.etapas || []).find(e => e.id === mk.etapa_kanban_id) || {}).nome || '—')}</td><td class="n">${mk.prazo_dias != null ? mk.prazo_dias + ' dias' : '—'}</td><td>${esc(marcoRegraTxt(mk, X))}</td>
+      <td style="white-space:nowrap"><button type="button" class="btn sm" data-mked="${mk.id}">Editar</button> <button type="button" class="btn sm bad" data-mkdel="${mk.id}">Excluir</button></td></tr>`).join('') || '<tr><td colspan="5" class="empty">Nenhum marco ainda.</td></tr>'}</tbody></table></div></div>`;
+}
+async function modalMarco(row, jid, etapas, X, depois) {
+  const pergs = {};
+  const r0 = (row && row.regra) || {};
+  const campos = [{ k: 'nome', l: 'Marco', req: 1, full: 1, ph: 'Ex.: Apresentou o plano de ação' }, { k: 'descricao', l: 'O que significa', t: 'textarea' },
+    { k: 'evidencia', l: 'O que prova (evidência)', ph: 'Ex.: plano enviado na pasta do aluno' }, { k: 'etapa_kanban_id', l: 'Etapa em que deve acontecer (opcional)', t: 'select', opts: sel(etapas, 'id', 'nome') },
+    { k: 'prazo_dias', l: 'Prazo (dias desde a matrícula)', t: 'number', step: '1', hint: 'Vazio = sem prazo. Marco obrigatório vencido gera alerta para o CS.' }, { k: 'obrigatorio', l: 'Obrigatório', t: 'check' },
+    { k: 'confirmacao', l: 'Como é confirmado', t: 'select', req: 1, def: 'manual', opts: Object.entries(MARCO_CONF) },
+    { k: 'r_tipo', l: 'O que o sistema observa', t: 'select', opts: Object.entries(MARCO_REGRA), def: r0.tipo },
+    { k: 'r_produto', l: 'Produto comprado', t: 'select', opts: sel(X.prods, 'id', 'nome'), def: r0.produto_id }, { k: 'r_video', l: 'Vídeo ou aula', t: 'select', opts: sel(X.videos, 'id', 'nome'), def: r0.fonte_id },
+    { k: 'r_min', l: 'Minutos assistidos (mínimo)', t: 'number', step: '1', def: r0.minutos }, { k: 'r_pesq', l: 'Pesquisa', t: 'select', opts: sel(X.pesqs, 'id', 'nome'), def: r0.pesquisa_id },
+    { k: 'r_perg', l: 'Pergunta (opcional)', t: 'select', opts: [], def: r0.pergunta_id }, { k: 'r_resp', l: 'Resposta que vale (opcional)', ph: 'Ex.: Sim', def: r0.resposta },
+    { k: 'r_etapa', l: 'Etapa', t: 'select', opts: sel(etapas, 'id', 'nome'), def: r0.etapa_kanban_id }, { k: 'r_lista', l: 'Lista ou grupo', t: 'select', opts: sel(X.listas, 'id', 'nome'), def: r0.lista_id },
+    { k: 'r_evento', l: 'Nome do evento', ph: 'Ex.: trabalho_xpto', def: r0.evento, hint: 'A plataforma do curso manda este nome para o endereço de eventos (veja "Receber eventos de fora").' }];
+  const f = modal(row ? 'Editar marco' : 'Novo marco', `<div class="grid2">${campos.map(c => campoHtml(c, row && !c.k.startsWith('r_') ? row[c.k] : undefined)).join('')}</div>`, async (_d, fm) => {
+    const v = lerCampos(campos.filter(c => !c.k.startsWith('r_')), fm);
+    if (v.confirmacao === 'manual') v.regra = null;
+    else {
+      const t = fm.r_tipo.value; if (!t) throw new Error('Escolha o que o sistema observa.');
+      const R = { tipo: t };
+      if (t === 'compra') { if (fm.r_produto.value) R.produto_id = fm.r_produto.value; }
+      if (t === 'video') { if (!fm.r_video.value) throw new Error('Escolha o vídeo ou aula.'); R.fonte_id = fm.r_video.value; if (fm.r_min.value) R.minutos = Number(fm.r_min.value); }
+      if (t === 'pesquisa') { if (!fm.r_pesq.value) throw new Error('Escolha a pesquisa.'); R.pesquisa_id = fm.r_pesq.value; if (fm.r_perg.value) { R.pergunta_id = fm.r_perg.value; if (fm.r_resp.value.trim()) R.resposta = fm.r_resp.value.trim(); } }
+      if (t === 'etapa') { if (!fm.r_etapa.value) throw new Error('Escolha a etapa.'); R.etapa_kanban_id = fm.r_etapa.value; }
+      if (t === 'lista') { if (!fm.r_lista.value) throw new Error('Escolha a lista.'); R.lista_id = fm.r_lista.value; }
+      if (t === 'evento') { const ev = fm.r_evento.value.trim().toLowerCase().replace(/\s+/g, '_'); if (!ev) throw new Error('Dê o nome do evento.'); R.evento = ev; }
+      v.regra = R;
+    }
+    v.prazo_dias = v.prazo_dias === '' || v.prazo_dias == null ? null : Number(v.prazo_dias);
+    let id = row && row.id;
+    if (row) await q(sb.from('jornada_marcos').update(v).eq('id', row.id));
+    else { const ins = await q(sb.from('jornada_marcos').insert({ ...v, workspace_id: S.ws, jornada_id: jid, ordem: Date.now() % 100000 }).select('id')); id = (one(ins) || {}).id; }
+    if (v.confirmacao !== 'manual' && id) { const n = await q(sb.rpc('marco_retroativo', { p_marco: id })).catch(() => 0); if (n) toast(n + ' aluno(s) já tinham atingido este marco'); }
+    toast('Marco salvo'); depois();
+  }, 'Salvar', true);
+  const vis = () => {
+    const auto = f.confirmacao.value !== 'manual', t = f.r_tipo.value;
+    const mostra = (k, on) => { const el = f[k]; if (el) el.closest('label').style.display = on ? '' : 'none'; };
+    mostra('r_tipo', auto); mostra('r_produto', auto && t === 'compra'); mostra('r_video', auto && t === 'video'); mostra('r_min', auto && t === 'video');
+    mostra('r_pesq', auto && t === 'pesquisa'); mostra('r_perg', auto && t === 'pesquisa'); mostra('r_resp', auto && t === 'pesquisa' && !!f.r_perg.value);
+    mostra('r_etapa', auto && t === 'etapa'); mostra('r_lista', auto && t === 'lista'); mostra('r_evento', auto && t === 'evento');
+  };
+  const carregaPerg = async () => { const p = f.r_pesq.value; if (!p) { f.r_perg.innerHTML = '<option value="">—</option>'; return vis(); }
+    pergs[p] = pergs[p] || await q(sb.from('pesquisa_perguntas').select('id,texto').eq('pesquisa_id', p).order('ordem')).catch(() => []);
+    f.r_perg.innerHTML = '<option value="">Qualquer resposta (só ter respondido)</option>' + pergs[p].map(x => `<option value="${x.id}"${x.id === r0.pergunta_id ? ' selected' : ''}>${esc(x.texto)}</option>`).join(''); vis(); };
+  f.confirmacao.onchange = vis; f.r_tipo.onchange = vis; f.r_perg.onchange = vis; f.r_pesq.onchange = carregaPerg;
+  await carregaPerg();
+}
+async function modalReceberEventos() {
+  const L = await q(sb.from('chaves_api').select('id,nome,prefixo,criado_em,ultimo_uso,usos,revogada_em').eq('workspace_id', S.ws).eq('escopo', 'eventos').order('criado_em', { ascending: false })).catch(() => []);
+  const url = k => LD_URL + '?tipo=evento&chave=' + (k || 'SUA_CHAVE');
+  modal('Receber eventos de fora', `<p style="margin-top:0">A plataforma do curso (ou um Zapier/Make no meio) avisa o Growths quando o aluno faz algo lá dentro: entrou, entregou um trabalho, terminou um módulo. O evento entra no histórico do aluno e marca os marcos com aquele nome.</p>
+    <p class="muted">1. Gere uma chave de eventos (só grava eventos; não lê nada). 2. Configure a plataforma para mandar um POST para o endereço abaixo com <code>{"email": "...", "evento": "trabalho_xpto"}</code> (ou <code>telefone</code> no lugar do e-mail). Pessoa que não está no Growths não é criada.</p>
+    <div class="filters"><input id="evNome" placeholder="Nome da chave (ex.: Área de membros)" style="flex:1"><button type="button" class="btn pri" id="evGerar">Gerar chave</button></div><div id="evChave"></div>
+    <p class="muted" style="margin-bottom:4px">Endereço:</p><div class="filters"><input id="evUrl" readonly class="mono" style="flex:1;min-width:320px" value="${esc(url())}"><button type="button" class="btn sm" id="evCp">Copiar endereço</button></div>
+    ${L.length ? `<div class="tw"><table><thead><tr><th>Chave</th><th>Criada</th><th>Último evento</th><th class="n">Envios</th></tr></thead><tbody>${L.map(k => `<tr><td><b>${esc(k.nome)}</b> <span class="muted mono">${esc(k.prefixo)}…</span>${k.revogada_em ? ' <span class="pill neutral">revogada</span>' : ''}</td><td>${dtt(k.criado_em)}</td><td>${k.ultimo_uso ? dtt(k.ultimo_uso) : '—'}</td><td class="n">${k.usos || 0}</td></tr>`).join('')}</tbody></table></div>` : ''}`, null, null, true);
+  const root = $('#modalRoot');
+  root.querySelector('#evCp').onclick = () => iaCopia(root.querySelector('#evUrl').value, 'Endereço copiado.');
+  root.querySelector('#evGerar').onclick = () => act(async () => {
+    const nome = root.querySelector('#evNome').value.trim(); if (!nome) throw new Error('Dê um nome para a chave.');
+    const k = await q(sb.rpc('chave_api_criar_escopo', { p_ws: S.ws, p_nome: nome, p_escopo: 'eventos' }));
+    root.querySelector('#evUrl').value = url(k);
+    root.querySelector('#evChave').innerHTML = `<div class="panel" style="border-left:4px solid var(--good);margin:8px 0"><b>Chave gerada.</b> Ela já está no endereço abaixo. Copie agora: não aparece de novo.</div>`;
+    root.querySelector('#evGerar').disabled = true;
+  });
+}
+
+/* ---------- v0.163: ficha da pessoa → Jornada e Evolução (uma matrícula por vez, escolhida pelo produto) ---------- */
+async function fichaJornada(el, pessoa) {
+  if (!el || !(await temColuna('alunos', 'jornada_id'))) { if (el) el.remove(); return; }
+  const alus = await q(sb.from('alunos').select('id,produto_id,jornada_id,etapa_kanban_id,status,entrou_em,saiu_em,produtos(nome)').eq('pessoa_id', pessoa).order('entrou_em', { ascending: false }));
+  if (!alus.length) { el.remove(); return; }
+  const sel0 = alus.find(a => a.id === S.fjA) || alus.find(a => a.status === 'ativo') || alus[0];
+  const a = sel0; S.fjA = a.id;
+  const [jor, marcos, am, hist, X] = await Promise.all([
+    a.jornada_id ? q(sb.from('jornadas').select('id,versao,status').eq('id', a.jornada_id)).then(r => r[0]) : null,
+    a.jornada_id ? q(sb.from('jornada_marcos').select('*').eq('jornada_id', a.jornada_id).order('ordem')).catch(() => []) : [],
+    q(sb.from('aluno_marcos').select('*').eq('aluno_id', a.id)).catch(() => []),
+    q(sb.from('aluno_historico').select('*').eq('aluno_id', a.id).order('em', { ascending: false })).catch(() => []),
+    marcosDados(S.ws)]);
+  const etTodas = await q(sb.from('etapas_kanban').select('id,nome,ordem,descricao,jornada_id').eq('workspace_id', S.ws).eq('quadro', 'alunos'));
+  const ETN = Object.fromEntries(etTodas.map(e => [e.id, e.nome]));
+  const ets = etTodas.filter(e => (e.jornada_id || null) === (a.jornada_id || null)).sort((x, y) => x.ordem - y.ordem);
+  X.etapas = ets;
+  const passou = new Set(hist.filter(h => h.etapa_kanban_id).map(h => h.etapa_kanban_id)), iAt = ets.findIndex(e => e.id === a.etapa_kanban_id);
+  const dEnt = Math.max(0, Math.floor((Date.now() - new Date(a.entrou_em)) / 864e5));
+  const AM = Object.fromEntries(am.map(x => [x.marco_id, x]));
+  const atrasado = mk => !AM[mk.id] && mk.prazo_dias != null && dEnt > mk.prazo_dias;
+  const caminho = `<div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0">${ets.map((e, i) => { const at = e.id === a.etapa_kanban_id, ok = i < iAt || (passou.has(e.id) && !at);
+    return `<span class="pill ${at ? 'info' : ok ? 'good' : 'neutral'}" title="${esc(e.descricao || '')}" data-et="${e.id}">${ok ? '✓ ' : at ? '● ' : ''}${esc(e.nome)}</span>`; }).join('<span class="muted">→</span>') || '<span class="muted">Sem etapas.</span>'}</div>`;
+  const linhaMk = mk => { const x = AM[mk.id], st = x ? MARCO_SIT[x.situacao] : atrasado(mk) ? ['bad', 'atrasado'] : ['neutral', 'pendente'];
+    return `<tr><td><b>${esc(mk.nome)}</b>${mk.obrigatorio ? ' <span class="pill info">obrigatório</span>' : ''}<br><small class="muted">${esc(marcoRegraTxt(mk, X))}${mk.prazo_dias != null ? ' · prazo ' + mk.prazo_dias + ' dias' : ''}</small></td>
+      <td><span class="pill ${st[0]}">${esc(st[1])}</span>${x ? `<br><small class="muted">${esc(SINAL[x.sinal] || x.sinal)} · ${dtt(x.validado_em || x.em)}${x.observacao ? ' · ' + esc(x.observacao) : ''}</small>` : ''}</td>
+      <td style="white-space:nowrap">${!x || x.situacao === 'aguardando' ? `<button type="button" class="btn sm" data-mkc="${mk.id}">Confirmar</button> <button type="button" class="btn sm" data-mkr="${mk.id}">Recusar</button>` : `<button type="button" class="btn sm" data-mkd="${mk.id}">Desfazer</button>`}</td></tr>`; };
+  const tl = hist.map(h => `<div><span>${dtt(h.em)}</span>${h.tipo === 'etapa' ? 'Etapa: ' + esc(ETN[h.etapa_kanban_id] || '—') : h.tipo === 'jornada' ? 'Mudou de versão da jornada · etapa ' + esc(ETN[h.etapa_kanban_id] || '—') : h.tipo === 'saida' ? 'Saiu' : 'Voltou'}</div>`)
+    .concat(am.map(x => `<div><span>${dtt(x.validado_em || x.em)}</span>Marco ${esc((marcos.find(m => m.id === x.marco_id) || {}).nome || '')}: ${esc((MARCO_SIT[x.situacao] || [0, x.situacao])[1])}</div>`));
+  const ating = marcos.filter(mk => (AM[mk.id] || {}).situacao === 'atingido').length;
+  el.innerHTML = `<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--accent);margin:16px 0 8px;padding-top:12px;border-top:1px solid var(--line)">Jornada e evolução</div>
+    ${alus.length > 1 ? `<div class="acts" style="margin-bottom:6px">${alus.map(x => `<button type="button" class="btn sm${x.id === a.id ? ' pri' : ''}" data-fja="${x.id}">${esc((one(x.produtos) || {}).nome || 'produto')}${x.status !== 'ativo' ? ' (' + esc(x.status) + ')' : ''}</button>`).join('')}</div>` : ''}
+    <div class="infog"><div><span class="muted" style="font-size:11px">Produto</span><br><b>${esc((one(a.produtos) || {}).nome || '')}</b></div><div><span class="muted" style="font-size:11px">Jornada</span><br>${a.jornada_id && jor ? 'Jornada do produto · v' + jor.versao + (jor.status === 'anterior' ? ' (anterior)' : '') : 'Jornada geral'}</div>
+      <div><span class="muted" style="font-size:11px">Matrícula</span><br>${dd(String(a.entrou_em).slice(0, 10))} · há ${dEnt} ${dEnt === 1 ? 'dia' : 'dias'}</div>${marcos.length ? `<div><span class="muted" style="font-size:11px">Marcos atingidos</span><br><b>${ating} de ${marcos.length}</b></div>` : ''}</div>
+    ${caminho}
+    ${marcos.length ? `<div class="tw"><table><thead><tr><th>Marco</th><th>Situação</th><th></th></tr></thead><tbody>${marcos.map(linhaMk).join('')}</tbody></table></div>` : a.jornada_id ? '<span class="muted">Esta jornada ainda não tem marcos.</span>' : '<span class="muted">Na Jornada geral não há marcos: eles ficam na jornada de cada produto.</span>'}
+    ${tl.length ? `<details style="margin-top:6px"><summary style="cursor:pointer">Histórico desta matrícula (${tl.length})</summary><div class="tl">${tl.join('')}</div></details>` : ''}`;
+  const de = () => fichaJornada(el, pessoa);
+  el.querySelectorAll('[data-fja]').forEach(b => b.onclick = () => { S.fjA = b.dataset.fja; de(); });
+  const acao = (mk, ac, obs) => act(async () => { await q(sb.rpc('marco_confirmar', { p_aluno: a.id, p_marco: mk, p_acao: ac, p_obs: obs || null })); de(); }, ac === 'confirmar' ? 'Marco confirmado' : ac === 'recusar' ? 'Marco recusado' : 'Marco desfeito');
+  el.querySelectorAll('[data-mkc]').forEach(b => b.onclick = () => acao(b.dataset.mkc, 'confirmar'));
+  el.querySelectorAll('[data-mkr]').forEach(b => b.onclick = () => { const o = prompt('Por que recusar? (opcional)') ; if (o === null) return; acao(b.dataset.mkr, 'recusar', o); });
+  el.querySelectorAll('[data-mkd]').forEach(b => b.onclick = () => acao(b.dataset.mkd, 'desfazer'));
 }
 
 /* Produtos → painel "Jornada do produto": onde está cada produto e o botão para abrir a jornada. */
@@ -4051,6 +4192,7 @@ async function fichaPessoa(id) {
     <div class="infog"><div><span class="muted" style="font-size:11px">Comercial responsável</span><br>${eqN(p.responsavel_comercial_id) ? '<b>' + esc(eqN(p.responsavel_comercial_id)) + '</b>' : '<span class="muted">sem responsável</span>'} <button type="button" class="btn sm" data-rc>Alterar</button></div>
       ${alus.map(a => `<div><span class="muted" style="font-size:11px">CS responsável · ${esc((one(a.produtos) || {}).nome || a.tag || 'aluno')}</span><br>${eqN(a.responsavel_cs_id) ? '<b>' + esc(eqN(a.responsavel_cs_id)) + '</b>' : '<span class="muted">sem responsável</span>'} <button type="button" class="btn sm" data-rcs="${a.id}">Alterar</button></div>`).join('')}</div>
     ${rh.length ? `<details style="margin-top:6px"><summary style="cursor:pointer">Histórico de responsáveis (${rh.length})</summary><div class="tl">${rh.map(h => `<div><span>${dtt(h.alterado_em)}</span>${h.tipo === 'cs' ? 'CS' : 'Comercial'}: ${esc(h.de_nome || '—')} → <b>${esc(h.para_nome || 'sem responsável')}</b>${h.alterado_por_email ? ' · por ' + esc(h.alterado_por_email) : ''}${h.motivo ? ' · ' + esc(h.motivo) : ''}</div>`).join('')}</div></details>` : '<span class="muted" style="font-size:12px">Nenhuma troca de responsável registrada ainda.</span>'}
+    <div id="fjEvo"></div>
     ${tit('Origem')}
     <div class="infog">${campo('Campanha', (one(p.campanhas) || {}).nome)}${campo('Canal', p.canal_origem)}${campo('Página de entrada', p.pagina_origem, 1)}${campo('Veio de (referrer)', p.referrer, 1)}</div>
     ${tit('Rastreamento (UTM)')}
@@ -4086,6 +4228,7 @@ async function fichaPessoa(id) {
     ${cts.length ? '<div><b>Contratos</b><br>' + cts.map(c => `#${c.numero} · ${esc(c.status)} · ${esc((c.contrato_itens || []).map(i => (one(i.produtos) || {}).nome).join(', '))} · ${c.num_parcelas} parcela(s)`).join('<br>') + '</div>' : ''}
     ${pf.length ? '<div><b>Funis</b><br>' + pf.map(x => `${esc((one(x.funis) || {}).nome)}: ${esc((one(x.funil_etapas) || {}).nome)}`).join('<br>') + '</div>' : ''}
     <div><b>Linha do tempo</b></div><div class="tl">${ev.map(e => `<div><span>${dtt(e.t)}</span>${esc(e.x)}</div>`).join('')}</div>`, null, '', true);
+  S.fjA = null; fichaJornada(f.querySelector('#fjEvo'), id);
   const bph = f.querySelector('[data-ph]');
   if (bph) bph.onclick = () => cadastroRapido({ um: 'pagamento anterior', tabela: 'pagamentos_historicos', antes: v => ({ ...v, pessoa_id: id }) },
     [{ k: 'valor', l: 'Valor pago (R$)', t: 'number', step: '0.01', req: 1 }, { k: 'periodo_inicio', l: 'Desde', t: 'date' }, { k: 'periodo_fim', l: 'Até', t: 'date' }, { k: 'descricao', l: 'Observação', full: 1 }],

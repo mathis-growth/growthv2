@@ -59,6 +59,24 @@ Deno.serve(async (req: Request) => {
     const corpo = await corpoDe(req) as Dic;
     const ir = destino(url, corpo || {});
     if (valorTexto(corpo?._gotcha) || valorTexto(corpo?.website)) return ir ? Response.redirect(ir, 303) : json({ ok: true });
+    // v0.163: eventos de fora (plataforma do curso) para os marcos da jornada do produto. Chave de escopo "eventos".
+    //   ?tipo=evento  com {email ou telefone, evento, em?, descricao?}  ou  {eventos: [...]} (até 100)
+    if (url.searchParams.get('tipo') === 'evento') {
+      const itens = (Array.isArray(corpo?.eventos) ? (corpo.eventos as unknown[]).slice(0, 100) : [corpo]) as Dic[];
+      const res: unknown[] = [];
+      for (const it of itens) {
+        const d = { email: valorTexto(it?.email), telefone: valorTexto(it?.telefone ?? it?.whatsapp ?? it?.celular), evento: valorTexto(it?.evento ?? url.searchParams.get('evento')),
+          em: valorTexto(it?.em), descricao: valorTexto(it?.descricao) };
+        const { data, error } = await sb.rpc('evento_por_chave', { p_chave: chave, p_dados: d });
+        if (error) {
+          if (/inválida|revogada/i.test(error.message)) return json({ ok: false, erro: error.message }, 401);
+          res.push({ ok: false, erro: error.message });
+        } else res.push(data);
+      }
+      const um = res.length === 1 ? res[0] as Dic : null;
+      if (um) return json(um, um.ok ? 200 : 400);
+      return json({ ok: res.some((r) => (r as Dic).ok), quantidade: res.filter((r) => (r as Dic).ok).length, resultados: res });
+    }
     // Meta nativo: entry[].changes[].value.leadgen_id (pode vir mais de um)
     const ids: string[] = [];
     for (const e of (Array.isArray(corpo?.entry) ? corpo.entry : []) as Dic[]) for (const ch of (Array.isArray(e.changes) ? e.changes : []) as Dic[]) {
