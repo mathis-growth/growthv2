@@ -1,7 +1,7 @@
 
 
 ## v0.163 — Customer Growth
-**Situação em 29/10/2026:** as migrações 20261116100000 a 20261122100000 foram aplicadas em produção pelo conector (registradas como `v0163_1` a `v0163_7`). Falta a contenção `supabase/RODAR_v0.163_contencao_alertas.sql` (migração 20261123100000): rode no SQL Editor **antes das 7h do dia seguinte**. Sem ela, os alertas de CS criados na primeira passada aparecem na tela atual "Alertas e resumo do dia" e entram no resumo do dia. Ela desliga os alertas de CS (`sistema_config.cg_alertas = 'nao'`), apaga esse acúmulo e tira os alertas de CS do resumo e do "Pergunte ao Growths".
+**Situação em 29/10/2026:** as migrações 20261116100000 a 20261123100000 foram aplicadas em produção pelo conector (registradas como `v0163_1` a `v0163_8`). A última (`RODAR_v0.163_contencao_alertas.sql`) desliga os alertas de CS (`sistema_config.cg_alertas = 'nao'`), apaga esse acúmulo e tira os alertas de CS do resumo e do "Pergunte ao Growths".
 Quando a tela RevOps → Customer Growth estiver no ar: `select cg_ligar_alertas();` (registra o que já acontece sem avisar ninguém e liga).
 1. Confira antes que a v0.132 (alertas e agendador) está aplicada: o arquivo verifica e para com uma mensagem se faltar algo, sem gravar nada.
 2. `supabase/RODAR_v0.163_customer_growth.sql` no SQL Editor do Supabase: é tudo ou nada e pode ser rodado de novo. **Ainda não aplicado em produção.**
