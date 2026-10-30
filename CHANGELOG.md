@@ -17,7 +17,7 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
   Oportunidades de expansão, retenção, renovação e ajuste não mexem no negócio do lead.
 - **CPF ou CNPJ no contrato:** se o cliente não tem documento, o contrato pede, valida e grava no cadastro dele. Sem documento válido, o contrato não é salvo.
 - **Correção:** o contrato novo não pegava a campanha do cliente (a busca não trazia a campanha). Agora pega.
-- Banco: `20261127100000_oportunidade_contrato.sql` (**ainda não aplicado em produção**). Testes:
+- Banco: `20261127100000_oportunidade_contrato.sql` (aplicado em produção em 30/10/2026 como `v0174_oportunidade_contrato`). Testes:
   - banco `tests/banco/oportunidade_contrato_cenarios.sql`: OK;
   - tela `tests/tela/t174_oportunidade_contrato.py`: 25 verificações, 0 falhas;
   - testes anteriores de CRM, contratos e oportunidades: sem falhas.
