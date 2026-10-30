@@ -1,3 +1,8 @@
+## v0.171
+- `estrategia_publicar` passa a `security definer` (mesma checagem: `pode_operar` e `perm(..., 'editar', mkt/gro)`); grava `publicada_por = auth.uid()`.
+- `funis.criado_em` (timestamptz, padrão `now()`; as estratégias antigas ficam sem data).
+- `estrategia_blocos.tipo = 'passagem'`: Passagem para o CS (fase retenção, sem métricas).
+
 ## v0.165 — Strategy Canvas (S1 a S3)
 - `funis`: `categoria` (texto livre), `objetivo`, `criterios` (critérios de sucesso), `status` rascunho/ativa/arquivada, `versao_atual` (0 = nunca publicada). Gatilho `funis_status_t` mantém `ativo` igual a `status <> 'arquivada'` nos dois sentidos.
 - `estrategia_blocos` e `campanha_blocos`: `x`, `y` (posição no mapa; vazio = organizar pela fase e ordem) e `props` jsonb (objetivo, descrição, canal, responsável, oferta, status). `campanha_blocos.status` planejado/implementado/pendente.

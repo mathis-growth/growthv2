@@ -79,6 +79,12 @@ begin
   insert into campanhas (workspace_id, nome) values (ws, 'Perpétuo') returning id into c;
   perform campanha_aplicar_estrategia(c, f2, false);
   if (select versao_atual from funis where id = f2) <> 1 or (select versao_id from campanha_estrategias where campanha_id = c) is null then raise exception 'X: versão automática na primeira campanha'; end if;
+  -- v0.171: publicar roda como definidora (quem chama, authenticated, não executa pode_operar) e só authenticated chama
+  if not (select prosecdef from pg_proc where proname = 'estrategia_publicar') then raise exception 'X: estrategia_publicar precisa ser security definer'; end if;
+  if has_function_privilege('anon', 'public.estrategia_publicar(uuid,text)', 'execute') then raise exception 'X: anon não pode publicar'; end if;
+  if (select versao from estrategia_versoes where funil_id = f order by versao desc limit 1) is null then raise exception 'X: versões'; end if;
+  insert into funis (workspace_id, nome, tipo) values (ws, 'Com data', 'outro') returning id into f2;
+  if (select criado_em from funis where id = f2) is null then raise exception 'X: estratégia nova sem data de criação'; end if;
   raise notice 'canvas_s1_s3: tudo OK';
 end $t$;
 select 'canvas_s1_s3: tudo OK' as resultado;

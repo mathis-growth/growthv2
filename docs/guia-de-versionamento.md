@@ -1,3 +1,7 @@
+## v0.171
+- Migração `20261125100000_estrategia_publicar_definer.sql`: `estrategia_publicar` com `security definer` (antes dava 403 "permission denied for function pode_operar" para authenticated) e `funis.criado_em` com padrão `now()`.
+- index.html: 0.170 → 0.171. Card com `.cv-fzb[data-fz]` e menu `.cv-fzm` (`mudaFase` atualiza o bloco e as etapas); `drop` dentro de `[data-banda]` passa a fase para `cvCriaBloco`, que agora respeita a fase também nos blocos com métricas; tipo simples `passagem` (Passagem para o CS, retenção); selects de fase do Canvas com os nomes de `CV_FASE`. Teste `t171_canvas_fase_no_card.py`.
+
 ## v0.170
 - index.html: 0.169 → 0.170. `vFunis`: botão `#estMapa` cria `funis` com `status = 'rascunho'`, `tipo = 'outro'` e nome `CV_RASC` e abre o mapa; `#estNova` vira "Nova a partir de modelo". `vEstrategia`: aviso `.cv-rasc`, pill de rascunho, voltar apaga rascunho vazio sem nome e sem campanha. `cvPublicar(f, { pr, nBlocos })`: no rascunho pede nome, tipo, categoria, produto e objetivo, grava e chama `estrategia_publicar`. Teste `t170_canvas_criar_no_mapa.py`. Sem migração.
 

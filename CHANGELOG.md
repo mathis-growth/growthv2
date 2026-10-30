@@ -2,6 +2,14 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.171 — Publicar a estratégia (correção), fase no card e Passagem para o CS (29/10/2026)
+- **Correção: publicar a versão dava "Sem permissão".** A função `estrategia_publicar` rodava com o papel de quem chama, e esse papel não pode executar a checagem `pode_operar`: toda publicação voltava 403. Agora ela roda como definidora (`security definer`), como as outras que publicam (por exemplo a jornada), com a mesma checagem dentro: pertencer ao workspace e poder editar Marketing ou Growth.
+- **Fase no próprio card:** cada card mostra a etiqueta da fase dele. Clicar abre Captação, Aquecimento, Vendas e Pós-venda (CS), e as métricas do bloco vão junto para a fase nova. O campo Fase do painel usa os mesmos nomes.
+- **Soltar na faixa:** um componente solto dentro da faixa de uma fase já nasce nessa fase.
+- **Passagem para o CS** (Pós-venda): bloco que marca no mapa o ponto em que o cliente sai de Vendas e passa a ser do CS. Depois dele, o funil do CS é montado na fase Pós-venda (CS).
+- A lista de estratégias mostra a data de criação das estratégias novas; as antigas não tinham data, e a lista não inventa uma.
+- Banco: `20261125100000_estrategia_publicar_definer.sql` (**ainda não aplicado em produção**). Testes: banco `canvas_s1_s3` (OK, com as checagens novas); tela `tests/tela/t171_canvas_fase_no_card.py` (14 verificações, 0 falhas); t164 a t170 sem falhas.
+
 ## v0.170 — Criar a estratégia pelo mapa (29/10/2026)
 - **Marketing → Estratégias → Criar no mapa** (botão principal): abre um mapa em branco, como rascunho, para montar o funil arrastando os componentes. Cada bloco já cria as etapas (métricas) dele.
 - **Publicar versão** num rascunho pede nome, tipo, categoria, produto e objetivo e publica a versão 1. A estratégia entra na lista pronta para as campanhas, com as etapas que você montou. Não publica com o mapa vazio, com nome repetido ou com o nome de rascunho.

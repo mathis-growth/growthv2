@@ -1199,7 +1199,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.170 · 29/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.171 · 29/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -9635,7 +9635,7 @@ async function vFunis(m) {
     ${cvB ? `<div class="filters"><label>Categoria<select id="estFc"><option value="">Todas</option>${cats.map(c => `<option${c === FL.cat ? ' selected' : ''}>${esc(c)}</option>`).join('')}</select></label>
       <label>Situação<select id="estFs">${[['ativas', 'Em uso'], ['arquivadas', 'Arquivadas'], ['todas', 'Todas']].map(([k, l]) => `<option value="${k}"${FL.st === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label></div>` : ''}
     <div class="panel"><div class="tw"><table><thead><tr><th>Estratégia</th>${cvB ? '<th>Categoria</th>' : ''}<th>Tipo</th><th>Produto</th>${cvB ? '<th class="n">Versão</th>' : ''}<th class="n">Etapas</th><th class="n">Campanhas</th><th>Situação</th><th></th></tr></thead><tbody>
-    ${fs.length ? fs.map(f => `<tr class="clk" data-est="${f.id}"><td><b>${esc(f.nome)}</b>${f.objetivo || f.descricao ? '<br><small class="muted">' + esc(f.objetivo || f.descricao) + '</small>' : ''}${cvB ? '<br><small class="muted">criada em ' + (f.criado_em ? dd(String(f.criado_em).slice(0, 10)) : '—') + '</small>' : ''}</td>${cvB ? `<td>${esc(f.categoria || '—')}</td>` : ''}<td>${esc(EST_TIPO[f.tipo] || f.tipo)}</td><td>${f.produto_id ? esc((pr.find(p => p.id === f.produto_id) || {}).nome || '—') : '<span class="muted">qualquer produto</span>'}</td>${cvB ? `<td class="n">${f.versao_atual ? 'v' + f.versao_atual : '<span class="muted">—</span>'}</td>` : ''}<td class="n">${ets.filter(e => e.funil_id === f.id).length}</td><td class="n">${cs.filter(c => c.funil_id === f.id).length}</td><td>${cvB && f.status === 'rascunho' ? '<span class="pill warn">rascunho</span>' : pillAtivo(f.ativo)}</td><td style="white-space:nowrap"><button class="btn sm" data-est="${f.id}">Abrir</button>${cvB ? ` <button class="btn sm" data-estdup="${f.id}">Duplicar</button>` : ''}</td></tr>`).join('') : `<tr><td colspan="${cvB ? 9 : 7}" class="empty">Nenhuma estratégia ${FL.st === 'arquivadas' ? 'arquivada' : 'ainda. Comece de um modelo pronto'}.</td></tr>`}</tbody></table></div></div>
+    ${fs.length ? fs.map(f => `<tr class="clk" data-est="${f.id}"><td><b>${esc(f.nome)}</b>${f.objetivo || f.descricao ? '<br><small class="muted">' + esc(f.objetivo || f.descricao) + '</small>' : ''}${cvB && f.criado_em ? '<br><small class="muted">criada em ' + dd(String(f.criado_em).slice(0, 10)) + '</small>' : ''}</td>${cvB ? `<td>${esc(f.categoria || '—')}</td>` : ''}<td>${esc(EST_TIPO[f.tipo] || f.tipo)}</td><td>${f.produto_id ? esc((pr.find(p => p.id === f.produto_id) || {}).nome || '—') : '<span class="muted">qualquer produto</span>'}</td>${cvB ? `<td class="n">${f.versao_atual ? 'v' + f.versao_atual : '<span class="muted">—</span>'}</td>` : ''}<td class="n">${ets.filter(e => e.funil_id === f.id).length}</td><td class="n">${cs.filter(c => c.funil_id === f.id).length}</td><td>${cvB && f.status === 'rascunho' ? '<span class="pill warn">rascunho</span>' : pillAtivo(f.ativo)}</td><td style="white-space:nowrap"><button class="btn sm" data-est="${f.id}">Abrir</button>${cvB ? ` <button class="btn sm" data-estdup="${f.id}">Duplicar</button>` : ''}</td></tr>`).join('') : `<tr><td colspan="${cvB ? 9 : 7}" class="empty">Nenhuma estratégia ${FL.st === 'arquivadas' ? 'arquivada' : 'ainda. Comece de um modelo pronto'}.</td></tr>`}</tbody></table></div></div>
     ${noMkt ? '' : '<div class="panel" id="c2"></div><div class="panel" id="c3"></div>'}`;
   if ($('#estFc')) $('#estFc').onchange = e => { FL.cat = e.target.value; render(); };
   if ($('#estFs')) $('#estFs').onchange = e => { FL.st = e.target.value; render(); };
@@ -10032,13 +10032,13 @@ const CV_GRUPOS = [
   ['Páginas', [['captura', 'Landing page', {}], ['captura', 'Página de captura', {}], ['pagina', 'Página de vendas', { fase: 'conversao' }], ['pagina', 'Página de obrigado', { fase: 'aquecimento' }], ['vsl', 'VSL', {}], ['aula', 'Webinar', {}]]],
   ['Comunicação', [['api', 'WhatsApp', { canal: 'WhatsApp' }], ['email', 'E-mail', {}], ['comunicacao', 'Chatbot', {}], ['comunicacao', 'Automação', {}], ['comunicacao', 'Notificação', {}]]],
   ['Conversão', [['pesquisa', 'Formulário', {}], ['checkout', 'Checkout', {}], ['pagina', 'Pagamento', { fase: 'conversao' }], ['comercial', 'Agendamento', {}], ['comercial', 'Atendimento comercial', {}]]],
-  ['Pós-venda', [['posvenda', 'Onboarding', {}], ['posvenda', 'Área de membros', {}], ['posvenda', 'Consumo do produto', {}], ['posvenda', 'Ativação', {}], ['posvenda', 'Acompanhamento', {}],
+  ['Pós-venda', [['passagem', 'Passagem para o CS', {}], ['posvenda', 'Onboarding', {}], ['posvenda', 'Área de membros', {}], ['posvenda', 'Consumo do produto', {}], ['posvenda', 'Ativação', {}], ['posvenda', 'Acompanhamento', {}],
     ['recompra', 'Upsell', {}], ['recompra', 'Cross-sell', {}], ['assinatura', 'Renovação', {}], ['recompra', 'Recompra', {}]]],
   ['Lógica', [['condicao', 'Condição', {}], ['decisao', 'Decisão', {}], ['divisao', 'Divisão de fluxo', {}], ['evento', 'Evento', {}], ['gatilho', 'Gatilho', {}]]],
   ['Personalizado', [['personalizado', 'Bloco personalizado', {}]]]
 ];
 // blocos sem métricas prontas (o resto vem de EST_BLOCOS, com as métricas e a fonte)
-const CV_SIMPLES = { pagina: ['Página', 'aquisicao'], comunicacao: ['Comunicação', 'aquecimento'], posvenda: ['Pós-venda', 'retencao'], condicao: ['Condição', 'aquecimento'], decisao: ['Decisão', 'aquecimento'],
+const CV_SIMPLES = { passagem: ['Passagem para o CS', 'retencao'], pagina: ['Página', 'aquisicao'], comunicacao: ['Comunicação', 'aquecimento'], posvenda: ['Pós-venda', 'retencao'], condicao: ['Condição', 'aquecimento'], decisao: ['Decisão', 'aquecimento'],
   divisao: ['Divisão de fluxo', 'aquecimento'], evento: ['Evento', 'aquecimento'], gatilho: ['Gatilho', 'aquecimento'], personalizado: ['Personalizado', 'aquisicao'] };
 const CV_LOGICA = ['condicao', 'decisao', 'divisao', 'evento', 'gatilho'];
 const CV_ST = [['', '—'], ['planejado', 'Planejado'], ['implementando', 'Implementando'], ['pronto', 'Pronto'], ['pausado', 'Pausado']];
@@ -10084,6 +10084,7 @@ const CV_BOTAO = { captura: 'Quero participar', vendas: 'Comprar agora', checkou
 const cvImgOk = u => typeof u === 'string' && (/^https:\/\//i.test(u) || /^data:image\/(png|jpe?g|webp|gif);base64,/i.test(u));
 const CV_PICT = { indicacao: '<circle cx="9" cy="8" r="3"/><circle cx="16.5" cy="9" r="2.5"/><path d="M3.5 19c.6-3.3 2.8-5 5.5-5s4.9 1.7 5.5 5M14 14.4c2.6-.4 5.6.9 6.3 4.6"/>',
   comercial: '<path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M19 19c0 1.5-2 2.5-5 2.5"/>',
+  passagem: '<path d="M2 12l4-4 4 2 3-2 3 1 6 3M2 12l5 5 2-1 2 2 2-1 2 1 3-3M9 10l3 3M13 9l3 3"/>',
   posvenda: '<path d="M3 9l9-4.5L21 9l-9 4.5z"/><path d="M7 11v4.5c1.4 1.3 3 2 5 2s3.6-.7 5-2V11"/>', recompra: '<path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"/>',
   assinatura: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4M9 15l2 2 4-4"/>', comunicacao: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>',
   conteudo: '<rect x="6" y="2.5" width="12" height="19" rx="2.5"/><rect x="8.5" y="6" width="7" height="7" rx="1"/><path d="M9 16.5h6"/>', video: '<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M10 9.2l5 2.8-5 2.8z"/>',
@@ -10110,7 +10111,7 @@ function cvArte(b) {
   else if (a === 'form') h = `<div class="cv-br">${nav}<div class="cv-pg cv-pg-c cv-pg-f"><b>${tit}</b><span class="cv-ck"><i></i>${l(60, '')}</span><span class="cv-ck"><i></i>${l(45, '')}</span><span class="cv-bt">${bt}</span></div></div>`;
   else if (a === 'logica') h = `<div class="cv-lgc"><svg viewBox="0 0 60 40"><path d="M30 3l26 17-26 17L4 20z" fill="none" stroke="currentColor" stroke-width="2"/>${b.tipo === 'divisao' ? '<path d="M18 20h10M28 20l7-6M28 20l7 6" stroke="currentColor" stroke-width="2" fill="none"/>' : b.tipo === 'evento' || b.tipo === 'gatilho' ? '<path d="M32 9l-7 12h6l-3 10 8-13h-6z" fill="currentColor"/>' : '<text x="30" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="currentColor">?</text>'}</svg></div>`;
   else h = `<div class="cv-ico">${lg ? CV_LOGO[lg] : cvPict(CV_PICT[b.tipo] ? b.tipo : 'personalizado')}</div>`;
-  return `<div class="cv-art cv-art-${a}">${h}</div>`;
+  return `<div class="cv-art cv-art-${a}${b.tipo === 'passagem' ? ' cv-passa' : ''}">${h}${b.tipo === 'passagem' ? '<small class="cv-passa-t">daqui para frente: CS</small>' : ''}</div>`;
 }
 // foto ou print da página: reduz para 360 px de largura antes de guardar no bloco
 const cvFotoReduz = file => new Promise((ok, erro) => { if (!/^image\//.test(file.type)) return erro(new Error('Escolha uma imagem (JPG, PNG ou WEBP).'));
@@ -10139,7 +10140,8 @@ async function cvCriaBloco(f, ctx, tipo, nome, extra, x, y) {
   let id;
   if (EST_BLOCOS[tipo]) id = await blkCria({ tabB: 'estrategia_blocos', tabE: 'estrategia_etapas', dono: f.id, tipo, nome, ordem, ref: null, chavesUsadas: ctx.L.map(e => e.chave) });
   else { id = crypto.randomUUID(); await q(sb.from('estrategia_blocos').insert({ id, workspace_id: S.ws, funil_id: f.id, ordem, fase, tipo, nome, origem_ref: null })); }
-  await q(sb.from('estrategia_blocos').update({ x: Math.round(x), y: Math.round(y), props }).eq('id', id));
+  await q(sb.from('estrategia_blocos').update({ x: Math.round(x), y: Math.round(y), props, ...(fase !== (EST_BLOCOS[tipo] || {}).fase ? { fase } : {}) }).eq('id', id));
+  if (EST_BLOCOS[tipo] && fase !== EST_BLOCOS[tipo].fase) await q(sb.from('estrategia_etapas').update({ fase }).eq('bloco_id', id)); // soltou na faixa de outra fase
   return id;
 }
 function cvMapa(el, f, ctx) {
@@ -10151,6 +10153,7 @@ function cvMapa(el, f, ctx) {
     return `<div class="cv-no${lg ? ' cv-lg' : ''}${sel && sel.id === b.id ? ' on' : ''}${edita ? ' cv-mov' : ''}" data-no="${b.id}" data-fase="${esc(b.fase)}" style="--fc:${cvFase(b.fase)[1]};left:${p.x}px;top:${p.y}px${T[b.id] !== 1 ? ';transform:scale(' + T[b.id] + ')' : ''}">
       <div class="cv-nh" data-arr="${b.id}"><span class="cv-tp">${esc(cvTipoNome(b.tipo))}</span>${st ? `<span class="cv-st cv-st-${st}">${esc((CV_ST.find(x => x[0] === st) || [0, st])[1])}</span>` : ''}${edita ? `<button type="button" class="cv-lx" data-lx="${b.id}" title="Excluir bloco" aria-label="Excluir ${esc(b.nome)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></button>` : ''}</div>
       ${cvArte(b)}<b class="cv-nm">${esc(b.nome)}</b>
+      ${edita ? `<button type="button" class="cv-fzb" data-fz="${b.id}" title="Mudar a fase deste bloco">${esc(cvFase(b.fase)[0])} ▾</button>` : `<span class="cv-fzb">${esc(cvFase(b.fase)[0])}</span>`}
       ${b.tipo === 'api' || b.tipo === 'grupo' ? `<div class="cv-sw">${[['api', 'API'], ['grupo', 'Grupo']].map(([k, l]) => `<button type="button" data-wa="${k}" class="${b.tipo === k ? 'on' : ''}"${edita ? '' : ' disabled'}>${l}</button>`).join('')}</div>`
         : (b.props || {}).canal && !cvLogoDe(b.tipo, b.nome, b.props.canal) ? `<small>${esc(b.props.canal)}</small>` : ''}
       ${pr ? `<small class="cv-kpi"><span class="blk-dot"></span>${esc(blkCurto(pr, b))}</small>` : lg ? '' : '<small class="muted">sem métrica</small>'}
@@ -10201,7 +10204,7 @@ function cvMapa(el, f, ctx) {
   palco.addEventListener('pointerdown', e => {
     const pino = e.target.closest('[data-pino]'), cab = e.target.closest('[data-arr]'), nob = e.target.closest('[data-no]');
     if (pino && edita) { arr = { tipo: 'liga', de: pino.dataset.pino }; e.preventDefault(); return; }
-    if (e.target.closest('[data-wa]') || e.target.closest('[data-lx]')) return;
+    if (e.target.closest('[data-wa]') || e.target.closest('[data-lx]') || e.target.closest('[data-fz]') || e.target.closest('.cv-fzm')) return;
     const rs = e.target.closest('[data-rs]');
     if (rs && edita) { arr = { tipo: 'tam', id: rs.dataset.rs, s0: T[rs.dataset.rs] }; e.preventDefault(); return; }
     if (nob && edita) { const id = nob.dataset.no, w = mundoXY(e); arr = { tipo: 'no', id, dx: w.x - P[id].x, dy: w.y - P[id].y, cx: e.clientX, cy: e.clientY, mexeu: false }; e.preventDefault(); return; }
@@ -10232,6 +10235,16 @@ function cvMapa(el, f, ctx) {
   window.addEventListener('pointermove', move); window.addEventListener('pointerup', solta, { once: false });
   const limpa = new MutationObserver(() => { if (!palco.isConnected) { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', solta); limpa.disconnect(); } });
   limpa.observe(document.body, { childList: true, subtree: true });
+  // fase pelo card: a etiqueta abre as quatro fases; trocar leva as métricas do bloco junto
+  const mudaFase = (b, fase) => act(async () => { if (b.fase === fase) return; await q(sb.from('estrategia_blocos').update({ fase }).eq('id', b.id));
+    for (const e2 of L.filter(x => x.bloco_id === b.id)) await q(sb.from('estrategia_etapas').update({ fase }).eq('id', e2.id)); render(); }, 'Agora em ' + cvFase(fase)[0]);
+  mundo.querySelectorAll('[data-fz]').forEach(x => x.addEventListener('click', e => { e.stopPropagation(); const b = BL.find(y => y.id === x.dataset.fz); if (!b) return;
+    const ab = mundo.querySelector('.cv-fzm'); if (ab) { const era = ab.dataset.de; ab.remove(); if (era === b.id) return; }
+    const m2 = document.createElement('div'); m2.className = 'cv-fzm'; m2.dataset.de = b.id;
+    m2.innerHTML = EST_FASES.map(([k]) => `<button type="button" data-fzk="${k}" style="--fc:${cvFase(k)[1]}" class="${b.fase === k ? 'on' : ''}">${esc(cvFase(k)[0])}</button>`).join('');
+    x.closest('[data-no]').appendChild(m2);
+    m2.querySelectorAll('[data-fzk]').forEach(o => o.addEventListener('click', ev2 => { ev2.stopPropagation(); m2.remove(); mudaFase(b, o.dataset.fzk); })); }));
+  palco.addEventListener('pointerdown', e => { if (!e.target.closest('.cv-fzm') && !e.target.closest('[data-fz]')) { const ab = mundo.querySelector('.cv-fzm'); if (ab) ab.remove(); } }, true);
   // lixeira no card: exclui na hora; o aviso no mapa deixa desfazer por alguns segundos
   mundo.querySelectorAll('[data-lx]').forEach(x => x.addEventListener('click', e => { e.stopPropagation(); const b = BL.find(y => y.id === x.dataset.lx); if (!b || !edita) return;
     act(async () => { const ets = L.filter(e2 => e2.bloco_id === b.id), cns = CN.filter(c => c.de_bloco === b.id || c.para_bloco === b.id);
@@ -10252,9 +10265,10 @@ function cvMapa(el, f, ctx) {
       novoBloco(it.dataset.pt, it.dataset.pn, JSON.parse(it.dataset.px || '{}'), c.x, c.y); };
   });
   palco.addEventListener('dragover', e => e.preventDefault());
-  palco.addEventListener('drop', e => { e.preventDefault(); let d; try { d = JSON.parse(e.dataTransfer.getData('text/plain')); } catch (x) { return; } const w = mundoXY(e); novoBloco(d.t, d.n, d.x, w.x - CV_W / 2, w.y - 20); });
+  palco.addEventListener('drop', e => { e.preventDefault(); let d; try { d = JSON.parse(e.dataTransfer.getData('text/plain')); } catch (x) { return; } const w = mundoXY(e); const bd = [...mundo.querySelectorAll('[data-banda]')].find(x => { const r = x.getBoundingClientRect(); return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom; });
+    novoBloco(d.t, d.n, bd ? { ...(d.x || {}), fase: bd.dataset.banda } : d.x, w.x - CV_W / 2, w.y - 20); });
   const novoBloco = (tipo, nome, extra, x, y) => { if (tipo === 'personalizado') return modal('Bloco personalizado', `<div class="grid2"><label class="full">Nome<input name="nome" required maxlength="80" placeholder="Ex.: Live de lançamento"></label>
-      <label>Fase<select name="fase">${EST_FASES.map(([k, l]) => `<option value="${k}">${l}</option>`).join('')}</select></label><span class="muted full">Depois, no painel do bloco, adicione as métricas dele.</span></div>`,
+      <label>Fase<select name="fase">${EST_FASES.map(([k, l]) => `<option value="${k}">${esc(cvFase(k)[0])}</option>`).join('')}</select></label><span class="muted full">Depois, no painel do bloco, adicione as métricas dele.</span></div>`,
       async d => { const id = await cvCriaBloco(f, ctx, 'personalizado', d.nome.trim(), { fase: d.fase }, x, y); S.cvSel = { t: 'no', id }; toast('Bloco criado'); }, 'Criar');
     act(async () => { const id = await cvCriaBloco(f, ctx, tipo, nome, extra, x, y); S.cvSel = { t: 'no', id }; render(); }, 'Bloco adicionado'); };
   if ($('#cvOrg')) $('#cvOrg').onclick = () => { const hs = {}; BL.forEach(b => { hs[b.id] = alt(b.id); });
@@ -10284,7 +10298,7 @@ function cvMapa(el, f, ctx) {
     const dep = CN.filter(c => c.para_bloco === b.id).map(c => (BL.find(x => x.id === c.de_bloco) || {}).nome).filter(Boolean);
     box.innerHTML = `<div class="cv-pt">${esc(cvTipoNome(b.tipo))}</div>
       <form id="cvFb"><label>Nome<input name="nome" required maxlength="80" value="${esc(b.nome)}"${edita ? '' : ' disabled'}></label>
-      <label>Fase<select name="fase"${edita ? '' : ' disabled'}>${EST_FASES.map(([k, l]) => `<option value="${k}"${b.fase === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+      <label>Fase<select name="fase"${edita ? '' : ' disabled'}>${EST_FASES.map(([k, l]) => `<option value="${k}"${b.fase === k ? ' selected' : ''}>${esc(cvFase(k)[0])}</option>`).join('')}</select></label>
       <label>Objetivo da etapa<textarea name="objetivo" rows="2"${edita ? '' : ' disabled'}>${esc(pr0.objetivo || '')}</textarea></label>
       <label>Descrição<textarea name="descricao" rows="2"${edita ? '' : ' disabled'}>${esc(pr0.descricao || '')}</textarea></label>
       <label>Canal ou plataforma<input name="canal" maxlength="80" value="${esc(pr0.canal || '')}" placeholder="Ex.: Meta Ads, Google Ads"${edita ? '' : ' disabled'}></label>
@@ -10382,6 +10396,12 @@ const CV_CSS = `<style id="cvCss">.cv{display:grid;grid-template-columns:200px m
 .cv-lx svg{width:14px;height:14px}.cv-no:hover .cv-lx,.cv-no.on .cv-lx{opacity:1}.cv-lx:hover{background:color-mix(in srgb,var(--bad) 16%,transparent);color:var(--bad)}
 .cv-desf{position:absolute;left:50%;top:50px;transform:translateX(-50%);z-index:3;display:flex;align-items:center;gap:10px;background:var(--panel,var(--surface));border:1px solid var(--line);border-radius:10px;padding:7px 8px 7px 14px;box-shadow:0 6px 18px rgba(15,23,42,.22);font-size:13px;white-space:nowrap}
 .cv-rasc{margin-top:8px;padding:8px 12px;border:1px dashed var(--warn,#d97706);border-radius:10px;font-size:13px;max-width:720px}
+.cv-fzb{align-self:flex-start;border:1px solid color-mix(in srgb,var(--fc) 45%,transparent);background:color-mix(in srgb,var(--fc) 10%,transparent);color:var(--fc);border-radius:99px;font:inherit;font-size:10.5px;font-weight:700;padding:1px 8px;cursor:pointer;white-space:nowrap}
+span.cv-fzb{cursor:default}.cv-fzm{position:absolute;left:8px;right:8px;bottom:8px;z-index:6;display:flex;flex-direction:column;gap:3px;padding:6px;background:var(--panel,var(--surface));border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 20px rgba(15,23,42,.25)}
+.cv-fzm button{display:flex;align-items:center;gap:6px;border:0;background:none;color:inherit;font:inherit;font-size:12px;text-align:left;padding:4px 6px;border-radius:6px;cursor:pointer}
+.cv-fzm button::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--fc)}.cv-fzm button:hover,.cv-fzm button.on{background:color-mix(in srgb,var(--fc) 14%,transparent)}
+.cv-passa-t{position:absolute;left:0;right:0;bottom:3px;text-align:center;font-size:8.5px;font-weight:700;color:#9333ea;text-transform:uppercase;letter-spacing:.05em}.cv-art-icone.cv-passa .cv-ico{padding-bottom:10px}
+.cv-art-icone.cv-passa{background:color-mix(in srgb,#9333ea 8%,transparent);border-radius:8px}
 .cv-sw button.on{background:#25D366;color:#053b1c;font-weight:700}.cv-sw button:disabled{cursor:default}
 .cv-prop .cv-sec label{display:block;margin-top:6px}
 .cv-no{border-top:4px solid var(--fc,var(--line))}.cv-no.cv-fora,.cv-ar.cv-fora{opacity:.22}.cv-no,.cv-ar{transition:opacity .15s}
