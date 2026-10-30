@@ -1,4 +1,4 @@
-## v0.175 — Diagnóstico 360° (G1)
+## v0.176 — Diagnóstico 360° (G1)
 - O formulário de cliente vai pelo link individual (Fila de envio). O link do diagnóstico vale 30 dias; vencido, não abre nem aceita resposta.
 - A pergunta condicional só aparece, e só é cobrada, quando a pergunta indicada tem uma das respostas escolhidas. No banco, a escondida também não é cobrada.
 - As métricas aparecem por etapa do funil pirata e são filtradas pelo modelo de negócio marcado (MRR e ARR só para assinatura e comunidade). Obrigatória = marcar Tenho, Não tenho ou Não sei em cada métrica visível.

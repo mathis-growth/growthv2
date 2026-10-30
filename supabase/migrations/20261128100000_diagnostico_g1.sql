@@ -1,4 +1,4 @@
--- v0.175 — Diagnóstico 360° (G1): formulário do cliente e catálogo de métricas por etapa do funil pirata.
+-- v0.176 — Diagnóstico 360° (G1) (aplicada em produção com o nome v0175_diagnostico_g1): formulário do cliente e catálogo de métricas por etapa do funil pirata.
 -- Plano: docs/diagnostico-360-plano.md (seções A, B, C e 6).
 -- 1. pesquisas: tipo 'diagnostico' e publico (lead ou cliente: "se é um tipo para lead ou se é para cliente").
 -- 2. pesquisa_perguntas: tipos novos (numero, moeda, meses, metricas, lista, documentos), condicao (mostrar só se outra pergunta

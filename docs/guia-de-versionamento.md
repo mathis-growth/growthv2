@@ -1,4 +1,4 @@
-## v0.175
+## v0.176
 - Migração `20261128100000_diagnostico_g1.sql`:
   - `pesquisas` com tipo `diagnostico` e `publico`;
   - `pesquisa_perguntas` com os tipos novos, `condicao` e `config`;
@@ -8,12 +8,17 @@
   - `pesquisa_condicao_ok`;
   - `pesquisa_publica` reescrita;
   - `pesquisa_registrar` e `pesquisa_responder` atualizadas por troca de texto, com erro se o trecho não for encontrado.
-- index.html: 0.174 → 0.175:
+- index.html: 0.175 → 0.176 (o atendimento, da outra frente, é a 0.175):
   - `PQ_TP_G1`, `AARRR`, `MET_ST`, `MET_CAMPOS`, `DOC_CATS`, `PQ_DIAG360`, `pfCampoG1`, `pfLigaG1`, `pfValidaG1`, `pfLeG1`, `pqVerResposta`;
   - `modalPesquisa` com "Para quem é" e `modalPergunta` com configuração e condição;
   - `criarDeModelo` com `objetos`;
   - Dicionário de métricas mostra a etapa e o que o Growth's ainda não calcula;
   - teste `t175_diagnostico_g1.py`.
+
+## v0.175
+- Atendimento em `assets/atendimento.js` e `assets/atendimento.css`, carregados pelo `index.html`. Incluir os assets na publicação; sem build.
+- Nova função `supabase/functions/atendimento`, migração `20261030021541_central_atendimento.sql` e testes `tests/atendimento`.
+- Base incorporada até `d07498c` (0.174), sem mudar os fluxos comerciais. Banco/função ainda não publicados; instruções e limites em `docs/atendimento.md`.
 
 ## v0.174
 - Migração `20261127100000_oportunidade_contrato.sql`: `contratos.oportunidade_id` (+ validação `contratos_oportunidade_valida`), `oportunidades.origem` com `crm`, gatilhos `contratos_ganha_oportunidade` e `oportunidade_negocio_pessoa` (definidores).

@@ -1,4 +1,4 @@
-## v0.175 — Diagnóstico 360° (G1)
+## v0.176 — Diagnóstico 360° (G1)
 - `pesquisas.tipo` aceita `diagnostico`; `pesquisas.publico` (`lead` ou `cliente`; os antigos: lead → lead, os outros → cliente).
 - `pesquisa_perguntas.tipo` aceita `numero`, `moeda`, `meses`, `metricas`, `lista` e `documentos`.
 - `pesquisa_perguntas.condicao`: `{pergunta, valores[]}`.

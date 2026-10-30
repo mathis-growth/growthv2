@@ -6,6 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Growths</title>
+<link rel="stylesheet" href="assets/atendimento.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1212,7 +1213,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.175 · 30/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.176 · 30/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -15296,7 +15297,7 @@ function pqLeituraPmf(x) {
   return `<div class="panel pq-pmf"><div>${semPilula({ k: st[0], txt: st[1] })}</div><p style="margin:8px 0 4px"><b>${String(pc).replace('.', ',')}%</b> marcaram "${esc(x.opcoes[0])}" (${prim} de ${base} respostas${na ? `; ${na} "Não se aplica" fora da base` : ''}).</p><p class="muted" style="margin:0">${st[2]} Com poucas respostas, leia como sinal, não como prova: aprofunde em conversas com quem respondeu.</p></div>`;
 }
 
-/* ================= v0.175 — Diagnóstico 360° (G1): formulário do cliente =================
+/* ================= v0.176 — Diagnóstico 360° (G1): formulário do cliente =================
    Plano: docs/diagnostico-360-plano.md. Tipos de pergunta novos (número, valor em reais, mês a mês, métricas do funil pirata,
    lista, documentos), pergunta condicional e o modelo pronto "Diagnóstico 360°" (seções B.1 a B.8 do plano). */
 PQ_TIPO.diagnostico = 'Diagnóstico do cliente';
@@ -19187,6 +19188,9 @@ function modalSubtemas(t, D) {
   }, 'Salvar');
 }
 
+</script>
+<script src="assets/atendimento.js"></script>
+<script>
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
 if (PQ_TOKEN) vPesquisaPublica(PQ_TOKEN);
 else sb.auth.getSession().then(({ data }) => { S.user = data.session ? data.session.user : null; boot(); });

@@ -1,6 +1,6 @@
 # Publicar o Growths no Cloudflare Pages
 
-O Growths é um arquivo só (`index.html`, na raiz do repositório `mathis-growth/growthv2`) que conversa com o Supabase. O Cloudflare Pages publica o repositório a cada atualização no GitHub. Não precisa compilar nada.
+O Growths usa `index.html` e, a partir da v0.175, a pasta `assets/` para o módulo Atendimento, na raiz do repositório `mathis-growth/growthv2`. Publicar ambos. O Cloudflare Pages publica o repositório a cada atualização no GitHub. Não precisa compilar nada. Banco e Edge Functions têm publicação separada; veja `docs/atendimento.md`.
 
 ## 1. GitHub (uma vez)
 1. Em github.com, crie um repositório **privado** chamado `growths` (sem README, sem .gitignore).

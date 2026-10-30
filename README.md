@@ -15,7 +15,8 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.175 · 30/10/2026 (`index.html`) |
+| **Versão da tela** | 0.176 · 30/10/2026 (`index.html` + `assets/atendimento.*`) |
+| **Atendimento (0.175)** | Código preparado; falta aplicar `supabase/migrations/20261030021541_central_atendimento.sql`, publicar a função `atendimento`, configurar canais e liberar as telas nos pacotes. [Guia](docs/atendimento.md). |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.156** (26/10/2026): dicionário de métricas com direção e referência; alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
 | **Falta aplicar no banco** | `supabase/RODAR_v0.157_narrativas.sql` (banco de narrativas; sem ele, as frases do Financeiro não aparecem) e `supabase/RODAR_v0.159_content_simples.sql` + `supabase/RODAR_v0.160_content_segmentos.sql` (Growth's Content; sem eles, as abas novas avisam) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
@@ -27,7 +28,8 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
-| 0.175 | 30/10/2026 | **Diagnóstico 360° (G1)**: formulário do cliente (para lead ou cliente), tipos de pergunta novos (métricas do funil pirata com tenho/não tenho e o detalhe de cada uma, mês a mês, lista, documentos), perguntas condicionais, link com validade e o modelo pronto com as 8 seções; catálogo de métricas por etapa do funil pirata. | `20261128100000_diagnostico_g1.sql` — aplicado em produção |
+| 0.176 | 30/10/2026 | **Diagnóstico 360° (G1)**: formulário do cliente (para lead ou cliente), tipos de pergunta novos (métricas do funil pirata com tenho/não tenho e o detalhe de cada uma, mês a mês, lista, documentos), perguntas condicionais, link com validade e o modelo pronto com as 8 seções; catálogo de métricas por etapa do funil pirata. | `20261128100000_diagnostico_g1.sql` — aplicado em produção |
+| 0.175 | 30/10/2026 | **Atendimento multicanal**: conversas, grupos Evolution, QR/status, cartão URL/Key, WhatsApp oficial e Instagram/Zernio, assinatura do usuário, notas internas e vínculo com a ficha do cliente. | `20261030021541_central_atendimento.sql` + função `atendimento` — **ainda não publicados** |
 | 0.174 | 30/10/2026 | **E2**: o lead vira **oportunidade** e a oportunidade gera o **contrato em rascunho** (a proposta), com mais de um contrato por oportunidade; ativar o contrato ganha a oportunidade; CPF/CNPJ pedido no contrato. | `20261127100000_oportunidade_contrato.sql` — aplicado em produção |
 | 0.173 | 30/10/2026 | **E1 da integração comercial**: CPF/CNPJ na pessoa (validado, único, buscável) e **linha do tempo única do cliente** na ficha (cadastro, marketing, comercial, financeiro, jornada e CS). Correção: mesclar cadastros sem tags falhava. | `20261126100000_pessoa_documento.sql` — aplicado em produção |
 | 0.172 | 30/10/2026 | **Resumo da estratégia** (dados, versão e funil por fase) e botão **Criar campanha** a partir da estratégia, que já vem escolhida e copia as etapas. | Sem mudança no banco |

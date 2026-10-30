@@ -1,6 +1,6 @@
 # Diagnóstico 360° de Growth, Dados e Maturidade Operacional: plano técnico
 
-**Data:** 30/10/2026 · **Situação:** G1 construída (v0.175: formulário do cliente e catálogo). G2 a G5 seguem só no plano.
+**Data:** 30/10/2026 · **Situação:** G1 construída (v0.176: formulário do cliente e catálogo). G2 a G5 seguem só no plano.
 **Base:** a especificação da Rebecka (30/10) e as decisões das etapas E1 a E7 (`docs/auditoria-integracao-comercial-onboarding.md`). Este plano detalha a etapa de onboarding com diagnóstico e o projeto de implantação de 90 dias.
 
 ## 0. Princípios
