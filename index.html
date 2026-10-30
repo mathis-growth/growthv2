@@ -6,6 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Growths</title>
+<link rel="stylesheet" href="assets/atendimento.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1202,7 +1203,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.174 · 30/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.175 · 30/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -18892,6 +18893,9 @@ function modalSubtemas(t, D) {
   }, 'Salvar');
 }
 
+</script>
+<script src="assets/atendimento.js"></script>
+<script>
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
 if (PQ_TOKEN) vPesquisaPublica(PQ_TOKEN);
 else sb.auth.getSession().then(({ data }) => { S.user = data.session ? data.session.user : null; boot(); });

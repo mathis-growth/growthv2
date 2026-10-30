@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 30/10/2026, versão 0.174.
+**Última atualização:** 30/10/2026, versão 0.175.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -296,6 +296,14 @@ Enquanto o cliente não estiver configurado, o módulo abre num passo a passo de
 
 ---
 
+### Atendimento multicanal
+
+A Central de Atendimento reúne conversas do WhatsApp oficial e do Instagram pela Zernio, além do WhatsApp e grupos pela Evolution. À esquerda ficam as conversas e os filtros; no centro, o histórico e as respostas; à direita, a pessoa do CRM, com responsável, oportunidades, compras e acesso à ficha completa. É possível registrar notas internas e indicar se a conversa está aberta, aguardando ou resolvida.
+
+As respostas levam o nome do atendente cadastrado no Growths. Nos grupos, cada mensagem identifica seu participante. O histórico capturado fica salvo no Growths e continua disponível mesmo se o número for desconectado; arquivos recebidos são copiados para armazenamento privado, com indicação quando a recuperação ainda está pendente. Conversas individuais podem ser vinculadas a pessoas existentes ou originar um novo lead.
+
+A primeira etapa está implementada e testada localmente na v0.175, aguardando publicação do banco e da função e configuração dos canais. Templates, disparos, automações e outros canais serão etapas seguintes.
+
 ## 6. RevOps: retenção e expansão
 
 - **Retenção & Expansão**, com filtros de período da primeira compra, produto, canal, campanha, origem e segmento:
@@ -469,6 +477,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **30/10 (v0.175):** Central de Atendimento, grupos WhatsApp, conexões, assinatura do atendente e histórico ligado ao CRM; publicação e configuração pendentes.
 - **30/10 (v0.174):** O lead vira oportunidade, e a oportunidade gera o contrato em rascunho (a proposta).
 - **30/10 (v0.173):** CPF/CNPJ no cadastro da pessoa e linha do tempo única do cliente na ficha.
 - **30/10 (v0.172):** Resumo da estratégia (funil por fase) e Criar campanha direto da estratégia.

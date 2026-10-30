@@ -2,6 +2,14 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.175 — Central de Atendimento (30/10/2026)
+- Atendimento na sidebar: Conversas e Canais e conexões, com filtros, três colunas, responsável, situação e notas internas.
+- Evolution 2.3.7: cartão de URL/Key em Integrações; instâncias, QR, status, conversas e grupos. Zernio: WhatsApp oficial e Instagram, respostas, histórico e webhooks.
+- Assinatura do usuário aplicada no servidor, histórico persistente por conversa e pessoa, arquivos privados e eventos deduplicados.
+- Adaptadores separados para adicionar canais futuros sem refazer o modelo de histórico.
+- Integração da base até a v0.174; ficha completa reutiliza as mudanças de documento, linha do tempo e oportunidades da outra pessoa.
+- **Ainda não publicado em produção:** migração `20261030021541_central_atendimento.sql`, função `atendimento`, assets, segredos, liberação nos pacotes e homologação real dos canais. Detalhes e limites em `docs/atendimento.md`.
+
 ## v0.174 — E2: o lead vira oportunidade e a oportunidade gera o contrato (30/10/2026)
 - **Funil de leads:** cada cartão tem "💼 Abrir oportunidade", que cria a oportunidade de venda nova já com o lead e o comercial responsável. Se o lead já tem uma, o botão mostra o valor e abre a oportunidade.
 - **A proposta é o contrato em rascunho:**

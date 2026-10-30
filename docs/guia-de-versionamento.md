@@ -1,3 +1,8 @@
+## v0.175
+- Atendimento em `assets/atendimento.js` e `assets/atendimento.css`, carregados pelo `index.html`. Incluir os assets na publicação; sem build.
+- Nova função `supabase/functions/atendimento`, migração `20261030021541_central_atendimento.sql` e testes `tests/atendimento`.
+- Base incorporada até `d07498c` (0.174), sem mudar os fluxos comerciais. Banco/função ainda não publicados; instruções e limites em `docs/atendimento.md`.
+
 ## v0.174
 - Migração `20261127100000_oportunidade_contrato.sql`: `contratos.oportunidade_id` (+ validação `contratos_oportunidade_valida`), `oportunidades.origem` com `crm`, gatilhos `contratos_ganha_oportunidade` e `oportunidade_negocio_pessoa` (definidores).
 - index.html: 0.173 → 0.174. `e2Ok`, `negocioOportunidade`; `fecharNegocio`/`ganhouNegocio`/`ofertaContrato` com a oportunidade; botão `[data-opn]` no funil de leads; `vCrmOport` com propostas ligadas (`[data-oc]`, `.op-cts`) e Ganhou abrindo a proposta; `modalContrato` com `pre.oportunidade_id`, `pre.proposta` e CPF/CNPJ (`#ctDoc`). Teste `t174_oportunidade_contrato.py`; `mockdb.js` com `REV` (contrato → itens).
