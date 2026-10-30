@@ -27,7 +27,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
-| 0.171 | 29/10/2026 | **Correção de publicar a estratégia** (dava "Sem permissão"); fase no próprio card; soltar na faixa define a fase; bloco **Passagem para o CS**. | `20261125100000_estrategia_publicar_definer.sql` — ainda não aplicado |
+| 0.171 | 29/10/2026 | **Correção de publicar a estratégia** (dava "Sem permissão"); fase no próprio card; soltar na faixa define a fase; bloco **Passagem para o CS**. | `20261125100000_estrategia_publicar_definer.sql` — aplicado em produção |
 | 0.170 | 29/10/2026 | **Criar a estratégia pelo mapa**: "Criar no mapa" abre um mapa em branco; ao publicar, dá o nome e a estratégia entra na lista com as etapas montadas (versão 1). | Sem mudança no banco |
 | 0.169 | 29/10/2026 | **Lixeira nos cards do Canvas**: um clique exclui o bloco, e o mapa oferece Desfazer por 8 segundos. | Sem mudança no banco |
 | 0.168 | 29/10/2026 | **Canvas por fase**: o funil inteiro num mapa só, com cor e faixa por fase (Captação, Aquecimento, Vendas, Pós-venda/CS) e legenda que destaca uma fase. Correção: trocar de workspace com uma estratégia aberta gravava os blocos no workspace errado. | Sem mudança no banco |

@@ -8,7 +8,7 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
 - **Soltar na faixa:** um componente solto dentro da faixa de uma fase já nasce nessa fase.
 - **Passagem para o CS** (Pós-venda): bloco que marca no mapa o ponto em que o cliente sai de Vendas e passa a ser do CS. Depois dele, o funil do CS é montado na fase Pós-venda (CS).
 - A lista de estratégias mostra a data de criação das estratégias novas; as antigas não tinham data, e a lista não inventa uma.
-- Banco: `20261125100000_estrategia_publicar_definer.sql` (**ainda não aplicado em produção**). Testes: banco `canvas_s1_s3` (OK, com as checagens novas); tela `tests/tela/t171_canvas_fase_no_card.py` (14 verificações, 0 falhas); t164 a t170 sem falhas.
+- Banco: `20261125100000_estrategia_publicar_definer.sql` (aplicado em produção em 29/10/2026 como `v0171_estrategia_publicar_definer`). Testes: banco `canvas_s1_s3` (OK, com as checagens novas); tela `tests/tela/t171_canvas_fase_no_card.py` (14 verificações, 0 falhas); t164 a t170 sem falhas.
 
 ## v0.170 — Criar a estratégia pelo mapa (29/10/2026)
 - **Marketing → Estratégias → Criar no mapa** (botão principal): abre um mapa em branco, como rascunho, para montar o funil arrastando os componentes. Cada bloco já cria as etapas (métricas) dele.
