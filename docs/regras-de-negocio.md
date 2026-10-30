@@ -1,3 +1,9 @@
+## v0.173 — Cliente único com CPF/CNPJ
+- Uma pessoa só por cliente. Se o cliente é empresa, o CNPJ vai na mesma pessoa; não há cadastro paralelo de empresa.
+- CPF/CNPJ é opcional no cadastro e obrigatório para gerar contrato (E2). É único por empresa usuária; em outra empresa usuária, o mesmo documento pode existir.
+- Mesclar dois cadastros com documentos diferentes é recusado.
+- A linha do tempo do cliente só mostra recebimento que de fato entrou (status recebido); a parcela prevista não aparece.
+
 ## v0.165 — Strategy Canvas
 - Versão nasce em "Publicar versão". A campanha copia a estratégia como ela está e guarda a versão; se a estratégia nunca foi publicada, a cópia publica a v1 antes.
 - Mudar a estratégia não mexe nas campanhas já criadas. Aplicar de novo na mesma campanha não duplica blocos nem ligações; "substituir" refaz tudo.

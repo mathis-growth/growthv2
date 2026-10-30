@@ -1,3 +1,7 @@
+## v0.173
+- `pessoas.documento`: CPF (11) ou CNPJ (14) só com dígitos, validado (`documento_valido`) e único por workspace quando houver (`pessoas_documento_uq`). O gatilho `pessoas_documento_t` normaliza o que foi digitado. O tipo sai do tamanho.
+- `_pessoas_mesclar_v088`: documentos diferentes impedem; o da removida passa para a mantida; tags vazias nos dois viram `{}` (antes falhava).
+
 ## v0.171
 - `estrategia_publicar` passa a `security definer` (mesma checagem: `pode_operar` e `perm(..., 'editar', mkt/gro)`); grava `publicada_por = auth.uid()`.
 - `funis.criado_em` (timestamptz, padrão `now()`; as estratégias antigas ficam sem data).

@@ -38,3 +38,6 @@ Sem Postgres instalado, dá para rodar tudo num Postgres em memória (PGlite):
 
 ## v0.165 — Strategy Canvas (PGlite)
 Mesmo jeito da v0.163: `node pglite_run.mjs <pasta do repositório> canvas_s1_s3_cenarios.sql`. Termina com "canvas_s1_s3: tudo OK" (biblioteca, conexões com ramificação, versões imutáveis, cópia para a campanha sem misturar versões). Conferido em 29/10/2026, junto com `jornada_b2_cenarios.sql`.
+
+## v0.173 — CPF/CNPJ na pessoa (PGlite)
+`node pglite_run.mjs <pasta do repositório> pessoa_documento_cenarios.sql`. Termina com "pessoa_documento: tudo OK" (validação, só dígitos, único por workspace, mesclagem levando o documento e recusando documentos diferentes, mesclagem sem tags). Conferido em 30/10/2026.

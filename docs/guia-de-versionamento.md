@@ -1,3 +1,7 @@
+## v0.173
+- Migração `20261126100000_pessoa_documento.sql`: `documento_normaliza`, `documento_valido`, `pessoas.documento` (dígitos, check, índice único por workspace), gatilho `pessoas_documento_t`; `_pessoas_mesclar_v088` atualizada por troca de texto (documento e correção das tags vazias), com erro se o trecho não for encontrado.
+- index.html: 0.172 → 0.173. `docDig`, `docTipo`, `docFmt`, `docValido`; campo em `modalCliente` (com `temColuna`); CPF/CNPJ em `fichaPessoa` e na busca de `vClientes`; linha do tempo única em `fichaPessoa` (eventos com categoria e filtro `.tlf`). Teste `t173_pessoa_documento_linha_tempo.py`; `mockdb.js` liga `etapas_kanban` e `jornada_marcos`.
+
 ## v0.172
 - index.html: 0.171 → 0.172. `vEstrategia`: aba `resumo` (padrão para estratégia publicada; rascunho abre em `mapa`), `cvResumoHtml(f, BL, L, CN, pr, vs)`, botão `#estCamp` → `formCampanha(null, { funil_id, modelo, abrir: true })`. `formCampanha`: `pre.funil_id` vira o padrão do campo Estratégia e `pre.abrir` abre a campanha criada. Teste `t172_estrategia_resumo_campanha.py`. Sem migração.
 

@@ -1,7 +1,7 @@
 (function(){
 const D = window.__SEED || {}; window.__D = D; window.__calls = [];
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'id' + Math.random().toString(36).slice(2));
-const FK = { campanhas: 'campanha_id', produtos: 'produto_id', funis: 'funil_id', funil_etapas: 'etapa_id', motivos_resultado: 'negocio_motivo_id', fontes_video: 'fonte_id', fornecedores: 'fornecedor_id', plataformas_venda: 'plataforma_id', contrato_itens: null };
+const FK = { campanhas: 'campanha_id', produtos: 'produto_id', funis: 'funil_id', funil_etapas: 'etapa_id', motivos_resultado: 'negocio_motivo_id', fontes_video: 'fonte_id', fornecedores: 'fornecedor_id', plataformas_venda: 'plataforma_id', contrato_itens: null, etapas_kanban: 'etapa_kanban_id', jornada_marcos: 'marco_id' };
 function from(t) {
   const st = { t, op: 'select', f: [], ord: null, lim: null, single: false, payload: null, onConflict: null, sel: '*' };
   const run = () => {

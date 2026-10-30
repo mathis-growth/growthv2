@@ -1108,6 +1108,8 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
 #arvRoot .arv-rosca li:hover{background:var(--accent-soft)} #arvRoot .arv-rosca li i{width:10px;height:10px;border-radius:3px}
 #arvRoot .arv-rosca li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
+<style id="v173">.tlf{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}.tlf button{border:1px solid var(--line);background:none;color:inherit;font:inherit;font-size:12px;border-radius:99px;padding:2px 10px;cursor:pointer}.tlf button.on{border-color:var(--accent);color:var(--accent);font-weight:700}.tlf button b{color:var(--muted);font-weight:600}
+.tlu{max-height:360px;overflow:auto}.tlt{font-style:normal;font-size:10.5px;font-weight:700;border-radius:99px;padding:0 6px;margin-right:4px;border:1px solid var(--line)}.tlt-fin{color:var(--good)}.tlt-com{color:var(--accent)}.tlt-jor{color:#9333ea}.tlt-mkt{color:#d97706}</style>
 <style id="v164">/* v0.164 — Cockpit: um painel por área, com números e um gráfico, clicável */
 :root{--ck-s1:#3b82f6;--ck-s2:#d97706;--ck-borda:rgba(148,163,184,.45)}
 :root[data-theme="light"]{--ck-s1:#1d4ed8;--ck-s2:#d97706;--ck-borda:#c3cfe2}
@@ -1199,7 +1201,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.172 · 30/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.173 · 30/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -1251,6 +1253,20 @@ const mesFmt = s => { const [a, m] = s.split('-'); return m + '/' + a; };
 const MESES = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 const hoje = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
 const one = x => Array.isArray(x) ? x[0] : x;
+/* v0.173: CPF ou CNPJ da pessoa (guardado só com dígitos; o tipo sai do tamanho) */
+const docDig = x => String(x || '').replace(/\D/g, '');
+const docTipo = x => docDig(x).length === 14 ? 'CNPJ' : 'CPF';
+const docFmt = x => { const d = docDig(x); return d.length === 11 ? d.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : d.length === 14 ? d.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5') : String(x || ''); };
+function docValido(x) {
+  const d = docDig(x), n = i => +d[i];
+  if (d.length === 11) { if (/^(\d)\1{10}$/.test(d)) return false;
+    const dv = k => { let t = 0; for (let i = 0; i < k; i++) t += n(i) * (k + 1 - i); const r = (t * 10) % 11; return r === 10 ? 0 : r; };
+    return dv(9) === n(9) && dv(10) === n(10); }
+  if (d.length === 14) { if (/^(\d)\1{13}$/.test(d)) return false;
+    const dv = ps => { let t = 0; ps.forEach((w, i) => { t += n(i) * w; }); const r = t % 11; return r < 2 ? 0 : 11 - r; };
+    return dv([5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]) === n(12) && dv([6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]) === n(13); }
+  return false;
+}
 const nul = v => (v === '' || v == null) ? null : v;
 const numOrNull = v => (v === '' || v == null) ? null : Number(v);
 
@@ -4485,26 +4501,59 @@ async function fichaPessoa(id) {
     q(sb.from('pessoa_historico').select('*').eq('pessoa_id', id)),
     q(sb.from('pessoa_funil').select('funis(nome),funil_etapas(nome)').eq('pessoa_id', id)),
     q(sb.from('pessoa_funil_historico').select('*').eq('pessoa_id', id)),
-    q(sb.from('vendas').select('data_venda,valor_bruto,status,forma_pagamento,campanha_id,vendedor_id,produtos(nome),campanhas(nome)').eq('pessoa_id', id).order('data_venda')),
-    q(sb.from('contratos').select('numero,status,recorrente,periodicidade,num_parcelas,data_inicio,data_fim,ativado_em,campanha_id,vendedor_id,campanhas(nome),contrato_itens(quantidade,valor,produtos(nome))').eq('pessoa_id', id)),
+    q(sb.from('vendas').select('id,data_venda,valor_bruto,status,forma_pagamento,campanha_id,vendedor_id,reembolsada_em,cancelada_em,produtos(nome),campanhas(nome),plataformas_venda(nome)').eq('pessoa_id', id).order('data_venda')),
+    q(sb.from('contratos').select('id,criado_em,cancelado_em,numero,status,recorrente,periodicidade,num_parcelas,data_inicio,data_fim,ativado_em,campanha_id,vendedor_id,campanhas(nome),contrato_itens(quantidade,valor,produtos(nome))').eq('pessoa_id', id)),
     q(sb.from('pessoa_notas').select('id,texto,autor_email,criado_em').eq('pessoa_id', id).order('criado_em', { ascending: false })),
     q(sb.from('presencas_video').select('assistiu_seg,ao_vivo,fontes_video(nome)').eq('pessoa_id', id)),
-    q(sb.from('alunos').select('id,tag,status,entrou_em,responsavel_cs_id,produtos(nome)').eq('pessoa_id', id)),
+    q(sb.from('alunos').select('id,tag,status,entrou_em,saiu_em,responsavel_cs_id,produtos(nome)').eq('pessoa_id', id)),
     q(sb.from('projetos').select('id,nome,status').eq('pessoa_id', id).order('criado_em', { ascending: false })),
     q(sb.from('equipe').select('id,nome,email,funcao,ativo').eq('workspace_id', S.ws).order('nome')),
     q(sb.from('responsavel_historico').select('*').eq('pessoa_id', id).order('alterado_em', { ascending: false })),
     q(sb.from('pagamentos_historicos').select('id,valor,periodo_inicio,periodo_fim,descricao,produtos(nome)').eq('pessoa_id', id).order('periodo_inicio', { ascending: false, nullsFirst: false })),
-    q(sb.from('oportunidades').select('titulo,tipo,status,valor_estimado').eq('pessoa_id', id).order('criado_em', { ascending: false })).catch(() => []),
+    q(sb.from('oportunidades').select('titulo,tipo,status,valor_estimado,criado_em,fechado_em').eq('pessoa_id', id).order('criado_em', { ascending: false })).catch(() => []),
     q(sb.from('pessoa_toques').select('em,tipo,canal,descricao,campanha_id,campanhas(nome)').eq('pessoa_id', id).order('em')).catch(() => [])
   ]);
   const eqN = i => (eqs.find(x => x.id === i) || {}).nome;
-  const ev = [{ t: p.criado_em, x: 'Cadastro como lead' + (p.canal_origem ? ' via ' + p.canal_origem : '') }];
-  hist.forEach(h => ev.push({ t: h.alterado_em, x: `${h.campo}: ${h.valor_anterior ?? '—'} → ${h.valor_novo ?? '—'}` }));
-  pfh.forEach(h => ev.push({ t: h.em, x: h.tipo === 'etapa' ? `Jornada: ${h.de ? h.de + ' → ' : 'entrou em '}${h.para}` : `Lista ${h.ref}: ${h.de} → ${h.para}` }));
-  rh.forEach(h => ev.push({ t: h.alterado_em, x: `${h.tipo === 'cs' ? 'CS responsável' : 'Comercial responsável'}: ${h.de_nome || '—'} → ${h.para_nome || 'sem responsável'}${h.alterado_por_email ? ' (por ' + h.alterado_por_email + ')' : ''}` }));
-  ven.forEach(v => ev.push({ t: v.data_venda, x: `Venda de ${brl(v.valor_bruto)} (${(one(v.produtos) || {}).nome || ''}, ${v.forma_pagamento}) · ${v.status}` }));
-  ph.forEach(h => ev.push({ t: h.periodo_inicio || p.criado_em, x: `Pago antes do sistema: ${brl(h.valor)}${h.periodo_fim ? ' (até ' + dd(h.periodo_fim) + ')' : ''}` }));
-  ev.sort((a, b) => new Date(a.t) - new Date(b.t));
+  // v0.173: o histórico único do cliente junta cadastro, marketing, comercial, financeiro e jornada (o que vem de venda, contrato ou plataforma)
+  const vIds = ven.map(v => v.id).filter(Boolean), cIds = cts.map(c => c.id).filter(Boolean), aIds = alus.map(a => a.id);
+  const [crV, crC, est, ahist, amar, resp, intv] = await Promise.all([
+    vIds.length ? q(sb.from('contas_receber').select('valor,data_recebimento,parcela,venda_id').eq('status', 'recebido').in('venda_id', vIds)).catch(() => []) : [],
+    cIds.length ? q(sb.from('contas_receber').select('valor,data_recebimento,parcela,contrato_id').eq('status', 'recebido').in('contrato_id', cIds)).catch(() => []) : [],
+    vIds.length ? q(sb.from('estornos').select('tipo,valor,data,venda_id').in('venda_id', vIds)).catch(() => []) : [],
+    q(sb.from('aluno_historico').select('aluno_id,tipo,em,etapas_kanban(nome)').eq('pessoa_id', id)).catch(() => []),
+    aIds.length ? q(sb.from('aluno_marcos').select('aluno_id,situacao,em,validado_em,jornada_marcos(nome)').in('aluno_id', aIds)).catch(() => []) : [],
+    q(sb.from('pesquisa_respostas').select('respondida_em,pesquisas(nome)').eq('pessoa_id', id)).catch(() => []),
+    q(sb.from('cs_intervencoes').select('tipo,descricao,status,resultado,criado_em,concluida_em').eq('pessoa_id', id)).catch(() => [])]);
+  const prodA = aid => { const a = alus.find(x => x.id === aid); return a ? ((one(a.produtos) || {}).nome || a.tag || '') : ''; };
+  const ctN = cid => { const c = cts.find(x => x.id === cid); return c ? '#' + c.numero : ''; };
+  const ev = [{ t: p.criado_em, c: 'cad', x: 'Cadastro como lead' + (p.canal_origem ? ' via ' + p.canal_origem : '') }];
+  hist.forEach(h => ev.push({ t: h.alterado_em, c: 'cad', x: `${h.campo}: ${h.valor_anterior ?? '—'} → ${h.valor_novo ?? '—'}` }));
+  toq.forEach(t => ev.push({ t: t.em, c: 'mkt', x: `${t.descricao || t.tipo}${t.canal ? ' · ' + t.canal : ''}${(one(t.campanhas) || {}).nome ? ' · ' + one(t.campanhas).nome : ''}` }));
+  pfh.forEach(h => ev.push({ t: h.em, c: 'mkt', x: h.tipo === 'etapa' ? `Funil: ${h.de ? h.de + ' → ' : 'entrou em '}${h.para}` : `Lista ${h.ref}: ${h.de} → ${h.para}` }));
+  rh.forEach(h => ev.push({ t: h.alterado_em, c: h.tipo === 'cs' ? 'jor' : 'com', x: `${h.tipo === 'cs' ? 'CS responsável' : 'Comercial responsável'}: ${h.de_nome || '—'} → ${h.para_nome || 'sem responsável'}${h.alterado_por_email ? ' (por ' + h.alterado_por_email + ')' : ''}` }));
+  ops.forEach(o => { if (o.criado_em) ev.push({ t: o.criado_em, c: 'com', x: `Oportunidade aberta: ${o.titulo}${o.valor_estimado != null ? ' · ' + brl(o.valor_estimado) : ''}` });
+    if (o.fechado_em && o.status !== 'aberta') ev.push({ t: o.fechado_em, c: 'com', x: `Oportunidade ${o.status === 'ganha' ? 'ganha' : 'perdida'}: ${o.titulo}` }); });
+  if (p.negocio_fechado_em && p.negocio_status !== 'aberto') ev.push({ t: p.negocio_fechado_em, c: 'com', x: 'Negócio ' + (p.negocio_status === 'ganho' ? 'ganho' : 'perdido') });
+  ven.forEach(v => { ev.push({ t: v.data_venda, c: 'fin', x: `Venda de ${brl(v.valor_bruto)} (${(one(v.produtos) || {}).nome || ''}, ${v.forma_pagamento}${(one(v.plataformas_venda) || {}).nome ? ', ' + one(v.plataformas_venda).nome : ''}) · ${v.status}` });
+    if (v.reembolsada_em) ev.push({ t: v.reembolsada_em, c: 'fin', x: `Reembolso da venda de ${(one(v.produtos) || {}).nome || ''}` });
+    if (v.cancelada_em) ev.push({ t: v.cancelada_em, c: 'fin', x: `Venda cancelada: ${(one(v.produtos) || {}).nome || ''}` }); });
+  cts.forEach(c => { const its = (c.contrato_itens || []).map(i => (one(i.produtos) || {}).nome).filter(Boolean).join(', ');
+    if (c.criado_em) ev.push({ t: c.criado_em, c: 'fin', x: `Contrato #${c.numero} criado${its ? ' (' + its + ')' : ''}` });
+    if (c.ativado_em) ev.push({ t: c.ativado_em, c: 'fin', x: `Contrato #${c.numero} ativado · ${c.num_parcelas} parcela(s)${c.recorrente ? ', recorrente' : ''}` });
+    if (c.cancelado_em) ev.push({ t: c.cancelado_em, c: 'fin', x: `Contrato #${c.numero} cancelado` }); });
+  crV.forEach(r => ev.push({ t: r.data_recebimento, c: 'fin', x: `Recebido ${brl(r.valor)} da venda` }));
+  crC.forEach(r => ev.push({ t: r.data_recebimento, c: 'fin', x: `Recebido ${brl(r.valor)} do contrato ${ctN(r.contrato_id)}${r.parcela ? ' · parcela ' + r.parcela : ''}` }));
+  est.forEach(e => ev.push({ t: e.data, c: 'fin', x: `Estorno (${e.tipo}) de ${brl(e.valor)}` }));
+  ph.forEach(h => ev.push({ t: h.periodo_inicio || p.criado_em, c: 'fin', x: `Pago antes do sistema: ${brl(h.valor)}${h.periodo_fim ? ' (até ' + dd(h.periodo_fim) + ')' : ''}` }));
+  alus.forEach(a => { const nm = (one(a.produtos) || {}).nome || a.tag || ''; if (a.entrou_em) ev.push({ t: a.entrou_em, c: 'jor', x: `Matrícula em ${nm}` }); if (a.saiu_em) ev.push({ t: a.saiu_em, c: 'jor', x: `Saiu de ${nm}` }); });
+  ahist.forEach(h => { if (h.tipo === 'etapa' || (one(h.etapas_kanban) || {}).nome) ev.push({ t: h.em, c: 'jor', x: `Jornada ${prodA(h.aluno_id)}: ${h.tipo === 'jornada' ? 'mudou de versão' : 'etapa ' + ((one(h.etapas_kanban) || {}).nome || '')}` }); });
+  amar.filter(m => m.situacao === 'atingido').forEach(m => ev.push({ t: m.validado_em || m.em, c: 'jor', x: `Marco atingido: ${(one(m.jornada_marcos) || {}).nome || ''}${prodA(m.aluno_id) ? ' · ' + prodA(m.aluno_id) : ''}` }));
+  resp.forEach(r => ev.push({ t: r.respondida_em, c: 'jor', x: `Respondeu a pesquisa ${(one(r.pesquisas) || {}).nome || ''}` }));
+  intv.forEach(i => { ev.push({ t: i.criado_em, c: 'jor', x: `Intervenção do CS: ${i.descricao || i.tipo}` }); if (i.concluida_em) ev.push({ t: i.concluida_em, c: 'jor', x: `Intervenção concluída${i.resultado ? ': ' + i.resultado : ''}` }); });
+  notas.forEach(n => { const tx = n.texto || ''; ev.push({ t: n.criado_em, c: 'com', x: 'Nota: ' + tx.slice(0, 140) + (tx.length > 140 ? '…' : '') }); });
+  const soDia = x => /^\d{4}-\d{2}-\d{2}$/.test(String(x)), tOrd = x => new Date(soDia(x) ? x + 'T12:00:00' : x); // data sem hora (recebimento, estorno) não muda de dia pelo fuso
+  const evOk = ev.filter(e => e.t).sort((a, b) => tOrd(b.t) - tOrd(a.t));
+  const TLC = [['cad', 'Cadastro'], ['mkt', 'Marketing'], ['com', 'Comercial'], ['fin', 'Financeiro'], ['jor', 'Jornada e CS']];
   const campo = (l, v, mono) => `<div><span class="muted" style="font-size:11px">${l}</span><br>${v ? (mono ? '<span class="mono" style="word-break:break-all">' + esc(v) + '</span>' : esc(v)) : '<span class="muted">—</span>'}</div>`;
   const tit = t => `<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--accent);margin:16px 0 8px;padding-top:12px;border-top:1px solid var(--line)">${t}</div>`;
   const neg = p.negocio_status || 'aberto', mot = one(p.motivos_resultado);
@@ -4527,12 +4576,16 @@ async function fichaPessoa(id) {
     <div class="infog">${p.email ? `<div><span class="muted" style="font-size:11px">E-mail</span><br><a href="mailto:${esc(p.email)}">${esc(p.email)}</a></div>` : campo('E-mail', '')}
       ${p.telefone ? `<div><span class="muted" style="font-size:11px">Telefone / WhatsApp</span><br>${esc(p.telefone)}${zap.length >= 10 ? ` · <a href="https://wa.me/${zap.length <= 11 ? '55' + zap : zap}" target="_blank" rel="noopener">abrir WhatsApp</a>` : ''}</div>` : campo('Telefone / WhatsApp', '')}
       ${(p.extras || {}).instagram ? (() => { const ig = String(p.extras.instagram).trim(), u = ig.replace(/^@/, '').replace(/^https?:\/\/(www\.)?instagram\.com\//, '').replace(/\/.*$/, ''); return `<div><span class="muted" style="font-size:11px">Instagram</span><br>${/^[A-Za-z0-9._]{1,30}$/.test(u) ? `<a href="https://instagram.com/${u}" target="_blank" rel="noopener">@${esc(u)}</a>` : esc(ig)}</div>`; })() : ''}
+      ${'documento' in p ? (p.documento ? campo(docTipo(p.documento), docFmt(p.documento)) : `<div><span class="muted" style="font-size:11px">CPF ou CNPJ</span><br><span class="muted">não informado · obrigatório para contrato</span></div>`) : ''}
       ${campo('Cadastrado em', p.criado_em ? dtt(p.criado_em) : '')}${campo('Virou cliente em', p.convertido_em ? dtt(p.convertido_em) : '')}</div>
     ${tit('Responsáveis')}
     <div class="infog"><div><span class="muted" style="font-size:11px">Comercial responsável</span><br>${eqN(p.responsavel_comercial_id) ? '<b>' + esc(eqN(p.responsavel_comercial_id)) + '</b>' : '<span class="muted">sem responsável</span>'} <button type="button" class="btn sm" data-rc>Alterar</button></div>
       ${alus.map(a => `<div><span class="muted" style="font-size:11px">CS responsável · ${esc((one(a.produtos) || {}).nome || a.tag || 'aluno')}</span><br>${eqN(a.responsavel_cs_id) ? '<b>' + esc(eqN(a.responsavel_cs_id)) + '</b>' : '<span class="muted">sem responsável</span>'} <button type="button" class="btn sm" data-rcs="${a.id}">Alterar</button></div>`).join('')}</div>
     ${rh.length ? `<details style="margin-top:6px"><summary style="cursor:pointer">Histórico de responsáveis (${rh.length})</summary><div class="tl">${rh.map(h => `<div><span>${dtt(h.alterado_em)}</span>${h.tipo === 'cs' ? 'CS' : 'Comercial'}: ${esc(h.de_nome || '—')} → <b>${esc(h.para_nome || 'sem responsável')}</b>${h.alterado_por_email ? ' · por ' + esc(h.alterado_por_email) : ''}${h.motivo ? ' · ' + esc(h.motivo) : ''}</div>`).join('')}</div></details>` : '<span class="muted" style="font-size:12px">Nenhuma troca de responsável registrada ainda.</span>'}
     <div id="fjEvo"></div>
+    ${tit('Linha do tempo do cliente')}
+    <div class="tlf"><button type="button" class="on" data-tlf="">Tudo <b>${evOk.length}</b></button>${TLC.filter(([k]) => evOk.some(e => e.c === k)).map(([k, l]) => `<button type="button" data-tlf="${k}">${l} <b>${evOk.filter(e => e.c === k).length}</b></button>`).join('')}</div>
+    <div class="tl tlu">${evOk.map(e => `<div data-tlc="${e.c}"><span>${soDia(e.t) ? dd(e.t) : dtt(e.t)}</span><i class="tlt tlt-${e.c}">${(TLC.find(x => x[0] === e.c) || [0, ''])[1]}</i> ${esc(e.x)}</div>`).join('')}</div>
     ${tit('Origem')}
     <div class="infog">${campo('Campanha', (one(p.campanhas) || {}).nome)}${campo('Canal', p.canal_origem)}${campo('Página de entrada', p.pagina_origem, 1)}${campo('Veio de (referrer)', p.referrer, 1)}</div>
     ${tit('Rastreamento (UTM)')}
@@ -4567,7 +4620,9 @@ async function fichaPessoa(id) {
     ${ops.length ? '<div><b>Oportunidades</b><br>' + ops.map(o => `${esc(o.titulo)} · ${OP_TIPO[o.tipo] || o.tipo} · ${o.status === 'aberta' ? 'em negociação' : o.status}${o.valor_estimado != null ? ' · ' + brl(o.valor_estimado) : ''}`).join('<br>') + '</div>' : ''}
     ${cts.length ? '<div><b>Contratos</b><br>' + cts.map(c => `#${c.numero} · ${esc(c.status)} · ${esc((c.contrato_itens || []).map(i => (one(i.produtos) || {}).nome).join(', '))} · ${c.num_parcelas} parcela(s)`).join('<br>') + '</div>' : ''}
     ${pf.length ? '<div><b>Funis</b><br>' + pf.map(x => `${esc((one(x.funis) || {}).nome)}: ${esc((one(x.funil_etapas) || {}).nome)}`).join('<br>') + '</div>' : ''}
-    <div><b>Linha do tempo</b></div><div class="tl">${ev.map(e => `<div><span>${dtt(e.t)}</span>${esc(e.x)}</div>`).join('')}</div>`, null, '', true);
+    `, null, '', true);
+  f.querySelectorAll('[data-tlf]').forEach(b => b.onclick = () => { f.querySelectorAll('[data-tlf]').forEach(x => x.classList.toggle('on', x === b));
+    f.querySelectorAll('[data-tlc]').forEach(r => { r.style.display = !b.dataset.tlf || r.dataset.tlc === b.dataset.tlf ? '' : 'none'; }); });
   S.fjA = null; fichaJornada(f.querySelector('#fjEvo'), id);
   const bph = f.querySelector('[data-ph]');
   if (bph) bph.onclick = () => cadastroRapido({ um: 'pagamento anterior', tabela: 'pagamentos_historicos', antes: v => ({ ...v, pessoa_id: id }) },
@@ -4627,7 +4682,7 @@ async function vClientes(m) {
   m.innerHTML = `<div class="head"><h1>Clientes</h1><div class="acts"><button class="btn" id="novoAntigo">Cadastrar cliente antigo</button><button class="btn pri" id="novo">Novo cadastro</button></div></div>
   <span class="muted">Lead, cliente ativo e cliente inativo no mesmo cadastro, com a origem completa (UTMs e identificadores de clique) para filtrar. Na integração, a campanha cria o lead e a venda converte em cliente; aqui você também faz isso à mão.</span>
   <div class="panel"><div class="filters">
-    <input data-f="busca" placeholder="Buscar nome, e-mail ou telefone" value="${esc(F.busca || '')}">
+    <input data-f="busca" placeholder="Buscar nome, e-mail, telefone ou CPF/CNPJ" value="${esc(F.busca || '')}">
     <select data-f="qual"><option value="">Toda qualificação</option>${['pendente', 'qualificado', 'nao_qualificado'].map(x => `<option value="${x}"${F.qual === x ? ' selected' : ''}>${x}</option>`).join('')}</select>
     <select data-f="tipo"><option value="">Todos os tipos</option>${TIPOS_CLIENTE.map(([v, l]) => `<option value="${v}"${F.tipo === v ? ' selected' : ''}>${l}</option>`).join('')}</select>
     <select data-f="campanha_id"><option value="">Todas as campanhas</option>${opts(camp, 'id', 'nome', F.campanha_id)}</select>
@@ -4641,7 +4696,7 @@ async function vClientes(m) {
     const rows = pes.filter(p => (!F.qual || p.qualificacao === F.qual) && (!F.tipo || tipoDe(p) === F.tipo) && (!F.campanha_id || p.campanha_id === F.campanha_id) &&
       FILTROS_UTM.every(([k]) => F['vazio_' + k] ? !p[k] : (!F[k] || p[k] === F[k])) &&
       (!F.de || diaLocal(p.criado_em) >= F.de) && (!F.ate || diaLocal(p.criado_em) <= F.ate) &&
-      (!b || [p.nome, p.email, p.telefone].join(' ').toLowerCase().includes(b)));
+      (!b || [p.nome, p.email, p.telefone].join(' ').toLowerCase().includes(b) || (docDig(b).length >= 3 && docDig(p.documento).includes(docDig(b)))));
     $('#tb').innerHTML = rows.length ? rows.slice(0, 500).map(p => `<tr>
       <td>${esc(p.nome)}<br><span class="muted">${esc(p.email || '')}${p.telefone ? ' · ' + esc(p.telefone) : ''}</span></td>
       <td>${pillFunil(p.status_funil, p.status_cliente)}</td>
@@ -4674,10 +4729,12 @@ async function modalCliente(p) {
     equipeAtiva()
   ]);
   const cx = await q(sb.from('campos_personalizados').select('chave,rotulo,tipo').eq('workspace_id', S.ws).eq('entidade', 'pessoas').order('rotulo')).catch(() => []);
-  const row = p ? { ...p, tipo: tipoDe(p), ...Object.fromEntries(cx.map(c => ['x_' + c.chave, (p.extras || {})[c.chave]])) } : null;
+  const docOk = await temColuna('pessoas', 'documento');
+  const row = p ? { ...p, tipo: tipoDe(p), ...(docOk ? { documento: p.documento ? docFmt(p.documento) : '' } : {}), ...Object.fromEntries(cx.map(c => ['x_' + c.chave, (p.extras || {})[c.chave]])) } : null;
   const campos = [
     { secao: 'Contato', sub: p ? 'Atualize nome, e-mail e telefone.' : 'Quem é. O cartão do CRM é criado automaticamente.', primeira: 1 },
     { k: 'nome', l: 'Nome completo', req: 1, full: 1 }, { k: 'email', l: 'E-mail', t: 'email', ph: 'nome@email.com' }, { k: 'telefone', l: 'Telefone / WhatsApp', ph: '(35) 99999-9999' },
+    ...(docOk ? [{ k: 'documento', l: 'CPF ou CNPJ', ph: '000.000.000-00 ou 00.000.000/0000-00', hint: 'Obrigatório para gerar contrato. Uma pessoa só: se o cliente é uma empresa, o CNPJ vai aqui.' }] : []),
     { k: 'tipo', l: 'Esta pessoa é', t: 'select', req: 1, def: 'lead', opts: TIPOS_CLIENTE, hint: 'Lead até a primeira compra. Mudar para cliente registra a conversão.' },
     { k: 'responsavel_comercial_id', l: 'Comercial responsável', t: 'select', novo: 'equipe', opts: sel(eqs, 'id', 'nome'), hint: 'Quem cuida deste lead. É avisado quando o cartão entra numa etapa com alerta.' },
     { secao: 'Origem', sub: 'De onde ela veio. Vazio = preenchido pela utm_campaign.' },
@@ -4689,12 +4746,13 @@ async function modalCliente(p) {
     { secao: 'Identificadores e entrada' },
     { k: 'gclid', l: 'Clique do Google (gclid)' }, { k: 'fbclid', l: 'Clique do Meta (fbclid)' },
     { k: 'referrer', l: 'Veio de (referrer)' }, { k: 'pagina_origem', l: 'Página de entrada' }];
-  const camposUsar0 = p ? [...campos.slice(0, 6), { secao: 'Automático', sub: 'Origem, UTMs, compras e presença vêm do sistema e da integração; não são editados aqui.' }] : campos;
+  const camposUsar0 = p ? [...campos.slice(0, docOk ? 7 : 6), { secao: 'Automático', sub: 'Origem, UTMs, compras e presença vêm do sistema e da integração; não são editados aqui.' }] : campos;
   const camposUsar = cx.length ? [...camposUsar0, { secao: 'Campos personalizados', sub: 'Criados por você ao importar planilhas.' }, ...cx.map(c => ({ k: 'x_' + c.chave, l: c.rotulo, t: c.tipo === 'number' ? 'number' : c.tipo === 'date' ? 'date' : 'text', step: c.tipo === 'number' ? 'any' : undefined }))] : camposUsar0;
   abrirForm(p ? 'Editar cadastro' : 'Novo cadastro', 'pessoas', camposUsar, row, {
     largo: true,
     ok: p ? 'Cadastro salvo' : 'Cadastro criado e cartão no CRM gerado. Campanha, canal e etapa foram preenchidos pela utm_campaign.',
     antes: async (v, r) => {
+      if (docOk && 'documento' in v) { const d = docDig(v.documento); if (d && !docValido(d)) throw new Error('CPF ou CNPJ inválido: confira os números.'); v.documento = d || null; }
       if (cx.length) { const at = r ? (((await q(sb.from('pessoas').select('extras').eq('id', r.id)))[0] || {}).extras || {}) : {}, mg = { ...at };
         cx.forEach(c => { const k = 'x_' + c.chave, val = v[k]; delete v[k]; if (val == null || val === '') delete mg[c.chave]; else mg[c.chave] = val; }); v.extras = mg; }
       const t = v.tipo; delete v.tipo;
