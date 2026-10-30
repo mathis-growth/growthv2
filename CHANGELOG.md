@@ -2,6 +2,15 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.172 — Resumo da estratégia e criar campanha a partir dela (30/10/2026)
+- **Resumo da estratégia:** nova aba, a primeira, ao lado de Mapa e Lista. A estratégia publicada abre nela, e o rascunho continua abrindo no Mapa. Mostra:
+  - versão e data da publicação, tipo, categoria, produto, objetivo e critérios;
+  - quantos blocos, métricas e ligações;
+  - o **funil por fase** (Captação, Aquecimento, Vendas, Pós-venda/CS), com cada bloco, a métrica principal e para onde ele segue. Dá para ler a estratégia sem abrir o editor.
+- **Criar campanha** (botão principal da estratégia): abre a nova campanha com esta estratégia já escolhida (estratégia de perpétuo ou assinatura vira campanha perpétua; as outras, lançamento). Ao salvar, copia as etapas da estratégia e abre a campanha. Não aparece em estratégia arquivada ou sem blocos.
+- Publicar o rascunho pelo mapa leva direto ao Resumo da estratégia pronta.
+- Sem mudança no banco. Teste `tests/tela/t172_estrategia_resumo_campanha.py` (15 verificações, 0 falhas); t164 a t171 sem falhas.
+
 ## v0.171 — Publicar a estratégia (correção), fase no card e Passagem para o CS (29/10/2026)
 - **Correção: publicar a versão dava "Sem permissão".** A função `estrategia_publicar` rodava com o papel de quem chama, e esse papel não pode executar a checagem `pode_operar`: toda publicação voltava 403. Agora ela roda como definidora (`security definer`), como as outras que publicam (por exemplo a jornada), com a mesma checagem dentro: pertencer ao workspace e poder editar Marketing ou Growth.
 - **Fase no próprio card:** cada card mostra a etiqueta da fase dele. Clicar abre Captação, Aquecimento, Vendas e Pós-venda (CS), e as métricas do bloco vão junto para a fase nova. O campo Fase do painel usa os mesmos nomes.

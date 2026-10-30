@@ -1199,7 +1199,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.171 · 29/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.172 · 30/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -2221,7 +2221,7 @@ async function formCampanha(row, pre = {}) {
     { k: 'modelo', l: 'Modelo', t: 'select', req: 1, def: pre.modelo || 'lancamento', opts: Object.entries(CAMP_MOD), hint: 'Lançamento tem começo, meio e fim. Recorrente não tem data de fim: dura o ano todo, com metas por mês (aba Metas mensais).' },
     { k: 'status', l: 'Status', t: 'select', req: 1, def: pre.status || 'rascunho', opts: Object.entries(CAMP_ST).map(([k, v]) => [k, v[1]]) },
     ...(tmOk ? [{ k: 'tipo_midia', l: 'Tipo de mídia', t: 'select', req: 1, def: 'hibrida', opts: [['hibrida', 'Híbrida (paga e orgânica)'], ['paga', 'Só paga'], ['organica', 'Só orgânica']], hint: 'Híbrida pode ter Meta Ads, Google, Instagram orgânico, e-mail e WhatsApp ao mesmo tempo; cada canal tem a sua execução e os seus custos.' }] : []),
-    { k: 'funil_id', l: 'Estratégia', t: 'select', req: !row && funis.length ? 1 : 0, novo: 'funis', opts: sel(funis, 'id', f => f.nome + ' (' + (EST_TIPO[f.tipo] || f.tipo) + ')'), hint: 'As etapas da estratégia são copiadas para a campanha ao salvar.' }, { k: 'produto_id', l: 'Produto', t: 'select', req: row ? 0 : 1, novo: 'produtos', opts: sel(prod, 'id', 'nome') },
+    { k: 'funil_id', l: 'Estratégia', t: 'select', req: !row && funis.length ? 1 : 0, def: pre.funil_id || '', novo: 'funis', opts: sel(funis, 'id', f => f.nome + ' (' + (EST_TIPO[f.tipo] || f.tipo) + ')'), hint: 'As etapas da estratégia são copiadas para a campanha ao salvar.' }, { k: 'produto_id', l: 'Produto', t: 'select', req: row ? 0 : 1, novo: 'produtos', opts: sel(prod, 'id', 'nome') },
     { k: 'data_inicio', l: 'Início', t: 'date', def: pre.data_inicio || '' }, { k: 'data_fim', l: 'Fim', t: 'date', hint: 'Obrigatório no lançamento. No perpétuo fica vazio.' },
     { k: 'data_carrinho_abre', l: 'Abertura do carrinho', t: 'date', hint: 'Só no lançamento.' }, { k: 'data_carrinho_fecha', l: 'Fechamento do carrinho', t: 'date', hint: 'Só no lançamento.' },
     { k: 'orcamento_total', l: 'Orçamento total (R$)', t: 'number', step: '0.01' }, { k: 'meta_cpl', l: 'Meta de custo por lead, CPL (R$)', t: 'number', step: '0.01' }, { k: 'meta_cac', l: 'Meta de CAC (R$)', t: 'number', step: '0.01' },
@@ -2235,7 +2235,8 @@ async function formCampanha(row, pre = {}) {
   let salvo = null;
   const pr = abrirForm(row ? 'Editar campanha' : 'Nova campanha', 'campanhas', campos, row, {
     ok: row ? 'Campanha salva' : 'Campanha criada',
-    depois: async () => { if (!salvo || !salvo.funil_id) return; if (row && row.funil_id === salvo.funil_id) return;
+    depois: async () => { if (!row && pre.abrir && salvo) { S.campSel = salvo.id; S.campTab = 'etapas'; S.view = 'mkt-camp'; S.estSel = null; }
+      if (!salvo || !salvo.funil_id) return; if (row && row.funil_id === salvo.funil_id) return;
       try { const n = await q(sb.rpc('campanha_aplicar_estrategia', { p_campanha: salvo.id, p_funil: salvo.funil_id, p_substituir: false })); if (n) toast(n + ' etapa(s) da estratégia copiada(s)'); } catch (e) { toast('Campanha salva, mas as etapas não foram copiadas: ' + (e.message || e), true); } },
     antes: v => {
       if (!row) v.id = crypto.randomUUID(); salvo = { id: row ? row.id : v.id, funil_id: v.funil_id || null };
@@ -9640,7 +9641,7 @@ async function vFunis(m) {
   if ($('#estFc')) $('#estFc').onchange = e => { FL.cat = e.target.value; render(); };
   if ($('#estFs')) $('#estFs').onchange = e => { FL.st = e.target.value; render(); };
   m.querySelectorAll('[data-estdup]').forEach(b => b.onclick = ev => { ev.stopPropagation(); estNova(pr, fs0.find(x => x.id === b.dataset.estdup)); });
-  m.querySelectorAll('[data-est]').forEach(b => b.onclick = ev => { ev.stopPropagation(); S.estSel = b.dataset.est; render(); });
+  m.querySelectorAll('[data-est]').forEach(b => b.onclick = ev => { ev.stopPropagation(); const fz = fs0.find(x => x.id === b.dataset.est) || {}; S.estSel = b.dataset.est; S.estVista = cvB && !fz.versao_atual ? 'mapa' : 'resumo'; S.cvView = null; render(); });
   $('#estNova').onclick = () => estNova(pr);
   if ($('#estMapa')) $('#estMapa').onclick = () => act(async () => { const id = crypto.randomUUID(); let n = 1; while (fs0.some(f => f.nome === CV_RASC + (n > 1 ? ' ' + n : ''))) n++;
     await q(sb.from('funis').insert({ id, workspace_id: S.ws, nome: CV_RASC + (n > 1 ? ' ' + n : ''), tipo: 'outro', status: 'rascunho', ativo: true }));
@@ -9688,20 +9689,21 @@ async function vEstrategia(m) {
   const f = fs[0]; if (!f || f.workspace_id !== S.ws) { S.estSel = null; return vFunis(m); }
   const cvOk = !!BL && await temColuna('estrategia_blocos', 'x');
   const [CN, of, eqs, ce, vs] = cvOk ? await Promise.all([q(sb.from('estrategia_conexoes').select('*').eq('funil_id', id)).catch(() => []), q(sb.from('ofertas').select('id,nome').eq('workspace_id', w).order('nome')).catch(() => []),
-    equipeAtiva().catch(() => []), q(sb.from('campanha_estrategias').select('campanha_id,versao_id').eq('funil_id', id)).catch(() => []), q(sb.from('estrategia_versoes').select('id,versao').eq('funil_id', id)).catch(() => [])]) : [[], [], [], [], []];
+    equipeAtiva().catch(() => []), q(sb.from('campanha_estrategias').select('campanha_id,versao_id').eq('funil_id', id)).catch(() => []), q(sb.from('estrategia_versoes').select('id,versao,publicada_em').eq('funil_id', id)).catch(() => [])]) : [[], [], [], [], []];
   const vista = cvOk ? (S.estVista || 'mapa') : 'lista';
   const R = await estRefs(f.id), Lo = estOrdena(L), avulsas = BL ? Lo.filter(e => !e.bloco_id) : Lo;
   m.innerHTML = `<div class="head"><div><button class="btn sm" id="estVolta">← Estratégias</button><h1 style="margin-top:8px">${esc(f.nome)}</h1>
       <span class="muted">${esc(EST_TIPO[f.tipo] || f.tipo)} · ${f.produto_id ? 'produto: ' + esc((pr.find(p => p.id === f.produto_id) || {}).nome || '') : 'qualquer produto'}${f.modelo_pronto && EST_MOD[f.modelo_pronto] ? ' · começou do modelo ' + esc(EST_MOD[f.modelo_pronto].nome) : ''} · ${f.status === 'rascunho' ? '<span class="pill warn">rascunho</span>' : pillAtivo(f.ativo)}</span></div>
       ${f.status === 'rascunho' && !f.versao_atual ? '<div class="cv-rasc">Monte o funil no mapa e clique em <b>Publicar versão</b>: aí você dá o nome, e a estratégia entra na lista pronta para as campanhas, com as etapas que você montou.</div>' : ''}
       ${cvOk ? `<br><span class="muted">${f.categoria ? 'Categoria: ' + esc(f.categoria) + ' · ' : ''}${f.versao_atual ? '<b>versão ' + f.versao_atual + '</b>' : 'ainda não publicada'}${f.objetivo ? ' · ' + esc(f.objetivo) : ''}</span>` : ''}</div>
-      <div class="acts">${cvOk ? '<button class="btn pri" id="estPub">Publicar versão</button><button class="btn" id="estVers">Versões</button>' : ''}<button class="btn" id="estEd">Editar dados</button><button class="btn" id="estDup">Duplicar</button>${vista === 'lista' ? `<button class="btn${BL ? '' : ' pri'}" id="estAdd">+ Etapa avulsa</button>` : ''}</div></div>
-    ${cvOk ? `<div class="tabs">${[['mapa', 'Mapa (Canvas)'], ['lista', 'Lista']].map(([k, l]) => `<button data-ev="${k}" class="${vista === k ? 'on' : ''}">${l}</button>`).join('')}</div>` : ''}
+      <div class="acts">${cvOk && f.status !== 'arquivada' && (BL || []).length ? '<button class="btn pri" id="estCamp">Criar campanha</button>' : ''}${cvOk ? '<button class="btn" id="estPub">Publicar versão</button><button class="btn" id="estVers">Versões</button>' : ''}<button class="btn" id="estEd">Editar dados</button><button class="btn" id="estDup">Duplicar</button>${vista === 'lista' ? `<button class="btn${BL ? '' : ' pri'}" id="estAdd">+ Etapa avulsa</button>` : ''}</div></div>
+    ${cvOk ? `<div class="tabs">${[['resumo', 'Resumo'], ['mapa', 'Mapa (Canvas)'], ['lista', 'Lista']].map(([k, l]) => `<button data-ev="${k}" class="${vista === k ? 'on' : ''}">${l}</button>`).join('')}</div>` : ''}
+    ${vista === 'resumo' ? CV_CSS + cvResumoHtml(f, BL, L, CN, pr, vs) : ''}
     ${vista === 'mapa' ? CV_CSS + BLK_CSS + '<div id="cvBox"></div>' : ''}
     ${vista === 'lista' && BL ? BLK_CSS + `<div class="panel" id="estQuadro"><h2>Funil da estratégia</h2><span class="muted">Monte com blocos: cada bloco já traz as métricas dele, e a métrica principal (com o ponto) passa para o próximo bloco. Clique num bloco para ver as métricas, ligar o item real, duplicar ou remover. Mudanças valem para as próximas campanhas.</span>${blkQuadroHtml(BL, L, R, true)}</div>` : vista === 'lista' ? EST_SEM_BANCO81 : ''}
     ${vista === 'lista' && cvOk ? `<div class="panel"><h2>Ligações entre os blocos</h2><span class="muted">As mesmas setas do mapa. Para criar ou mudar uma ligação, use o Mapa.</span>${CN.length ? `<div class="tw"><table><thead><tr><th>De</th><th>Para</th><th>Tipo</th><th>Condição ou nota</th></tr></thead><tbody>${CN.map(c => `<tr><td>${esc((BL.find(b => b.id === c.de_bloco) || {}).nome || '')}</td><td>${esc((BL.find(b => b.id === c.para_bloco) || {}).nome || '')}</td><td>${esc((CV_CON.find(x => x[0] === c.tipo) || [0, c.tipo])[1])}${c.tipo === 'divisao' && c.peso != null ? ' ' + c.peso + '%' : ''}</td><td>${esc(c.condicao || c.nota || c.rotulo || '—')}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">Sem ligações: o caminho segue a ordem das fases.</div>'}</div>` : ''}
     ${vista === 'lista' && (!BL || avulsas.length) ? `<div class="panel"><h2>${BL ? 'Etapas avulsas' : 'Funil da estratégia'}</h2><span class="muted">${BL ? 'Etapas que não pertencem a nenhum bloco (criadas antes dos blocos ou à mão). Continuam valendo.' : 'Fases na ordem: Aquisição, Aquecimento, Conversão, Retenção. Uma fase sem etapas não aparece. Mudanças aqui valem para as próximas campanhas; as que já existem mantêm a cópia delas.'}</span>${estTabelaEtapas(avulsas, R, 'est')}</div>` : ''}
-    <div class="panel"><h2>Campanhas que usam esta estratégia</h2>${cs.length ? `<div class="tw"><table><thead><tr><th>Campanha</th>${cvOk ? '<th>Versão</th>' : ''}<th>Status</th><th>Período</th></tr></thead><tbody>${cs.map(c => `<tr class="clk" data-camp="${c.id}"><td><b>${esc(c.nome)}</b></td>${cvOk ? `<td>${(v => v ? 'v' + v : '<span class="muted">antes das versões</span>')((vs.find(v => v.id === (ce.find(x => x.campanha_id === c.id) || {}).versao_id) || {}).versao)}</td>` : ''}<td>${esc(c.status)}</td><td><small>${dd(c.data_inicio)}${c.data_fim ? ' a ' + dd(c.data_fim) : c.modelo === 'perpetuo' ? ' (sem fim)' : ''}</small></td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">Nenhuma campanha ainda. Ao criar uma campanha, escolha esta estratégia.</div>'}</div>`;
+    <div class="panel"><h2>Campanhas que usam esta estratégia</h2>${cs.length ? `<div class="tw"><table><thead><tr><th>Campanha</th>${cvOk ? '<th>Versão</th>' : ''}<th>Status</th><th>Período</th></tr></thead><tbody>${cs.map(c => `<tr class="clk" data-camp="${c.id}"><td><b>${esc(c.nome)}</b></td>${cvOk ? `<td>${(v => v ? 'v' + v : '<span class="muted">antes das versões</span>')((vs.find(v => v.id === (ce.find(x => x.campanha_id === c.id) || {}).versao_id) || {}).versao)}</td>` : ''}<td>${esc(c.status)}</td><td><small>${dd(c.data_inicio)}${c.data_fim ? ' a ' + dd(c.data_fim) : c.modelo === 'perpetuo' ? ' (sem fim)' : ''}</small></td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">Nenhuma campanha ainda. Use o botão Criar campanha, aqui em cima.</div>'}</div>`;
   $('#estVolta').onclick = () => act(async () => { if (f.status === 'rascunho' && !f.versao_atual && (f.nome || '').startsWith(CV_RASC) && !(BL || []).length && !cs.length) await q(sb.from('funis').delete().eq('id', f.id)); S.estSel = null; render(); });
   $('#estDup').onclick = () => estNova(pr, f);
   $('#estEd').onclick = () => abrirForm('Editar estratégia', 'funis', [{ k: 'nome', l: 'Nome', req: 1, full: 1 }, { k: 'tipo', l: 'Tipo', t: 'select', req: 1, opts: EST_TIPOS },
@@ -9710,6 +9712,7 @@ async function vEstrategia(m) {
       { k: 'objetivo', l: 'Objetivo geral', t: 'textarea' }, { k: 'criterios', l: 'Critérios de sucesso', t: 'textarea', hint: 'O que precisa acontecer para considerar a estratégia um sucesso.' }] : []),
     { k: 'descricao', l: 'Descrição', t: 'textarea' }, ...(cvOk ? [] : [{ k: 'ativo', l: 'Ativa', t: 'check' }])], f, { ok: 'Estratégia salva' });
   if (cvOk) { m.querySelectorAll('[data-ev]').forEach(b => b.onclick = () => { S.estVista = b.dataset.ev; render(); });
+    if ($('#estCamp')) $('#estCamp').onclick = () => formCampanha(null, { funil_id: f.id, modelo: f.tipo === 'perpetuo' || f.tipo === 'assinatura' ? 'perpetuo' : 'lancamento', abrir: true });
     $('#estPub').onclick = () => cvPublicar(f, { pr, nBlocos: BL.length }); $('#estVers').onclick = () => cvVersoes(f);
     if (vista === 'mapa') cvMapa($('#cvBox'), f, { BL, CN, L, R, cat, pr, of, eq: eqs }); }
   const prox = (Lo.length ? Math.max(...Lo.map(e => e.ordem || 0)) : 0) + 10;
@@ -10402,6 +10405,10 @@ span.cv-fzb{cursor:default}.cv-fzm{position:absolute;left:8px;right:8px;bottom:8
 .cv-fzm button::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--fc)}.cv-fzm button:hover,.cv-fzm button.on{background:color-mix(in srgb,var(--fc) 14%,transparent)}
 .cv-passa-t{position:absolute;left:0;right:0;bottom:3px;text-align:center;font-size:8.5px;font-weight:700;color:#9333ea;text-transform:uppercase;letter-spacing:.05em}.cv-art-icone.cv-passa .cv-ico{padding-bottom:10px}
 .cv-art-icone.cv-passa{background:color-mix(in srgb,#9333ea 8%,transparent);border-radius:8px}
+.cv-rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.cv-rgrid>div{display:flex;flex-direction:column;gap:2px}.cv-rgrid b{font-size:15px}
+.cv-rcols{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:8px}.cv-rcol{border:1.5px solid color-mix(in srgb,var(--fc) 40%,var(--line));border-top:4px solid var(--fc);border-radius:12px;padding:8px;background:color-mix(in srgb,var(--fc) 5%,transparent)}
+.cv-rh{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--fc);margin:2px 4px 8px}.cv-rh b{color:var(--muted);font-weight:600}
+.cv-rb{display:flex;gap:8px;align-items:flex-start;padding:7px 8px;border:1px solid var(--line);border-radius:9px;background:var(--panel,var(--surface));margin-top:6px}.cv-rb>div{display:flex;flex-direction:column;min-width:0}.cv-rb small{color:var(--muted);font-size:11.5px}.cv-rb .cv-rs2{color:var(--ink)}
 .cv-sw button.on{background:#25D366;color:#053b1c;font-weight:700}.cv-sw button:disabled{cursor:default}
 .cv-prop .cv-sec label{display:block;margin-top:6px}
 .cv-no{border-top:4px solid var(--fc,var(--line))}.cv-no.cv-fora,.cv-ar.cv-fora{opacity:.22}.cv-no,.cv-ar{transition:opacity .15s}
@@ -10414,6 +10421,23 @@ span.cv-fzb{cursor:default}.cv-fzm{position:absolute;left:8px;right:8px;bottom:8
 
 /* Versões da estratégia */
 const CV_RASC = 'Nova estratégia (rascunho)';
+// Resumo da estratégia: o funil inteiro por fase, para ler sem abrir o editor
+function cvResumoHtml(f, BL, L, CN, pr, vs) {
+  BL = BL || []; const v = (vs || []).find(x => x.versao === f.versao_atual), prod = f.produto_id ? ((pr || []).find(x => x.id === f.produto_id) || {}).nome : '';
+  const princ = b => { const et = L.filter(e => e.bloco_id === b.id); return et.find(e => e.papel === 'principal') || et[0]; };
+  const fases = EST_FASES.map(x => x[0]).filter(k => BL.some(b => b.fase === k));
+  const col = k => { const bs = BL.filter(b => b.fase === k).sort((a, b) => a.ordem - b.ordem), [nm, cor] = cvFase(k);
+    return `<div class="cv-rcol" style="--fc:${cor}"><div class="cv-rh">${esc(nm)} <b>${bs.length}</b></div>${bs.map(b => { const m1 = princ(b), sai = CN.filter(c => c.de_bloco === b.id).map(c => (BL.find(x => x.id === c.para_bloco) || {}).nome).filter(Boolean);
+      return `<div class="cv-rb">${cvIcoPal(b.tipo, b.nome, b.props || {})}<div><b>${esc(b.nome)}</b><small>${esc(cvTipoNome(b.tipo))}${m1 ? ' · ' + esc(blkCurto(m1, b)) : ''}</small>${sai.length ? `<small class="cv-rs2">→ ${sai.map(esc).join(', ')}</small>` : ''}</div></div>`; }).join('')}</div>`; };
+  return `<div class="panel cv-res-p"><div class="cv-rgrid">
+      <div><span class="muted">Versão</span><b>${f.versao_atual ? 'v' + f.versao_atual : 'ainda não publicada'}</b>${v && v.publicada_em ? `<small class="muted">publicada em ${dd(String(v.publicada_em).slice(0, 10))}</small>` : ''}</div>
+      <div><span class="muted">Tipo</span><b>${esc(EST_TIPO[f.tipo] || f.tipo)}</b></div>
+      <div><span class="muted">Categoria</span><b>${esc(f.categoria || '—')}</b></div>
+      <div><span class="muted">Produto</span><b>${esc(prod || 'Qualquer produto')}</b></div>
+      <div><span class="muted">Blocos e métricas</span><b>${BL.length} blocos · ${L.length} métricas</b><small class="muted">${CN.length} ligações</small></div></div>
+      ${f.objetivo ? `<p style="margin:12px 0 0"><span class="muted">Objetivo:</span> ${esc(f.objetivo)}</p>` : ''}${f.criterios ? `<p style="margin:6px 0 0"><span class="muted">Critérios de sucesso:</span> ${esc(f.criterios)}</p>` : ''}</div>
+    <div class="panel"><h2>Funil por fase</h2>${BL.length ? `<div class="cv-rcols">${fases.map(col).join('')}</div>` : '<div class="empty">Ainda sem blocos. Abra o Mapa para montar o funil.</div>'}</div>`;
+}
 function cvPublicar(f, ctx = {}) {
   if (ctx.nBlocos === 0) return toast('Coloque pelo menos um bloco no mapa antes de publicar.', true);
   if (f.status === 'rascunho' && !f.versao_atual) {
@@ -10428,7 +10452,7 @@ function cvPublicar(f, ctx = {}) {
       if (nome.startsWith(CV_RASC)) throw new Error('Troque o nome de rascunho por um nome de verdade.');
       const ja = await q(sb.from('funis').select('id').eq('workspace_id', f.workspace_id).eq('nome', nome)); if (ja.some(x => x.id !== f.id)) throw new Error('Já existe uma estratégia com esse nome.');
       await q(sb.from('funis').update({ nome, tipo: d.tipo, categoria: (d.categoria || '').trim() || null, produto_id: d.produto_id || null, objetivo: (d.objetivo || '').trim() || null }).eq('id', f.id));
-      const v = await q(sb.rpc('estrategia_publicar', { p_funil: f.id, p_nota: 'Criada no mapa' })); toast('Estratégia publicada (versão ' + v + ')'); }, 'Publicar estratégia');
+      const v = await q(sb.rpc('estrategia_publicar', { p_funil: f.id, p_nota: 'Criada no mapa' })); S.estVista = 'resumo'; toast('Estratégia publicada (versão ' + v + ')'); }, 'Publicar estratégia');
   }
   modal('Publicar versão ' + ((f.versao_atual || 0) + 1), `<p>A versão guarda o mapa como está agora (blocos, ligações e métricas). As próximas campanhas com esta estratégia usam esta versão; as que já existem continuam com a delas.</p>
     <label>O que mudou (opcional)<input name="nota" maxlength="1000" placeholder="Ex.: entrou o grupo de WhatsApp antes da aula"></label>`, async d => {

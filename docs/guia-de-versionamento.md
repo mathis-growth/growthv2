@@ -1,3 +1,6 @@
+## v0.172
+- index.html: 0.171 → 0.172. `vEstrategia`: aba `resumo` (padrão para estratégia publicada; rascunho abre em `mapa`), `cvResumoHtml(f, BL, L, CN, pr, vs)`, botão `#estCamp` → `formCampanha(null, { funil_id, modelo, abrir: true })`. `formCampanha`: `pre.funil_id` vira o padrão do campo Estratégia e `pre.abrir` abre a campanha criada. Teste `t172_estrategia_resumo_campanha.py`. Sem migração.
+
 ## v0.171
 - Migração `20261125100000_estrategia_publicar_definer.sql`: `estrategia_publicar` com `security definer` (antes dava 403 "permission denied for function pode_operar" para authenticated) e `funis.criado_em` com padrão `now()`.
 - index.html: 0.170 → 0.171. Card com `.cv-fzb[data-fz]` e menu `.cv-fzm` (`mudaFase` atualiza o bloco e as etapas); `drop` dentro de `[data-banda]` passa a fase para `cvCriaBloco`, que agora respeita a fase também nos blocos com métricas; tipo simples `passagem` (Passagem para o CS, retenção); selects de fase do Canvas com os nomes de `CV_FASE`. Teste `t171_canvas_fase_no_card.py`.

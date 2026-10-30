@@ -15,7 +15,7 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.171 · 29/10/2026 (`index.html`) |
+| **Versão da tela** | 0.172 · 30/10/2026 (`index.html`) |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | até a **v0.156** (26/10/2026): dicionário de métricas com direção e referência; alertas, Máquina de Conteúdo, dashboard e DMs do Instagram; funções `avisos`, `perguntar`, `linha-editorial` e `zernio-sync` (posts, conta e DMs); crons `growths-alertas` (hora em hora), `zernio-sync-diario` e `zernio-dms` (a cada 30 min) |
 | **Falta aplicar no banco** | `supabase/RODAR_v0.157_narrativas.sql` (banco de narrativas; sem ele, as frases do Financeiro não aparecem) e `supabase/RODAR_v0.159_content_simples.sql` + `supabase/RODAR_v0.160_content_segmentos.sql` (Growth's Content; sem eles, as abas novas avisam) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
@@ -27,6 +27,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.172 | 30/10/2026 | **Resumo da estratégia** (dados, versão e funil por fase) e botão **Criar campanha** a partir da estratégia, que já vem escolhida e copia as etapas. | Sem mudança no banco |
 | 0.171 | 29/10/2026 | **Correção de publicar a estratégia** (dava "Sem permissão"); fase no próprio card; soltar na faixa define a fase; bloco **Passagem para o CS**. | `20261125100000_estrategia_publicar_definer.sql` — aplicado em produção |
 | 0.170 | 29/10/2026 | **Criar a estratégia pelo mapa**: "Criar no mapa" abre um mapa em branco; ao publicar, dá o nome e a estratégia entra na lista com as etapas montadas (versão 1). | Sem mudança no banco |
 | 0.169 | 29/10/2026 | **Lixeira nos cards do Canvas**: um clique exclui o bloco, e o mapa oferece Desfazer por 8 segundos. | Sem mudança no banco |
