@@ -1108,6 +1108,16 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
 #arvRoot .arv-rosca li:hover{background:var(--accent-soft)} #arvRoot .arv-rosca li i{width:10px;height:10px;border-radius:3px}
 #arvRoot .arv-rosca li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
+<style id="v175">.pf-num{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.pf-num input{max-width:220px}.pf-ns{display:inline-flex;gap:6px;align-items:center;font-size:14px}
+.pf-meses{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.pf-meses label{font-size:13px;text-transform:capitalize}
+.pf-lista{display:flex;flex-direction:column;gap:10px}.pf-lr{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr)) 36px;gap:8px;align-items:end;padding:10px;border:1px solid rgba(0,0,0,.12);border-radius:10px}
+.pf-lr label{display:flex;flex-direction:column;gap:4px;font-size:12.5px}.pf-lx{height:36px;padding:0}.pf-lmais{margin-top:8px}
+.pf-doc{padding:10px 0;border-top:1px solid rgba(0,0,0,.08)}.pf-doc small{display:block;opacity:.75;margin:2px 0 6px}.pf-ops{display:flex;flex-wrap:wrap;gap:6px}.pf-aviso2{margin-top:12px;font-size:13px;opacity:.85}
+.pf-etapa{margin-top:18px}.pf-etapa h3{margin:0 0 8px;font-size:15px;text-transform:uppercase;letter-spacing:.06em}
+.pf-m{padding:12px;border:1px solid rgba(0,0,0,.12);border-radius:12px;margin-bottom:10px}.pf-m.pf-tem{border-color:rgba(26,127,75,.55)}.pf-mh b{display:block}.pf-mh small{display:block;opacity:.75;margin:2px 0 8px}
+.pf-md,.pf-mn{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px;padding-top:10px;border-top:1px dashed rgba(0,0,0,.15)}.pf-md[hidden],.pf-mn[hidden]{display:none}
+.pf-mf{display:flex;flex-direction:column;gap:4px;font-size:13px}.pf-mf.pf-dec{flex-direction:row;align-items:center;grid-column:1/-1}.pf-dica2{font-size:14px}.pf-dcont{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:99px;background:rgba(0,0,0,.07)}.pf-dcont.ok{background:rgba(26,127,75,.18)}
+.pq-ver h3{margin:16px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}.pq-vi{padding:6px 0;border-bottom:1px solid var(--line)}.pq-vi>span{font-size:12px}.pq-vi ul{margin:4px 0;padding-left:18px}</style>
 <style id="v174">.op-cts{display:flex;flex-direction:column;gap:2px;margin:4px 0;font-size:12px}.op-cts a{cursor:pointer;color:var(--accent)}.card.op-foco{box-shadow:0 0 0 3px rgba(var(--accent-rgb),.45)}</style>
 <style id="v173">.tlf{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}.tlf button{border:1px solid var(--line);background:none;color:inherit;font:inherit;font-size:12px;border-radius:99px;padding:2px 10px;cursor:pointer}.tlf button.on{border-color:var(--accent);color:var(--accent);font-weight:700}.tlf button b{color:var(--muted);font-weight:600}
 .tlu{max-height:360px;overflow:auto}.tlt{font-style:normal;font-size:10.5px;font-weight:700;border-radius:99px;padding:0 6px;margin-right:4px;border:1px solid var(--line)}.tlt-fin{color:var(--good)}.tlt-com{color:var(--accent)}.tlt-jor{color:#9333ea}.tlt-mkt{color:#d97706}</style>
@@ -1202,7 +1212,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.174 · 30/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.175 · 30/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -9242,7 +9252,7 @@ async function vMetricas(m) {
   if (!D) { m.innerHTML = '<div class="panel"><h1>Dicionário de métricas</h1><p>Esta tela precisa da migração <span class="mono">20261011000000_fase1_confianca_dado.sql</span>.</p></div>'; return; }
   m.innerHTML = `<div class="head"><div><h1>Dicionário de métricas</h1><span class="muted">A definição oficial de cada indicador: a mesma em todas as telas, na IA e nos relatórios. Nos painéis, passe o mouse no ⓘ ao lado do nome do cartão. A direção e a referência decidem a cor: sem referência, o número fica neutro; nas métricas em que o zero é limite, negativo fica vermelho e positivo, verde.</span></div></div>
   <div class="panel"><div class="tw"><table><thead><tr><th>Métrica</th><th>Como é calculada</th><th>De onde vem</th><th>Quando não há dado</th>${D.some(d => 'direcao' in d) ? '<th>Unidade</th><th>Direção</th><th>Referência que dá a cor</th>' : ''}<th>Observação</th><th class="n">Versão</th></tr></thead><tbody>
-  ${D.map(d => `<tr><td><b>${esc(d.nome)}</b></td><td>${esc(d.formula)}</td><td class="mono" style="font-size:12px">${esc(d.fonte)}</td><td>${esc(d.sem_dado)}</td>${'direcao' in d ? `<td>${esc(SEM_UN_ROT[d.unidade] || d.unidade || '—')}${d.casas != null ? ' · ' + d.casas + ' casa(s)' : ''}</td><td>${esc(SEM_DIR_ROT[d.direcao] || '—')}${d.zero_limite ? '<br><span class="muted">zero é limite</span>' : ''}</td><td class="muted">${esc(d.referencia || '')}</td>` : ''}<td class="muted">${esc(d.observacao || '')}</td><td class="n">${d.versao}</td></tr>`).join('')}</tbody></table></div></div>`;
+  ${D.map(d => `<tr><td><b>${esc(d.nome)}</b>${d.calcula_sozinho === false ? '<br><span class="pill neutral" title="Faz parte do catálogo do Diagnóstico 360°">o Growth\'s ainda não calcula</span>' : ''}${d.etapa_aarrr ? `<br><small class="muted">${esc((AARRR.find(a => a[0] === d.etapa_aarrr) || [0, ''])[1])}</small>` : ''}</td><td>${esc(d.formula)}</td><td class="mono" style="font-size:12px">${esc(d.fonte)}</td><td>${esc(d.sem_dado)}</td>${'direcao' in d ? `<td>${esc(SEM_UN_ROT[d.unidade] || d.unidade || '—')}${d.casas != null ? ' · ' + d.casas + ' casa(s)' : ''}</td><td>${esc(SEM_DIR_ROT[d.direcao] || '—')}${d.zero_limite ? '<br><span class="muted">zero é limite</span>' : ''}</td><td class="muted">${esc(d.referencia || '')}</td>` : ''}<td class="muted">${esc(d.observacao || '')}</td><td class="n">${d.versao}</td></tr>`).join('')}</tbody></table></div></div>`;
 }
 
 /* ---------- Configurações → Auditoria (só administradores) ---------- */
@@ -15286,16 +15296,252 @@ function pqLeituraPmf(x) {
   return `<div class="panel pq-pmf"><div>${semPilula({ k: st[0], txt: st[1] })}</div><p style="margin:8px 0 4px"><b>${String(pc).replace('.', ',')}%</b> marcaram "${esc(x.opcoes[0])}" (${prim} de ${base} respostas${na ? `; ${na} "Não se aplica" fora da base` : ''}).</p><p class="muted" style="margin:0">${st[2]} Com poucas respostas, leia como sinal, não como prova: aprofunde em conversas com quem respondeu.</p></div>`;
 }
 
+/* ================= v0.175 — Diagnóstico 360° (G1): formulário do cliente =================
+   Plano: docs/diagnostico-360-plano.md. Tipos de pergunta novos (número, valor em reais, mês a mês, métricas do funil pirata,
+   lista, documentos), pergunta condicional e o modelo pronto "Diagnóstico 360°" (seções B.1 a B.8 do plano). */
+PQ_TIPO.diagnostico = 'Diagnóstico do cliente';
+const PQ_TP_G1 = { numero: 'Número', moeda: 'Valor em reais (R$)', meses: 'Valores mês a mês', metricas: 'Métricas do funil pirata (tenho / não tenho)', lista: 'Lista (uma linha por item)', documentos: 'Documentos (tenho / mando depois)' };
+const AARRR = [['aquisicao', 'Aquisição'], ['ativacao', 'Ativação'], ['retencao', 'Retenção'], ['receita', 'Receita'], ['recomendacao', 'Recomendação'], ['recompra', 'Recompra e ascensão']];
+const MET_ST = [['regular', 'Tenho, calculamos regularmente'], ['ocasional', 'Tenho, de vez em quando'], ['nao', 'Não tenho'], ['nao_sei', 'Não sei informar']];
+const MET_COMO = ['Planilha', 'Sistema ou CRM', 'Plataforma de venda', 'Automação', 'Painel ou dashboard', 'Relatório da ferramenta de anúncio', 'Manual', 'Outro'];
+const MET_CAMPOS = [ // o bloco de cada métrica (M2 a M16 do plano), quando o cliente marca "Tenho"
+  ['decide', 'Usamos esta métrica para tomar decisões', 'check'],
+  ['objetivo', 'Qual é o objetivo desta métrica hoje?', 'texto'],
+  ['numerador', 'Numerador: o que entra em cima da conta', 'linha'],
+  ['denominador', 'Denominador: pelo que vocês dividem (ou "não tem")', 'linha'],
+  ['janela', 'Janela de tempo', ['Dia', 'Semana', 'Mês', 'Trimestre', 'Campanha', 'Desde sempre', 'Outro']],
+  ['inclui', 'Quem entra e quem sai da conta (ex.: tira reembolsos?)', 'texto'],
+  ['calculo', 'Como é calculada, do seu jeito (se preferir explicar de uma vez)', 'texto'],
+  ['como', 'Como acompanham', MET_COMO, 'multi'],
+  ['fonte', 'De onde vêm os dados (ex.: Hotmart, Meta Ads, planilha do comercial)', 'linha'],
+  ['atualiza', 'De quanto em quanto tempo atualiza', ['Tempo real', 'Diária', 'Semanal', 'Mensal', 'Quando alguém lembra']],
+  ['detalhe', 'Nível de detalhe', ['Total', 'Por canal', 'Por campanha', 'Por produto', 'Por cliente']],
+  ['responsavel', 'Quem é o responsável', 'linha'],
+  ['clareza', 'Isso está claro na empresa?', ['Sim', 'Em parte', 'Não']],
+  ['decisao', 'Que decisão vocês tomam olhando este número?', 'texto'],
+  ['reacao', 'Depois que vocês agem, quanto tempo leva para este número mudar?', ['Horas', 'Dias', 'Semanas', 'Meses']],
+  ['confere', 'Alguém confere se o número está certo?', ['Sim', 'Às vezes', 'Não']],
+  ['confianca', 'Quanto você confia neste número (1 a 5)?', ['1', '2', '3', '4', '5']],
+  ['valor', 'Valor atual (opcional)', 'linha']];
+const DOC_CATS = [ // Central de Documentos (E1 a E7): o que pedir, preferencialmente os últimos 6 meses completos
+  { k: 'vendas', l: 'Vendas e pedidos (inclui as últimas vendas)', d: 'Data, produto, valor, desconto, forma de pagamento, reembolsos e cancelamentos, identificação do cliente (e-mail ou CPF), plataforma, origem ou UTM.' },
+  { k: 'crm', l: 'CRM e leads (inclui o cadastro de leads)', d: 'Leads com data de entrada, origem e canal, etapa do funil, responsável, resultado (ganho ou perdido).' },
+  { k: 'alunos', l: 'Alunos e clientes', d: 'Cadastro, produto, data de entrada, acesso e ativação, consumo e progresso, conclusão, cancelamento, recompra.' },
+  { k: 'marketing', l: 'Marketing e aquisição', d: 'Campanhas por canal: investimento, impressões, cliques, leads e conversões, por mês.' },
+  { k: 'financeiro', l: 'Financeiro', d: 'Receitas, custos, despesas, taxas das plataformas e margens, quando houver.' },
+  { k: 'produtos', l: 'Produtos e ofertas', d: 'Catálogo, preços, ofertas, recorrências e esteira.' },
+  { k: 'complementares', l: 'Arquivos complementares', d: 'Painéis, planilhas de acompanhamento, relatórios e documentação de processos.' }];
+const DOC_ST = [['sim', 'Tenho'], ['parte', 'Tenho em parte'], ['nao', 'Não tenho'], ['depois', 'Mando depois']];
+const MOD_MAPA = { 'Infoproduto ou curso': 'infoproduto', 'Mentoria': 'mentoria', 'Consultoria ou serviço': 'servico', 'Assinatura ou recorrência': 'assinatura', 'Comunidade': 'comunidade', 'E-commerce': 'ecommerce', 'High ticket': 'high_ticket' };
+// os últimos N meses completos, do mais antigo ao mais recente
+const pfMeses = n => { const h = new Date(), L = []; for (let i = n; i >= 1; i--) { const d = new Date(h.getFullYear(), h.getMonth() - i, 1); L.push([d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'), d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })]); } return L; };
+
+/* modelo pronto: Diagnóstico 360° (seções B.1 a B.8). k = chave local para as condições; c = { k, v } mostra só se a pergunta k teve uma das respostas v */
+const DG_SIM = ['Sim', 'Mais ou menos', 'Não'];
+const PQ_DIAG360 = [
+  // B.1 Perfil do negócio
+  { s: 'Perfil do negócio', t: 'Nome da empresa', tp: 'texto' },
+  { s: 'Perfil do negócio', t: 'CNPJ ou CPF da empresa', tp: 'texto', o: false },
+  { s: 'Perfil do negócio', t: 'Segmento', tp: 'escolha', op: ['Educação ou infoproduto', 'Consultoria', 'Serviços', 'Saúde', 'Beleza', 'Varejo ou e-commerce', 'SaaS ou tecnologia', 'Outro'] },
+  { k: 'modelo', s: 'Perfil do negócio', t: 'Qual é o modelo do seu negócio? (pode marcar mais de um)', tp: 'multipla', op: Object.keys(MOD_MAPA).concat('Outro') },
+  { s: 'Perfil do negócio', t: 'Há quanto tempo vende?', tp: 'escolha', op: ['Menos de 1 ano', '1 a 2 anos', '3 a 5 anos', 'Mais de 5 anos'] },
+  { s: 'Perfil do negócio', t: 'Faturamento médio mensal', tp: 'escolha', op: ['Até R$ 20 mil', 'R$ 20 a 50 mil', 'R$ 50 a 100 mil', 'R$ 100 a 300 mil', 'R$ 300 mil a 1 milhão', 'Acima de R$ 1 milhão'] },
+  { s: 'Perfil do negócio', t: 'Faturamento dos últimos 6 meses (deixe em branco o mês que não souber)', tp: 'meses', cfg: { meses: 6 } },
+  { s: 'Perfil do negócio', t: 'Tamanho da equipe', tp: 'escolha', op: ['Só eu', '2 a 5 pessoas', '6 a 15', '16 a 50', 'Mais de 50'] },
+  { s: 'Perfil do negócio', t: 'Quem cuida de cada área', tp: 'lista', o: false, cfg: { colunas: [{ k: 'area', l: 'Área', t: 'escolha', op: ['Marketing', 'Comercial', 'CS ou sucesso do aluno', 'Produto', 'Financeiro', 'Dados'] }, { k: 'quem', l: 'Quem faz', t: 'escolha', op: ['Equipe própria', 'Terceirizado', 'Ninguém'] }] } },
+  { s: 'Perfil do negócio', t: 'Objetivos para os próximos 12 meses', tp: 'multipla', op: ['Aumentar o faturamento', 'Aumentar a margem', 'Reduzir o CAC', 'Aumentar a recorrência', 'Lançar produto', 'Escalar o time', 'Organizar os dados', 'Outro'] },
+  { s: 'Perfil do negócio', t: 'Principais desafios hoje', tp: 'multipla', op: ['Gerar leads', 'Converter em vendas', 'Reter clientes', 'Entender os números', 'Equipe', 'Caixa', 'Outro'] },
+  { s: 'Perfil do negócio', t: 'Se marcou "Outro" em objetivos ou desafios: qual?', tp: 'texto', o: false },
+  { s: 'Perfil do negócio', t: 'O que você espera deste trabalho?', tp: 'texto' },
+  { s: 'Perfil do negócio', t: 'O que precisa acontecer para você perceber que este trabalho está trazendo resultado?', tp: 'texto' },
+  { s: 'Perfil do negócio', t: 'Em quanto tempo você espera ver esse resultado?', tp: 'escolha', op: ['30 dias', '60 dias', '90 dias', '6 meses', 'Mais de 6 meses'] },
+  // B.2 Produtos e ofertas
+  { s: 'Produtos e ofertas', t: 'Seus produtos e ofertas (uma linha por produto)', tp: 'lista', cfg: { colunas: [{ k: 'nome', l: 'Produto', t: 'texto' }, { k: 'tipo', l: 'Tipo', t: 'escolha', op: ['Curso', 'Mentoria', 'Consultoria ou serviço', 'Assinatura', 'Comunidade', 'Evento', 'Produto físico', 'Outro'] },
+    { k: 'preco', l: 'Preço ou ticket (R$)', t: 'moeda' }, { k: 'recorrencia', l: 'Recorrente?', t: 'escolha', op: ['Não', 'Mensal', 'Trimestral', 'Semestral', 'Anual'] }, { k: 'margem', l: 'Margem aproximada (%)', t: 'numero' },
+    { k: 'participacao', l: 'Parte das vendas (%)', t: 'numero' }, { k: 'esteira', l: 'Posição na esteira', t: 'escolha', op: ['Entrada', 'Principal', 'High ticket', 'Recorrente', 'Upsell'] }] } },
+  { s: 'Produtos e ofertas', t: 'Ticket médio geral', tp: 'moeda', o: false, cfg: { naosei: true } },
+  { s: 'Produtos e ofertas', t: 'Onde você vende', tp: 'multipla', op: ['Hotmart', 'Kiwify', 'Eduzz', 'Outra plataforma', 'Venda direta ou contrato', 'Loja própria'] },
+  { s: 'Produtos e ofertas', t: 'Formas de pagamento', tp: 'multipla', op: ['Pix', 'Cartão', 'Boleto', 'Parcelado', 'Recorrência no cartão'] },
+  { k: 'esteira', s: 'Produtos e ofertas', t: 'Tem uma esteira de produtos definida?', tp: 'escolha', op: ['Sim', 'Em construção', 'Não'] },
+  { s: 'Produtos e ofertas', t: 'Qual é o caminho do cliente na sua esteira?', tp: 'texto', c: { k: 'esteira', v: ['Sim', 'Em construção'] } },
+  // B.3 Jornada do cliente (funil pirata)
+  { k: 'canais', s: 'Jornada do cliente', t: 'Canais que você usa', tp: 'multipla', op: ['Meta Ads', 'Google Ads', 'YouTube Ads', 'TikTok Ads', 'Instagram orgânico', 'YouTube orgânico', 'TikTok orgânico', 'LinkedIn', 'E-mail', 'WhatsApp', 'Grupos', 'Indicação', 'Afiliados', 'Eventos', 'Prospecção ativa ou SDR', 'Parcerias', 'SEO ou blog', 'Outro'] },
+  { s: 'Jornada do cliente', t: 'Qual canal mais traz clientes?', tp: 'texto' },
+  { s: 'Jornada do cliente', t: 'Investimento médio mensal em mídia', tp: 'moeda', o: false, cfg: { naosei: true } },
+  { s: 'Jornada do cliente', t: 'CAC mídia: quanto de anúncio vocês gastam para conquistar um cliente', tp: 'moeda', o: false, cfg: { naosei: true } },
+  { s: 'Jornada do cliente', t: 'CAC médio: o custo total de conquistar um cliente (mídia, equipe e ferramentas)', tp: 'moeda', o: false, cfg: { naosei: true } },
+  { s: 'Jornada do cliente', t: 'Como você vende', tp: 'multipla', op: ['Lançamento', 'Perpétuo', 'Webinário', 'Desafio', 'Comercial ou SDR', 'Direct', 'Evento', 'Outro'] },
+  { k: 'pv', s: 'Jornada do cliente', t: 'Existe um primeiro valor definido depois da compra (o primeiro resultado que o cliente precisa sentir)?', tp: 'escolha', op: DG_SIM },
+  { s: 'Jornada do cliente', t: 'Qual é esse primeiro valor?', tp: 'texto', c: { k: 'pv', v: ['Sim', 'Mais ou menos'] } },
+  { s: 'Jornada do cliente', t: 'Que evento mostra que o cliente chegou nele (ex.: primeira venda, primeira aula concluída)?', tp: 'texto', o: false, c: { k: 'pv', v: ['Sim', 'Mais ou menos'] } },
+  { s: 'Jornada do cliente', t: 'Em quantos dias, em média, o cliente chega lá?', tp: 'numero', o: false, c: { k: 'pv', v: ['Sim', 'Mais ou menos'] }, cfg: { naosei: true } },
+  { s: 'Jornada do cliente', t: 'Que parte dos clientes não chega no tempo esperado (%)?', tp: 'numero', o: false, c: { k: 'pv', v: ['Sim', 'Mais ou menos'] }, cfg: { naosei: true } },
+  { k: 'onb', s: 'Jornada do cliente', t: 'Tem onboarding depois da compra?', tp: 'escolha', op: ['Sim', 'Em parte', 'Não'] },
+  { s: 'Jornada do cliente', t: 'Como é o onboarding?', tp: 'multipla', op: ['Boas-vindas', 'Reunião', 'Aula', 'Grupo', 'Sequência de e-mails ou WhatsApp', 'Área de membros'], c: { k: 'onb', v: ['Sim', 'Em parte'] } },
+  { k: 'cons', s: 'Jornada do cliente', t: 'Acompanha o consumo ou o progresso dos clientes?', tp: 'escolha', op: ['Sim', 'Em parte', 'Não'] },
+  { s: 'Jornada do cliente', t: 'Como acompanha o consumo ou o progresso?', tp: 'texto', o: false, c: { k: 'cons', v: ['Sim', 'Em parte'] } },
+  { k: 'churn', s: 'Jornada do cliente', t: 'Mede o churn (cancelamento ou não renovação)?', tp: 'escolha', op: ['Sim', 'Não', 'Não se aplica'] },
+  { s: 'Jornada do cliente', t: 'Churn por mês (%)', tp: 'numero', o: false, c: { k: 'churn', v: ['Sim'] }, cfg: { naosei: true } },
+  { s: 'Jornada do cliente', t: 'Separa a receita de clientes novos da receita de quem já era cliente?', tp: 'escolha', op: ['Sim', 'Não'] },
+  { s: 'Jornada do cliente', t: 'Acompanha retenção, churn e expansão (renovação, upsell) juntas?', tp: 'escolha', op: ['Sim', 'Em parte', 'Não'] },
+  { k: 'recompra', s: 'Jornada do cliente', t: 'Tem recompra ou ascensão na esteira?', tp: 'escolha', op: ['Sim', 'Não'] },
+  { s: 'Jornada do cliente', t: 'Que parte dos clientes compra de novo (%)?', tp: 'numero', o: false, c: { k: 'recompra', v: ['Sim'] }, cfg: { naosei: true } },
+  { k: 'indic', s: 'Jornada do cliente', t: 'Tem programa de indicação?', tp: 'escolha', op: ['Sim', 'Informal', 'Não'] },
+  { s: 'Jornada do cliente', t: 'Que parte dos clientes vem por indicação (%)?', tp: 'numero', o: false, c: { k: 'indic', v: ['Sim', 'Informal'] }, cfg: { naosei: true } },
+  // B.4 Maturidade das métricas
+  { s: 'Métricas do negócio', t: 'Para cada métrica, marque se vocês acompanham. Se tem, conte como funciona; se não tem, passe para a próxima.', tp: 'metricas', cfg: { modelo: 'modelo', min_decide: 5, max_decide: 8 } },
+  { k: 'ns', s: 'Métricas do negócio', t: 'Vocês têm uma North Star (a métrica principal que mostra se o negócio está entregando valor)?', tp: 'escolha', op: ['Sim', 'Não', 'Não sei'] },
+  { s: 'Métricas do negócio', t: 'Qual é a North Star?', tp: 'texto', c: { k: 'ns', v: ['Sim'] } },
+  { s: 'Métricas do negócio', t: 'Por que ela?', tp: 'texto', o: false, c: { k: 'ns', v: ['Sim'] } },
+  { k: 'guard', s: 'Métricas do negócio', t: 'Quando um número melhora, vocês olham se outro piorou (ex.: o CPL caiu, mas a qualidade do lead caiu junto)?', tp: 'escolha', op: ['Sempre', 'Às vezes', 'Nunca'] },
+  { s: 'Métricas do negócio', t: 'Quais números vocês olham juntos?', tp: 'texto', o: false, c: { k: 'guard', v: ['Sempre', 'Às vezes'] } },
+  { s: 'Métricas do negócio', t: 'Métricas que vocês usam e que não estão na lista', tp: 'lista', o: false, cfg: { colunas: [{ k: 'nome', l: 'Métrica', t: 'texto' }, { k: 'objetivo', l: 'Objetivo', t: 'texto' }, { k: 'calculo', l: 'Como é calculada', t: 'texto' },
+    { k: 'como', l: 'Como acompanham', t: 'texto' }, { k: 'responsavel', l: 'Responsável', t: 'texto' }, { k: 'decisao', l: 'Decisão que tomam com ela', t: 'texto' }, { k: 'valor', l: 'Valor atual', t: 'texto' }] } },
+  // B.5 Infraestrutura de dados
+  { s: 'Infraestrutura de dados', t: 'Ferramentas que vocês usam', tp: 'multipla', op: ['Excel ou Google Sheets', 'CRM', 'Plataforma de venda', 'ERP ou financeiro', 'E-mail marketing', 'WhatsApp ou automação', 'Área de membros', 'BI ou dashboard', 'Google Analytics 4', 'Pixel ou API de Conversões', 'Outro'] },
+  { s: 'Infraestrutura de dados', t: 'Quais são (nome de cada ferramenta: CRM, plataforma, ERP…)?', tp: 'texto', o: false },
+  { s: 'Infraestrutura de dados', t: 'Que integrações já funcionam entre elas?', tp: 'texto', o: false },
+  { s: 'Infraestrutura de dados', t: 'Os links usam UTMs padronizadas?', tp: 'escolha', op: ['Sim', 'Às vezes', 'Não', 'Não sei o que é'] },
+  { s: 'Infraestrutura de dados', t: 'Como vocês sabem de onde veio cada venda?', tp: 'multipla', op: ['UTM', 'Pergunta no checkout', 'Pergunta do comercial', 'Relatório da plataforma', 'Não sabemos'] },
+  { s: 'Infraestrutura de dados', t: 'Os dados batem entre as ferramentas (ex.: vendas da plataforma × financeiro)?', tp: 'escolha', op: ['Sim', 'Quase', 'Não', 'Nunca conferimos'] },
+  { s: 'Infraestrutura de dados', t: 'Há cadastros duplicados de clientes ou leads?', tp: 'escolha', op: ['Não', 'Alguns', 'Muitos', 'Não sei'] },
+  { s: 'Infraestrutura de dados', t: 'Quem cuida dos dados?', tp: 'escolha', op: ['Ninguém', 'Eu', 'Alguém da equipe', 'Terceirizado'] },
+  { s: 'Infraestrutura de dados', t: 'Quanto você confia nos números do negócio, de modo geral?', tp: 'escala' },
+  // B.6 Gestão e decisões
+  { s: 'Gestão e decisões', t: 'Rotina de análise dos números', tp: 'escolha', op: ['Diária', 'Semanal', 'Quinzenal', 'Mensal', 'Não tem'] },
+  { k: 'reuniao', s: 'Gestão e decisões', t: 'Tem reunião de resultados?', tp: 'escolha', op: ['Sim', 'Não'] },
+  { s: 'Gestão e decisões', t: 'Quem participa?', tp: 'multipla', op: ['Sócios', 'Marketing', 'Comercial', 'CS', 'Produto', 'Financeiro'], c: { k: 'reuniao', v: ['Sim'] } },
+  { k: 'metas', s: 'Gestão e decisões', t: 'Tem metas definidas?', tp: 'escolha', op: ['Por área', 'Só de faturamento', 'Não'] },
+  { s: 'Gestão e decisões', t: 'Quem define as metas?', tp: 'texto', o: false, c: { k: 'metas', v: ['Por área', 'Só de faturamento'] } },
+  { s: 'Gestão e decisões', t: 'Conte uma decisão importante recente que vocês tomaram com dados', tp: 'texto', o: false },
+  { s: 'Gestão e decisões', t: 'E uma decisão importante tomada sem dados: qual e por quê?', tp: 'texto', o: false },
+  { s: 'Gestão e decisões', t: 'O que mais atrapalha decidir com dados hoje?', tp: 'multipla', op: ['Não confio nos números', 'Demora para juntar', 'Não sei o que olhar', 'Ninguém cuida', 'Outro'] },
+  // B.7 Prioridades de crescimento
+  { s: 'Prioridades de crescimento', t: 'Onde estão os gargalos?', tp: 'multipla', op: AARRR.map(x => x[1]) },
+  { s: 'Prioridades de crescimento', t: 'Conte um pouco mais sobre os gargalos', tp: 'texto', o: false },
+  { s: 'Prioridades de crescimento', t: 'Hipóteses: o que você acha que resolveria?', tp: 'texto', o: false },
+  { s: 'Prioridades de crescimento', t: 'Oportunidades que você vê e ainda não explorou', tp: 'texto', o: false },
+  { s: 'Prioridades de crescimento', t: 'Objetivos para os próximos 90 dias', tp: 'texto' },
+  { s: 'Prioridades de crescimento', t: 'Restrições', tp: 'multipla', o: false, op: ['Orçamento', 'Equipe', 'Tempo', 'Tecnologia', 'Outro'] },
+  // B.8 Documentação
+  { s: 'Documentação', t: 'Para cada grupo de arquivos, diga se tem. De preferência, os últimos 6 meses completos.', tp: 'documentos', cfg: { categorias: DOC_CATS, aviso: 'Não envie senhas nem acessos em planilhas ou documentos. Os dados pessoais são tratados conforme a LGPD. O envio dos arquivos é feito na Central de Documentos, pelo mesmo link.' } }
+];
+PQ_MODELOS.diagnostico360 = { nome: 'Diagnóstico 360° de Growth, Dados e Maturidade', tipo: 'diagnostico', publico: 'cliente', gatilho: 'manual', objetos: PQ_DIAG360,
+  descricao: 'Este diagnóstico é o primeiro passo do nosso trabalho. Ele mostra como o seu negócio funciona hoje, que números vocês acompanham e como, e onde estão as maiores oportunidades. Quase tudo é de marcar; leva uns 30 minutos e dá para fazer com calma.' };
+
+/* ----- formulário público: tipos novos ----- */
+function pfCampoG1(x, d) {
+  const n = 'q_' + x.id, cfg = x.config || {}, sel = (nm, ops, cls = '') => `<select name="${nm}" class="${cls}"><option value="">—</option>${ops.map(o => `<option>${esc(o)}</option>`).join('')}</select>`;
+  if (x.tipo === 'numero' || x.tipo === 'moeda') return `<div class="pf-num">${x.tipo === 'moeda' ? '<span>R$</span>' : ''}<input type="number" step="0.01" min="0" name="${n}" inputmode="decimal">${cfg.naosei ? `<label class="pf-ns"><input type="checkbox" name="${n}_ns"> Não sei</label>` : ''}</div>`;
+  if (x.tipo === 'meses') return `<div class="pf-meses">${pfMeses(Number(cfg.meses) || 6).map(([k, l]) => `<label>${esc(l)}<div class="pf-num"><span>R$</span><input type="number" step="0.01" min="0" data-mes="${k}" inputmode="decimal"></div></label>`).join('')}</div>`;
+  if (x.tipo === 'lista') { const cols = cfg.colunas || [{ k: 'item', l: 'Item', t: 'texto' }];
+    const campoL = c => c.t === 'escolha' ? `<select class="pf-lc"><option value="">—</option>${(c.op || []).map(o => `<option>${esc(o)}</option>`).join('')}</select>`
+      : `<input class="pf-lc" ${c.t === 'texto' ? 'type="text" maxlength="300"' : 'type="number" step="0.01" min="0" inputmode="decimal"'}>`;
+    const linha = () => `<div class="pf-lr">${cols.map(c => `<label><span>${esc(c.l)}</span>${campoL(c)}</label>`).join('')}<button type="button" class="pf-b2 pf-lx" title="Tirar esta linha">×</button></div>`;
+    return `<div class="pf-lista" data-cols='${esc(JSON.stringify(cols.map(c => c.k)))}'>${linha()}</div><button type="button" class="pf-b2 pf-lmais" data-tpl='${esc(linha())}'>+ Adicionar linha</button>`; }
+  if (x.tipo === 'documentos') return `${(cfg.categorias || []).map(c => `<div class="pf-doc"><b>${esc(c.l)}</b>${c.d ? `<small>${esc(c.d)}</small>` : ''}<div class="pf-ops">${DOC_ST.map(([k, l]) => `<label class="pf-op"><input type="radio" name="${n}_${c.k}" value="${k}"><span>${l}</span></label>`).join('')}</div></div>`).join('')}${cfg.aviso ? `<p class="pf-aviso2">${esc(cfg.aviso)}</p>` : ''}`;
+  if (x.tipo === 'metricas') {
+    const cat = (d.metricas || []).filter(m => !(cfg.etapas || []).length || cfg.etapas.includes(m.etapa));
+    const campo = ([k, l, t, multi]) => Array.isArray(t) ? (multi ? `<div class="pf-mf"><span>${esc(l)}</span><div class="pf-ops">${t.map(o => `<label class="pf-op"><input type="checkbox" data-c="${k}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join('')}</div></div>`
+        : `<label class="pf-mf"><span>${esc(l)}</span><select data-c="${k}"><option value="">—</option>${t.map(o => `<option>${esc(o)}</option>`).join('')}</select></label>`)
+      : t === 'check' ? `<label class="pf-mf pf-dec"><input type="checkbox" data-c="${k}"> <b>${esc(l)}</b></label>`
+      : `<label class="pf-mf"><span>${esc(l)}</span>${t === 'texto' ? `<textarea data-c="${k}" rows="2" maxlength="1500"></textarea>` : `<input data-c="${k}" maxlength="300">`}</label>`;
+    return `${cfg.min_decide ? `<p class="pf-dica2">Marque como <b>"usamos para tomar decisões"</b> as ${cfg.min_decide} a ${cfg.max_decide || cfg.min_decide} métricas mais usadas no dia a dia. <span class="pf-dcont" data-min="${cfg.min_decide}" data-max="${cfg.max_decide || 99}">0 marcadas</span></p>` : ''}
+      ${AARRR.filter(([k]) => cat.some(m => m.etapa === k)).map(([k, l]) => `<div class="pf-etapa"><h3>${l}</h3>${cat.filter(m => m.etapa === k).map(m => `<div class="pf-m" data-m="${esc(m.codigo)}" data-mods="${esc((m.modelos || []).join(','))}">
+        <div class="pf-mh"><b>${esc(m.nome)}</b>${m.descricao ? `<small>${esc(m.descricao)}</small>` : ''}</div>
+        <div class="pf-ops">${MET_ST.map(([v, t]) => `<label class="pf-op"><input type="radio" name="${n}_${esc(m.codigo)}" value="${v}"><span>${t}</span></label>`).join('')}</div>
+        <div class="pf-md" hidden>${MET_CAMPOS.map(campo).join('')}</div>
+        <div class="pf-mn" hidden><label class="pf-mf"><span>Vocês têm os dados para calcular esta métrica?</span><select data-c="tem_dados"><option value="">—</option><option value="sim">Sim</option><option value="parte">Em parte</option><option value="nao">Não</option><option value="nao_sei">Não sei</option></select></label></div></div>`).join('')}</div>`).join('')}`;
+  }
+  return '';
+}
+// mostra ou esconde as perguntas condicionais, filtra as métricas pelo modelo de negócio e abre o bloco de cada métrica
+function pfLigaG1(f, d) {
+  const porK = Object.fromEntries((d.perguntas || []).map(x => [x.id, x]));
+  const valores = id => { const q = porK[id]; if (!q) return []; return [...f.querySelectorAll(`[name="q_${id}"]`)].filter(i => (i.type === 'radio' || i.type === 'checkbox') ? i.checked : i.value).map(i => i.value); };
+  const atualiza = () => {
+    f.querySelectorAll('.pf-q[data-cond]').forEach(fs => { const c = JSON.parse(fs.dataset.cond); const vs = valores(c.pergunta); fs.hidden = !vs.some(v => (c.valores || []).includes(v)); });
+    f.querySelectorAll('.pf-q[data-tipo="metricas"]').forEach(fs => { const x = porK[fs.dataset.q], cfg = (x && x.config) || {};
+      const mods = cfg.modelo ? valores(cfg.modelo).map(v => cfg.modelo_mapa ? cfg.modelo_mapa[v] : MOD_MAPA[v]).filter(Boolean) : [];
+      fs.querySelectorAll('.pf-m').forEach(m => { const ms = m.dataset.mods ? m.dataset.mods.split(',') : []; m.hidden = !!(ms.length && mods.length && !ms.some(z => mods.includes(z))); });
+      const cont = fs.querySelector('.pf-dcont'); if (cont) { const nd = fs.querySelectorAll('.pf-m:not([hidden]) [data-c="decide"]:checked').length; cont.textContent = nd + (nd === 1 ? ' marcada' : ' marcadas'); cont.classList.toggle('ok', nd >= +cont.dataset.min && nd <= +cont.dataset.max); } });
+  };
+  f.addEventListener('change', e => {
+    const m = e.target.closest('.pf-m');
+    if (m && e.target.type === 'radio') { const v = e.target.value; m.querySelector('.pf-md').hidden = !['regular', 'ocasional'].includes(v); m.querySelector('.pf-mn').hidden = v !== 'nao'; m.classList.toggle('pf-tem', ['regular', 'ocasional'].includes(v)); }
+    const ns = e.target.name && /_ns$/.test(e.target.name) ? f.querySelector(`[name="${e.target.name.slice(0, -3)}"]`) : null; if (ns) { ns.disabled = e.target.checked; if (e.target.checked) ns.value = ''; }
+    atualiza();
+  });
+  f.addEventListener('click', e => {
+    const mais = e.target.closest('.pf-lmais'); if (mais) { mais.previousElementSibling.insertAdjacentHTML('beforeend', mais.dataset.tpl); return; }
+    const x = e.target.closest('.pf-lx'); if (x) { const box = x.closest('.pf-lista'); if (box.children.length > 1) x.closest('.pf-lr').remove(); else x.closest('.pf-lr').querySelectorAll('input,select').forEach(i => { i.value = ''; }); }
+  });
+  atualiza();
+}
+// validação e leitura dos tipos novos (só das perguntas visíveis)
+function pfValidaG1(fs, x) {
+  const n = 'q_' + x.id, f = fs.closest('form'), cfg = x.config || {};
+  if (x.tipo === 'numero' || x.tipo === 'moeda') { const i = f.elements[n], ns = f.elements[n + '_ns']; if (i.value !== '' && !(Number(i.value) >= 0)) return 'Confira o número em: '; if (x.obrigatoria && i.value === '' && !(ns && ns.checked)) return 'Responda: '; return ''; }
+  if (x.tipo === 'meses') return x.obrigatoria && ![...fs.querySelectorAll('[data-mes]')].some(i => i.value !== '') ? 'Preencha pelo menos um mês em: ' : '';
+  if (x.tipo === 'lista') return x.obrigatoria && ![...fs.querySelectorAll('.pf-lc')].some(i => i.value !== '') ? 'Preencha pelo menos uma linha em: ' : '';
+  if (x.tipo === 'documentos') return x.obrigatoria && (cfg.categorias || []).some(c => !fs.querySelector(`[name="${n}_${c.k}"]:checked`)) ? 'Marque cada grupo de arquivos em: ' : '';
+  if (x.tipo === 'metricas') {
+    const vis = [...fs.querySelectorAll('.pf-m:not([hidden])')];
+    const falta = vis.find(m => !m.querySelector('input[type=radio]:checked'));
+    if (x.obrigatoria && falta) { falta.scrollIntoView({ block: 'center' }); return 'Marque se vocês acompanham "' + falta.querySelector('.pf-mh b').textContent + '" em: '; }
+    const tem = vis.filter(m => m.classList.contains('pf-tem')).length, nd = fs.querySelectorAll('.pf-m:not([hidden]) [data-c="decide"]:checked').length;
+    if (cfg.min_decide && tem >= cfg.min_decide && nd < cfg.min_decide) return `Marque de ${cfg.min_decide} a ${cfg.max_decide || cfg.min_decide} métricas como "usamos para tomar decisões" em: `;
+    if (cfg.max_decide && nd > cfg.max_decide) return `Marque no máximo ${cfg.max_decide} métricas como "usamos para tomar decisões" em: `;
+    return '';
+  }
+  return '';
+}
+function pfLeG1(fs, x) {
+  const n = 'q_' + x.id, f = fs.closest('form'), cfg = x.config || {};
+  if (x.tipo === 'numero' || x.tipo === 'moeda') { const i = f.elements[n]; return i.value === '' || i.disabled ? null : Number(i.value); }
+  if (x.tipo === 'meses') { const o = {}; fs.querySelectorAll('[data-mes]').forEach(i => { if (i.value !== '') o[i.dataset.mes] = Number(i.value); }); return Object.keys(o).length ? o : null; }
+  if (x.tipo === 'lista') { const ks = JSON.parse(fs.querySelector('.pf-lista').dataset.cols), cols = cfg.colunas || [];
+    const L = [...fs.querySelectorAll('.pf-lr')].map(r => { const o = {}; [...r.querySelectorAll('.pf-lc')].forEach((i, j) => { if (i.value !== '') o[ks[j]] = (cols[j] && ['numero', 'moeda'].includes(cols[j].t)) ? Number(i.value) : i.value.trim(); }); return o; }).filter(o => Object.keys(o).length);
+    return L.length ? L : null; }
+  if (x.tipo === 'documentos') { const o = {}; (cfg.categorias || []).forEach(c => { const r = fs.querySelector(`[name="${n}_${c.k}"]:checked`); if (r) o[c.k] = r.value; }); return Object.keys(o).length ? o : null; }
+  if (x.tipo === 'metricas') { const o = {};
+    fs.querySelectorAll('.pf-m:not([hidden])').forEach(m => { const st = m.querySelector('input[type=radio]:checked'); if (!st) return; const r = { status: st.value };
+      const box = m.querySelector(['regular', 'ocasional'].includes(st.value) ? '.pf-md' : '.pf-mn');
+      if (st.value !== 'nao_sei') { box.querySelectorAll('[data-c]').forEach(i => { const k = i.dataset.c;
+        if (i.type === 'checkbox' && i.value !== 'on') { if (i.checked) (r[k] = r[k] || []).push(i.value); }
+        else if (i.type === 'checkbox') { if (i.checked) r[k] = true; }
+        else if (i.value.trim()) r[k] = i.value.trim(); }); }
+      o[m.dataset.m] = r; });
+    return Object.keys(o).length ? o : null; }
+  return null;
+}
+// a equipe lê uma resposta inteira (os tipos novos formatados)
+function pqVerResposta(perg, its, titulo) {
+  const porP = {}; (its || []).forEach(i => (porP[i.pergunta_id] = porP[i.pergunta_id] || []).push(i));
+  const fmt = (x, L) => { if (!L || !L.length) return '<span class="muted">—</span>';
+    const j = L[0].valor_json;
+    if (x.tipo === 'metricas' && j) { const tem = Object.entries(j).filter(([, v]) => ['regular', 'ocasional'].includes(v.status)), nao = Object.entries(j).filter(([, v]) => v.status === 'nao');
+      return `<b>${tem.length} acompanham</b> · ${nao.length} não acompanham<br>${tem.map(([k, v]) => `<details><summary>${esc(k)} · ${esc((MET_ST.find(s => s[0] === v.status) || [0, v.status])[1])}${v.decide ? ' · <b>usada para decidir</b>' : ''}</summary><ul>${MET_CAMPOS.filter(c => v[c[0]] != null && c[0] !== 'decide').map(c => `<li><b>${esc(c[1])}:</b> ${esc(Array.isArray(v[c[0]]) ? v[c[0]].join(', ') : String(v[c[0]]))}</li>`).join('')}</ul></details>`).join('')}${nao.length ? `<small class="muted">Não acompanham: ${nao.map(([k, v]) => esc(k) + (v.tem_dados ? ' (dados: ' + esc(v.tem_dados) + ')' : '')).join(', ')}</small>` : ''}`; }
+    if (x.tipo === 'meses' && j) return Object.entries(j).map(([k, v]) => `${esc(k)}: <b>${brl(v)}</b>`).join(' · ');
+    if (x.tipo === 'lista' && j) return `<ul>${j.map(o => `<li>${Object.values(o).map(v => esc(String(v))).join(' · ')}</li>`).join('')}</ul>`;
+    if (x.tipo === 'documentos' && j) return Object.entries(j).map(([k, v]) => `${esc((DOC_CATS.find(c => c.k === k) || { l: k }).l)}: <b>${esc((DOC_ST.find(s => s[0] === v) || [0, v])[1])}</b>`).join('<br>');
+    if (x.tipo === 'moeda') return brl(L[0].valor_num);
+    return L.map(i => esc(String(i.valor_texto ?? i.valor_num))).join(', '); };
+  let sec = '';
+  modal(titulo || 'Resposta', `<div class="pq-ver">${perg.map(x => { const h = (x.secao && x.secao !== sec) ? `<h3>${esc(sec = x.secao)}</h3>` : ''; return `${h}<div class="pq-vi"><span class="muted">${esc(x.texto)}</span><div>${fmt(x, porP[x.id])}</div></div>`; }).join('')}</div>`, null, '', true);
+}
+
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;
 const fonteLink = () => location.protocol === 'file:' ? '<div class="panel"><b>Atenção:</b> o arquivo está aberto do seu computador, então o link de resposta não funciona para outras pessoas. Hospede o arquivo (por exemplo no GitHub Pages) antes de enviar.</div>' : '';
 
 async function vPesquisas(m) {
+  S.pqCfg = await temColuna('pesquisa_perguntas', 'config');
   if (S.pqSel) return vPesquisaDet(m);
   const w = S.ws;
   const [ps, env, perg] = await Promise.all([q(sb.from('pesquisas').select('*').eq('workspace_id', w).order('criado_em', { ascending: false })), q(sb.from('pesquisa_envios').select('pesquisa_id,status').eq('workspace_id', w).limit(20000)), q(sb.from('pesquisa_perguntas').select('pesquisa_id').eq('workspace_id', w))]);
   const E = {}; env.forEach(e => { const o = E[e.pesquisa_id] = E[e.pesquisa_id] || { total: 0, respondido: 0, enviado: 0, pendente: 0 }; o.total++; o[e.status] = (o[e.status] || 0) + 1; });
   const NP = {}; perg.forEach(x => NP[x.pesquisa_id] = (NP[x.pesquisa_id] || 0) + 1);
-  m.innerHTML = `<div class="head"><div><h1>Pesquisas</h1><span class="muted">Monte a pesquisa, escolha em que momento ela vai para o lead, o aluno ou o cliente, e traga as respostas para o ciclo de experimentos.</span></div><div class="acts"><button class="btn pri" id="pqNova">Nova pesquisa</button><select id="pqModelo" aria-label="Usar modelo"><option value="">Começar de um modelo…</option>${Object.entries(PQ_MODELOS).map(([k, v]) => `<option value="${k}">${esc(v.nome)}</option>`).join('')}</select></div></div>
+  m.innerHTML = `<div class="head"><div><h1>Pesquisas</h1><span class="muted">Monte a pesquisa, escolha em que momento ela vai para o lead, o aluno ou o cliente, e traga as respostas para o ciclo de experimentos.</span></div><div class="acts"><button class="btn pri" id="pqNova">Nova pesquisa</button><select id="pqModelo" aria-label="Usar modelo"><option value="">Começar de um modelo…</option>${Object.entries(PQ_MODELOS).filter(([k, v]) => !v.objetos || S.pqCfg).map(([k, v]) => `<option value="${k}">${esc(v.nome)}</option>`).join('')}</select></div></div>
   <div class="panel"><span class="muted"><b>O envio automático ainda não está conectado.</b> Quando o gatilho acontece (cadastro, entrada em etapa, virar aluno), o Growths coloca a pessoa na fila com um link único. Hoje você envia pelo botão de WhatsApp da fila ou copia o link; o disparo sozinho por WhatsApp e e-mail depende de integração com um provedor.</span></div>
   <div class="panel"><div class="tw"><table><thead><tr><th>Pesquisa</th><th>Tipo</th><th>Quando vai</th><th class="n">Perguntas</th><th class="n">Na fila</th><th class="n">Respondidas</th><th class="n">Taxa</th><th>Situação</th></tr></thead><tbody>${ps.map(p => { const e = E[p.id] || { total: 0, respondido: 0, enviado: 0, pendente: 0 }; return `<tr class="clk" data-pq="${p.id}"><td><b>${esc(p.nome)}</b></td><td>${PQ_TIPO[p.tipo]}</td><td>${esc(PQ_GAT[p.gatilho])}${p.gatilho === 'etapa' ? ': ' + esc(p.gatilho_etapa) : ''}</td><td class="n">${NP[p.id] || 0}</td><td class="n">${num(e.pendente)}</td><td class="n">${num(e.respondido)}</td><td class="n">${fP(div(e.respondido, e.enviado + e.respondido))}</td><td>${pillAtivo(p.ativa)}</td></tr>`; }).join('') || '<tr><td colspan="8" class="empty">Nenhuma pesquisa ainda. Comece de um modelo ou crie a sua.</td></tr>'}</tbody></table></div></div>`;
   m.querySelectorAll('[data-pq]').forEach(r => r.onclick = () => { S.pqSel = r.dataset.pq; S.pqTab = 'perguntas'; render(); });
@@ -15304,6 +15550,14 @@ async function vPesquisas(m) {
 }
 function criarDeModelo(k) {
   const md = PQ_MODELOS[k];
+  if (md.objetos) return modal('Criar do modelo', `<p>Vai criar <b>${esc(md.nome)}</b> com ${md.objetos.length} perguntas em ${new Set(md.objetos.map(x => x.s)).size} passos, para <b>cliente</b>. Ela nasce desativada: revise, ative e mande pelo link individual de cada cliente (aba Fila de envio). O link vale 30 dias.</p>`, async () => {
+    const pid = crypto.randomUUID(), ids = {}; md.objetos.forEach((x, i) => { ids[x.k || ('_' + i)] = crypto.randomUUID(); });
+    await q(sb.from('pesquisas').insert({ id: pid, workspace_id: S.ws, nome: md.nome, tipo: md.tipo, publico: md.publico, gatilho: md.gatilho, descricao: md.descricao, ativa: false }));
+    await q(sb.from('pesquisa_perguntas').insert(md.objetos.map((x, i) => { const cfg = { ...(x.cfg || {}) }; if (cfg.modelo) cfg.modelo = ids[cfg.modelo];
+      return { id: ids[x.k || ('_' + i)], workspace_id: S.ws, pesquisa_id: pid, ordem: i + 1, texto: x.t, tipo: x.tp, opcoes: x.op || [], papel: 'livre', obrigatoria: x.o !== false, secao: x.s, config: cfg,
+        condicao: x.c ? { pergunta: ids[x.c.k], valores: x.c.v } : null }; })));
+    S.pqSel = pid; S.pqTab = 'perguntas'; toast('Diagnóstico criado, desativado. Revise e ative.');
+  }, 'Criar');
   modal('Criar pesquisa do modelo', `<p>Vai criar <b>${esc(md.nome)}</b> com ${md.perguntas.length} perguntas. Depois você edita tudo.</p>`, async () => {
     const p = one(await q(sb.from('pesquisas').insert({ workspace_id: S.ws, nome: md.nome, tipo: md.tipo, gatilho: md.gatilho, descricao: md.descricao, dispensa_qualificado: !!md.dispensa_qualificado, ativa: false, ...(md.extra || {}) }).select('id').single()));
     await q(sb.from('pesquisa_perguntas').insert(md.perguntas.map((x, i) => ({ workspace_id: S.ws, pesquisa_id: p.id, ordem: i + 1, texto: x[0], tipo: x[1], opcoes: x[2], papel: x[3], obrigatoria: x[4] !== false, ...(x[5] ? { secao: x[5] } : {}), ...(x[6] ? { pontos: x[6] } : {}) }))));
@@ -15320,7 +15574,9 @@ async function modalPesquisa(row, pre) {
   const etA = etA0.filter(e => !e.jornada_id || (JA[e.jornada_id] && JA[e.jornada_id].status !== 'arquivada')).map(e => ({ id: e.id, nome: e.jornada_id ? nomeJor(JA[e.jornada_id], PA).replace(/&amp;/g, '&') + ' · ' + e.nome + (JA[e.jornada_id].status === 'rascunho' ? ' (rascunho)' : '') : (jorA.length ? 'Jornada geral · ' : '') + e.nome }));
   const cgC = cgA && await temColuna('pesquisas', 'checkin_dias');
   const gats = Object.entries(PQ_GAT).filter(([k]) => (cgA || k !== 'etapa_aluno') && (cgC || k !== 'checkin'));
-  const campos = [{ k: 'nome', l: 'Nome da pesquisa', req: 1, full: 1 }, { k: 'tipo', l: 'Tipo', t: 'select', req: 1, def: 'lead', opts: Object.entries(PQ_TIPO) }, { k: 'descricao', l: 'Texto de abertura (a pessoa vê)', t: 'textarea' },
+  const pubOk = await temColuna('pesquisas', 'publico');
+  const campos = [{ k: 'nome', l: 'Nome da pesquisa', req: 1, full: 1 }, { k: 'tipo', l: 'Tipo', t: 'select', req: 1, def: 'lead', opts: Object.entries(PQ_TIPO).filter(([k]) => pubOk || k !== 'diagnostico') },
+    ...(pubOk ? [{ k: 'publico', l: 'Para quem é', t: 'select', req: 1, def: 'lead', opts: [['lead', 'Lead (captação)'], ['cliente', 'Cliente (diagnóstico, onboarding, jornada)']], hint: 'Lead entra pelo link aberto ou pelo cadastro; cliente recebe o link individual, e a resposta cai no cadastro dele.' }] : []), { k: 'descricao', l: 'Texto de abertura (a pessoa vê)', t: 'textarea' },
     { k: 'gatilho', l: 'Quando enviar', t: 'select', req: 1, def: 'manual', opts: gats },
     ...(cgA ? [{ k: 'etapa_aluno_id', l: 'Etapa da jornada do aluno (se o gatilho for etapa do aluno)', t: 'select', opts: sel(etA, 'id', 'nome') },
       { k: 'produto_id', l: 'Só alunos deste produto (opcional)', t: 'select', opts: sel(prodA, 'id', 'nome'), hint: 'Vale para "Quando vira aluno", "Quando o aluno entra numa etapa" e o check-in. Vazio = todos os produtos.' }] : []),
@@ -15332,7 +15588,7 @@ async function modalPesquisa(row, pre) {
     { k: 'mensagem', l: 'Mensagem do convite', t: 'textarea', def: 'Oi {nome}! Pode responder uma pesquisa rápida? Leva 2 minutos: {link}', hint: 'Use {nome} e {link}.' },
     { k: 'aceita_link_aberto', l: 'Aceitar também o link aberto (qualquer pessoa com o link responde, ligando por e-mail)', t: 'check', hint: 'Use na página de obrigado. Sem ele, só quem recebeu o link único responde.' }, { k: 'ativa', l: 'Ativa', t: 'check', def: false }];
   if (pre && !row) campos.forEach(c => { if (c.k && pre[c.k] !== undefined) c.def = pre[c.k]; });
-  const f = abrirForm(row ? 'Editar pesquisa' : 'Nova pesquisa', 'pesquisas', campos, row, { antes: v => { if (v.gatilho === 'etapa' && !v.gatilho_etapa) throw new Error('Escolha a etapa do funil.'); if (v.gatilho !== 'etapa') v.gatilho_etapa = null;
+  const f = abrirForm(row ? 'Editar pesquisa' : 'Nova pesquisa', 'pesquisas', campos, row, { antes: v => { if (pubOk && v.tipo === 'diagnostico') v.publico = 'cliente'; if (v.gatilho === 'etapa' && !v.gatilho_etapa) throw new Error('Escolha a etapa do funil.'); if (v.gatilho !== 'etapa') v.gatilho_etapa = null;
     if (cgA) { if (v.gatilho === 'etapa_aluno' && !v.etapa_aluno_id) throw new Error('Escolha a etapa da jornada do aluno.'); if (v.gatilho !== 'etapa_aluno') v.etapa_aluno_id = null; if (!['entrada_aluno', 'etapa_aluno', 'checkin'].includes(v.gatilho)) v.produto_id = null; }
     if (cgC) { if (v.gatilho === 'checkin') { v.checkin_dias = Number(v.checkin_dias); if (!(v.checkin_dias >= 1 && v.checkin_dias <= 365)) throw new Error('Diga a cada quantos dias vai o check-in (de 1 a 365).'); v.checkin_max = v.checkin_max ? Number(v.checkin_max) : null; } else { v.checkin_dias = null; v.checkin_max = null; } }
     return v; }, ok: 'Pesquisa salva' });
@@ -15351,11 +15607,42 @@ async function vPesquisaDet(m) {
   if (T === 'envios') return pqEnvios(body, p); if (T === 'res') return pqResultados(body, p, perg); if (T === 'ins') return pqInsights(body, p, perg); if (T === 'qual') return pqQualif(body, p, perg); if (T === 'form') return pqForm(body, p, perg); if (T === 'quem') return pqRespondentes(body, p, perg);
   pqPerguntas(body, p, perg);
 }
-function modalPergunta(p, row, n) {
-  const campos = [{ k: 'texto', l: 'Pergunta', req: 1, full: 1 }, { k: 'tipo', l: 'Tipo de resposta', t: 'select', req: 1, def: 'texto', opts: Object.entries(PQ_TP) }, { k: 'opcoes_txt', l: 'Opções (uma por linha, só para escolha)', t: 'textarea', hint: 'Na pergunta de PMF, a primeira opção é a que conta (por exemplo "Muito desapontado").' },
+function modalPergunta(p, row, n, perg = []) {
+  const g1 = !!S.pqCfg, outras = perg.filter(x => !row || x.id !== row.id);
+  const campos = [{ k: 'texto', l: 'Pergunta', req: 1, full: 1 }, { k: 'tipo', l: 'Tipo de resposta', t: 'select', req: 1, def: 'texto', opts: Object.entries(g1 ? { ...PQ_TP, ...PQ_TP_G1 } : PQ_TP) }, { k: 'opcoes_txt', l: 'Opções (uma por linha, só para escolha)', t: 'textarea', hint: 'Na pergunta de PMF, a primeira opção é a que conta (por exemplo "Muito desapontado").' },
     { k: 'papel', l: 'Papel na análise', t: 'select', req: 1, def: 'livre', opts: Object.entries(PQ_PAPEL) }, { k: 'ordem', l: 'Ordem', t: 'number', def: n }, { k: 'obrigatoria', l: 'Obrigatória', t: 'check', def: true }];
   if (S.pqSecao) campos.splice(4, 0, { k: 'secao', l: 'Passo do formulário', hint: 'Perguntas com o mesmo nome de passo aparecem juntas, na ordem. Vazio = passo "Perguntas".' });
-  const f = abrirForm(row ? 'Editar pergunta' : 'Nova pergunta', 'pesquisa_perguntas', campos, row ? { ...row, opcoes_txt: (row.opcoes || []).join('\n') } : null, { extra: { pesquisa_id: p.id }, antes: v => {
+  if (g1) campos.push(
+    { secao: 'Mostrar só se… (pergunta condicional)', sub: 'Vazio = sempre aparece. Escondida, ela não é cobrada.' },
+    { k: 'cond_pergunta', l: 'Mostrar só se a pergunta', t: 'select', opts: outras.filter(x => (x.opcoes || []).length || x.tipo === 'sim_nao').map(x => [x.id, x.ordem + '. ' + x.texto.slice(0, 70)]) },
+    { k: 'cond_valores', l: 'tiver uma destas respostas (uma por linha)', t: 'textarea' },
+    { secao: 'Configuração dos tipos novos', sub: 'Só vale para o tipo indicado em cada campo.' },
+    { k: 'cfg_naosei', l: 'Número ou valor em reais: mostrar "Não sei"', t: 'check' },
+    { k: 'cfg_meses', l: 'Mês a mês: quantos meses (os últimos completos)', t: 'number', step: '1', def: 6 },
+    { k: 'cfg_etapas', l: 'Métricas: etapas do funil pirata (vazio = todas)', hint: 'Separe por vírgula: aquisicao, ativacao, retencao, receita, recomendacao, recompra.' },
+    { k: 'cfg_modelo', l: 'Métricas: filtrar pelo modelo de negócio respondido em', t: 'select', opts: outras.filter(x => x.tipo === 'multipla' || x.tipo === 'escolha').map(x => [x.id, x.ordem + '. ' + x.texto.slice(0, 70)]), hint: 'As opções "Infoproduto ou curso", "Assinatura ou recorrência"… mostram só as métricas que valem para o modelo (MRR só para assinatura).' },
+    { k: 'cfg_min', l: 'Métricas: mínimo de "usamos para decidir"', t: 'number', step: '1' }, { k: 'cfg_max', l: 'Métricas: máximo de "usamos para decidir"', t: 'number', step: '1' },
+    { k: 'cfg_colunas', l: 'Lista: colunas, uma por linha', t: 'textarea', hint: 'Rótulo | tipo (texto, numero, moeda, escolha) | opções separadas por ; (só para escolha)' },
+    { k: 'cfg_categorias', l: 'Documentos: grupos, um por linha (vazio = os 7 grupos padrão)', t: 'textarea', hint: 'Nome do grupo | o que pedir' },
+    { k: 'cfg_aviso', l: 'Documentos: aviso no fim', t: 'textarea' });
+  const cf = (row && row.config) || {}, cdx = (row && row.condicao) || {};
+  const rowG1 = row ? { ...row, opcoes_txt: (row.opcoes || []).join('\n'), cond_pergunta: cdx.pergunta || '', cond_valores: (cdx.valores || []).join('\n'), cfg_naosei: !!cf.naosei, cfg_meses: cf.meses || 6,
+    cfg_etapas: (cf.etapas || []).join(', '), cfg_modelo: cf.modelo || '', cfg_min: cf.min_decide || '', cfg_max: cf.max_decide || '', cfg_aviso: cf.aviso || '',
+    cfg_colunas: (cf.colunas || []).map(c => [c.l, c.t, (c.op || []).join(';')].filter(Boolean).join(' | ')).join('\n'), cfg_categorias: (cf.categorias || []).map(c => c.l + (c.d ? ' | ' + c.d : '')).join('\n') } : null;
+  const f = abrirForm(row ? 'Editar pergunta' : 'Nova pergunta', 'pesquisa_perguntas', campos, row ? (g1 ? rowG1 : { ...row, opcoes_txt: (row.opcoes || []).join('\n') }) : null, { extra: { pesquisa_id: p.id }, largo: g1, antes: v => {
+    if (g1) { const t = v.tipo, num = x => x === '' || x == null ? null : Number(x), cfg = {}, tx = k => String(v[k] || '');
+      if (['numero', 'moeda'].includes(t) && v.cfg_naosei) cfg.naosei = true;
+      if (t === 'meses') cfg.meses = Math.max(1, Math.min(24, num(v.cfg_meses) || 6));
+      if (t === 'metricas') { const et = tx('cfg_etapas').split(',').map(x => x.trim()).filter(Boolean); if (et.some(x => !AARRR.some(a => a[0] === x))) throw new Error('Etapa desconhecida: use aquisicao, ativacao, retencao, receita, recomendacao ou recompra.');
+        if (et.length) cfg.etapas = et; if (v.cfg_modelo) cfg.modelo = v.cfg_modelo; if (num(v.cfg_min)) cfg.min_decide = num(v.cfg_min); if (num(v.cfg_max)) cfg.max_decide = num(v.cfg_max); }
+      if (t === 'lista') { cfg.colunas = tx('cfg_colunas').split(/\r?\n/).map(l => l.trim()).filter(Boolean).map((l, i) => { const [rot, tp, ops] = l.split('|').map(z => (z || '').trim()); const tt = ['texto', 'numero', 'moeda', 'escolha'].includes(tp) ? tp : 'texto';
+          return { k: 'c' + (i + 1), l: rot, t: tt, ...(tt === 'escolha' ? { op: (ops || '').split(';').map(z => z.trim()).filter(Boolean) } : {}) }; });
+        if (!cfg.colunas.length) throw new Error('Informe pelo menos uma coluna da lista.'); }
+      if (t === 'documentos') { const cs = tx('cfg_categorias').split(/\r?\n/).map(l => l.trim()).filter(Boolean); cfg.categorias = cs.length ? cs.map((l, i) => { const [rot, d] = l.split('|').map(z => (z || '').trim()); return { k: 'g' + (i + 1), l: rot, d: d || '' }; }) : DOC_CATS; if (tx('cfg_aviso').trim()) cfg.aviso = tx('cfg_aviso').trim(); }
+      v.config = cfg; const cv = tx('cond_valores').split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+      if (v.cond_pergunta && !cv.length) throw new Error('Diga com que respostas a pergunta aparece (uma por linha).');
+      v.condicao = v.cond_pergunta ? { pergunta: v.cond_pergunta, valores: cv } : null;
+      ['cond_pergunta', 'cond_valores', 'cfg_naosei', 'cfg_meses', 'cfg_etapas', 'cfg_modelo', 'cfg_min', 'cfg_max', 'cfg_colunas', 'cfg_categorias', 'cfg_aviso'].forEach(k => delete v[k]); }
     v.opcoes = (v.opcoes_txt || '').split(/\r?\n/).map(x => x.trim()).filter(Boolean); delete v.opcoes_txt;
     if (['escolha', 'multipla'].includes(v.tipo) && v.opcoes.length < 2) throw new Error('Informe pelo menos 2 opções.');
     if (!['escolha', 'multipla'].includes(v.tipo)) v.opcoes = []; v.ordem = v.ordem == null ? n : v.ordem; return v;
@@ -15364,9 +15651,9 @@ function modalPergunta(p, row, n) {
 }
 function pqPerguntas(el, p, perg) {
   el.innerHTML = `<div class="acts"><button class="btn pri" id="qNova">Nova pergunta</button></div>${p.aceita_link_aberto ? `<div class="panel"><b>Link aberto (para a página de obrigado):</b> <code style="word-break:break-all">${esc(linkPesquisa(p.token_aberto))}</code> <button class="btn sm" id="cpAberto">Copiar</button></div>` : ''}${fonteLink()}
-  <div class="panel"><div class="tw"><table><thead><tr><th class="n">#</th><th>Pergunta</th><th>Tipo</th><th>Papel</th><th></th></tr></thead><tbody>${perg.map(x => `<tr><td class="n">${x.ordem}</td><td><b>${esc(x.texto)}</b>${x.opcoes.length ? `<br><small class="muted">${x.opcoes.map(esc).join(' · ')}</small>` : ''}${x.obrigatoria ? '' : ' <span class="pill neutral">opcional</span>'}</td><td>${PQ_TP[x.tipo]}${x.secao ? '<br><small class="muted">Passo: ' + esc(x.secao) + '</small>' : ''}</td><td>${PQ_PAPEL[x.papel]}</td><td><button class="btn sm" data-q="${x.id}">Editar</button></td></tr>`).join('') || '<tr><td colspan="5" class="empty">Sem perguntas.</td></tr>'}</tbody></table></div></div>`;
-  $('#qNova').onclick = () => modalPergunta(p, null, perg.length + 1);
-  el.querySelectorAll('[data-q]').forEach(b => b.onclick = () => modalPergunta(p, perg.find(x => x.id === b.dataset.q), perg.length + 1));
+  <div class="panel"><div class="tw"><table><thead><tr><th class="n">#</th><th>Pergunta</th><th>Tipo</th><th>Papel</th><th></th></tr></thead><tbody>${perg.map(x => `<tr><td class="n">${x.ordem}</td><td><b>${esc(x.texto)}</b>${x.opcoes.length ? `<br><small class="muted">${x.opcoes.map(esc).join(' · ')}</small>` : ''}${x.obrigatoria ? '' : ' <span class="pill neutral">opcional</span>'}</td><td>${({ ...PQ_TP, ...PQ_TP_G1 })[x.tipo]}${x.secao ? '<br><small class="muted">Passo: ' + esc(x.secao) + '</small>' : ''}</td><td>${PQ_PAPEL[x.papel]}</td><td><button class="btn sm" data-q="${x.id}">Editar</button></td></tr>`).join('') || '<tr><td colspan="5" class="empty">Sem perguntas.</td></tr>'}</tbody></table></div></div>`;
+  $('#qNova').onclick = () => modalPergunta(p, null, perg.length + 1, perg);
+  el.querySelectorAll('[data-q]').forEach(b => b.onclick = () => modalPergunta(p, perg.find(x => x.id === b.dataset.q), perg.length + 1, perg));
   if ($('#cpAberto')) $('#cpAberto').onclick = () => navigator.clipboard.writeText(linkPesquisa(p.token_aberto)).then(() => toast('Link copiado'), () => toast('Não consegui copiar. Selecione e copie o link.', true));
 }
 async function pqEnvios(el, p) {
@@ -15478,7 +15765,7 @@ function pfPassos(d) {
   if (cap && ((cap.aviso_texto || '').trim() || (cap.consentimentos || []).some(c => (c.texto || '').trim()) || (cap.nota_final || '').trim())) P.push({ tipo: 'final', titulo: cap.passo_final || 'Confirmação' });
   return P;
 }
-function pfCampo(x) {
+function pfCampo(x, d = {}) {
   const n = 'q_' + x.id, req = x.obrigatoria ? ' required' : '';
   const op = (tipo, v, l) => `<label class="pf-op"><input type="${tipo}" name="${n}" value="${esc(v)}"${tipo === 'radio' ? req : ''}><span>${esc(l)}</span></label>`;
   let inp;
@@ -15487,8 +15774,9 @@ function pfCampo(x) {
   else if (x.tipo === 'sim_nao') inp = op('radio', 'sim', 'Sim') + op('radio', 'nao', 'Não');
   else if (x.tipo === 'escolha') inp = (x.opcoes || []).map(o => op('radio', o, o)).join('');
   else if (x.tipo === 'multipla') inp = (x.opcoes || []).map(o => op('checkbox', o, o)).join('') + '<small class="pf-dica">Pode marcar mais de uma.</small>';
+  else if (PQ_TP_G1[x.tipo]) inp = pfCampoG1(x, d);
   else inp = `<textarea name="${n}" rows="3" maxlength="2000"${req}></textarea>`;
-  return `<fieldset class="pf-q" data-q="${x.id}" data-tipo="${x.tipo}" data-obr="${x.obrigatoria ? 1 : 0}"><legend>${esc(x.texto)}${x.obrigatoria ? '' : ' <span class="pf-opc">(opcional)</span>'}</legend>${inp}</fieldset>`;
+  return `<fieldset class="pf-q" data-q="${x.id}" data-tipo="${x.tipo}" data-obr="${x.obrigatoria ? 1 : 0}"${x.condicao ? ` data-cond='${esc(JSON.stringify(x.condicao))}' hidden` : ''}><legend>${esc(x.texto)}${x.obrigatoria ? '' : ' <span class="pf-opc">(opcional)</span>'}</legend>${inp}</fieldset>`;
 }
 /* desenha o formulário inteiro em "el". op.previa = não envia (usado no editor). */
 function pfDesenha(el, d, token, op = {}) {
@@ -15504,7 +15792,7 @@ function pfDesenha(el, d, token, op = {}) {
       if (cap && cmp.instagram && cmp.instagram.mostrar) h += campoC('instagram', cmp.instagram.rotulo || 'Instagram', 'text', 'off', '@seuperfil', !!cmp.instagram.obrig);
       if (!cap) h = campoC('email', 'Seu e-mail', 'email', 'email', '', true);
       h += '<div class="pf-hp" aria-hidden="true"><label>Site<input name="site" tabindex="-1" autocomplete="off"></label></div>';
-    } else if (p.tipo === 'perguntas') h = p.perguntas.map(pfCampo).join('');
+    } else if (p.tipo === 'perguntas') h = p.perguntas.map(x => pfCampo(x, d)).join('');
     else {
       if ((cap.aviso_texto || '').trim()) h += `<div class="pf-aviso">${cap.aviso_titulo ? `<b>${esc(cap.aviso_titulo)}</b>` : ''}<p>${esc(cap.aviso_texto)}</p></div>`;
       h += (cap.consentimentos || []).filter(c => (c.texto || '').trim()).map((c, j) => `<label class="pf-ck"><input type="checkbox" name="cons_${j}" data-cons="${j}"${c.obrig ? ' required' : ''}><span>${esc(c.texto)}${c.obrig ? '' : ' <span class="pf-opc">(opcional)</span>'}</span></label>`).join('');
@@ -15520,6 +15808,7 @@ function pfDesenha(el, d, token, op = {}) {
       <div class="pf-acts"><button type="button" class="pf-b pf-b2" data-pf="volta" hidden>Voltar</button><span></span><button type="button" class="pf-b" data-pf="segue"${N > 1 ? '' : ' hidden'}>${esc(v.botao)}</button><button type="submit" class="pf-b" data-pf="envia"${N > 1 ? ' hidden' : ''}>${esc(v.enviar)}</button></div>
       <p class="pf-msg" role="status" aria-live="polite"></p></form></div></div>`;
   const f = el.querySelector('form'), msg = el.querySelector('.pf-msg'); let at = 0;
+  if ((d.perguntas || []).some(x => PQ_TP_G1[x.tipo] || x.condicao)) pfLigaG1(f, d);
   const mostra = () => {
     f.querySelectorAll('[data-passo]').forEach(s => s.hidden = +s.dataset.passo !== at);
     f.querySelector('[data-pf="volta"]').hidden = at === 0; f.querySelector('[data-pf="segue"]').hidden = at === N - 1; f.querySelector('[data-pf="envia"]').hidden = at !== N - 1;
@@ -15529,6 +15818,8 @@ function pfDesenha(el, d, token, op = {}) {
   const valida = () => {
     const s = f.querySelector(`[data-passo="${at}"]`);
     for (const fs of s.querySelectorAll('.pf-q')) {
+      if (fs.hidden) continue;
+      if (PQ_TP_G1[fs.dataset.tipo]) { const er = pfValidaG1(fs, d.perguntas.find(y => y.id === fs.dataset.q)); if (er) { msg.textContent = er + fs.querySelector('legend').firstChild.textContent; return false; } continue; }
       if (fs.dataset.obr !== '1') continue;
       const t = fs.dataset.tipo, ok = t === 'texto' ? fs.querySelector('textarea').value.trim() !== '' : !!fs.querySelector('input:checked');
       if (!ok) { msg.textContent = 'Responda: ' + fs.querySelector('legend').firstChild.textContent; (fs.querySelector('input,textarea')).focus(); return false; }
@@ -15550,7 +15841,9 @@ function pfDesenha(el, d, token, op = {}) {
     if (op.previa) { msg.textContent = 'Pré-visualização: o envio só funciona pelo link.'; return; }
     const resp = {};
     for (const x of d.perguntas) {
-      const n = 'q_' + x.id;
+      const n = 'q_' + x.id, fsx = f.querySelector(`.pf-q[data-q="${x.id}"]`);
+      if (fsx && fsx.hidden) continue;
+      if (PQ_TP_G1[x.tipo]) { const vv = pfLeG1(fsx, x); if (vv != null) resp[x.id] = vv; continue; }
       if (x.tipo === 'multipla') resp[x.id] = [...f.querySelectorAll(`input[name="${n}"]:checked`)].map(i => i.value);
       else if (['nps', 'escala'].includes(x.tipo)) { const c = f.querySelector(`input[name="${n}"]:checked`); resp[x.id] = c ? Number(c.value) : null; }
       else if (['sim_nao', 'escolha'].includes(x.tipo)) { const c = f.querySelector(`input[name="${n}"]:checked`); resp[x.id] = c ? c.value : null; }
@@ -15582,6 +15875,7 @@ async function vPesquisaPublica(token) {
   if (!d) return aviso('Formulário indisponível', 'O link está incorreto ou o formulário foi encerrado.');
   box.style.background = pfVis(d.visual).cor_fundo;
   document.title = pfVis(d.visual).titulo || d.nome;
+  if (d.expirado) return aviso('Link vencido', 'Este link venceu. Peça um novo link a quem enviou.');
   if (d.ja_respondida) return aviso('Obrigado!', 'Você já respondeu esta pesquisa.');
   pfDesenha(box, d, token);
 }
@@ -15749,7 +16043,7 @@ async function pqRespondentes(el, p, perg) {
   const temCont = await temColuna('pesquisa_respostas', 'contato');
   const [resp, itens] = await Promise.all([
     gcTodos(() => sb.from('pesquisa_respostas').select('id,pessoa_id,email,respondida_em' + (temCont ? ',contato,novo_contato' : '')).eq('pesquisa_id', p.id).order('id')),
-    gcTodos(() => sb.from('pesquisa_resposta_itens').select('id,resposta_id,pergunta_id,valor_num,valor_texto').eq('workspace_id', S.ws).in('pergunta_id', perg.length ? perg.map(x => x.id) : ['00000000-0000-0000-0000-000000000000']).order('id'))
+    gcTodos(() => sb.from('pesquisa_resposta_itens').select('id,resposta_id,pergunta_id,valor_num,valor_texto' + (S.pqCfg ? ',valor_json' : '')).eq('workspace_id', S.ws).in('pergunta_id', perg.length ? perg.map(x => x.id) : ['00000000-0000-0000-0000-000000000000']).order('id'))
   ]);
   const ids = [...new Set(resp.map(r => r.pessoa_id).filter(Boolean))], pes = [];
   for (let i = 0; i < ids.length; i += 150) pes.push(...await q(sb.from('pessoas').select('id,nome,email,telefone,qualificacao,pontuacao_qualificacao,tags').in('id', ids.slice(i, i + 150))));
@@ -15779,13 +16073,14 @@ async function pqRespondentes(el, p, perg) {
     <td>${x.res === 'qualificado' ? '<span class="pill good">qualifica</span>' : x.res === 'nao_qualificado' ? '<span class="pill bad">não qualifica</span>' : '<span class="muted">sem corte</span>'}</td>
     <td>${x.pe ? seloQual(x.pe) : '<span class="muted">não entrou no CRM</span>'}</td>
     <td><div class="tg-l">${x.tags.map(tagPill).join('') || '<span class="muted">—</span>'}</div></td>
-    <td>${x.pe ? `<button class="btn sm" data-fp="${x.pe.id}">Abrir lead</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="7" class="empty">Ninguém respondeu ainda.</td></tr>'}</tbody></table></div>
+    <td style="white-space:nowrap"><button class="btn sm" data-vr="${x.r.id}">Ver respostas</button> ${x.pe ? `<button class="btn sm" data-fp="${x.pe.id}">${p.publico === 'cliente' ? 'Abrir cliente' : 'Abrir lead'}</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="7" class="empty">Ninguém respondeu ainda.</td></tr>'}</tbody></table></div>
   ${regra ? '<small class="muted">"Pontos" e "Pela regra" usam a regra de hoje (aba Qualificação e pontos). "No CRM agora" é o que está gravado no lead; se mudou a regra depois que a pessoa respondeu, use "Recalcular quem já respondeu" lá.</small>' : ''}</div>`;
   if ($('#rIrQ')) $('#rIrQ').onclick = e => { e.preventDefault(); S.pqTab = 'qual'; render(); };
   $('#rF').onchange = e => { V.filtro = e.target.value; render(); };
   $('#rO').onchange = e => { V.ord = e.target.value; render(); };
   $('#rT').onchange = e => { V.todas = e.target.checked; render(); };
   el.querySelectorAll('[data-fp]').forEach(b => b.onclick = () => fichaPessoa(b.dataset.fp));
+  el.querySelectorAll('[data-vr]').forEach(b => b.onclick = () => { const x = L.find(y => y.r.id === b.dataset.vr); pqVerResposta(perg, porR[b.dataset.vr], (x && x.nome ? x.nome + ' · ' : '') + p.nome); });
   $('#rCsv').onclick = () => {
     const cel = v => { const s = String(v ?? ''); return /[";\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
     const PQ = perg;

@@ -1,3 +1,20 @@
+## v0.175
+- Migração `20261128100000_diagnostico_g1.sql`:
+  - `pesquisas` com tipo `diagnostico` e `publico`;
+  - `pesquisa_perguntas` com os tipos novos, `condicao` e `config`;
+  - `pesquisa_resposta_itens.valor_json`;
+  - `pesquisa_envios.expira_em` (gatilho de 30 dias no diagnóstico);
+  - `metricas_definicoes` com `etapa_aarrr`, `modelos`, `calcula_sozinho`, `descricao_cliente` e `ordem`, mais 36 métricas;
+  - `pesquisa_condicao_ok`;
+  - `pesquisa_publica` reescrita;
+  - `pesquisa_registrar` e `pesquisa_responder` atualizadas por troca de texto, com erro se o trecho não for encontrado.
+- index.html: 0.174 → 0.175:
+  - `PQ_TP_G1`, `AARRR`, `MET_ST`, `MET_CAMPOS`, `DOC_CATS`, `PQ_DIAG360`, `pfCampoG1`, `pfLigaG1`, `pfValidaG1`, `pfLeG1`, `pqVerResposta`;
+  - `modalPesquisa` com "Para quem é" e `modalPergunta` com configuração e condição;
+  - `criarDeModelo` com `objetos`;
+  - Dicionário de métricas mostra a etapa e o que o Growth's ainda não calcula;
+  - teste `t175_diagnostico_g1.py`.
+
 ## v0.174
 - Migração `20261127100000_oportunidade_contrato.sql`: `contratos.oportunidade_id` (+ validação `contratos_oportunidade_valida`), `oportunidades.origem` com `crm`, gatilhos `contratos_ganha_oportunidade` e `oportunidade_negocio_pessoa` (definidores).
 - index.html: 0.173 → 0.174. `e2Ok`, `negocioOportunidade`; `fecharNegocio`/`ganhouNegocio`/`ofertaContrato` com a oportunidade; botão `[data-opn]` no funil de leads; `vCrmOport` com propostas ligadas (`[data-oc]`, `.op-cts`) e Ganhou abrindo a proposta; `modalContrato` com `pre.oportunidade_id`, `pre.proposta` e CPF/CNPJ (`#ctDoc`). Teste `t174_oportunidade_contrato.py`; `mockdb.js` com `REV` (contrato → itens).

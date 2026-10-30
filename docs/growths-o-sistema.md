@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 30/10/2026, versão 0.174.
+**Última atualização:** 30/10/2026, versão 0.175.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -469,6 +469,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **30/10 (v0.175):** Diagnóstico 360° (G1): formulário do cliente com as métricas do funil pirata e o modelo pronto com as 8 seções.
 - **30/10 (v0.174):** O lead vira oportunidade, e a oportunidade gera o contrato em rascunho (a proposta).
 - **30/10 (v0.173):** CPF/CNPJ no cadastro da pessoa e linha do tempo única do cliente na ficha.
 - **30/10 (v0.172):** Resumo da estratégia (funil por fase) e Criar campanha direto da estratégia.

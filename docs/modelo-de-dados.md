@@ -1,3 +1,23 @@
+## v0.175 — Diagnóstico 360° (G1)
+- `pesquisas.tipo` aceita `diagnostico`; `pesquisas.publico` (`lead` ou `cliente`; os antigos: lead → lead, os outros → cliente).
+- `pesquisa_perguntas.tipo` aceita `numero`, `moeda`, `meses`, `metricas`, `lista` e `documentos`.
+- `pesquisa_perguntas.condicao`: `{pergunta, valores[]}`.
+- `pesquisa_perguntas.config`:
+  - meses;
+  - `etapas`, `modelo` (id da pergunta de modelo de negócio), `min_decide` e `max_decide`;
+  - colunas;
+  - categorias e aviso;
+  - naosei.
+- `pesquisa_resposta_itens.valor_json`:
+  - métricas: `{codigo: {status, decide, objetivo, numerador, denominador, janela, inclui, calculo, como[], fonte, atualiza, detalhe, responsavel, clareza, decisao, reacao, confere, confianca, valor, tem_dados}}`;
+  - meses: `{"AAAA-MM": valor}`;
+  - lista: `[{...}]`;
+  - documentos: `{grupo: sim|parte|nao|depois}`.
+
+  Em métricas, `valor_num` é quantas o cliente tem.
+- `pesquisa_envios.expira_em` (diagnóstico: 30 dias).
+- `metricas_definicoes`: `etapa_aarrr` (aquisicao, ativacao, retencao, receita, recomendacao, recompra), `modelos` text[] (vazio = todos), `calcula_sozinho`, `descricao_cliente`, `ordem`.
+
 ## v0.174
 - `contratos.oportunidade_id` → `oportunidades` (vários contratos por oportunidade; mesma pessoa e workspace, validado por gatilho).
 - `oportunidades.origem` aceita `crm`.

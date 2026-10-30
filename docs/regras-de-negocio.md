@@ -1,3 +1,10 @@
+## v0.175 — Diagnóstico 360° (G1)
+- O formulário de cliente vai pelo link individual (Fila de envio). O link do diagnóstico vale 30 dias; vencido, não abre nem aceita resposta.
+- A pergunta condicional só aparece, e só é cobrada, quando a pergunta indicada tem uma das respostas escolhidas. No banco, a escondida também não é cobrada.
+- As métricas aparecem por etapa do funil pirata e são filtradas pelo modelo de negócio marcado (MRR e ARR só para assinatura e comunidade). Obrigatória = marcar Tenho, Não tenho ou Não sei em cada métrica visível.
+- "Usadas para decidir": de 5 a 8, quando o cliente tem pelo menos 5 métricas.
+- O que o cliente declara fica guardado como declaração. A validação pela equipe é da etapa G3.
+
 ## v0.174 — Oportunidade e contrato
 - O negócio do lead é a oportunidade de venda nova. O status do negócio na pessoa é resumo: ganho se alguma ganhou; perdido se a última aberta foi perdida e não há outra; aberto ao abrir ou reabrir.
 - A proposta é o contrato em rascunho, ligado à oportunidade. Uma oportunidade pode ter vários contratos (implantação e mensalidade).

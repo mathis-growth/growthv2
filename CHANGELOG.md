@@ -2,6 +2,43 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.175 — Diagnóstico 360° (G1): formulário do cliente e catálogo de métricas (30/10/2026)
+- **"Para quem é" o formulário:** Lead (captação) ou Cliente (diagnóstico, onboarding, jornada). Tipo novo **Diagnóstico do cliente**.
+- **Tipos de pergunta novos:**
+  - número;
+  - valor em reais, com "Não sei";
+  - **valores mês a mês** (os últimos N meses completos, com o nome do mês);
+  - **lista** (uma linha por item, com colunas);
+  - **documentos** (Tenho / Tenho em parte / Não tenho / Mando depois, com aviso de senhas e LGPD);
+  - **métricas do funil pirata**: para cada métrica do catálogo, Tenho (regularmente ou de vez em quando), Não tenho ou Não sei. "Tenho" abre o bloco da métrica:
+    - se usam para decidir;
+    - **objetivo**;
+    - numerador, denominador, janela, quem entra e quem sai, e como calcula;
+    - como acompanham (planilha, automação…) e fonte;
+    - atualização e nível de detalhe;
+    - responsável e se isso está claro;
+    - decisão que tomam com ela;
+    - tempo para o número mudar;
+    - se alguém confere, a confiança e o valor atual.
+
+    "Não tenho" passa reto e só pergunta se há dados para calcular. A lista vem **filtrada pelo modelo de negócio** (MRR e ARR só para assinatura) e conta as 5 a 8 "usadas para decidir".
+- **Pergunta condicional:** mostra (e só então cobra) uma pergunta conforme a resposta de outra.
+- **Modelo pronto "Diagnóstico 360° de Growth, Dados e Maturidade":** 75 perguntas nas 8 seções do plano (`docs/diagnostico-360-plano.md`, seção B):
+  - Perfil (com o que espera, o que precisa acontecer para ver resultado e o faturamento dos últimos 6 meses);
+  - Produtos e ofertas;
+  - Jornada do cliente (canais, CAC mídia, CAC médio, primeiro valor e TTV, onboarding, churn, receita de novos e de existentes, recompra, indicação);
+  - Métricas do negócio (o bloco do funil pirata, a North Star, os guardrails e as métricas fora da lista);
+  - Infraestrutura de dados;
+  - Gestão e decisões;
+  - Prioridades;
+  - Documentação (os 7 grupos de arquivos).
+- **Link individual com validade:** o diagnóstico vale 30 dias; vencido, não abre nem aceita resposta.
+- **Catálogo de métricas:**
+  - as 22 métricas do Growth's que fazem parte do funil ganham a etapa do funil pirata e um texto simples para o cliente;
+  - entram 36 métricas que faltavam (LTV, LTV/CAC, ativação, TTV, retenção por coorte, consumo, recompra, indicação, NRR…), marcadas "o Growth's ainda não calcula" no Dicionário de métricas.
+- **Para a equipe:** "Ver respostas" em Quem respondeu mostra a resposta inteira, com as métricas e os valores formatados.
+- Banco: `20261128100000_diagnostico_g1.sql` (**ainda não aplicado em produção**). Testes: banco `tests/banco/diagnostico_g1_cenarios.sql` (OK); tela `tests/tela/t175_diagnostico_g1.py` (66 verificações, 0 falhas).
+
 ## v0.174 — E2: o lead vira oportunidade e a oportunidade gera o contrato (30/10/2026)
 - **Funil de leads:** cada cartão tem "💼 Abrir oportunidade", que cria a oportunidade de venda nova já com o lead e o comercial responsável. Se o lead já tem uma, o botão mostra o valor e abre a oportunidade.
 - **A proposta é o contrato em rascunho:**
