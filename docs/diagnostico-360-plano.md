@@ -22,13 +22,269 @@
 
   Estruturas novas só onde não há nada: diagnóstico validado, arquivos e checagem por métrica.
 
+**Regra deste plano:** nada do que a Rebecka pediu é cortado ou resumido para caber. O que ela disse entra como disse. A especificação "Diagnóstico 360°" e o documento "Diagnóstico de Métricas da Sua Empresa" são o guia para o que ela não detalhou.
+
+## A. Tudo o que a Rebecka pediu e onde está no plano
+
+| # | Pedido (com as palavras dela) | Onde está |
+|---|---|---|
+| 1 | Opção no formulário: "se é um tipo para lead ou se é para cliente" | B.0 e D1 |
+| 2 | O diagnóstico do cliente é "um primeiro passo": o primeiro do onboarding, não captação | Princípios e seção 2 |
+| 3 | "Montar toda a árvore de métrica para entender o que realmente esse cliente tem hoje" | B.4 (todas as métricas do negócio) e mapa causal (seção 6, 3b). Não cria nada sozinho no sistema do cliente: o mapa vai para o relatório |
+| 4 | "O que ele espera" | B.1, pergunta 1.10 |
+| 5 | "O que tem que acontecer para ele entender que está trazendo resultado para ele" | B.1, pergunta 1.11 |
+| 6 | "Levantar todas as métricas de um negócio", com um botão para ele identificar as que acompanha | B.4 e o catálogo C |
+| 7 | "Separado por etapa do funil pirata" | C (Aquisição, Ativação, Retenção, Receita, Recomendação, mais Recompra e ascensão) |
+| 8 | "Ele vai ticar: tenho, não tenho" | B.4, campo M1 (Tenho, em dois níveis: regularmente ou de vez em quando; Não tenho; Não sei) |
+| 9 | Se tem: "espaço para descrever **qual o objetivo** dessa métrica hoje" | B.4, campo M3 |
+| 10 | Se tem: "**como é que ele acompanha**: planilha, alguma automação…" | B.4, campo M8 (marcar: planilha, sistema, automação, painel, plataforma de venda, CRM, manual, outro) |
+| 11 | Se tem: "**como é calculada**" | B.4, campos M4 a M7 (numerador, denominador, janela, quem entra e quem sai) + M7a (fórmula em texto livre) |
+| 12 | Se tem: "**se tem algum responsável** por ela" | B.4, campos M11 e M12 |
+| 13 | "Se ele não tem, vai passar reto" | B.4: com "Não tenho", o bloco fecha (só pergunta, sem obrigar: "tem os dados para calcular?") |
+| 14 | No final, "um lugar para ele subir os arquivos" | B.8 e E (Central de Documentos) |
+| 15 | Pedir os arquivos de **vendas, CRM, cadastro de lead, os alunos, as últimas vendas, os últimos 6 meses** | E, categorias E1 a E7, cada uma pedindo os últimos 6 meses |
+| 16 | Responder "**qual o faturamento dos últimos 6 meses**" | B.1, pergunta 1.6 (mês a mês, com o nome do mês já escrito) |
+| 17 | "**O CAC mídia, o CAC médio**" | B.3, perguntas 3.4 e 3.5 |
+| 18 | "**Quais canais ele usa**" | B.3, pergunta 3.1 (marcar) |
+| 19 | "O que a gente puder facilitar para ser só check"; pergunta aberta só quando precisa | Todo o banco B: marcar sempre que dá; texto só onde é opinião ou definição |
+| 20 | Gerar **dois relatórios**: "um para mim e outro para o cliente" | F |
+| 21 | Plano de **30, 60 e 90 dias** (aula da Ana), com tudo rodando, "inclusive acompanhando a parte dos alunos" | G (pendente: confirmar com a aula da Ana) |
+| 22 | "No final eu quero que ele dê um local pro cliente fazer o upload desses arquivos" | E (no fim do formulário, pelo mesmo link) |
+| 23 | O módulo "tem que responder 100%" do documento "Diagnóstico de Métricas da Sua Empresa" | Seção 6 (item por item) |
+| 24 | "Não minimize; tem mais perguntas além do documento" | Este plano: o banco B tem as perguntas do documento **e** as das 8 seções |
+
+## B. Banco de perguntas do formulário do cliente ("Diagnóstico 360°")
+
+**Legenda:**
+- [marcar] = escolha ou múltipla escolha;
+- [número], [R$], [mês a mês];
+- [texto] = resposta aberta;
+- (se…) = pergunta condicional.
+
+Tudo pode ser editado no construtor de pesquisas. Este é o modelo pronto.
+
+### B.0 Configuração do formulário (para a equipe)
+- **Para quem é:** Lead (captação) ou Cliente (diagnóstico / onboarding).
+- **Tipo:** diagnóstico.
+- **Produto ligado** (opcional): o produto que leva a este diagnóstico.
+- **Envio:** link individual por cliente, com validade (padrão de 30 dias, a confirmar) e o mesmo link para a Central de Documentos.
+
+### B.1 Seção 1: Perfil do negócio
+1.1 Nome da empresa e CPF/CNPJ [já vêm do cadastro; o cliente só confirma ou corrige; não sobrescreve sem confirmação].
+1.2 Segmento [marcar: educação/infoproduto, consultoria, serviços, saúde, beleza, varejo/e-commerce, SaaS/tecnologia, outro + texto].
+1.3 **Modelo de negócio** [marcar vários: infoproduto/curso, mentoria, consultoria ou serviço, assinatura/recorrência, comunidade, e-commerce, high ticket, outro]. É a pergunta que **define a triagem de métricas** da seção 4.
+1.4 Há quanto tempo vende [marcar: menos de 1 ano, 1 a 2, 3 a 5, mais de 5].
+1.5 Faturamento médio mensal [marcar faixas].
+1.6 **Faturamento dos últimos 6 meses** [mês a mês, com o nome do mês escrito; "não sei" por mês].
+1.7 Tamanho da equipe [marcar faixas] e quem cuida de cada área [para cada área (marketing, comercial, CS/sucesso do aluno, produto, financeiro, dados): própria, terceirizada, ninguém].
+1.8 **Objetivos** do negócio para os próximos 12 meses [marcar: aumentar faturamento, aumentar margem, reduzir CAC, aumentar recorrência, lançar produto, escalar time, organizar dados, outro + texto].
+1.9 **Principais desafios** hoje [marcar: gerar leads, converter, reter, entender os números, equipe, caixa, outro + texto].
+1.10 **O que você espera deste trabalho?** [texto].
+1.11 **O que precisa acontecer para você perceber que este trabalho está trazendo resultado?** [texto].
+1.12 Em quanto tempo espera ver esse resultado [marcar: 30, 60, 90 dias, 6 meses, mais].
+
+### B.2 Seção 2: Produtos e ofertas
+2.1 **Produtos e ofertas** [lista que se repete, uma linha por produto]: nome; tipo [marcar]; preço ou ticket [R$]; recorrente? [sim/não → periodicidade]; margem aproximada [%, ou "não sei"]; participação nas vendas [%, ou "não sei"]; posição na esteira [marcar: entrada, principal, high ticket, recorrente, upsell].
+2.2 Ticket médio geral [R$].
+2.3 Onde vende [marcar: Hotmart, Kiwify, Eduzz, outra plataforma, venda direta/contrato, loja própria].
+2.4 Formas de pagamento [marcar: Pix, cartão, boleto, parcelado, recorrência no cartão].
+2.5 Tem **esteira de produtos** definida? [sim, em construção, não] (se sim) qual é o caminho do cliente na esteira [texto].
+
+### B.3 Seção 3: Jornada do cliente (funil pirata, como acontece hoje)
+3.1 **Canais que usa** [marcar vários: Meta Ads, Google Ads, YouTube Ads, TikTok Ads, Instagram orgânico, YouTube orgânico, TikTok orgânico, LinkedIn, e-mail, WhatsApp, grupos, indicação, afiliados, eventos, prospecção ativa/SDR, parcerias, SEO/blog, outro].
+3.2 Canal que mais traz clientes [marcar um dos que marcou].
+3.3 Investimento médio mensal em mídia [R$].
+3.4 **CAC mídia** (custo de mídia por cliente) [R$, ou "não sei"].
+3.5 **CAC médio** (custo total de aquisição por cliente: mídia, equipe, ferramentas) [R$, ou "não sei"].
+3.6 Como vende [marcar vários: lançamento, perpétuo, webinário, desafio, comercial/SDR, direct, evento, outro].
+3.7 (Ativação) Existe **primeiro valor** definido depois da compra? [sim, mais ou menos, não] (se sim) qual é [texto]; qual **evento** mostra que o cliente chegou nele [texto]; em quanto tempo o cliente chega lá [número de dias, ou "não sei"]; que parte **não chega** no tempo esperado [%, ou "não sei"].
+3.8 (Ativação) Tem **onboarding** depois da compra? [sim, em parte, não] (se sim) como [marcar: boas-vindas, reunião, aula, grupo, sequência de e-mails/WhatsApp, área de membros].
+3.9 (Retenção) Acompanha **consumo ou progresso** dos alunos ou clientes? [sim, em parte, não] (se sim) como [texto].
+3.10 (Retenção) Mede **churn ou cancelamento**? [sim, não, não se aplica] (se sim) quanto, por mês [%].
+3.11 (Receita da base) **Separa a receita de clientes novos da receita de clientes que já compraram?** [sim, não].
+3.12 (Receita da base) Acompanha **retenção, churn e expansão** (renovação, upsell) juntas? [sim, em parte, não].
+3.13 (Recompra) Tem **recompra ou ascensão** na esteira? [sim, não] (se sim) que parte dos clientes compra de novo [%, ou "não sei"].
+3.14 (Recomendação) Tem **programa de indicação**? [sim, informal, não] (se sim) quantos clientes vêm por indicação [%, ou "não sei"].
+
+### B.4 Seção 4: Maturidade das métricas (todas as métricas do negócio)
+Na tela, uma lista **por etapa do funil pirata**, já filtrada pelo modelo de negócio (1.3), com um botão em cada métrica. Para cada métrica do catálogo C:
+
+- **M1. Acompanha esta métrica?** [marcar: Tenho, calculamos regularmente · Tenho, calculamos de vez em quando · Não tenho · Não sei informar].
+- (Se **Não tenho**) o bloco fecha ("passa reto"). Só aparece, sem obrigar: **M1a. Tem os dados para calcular?** [sim, em parte, não, não sei].
+- (Se **Tenho**) abre:
+  - **M2. Usamos para tomar decisões** [sim/não]. O formulário pede que marque de 5 a 8 (as "mais usadas para decidir" do documento).
+  - **M3. Qual é o objetivo desta métrica hoje?** [texto].
+  - **M4. Numerador:** o que entra em cima da conta [texto].
+  - **M5. Denominador:** pelo que divide [texto, ou "não tem"].
+  - **M6. Janela de tempo** [marcar: dia, semana, mês, trimestre, campanha, desde sempre, outro].
+  - **M7. Quem entra e quem sai da conta** (por exemplo, exclui reembolsos?) [texto].
+  - **M7a. Como é calculada, do seu jeito** [texto], se preferir explicar de uma vez.
+  - **M8. Como acompanha** [marcar vários: planilha, sistema/CRM, plataforma de venda, automação, painel/dashboard, relatório da ferramenta de anúncio, manual, outro + qual].
+  - **M9. De onde vêm os dados (fonte)** [texto, por exemplo: Hotmart, Meta Ads, planilha do comercial].
+  - **M10. De quanto em quanto tempo atualiza** [marcar: tempo real, diária, semanal, mensal, quando alguém lembra].
+  - **M10a. Nível de detalhe (granularidade)** [marcar: total, por canal, por campanha, por produto, por cliente].
+  - **M11. Quem é o responsável** [texto].
+  - **M12. Isso está claro na empresa?** [sim, em parte, não].
+  - **M13. Que decisão vocês tomam olhando este número?** [texto].
+  - **M14. Depois que vocês agem, quanto tempo leva para este número mudar?** [marcar: horas, dias, semanas, meses]. Ajuda na lente antecedente ou consequente.
+  - **M15. Alguém confere se o número está certo?** [sim, às vezes, não] e **quanto confia nele** [escala de 1 a 5].
+  - **M16. Valor atual** [número, opcional], para a tabela final "com números".
+
+Ainda nesta seção:
+- 4.1 **Tem uma North Star (métrica principal)?** [sim, não, não sei] (se sim) qual [texto] e por que ela [texto].
+- 4.2 **Quando um número melhora, vocês olham se outro piorou?** (guardrails) [sempre, às vezes, nunca] (se sempre ou às vezes) quais pares [texto, por exemplo: "CPL caiu, mas a qualidade do lead caiu?"].
+- 4.3 Métricas que vocês usam e **não estão na lista** [lista: nome + o mesmo bloco M2 a M16].
+
+### B.5 Seção 5: Infraestrutura de dados
+5.1 **Ferramentas** [marcar vários: Excel/Google Sheets, CRM (qual), plataforma de venda (qual), ERP/financeiro (qual), e-mail marketing (qual), WhatsApp/automação (qual), área de membros (qual), BI/dashboard (qual), Google Analytics 4, Pixel/API de Conversões, outro].
+5.2 **Integrações** que já funcionam entre elas [texto, ou marcar pares comuns].
+5.3 **UTMs padronizadas** nos links? [sim, às vezes, não, não sei o que é].
+5.4 **Atribuição:** como sabe de onde veio cada venda [marcar: UTM, pergunta no checkout, pergunta do comercial, relatório da plataforma, não sabemos].
+5.5 Os dados **batem entre as ferramentas** (por exemplo, vendas da plataforma × financeiro)? [sim, quase, não, nunca conferimos].
+5.6 **Cadastros duplicados** de clientes ou leads? [não, alguns, muitos, não sei].
+5.7 **Quem cuida dos dados** [marcar: ninguém, eu, alguém da equipe, terceirizado].
+5.8 **Confiança geral nos números** [escala de 1 a 5].
+
+### B.6 Seção 6: Gestão e decisões
+6.1 **Rotina de análise** [marcar: diária, semanal, quinzenal, mensal, não tem].
+6.2 Tem **reunião de resultados**? [sim, não] (se sim) quem participa [marcar áreas].
+6.3 Tem **metas definidas**? [por área, só faturamento, não] e quem define [texto].
+6.4 **Uma decisão importante recente tomada com dados** [texto].
+6.5 **Uma decisão importante tomada sem dados**, e por quê [texto].
+6.6 O que **mais atrapalha** decidir com dados hoje [marcar: não confio nos números, demora para juntar, não sei o que olhar, ninguém cuida, outro].
+
+### B.7 Seção 7: Prioridades de crescimento
+7.1 **Gargalos** [marcar por etapa do funil pirata + texto].
+7.2 **Hipóteses**: o que você acha que resolveria [texto].
+7.3 **Oportunidades** que vê e ainda não explorou [texto].
+7.4 **Objetivos para os próximos 90 dias** [marcar + texto].
+7.5 **Restrições** [marcar: orçamento, equipe, tempo, tecnologia, outro].
+
+### B.8 Seção 8: Documentação (fim do formulário)
+8.1 Para cada categoria da Central de Documentos (E): **tem** [sim, em parte, não, mando depois].
+8.2 Botão **"Ir para a Central de Documentos"**, no mesmo link, sem outro login. Ali ele envia agora ou volta depois.
+8.3 Aviso: **não envie senhas nem acessos** em planilhas ou documentos. Os dados pessoais são tratados conforme a LGPD.
+
+## C. Catálogo de métricas por etapa do funil pirata (lista inicial para editar)
+
+Cada métrica tem: etapa, modelos de negócio em que se aplica, fórmula de referência do Growth's, se o Growth's **já calcula sozinho** e a explicação simples para o cliente. As que já existem no catálogo (`metricas_definicoes`) estão marcadas com ✓.
+
+- **Aquisição:** investimento em mídia ✓, impressões e alcance, CTR ✓, CPC, leads ✓, leads por canal, CPL ✓, custo por lead qualificado, conversão da página de captura, CAC mídia, CAC médio/total ✓ (CAC), ROAS ✓, ROI ✓, crescimento orgânico (seguidores e alcance), recuperação de checkout ✓.
+- **Ativação:** taxa de qualificação (lead → qualificado), comparecimento (aula, reunião, webinário), lead → cliente ✓, tempo até a compra, primeiro acesso, onboarding concluído, **primeiro valor / ativação**, **Time to Value (TTV)**.
+- **Retenção:** churn ✓, retenção por coorte, consumo e progresso, conclusão, frequência de uso, NPS ✓ (NPS dos alunos), resposta dos check-ins ✓, marco atingido e marco no prazo ✓, alunos em risco, intervenções que resolveram ✓.
+- **Receita:** faturamento/receita ✓, ticket médio ✓, conversão de vendas, aceite da oferta ✓, receita de novos × de clientes existentes, MRR ✓ (só assinatura), ARR (só assinatura), LTV, LTV/CAC, payback do CAC, margem ✓, lucro ✓, reembolso e chargeback, expansão (upsell), NRR (sinalizar para a etapa seguinte).
+- **Recomendação:** indicações, taxa de indicação, receita vinda de indicação, depoimentos e avaliações, promotores (NPS).
+- **Recompra e ascensão:** taxa de recompra, ascensão na esteira, tempo até a segunda compra.
+
+## D. O que a equipe preenche no diagnóstico técnico
+
+**Por métrica:**
+- o que foi declarado (vem do formulário);
+- o que o Growth's suporta (vem do catálogo);
+- o **estado**: validado, precisa de validação, parcialmente disponível, não disponível ou não aplicável;
+- tem dados para calcular?;
+- evidência (o arquivo que confirma);
+- as **5 lentes** do documento (seção 6);
+- observação e recomendação;
+- a tarefa no projeto de implantação.
+
+**Pelo diagnóstico inteiro:**
+- avaliação da North Star e a candidata;
+- **mapa causal** (ligações entre as métricas);
+- guardrails ausentes e o risco;
+- ativação e TTV;
+- retenção e expansão;
+- as 4 recomendações;
+- a tabela final (North Star, resultado e KPIs, entrada, guardrails, com números);
+- problemas de qualidade dos dados (5.5, 5.6 e o que os arquivos mostrarem);
+- integrações necessárias;
+- prioridades.
+
+## E. Central de Documentos
+
+Pelo mesmo link do formulário, com validade, sem login e sem pedir senhas. Cada categoria aceita **vários arquivos**, **mandar depois** e **"não tenho"**. Cada arquivo fica ligado ao **cliente** e ao **diagnóstico**, com categoria, período, data de envio e situação da validação (recebido, conferido, com problema).
+
+| # | Categoria | O que pedir (preferencialmente os **últimos 6 meses completos**) |
+|---|---|---|
+| E1 | **Vendas e pedidos** (inclui "as últimas vendas") | Data, produto, valor, desconto, forma de pagamento, reembolsos e cancelamentos, identificação do cliente (e-mail ou CPF), plataforma, origem/UTM quando houver |
+| E2 | **CRM e leads** (inclui "cadastro de lead") | Leads com data de entrada, origem e canal, etapa do funil, responsável, resultado (ganho ou perdido) |
+| E3 | **Alunos e clientes** | Cadastro de alunos ou clientes, produto, data de entrada, acesso e ativação, consumo e progresso, conclusão, cancelamento, recompra |
+| E4 | **Marketing e aquisição** | Campanhas por canal: investimento, impressões, cliques, leads, conversões, por mês |
+| E5 | **Financeiro** | Receitas, custos, despesas, taxas das plataformas, margens, quando houver |
+| E6 | **Produtos e ofertas** | Catálogo, preços, ofertas, recorrências, esteira |
+| E7 | **Arquivos complementares** | Painéis, planilhas de acompanhamento, relatórios, documentação de processos |
+
+**Regras:**
+- **Tipos aceitos:** planilha (xlsx, xls, csv), PDF, imagem, documento. **Tamanho máximo** por arquivo, a definir; proposta: 25 MB.
+- O armazenamento é **privado**. Só a equipe logada daquele cliente baixa.
+- Fica registrado **quem enviou e quando**.
+- Aviso de LGPD na tela.
+
+## F. Os dois relatórios
+
+**Relatório do cliente (executivo, em PDF), "para o cliente":**
+- o que ele espera e o critério de sucesso dele (1.10 a 1.12);
+- **visão de maturidade** por etapa do funil pirata;
+- os números que ele informou (faturamento mês a mês, CAC mídia, CAC médio, ticket, canais);
+- as principais lacunas, os riscos e as oportunidades;
+- o **plano de 30, 60 e 90 dias**.
+
+Cada ponto diz se é **declarado**, **verificado** ou **recomendação**. Sai como **pré-diagnóstico** (só respostas) e depois como **validado**.
+
+**Relatório técnico (para você e a equipe), em PDF:**
+- **segue as 4 seções do documento "Diagnóstico de Métricas da Sua Empresa"** (Mapeamento, Análise crítica, Arquitetura, Recomendações), com o mapa causal desenhado, a tabela final com números e o contador de palavras;
+- depois, o resto do 360°:
+  - o de-para por métrica (declarado × Growth's × estado);
+  - as fórmulas declaradas comparadas com as do Growth's;
+  - fontes e responsáveis;
+  - problemas de qualidade dos dados;
+  - integrações necessárias;
+  - prioridades;
+  - arquivos recebidos e pendentes;
+  - a **lista de implantação**.
+
+## G. Roteiro de implantação de 90 dias (o primeiro projeto do cliente)
+
+O objetivo dos primeiros 90 dias não é aumentar o faturamento de imediato. É **colocar o sistema de crescimento funcionando**: dados confiáveis, workflows implantados, rotina de acompanhamento e a jornada dos alunos acompanhada. O roteiro é a base e muda conforme a maturidade e as lacunas; os prazos podem ser **acelerados ou adaptados**. Cada atividade tem **responsável, prazo, dependências, status e critério de aceite**.
+
+- **Dias 1–30, entender e estruturar:**
+  - diagnóstico validado e auditoria dos dados recebidos;
+  - definição da North Star, da árvore de métricas e dos responsáveis;
+  - prioridades e arquitetura de implantação.
+
+  **Entrega:** diagnóstico validado, plano de ação priorizado e arquitetura aprovada.
+- **Dias 31–60, conectar e implementar:**
+  - integrações (por exemplo, Hotmart) e configuração das métricas;
+  - dashboards, workflows e rastreamento (UTMs, pixel);
+  - campanhas e etapas da jornada do cliente, com os pontos de coleta e as automações prioritárias.
+
+  **Entrega:** fluxos prioritários implantados e dados começando a circular.
+- **Dias 61–90, validar e operar:**
+  - validação dos indicadores e testes dos workflows;
+  - monitoramento da jornada dos alunos;
+  - treinamento da equipe;
+  - rotina de análise e de experimentos.
+
+  **Entrega:** operação prioritária funcionando, com responsáveis, indicadores e acompanhamento contínuo.
+- **Jornada do aluno (Customer Growth), sempre dentro dos 90 dias:**
+  - entrada e onboarding depois da compra;
+  - primeiro acesso e ativação;
+  - consumo e progresso;
+  - check-ins e identificação de alunos em risco;
+  - conclusão e resultados alcançados;
+  - renovação, recompra e ascensão na esteira.
+
+  Tudo usa o que já existe no Customer Growth (jornada do produto, marcos, check-ins, alertas, intervenções, oportunidades).
+- **Tarefas que nascem das lacunas:** cada métrica "precisa de validação" ou "não disponível" que importa para o cliente vira uma tarefa, por exemplo "Validar o cálculo do CAC" ou "Começar a medir a ativação".
+- **Pendente:** confirmar as fases e os critérios com a **aula da Ana**.
+
 ## 1. O que já existe e onde cada parte entra
 
 | Parte da especificação | O que já existe | O que falta |
 |---|---|---|
 | Formulário em 8 seções, perguntas condicionais | `pesquisas` + `pesquisa_perguntas` (com `secao`, `obrigatoria`, `pontos`). Tipos de pergunta: nps, escala, escolha, múltipla, sim/não, texto | "Para quem" (lead ou cliente); tipos de pergunta novos (número, valor em reais, valores por mês, **métrica**, **arquivos**); **condição** para mostrar a pergunta; tipo `diagnostico` |
 | Link individual e seguro | `pesquisa_envios` (um código por pessoa, status, respondido em) | **Validade** do link (`expira_em`); o mesmo link abre a Central de Documentos |
-| Avaliação de cada métrica (acompanha?, como calcula, responsável, uso nas decisões, fonte, periodicidade, granularidade, validação, confiabilidade) | — | Pergunta do tipo `metrica`: uma pergunta mostra o bloco inteiro para cada métrica do catálogo; o detalhe vai num campo `valor_json` da resposta |
+| Avaliação de cada métrica: os campos M1 a M16 de B.4 (tenho ou não tenho, **objetivo**, como calcula, como acompanha, fonte, atualização, granularidade, responsável e clareza, decisão, tempo de reação, conferência e confiança, valor atual) | — | Pergunta do tipo `metrica`: uma pergunta mostra o bloco inteiro para cada métrica do catálogo; o detalhe vai num campo `valor_json` da resposta |
 | Catálogo de métricas do Growth's | `metricas_definicoes` (30 métricas, com fórmula, fonte e unidade, globais): CAC, CPL, CTR, leads, investimento, ROAS, ROI, lead → cliente, ticket médio, receita, margem, lucro, MRR, churn, NPS dos alunos, marcos e check-ins (Customer Growth), recuperação de checkout… | **Etapa do funil pirata** (AARRR), **modelos de negócio** em que se aplica (assinatura, infoproduto, serviço, mentoria, e-commerce), se o Growth's **já calcula sozinho** ou não. Métricas que faltam: LTV, LTV/CAC, ativação, primeiro acesso, consumo e progresso, conclusão, recompra, indicação, payback, taxa de comparecimento, ARR, entre outras |
 | Triagem pelo modelo de negócio | O perfil do negócio é uma seção do formulário | A seção 1 define o modelo, e a seção 4 mostra só as métricas que se aplicam (MRR e ARR só para assinatura) |
 | De-para em 3 dimensões e 5 estados | — | **Nova tabela** `diagnosticos` (um por cliente e resposta: pré-diagnóstico → validado) + **nova tabela** `diagnostico_metricas` (por métrica: o que foi declarado, o que o Growth's suporta, estado entre validado / precisa de validação / parcialmente disponível / não disponível / não aplicável, se tem dados para calcular, evidência, observação, recomendação) |
