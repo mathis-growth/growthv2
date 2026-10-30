@@ -37,7 +37,7 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
   - as 22 métricas do Growth's que fazem parte do funil ganham a etapa do funil pirata e um texto simples para o cliente;
   - entram 36 métricas que faltavam (LTV, LTV/CAC, ativação, TTV, retenção por coorte, consumo, recompra, indicação, NRR…), marcadas "o Growth's ainda não calcula" no Dicionário de métricas.
 - **Para a equipe:** "Ver respostas" em Quem respondeu mostra a resposta inteira, com as métricas e os valores formatados.
-- Banco: `20261128100000_diagnostico_g1.sql` (**ainda não aplicado em produção**). Testes: banco `tests/banco/diagnostico_g1_cenarios.sql` (OK); tela `tests/tela/t175_diagnostico_g1.py` (66 verificações, 0 falhas).
+- Banco: `20261128100000_diagnostico_g1.sql` (aplicado em produção em 30/10/2026 como `v0175_diagnostico_g1`). Testes: banco `tests/banco/diagnostico_g1_cenarios.sql` (OK); tela `tests/tela/t175_diagnostico_g1.py` (66 verificações, 0 falhas).
 
 ## v0.174 — E2: o lead vira oportunidade e a oportunidade gera o contrato (30/10/2026)
 - **Funil de leads:** cada cartão tem "💼 Abrir oportunidade", que cria a oportunidade de venda nova já com o lead e o comercial responsável. Se o lead já tem uma, o botão mostra o valor e abre a oportunidade.
