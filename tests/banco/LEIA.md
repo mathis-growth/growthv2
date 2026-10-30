@@ -47,3 +47,28 @@ Mesmo jeito da v0.163: `node pglite_run.mjs <pasta do repositório> canvas_s1_s3
 
 ## v0.176 — Diagnóstico 360° G1 (PGlite)
 `node pglite_run.mjs <pasta do repositório> diagnostico_g1_cenarios.sql`. Termina com "diagnostico_g1: tudo OK" (catálogo por etapa, link de 30 dias, público com condição, configuração e catálogo, condicional escondida não cobrada, condicional visível cobrada, métrica inválida recusada, resposta grande, link vencido). Conferido em 30/10/2026.
+
+## v0.177 — Diagnóstico 360° G1b, G2 e G3 (PGlite)
+- `node pglite_run.mjs <pasta do repositório> diagnostico_g1b_cenarios.sql`: termina com "diagnostico_g1b: tudo OK". Testa a natureza das métricas e o rascunho (salvar, voltar, formato, tamanho, depois de responder, link vencido, fora do diagnóstico).
+- `diagnostico_g2_cenarios.sql`: termina com "diagnostico_g2: tudo OK". Testa:
+  - autorizar, confirmar e listar;
+  - nome limpo;
+  - recusa de tipo, tamanho, grupo e link falso;
+  - limite de 40 e limpeza dos pendentes antigos;
+  - remover só do próprio link;
+  - depois de responder e vencido;
+  - só no diagnóstico;
+  - permissões de anon e authenticated.
+
+  O Storage não existe no PGlite: o envio de verdade é conferido no Supabase.
+- `diagnostico_g3_cenarios.sql`: termina com "diagnostico_g3: tudo OK". Testa:
+  - dados vindos da resposta;
+  - um diagnóstico por resposta;
+  - empresa coerente;
+  - validar e voltar a rascunho;
+  - upsert da métrica;
+  - leitura;
+  - cascata;
+  - políticas.
+
+Conferido em 30/10/2026.

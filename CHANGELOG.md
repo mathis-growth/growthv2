@@ -2,6 +2,35 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.177 — Diagnóstico 360°: formulário curto, arquivos e reunião (G1b, G2 e G3) (30/10/2026)
+Depois do teste da G1, a parte técnica sai do formulário do cliente e vai para a reunião, preenchida pela equipe. O documento de Arquitetura de Métricas continua respondido por inteiro: o que sai do formulário entra no roteiro da reunião. Plano: `docs/diagnostico-360-plano.md`, seção 8.
+- **G1b · formulário curto do cliente:**
+  - modelo novo **"Diagnóstico 360° (cliente, curto)"**, com 6 partes (negócio, o que espera, números, canais, o que acompanha, arquivos), uns 15 minutos;
+  - métricas no **modo simples**: "Acompanho", "Não acompanho" ou "Não sei" e, se acompanha, onde vê. Lista curta de 21 números, filtrada pelo modelo de negócio;
+  - **salva e continua depois:** o link individual guarda um rascunho a cada parte (e alguns segundos depois de mexer) e volta de onde parou;
+  - o modelo completo de 75 perguntas continua disponível.
+- **G2 · arquivos pelo link:**
+  - em cada grupo de documentos, o cliente envia arquivos, marca "Mando depois" ou marca "Não tenho";
+  - até 20 MB por arquivo e 40 por link. Aceita planilha, CSV, PDF, Word, PowerPoint e imagem;
+  - os arquivos vão para um local privado, depois que a função na nuvem `diagnostico-arquivo` confere o link;
+  - depois de responder, o mesmo link abre só para mandar o que faltou, enquanto vale.
+- **G3 · reunião:**
+  - "Abrir reunião" em Pesquisas → Quem respondeu e na ficha do cliente. A tela já vem com as respostas e salva sozinha;
+  - os números que usam para decidir (5 a 8), com a opção de incluir outro número do catálogo;
+  - **as perguntas mudam com a natureza do número**: em valor (investimento, leads, faturamento), onde veem e se olham junto com o resultado; em taxa (CPL, CAC, churn), numerador, denominador, período, quem fica de fora e se alguém confere. Nos dois: responsável, frequência, decisão e "mais detalhes";
+  - **roteiro**: tudo do modelo completo que o formulário curto não pergunta (produtos, jornada, North Star e guardrails, dados, gestão, prioridades), com as condições;
+  - **documentos**: o que o cliente disse de cada grupo, os arquivos para baixar e "Ler os arquivos no Diagnóstico Growth";
+  - anotações e "Validar diagnóstico".
+- **Diagnóstico Growth:** aberto pela reunião, já vem com as planilhas do cliente. "Guardar no diagnóstico do cliente" grava a completude, a cobertura, o que tem e o que falta e a mensagem para o cliente no diagnóstico dele. **Não mexe** no Growth Model da empresa.
+- Banco:
+  - `20261129100000_diagnostico_g1b.sql`;
+  - `20261129110000_diagnostico_g2_arquivos.sql`;
+  - `20261129120000_diagnostico_g3_reuniao.sql`.
+- Função na nuvem: `supabase/functions/diagnostico-arquivo`.
+- Testes:
+  - banco: `diagnostico_g1b_cenarios.sql`, `diagnostico_g2_cenarios.sql` e `diagnostico_g3_cenarios.sql` (OK);
+  - tela: `t177_diagnostico_reuniao.py` (63 verificações, 0 falhas).
+
 ## v0.176 — Diagnóstico 360° (G1): formulário do cliente e catálogo de métricas (30/10/2026)
 - **"Para quem é" o formulário:** Lead (captação) ou Cliente (diagnóstico, onboarding, jornada). Tipo novo **Diagnóstico do cliente**.
 - **Tipos de pergunta novos:**

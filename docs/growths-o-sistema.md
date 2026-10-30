@@ -1,7 +1,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 30/10/2026, versão 0.176.
+**Última atualização:** 30/10/2026, versão 0.177.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -477,6 +477,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **30/10 (v0.177):** Diagnóstico 360°: formulário curto do cliente (salva e continua depois), envio de arquivos pelo link e a reunião do diagnóstico, com a leitura dos arquivos no Diagnóstico Growth.
 - **30/10 (v0.176):** Diagnóstico 360° (G1): formulário do cliente com as métricas do funil pirata e o modelo pronto com as 8 seções.
 - **30/10 (v0.175):** Central de Atendimento, grupos WhatsApp, conexões, assinatura do atendente e histórico ligado ao CRM; publicação e configuração pendentes.
 - **30/10 (v0.174):** O lead vira oportunidade, e a oportunidade gera o contrato em rascunho (a proposta).

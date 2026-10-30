@@ -1109,6 +1109,15 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
 #arvRoot .arv-rosca li:hover{background:var(--accent-soft)} #arvRoot .arv-rosca li i{width:10px;height:10px;border-radius:3px}
 #arvRoot .arv-rosca li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
+<style id="v177">.dg-reu{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:16px;align-items:start}.dg-lado{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}
+.dg-lado dl{margin:0;display:grid;gap:6px}.dg-lado dt{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:4px}.dg-lado dd{margin:0;font-size:13.5px}
+.dg-cont{display:flex;flex-direction:column;gap:16px;min-width:0}.dg-cont h2 .pill{margin-left:6px;vertical-align:middle}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{position:relative;display:inline-flex}.chip input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}.chip span{border:1px solid var(--line);border-radius:99px;padding:5px 12px;font-size:13px}
+.chip input:checked+span{background:var(--accent-soft);border-color:var(--accent);font-weight:600}.chip:focus-within span{outline:2px solid var(--accent);outline-offset:2px}
+.dg-mc{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px}.dg-mh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}.dg-mc details{margin-top:8px}
+.dg-sec{border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-top:8px}.dg-sec summary{cursor:pointer}.dg-rl{display:grid;gap:10px;margin-top:10px}.dg-rf{display:flex;flex-direction:column;gap:4px}.dg-rf>label{font-weight:600;font-size:13.5px}.dg-rf[hidden]{display:none}
+.dg-it{border-left:4px solid var(--line);padding:6px 10px;margin:6px 0}.dg-it.ok{border-left-color:var(--good)}.dg-it.parcial{border-left-color:var(--warn)}.dg-it.falta{border-left-color:var(--bad)}
+@media (max-width:860px){.dg-reu{grid-template-columns:minmax(0,1fr)}.dg-lado{position:static;max-height:none}}</style>
 <style id="v175">.pf-num{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.pf-num input{max-width:220px}.pf-ns{display:inline-flex;gap:6px;align-items:center;font-size:14px}
 .pf-meses{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.pf-meses label{font-size:13px;text-transform:capitalize}
 .pf-lista{display:flex;flex-direction:column;gap:10px}.pf-lr{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr)) 36px;gap:8px;align-items:end;padding:10px;border:1px solid rgba(0,0,0,.12);border-radius:10px}
@@ -1116,7 +1125,9 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
 .pf-doc{padding:10px 0;border-top:1px solid rgba(0,0,0,.08)}.pf-doc small{display:block;opacity:.75;margin:2px 0 6px}.pf-ops{display:flex;flex-wrap:wrap;gap:6px}.pf-aviso2{margin-top:12px;font-size:13px;opacity:.85}
 .pf-etapa{margin-top:18px}.pf-etapa h3{margin:0 0 8px;font-size:15px;text-transform:uppercase;letter-spacing:.06em}
 .pf-m{padding:12px;border:1px solid rgba(0,0,0,.12);border-radius:12px;margin-bottom:10px}.pf-m.pf-tem{border-color:rgba(26,127,75,.55)}.pf-mh b{display:block}.pf-mh small{display:block;opacity:.75;margin:2px 0 8px}
-.pf-md,.pf-mn{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px;padding-top:10px;border-top:1px dashed rgba(0,0,0,.15)}.pf-md[hidden],.pf-mn[hidden]{display:none}
+.pf-md,.pf-mn{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px;padding-top:10px;border-top:1px dashed rgba(0,0,0,.15)}.pf-md[hidden],.pf-mn[hidden],.pf-mn:empty{display:none}
+.pf-up{position:relative;overflow:hidden;display:inline-flex;align-items:center;cursor:pointer}.pf-up input{position:absolute;inset:0;opacity:0;cursor:pointer}.pf-up.envia{opacity:.6;pointer-events:none}
+.pf-arqs{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}.pf-arqs li{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px}.pf-arqs small{opacity:.7}.pf-arx{padding:2px 10px}.pf-salvo{font-size:13px;opacity:.7;align-self:center;text-align:center}
 .pf-mf{display:flex;flex-direction:column;gap:4px;font-size:13px}.pf-mf.pf-dec{flex-direction:row;align-items:center;grid-column:1/-1}.pf-dica2{font-size:14px}.pf-dcont{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:99px;background:rgba(0,0,0,.07)}.pf-dcont.ok{background:rgba(26,127,75,.18)}
 .pq-ver h3{margin:16px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}.pq-vi{padding:6px 0;border-bottom:1px solid var(--line)}.pq-vi>span{font-size:12px}.pq-vi ul{margin:4px 0;padding-left:18px}</style>
 <style id="v174">.op-cts{display:flex;flex-direction:column;gap:2px;margin:4px 0;font-size:12px}.op-cts a{cursor:pointer;color:var(--accent)}.card.op-foco{box-shadow:0 0 0 3px rgba(var(--accent-rgb),.45)}</style>
@@ -1213,7 +1224,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.176 · 30/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.177 · 30/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -1698,6 +1709,8 @@ function botaoVoltar(m) {
 }
 async function render() {
   if (S.wsBase == null) S.wsBase = S.ws;
+  if (S.view !== 'gro-diag') S.gxDiag = null;
+  if (S.view !== 'gro-pesq') S.dgReu = null;
   const casaV = ehCasaV(S.view), casaW = casaDe(S.wsBase);
   if (casaV && !casaW) S.view = 'fin-dash';
   S.ws = casaV && casaW ? casaW.id : S.wsBase;
@@ -4577,7 +4590,7 @@ async function fichaPessoa(id) {
     vIds.length ? q(sb.from('estornos').select('tipo,valor,data,venda_id').in('venda_id', vIds)).catch(() => []) : [],
     q(sb.from('aluno_historico').select('aluno_id,tipo,em,etapas_kanban(nome)').eq('pessoa_id', id)).catch(() => []),
     aIds.length ? q(sb.from('aluno_marcos').select('aluno_id,situacao,em,validado_em,jornada_marcos(nome)').in('aluno_id', aIds)).catch(() => []) : [],
-    q(sb.from('pesquisa_respostas').select('respondida_em,pesquisas(nome)').eq('pessoa_id', id)).catch(() => []),
+    q(sb.from('pesquisa_respostas').select('id,pesquisa_id,respondida_em,pesquisas(nome,tipo)').eq('pessoa_id', id)).catch(() => []),
     q(sb.from('cs_intervencoes').select('tipo,descricao,status,resultado,criado_em,concluida_em').eq('pessoa_id', id)).catch(() => [])]);
   const prodA = aid => { const a = alus.find(x => x.id === aid); return a ? ((one(a.produtos) || {}).nome || a.tag || '') : ''; };
   const ctN = cid => { const c = cts.find(x => x.id === cid); return c ? '#' + c.numero : ''; };
@@ -4633,6 +4646,7 @@ async function fichaPessoa(id) {
       ${(p.extras || {}).instagram ? (() => { const ig = String(p.extras.instagram).trim(), u = ig.replace(/^@/, '').replace(/^https?:\/\/(www\.)?instagram\.com\//, '').replace(/\/.*$/, ''); return `<div><span class="muted" style="font-size:11px">Instagram</span><br>${/^[A-Za-z0-9._]{1,30}$/.test(u) ? `<a href="https://instagram.com/${u}" target="_blank" rel="noopener">@${esc(u)}</a>` : esc(ig)}</div>`; })() : ''}
       ${'documento' in p ? (p.documento ? campo(docTipo(p.documento), docFmt(p.documento)) : `<div><span class="muted" style="font-size:11px">CPF ou CNPJ</span><br><span class="muted">não informado · obrigatório para contrato</span></div>`) : ''}
       ${campo('Cadastrado em', p.criado_em ? dtt(p.criado_em) : '')}${campo('Virou cliente em', p.convertido_em ? dtt(p.convertido_em) : '')}</div>
+    ${resp.some(r => (one(r.pesquisas) || {}).tipo === 'diagnostico') ? `${tit('Diagnóstico')}<div class="acts" style="justify-content:flex-start">${resp.filter(r => (one(r.pesquisas) || {}).tipo === 'diagnostico').map(r => `<button type="button" class="btn sm" data-dgreu="${r.id}" data-dgpq="${r.pesquisa_id}">Abrir reunião: ${esc((one(r.pesquisas) || {}).nome || '')} · ${dd(String(r.respondida_em).slice(0, 10))}</button>`).join('')}</div>` : ''}
     ${tit('Responsáveis')}
     <div class="infog"><div><span class="muted" style="font-size:11px">Comercial responsável</span><br>${eqN(p.responsavel_comercial_id) ? '<b>' + esc(eqN(p.responsavel_comercial_id)) + '</b>' : '<span class="muted">sem responsável</span>'} <button type="button" class="btn sm" data-rc>Alterar</button></div>
       ${alus.map(a => `<div><span class="muted" style="font-size:11px">CS responsável · ${esc((one(a.produtos) || {}).nome || a.tag || 'aluno')}</span><br>${eqN(a.responsavel_cs_id) ? '<b>' + esc(eqN(a.responsavel_cs_id)) + '</b>' : '<span class="muted">sem responsável</span>'} <button type="button" class="btn sm" data-rcs="${a.id}">Alterar</button></div>`).join('')}</div>
@@ -4684,6 +4698,7 @@ async function fichaPessoa(id) {
     [{ k: 'valor', l: 'Valor pago (R$)', t: 'number', step: '0.01', req: 1 }, { k: 'periodo_inicio', l: 'Desde', t: 'date' }, { k: 'periodo_fim', l: 'Até', t: 'date' }, { k: 'descricao', l: 'Observação', full: 1 }],
     () => { $('#modalRoot').innerHTML = ''; toast('Pagamento anterior registrado'); fichaPessoa(id); });
   f.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => { $('#modalRoot').innerHTML = ''; act(() => modalCliente(p)); });
+  f.querySelectorAll('[data-dgreu]').forEach(b => b.onclick = () => { $('#modalRoot').innerHTML = ''; S.view = 'gro-pesq'; S.pqSel = b.dataset.dgpq; S.pqTab = 'quem'; S.dgReu = b.dataset.dgreu; render(); });
   const eqAtivos = eqs.filter(x => x.ativo !== false);
   const fRc = f.querySelector('[data-rc]'); if (fRc) fRc.onclick = () => { $('#modalRoot').innerHTML = ''; modalResponsavel('pessoas', id, p.responsavel_comercial_id, eqAtivos, 'Comercial responsável'); };
   f.querySelectorAll('[data-rcs]').forEach(b => b.onclick = () => { const a = alus.find(x => x.id === b.dataset.rcs); $('#modalRoot').innerHTML = ''; modalResponsavel('alunos', a.id, a.responsavel_cs_id, eqAtivos, 'CS responsável'); });
@@ -11722,7 +11737,7 @@ function gxLeEstruturado(tabs) {
 }
 
 /* ===== v0.74 — Growth Model novo: telas ===== */
-const gxEst = () => S.gx = S.gx || { tabs: [], N: null, cfg: null, ds: null, dg: null, modelo: null, prod: 'all', carregado: false, aberto: {} };
+const gxEst = () => { const k = S.gxDiag ? 'gxC' : 'gx'; return S[k] = S[k] || { tabs: [], N: null, cfg: null, ds: null, dg: null, modelo: null, prod: 'all', carregado: false, aberto: {} }; };
 const GX_TIPOS = [['vendas', 'Vendas'], ['leads', 'Leads'], ['midia', 'Investimento e anúncios'], ['estruturado', 'Planilha já no formato do Growth Model'], ['ignorar', 'Ignorar']];
 const GX_LOOPS_OPC = [['paid', 'Tráfego pago'], ['email', 'E-mail e listas'], ['organico', 'Orgânico e social'], ['social_selling', 'Social selling'], ['outro', 'Outros canais'], ['sem_canal', 'Sem canal identificado']];
 function gxTabsBar() { return ''; }
@@ -11760,7 +11775,11 @@ async function gxLerArquivos(files) {
 }
 /* ---------- aba: dados do cliente ---------- */
 async function gxViewDiag(m) {
-  const E = gxEst(); await gxCarrega();
+  const E = gxEst(), CD = S.gxDiag; await gxCarrega();
+  // v0.177: aberto pela reunião do diagnóstico, já com os arquivos que o cliente mandou (não mexe no Growth Model da empresa)
+  if (CD && !E.cdLido) { E.cdLido = true; const fs = [];
+    for (const a of CD.arquivos) { const r = await sb.storage.from('diagnostico').download(a.caminho); if (r.error) { toast('Não consegui baixar ' + a.nome, true); continue; } fs.push(new File([r.data], a.nome)); }
+    if (fs.length) { const n = await gxLerArquivos(fs); toast(n + ' planilha(s) do cliente lida(s). Confira o que identifiquei.'); } }
   const desenha = () => {
     const temEstr = E.tabs.some(t => t.tipo === 'estruturado');
     const card = (t, i) => {
@@ -11793,19 +11812,27 @@ async function gxViewDiag(m) {
         <h3>Cobertura por mês (linhas com dado)</h3><div style="overflow:auto"><table class="tbl"><thead><tr><th></th>${dg.cobertura.meses.map(x => `<th class="n">${gmMes(x)}</th>`).join('')}</tr></thead><tbody>${dg.cobertura.linhas.map(l => `<tr><td>${l.nome}</td>${l.v.map(n => `<td class="n" style="${calor(n)}">${n || '—'}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
         <h3>O que tenho e o que falta</h3>${dg.itens.map(x => { const c = cor[x.status]; return `<div style="border:1px solid var(--line);border-left:4px solid ${c[1]};border-radius:8px;padding:8px 12px;margin:6px 0"><div style="display:flex;gap:8px;align-items:center"><span style="background:${c[0]};color:${c[1]};border-radius:99px;padding:1px 10px;font-size:12px;font-weight:600">${c[2]}</span><b>${esc(x.titulo)}</b></div><div class="muted" style="margin-top:4px">${esc(x.detalhe)}</div>${x.status !== 'ok' && x.impacto ? `<div style="margin-top:4px"><b>Por que importa:</b> ${esc(x.impacto)}</div>` : ''}${x.status !== 'ok' && x.pedir ? `<div style="margin-top:2px"><b>Pedir ao cliente:</b> ${esc(x.pedir)}</div>` : ''}</div>`; }).join('')}
         <h3>Mensagem para o cliente</h3><textarea id="gxMsg" rows="9" style="width:100%">${esc(dg.mensagem)}</textarea>
-        <div class="acts"><button class="btn" id="gxCopia">Copiar mensagem</button><button class="btn" id="gxXlsx">Baixar planilha padronizada (.xlsx)</button><button class="btn" id="gxTxt">Baixar diagnóstico (.txt)</button><button class="btn pri" id="gxSalva">Salvar no Growth Model</button></div></div>`;
+        <div class="acts"><button class="btn" id="gxCopia">Copiar mensagem</button><button class="btn" id="gxXlsx">Baixar planilha padronizada (.xlsx)</button><button class="btn" id="gxTxt">Baixar diagnóstico (.txt)</button>${CD ? '<button class="btn pri" id="gxGuarda">Guardar no diagnóstico do cliente</button>' : '<button class="btn pri" id="gxSalva">Salvar no Growth Model</button>'}</div></div>`;
     };
     const temModelo = E.modelo && E.modelo.dados && E.modelo.dados.loops;
-    m.innerHTML = `<div class="head"><div><h1>Diagnóstico Growth</h1><span class="muted">Suba os dados do cliente, eu organizo, mostro o que falta e, quando você salvar, eles viram o Growth Model dele.</span></div><button class="btn" id="gxVaiModelo">Abrir o Growth Model</button></div>
-      ${temModelo ? `<div class="panel" style="margin-top:8px"><b>Já existe um modelo salvo</b> (${(E.modelo.dados.produtos || []).length} produto(s), atualizado em ${new Date(E.modelo.atualizado_em).toLocaleDateString('pt-BR')}). Salvar de novo substitui o modelo atual. <button class="btn sm" id="gxVaiModelo2">Abrir o modelo</button></div>` : ''}
+    m.innerHTML = `${CD ? `<div class="head"><div><button class="btn sm" id="gxVoltaReu">← Voltar para a reunião</button><h1 style="margin-top:8px">Diagnóstico Growth: ${esc(CD.nome)}</h1><span class="muted">Os arquivos que o cliente mandou já estão aqui. Confira o que identifiquei, consolide e guarde o resultado no diagnóstico dele. Isto não mexe no Growth Model da empresa.</span></div></div>`
+      : `<div class="head"><div><h1>Diagnóstico Growth</h1><span class="muted">Suba os dados do cliente, eu organizo, mostro o que falta e, quando você salvar, eles viram o Growth Model dele.</span></div><button class="btn" id="gxVaiModelo">Abrir o Growth Model</button></div>`}
+      ${temModelo && !CD ? `<div class="panel" style="margin-top:8px"><b>Já existe um modelo salvo</b> (${(E.modelo.dados.produtos || []).length} produto(s), atualizado em ${new Date(E.modelo.atualizado_em).toLocaleDateString('pt-BR')}). Salvar de novo substitui o modelo atual. <button class="btn sm" id="gxVaiModelo2">Abrir o modelo</button></div>` : ''}
       <div class="panel" style="margin-top:8px"><h2>1. Arquivos do cliente</h2><p class="muted">Pode subir vários de uma vez: vendas, leads, investimento em anúncios, ou a planilha já no formato do Growth Model. Aceito .xlsx, .xls e .csv, mesmo com título solto no topo e colunas em qualquer ordem. Eu identifico o que é cada coisa e você confere.</p>
         <div class="acts"><input type="file" id="gxArq" accept=".xlsx,.xls,.csv,.txt" multiple><button class="btn pri" id="gxLer">Ler arquivos</button>${E.tabs.length ? '<button class="btn" id="gxLimpa">Limpar tudo</button>' : ''}</div>
         ${E.tabs.map(card).join('')}
-        ${E.tabs.length ? `<div class="acts">${temEstr ? '<button class="btn pri" id="gxEstr">Importar a planilha estruturada para o modelo</button>' : ''}${E.tabs.some(t => ['vendas', 'leads', 'midia'].includes(t.tipo)) ? '<button class="btn pri" id="gxPasso2">Continuar: conferir canais, produtos e status</button>' : ''}</div>` : ''}</div>${passo2()}${passo3()}`;
+        ${E.tabs.length ? `<div class="acts">${temEstr && !CD ? '<button class="btn pri" id="gxEstr">Importar a planilha estruturada para o modelo</button>' : ''}${E.tabs.some(t => ['vendas', 'leads', 'midia'].includes(t.tipo)) ? '<button class="btn pri" id="gxPasso2">Continuar: conferir canais, produtos e status</button>' : ''}</div>` : ''}</div>${passo2()}${passo3()}`;
     ligar();
   };
   const ligar = () => {
-    $('#gxVaiModelo').onclick = () => gxIr('gro-modelo'); if ($('#gxVaiModelo2')) $('#gxVaiModelo2').onclick = () => gxIr('gro-modelo');
+    if ($('#gxVaiModelo')) $('#gxVaiModelo').onclick = () => gxIr('gro-modelo');
+    const voltaReu = () => { const v = CD.volta; S.gxDiag = null; S.view = 'gro-pesq'; S.pqSel = v.pqSel; S.pqTab = 'quem'; S.dgReu = v.dgReu; render(); };
+    if ($('#gxVoltaReu')) $('#gxVoltaReu').onclick = voltaReu;
+    if ($('#gxGuarda')) $('#gxGuarda').onclick = () => act(async () => { const dg = E.dg;
+      await q(sb.from('diagnosticos').update({ leitura: { score: dg.score, itens: dg.itens.map(x => ({ titulo: x.titulo, status: x.status, detalhe: x.detalhe, pedir: x.pedir })), mensagem: $('#gxMsg').value,
+        cobertura: dg.cobertura, vendas: E.ds.stat.vendasOk, arquivos: E.tabs.map(t => t.arq + ' · ' + t.aba), lido_em: new Date().toISOString() } }).eq('id', CD.id));
+      toast('Leitura guardada no diagnóstico do cliente.'); voltaReu(); });
+    if ($('#gxVaiModelo2')) $('#gxVaiModelo2').onclick = () => gxIr('gro-modelo');
     $('#gxLer').onclick = () => act(async () => { const fs = $('#gxArq').files; if (!fs.length) throw new Error('Escolha um ou mais arquivos.'); const n = await gxLerArquivos([...fs]); toast(n + ' planilha(s) lida(s). Confira o que identifiquei.'); desenha(); });
     if ($('#gxLimpa')) $('#gxLimpa').onclick = () => { E.tabs = []; E.N = E.cfg = E.ds = E.dg = null; desenha(); };
     m.querySelectorAll('[data-gx-rm]').forEach(b => b.onclick = () => { E.tabs.splice(+b.dataset.gxRm, 1); E.N = E.cfg = E.ds = E.dg = null; desenha(); });
@@ -11825,7 +11852,7 @@ async function gxViewDiag(m) {
       $('#gxCopia').onclick = async () => { try { await navigator.clipboard.writeText($('#gxMsg').value); toast('Mensagem copiada.'); } catch (e) { $('#gxMsg').select(); toast('Selecionei o texto. Use Ctrl+C.'); } };
       $('#gxXlsx').onclick = () => act(async () => { await gxBaixaXlsx(); });
       $('#gxTxt').onclick = () => gxBaixaTxt();
-      $('#gxSalva').onclick = () => act(async () => { await gxSalva(E.ds); toast('Salvo. Abrindo o Growth Model do cliente.'); gxIr('gro-modelo'); });
+      if ($('#gxSalva')) $('#gxSalva').onclick = () => act(async () => { await gxSalva(E.ds); toast('Salvo. Abrindo o Growth Model do cliente.'); gxIr('gro-modelo'); });
     }
   };
   desenha();
@@ -15332,6 +15359,8 @@ const DOC_CATS = [ // Central de Documentos (E1 a E7): o que pedir, preferencial
   { k: 'financeiro', l: 'Financeiro', d: 'Receitas, custos, despesas, taxas das plataformas e margens, quando houver.' },
   { k: 'produtos', l: 'Produtos e ofertas', d: 'Catálogo, preços, ofertas, recorrências e esteira.' },
   { k: 'complementares', l: 'Arquivos complementares', d: 'Painéis, planilhas de acompanhamento, relatórios e documentação de processos.' }];
+const MET_ST_S = [['regular', 'Acompanho'], ['nao', 'Não acompanho'], ['nao_sei', 'Não sei']];
+const MET_ONDE = ['Planilha', 'Plataforma de venda', 'Ferramenta de anúncios', 'CRM', 'Painel ou dashboard', 'De cabeça'];
 const DOC_ST = [['sim', 'Tenho'], ['parte', 'Tenho em parte'], ['nao', 'Não tenho'], ['depois', 'Mando depois']];
 const MOD_MAPA = { 'Infoproduto ou curso': 'infoproduto', 'Mentoria': 'mentoria', 'Consultoria ou serviço': 'servico', 'Assinatura ou recorrência': 'assinatura', 'Comunidade': 'comunidade', 'E-commerce': 'ecommerce', 'High ticket': 'high_ticket' };
 // os últimos N meses completos, do mais antigo ao mais recente
@@ -15430,6 +15459,112 @@ const PQ_DIAG360 = [
 PQ_MODELOS.diagnostico360 = { nome: 'Diagnóstico 360° de Growth, Dados e Maturidade', tipo: 'diagnostico', publico: 'cliente', gatilho: 'manual', objetos: PQ_DIAG360,
   descricao: 'Este diagnóstico é o primeiro passo do nosso trabalho. Ele mostra como o seu negócio funciona hoje, que números vocês acompanham e como, e onde estão as maiores oportunidades. Quase tudo é de marcar; leva uns 30 minutos e dá para fazer com calma.' };
 
+/* ================= v0.177 — Diagnóstico 360° (G1b): formulário curto do cliente =================
+   Depois do teste da G1 (30/10): o cliente responde só o que sabe sem ajuda, em 6 partes. A parte técnica de cada métrica
+   (conta, janela, responsável, decisão, confiança…) vai para a reunião, que a equipe preenche (G3). Plano: seção 8. */
+const DG_MET_CURTO = ['investimento', 'leads', 'leads_canal', 'cpl', 'cac', 'roas', 'taxa_qualificacao', 'comparecimento', 'conv_lead_venda', 'ativacao',
+  'consumo_progresso', 'churn', 'cg_nps', 'receita', 'cliente', 'ticket_medio', 'margem', 'ltv', 'mrr', 'indicacoes', 'recompra'];
+const DG_AVISO = 'Não envie senhas nem acessos em planilhas ou documentos. Os arquivos ficam num local privado e só a equipe que atende você vê. Os dados pessoais são tratados conforme a LGPD.';
+const PQ_DIAG_CLI = [
+  { s: 'Sobre o seu negócio', t: 'Nome da empresa', tp: 'texto' },
+  { k: 'modelo', s: 'Sobre o seu negócio', t: 'Como você vende? (pode marcar mais de um)', tp: 'multipla', op: Object.keys(MOD_MAPA).concat('Outro') },
+  { s: 'Sobre o seu negócio', t: 'Há quanto tempo vende?', tp: 'escolha', op: ['Menos de 1 ano', '1 a 2 anos', '3 a 5 anos', 'Mais de 5 anos'] },
+  { s: 'Sobre o seu negócio', t: 'Quantas pessoas trabalham com você?', tp: 'escolha', op: ['Só eu', '2 a 5', '6 a 15', 'Mais de 15'] },
+  { s: 'O que você espera', t: 'O que você espera deste trabalho?', tp: 'texto' },
+  { s: 'O que você espera', t: 'O que precisa acontecer para você sentir que deu resultado?', tp: 'texto' },
+  { s: 'O que você espera', t: 'Em quanto tempo?', tp: 'escolha', op: ['30 dias', '60 dias', '90 dias', '6 meses', 'Mais de 6 meses'] },
+  { s: 'Seus números', t: 'Faturamento dos últimos 6 meses (o que souber)', tp: 'meses', cfg: { meses: 6 } },
+  { s: 'Seus números', t: 'Quanto investe em anúncios por mês, em média?', tp: 'moeda', o: false, cfg: { naosei: true } },
+  { s: 'Seus números', t: 'Ticket médio (valor médio de cada venda)', tp: 'moeda', o: false, cfg: { naosei: true } },
+  { s: 'Como os clientes chegam e compram', t: 'Canais que você usa', tp: 'multipla', op: ['Meta Ads', 'Google Ads', 'YouTube', 'TikTok', 'Instagram orgânico', 'E-mail', 'WhatsApp', 'Indicação', 'Afiliados', 'Eventos', 'Prospecção ativa', 'Parcerias', 'Outro'] },
+  { s: 'Como os clientes chegam e compram', t: 'Como vende', tp: 'multipla', o: false, op: ['Lançamento', 'Perpétuo', 'Webinário', 'Comercial ou SDR', 'Direct', 'Evento', 'Outro'] },
+  { s: 'Como os clientes chegam e compram', t: 'Onde vende', tp: 'multipla', o: false, op: ['Hotmart', 'Kiwify', 'Eduzz', 'Contrato direto', 'Loja própria', 'Outro'] },
+  { s: 'Como os clientes chegam e compram', t: 'Ferramentas que usa', tp: 'multipla', o: false, op: ['Planilha', 'CRM', 'Área de membros', 'E-mail marketing', 'Automação de WhatsApp', 'Painel ou BI', 'Google Analytics', 'Outro'] },
+  { s: 'O que você acompanha hoje', t: 'Para cada número, diga se acompanha. Se acompanha, marque onde vê. Sem cálculo: os detalhes a gente vê juntos na reunião.', tp: 'metricas', cfg: { modelo: 'modelo', simples: true, codigos: DG_MET_CURTO } },
+  { s: 'Seus arquivos', t: 'De preferência, os últimos 6 meses. Pode mandar agora ou depois, pelo mesmo link.', tp: 'documentos', cfg: { categorias: DOC_CATS, upload: true, aviso: DG_AVISO } }];
+PQ_MODELOS.diagnostico_cliente = { nome: 'Diagnóstico 360° (cliente, curto)', tipo: 'diagnostico', publico: 'cliente', gatilho: 'manual', objetos: PQ_DIAG_CLI,
+  descricao: 'Este diagnóstico é o primeiro passo do nosso trabalho. Leva uns 15 minutos e quase tudo é de marcar. O que você responde fica salvo: pode parar e voltar pelo mesmo link. Os detalhes técnicos a gente vê juntos na reunião.' };
+
+/* rascunho do link individual: guarda o estado dos campos (não as respostas finais) para continuar depois */
+function pfRascChave(i) {
+  const fs = i.closest('.pf-q'), m = i.closest('.pf-m'), lr = i.closest('.pf-lr');
+  let k = (fs ? fs.dataset.q : '-') + '|' + (i.name || '') + '|' + (m ? m.dataset.m : '') + '|' + (i.dataset.c || i.dataset.mes || '');
+  if (lr) k += '|' + [...lr.parentElement.children].indexOf(lr) + '.' + [...lr.querySelectorAll('.pf-lc')].indexOf(i);
+  if (i.type === 'radio' || i.type === 'checkbox') k += '|' + i.value;
+  return k;
+}
+const pfRascCampos = f => [...f.querySelectorAll('input,select,textarea')].filter(i => i.type !== 'file' && i.name !== 'site' && !i.closest('.pf-up') && !i.classList.contains('pf-upsim'));
+function pfRascLe(f, passo) {
+  const c = {}, listas = {};
+  pfRascCampos(f).forEach(i => { if (i.type === 'radio' || i.type === 'checkbox') { if (i.checked) c[pfRascChave(i)] = true; } else if (i.value !== '') c[pfRascChave(i)] = i.value; });
+  f.querySelectorAll('.pf-lista').forEach(l => { listas[l.closest('.pf-q').dataset.q] = l.children.length; });
+  return { passo, campos: c, listas };
+}
+function pfRascPoe(f, r) {
+  if (!r || !r.campos) return;
+  f.querySelectorAll('.pf-lista').forEach(l => { const n = +((r.listas || {})[l.closest('.pf-q').dataset.q]) || 1, mais = l.nextElementSibling; for (let j = l.children.length; j < Math.min(n, 60); j++) mais.click(); });
+  pfRascCampos(f).forEach(i => { const v = r.campos[pfRascChave(i)]; if (v == null) return; if (i.type === 'radio' || i.type === 'checkbox') i.checked = true; else i.value = v; });
+  // o "change" reabre os blocos das métricas e as condicionais
+  pfRascCampos(f).filter(i => (i.type === 'radio' || i.type === 'checkbox') && i.checked).forEach(i => i.dispatchEvent(new Event('change', { bubbles: true })));
+}
+
+/* ================= v0.177 — Diagnóstico 360° (G2): o cliente envia os arquivos pelo link =================
+   Cada arquivo: a função na nuvem "diagnostico-arquivo" confere o link e dá uma autorização de uso único; o arquivo vai direto
+   para o local privado "diagnostico"; depois a função confirma que ele chegou. Regras no banco (20261129110000). */
+const DG_EXT = ['xlsx', 'xls', 'csv', 'txt', 'pdf', 'doc', 'docx', 'ppt', 'pptx', 'png', 'jpg', 'jpeg'];
+const dgTam = b => b >= 1048576 ? (b / 1048576).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB';
+async function dgArqFn(body) {
+  const r = await sb.functions.invoke('diagnostico-arquivo', { body });
+  if (r.error) throw new Error('Não consegui falar com o servidor. Verifique a conexão e tente de novo.');
+  if (!r.data || !r.data.ok) throw new Error((r.data && r.data.erro) || 'Erro ao enviar o arquivo.');
+  return r.data;
+}
+// liga os botões "Enviar arquivo" das perguntas de documentos; op.previa = só mostra
+function pfLigaUpload(f, token, op = {}) {
+  const docs = [...f.querySelectorAll('.pf-doc[data-g]')]; if (!docs.length) return;
+  const msg = f.querySelector('.pf-msg') || f.closest('.pf-in').querySelector('.pf-msg');
+  const linha = (box, a) => { const li = document.createElement('li'); li.dataset.id = a.id; li.innerHTML = `<span>✓ ${esc(a.nome)} <small>${dgTam(a.tamanho)}</small></span><button type="button" class="pf-b2 pf-arx" title="Tirar este arquivo" aria-label="Tirar ${esc(a.nome)}">×</button>`; box.querySelector('.pf-arqs').appendChild(li); marca(box); };
+  const marca = box => { const sim = box.querySelector('.pf-upsim'), tem = box.querySelectorAll('.pf-arqs li').length > 0;
+    if (tem) { sim.checked = true; } else if (sim.checked) sim.checked = false; sim.dispatchEvent(new Event('change', { bubbles: true })); };
+  if (!op.previa) q(sb.rpc('pesquisa_arquivos_do_link', { p_token: token })).then(L => (L || []).forEach(a => { const box = docs.find(b => b.dataset.g === a.grupo); if (box) linha(box, a); })).catch(() => {});
+  f.addEventListener('change', async ev => {
+    const inp = ev.target.closest('[data-up]'); if (!inp) return;
+    const box = inp.closest('.pf-doc'), lab = inp.closest('.pf-up'), fs = [...inp.files]; inp.value = '';
+    if (op.previa) { msg.textContent = 'Pré-visualização: o envio de arquivos só funciona pelo link.'; return; }
+    lab.classList.add('envia');
+    for (const a of fs) {
+      const ext = (a.name.match(/\.([A-Za-z0-9]{1,5})$/) || [])[1];
+      if (!ext || !DG_EXT.includes(ext.toLowerCase())) { msg.textContent = a.name + ': tipo de arquivo não aceito. Envie planilha, CSV, PDF, Word, PowerPoint ou imagem.'; continue; }
+      if (a.size > 20971520) { msg.textContent = a.name + ': maior que 20 MB. Divida em partes.'; continue; }
+      msg.textContent = 'Enviando ' + a.name + '…';
+      try {
+        const r = await dgArqFn({ acao: 'autorizar', token, grupo: box.dataset.g, nome: a.name, tamanho: a.size, tipo: a.type });
+        const up = await sb.storage.from('diagnostico').uploadToSignedUrl(r.caminho, r.envio, a, { contentType: a.type || 'application/octet-stream' });
+        if (up.error) { dgArqFn({ acao: 'remover', token, id: r.id }).catch(() => {}); throw new Error('O envio de ' + a.name + ' falhou. Tente de novo.'); }
+        await dgArqFn({ acao: 'confirmar', token, id: r.id });
+        linha(box, { id: r.id, nome: a.name, tamanho: a.size }); msg.textContent = a.name + ' enviado.';
+      } catch (er) { msg.textContent = er.message; }
+    }
+    lab.classList.remove('envia');
+  });
+  f.addEventListener('click', async ev => {
+    const x = ev.target.closest('.pf-arx'); if (!x || op.previa) return;
+    const li = x.closest('li'), box = x.closest('.pf-doc'); x.disabled = true;
+    try { await dgArqFn({ acao: 'remover', token, id: li.dataset.id }); li.remove(); marca(box); msg.textContent = 'Arquivo retirado.'; }
+    catch (er) { msg.textContent = er.message; x.disabled = false; }
+  });
+}
+// depois de responder, o mesmo link do diagnóstico abre só para mandar os arquivos que faltaram
+function pfSoArquivos(box, d, token) {
+  const v = pfVis(d.visual), qs = (d.perguntas || []).filter(x => x.tipo === 'documentos' && (x.config || {}).upload);
+  box.innerHTML = `<div class="pf" style="${pfEstilo(v)}"><div class="pf-in">${v.logo_url ? `<img class="pf-logo" src="${esc(v.logo_url)}" alt="${esc(v.marca || 'Logo')}">` : ''}${v.marca ? `<div class="pf-marca">${esc(v.marca)}</div>` : ''}
+    <h1>${esc(v.titulo || d.nome)}</h1><form class="pf-f" novalidate><section class="pf-card"><h2>Obrigado! Agora é só mandar os arquivos que faltaram</h2>
+      <p class="pf-sub">Suas respostas já chegaram. Cada arquivo é enviado na hora: pode fechar esta página quando terminar${d.expira_em ? '. O link vale até ' + new Date(d.expira_em).toLocaleDateString('pt-BR') : ''}.</p>
+      ${qs.map(x => pfCampo({ ...x, condicao: null }, d)).join('')}</section><p class="pf-msg" role="status" aria-live="polite"></p></form></div></div>`;
+  box.querySelectorAll('.pf-op input[type=radio]').forEach(i => { i.closest('.pf-op').hidden = true; });
+  pfLigaUpload(box.querySelector('form'), token);
+}
+
 /* ----- formulário público: tipos novos ----- */
 function pfCampoG1(x, d) {
   const n = 'q_' + x.id, cfg = x.config || {}, sel = (nm, ops, cls = '') => `<select name="${nm}" class="${cls}"><option value="">—</option>${ops.map(o => `<option>${esc(o)}</option>`).join('')}</select>`;
@@ -15440,9 +15575,15 @@ function pfCampoG1(x, d) {
       : `<input class="pf-lc" ${c.t === 'texto' ? 'type="text" maxlength="300"' : 'type="number" step="0.01" min="0" inputmode="decimal"'}>`;
     const linha = () => `<div class="pf-lr">${cols.map(c => `<label><span>${esc(c.l)}</span>${campoL(c)}</label>`).join('')}<button type="button" class="pf-b2 pf-lx" title="Tirar esta linha">×</button></div>`;
     return `<div class="pf-lista" data-cols='${esc(JSON.stringify(cols.map(c => c.k)))}'>${linha()}</div><button type="button" class="pf-b2 pf-lmais" data-tpl='${esc(linha())}'>+ Adicionar linha</button>`; }
+  if (x.tipo === 'documentos' && cfg.upload) return `${(cfg.categorias || []).map(c => `<div class="pf-doc" data-g="${esc(c.k)}"><b>${esc(c.l)}</b>${c.d ? `<small>${esc(c.d)}</small>` : ''}
+      <div class="pf-ops"><label class="pf-b pf-b2 pf-up">Enviar arquivo<input type="file" multiple data-up="${esc(c.k)}" accept="${DG_EXT.map(z => '.' + z).join(',')}"></label>
+        ${[['depois', 'Mando depois'], ['nao', 'Não tenho']].map(([k, l]) => `<label class="pf-op"><input type="radio" name="${n}_${c.k}" value="${k}"><span>${l}</span></label>`).join('')}
+        <input type="radio" name="${n}_${c.k}" value="sim" class="pf-upsim" hidden tabindex="-1" aria-hidden="true"></div><ul class="pf-arqs"></ul></div>`).join('')}${cfg.aviso ? `<p class="pf-aviso2">${esc(cfg.aviso)}</p>` : ''}`;
   if (x.tipo === 'documentos') return `${(cfg.categorias || []).map(c => `<div class="pf-doc"><b>${esc(c.l)}</b>${c.d ? `<small>${esc(c.d)}</small>` : ''}<div class="pf-ops">${DOC_ST.map(([k, l]) => `<label class="pf-op"><input type="radio" name="${n}_${c.k}" value="${k}"><span>${l}</span></label>`).join('')}</div></div>`).join('')}${cfg.aviso ? `<p class="pf-aviso2">${esc(cfg.aviso)}</p>` : ''}`;
   if (x.tipo === 'metricas') {
-    const cat = (d.metricas || []).filter(m => !(cfg.etapas || []).length || cfg.etapas.includes(m.etapa));
+    const cat = (d.metricas || []).filter(m => (!(cfg.etapas || []).length || cfg.etapas.includes(m.etapa)) && (!(cfg.codigos || []).length || cfg.codigos.includes(m.codigo)));
+    // modo simples (G1b): o cliente só diz se acompanha e onde vê; o detalhe é da reunião
+    const ST = cfg.simples ? MET_ST_S : MET_ST, CAMPOS = cfg.simples ? [['como', 'Onde vocês veem este número', MET_ONDE, 'multi']] : MET_CAMPOS;
     const campo = ([k, l, t, multi]) => Array.isArray(t) ? (multi ? `<div class="pf-mf"><span>${esc(l)}</span><div class="pf-ops">${t.map(o => `<label class="pf-op"><input type="checkbox" data-c="${k}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join('')}</div></div>`
         : `<label class="pf-mf"><span>${esc(l)}</span><select data-c="${k}"><option value="">—</option>${t.map(o => `<option>${esc(o)}</option>`).join('')}</select></label>`)
       : t === 'check' ? `<label class="pf-mf pf-dec"><input type="checkbox" data-c="${k}"> <b>${esc(l)}</b></label>`
@@ -15450,9 +15591,9 @@ function pfCampoG1(x, d) {
     return `${cfg.min_decide ? `<p class="pf-dica2">Marque como <b>"usamos para tomar decisões"</b> as ${cfg.min_decide} a ${cfg.max_decide || cfg.min_decide} métricas mais usadas no dia a dia. <span class="pf-dcont" data-min="${cfg.min_decide}" data-max="${cfg.max_decide || 99}">0 marcadas</span></p>` : ''}
       ${AARRR.filter(([k]) => cat.some(m => m.etapa === k)).map(([k, l]) => `<div class="pf-etapa"><h3>${l}</h3>${cat.filter(m => m.etapa === k).map(m => `<div class="pf-m" data-m="${esc(m.codigo)}" data-mods="${esc((m.modelos || []).join(','))}">
         <div class="pf-mh"><b>${esc(m.nome)}</b>${m.descricao ? `<small>${esc(m.descricao)}</small>` : ''}</div>
-        <div class="pf-ops">${MET_ST.map(([v, t]) => `<label class="pf-op"><input type="radio" name="${n}_${esc(m.codigo)}" value="${v}"><span>${t}</span></label>`).join('')}</div>
-        <div class="pf-md" hidden>${MET_CAMPOS.map(campo).join('')}</div>
-        <div class="pf-mn" hidden><label class="pf-mf"><span>Vocês têm os dados para calcular esta métrica?</span><select data-c="tem_dados"><option value="">—</option><option value="sim">Sim</option><option value="parte">Em parte</option><option value="nao">Não</option><option value="nao_sei">Não sei</option></select></label></div></div>`).join('')}</div>`).join('')}`;
+        <div class="pf-ops">${ST.map(([v, t]) => `<label class="pf-op"><input type="radio" name="${n}_${esc(m.codigo)}" value="${v}"><span>${t}</span></label>`).join('')}</div>
+        <div class="pf-md" hidden>${CAMPOS.map(campo).join('')}</div>
+        <div class="pf-mn" hidden>${cfg.simples ? '' : `<label class="pf-mf"><span>Vocês têm os dados para calcular esta métrica?</span><select data-c="tem_dados"><option value="">—</option><option value="sim">Sim</option><option value="parte">Em parte</option><option value="nao">Não</option><option value="nao_sei">Não sei</option></select></label>`}</div></div>`).join('')}</div>`).join('')}`;
   }
   return '';
 }
@@ -15485,7 +15626,8 @@ function pfValidaG1(fs, x) {
   if (x.tipo === 'numero' || x.tipo === 'moeda') { const i = f.elements[n], ns = f.elements[n + '_ns']; if (i.value !== '' && !(Number(i.value) >= 0)) return 'Confira o número em: '; if (x.obrigatoria && i.value === '' && !(ns && ns.checked)) return 'Responda: '; return ''; }
   if (x.tipo === 'meses') return x.obrigatoria && ![...fs.querySelectorAll('[data-mes]')].some(i => i.value !== '') ? 'Preencha pelo menos um mês em: ' : '';
   if (x.tipo === 'lista') return x.obrigatoria && ![...fs.querySelectorAll('.pf-lc')].some(i => i.value !== '') ? 'Preencha pelo menos uma linha em: ' : '';
-  if (x.tipo === 'documentos') return x.obrigatoria && (cfg.categorias || []).some(c => !fs.querySelector(`[name="${n}_${c.k}"]:checked`)) ? 'Marque cada grupo de arquivos em: ' : '';
+  if (x.tipo === 'documentos' && fs.querySelector('.pf-up.envia')) return 'Espere terminar o envio dos arquivos em: ';
+  if (x.tipo === 'documentos') return x.obrigatoria && (cfg.categorias || []).some(c => !fs.querySelector(`[name="${n}_${c.k}"]:checked`)) ? (cfg.upload ? 'Para cada grupo, envie um arquivo ou marque "Mando depois" ou "Não tenho" em: ' : 'Marque cada grupo de arquivos em: ') : '';
   if (x.tipo === 'metricas') {
     const vis = [...fs.querySelectorAll('.pf-m:not([hidden])')];
     const falta = vis.find(m => !m.querySelector('input[type=radio]:checked'));
@@ -15530,6 +15672,155 @@ function pqVerResposta(perg, its, titulo) {
     return L.map(i => esc(String(i.valor_texto ?? i.valor_num))).join(', '); };
   let sec = '';
   modal(titulo || 'Resposta', `<div class="pq-ver">${perg.map(x => { const h = (x.secao && x.secao !== sec) ? `<h3>${esc(sec = x.secao)}</h3>` : ''; return `${h}<div class="pq-vi"><span class="muted">${esc(x.texto)}</span><div>${fmt(x, porP[x.id])}</div></div>`; }).join('')}</div>`, null, '', true);
+}
+
+/* ================= v0.177 — Diagnóstico 360° (G3): a reunião, preenchida pela equipe =================
+   Abre em Pesquisas → Quem respondeu → "Abrir reunião" (e na ficha da pessoa). Já vem com as respostas do cliente.
+   1. Os números que usam para decidir (5 a 8). 2. Como cada um funciona: as perguntas mudam com a natureza (valor ou taxa).
+   3. Roteiro: tudo do modelo completo (PQ_DIAG360) que o formulário curto não pergunta, para o documento de Arquitetura de
+   Métricas seguir respondido por inteiro. 4. Documentos: os arquivos do cliente e a leitura no Diagnóstico Growth.
+   Salva sozinho em diagnosticos e diagnostico_metricas (20261129120000). */
+const DG_SN = ['Sim', 'Às vezes', 'Não'];
+const DG_CAMPOS = {
+  taxa: [['numerador', 'O que entra em cima da conta', 'linha'], ['denominador', 'Pelo que dividem (ou "não tem")', 'linha'],
+    ['janela', 'Período da conta', ['Dia', 'Semana', 'Mês', 'Trimestre', 'Campanha', 'Desde sempre', 'Outro']],
+    ['inclui', 'Quem fica de fora da conta', 'texto', 'Ex.: tiram reembolsos? Contam renovações?'], ['confere', 'Alguém confere se está certo?', DG_SN]],
+  valor: [['fonte', 'Onde veem o número', 'linha'], ['detalhe', 'Nível de detalhe', ['Total', 'Por canal', 'Por campanha', 'Por produto', 'Por cliente']],
+    ['compara', 'Olham junto com o resultado que ele traz?', DG_SN]],
+  comum: [['responsavel', 'Quem cuida deste número', 'linha'], ['atualiza', 'De quanto em quanto tempo olham', ['Tempo real', 'Diária', 'Semanal', 'Mensal', 'Quando alguém lembra']],
+    ['decisao', 'Que decisão tomam olhando para ele', 'texto']],
+  mais: [['objetivo', 'Objetivo desta métrica hoje', 'texto'], ['clareza', 'A responsabilidade está clara na empresa?', ['Sim', 'Em parte', 'Não']],
+    ['reacao', 'Depois que agem, quanto tempo leva para o número mudar?', ['Horas', 'Dias', 'Semanas', 'Meses']], ['confianca', 'Quanto confiam no número (1 a 5)', ['1', '2', '3', '4', '5']],
+    ['valor', 'Valor atual', 'linha'], ['tem_dados', 'Têm os dados para calcular do jeito certo?', ['Sim', 'Em parte', 'Não', 'Não sei']]]
+};
+// um valor sozinho não diz se vai bem: com que resultado ele é olhado
+const DG_LIGA = { investimento: 'roas', impressoes: 'ctr', leads: 'cpl', leads_canal: 'cpl', organico: 'conv_captura', receita: 'margem', cliente: 'cac', mrr: 'churn', arr: 'churn',
+  receita_novos_base: 'nrr', expansao: 'nrr', lucro: 'margem', indicacoes: 'taxa_indicacao', receita_indicacao: 'taxa_indicacao', depoimentos: 'promotores' };
+// do modelo completo, o que o formulário curto já pergunta (o resto vira roteiro da reunião)
+const DG_JA_NO_CURTO = ['Nome da empresa', 'Há quanto tempo vende?', 'Tamanho da equipe', 'O que você espera deste trabalho?', 'Em quanto tempo você espera ver esse resultado?',
+  'Faturamento dos últimos 6 meses (deixe em branco o mês que não souber)', 'Ticket médio geral', 'Onde você vende', 'Canais que você usa', 'Investimento médio mensal em mídia', 'Como você vende'];
+const dgRoteiro = () => PQ_DIAG360.filter(x => !['metricas', 'documentos', 'meses'].includes(x.tp) && x.k !== 'modelo' && !DG_JA_NO_CURTO.includes(x.t) && !/^O que precisa acontecer/.test(x.t));
+const dgPlanilha = n => /\.(xlsx|xls|csv|txt)$/i.test(n || '');
+
+async function dgReuniao(m, p, perg) {
+  const rid = S.dgReu;
+  const [rs, its] = await Promise.all([q(sb.from('pesquisa_respostas').select('id,pessoa_id,envio_id,respondida_em').eq('id', rid)),
+    q(sb.from('pesquisa_resposta_itens').select('pergunta_id,valor_num,valor_texto,valor_json').eq('resposta_id', rid))]);
+  const R = rs[0]; if (!R) { S.dgReu = null; return vPesquisaDet(m); }
+  const [pes, cat, arqs, dgs] = await Promise.all([R.pessoa_id ? q(sb.from('pessoas').select('id,nome,email').eq('id', R.pessoa_id)) : [],
+    q(sb.from('metricas_definicoes').select('codigo,nome,etapa_aarrr,natureza,descricao_cliente,ordem').not('etapa_aarrr', 'is', null).order('ordem')),
+    R.envio_id ? q(sb.from('pesquisa_arquivos').select('id,grupo,nome,caminho,tamanho,enviado_em').eq('envio_id', R.envio_id).eq('status', 'enviado').order('enviado_em')).catch(() => []) : [],
+    q(sb.from('diagnosticos').select('*').eq('resposta_id', rid))]);
+  const PE = pes[0] || {}, CAT = Object.fromEntries(cat.map(c => [c.codigo, c])), porP = {};
+  its.forEach(i => (porP[i.pergunta_id] = porP[i.pergunta_id] || []).push(i));
+  const qMet = perg.find(x => x.tipo === 'metricas'), qDoc = perg.find(x => x.tipo === 'documentos');
+  const DEC = (qMet && porP[qMet.id] && porP[qMet.id][0].valor_json) || {}, DOCR = (qDoc && porP[qDoc.id] && porP[qDoc.id][0].valor_json) || {};
+  const tem = c => ['regular', 'ocasional'].includes((DEC[c] || {}).status);
+  let D = dgs[0];
+  if (!D) D = (await q(sb.from('diagnosticos').insert({ workspace_id: S.ws, resposta_id: rid, decide: Object.keys(DEC).filter(c => DEC[c].decide) }).select()))[0];
+  const MR = await q(sb.from('diagnostico_metricas').select('*').eq('diagnostico_id', D.id));
+  const M = Object.fromEntries(MR.map(x => [x.codigo, x]));
+  D.arquitetura = D.arquitetura || {}; D.arquitetura.roteiro = D.arquitetura.roteiro || {};
+  // resumo do que o cliente respondeu (o que não é métrica nem documento)
+  const fmtR = (x, L) => { if (!L || !L.length) return ''; const j = L[0].valor_json;
+    if (x.tipo === 'meses' && j) { const v = Object.values(j).map(Number).filter(n => n > 0); return v.length ? brl(v.reduce((a, b) => a + b, 0) / v.length) + ' por mês, em média (' + v.length + (v.length === 1 ? ' mês)' : ' meses)') : ''; }
+    if (x.tipo === 'lista' && j) return j.map(o => Object.values(o).join(' · ')).join('; ');
+    if (x.tipo === 'moeda') return L[0].valor_num == null ? '' : brl(L[0].valor_num);
+    return L.map(i => String(i.valor_texto ?? i.valor_num ?? '')).filter(Boolean).join(', '); };
+  const resumo = perg.filter(x => !['metricas', 'documentos'].includes(x.tipo)).map(x => [x.texto, fmtR(x, porP[x.id])]).filter(([, v]) => v);
+  let tS = {}, tD = null;
+  const salvaD = () => { clearTimeout(tD); tD = setTimeout(() => act(async () => { await q(sb.from('diagnosticos').update({ decide: D.decide, arquitetura: D.arquitetura, notas: D.notas || null }).eq('id', D.id)); marcaSalvo(); }), 700); };
+  const salvaM = c => { clearTimeout(tS[c]); tS[c] = setTimeout(() => act(async () => { const x = M[c];
+    const r = await q(sb.from('diagnostico_metricas').upsert({ workspace_id: S.ws, diagnostico_id: D.id, codigo: c, declarado: DEC[c] || null, detalhe: x.detalhe || {}, decide: D.decide.includes(c), observacao: x.observacao || null }, { onConflict: 'diagnostico_id,codigo' }).select());
+    M[c] = (r && r[0]) || x; marcaSalvo(); }), 700); };
+  const marcaSalvo = () => { const s = m.querySelector('#dgSalvo'); if (s) s.textContent = 'Salvo às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); };
+  const campo = (pre, [k, l, t, dica], v) => { const id = 'dg_' + pre + '_' + k, val = v ?? '';
+    const inp = Array.isArray(t) ? `<select id="${id}" data-dgk="${k}"><option value="">—</option>${t.map(o => `<option${val === o ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select>`
+      : t === 'texto' ? `<textarea id="${id}" data-dgk="${k}" rows="2" maxlength="2000">${esc(val)}</textarea>` : `<input id="${id}" data-dgk="${k}" value="${esc(val)}" maxlength="300">`;
+    return `<label for="${id}">${esc(l)}${inp}${dica ? `<span class="muted" style="font-weight:400">${esc(dica)}</span>` : ''}</label>`; };
+  const cartao = c => { const ct = CAT[c] || { nome: c, natureza: 'taxa' }, nat = ct.natureza === 'valor' ? 'valor' : 'taxa', dec = DEC[c] || {}, det = { ...dec, ...((M[c] || {}).detalhe || {}) };
+    const onde = (dec.como || []).join(', '), liga = DG_LIGA[c] && CAT[DG_LIGA[c]] ? CAT[DG_LIGA[c]].nome : '';
+    const esp = DG_CAMPOS[nat].map(f => f[0] === 'fonte' && onde ? [f[0], f[1], f[2], 'O cliente marcou: ' + onde] : f[0] === 'compara' && liga ? [f[0], f[1], f[2], 'Ex.: olhar junto com ' + liga + '.'] : f);
+    const preench = [...DG_CAMPOS[nat], ...DG_CAMPOS.comum].filter(f => String(det[f[0]] ?? '').trim()).length;
+    return `<div class="dg-mc" data-dgm="${esc(c)}"><div class="dg-mh"><div><b>${esc(ct.nome)}</b> <span class="pill ${nat === 'taxa' ? 'acc' : ''}">${nat === 'taxa' ? 'conta (taxa ou custo)' : 'valor (soma ou contagem)'}</span></div>
+      <span class="muted">${tem(c) ? 'O cliente disse que acompanha' + (onde ? ' em ' + esc(onde) : '') : 'Incluído na reunião'} · ${preench} de ${DG_CAMPOS[nat].length + DG_CAMPOS.comum.length} preenchidos</span></div>
+      <div class="grid2">${esp.concat(DG_CAMPOS.comum).map(f => campo(c, f, det[f[0]])).join('')}</div>
+      <details><summary class="muted">Mais detalhes (objetivo, clareza, tempo de reação, confiança, valor atual)</summary><div class="grid2">${DG_CAMPOS.mais.map(f => campo(c, f, det[f[0]])).join('')}
+        <label for="dg_${c}_obs">Observação da equipe<textarea id="dg_${c}_obs" data-dgobs rows="2" maxlength="5000">${esc((M[c] || {}).observacao || '')}</textarea></label></div></details></div>`; };
+  const roteiro = () => { const RT = D.arquitetura.roteiro, L = dgRoteiro(), secs = [...new Set(L.map(x => x.s))], kv = {};
+    L.forEach(x => { if (x.k) kv[x.k] = RT[x.t]; });
+    const vis = x => !x.c || [].concat(kv[x.c.k] || []).some(v => x.c.v.includes(v));
+    const fld = (x, i) => { const v = RT[x.t], id = 'dgr_' + i;
+      const inp = x.tp === 'multipla' ? `<div class="chips">${x.op.map((o, j) => `<label class="chip"><input type="checkbox" data-dgr="${esc(x.t)}" value="${esc(o)}" id="${id}_${j}"${(v || []).includes(o) ? ' checked' : ''}><span>${esc(o)}</span></label>`).join('')}</div>`
+        : x.tp === 'escolha' ? `<select id="${id}" data-dgr="${esc(x.t)}"><option value="">—</option>${x.op.map(o => `<option${v === o ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select>`
+        : x.tp === 'escala' ? `<select id="${id}" data-dgr="${esc(x.t)}"><option value="">—</option>${['1', '2', '3', '4', '5'].map(o => `<option${v === o ? ' selected' : ''}>${o}</option>`).join('')}</select>`
+        : ['numero', 'moeda'].includes(x.tp) ? `<input id="${id}" type="number" step="0.01" data-dgr="${esc(x.t)}" value="${esc(v ?? '')}">`
+        : `<textarea id="${id}" rows="2" data-dgr="${esc(x.t)}" maxlength="3000"${x.tp === 'lista' ? ' placeholder="Uma linha por item"' : ''}>${esc(v ?? '')}</textarea>`;
+      return `<div class="dg-rf"${vis(x) ? '' : ' hidden'} data-dgrc='${x.c ? esc(JSON.stringify(x.c)) : ''}' data-dgrk="${esc(x.k || '')}"><label for="${id}">${esc(x.t)}</label>${inp}</div>`; };
+    let i = 0;
+    return secs.map(s => { const qs = L.filter(x => x.s === s), n = qs.filter(x => { const v = RT[x.t]; return Array.isArray(v) ? v.length : String(v ?? '').trim(); }).length;
+      return `<details class="dg-sec"${S.dgAberta === s ? ' open' : ''} data-dgs="${esc(s)}"><summary><b>${esc(s)}</b> <span class="pill ${n === qs.length ? 'good' : n ? 'warn' : ''}">${n} de ${qs.length}</span></summary><div class="dg-rl">${qs.map(x => fld(x, i++)).join('')}</div></details>`; }).join(''); };
+  const docs = () => { const G = DOC_CATS.map(c => ({ ...c, st: DOCR[c.k], fs: arqs.filter(a => a.grupo === c.k) }));
+    const rot = { sim: ['good', 'Tem'], parte: ['warn', 'Tem em parte'], depois: ['warn', 'Vai mandar depois'], nao: ['bad', 'Não tem'] };
+    const extra = arqs.filter(a => !DOC_CATS.some(c => c.k === a.grupo)), L = D.leitura;
+    const cor = { ok: 'good', parcial: 'warn', falta: 'bad' }, tx = { ok: 'Tem', parcial: 'Parcial', falta: 'Falta' };
+    return `<div class="tw"><table><thead><tr><th>Grupo</th><th>O cliente disse</th><th>Arquivos</th></tr></thead><tbody>${G.concat(extra.length ? [{ l: 'Outros', fs: extra }] : []).map(g => `<tr><td>${esc(g.l)}</td>
+      <td>${g.fs.length ? '<span class="pill good">Recebido</span>' : g.st ? `<span class="pill ${rot[g.st][0]}">${rot[g.st][1]}</span>` : '<span class="muted">sem resposta</span>'}</td>
+      <td>${g.fs.map(a => `<a href="#" data-dgarq="${a.id}">${esc(a.nome)}</a> <small class="muted">${dgTam(a.tamanho)}</small>`).join('<br>') || '—'}</td></tr>`).join('')}</tbody></table></div>
+      <div class="acts"><span class="muted">${arqs.filter(a => dgPlanilha(a.nome)).length} planilha(s) para ler. PDFs e imagens ficam só para baixar.</span><button class="btn pri" id="dgLer"${arqs.some(a => dgPlanilha(a.nome)) ? '' : ' disabled'}>Ler os arquivos no Diagnóstico Growth</button></div>
+      ${L ? `<h3>O que os arquivos mostram <span class="pill">${esc(String(L.score))}% completo</span> <small class="muted">lido em ${dtt(L.lido_em)}</small></h3>
+        ${(L.itens || []).map(x => `<div class="dg-it ${x.status}"><span class="pill ${cor[x.status] || ''}">${tx[x.status] || esc(x.status)}</span> <b>${esc(x.titulo)}</b><div class="muted">${esc(x.detalhe || '')}</div></div>`).join('')}
+        <label for="dgMsgCli">Mensagem para o cliente<textarea id="dgMsgCli" rows="7">${esc(L.mensagem || '')}</textarea></label><div class="acts"><button class="btn" id="dgCopia">Copiar mensagem</button></div>` : ''}`; };
+  const desenha = () => {
+    const temL = cat.filter(c => tem(c.codigo)), naoL = cat.filter(c => (DEC[c.codigo] || {}).status === 'nao'), nd = D.decide.length;
+    const outros = cat.filter(c => !tem(c.codigo) && !D.decide.includes(c.codigo));
+    m.innerHTML = `<div class="head"><div><button class="btn sm" id="dgVolta">← Quem respondeu</button><h1 style="margin-top:8px">Reunião do diagnóstico: ${esc(PE.nome || 'cliente')}</h1>
+      <span class="muted">${esc(p.nome)} · respondido em ${dtt(R.respondida_em)} · ${D.status === 'validado' ? '<span class="pill good">validado</span>' : '<span class="pill warn">rascunho</span>'} · <span id="dgSalvo">salva sozinho</span></span></div>
+      <div class="acts"><button class="btn" id="dgVer">Ver as respostas do cliente</button>${R.pessoa_id ? '<button class="btn" id="dgFicha">Abrir cliente</button>' : ''}</div></div>
+    <div class="dg-reu"><aside class="panel dg-lado"><h2>O que o cliente respondeu</h2><dl>${resumo.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('') || '<dd class="muted">Sem respostas além das métricas.</dd>'}
+      <dt>Números</dt><dd><span class="pill good">${temL.length} acompanha</span> <span class="pill bad">${naoL.length} não</span></dd></dl></aside>
+    <div class="dg-cont">
+      <section class="panel"><h2>1. Os números que usam para decidir <span class="pill ${nd >= 5 && nd <= 8 ? 'good' : 'warn'}">${nd} de 5 a 8</span></h2>
+        <p class="muted">Dos números que ele acompanha, marque os que de fato pesam nas decisões. Só esses ganham o detalhe abaixo.</p>
+        <div class="chips">${temL.concat(cat.filter(c => !tem(c.codigo) && D.decide.includes(c.codigo))).map((c, i) => `<label class="chip"><input type="checkbox" data-dgdec="${esc(c.codigo)}" id="dgdec_${i}"${D.decide.includes(c.codigo) ? ' checked' : ''}><span>${esc(c.nome)}</span></label>`).join('') || '<span class="muted">O cliente não marcou nenhum número que acompanha.</span>'}</div>
+        <div class="acts"><select id="dgMais" aria-label="Incluir outro número"><option value="">Incluir outro número que eles usam…</option>${AARRR.map(([k, l]) => `<optgroup label="${l}">${outros.filter(c => c.etapa_aarrr === k).map(c => `<option value="${esc(c.codigo)}">${esc(c.nome)}</option>`).join('')}</optgroup>`).join('')}</select></div>
+        ${naoL.length ? `<p class="muted"><b>Não acompanham:</b> ${naoL.map(c => esc(c.nome)).join(', ')}. Pergunte se têm os dados para começar a medir.</p>` : ''}</section>
+      <section class="panel"><h2>2. Como cada um funciona</h2>${D.decide.length ? D.decide.map(cartao).join('') : '<p class="muted">Marque acima os números que usam para decidir.</p>'}</section>
+      <section class="panel" id="dgRot"><h2>3. Roteiro da reunião</h2><p class="muted">O que o formulário curto não pergunta: produtos, jornada, North Star e guardrails, dados, gestão e prioridades. Abra uma parte por vez.</p>${roteiro()}</section>
+      <section class="panel"><h2>4. Documentos</h2>${docs()}</section>
+      <section class="panel"><h2>5. Anotações</h2><label for="dgNotas">O que chamou a atenção<textarea id="dgNotas" rows="4" maxlength="20000">${esc(D.notas || '')}</textarea></label>
+        <div class="acts">${D.status === 'validado' ? '<button class="btn" id="dgReabre">Voltar para rascunho</button>' : '<button class="btn pri" id="dgValida">Validar diagnóstico</button>'}</div></section>
+    </div></div>`;
+    liga();
+  };
+  const liga = () => {
+    $('#dgVolta').onclick = () => { S.dgReu = null; render(); };
+    $('#dgVer').onclick = () => pqVerResposta(perg, its, (PE.nome ? PE.nome + ' · ' : '') + p.nome);
+    if ($('#dgFicha')) $('#dgFicha').onclick = () => fichaPessoa(R.pessoa_id);
+    m.querySelectorAll('[data-dgdec]').forEach(i => i.onchange = () => { const c = i.dataset.dgdec; D.decide = i.checked ? [...new Set([...D.decide, c])] : D.decide.filter(x => x !== c); salvaD(); if (M[c] || i.checked) { M[c] = M[c] || { detalhe: {} }; salvaM(c); } desenha(); });
+    $('#dgMais').onchange = e => { const c = e.target.value; if (!c) return; D.decide = [...new Set([...D.decide, c])]; M[c] = M[c] || { detalhe: {} }; salvaD(); salvaM(c); desenha(); };
+    m.querySelectorAll('[data-dgm]').forEach(box => { const c = box.dataset.dgm;
+      box.addEventListener('input', ev => { const t = ev.target; M[c] = M[c] || { detalhe: {} };
+        if (t.dataset.dgk) M[c].detalhe = { ...(M[c].detalhe || {}), [t.dataset.dgk]: t.value }; else if (t.hasAttribute('data-dgobs')) M[c].observacao = t.value; else return;
+        salvaM(c); }); });
+    m.querySelectorAll('.dg-sec').forEach(s => s.addEventListener('toggle', () => { if (s.open) S.dgAberta = s.dataset.dgs; }));
+    const RT = D.arquitetura.roteiro;
+    const rot = m.querySelector('#dgRot');
+    rot.addEventListener('input', ev => { const t = ev.target.closest('[data-dgr]'); if (!t || t.type === 'checkbox') return; RT[t.dataset.dgr] = t.value; salvaD(); condRot(); });
+    rot.addEventListener('change', ev => { const t = ev.target.closest('[data-dgr]'); if (!t) return;
+      RT[t.dataset.dgr] = t.type === 'checkbox' ? [...m.querySelectorAll(`[data-dgr="${CSS.escape(t.dataset.dgr)}"]:checked`)].map(x => x.value) : t.value; salvaD(); condRot(); });
+    const condRot = () => { const kv = {}; dgRoteiro().forEach(x => { if (x.k) kv[x.k] = RT[x.t]; });
+      m.querySelectorAll('.dg-rf[data-dgrc]').forEach(f => { if (!f.dataset.dgrc) return; const c = JSON.parse(f.dataset.dgrc); f.hidden = ![].concat(kv[c.k] || []).some(v => c.v.includes(v)); }); };
+    $('#dgNotas').oninput = e => { D.notas = e.target.value; salvaD(); };
+    m.querySelectorAll('[data-dgarq]').forEach(a => a.onclick = ev => { ev.preventDefault(); act(async () => { const x = arqs.find(y => y.id === a.dataset.dgarq);
+      const r = await sb.storage.from('diagnostico').createSignedUrl(x.caminho, 300, { download: x.nome }); if (r.error) throw new Error('Não consegui abrir o arquivo: ' + r.error.message); window.open(r.data.signedUrl, '_blank', 'noopener'); }); });
+    $('#dgLer').onclick = () => { S.gxDiag = { id: D.id, nome: PE.nome || 'cliente', arquivos: arqs.filter(a => dgPlanilha(a.nome)).map(a => ({ caminho: a.caminho, nome: a.nome })), volta: { pqSel: S.pqSel, dgReu: rid } }; S.gxC = null; S.view = 'gro-diag'; render(); };
+    if ($('#dgCopia')) $('#dgCopia').onclick = async () => { try { await navigator.clipboard.writeText($('#dgMsgCli').value); toast('Mensagem copiada.'); } catch (er) { $('#dgMsgCli').select(); toast('Selecionei o texto. Use Ctrl+C.'); } };
+    if ($('#dgValida')) $('#dgValida').onclick = () => act(async () => { const nd = D.decide.length; if (nd < 1) throw new Error('Marque pelo menos um número que eles usam para decidir.');
+      await q(sb.from('diagnosticos').update({ status: 'validado', validado_por: S.user.id, decide: D.decide, arquitetura: D.arquitetura, notas: D.notas || null }).eq('id', D.id)); D.status = 'validado'; toast('Diagnóstico validado.'); desenha(); });
+    if ($('#dgReabre')) $('#dgReabre').onclick = () => act(async () => { await q(sb.from('diagnosticos').update({ status: 'rascunho' }).eq('id', D.id)); D.status = 'rascunho'; desenha(); });
+  };
+  desenha();
 }
 
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;
@@ -15600,6 +15891,8 @@ async function vPesquisaDet(m) {
   const [ps, perg] = await Promise.all([q(sb.from('pesquisas').select('*').eq('id', id)), q(sb.from('pesquisa_perguntas').select('*').eq('pesquisa_id', id).order('ordem').order('criado_em'))]);
   const p = ps[0]; if (!p) { S.pqSel = null; return vPesquisas(m); }
   S.pqSecao = await temColuna('pesquisa_perguntas', 'secao');
+  S.dgOk = p.tipo === 'diagnostico' && await temColuna('diagnosticos', 'resposta_id');
+  if (S.dgReu && S.dgOk) return dgReuniao(m, p, perg);
   m.innerHTML = `<div class="head"><div><button class="btn sm" id="pqVolta">← Pesquisas</button><h1 style="margin-top:8px">${esc(p.nome)} ${pillAtivo(p.ativa)}</h1><span class="muted">${PQ_TIPO[p.tipo]} · ${esc(PQ_GAT[p.gatilho])}${p.gatilho === 'etapa' ? ': ' + esc(p.gatilho_etapa) : ''}${p.gatilho === 'checkin' && p.checkin_dias ? ': a cada ' + p.checkin_dias + ' dias' : ''}${p.gatilho === 'etapa_aluno' && p.etapa_aluno_id ? ': ' + esc(((await q(sb.from('etapas_kanban').select('nome').eq('id', p.etapa_aluno_id)).catch(() => []))[0] || {}).nome || 'etapa') : ''}</span></div><div class="acts"><button class="btn" id="pqEd">Configurar</button></div></div>
   <div class="tabs">${[['perguntas', 'Perguntas'], ['form', 'Formulário e aparência'], ['qual', 'Qualificação e pontos'], ['quem', 'Quem respondeu'], ['envios', 'Fila de envio'], ['res', 'Resultados'], ['ins', 'Insights']].map(([k, l]) => `<button data-t="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="pqBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
   $('#pqVolta').onclick = () => { S.pqSel = null; render(); }; $('#pqEd').onclick = () => modalPesquisa(p);
@@ -15810,6 +16103,7 @@ function pfDesenha(el, d, token, op = {}) {
       <p class="pf-msg" role="status" aria-live="polite"></p></form></div></div>`;
   const f = el.querySelector('form'), msg = el.querySelector('.pf-msg'); let at = 0;
   if ((d.perguntas || []).some(x => PQ_TP_G1[x.tipo] || x.condicao)) pfLigaG1(f, d);
+  if ((d.perguntas || []).some(x => x.tipo === 'documentos' && (x.config || {}).upload)) pfLigaUpload(f, token, op);
   const mostra = () => {
     f.querySelectorAll('[data-passo]').forEach(s => s.hidden = +s.dataset.passo !== at);
     f.querySelector('[data-pf="volta"]').hidden = at === 0; f.querySelector('[data-pf="segue"]').hidden = at === N - 1; f.querySelector('[data-pf="envia"]').hidden = at !== N - 1;
@@ -15835,7 +16129,19 @@ function pfDesenha(el, d, token, op = {}) {
     return true;
   };
   const topo = () => { if (!op.previa) { const b = document.getElementById('pubPesq'); if (b) b.scrollTop = 0; } };
-  f.querySelector('[data-pf="segue"]').onclick = () => { if (valida()) { at++; mostra(); topo(); } };
+  // diagnóstico pelo link individual: salva a cada passo (e alguns segundos depois de mexer) para continuar depois
+  const rasc = !op.previa && d.tipo === 'diagnostico' && !d.aberto && 'rascunho' in d, salvoEl = f.querySelector('.pf-acts > span');
+  let rT = null;
+  const salvaRasc = () => { clearTimeout(rT); if (!rasc) return; salvoEl.className = 'pf-salvo'; salvoEl.textContent = 'Salvando…';
+    q(sb.rpc('pesquisa_rascunho_salvar', { p_token: token, p_dados: pfRascLe(f, at) })).then(() => { salvoEl.textContent = 'Salvo às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + '. Pode voltar pelo mesmo link.'; })
+      .catch(() => { salvoEl.textContent = 'Não consegui salvar agora. Suas respostas continuam nesta tela.'; }); };
+  if (rasc) {
+    if (d.rascunho) { pfRascPoe(f, d.rascunho); at = Math.max(0, Math.min(+d.rascunho.passo || 0, N - 1)); mostra(); salvoEl.className = 'pf-salvo'; salvoEl.textContent = 'Continuando de onde você parou.'; }
+    else { salvoEl.className = 'pf-salvo'; salvoEl.textContent = 'O que você responde fica salvo.'; }
+    f.addEventListener('input', () => { clearTimeout(rT); rT = setTimeout(salvaRasc, 4000); });
+    f.addEventListener('change', () => { clearTimeout(rT); rT = setTimeout(salvaRasc, 4000); });
+  }
+  f.querySelector('[data-pf="segue"]').onclick = () => { if (valida()) { at++; mostra(); topo(); salvaRasc(); } };
   f.querySelector('[data-pf="volta"]').onclick = () => { at--; mostra(); topo(); };
   f.onsubmit = async e => {
     e.preventDefault(); if (!valida()) return;
@@ -15877,6 +16183,7 @@ async function vPesquisaPublica(token) {
   box.style.background = pfVis(d.visual).cor_fundo;
   document.title = pfVis(d.visual).titulo || d.nome;
   if (d.expirado) return aviso('Link vencido', 'Este link venceu. Peça um novo link a quem enviou.');
+  if (d.ja_respondida && d.tipo === 'diagnostico' && (d.perguntas || []).some(x => x.tipo === 'documentos' && (x.config || {}).upload)) return pfSoArquivos(box, d, token);
   if (d.ja_respondida) return aviso('Obrigado!', 'Você já respondeu esta pesquisa.');
   pfDesenha(box, d, token);
 }
@@ -16074,13 +16381,14 @@ async function pqRespondentes(el, p, perg) {
     <td>${x.res === 'qualificado' ? '<span class="pill good">qualifica</span>' : x.res === 'nao_qualificado' ? '<span class="pill bad">não qualifica</span>' : '<span class="muted">sem corte</span>'}</td>
     <td>${x.pe ? seloQual(x.pe) : '<span class="muted">não entrou no CRM</span>'}</td>
     <td><div class="tg-l">${x.tags.map(tagPill).join('') || '<span class="muted">—</span>'}</div></td>
-    <td style="white-space:nowrap"><button class="btn sm" data-vr="${x.r.id}">Ver respostas</button> ${x.pe ? `<button class="btn sm" data-fp="${x.pe.id}">${p.publico === 'cliente' ? 'Abrir cliente' : 'Abrir lead'}</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="7" class="empty">Ninguém respondeu ainda.</td></tr>'}</tbody></table></div>
+    <td style="white-space:nowrap">${p.tipo === 'diagnostico' && S.dgOk ? `<button class="btn sm pri" data-reu="${x.r.id}">Abrir reunião</button> ` : ''}<button class="btn sm" data-vr="${x.r.id}">Ver respostas</button> ${x.pe ? `<button class="btn sm" data-fp="${x.pe.id}">${p.publico === 'cliente' ? 'Abrir cliente' : 'Abrir lead'}</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="7" class="empty">Ninguém respondeu ainda.</td></tr>'}</tbody></table></div>
   ${regra ? '<small class="muted">"Pontos" e "Pela regra" usam a regra de hoje (aba Qualificação e pontos). "No CRM agora" é o que está gravado no lead; se mudou a regra depois que a pessoa respondeu, use "Recalcular quem já respondeu" lá.</small>' : ''}</div>`;
   if ($('#rIrQ')) $('#rIrQ').onclick = e => { e.preventDefault(); S.pqTab = 'qual'; render(); };
   $('#rF').onchange = e => { V.filtro = e.target.value; render(); };
   $('#rO').onchange = e => { V.ord = e.target.value; render(); };
   $('#rT').onchange = e => { V.todas = e.target.checked; render(); };
   el.querySelectorAll('[data-fp]').forEach(b => b.onclick = () => fichaPessoa(b.dataset.fp));
+  el.querySelectorAll('[data-reu]').forEach(b => b.onclick = () => { S.dgReu = b.dataset.reu; render(); });
   el.querySelectorAll('[data-vr]').forEach(b => b.onclick = () => { const x = L.find(y => y.r.id === b.dataset.vr); pqVerResposta(perg, porR[b.dataset.vr], (x && x.nome ? x.nome + ' · ' : '') + p.nome); });
   $('#rCsv').onclick = () => {
     const cel = v => { const s = String(v ?? ''); return /[";\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };

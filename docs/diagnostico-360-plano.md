@@ -1,6 +1,6 @@
 # Diagnóstico 360° de Growth, Dados e Maturidade Operacional: plano técnico
 
-**Data:** 30/10/2026 · **Situação:** G1 construída (v0.176: formulário do cliente e catálogo). G2 a G5 seguem só no plano.
+**Data:** 30/10/2026 · **Situação:** G1 construída (v0.176). G1b, G2 e G3 construídas (v0.177: formulário curto, arquivos e reunião; ver seção 8). G4 e G5 seguem só no plano.
 **Base:** a especificação da Rebecka (30/10) e as decisões das etapas E1 a E7 (`docs/auditoria-integracao-comercial-onboarding.md`). Este plano detalha a etapa de onboarding com diagnóstico e o projeto de implantação de 90 dias.
 
 ## 0. Princípios
@@ -407,3 +407,50 @@ Nenhuma tabela a mais além das três já previstas.
    Com o Google Forms, as respostas teriam de ser importadas e ligadas ao cliente depois.
 3. **Validade do link de envio:** 30 dias por padrão?
 4. **Quem dispara o diagnóstico:** sozinho, ao ativar o contrato de um produto marcado "com diagnóstico", ou a equipe manda manualmente?
+
+## 8. Ajuste depois do teste da G1 (30/10/2026)
+
+**O que mudou:** a G1 ficou longa e técnica para o cliente. A prévia testada (formulário curto, reunião e documentos) passa a ser o desenho:
+- o cliente responde só o que sabe sem ajuda;
+- a parte técnica vai para a **reunião**, preenchida pela equipe.
+
+Nada sai da cobertura do documento de Arquitetura de Métricas. Cada pergunta técnica que deixa o formulário do cliente passa para a tela da reunião: numerador, denominador, janela, quem entra e quem sai, responsável, decisão, confiança, North Star, primeiro valor, guardrails, receita de novos e da base. O modelo completo de 75 perguntas continua disponível como "Diagnóstico 360° completo".
+
+### G1b: formulário curto do cliente
+- **Banco (aditivo):**
+  - `metricas_definicoes.natureza`: `valor` (soma ou contagem: investimento, leads, faturamento) ou `taxa` (conta: CPL, CAC, conversão, churn, ROAS, LTV), preenchida nas 66 métricas;
+  - `pesquisa_envios.rascunho` jsonb e `rascunho_em`;
+  - função `pesquisa_rascunho_salvar(token, dados)`, que serve para salvar e continuar depois. Ela só vale para o diagnóstico, com limite de tamanho, e recusa link vencido;
+  - `pesquisa_publica` devolve o rascunho.
+- **Tela:**
+  - o diagnóstico abre uma seção por tela, com a barra de progresso e o tempo estimado;
+  - a pergunta de métricas ganha o modo simples ("Acompanho", "Não acompanho" ou "Não sei" e, se acompanha, onde);
+  - modelo novo "Diagnóstico 360° (cliente)", com as 6 partes da prévia.
+
+### G2: documentos (D8)
+- **Banco:**
+  - local privado `diagnostico` no Storage: até 20 MB por arquivo e 40 arquivos por link. Aceita planilha, CSV, PDF, Word, PowerPoint e imagem;
+  - tabela `pesquisa_arquivos` (empresa, envio, pessoa, grupo, nome, caminho, tamanho, tipo, data);
+  - função na nuvem `diagnostico-arquivo`: confere o link (válido e de diagnóstico) e devolve uma autorização de envio de uso único. O cliente não lê nada de ninguém e pode tirar um arquivo dele enquanto o link vale. A equipe vê os arquivos pela proteção por empresa.
+- **Tela:**
+  - no fim do formulário, "Enviar", "Mando depois" ou "Não tenho" em cada grupo;
+  - o mesmo link reabre só para mandar o que faltou.
+
+### G3: reunião e leitura dos documentos (D6 e D7, adaptados)
+- **Banco:**
+  - **`diagnosticos`**: empresa, pessoa, envio, resposta, situação (`rascunho` ou `validado`), números usados para decidir, arquitetura, anotações, leitura dos documentos, quem validou e quando;
+  - **`diagnostico_metricas`**: o que o cliente declarou e o detalhe da reunião, conforme a natureza da métrica;
+  - proteção por empresa; só quem pode editar altera.
+- **Tela:**
+  - "Abrir reunião" em Quem respondeu e na ficha da pessoa. Já vem com as respostas e salva sozinha;
+  - as perguntas mudam com a natureza da métrica, como na prévia;
+  - "Ler os arquivos no Diagnóstico Growth" abre o módulo que já existe com os arquivos do cliente já carregados, sem baixar nem subir de novo;
+  - o resultado (completude, cobertura por mês, o que tem e o que falta, mensagem para o cliente) fica guardado no diagnóstico daquele cliente. **Não mexe** no modelo de Growth da empresa, que é o que o Diagnóstico Growth salva hoje.
+
+### Impactos
+- **Formulários que não são diagnóstico:** não mudam.
+- **Respostas da G1:** continuam abrindo.
+- **Diagnóstico Growth aberto pelo menu:** funciona como hoje.
+- **Financeiro e contratos:** não mudam.
+- **Risco a vigiar:** o envio de arquivos sem login. Ele fica restrito ao link válido, ao tamanho, à quantidade, ao tipo de arquivo e a um local privado.
+- **Ordem:** G1b, depois G2, depois G3. Cada uma é testada (banco e tela) e publicada antes da próxima.

@@ -1,3 +1,18 @@
+## v0.177
+- Migrações:
+  - `20261129100000_diagnostico_g1b.sql`: `metricas_definicoes.natureza` (valor ou taxa), `pesquisa_envios.rascunho` e `rascunho_em`, `pesquisa_rascunho_salvar`. `pesquisa_publica` passa a devolver o rascunho (troca de texto, com erro se o trecho não for encontrado);
+  - `20261129110000_diagnostico_g2_arquivos.sql`: tabela `pesquisa_arquivos`, local privado `diagnostico` no Storage e a política de leitura da equipe. Funções `pesquisa_arquivo_envio`, `_autorizar`, `_caminho`, `_confirmar` e `_remover` (só service_role) e `pesquisa_arquivos_do_link` (anon);
+  - `20261129120000_diagnostico_g3_reuniao.sql`: tabelas `diagnosticos` e `diagnostico_metricas`, com gatilhos de coerência e RLS.
+- Função na nuvem `diagnostico-arquivo` (com verificação de JWT).
+- index.html: 0.176 → 0.177:
+  - `PQ_DIAG_CLI`, `PQ_MODELOS.diagnostico_cliente`, `DG_MET_CURTO`, `MET_ST_S`, `MET_ONDE`;
+  - `pfRascChave`, `pfRascLe`, `pfRascPoe` e o rascunho em `pfDesenha`;
+  - `DG_EXT`, `dgArqFn`, `pfLigaUpload`, `pfSoArquivos`;
+  - `DG_CAMPOS`, `DG_LIGA`, `dgRoteiro`, `dgReuniao`;
+  - `gxEst` com estado separado para os arquivos do cliente (`S.gxDiag`, `S.gxC`), e `gxViewDiag` com "Guardar no diagnóstico do cliente";
+  - "Abrir reunião" em `pqRespondentes` e em `fichaPessoa`;
+  - teste `t177_diagnostico_reuniao.py`.
+
 ## v0.176
 - Migração `20261128100000_diagnostico_g1.sql`:
   - `pesquisas` com tipo `diagnostico` e `publico`;

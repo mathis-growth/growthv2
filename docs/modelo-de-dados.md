@@ -1,3 +1,18 @@
+## v0.177 — Diagnóstico 360° (G1b, G2 e G3)
+- `metricas_definicoes.natureza`: `valor` (soma ou contagem) ou `taxa` (conta). Preenchida em todas as métricas do funil.
+- `pesquisa_envios.rascunho` (jsonb: `{passo, campos: {chave do campo: valor}, listas: {pergunta: linhas}}`) e `rascunho_em`.
+- **`pesquisa_arquivos`**:
+  - empresa, envio, pesquisa, pessoa, grupo (código do grupo de documentos), nome, caminho no Storage (`empresa/envio/id.ext`), tamanho, tipo;
+  - status (`pendente` até a função confirmar que o arquivo chegou, depois `enviado`), `criado_em`, `enviado_em`.
+- Storage: local privado **`diagnostico`** (20 MB por arquivo).
+- **`diagnosticos`**:
+  - um por resposta (`resposta_id` único). Pesquisa, envio e pessoa vêm da resposta;
+  - `status` (`rascunho` ou `validado`), `decide` text[] (códigos das métricas usadas para decidir);
+  - `arquitetura` jsonb (`roteiro`: {texto da pergunta do modelo completo: resposta}), `notas`;
+  - `leitura` jsonb (score, itens com título, status, detalhe e o que pedir, mensagem, cobertura, vendas, arquivos, `lido_em`);
+  - `validado_em` e `validado_por`.
+- **`diagnostico_metricas`**: diagnóstico, código, `declarado` (o que o cliente marcou), `detalhe` jsonb (numerador, denominador, janela, inclui, confere, fonte, detalhe, compara, responsavel, atualiza, decisao, objetivo, clareza, reacao, confianca, valor, tem_dados), `decide`, `observacao`. Único por (diagnóstico, código).
+
 ## v0.176 — Diagnóstico 360° (G1)
 - `pesquisas.tipo` aceita `diagnostico`; `pesquisas.publico` (`lead` ou `cliente`; os antigos: lead → lead, os outros → cliente).
 - `pesquisa_perguntas.tipo` aceita `numero`, `moeda`, `meses`, `metricas`, `lista` e `documentos`.

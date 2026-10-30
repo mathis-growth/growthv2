@@ -1,3 +1,18 @@
+## v0.177 — Diagnóstico 360° (G1b, G2 e G3)
+- **Rascunho:** só no diagnóstico e só pelo link individual, válido e ainda não respondido. Depois de responder, o rascunho não volta mais.
+- **Arquivos do cliente:**
+  - só no diagnóstico, com o link dentro da validade. Vale também depois de responder, para mandar o que faltou;
+  - até 40 arquivos por link e 20 MB por arquivo. Tipos: xlsx, xls, csv, txt, pdf, doc, docx, ppt, pptx, png, jpg, jpeg;
+  - o nome do arquivo é limpo (sem barras nem caracteres de controle);
+  - cada envio passa pela função na nuvem: ela confere o link, dá uma autorização de uso único, confere que o arquivo chegou e só então ele conta;
+  - autorizações de mais de um dia que não viraram arquivo deixam de contar;
+  - o cliente vê e tira só os arquivos do próprio link. A equipe vê os da empresa (quem lê Pesquisas) e exclui (quem edita Growth).
+- **Reunião:**
+  - um diagnóstico por resposta, que nasce ao abrir a reunião, com os números que o cliente marcou como "usados para decidir" (no formulário completo);
+  - salva sozinha. Só quem edita Growth altera;
+  - "Validar" exige pelo menos um número para decidir. Voltar a rascunho limpa a validação.
+- **Leitura dos arquivos:** aberta pela reunião, usa um estado separado do Diagnóstico Growth da empresa e grava só no diagnóstico do cliente. O Growth Model da empresa não muda.
+
 ## v0.176 — Diagnóstico 360° (G1)
 - O formulário de cliente vai pelo link individual (Fila de envio). O link do diagnóstico vale 30 dias; vencido, não abre nem aceita resposta.
 - A pergunta condicional só aparece, e só é cobrada, quando a pergunta indicada tem uma das respostas escolhidas. No banco, a escondida também não é cobrada.
