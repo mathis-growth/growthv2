@@ -1108,6 +1108,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
 #arvRoot .arv-rosca li:hover{background:var(--accent-soft)} #arvRoot .arv-rosca li i{width:10px;height:10px;border-radius:3px}
 #arvRoot .arv-rosca li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
+<style id="v174">.op-cts{display:flex;flex-direction:column;gap:2px;margin:4px 0;font-size:12px}.op-cts a{cursor:pointer;color:var(--accent)}.card.op-foco{box-shadow:0 0 0 3px rgba(var(--accent-rgb),.45)}</style>
 <style id="v173">.tlf{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}.tlf button{border:1px solid var(--line);background:none;color:inherit;font:inherit;font-size:12px;border-radius:99px;padding:2px 10px;cursor:pointer}.tlf button.on{border-color:var(--accent);color:var(--accent);font-weight:700}.tlf button b{color:var(--muted);font-weight:600}
 .tlu{max-height:360px;overflow:auto}.tlt{font-style:normal;font-size:10.5px;font-weight:700;border-radius:99px;padding:0 6px;margin-right:4px;border:1px solid var(--line)}.tlt-fin{color:var(--good)}.tlt-com{color:var(--accent)}.tlt-jor{color:#9333ea}.tlt-mkt{color:#d97706}</style>
 <style id="v164">/* v0.164 — Cockpit: um painel por área, com números e um gráfico, clicável */
@@ -1201,7 +1202,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.173 · 30/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.174 · 30/10/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -2743,13 +2744,27 @@ async function fecharNegocio(pessoaId, tipo, depoisContrato) {
     <p class="muted">Os motivos alimentam a análise do funil. Você pode editar a lista em Cadastros → Motivos de ganho e perda.</p>`,
     async d => {
       await q(sb.from('pessoas').update({ negocio_status: tipo, negocio_motivo_id: d.motivo, negocio_obs: nul(d.obs) }).eq('id', pessoaId));
+      const opId = await negocioOportunidade(pessoaId, tipo === 'ganho' ? 'ganha' : 'perdida', (motivos.find(x => x.id === d.motivo) || {}).nome);
       toast(tipo === 'ganho' ? 'Negócio marcado como ganho' : 'Negócio marcado como perdido');
-      if (tipo === 'ganho' && depoisContrato) setTimeout(() => ofertaContrato(pessoaId).catch(() => {}), 400);
+      if (tipo === 'ganho' && depoisContrato) setTimeout(() => ofertaContrato(pessoaId, opId).catch(() => {}), 400);
     }, tipo === 'ganho' ? 'Marcar como ganho' : 'Marcar como perdido');
+}
+/* v0.174 (E2): o negócio do lead é a oportunidade de venda nova. Ganhar ou perder o lead fecha a oportunidade aberta dele
+   (ganho sem oportunidade cria uma, já ganha), e o contrato sai ligado a ela. */
+const e2Ok = () => temColuna('contratos', 'oportunidade_id');
+async function negocioOportunidade(pessoaId, status, motivo) {
+  if (!(await e2Ok())) return null;
+  const ab = await q(sb.from('oportunidades').select('id').eq('pessoa_id', pessoaId).eq('tipo', 'nova_venda').eq('status', 'aberta').order('criado_em'));
+  const agora = new Date().toISOString();
+  if (ab.length) { await q(sb.from('oportunidades').update({ status, fechado_em: agora, ...(status === 'perdida' ? { motivo: motivo || null } : {}) }).in('id', ab.map(x => x.id))); return ab[0].id; }
+  if (status !== 'ganha') return null;
+  const [pp] = await q(sb.from('pessoas').select('nome,responsavel_comercial_id').eq('id', pessoaId)), id = crypto.randomUUID();
+  await q(sb.from('oportunidades').insert({ id, workspace_id: S.ws, pessoa_id: pessoaId, titulo: 'Negócio com ' + ((pp || {}).nome || 'cliente'), tipo: 'nova_venda', status: 'ganha', fechado_em: agora, origem: 'crm', responsavel_id: (pp || {}).responsavel_comercial_id || null }));
+  return id;
 }
 async function ganhouNegocio(pessoaId) {
   const p = one(await q(sb.from('pessoas').select('negocio_status').eq('id', pessoaId).single()));
-  if (p && p.negocio_status === 'ganho') return ofertaContrato(pessoaId);
+  if (p && p.negocio_status === 'ganho') return ofertaContrato(pessoaId, await negocioOportunidade(pessoaId, 'ganha'));
   return fecharNegocio(pessoaId, 'ganho', true);
 }
 
@@ -2844,12 +2859,15 @@ async function vCrmLeads(m) {
     q(sb.from('campanhas').select('id,nome').eq('workspace_id', w).order('nome')),
     crmExtras(), equipeAtiva()
   ]);
+  const opsAb = (await e2Ok()) ? await q(sb.from('oportunidades').select('id,pessoa_id,valor_estimado').eq('workspace_id', w).eq('tipo', 'nova_venda').eq('status', 'aberta')).catch(() => []) : null;
+  const opDe = pid => (opsAb || []).find(o => o.pessoa_id === pid);
   const RL = S.respL = S.respL || '';
   const lista = pes.filter(p => crmPassa(p, F, X) && passaResp(p.responsavel_comercial_id, RL, eqs));
   m.innerHTML = `<div class="head"><h1>Funil de leads</h1><div class="acts">${ir('crm-oport', 'Oportunidades de clientes')}${filtroRespHtml('rlF', eqs, RL, 'Comercial responsável')}<button class="btn" id="gEt">Gerenciar etapas</button><button class="btn pri" id="novo">Novo lead</button></div></div>
   <span class="muted">Arraste os cartões entre as etapas. Ao levar para Cliente, o sistema pede o motivo do ganho e abre o contrato. Clique no nome para abrir o cartão completo.</span>
   <div class="panel">${crmFiltroHtml(F, pes, X, camp, lista.length)}${quadro(etapas, lista, p => `<div class="card" draggable="true" data-id="${p.id}">${crmCardTopo(p, X)}
     <div class="ca"><button class="btn sm" data-q="${p.id}">Qualificar</button><button class="btn sm" data-s="${p.id}">Vender</button><button class="btn sm" data-resp="${p.id}" title="Comercial responsável">${p.responsavel_comercial_id ? '👤 ' + esc((nomeEq(eqs, p.responsavel_comercial_id) || '?').split(' ')[0]) : '+ responsável'}</button></div>
+    ${opsAb ? `<div class="ca"><button class="btn sm${opDe(p.id) ? ' pri' : ''}" data-opn="${p.id}" title="${opDe(p.id) ? 'Abrir a oportunidade deste lead' : 'Abrir uma oportunidade de venda para este lead'}">💼 ${opDe(p.id) ? 'Oportunidade' + (opDe(p.id).valor_estimado != null ? ' ' + brl(opDe(p.id).valor_estimado) : '') : 'Abrir oportunidade'}</button></div>` : ''}
     <div class="ca">${(p.negocio_status || 'aberto') === 'aberto' ? `<button class="btn sm" data-gn="${p.id}">Ganhou</button><button class="btn sm bad" data-pd="${p.id}">Perdeu</button>` : `<button class="btn sm" data-ab="${p.id}">Reabrir</button>`}</div></div>`, 'pessoas')}</div>`;
   ligaArrastar(m);
   crmFiltroLiga(m, F);
@@ -2858,6 +2876,9 @@ async function vCrmLeads(m) {
   $('#rlF').onchange = e => { S.respL = e.target.value; render(); };
   m.onclick = e => {
     const rs = e.target.closest('[data-resp]'); if (rs) { const pp = pes.find(x => x.id === rs.dataset.resp); return modalResponsavel('pessoas', pp.id, pp.responsavel_comercial_id, eqs, 'Comercial responsável'); }
+    const on = e.target.closest('[data-opn]'); if (on) { const pp = pes.find(x => x.id === on.dataset.opn), o = opDe(pp.id);
+      if (o) { S.view = 'crm-oport'; S.opFoco = o.id; return render(); }
+      return modalOport({ pessoa_id: pp.id, tipo: 'nova_venda', titulo: 'Negócio com ' + pp.nome, origem: 'crm', responsavel_id: pp.responsavel_comercial_id }); }
     const bq = e.target.closest('[data-q]'), bs = e.target.closest('[data-s]'), gn = e.target.closest('[data-gn]'), pd = e.target.closest('[data-pd]'), ab = e.target.closest('[data-ab]'), fc = e.target.closest('[data-f]');
     if (fc) return fichaPessoa(fc.dataset.f);
     if (gn) return ganhouNegocio(gn.dataset.gn);
@@ -2916,7 +2937,7 @@ async function modalOport(pre = {}, row = null) {
     { k: 'observacoes', l: 'Observações', t: 'textarea' }
   ], row, { extra: row ? {} : { contrato_origem_id: pre.contrato_origem_id || null, ...(cgO && pre.aluno_id ? { aluno_id: pre.aluno_id } : {}), ...(cgO && pre.origem ? { origem: pre.origem } : {}) }, ok: row ? 'Oportunidade salva' : 'Oportunidade criada', largo: true });
   // pré-preenchimento (nova oportunidade vinda de um contrato ou da ficha do cliente)
-  if (!row) setTimeout(() => { const f = $('#modalRoot form'); if (!f) return; ['pessoa_id', 'titulo', 'tipo', 'produto_id', 'valor_estimado'].forEach(k => { if (pre[k] != null && f.elements[k]) f.elements[k].value = pre[k]; }); }, 0);
+  if (!row) setTimeout(() => { const f = $('#modalRoot form'); if (!f) return; ['pessoa_id', 'titulo', 'tipo', 'produto_id', 'valor_estimado', 'responsavel_id'].forEach(k => { if (pre[k] != null && f.elements[k]) f.elements[k].value = pre[k]; }); }, 0);
 }
 async function vCrmOport(m) {
   const w = S.ws;
@@ -2925,24 +2946,35 @@ async function vCrmOport(m) {
     q(sb.from('oportunidades').select('*, pessoas(nome), produtos(nome)').eq('workspace_id', w).order('criado_em', { ascending: false }).limit(2000)),
     equipeAtiva()
   ]);
+  const e2 = await e2Ok(), ctOp = e2 ? await q(sb.from('contratos').select('id,numero,status,recorrente,num_parcelas,oportunidade_id,contrato_itens(quantidade,valor)').eq('workspace_id', w)).then(L => L.filter(c => c.oportunidade_id)).catch(() => []) : [];
+  const ctsDe = oid => ctOp.filter(c => c.oportunidade_id === oid);
+  const ctTxt = c => `#${c.numero} ${c.status === 'rascunho' ? 'proposta' : CT_ROT[c.status] || c.status} · ${brl(valoresContrato(c, c.contrato_itens || []).total)}${c.recorrente ? ' recorrente' : ''}`;
   const abertas = ops.filter(o => o.status === 'aberta'), ganhas = ops.filter(o => o.status === 'ganha'), perdidas = ops.filter(o => o.status === 'perdida');
   const fechadas = ops.filter(o => o.status !== 'aberta').sort((a, b) => String(b.fechado_em || '').localeCompare(String(a.fechado_em || ''))).slice(0, 40);
   m.innerHTML = `<div class="head"><h1>Oportunidades</h1><div class="acts">${ir('crm-leads', 'Funil de leads')}<button class="btn" id="opEt">Gerenciar etapas</button><button class="btn pri" id="opNova">Nova oportunidade</button></div></div>
-  <span class="muted">Novos negócios com quem já é cliente (ou lead): venda de outro produto, renovação, ajuste. Cada cartão fica ligado ao cliente. Arraste entre as etapas; ao marcar como Ganhou, o sistema abre o contrato.</span>
+  <span class="muted">${e2 ? 'Os negócios em andamento: venda nova (aberta pelo funil de leads), venda de outro produto, renovação, ajuste. A proposta é o contrato em rascunho: clique em Proposta para montar produtos, entrada e parcelas; uma oportunidade pode ter mais de um contrato (por exemplo, implantação e mensalidade). Ao ativar o contrato, a oportunidade fica ganha.' : 'Novos negócios com quem já é cliente (ou lead): venda de outro produto, renovação, ajuste. Cada cartão fica ligado ao cliente. Arraste entre as etapas; ao marcar como Ganhou, o sistema abre o contrato.'}</span>
   <div class="kpis">${kpi('Em negociação', num(abertas.length), 'oportunidades abertas')}${kpi('Valor em negociação', brl(sum(abertas, 'valor_estimado')), 'soma das estimativas')}${kpi('Renovações abertas', num(abertas.filter(o => o.tipo === 'renovacao').length), 'contratos para renovar')}${kpi('Ganhas', num(ganhas.length), brl(sum(ganhas, 'valor_estimado')))}${kpi('Perdidas', num(perdidas.length), brl(sum(perdidas, 'valor_estimado')))}</div>
   <div class="panel">${quadro(et, abertas, o => `<div class="card" draggable="true" data-id="${o.id}"><b>${esc(o.titulo)}</b><br><a data-f="${o.pessoa_id}" style="cursor:pointer">${esc((one(o.pessoas) || {}).nome || '')}</a>
     <div class="muted" style="margin:4px 0"><span class="pill ${o.tipo === 'renovacao' ? 'warn' : 'info'}">${OP_TIPO[o.tipo] || o.tipo}</span>${o.valor_estimado != null ? ' ' + brl(o.valor_estimado) : ''}${o.previsao_fechamento ? ' · fecha ' + dd(o.previsao_fechamento) : ''}${o.responsavel_id ? ' · 👤 ' + esc((nomeEq(eqs, o.responsavel_id) || '?').split(' ')[0]) : ''}</div>
-    <div class="ca"><button class="btn sm" data-og="${o.id}">Ganhou</button><button class="btn sm bad" data-op="${o.id}">Perdeu</button><button class="btn sm" data-oe="${o.id}">Editar</button></div></div>`, 'oportunidades')}</div>
+    ${ctsDe(o.id).length ? `<div class="op-cts">${ctsDe(o.id).map(c => `<a data-oct="${c.id}">${ctTxt(c)}</a>`).join('')}</div>` : ''}
+    <div class="ca">${e2 ? `<button class="btn sm" data-oc="${o.id}">Proposta</button>` : ''}<button class="btn sm" data-og="${o.id}">Ganhou</button><button class="btn sm bad" data-op="${o.id}">Perdeu</button><button class="btn sm" data-oe="${o.id}">Editar</button></div></div>`, 'oportunidades')}</div>
   ${fechadas.length ? `<div class="panel"><h2>Já decididas</h2><div class="tw"><table><thead><tr><th>Cliente</th><th>Negócio</th><th>Tipo</th><th class="n">Valor</th><th>Resultado</th><th></th></tr></thead><tbody>${fechadas.map(o => `<tr><td><a data-f="${o.pessoa_id}" style="cursor:pointer">${esc((one(o.pessoas) || {}).nome || '')}</a></td><td>${esc(o.titulo)}${o.motivo ? '<br><span class="muted">' + esc(o.motivo) + '</span>' : ''}</td><td>${OP_TIPO[o.tipo] || o.tipo}</td><td class="n">${o.valor_estimado != null ? brl(o.valor_estimado) : '—'}</td><td><span class="pill ${o.status === 'ganha' ? 'good' : 'bad'}">${o.status === 'ganha' ? 'Ganha' : 'Perdida'}</span> <small>${o.fechado_em ? dd(String(o.fechado_em).slice(0, 10)) : ''}</small></td><td class="n"><button class="btn sm" data-oa="${o.id}">Reabrir</button></td></tr>`).join('')}</tbody></table></div></div>` : ''}`;
   ligaArrastar(m);
+  if (S.opFoco) { const cd = m.querySelector(`.card[data-id="${S.opFoco}"]`); S.opFoco = null; if (cd) { cd.classList.add('op-foco'); cd.scrollIntoView({ block: 'center' }); } }
   $('#opNova').onclick = () => modalOport();
   $('#opEt').onclick = () => gerirEtapas('oportunidades');
   m.onclick = e => {
     const g = e.target.closest('[data-og]'), p = e.target.closest('[data-op]'), ed = e.target.closest('[data-oe]'), a = e.target.closest('[data-oa]'), f = e.target.closest('[data-f]');
+    const oc = e.target.closest('[data-oc]'), oct = e.target.closest('[data-oct]');
+    if (oct) return detalheContrato(oct.dataset.oct);
+    if (oc) { const o = ops.find(x => x.id === oc.dataset.oc);
+      return modalContrato({ pessoa_id: o.pessoa_id, oportunidade_id: o.id, proposta: true, itens: o.produto_id ? [{ produto_id: o.produto_id, quantidade: 1, valor: o.valor_estimado }] : null }); }
     if (g) { const o = ops.find(x => x.id === g.dataset.og); return act(async () => {
       await q(sb.from('oportunidades').update({ status: 'ganha', fechado_em: new Date().toISOString() }).eq('id', o.id)); toast('Oportunidade ganha!'); render();
+      const rasc = ctsDe(o.id).filter(c => c.status === 'rascunho');
       if (o.tipo === 'renovacao' && o.contrato_origem_id) renovarContrato(o.contrato_origem_id);
-      else modalContrato({ pessoa_id: o.pessoa_id, itens: o.produto_id ? [{ produto_id: o.produto_id, quantidade: 1, valor: o.valor_estimado }] : null }, null, true);
+      else if (rasc.length) { const [row] = await q(sb.from('contratos').select('*').eq('id', rasc[0].id)); modalContrato({}, row, true); }
+      else modalContrato({ pessoa_id: o.pessoa_id, oportunidade_id: e2 ? o.id : null, itens: o.produto_id ? [{ produto_id: o.produto_id, quantidade: 1, valor: o.valor_estimado }] : null }, null, true);
     }); }
     if (p) { const o = ops.find(x => x.id === p.dataset.op); return modal('Oportunidade perdida', `<p><b>${esc(o.titulo)}</b></p><label>Motivo<textarea name="motivo" rows="3" placeholder="Preço, momento, escolheu outro..."></textarea></label>`,
       async d => { await q(sb.from('oportunidades').update({ status: 'perdida', motivo: nul(d.motivo), fechado_em: new Date().toISOString() }).eq('id', o.id)); toast('Marcada como perdida'); }, 'Marcar como perdida'); }
@@ -3767,20 +3799,22 @@ function valoresContrato(c, itens) {
 }
 const mrrContrato = (c, itens) => !c.recorrente ? 0 : valoresContrato(c, itens).parcela / (CT_PASSO[c.periodicidade] || 1);
 
-async function ofertaContrato(pessoaId) {
+async function ofertaContrato(pessoaId, opId) {
   if (!pessoaId) return;
   const w = S.ws;
+  if (opId) { const rasc = await q(sb.from('contratos').select('*').eq('oportunidade_id', opId).eq('status', 'rascunho').order('criado_em')).catch(() => []);
+    if (rasc.length) return modalContrato({}, rasc[0], true); }
   const [serv, ja] = await Promise.all([
     q(sb.from('produtos').select('id').eq('workspace_id', w).eq('tipo', 'servico').eq('ativo', true).limit(1)),
     q(sb.from('contratos').select('id').eq('workspace_id', w).eq('pessoa_id', pessoaId).neq('status', 'cancelado').limit(1))
   ]);
-  if (serv.length && !ja.length) modalContrato({ pessoa_id: pessoaId }, null, true);
+  if (serv.length && (!ja.length || opId)) modalContrato({ pessoa_id: pessoaId, oportunidade_id: opId || null }, null, true);
 }
 
 async function modalContrato(pre = {}, row = null, ganhou = false) {
-  const w = S.ws, h = hoje();
+  const w = S.ws, h = hoje(), docOk = await temColuna('pessoas', 'documento'), opOk = await e2Ok();
   const [pes, prod, bancos, its, planoIni] = await Promise.all([
-    q(sb.from('pessoas').select('id,nome,email').eq('workspace_id', w).order('nome').limit(3000)),
+    q(sb.from('pessoas').select('id,nome,email,campanha_id' + (docOk ? ',documento' : '')).eq('workspace_id', w).order('nome').limit(3000)),
     q(sb.from('produtos').select('id,nome,tipo,preco,recorrente,periodicidade').eq('workspace_id', w).eq('ativo', true).order('nome')),
     q(sb.from('contas_bancarias').select('*').eq('workspace_id', w).eq('ativa', true)).then(soContas),
     row ? q(sb.from('contrato_itens').select('*').eq('contrato_id', row.id)) : Promise.resolve(pre.itens || []),
@@ -3794,9 +3828,12 @@ async function modalContrato(pre = {}, row = null, ganhou = false) {
     <label>Valor (R$)<input class="itv" data-money="1" type="number" step="0.01" min="0" value="${it.valor ?? ''}"></label><button type="button" class="btn sm bad itx">Remover</button></div>`;
   const ini = its.length ? its : [{ produto_id: (prod.find(p => p.tipo === 'servico') || prod[0]).id }];
   ini.forEach(i => { if (i.valor == null) i.valor = (prod.find(p => p.id === i.produto_id) || {}).preco; });
-  const f = modal(row ? 'Editar contrato #' + row.numero : pre.renovacao ? 'Renovar contrato #' + pre.renovacao : (ganhou ? 'Negócio fechado: fazer o contrato' : 'Novo contrato'), `
+  const opId = row ? row.oportunidade_id || null : pre.oportunidade_id || null, prop = !row && pre.proposta;
+  const f = modal(row ? (row.status === 'rascunho' ? 'Proposta · contrato #' + row.numero : 'Editar contrato #' + row.numero) : pre.renovacao ? 'Renovar contrato #' + pre.renovacao : prop ? 'Proposta (contrato em rascunho)' : (ganhou ? 'Negócio fechado: fazer o contrato' : 'Novo contrato'), `
+    ${prop ? '<p class="muted" style="margin:0 0 8px">A proposta é o próprio contrato, em rascunho: produtos do catálogo, valores, entrada e parcelas. Fica ligada à oportunidade; quando o cliente aceitar, é só ativar.</p>' : ''}
     ${ganhou ? '<p class="muted" style="margin:0 0 8px">Você moveu este lead para Cliente. Preencha o contrato: ao ativar, as parcelas vão para o contas a receber e a previsão entra na contabilidade. Se preferir fazer depois, feche: ele fica na lista "Ganhou, falta contrato".</p>' : ''}
-    <label>Cliente<select name="pessoa_id" required>${opts(pes, 'id', p => p.nome + (p.email ? ' · ' + p.email : ''), c.pessoa_id)}</select></label>
+    <label>Cliente<select name="pessoa_id" required${opId ? ' disabled' : ''}>${opts(pes, 'id', p => p.nome + (p.email ? ' · ' + p.email : ''), c.pessoa_id)}</select></label>${opId ? `<input type="hidden" name="pessoa_id_fixo" value="${esc(c.pessoa_id)}">` : ''}
+    ${docOk ? `<label id="ctDoc" style="display:none">CPF ou CNPJ do cliente <span class="muted">(obrigatório para o contrato; fica no cadastro dele)</span><input name="ct_documento" placeholder="000.000.000-00 ou 00.000.000/0000-00"></label>` : ''}
     <h3 style="margin:8px 0 4px">Produtos e serviços do contrato</h3><div id="ctIt">${ini.map(linha).join('')}</div>
     <button type="button" class="btn sm" id="ctMais">+ Outro produto</button>
     <div class="grid3"><label>Início<input name="data_inicio" type="date" required value="${c.data_inicio || h}"></label>
@@ -3812,8 +3849,13 @@ async function modalContrato(pre = {}, row = null, ganhou = false) {
     <label>O que ele tem acesso<textarea name="acessos" rows="2" placeholder="Plataforma, grupo, mentoria, ferramentas...">${esc(c.acessos || '')}</textarea></label>
     <label>Observações<textarea name="observacoes" rows="2">${esc(c.observacoes || '')}</textarea></label>
     <div id="ctRes" class="panel" style="margin:4px 0"></div>
-    <label class="chk"><input type="checkbox" name="ativar" value="1"${row && row.status !== 'rascunho' ? ' disabled' : ' checked'}> Marcar como assinado e ativar agora (gera as parcelas no contas a receber e a previsão contábil). Desmarcado, fica pendente e dá para continuar editando.</label>`,
+    <label class="chk"><input type="checkbox" name="ativar" value="1"${row && row.status !== 'rascunho' ? ' disabled' : prop ? '' : ' checked'}> Marcar como assinado e ativar agora (gera as parcelas no contas a receber e a previsão contábil). Desmarcado, fica pendente e dá para continuar editando.</label>`,
     async (d, form) => {
+      if (opId) d.pessoa_id = d.pessoa_id_fixo || c.pessoa_id;
+      if (docOk) { const pz = pes.find(x => x.id === d.pessoa_id);
+        if (pz && !pz.documento) { const dg = docDig(d.ct_documento); if (!dg) throw new Error('Informe o CPF ou CNPJ do cliente: é obrigatório para o contrato.');
+          if (!docValido(dg)) throw new Error('CPF ou CNPJ inválido: confira os números.');
+          await q(sb.from('pessoas').update({ documento: dg }).eq('id', pz.id)); pz.documento = dg; } }
       const itens = [...form.querySelectorAll('.it')].map(r => ({ produto_id: r.querySelector('.itp').value, quantidade: Number(r.querySelector('.itq').value || 1), valor: Number(r.querySelector('.itv').value || 0) }));
       if (!itens.length) throw new Error('Inclua ao menos um produto.');
       if (!itens.some(i => i.valor > 0)) throw new Error('Informe o valor de ao menos um produto.');
@@ -3831,7 +3873,7 @@ async function modalContrato(pre = {}, row = null, ganhou = false) {
       }
       let id;
       if (row) { await q(sb.from('contratos').update(reg).eq('id', row.id)); id = row.id; await q(sb.from('contrato_itens').delete().eq('contrato_id', id)); }
-      else id = one(await q(sb.from('contratos').insert({ ...reg, workspace_id: w, campanha_id: (pes.find(p => p.id === d.pessoa_id) || {}).campanha_id || null }).select('id').single())).id;
+      else id = one(await q(sb.from('contratos').insert({ ...reg, workspace_id: w, campanha_id: (pes.find(p => p.id === d.pessoa_id) || {}).campanha_id || null, ...(opOk && opId ? { oportunidade_id: opId } : {}) }).select('id').single())).id;
       await q(sb.from('contrato_itens').insert(itens.map(i => ({ ...i, workspace_id: w, contrato_id: id }))));
       await q(sb.from('contrato_parcelas_plano').delete().eq('contrato_id', id));
       if (plano.length) await q(sb.from('contrato_parcelas_plano').insert(plano.map(p => ({ ...p, workspace_id: w, contrato_id: id }))));
@@ -3878,6 +3920,8 @@ async function modalContrato(pre = {}, row = null, ganhou = false) {
   ['recorrente', 'periodicidade', 'data_inicio', 'data_fim', 'primeiro_vencimento', 'num_parcelas'].forEach(n => f[n].onchange = resumo);
   if (!row && !its.length) { const p0 = prod.find(p => p.id === ini[0].produto_id); if (p0 && p0.recorrente) { f.recorrente.checked = true; f.periodicidade.value = p0.periodicidade; } }
   f.plano.onchange = () => desenhaPlano(!planoAtual.length);
+  if (docOk) { const vd = () => { const pz = pes.find(x => x.id === (opId ? c.pessoa_id : f.pessoa_id.value)), box = $('#ctDoc'); if (box) box.style.display = pz && !pz.documento ? '' : 'none'; };
+    f.pessoa_id.addEventListener('change', vd); vd(); }
   liga(); resumo();
 }
 

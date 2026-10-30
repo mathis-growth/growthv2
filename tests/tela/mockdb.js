@@ -2,6 +2,8 @@
 const D = window.__SEED || {}; window.__D = D; window.__calls = [];
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'id' + Math.random().toString(36).slice(2));
 const FK = { campanhas: 'campanha_id', produtos: 'produto_id', funis: 'funil_id', funil_etapas: 'etapa_id', motivos_resultado: 'negocio_motivo_id', fontes_video: 'fonte_id', fornecedores: 'fornecedor_id', plataformas_venda: 'plataforma_id', contrato_itens: null, etapas_kanban: 'etapa_kanban_id', jornada_marcos: 'marco_id' };
+// relações de um para muitos (o Supabase devolve a lista): contrato → itens
+const REV = { contrato_itens: 'contrato_id' };
 function from(t) {
   const st = { t, op: 'select', f: [], ord: null, lim: null, single: false, payload: null, onConflict: null, sel: '*' };
   const run = () => {
@@ -17,7 +19,7 @@ function from(t) {
     let out = rows.filter(match);
     if (st.ord) { const [k, asc] = st.ord; out = out.slice().sort((a, b) => (a[k] > b[k] ? 1 : a[k] < b[k] ? -1 : 0) * (asc ? 1 : -1)); }
     if (st.lim != null) out = out.slice(0, st.lim);
-    out = out.map(r => { const o = { ...r }; String(st.sel || '').replace(/(\w+)\(([^)]*)\)/g, (m, tb) => { const fk = FK[tb] !== undefined ? FK[tb] : tb.replace(/s$/, '') + '_id'; if (fk) o[tb] = (D[tb] || []).find(x => x.id === r[fk]) || null; return m; }); return o; });
+    out = out.map(r => { const o = { ...r }; String(st.sel || '').replace(/(\w+)\(([^)]*)\)/g, (m, tb) => { const fk = FK[tb] !== undefined ? FK[tb] : tb.replace(/s$/, '') + '_id'; if (fk) o[tb] = (D[tb] || []).find(x => x.id === r[fk]) || null; else if (REV[tb] && o[tb] === undefined) o[tb] = (D[tb] || []).filter(x => x[REV[tb]] === r.id); return m; }); return o; });
     if (st.single) return { data: out[0] || null, error: out[0] ? null : { message: 'não encontrado' } };
     return { data: out, error: null };
   };

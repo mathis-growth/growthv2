@@ -1,3 +1,7 @@
+## v0.174
+- Migração `20261127100000_oportunidade_contrato.sql`: `contratos.oportunidade_id` (+ validação `contratos_oportunidade_valida`), `oportunidades.origem` com `crm`, gatilhos `contratos_ganha_oportunidade` e `oportunidade_negocio_pessoa` (definidores).
+- index.html: 0.173 → 0.174. `e2Ok`, `negocioOportunidade`; `fecharNegocio`/`ganhouNegocio`/`ofertaContrato` com a oportunidade; botão `[data-opn]` no funil de leads; `vCrmOport` com propostas ligadas (`[data-oc]`, `.op-cts`) e Ganhou abrindo a proposta; `modalContrato` com `pre.oportunidade_id`, `pre.proposta` e CPF/CNPJ (`#ctDoc`). Teste `t174_oportunidade_contrato.py`; `mockdb.js` com `REV` (contrato → itens).
+
 ## v0.173
 - Migração `20261126100000_pessoa_documento.sql`: `documento_normaliza`, `documento_valido`, `pessoas.documento` (dígitos, check, índice único por workspace), gatilho `pessoas_documento_t`; `_pessoas_mesclar_v088` atualizada por troca de texto (documento e correção das tags vazias), com erro se o trecho não for encontrado.
 - index.html: 0.172 → 0.173. `docDig`, `docTipo`, `docFmt`, `docValido`; campo em `modalCliente` (com `temColuna`); CPF/CNPJ em `fichaPessoa` e na busca de `vClientes`; linha do tempo única em `fichaPessoa` (eventos com categoria e filtro `.tlf`). Teste `t173_pessoa_documento_linha_tempo.py`; `mockdb.js` liga `etapas_kanban` e `jornada_marcos`.

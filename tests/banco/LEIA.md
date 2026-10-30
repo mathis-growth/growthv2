@@ -41,3 +41,6 @@ Mesmo jeito da v0.163: `node pglite_run.mjs <pasta do repositório> canvas_s1_s3
 
 ## v0.173 — CPF/CNPJ na pessoa (PGlite)
 `node pglite_run.mjs <pasta do repositório> pessoa_documento_cenarios.sql`. Termina com "pessoa_documento: tudo OK" (validação, só dígitos, único por workspace, mesclagem levando o documento e recusando documentos diferentes, mesclagem sem tags). Conferido em 30/10/2026.
+
+## v0.174 — Oportunidade e contrato (PGlite)
+`node pglite_run.mjs <pasta do repositório> oportunidade_contrato_cenarios.sql`. Termina com "oportunidade_contrato: tudo OK" (dois contratos por oportunidade, contrato de outra pessoa recusado, ativar ganha a oportunidade, negócio do lead ganho/perdido/aberto, expansão não mexe no lead). Conferido em 30/10/2026.

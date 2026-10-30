@@ -1,3 +1,9 @@
+## v0.174 — Oportunidade e contrato
+- O negócio do lead é a oportunidade de venda nova. O status do negócio na pessoa é resumo: ganho se alguma ganhou; perdido se a última aberta foi perdida e não há outra; aberto ao abrir ou reabrir.
+- A proposta é o contrato em rascunho, ligado à oportunidade. Uma oportunidade pode ter vários contratos (implantação e mensalidade).
+- Ativar um contrato ligado ganha a oportunidade. Ganhar a oportunidade não ativa nada sozinho: a tela abre a proposta para ativar.
+- O contrato exige CPF ou CNPJ válido do cliente; o documento fica no cadastro da pessoa.
+
 ## v0.173 — Cliente único com CPF/CNPJ
 - Uma pessoa só por cliente. Se o cliente é empresa, o CNPJ vai na mesma pessoa; não há cadastro paralelo de empresa.
 - CPF/CNPJ é opcional no cadastro e obrigatório para gerar contrato (E2). É único por empresa usuária; em outra empresa usuária, o mesmo documento pode existir.

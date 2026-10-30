@@ -1,3 +1,8 @@
+## v0.174
+- `contratos.oportunidade_id` → `oportunidades` (vários contratos por oportunidade; mesma pessoa e workspace, validado por gatilho).
+- `oportunidades.origem` aceita `crm`.
+- Gatilhos: contrato ativado → oportunidade aberta vira ganha; oportunidade de venda nova muda → `pessoas.negocio_status` (resumo).
+
 ## v0.173
 - `pessoas.documento`: CPF (11) ou CNPJ (14) só com dígitos, validado (`documento_valido`) e único por workspace quando houver (`pessoas_documento_uq`). O gatilho `pessoas_documento_t` normaliza o que foi digitado. O tipo sai do tamanho.
 - `_pessoas_mesclar_v088`: documentos diferentes impedem; o da removida passa para a mantida; tags vazias nos dois viram `{}` (antes falhava).

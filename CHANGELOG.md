@@ -2,6 +2,28 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.174 — E2: o lead vira oportunidade e a oportunidade gera o contrato (30/10/2026)
+- **Funil de leads:** cada cartão tem "💼 Abrir oportunidade", que cria a oportunidade de venda nova já com o lead e o comercial responsável. Se o lead já tem uma, o botão mostra o valor e abre a oportunidade.
+- **A proposta é o contrato em rascunho:**
+  - em Oportunidades, o botão **Proposta** abre o contrato em rascunho ligado à oportunidade, com o cliente fixo, o produto, a entrada e as parcelas;
+  - uma oportunidade pode ter **mais de um contrato** (por exemplo, implantação parcelada e mensalidade recorrente), e o cartão mostra cada proposta com o valor.
+- **Ganhou** numa oportunidade abre a proposta em rascunho para ativar; sem proposta, abre um contrato novo já ligado. **Ativar o contrato marca a oportunidade como ganha** (no banco, também quando quem ativa é o financeiro).
+- **Ganhou ou Perdeu no lead** fecha a oportunidade aberta dele: ganha, ou perdida com o motivo. Se o lead não tinha oportunidade, o ganho cria uma, já ganha. O contrato oferecido sai ligado a ela.
+- O **negócio no cadastro da pessoa** passa a acompanhar as oportunidades de venda nova:
+  - ganha → ganho;
+  - perdida, sem outra aberta ou ganha → perdido;
+  - nova ou reaberta → aberto.
+
+  Oportunidades de expansão, retenção, renovação e ajuste não mexem no negócio do lead.
+- **CPF ou CNPJ no contrato:** se o cliente não tem documento, o contrato pede, valida e grava no cadastro dele. Sem documento válido, o contrato não é salvo.
+- **Correção:** o contrato novo não pegava a campanha do cliente (a busca não trazia a campanha). Agora pega.
+- Banco: `20261127100000_oportunidade_contrato.sql` (**ainda não aplicado em produção**). Testes:
+  - banco `tests/banco/oportunidade_contrato_cenarios.sql`: OK;
+  - tela `tests/tela/t174_oportunidade_contrato.py`: 25 verificações, 0 falhas;
+  - testes anteriores de CRM, contratos e oportunidades: sem falhas.
+
+  O banco simulado dos testes de tela passou a devolver os itens do contrato como o Supabase.
+
 ## v0.173 — E1: CPF/CNPJ na pessoa e linha do tempo única do cliente (30/10/2026)
 - **CPF ou CNPJ no cadastro** (uma pessoa só, sem cadastro paralelo de empresa):
   - campo "CPF ou CNPJ" em Editar cadastro, validado pelos dígitos verificadores, no navegador e no banco;
