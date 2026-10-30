@@ -314,7 +314,82 @@ checkout (webhook) ─> vendas (id_externo único) ─> processar_venda ─┐
 
 ---
 
-## 12. Decisões que dependem de você
+## 12. Decisões tomadas em 30/10/2026 (valem sobre as seções 4 a 11)
+
+| Tema | Decisão | Efeito no plano |
+|---|---|---|
+| Gateway de cobrança | **Nenhum.** O Growth's não gera cobrança Pix ou boleto | Sai a cobrança no gateway: M5 e E6 do jeito que estavam. A conta a receber do contrato não tem `gateway` nem link de pagamento |
+| De onde vem o pagamento | Cada contrato (venda consultiva de serviço) diz **por onde é pago**: **Hotmart** (ou outra plataforma) ou **manual** | Nova regra, abaixo. Reaproveita `plataformas_venda` e `produto_plataforma` (o produto cadastrado na Hotmart, com `id_externo`) |
+| Contrato × venda | **Contrato é contrato.** Vem da venda consultiva e não vira venda duplicada. Mentoria pode ser só venda de plataforma, sem contrato | A Hotmart nunca cria uma segunda matrícula nem uma segunda receita para um contrato |
+| Negócio do lead | **O lead passa a ser a oportunidade** | `oportunidades` vira a fonte do negócio (`nova_venda` a partir do CRM); `pessoas.negocio_*` vira resumo |
+| Cadastro do cliente | **Sempre uma pessoa só**, com **CPF ou CNPJ** no próprio cadastro, preenchido ou atualizado quando ela compra | M1 simplificado: `pessoas.documento` (CPF ou CNPJ, o tipo sai do tamanho) normalizado e único por workspace quando houver. **Sem** contato ligado a empresa (`empresa_id`) e sem razão social. O documento é **obrigatório para gerar o contrato** e é pedido na hora, se faltar |
+| Assinatura | **Leitura e aceite eletrônico**; o provedor ainda não foi escolhido | Ver 12.2 |
+
+### 12.1 Regra de pagamento do contrato (sem duplicar)
+
+O contrato ganha **por onde é pago**: `manual` ou uma plataforma de `plataformas_venda` (por exemplo, Hotmart).
+
+**Pagamento manual:**
+- `ativar_contrato` gera as parcelas em `contas_receber` como hoje.
+- A baixa é feita pela equipe (`registrar_recebimento`), ou de outro jeito, conforme 12.3.
+- Não existe venda de plataforma para esse contrato, então não há o que duplicar.
+
+**Pagamento pela Hotmart (ou outra plataforma):**
+- O contrato continua gerando as parcelas previstas.
+- Quando a compra chega da Hotmart (pela integração ou pela importação), o Growth's procura o **contrato ativo da mesma pessoa** (por e-mail, telefone ou documento) **com o mesmo produto** (`produto_plataforma.id_externo`) e **pago pela Hotmart**.
+- Se acha:
+  - a compra é registrada **ligada ao contrato** (nova coluna `vendas.contrato_id`);
+  - a parcela correspondente recebe a baixa com a data e o valor da Hotmart;
+  - `processar_venda` **não** cria matrícula nem conta a receber própria, porque o contrato já tem as duas.
+- Se não acha, é uma venda normal de plataforma (o caso da mentoria sem contrato), com matrícula e financeiro próprios, como hoje.
+- Reembolso ou chargeback de uma compra ligada a contrato estorna a parcela e avisa a equipe; o contrato não é cancelado sozinho.
+
+**Garantias:**
+- A trava `vendas_externo_uq` impede a mesma transação duas vezes.
+- `alunos` continua com uma matrícula por contrato.
+- `contas_receber` só nasce em `ativar_contrato` (contrato) ou em `processar_venda` (venda sem contrato).
+
+### 12.2 Aceite eletrônico (provedor em aberto)
+
+Há dois caminhos. Os dois usam `contrato_modelos` e `contrato_documentos` (M3, M4).
+- **Aceite no próprio Growth's (sem provedor):** o cliente recebe um link, lê o contrato e aceita. O sistema grava data e hora, e-mail, IP, navegador e o hash do documento; o PDF fica em `arquivos`. Não tem custo e resolve a maior parte dos serviços.
+- **Provedor de assinatura (ZapSign, Clicksign, D4Sign, DocuSign…):** dá validade com certificado e trilha do provedor. Entra depois, na mesma estrutura, quando o nome for escolhido.
+
+Proposta: começar pelo aceite no próprio Growth's e deixar o provedor como plugável.
+
+### 12.3 Em aberto
+
+- **"Baixa automática" no pagamento manual.** Sem gateway, não há confirmação externa de pagamento. Há três jeitos possíveis:
+  - (a) a equipe dá a baixa, como hoje;
+  - (b) a parcela recebe baixa sozinha no vencimento, a não ser que alguém marque que não pagou;
+  - (c) a baixa vem do extrato bancário importado (`movimentacoes_bancarias` já existe).
+
+  A diretriz original pede para não dar baixa sem confirmação válida; a opção (b) contraria isso.
+- **Nome do provedor de assinatura**, se não for o aceite no próprio Growth's.
+
+### 12.4 Mudanças mínimas revisadas
+
+| # | Mudança | Antes | Agora |
+|---|---|---|---|
+| M1 | `pessoas.documento` (CPF/CNPJ normalizado, único por workspace quando houver) | também tipo, razão social e `empresa_id` | só o documento |
+| M2 | `contratos.oportunidade_id` + oportunidade `nova_venda` vinda do CRM | igual | igual |
+| M3/M4 | `contrato_modelos`, `contrato_documentos` (aceite: data, e-mail, IP, hash) | com provedor | aceite próprio; provedor depois |
+| M5 | `contratos.pagamento_por` (`manual` ou `plataforma_id`) + `vendas.contrato_id` + `contas_receber.venda_id` da baixa vinda da plataforma | gateway em `contas_receber` | sem gateway |
+| M6/M7 | onboarding por produto e `campo_destino` | igual | igual |
+| M8 | `arquivos` + bucket privado | igual | igual (guarda o PDF aceito) |
+| M9 | `workspaces.cliente_pessoa_id` | igual | igual |
+| M11 | Edge Function `vendas` (Hotmart primeiro) com a regra 12.1 | `vendas`, `cobrancas` e `assinatura` | só `vendas`; `assinatura` quando houver provedor |
+
+**Etapas revisadas:**
+- E1: documento da pessoa e linha do tempo única.
+- E2: oportunidade → contrato rascunho.
+- E3: modelo, documento e aceite eletrônico, com arquivos.
+- E4: pagamento do contrato (manual ou Hotmart) com a regra 12.1, a integração da Hotmart e a importação ligando ao contrato.
+- E5: onboarding por produto e diagnóstico.
+- E6: modelo de projeto "Implantação 90 dias".
+- E7: workspace do cliente ligado à pessoa e telas nos pacotes.
+
+## 13. Decisões que dependiam de você (perguntas originais)
 
 1. **Provedor de assinatura:** ZapSign, Clicksign, D4Sign ou outro.
 2. **Gateway de cobrança** para Pix e boleto dos contratos: Asaas, Iugu, Pagar.me, Mercado Pago ou outro. E se a baixa automática fica ligada por padrão.
