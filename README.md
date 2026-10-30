@@ -27,7 +27,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
-| 0.173 | 30/10/2026 | **E1 da integração comercial**: CPF/CNPJ na pessoa (validado, único, buscável) e **linha do tempo única do cliente** na ficha (cadastro, marketing, comercial, financeiro, jornada e CS). Correção: mesclar cadastros sem tags falhava. | `20261126100000_pessoa_documento.sql` — ainda não aplicado |
+| 0.173 | 30/10/2026 | **E1 da integração comercial**: CPF/CNPJ na pessoa (validado, único, buscável) e **linha do tempo única do cliente** na ficha (cadastro, marketing, comercial, financeiro, jornada e CS). Correção: mesclar cadastros sem tags falhava. | `20261126100000_pessoa_documento.sql` — aplicado em produção |
 | 0.172 | 30/10/2026 | **Resumo da estratégia** (dados, versão e funil por fase) e botão **Criar campanha** a partir da estratégia, que já vem escolhida e copia as etapas. | Sem mudança no banco |
 | 0.171 | 29/10/2026 | **Correção de publicar a estratégia** (dava "Sem permissão"); fase no próprio card; soltar na faixa define a fase; bloco **Passagem para o CS**. | `20261125100000_estrategia_publicar_definer.sql` — aplicado em produção |
 | 0.170 | 29/10/2026 | **Criar a estratégia pelo mapa**: "Criar no mapa" abre um mapa em branco; ao publicar, dá o nome e a estratégia entra na lista com as etapas montadas (versão 1). | Sem mudança no banco |

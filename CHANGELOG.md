@@ -19,7 +19,7 @@ Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto
   Tem filtro por tipo (Cadastro, Marketing, Comercial, Financeiro, Jornada e CS). Datas sem hora não mudam de dia pelo fuso.
 - **Correção na mesclagem de cadastros:** quando os dois cadastros não tinham tags, a mesclagem falhava (o banco não aceita tags vazias como nulo). Em produção, 5.148 das 5.274 pessoas não têm tags e nenhuma mesclagem tinha sido concluída. Agora funciona.
 - **Mesclagem e CPF/CNPJ:** documentos diferentes impedem juntar os cadastros, e o documento do cadastro removido passa para o que fica.
-- Banco: `20261126100000_pessoa_documento.sql` (**ainda não aplicado em produção**). Testes: banco `tests/banco/pessoa_documento_cenarios.sql` (OK) e `canvas_s1_s3` (OK); tela `tests/tela/t173_pessoa_documento_linha_tempo.py` (29 verificações, 0 falhas); t163 a t172 sem falhas. O banco simulado dos testes de tela passou a ligar etapas e marcos como o Supabase.
+- Banco: `20261126100000_pessoa_documento.sql` (aplicado em produção em 30/10/2026 como `v0173_pessoa_documento`). Testes: banco `tests/banco/pessoa_documento_cenarios.sql` (OK) e `canvas_s1_s3` (OK); tela `tests/tela/t173_pessoa_documento_linha_tempo.py` (29 verificações, 0 falhas); t163 a t172 sem falhas. O banco simulado dos testes de tela passou a ligar etapas e marcos como o Supabase.
 
 ## v0.172 — Resumo da estratégia e criar campanha a partir dela (30/10/2026)
 - **Resumo da estratégia:** nova aba, a primeira, ao lado de Mapa e Lista. A estratégia publicada abre nela, e o rascunho continua abrindo no Mapa. Mostra:
