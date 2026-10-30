@@ -183,7 +183,7 @@ async function handle(req: Request, b: any) {
     }
     const text = String(b.texto || '').trim(); if (!text || text.length > 4000) throw new Error('Escreva uma mensagem de até 4.000 caracteres.');
     if (!/^[0-9a-f-]{36}$/i.test(b.requisicao_id || '')) throw new Error('Identificador de envio inválido.');
-    if (!ctx.nome) throw new Error('Cadastre seu nome em Equipe e acessos antes de enviar.');
+    if (!ctx.nome) throw new Error('Não encontrei seu nome. Atualize o nome do perfil da sua conta e entre novamente.');
     const note = b.action === 'nota';
     if (!note && (!ch.ativo || ch.status !== 'conectado')) throw new Error('Conecte este canal antes de enviar.');
     const signed = note ? text : assinatura(ctx.nome,text,ch.canal);
