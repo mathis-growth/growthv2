@@ -357,9 +357,31 @@ Há dois caminhos. Os dois usam `contrato_modelos` e `contrato_documentos` (M3, 
 
 Proposta: começar pelo aceite no próprio Growth's e deixar o provedor como plugável.
 
-### 12.3 Em aberto
+### 12.3 Recebimento pela plataforma: o saldo fica na Hotmart até o saque
 
-- **"Baixa automática" no pagamento manual.** Sem gateway, não há confirmação externa de pagamento. Há três jeitos possíveis:
+**Decisão (30/10):** na Hotmart (e plataformas parecidas), quem recebe é a plataforma. Quando ela confirma o pagamento, a venda ou a parcela do contrato **já está recebida**, mas o dinheiro **fica na Hotmart** até ser transferido para o banco. "Baixa automática" quer dizer isto: a baixa vem da confirmação da plataforma.
+
+**Como está hoje:**
+- `processar_venda` cria a conta a receber **prevista**, com vencimento em `data_prevista_recebimento` (a data em que a Hotmart libera o dinheiro), e alguém precisa marcar como recebida depois. Em produção, das 496 contas a receber de vendas, **412 estão previstas**.
+- `contas_bancarias.tipo` só aceita `conta` e `cartao`; não há conta que represente o saldo na plataforma.
+- Não há transferência entre contas próprias; só existe `transferir_para_casa`.
+
+**Proposta, reaproveitando o financeiro:**
+1. **Conta "Saldo Hotmart"**: `contas_bancarias.tipo` passa a aceitar `plataforma`, e `plataformas_venda.conta_bancaria_id` diz qual conta guarda o saldo de cada plataforma. É uma conta de verdade, com saldo, extrato e conta contábil.
+2. **Pagamento confirmado pela plataforma**: a conta a receber (da venda ou da parcela do contrato pago pela Hotmart) recebe a baixa **na hora**, na conta "Saldo Hotmart", na data da aprovação. Isso fica separado em dois números:
+   - **a liberar**: aprovado, mas antes de `data_prevista_recebimento`;
+   - **disponível para saque**: depois dessa data.
+3. **Saque**: uma transferência entre contas próprias, "Saldo Hotmart → banco" (nova função `transferir_entre_contas`, com lançamento contábil e uma movimentação em cada conta). Não é receita de novo, só troca de lugar. As taxas da Hotmart já saem em `taxa_plataforma` na venda.
+4. **Reembolso ou chargeback** depois da baixa: o estorno sai do Saldo Hotmart (`estornos`, que já existe).
+5. **Pagamento manual** (contrato pago fora de plataforma): a equipe dá a baixa, como hoje. Conferir com o extrato importado (`movimentacoes_bancarias`) é opcional e fica para depois.
+
+**Dados antigos:** as 412 contas previstas de vendas da Hotmart **não mudam sozinhas**. Depois, com a sua aprovação, uma rotina pode dar a baixa das que a Hotmart já confirmou, na conta Saldo Hotmart, sem apagar nada.
+
+**Mudanças:** `contas_bancarias.tipo` + `plataforma`; `plataformas_venda.conta_bancaria_id`; função `transferir_entre_contas`; `processar_venda` e a integração passam a dar baixa na conta da plataforma quando a venda vem confirmada. Entra na **E4** (pagamento do contrato e Hotmart).
+
+### 12.3.1 Em aberto
+
+- **"Baixa automática" no pagamento manual:** resolvido acima. Manual = a equipe dá a baixa; plataforma = a baixa vem da confirmação dela. Sem gateway, não há confirmação externa de pagamento. Há três jeitos possíveis:
   - (a) a equipe dá a baixa, como hoje;
   - (b) a parcela recebe baixa sozinha no vencimento, a não ser que alguém marque que não pagou;
   - (c) a baixa vem do extrato bancário importado (`movimentacoes_bancarias` já existe).
