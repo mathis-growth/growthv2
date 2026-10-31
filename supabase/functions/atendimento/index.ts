@@ -146,9 +146,9 @@ async function handle(req: Request, b: any) {
   const { data: { user }, error } = await userDb.auth.getUser();
   if (error || !user) return json({ erro: 'Faça login novamente.' },401);
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
-  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades'];
+  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
-  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia'];
+  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
   const ws = b.workspace_id;
   if (['zernio-disponiveis','zernio-conectar'].includes(b.action)) {
@@ -201,6 +201,28 @@ async function handle(req: Request, b: any) {
       }
     }
     return json({canais:channels.map((c:any)=>({id:c.id,nome:c.nome,numero:c.numero||null}))});
+  }
+  if(b.action==='exibir-arquivados'){
+    const ch=await channel(String(b.canal_id||''),ws);
+    if(ch.provedor!=='evolution'||ch.canal!=='whatsapp')throw Error('Preferência exclusiva do WhatsApp Evolution.');
+    const value=b.exibir===true;
+    await q(db.from('atd_canais').update({exibir_grupos_arquivados:value}).eq('id',ch.id).eq('workspace_id',ws));
+    return json({ok:true,exibir:value});
+  }
+  if(b.action==='arquivar-grupo'){
+    const cv=await q(db.from('atd_conversas').select('id,grupo,canal_id').eq('id',b.conversa_id).eq('workspace_id',ws).single());
+    const ch=await channel(cv.canal_id,ws);
+    if(!cv.grupo||ch.provedor!=='evolution')throw Error('Operação exclusiva de grupos Evolution.');
+    await q(db.from('atd_conversas').update({arquivada:b.arquivar===true})
+      .eq('id',cv.id).eq('workspace_id',ws).eq('canal_id',ch.id));
+    return json({ok:true,arquivada:b.arquivar===true});
+  }
+  if(b.action==='avatar'){
+    const cv=await q(db.from('atd_conversas').select('id,avatar_path').eq('id',b.conversa_id)
+      .eq('workspace_id',ws).single());
+    if(!cv.avatar_path || !cv.avatar_path.startsWith(ws+'/avatars/'))return json({url:null});
+    const signed=await q(db.storage.from('atendimento').createSignedUrl(cv.avatar_path,300));
+    return json({url:signed.signedUrl});
   }
   if (b.action === 'zernio-disponiveis') return json({ contas:await zernioDisponiveis(ws) });
   if (b.action === 'zernio-conectar') {
@@ -349,18 +371,86 @@ async function setupWebhook(ch: any,cfg: any) {
     await zernio(zp(),'/webhooks/settings','POST',{name:'Growths Atendimento',url:root,secret:s,events:['message.received','message.sent','message.delivered','message.read','message.failed']});
   }
 }
+// Metadados de grupo e foto: sempre por instância autenticada do workspace.
+// Evita misturar fotos/nomes de clientes, sem expor URLs remotas no frontend.
+const isJid=(jid:string)=>/^[0-9]{5,22}@(g\.us|s\.whatsapp\.net|lid)$/.test(jid);
+const groupName=(g:any)=>String(g?.subject||g?.groupMetadata?.subject||g?.name||g?.title||g?.groupName||'').trim().slice(0,180);
+async function storedAvatar(ch:any,jid:string, cfg:any):Promise<string|null>{
+  if(!isJid(jid))return null;
+  try{
+    const result=await evolution(cfg,'/chat/fetchProfilePictureUrl/'+encodeURIComponent(ch.externo_id),'POST',{number:jid});
+    const url=String(result.profilePictureUrl||result.profilePicture||result.picture||result.url||'');
+    if(!url)return null;
+    const bytes=await mediaBytes(url);
+    if(!bytes.length||bytes.length>512*1024)return null;
+    const mime='image/jpeg';
+    const encoded=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(jid));
+    const hash=Array.from(new Uint8Array(encoded),v=>v.toString(16).padStart(2,'0')).join('').slice(0,32);
+    const path=ch.workspace_id+'/avatars/'+ch.id+'/'+hash+'.jpg';
+    await q(db.storage.from('atendimento').upload(path,bytes,{contentType:mime,upsert:true}));
+    return path;
+  }catch{return null;} // Fotos ausentes ou privadas não devem bloquear mensagens.
+}
+async function refreshAvatar(ch:any,cv:any,cfg:any){
+  if(cv.avatar_atualizado_em&&Date.now()-Date.parse(cv.avatar_atualizado_em)<86400000)return;
+  const path=await storedAvatar(ch,cv.externo_id,cfg);
+  if(path)await q(db.from('atd_conversas').update({avatar_path:path,avatar_atualizado_em:new Date().toISOString()})
+    .eq('id',cv.id).eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id));
+}
+async function enrichGroup(ch:any, jid:string, original:any,cfg:any){
+  if(!isJid(jid)||!jid.endsWith('@g.us'))return;
+  let name=groupName(original);
+  if(!name || name===jid){
+    try{
+      const r=await evolution(cfg,'/group/findGroupInfos/'+encodeURIComponent(ch.externo_id),'POST',{groupJid:jid});
+      name=groupName(r)||groupName(r?.data);
+    }catch{} // A versão do servidor pode não expor o endpoint.
+  }
+  const cv=await q(db.from('atd_conversas').select('id,nome,avatar_atualizado_em,externo_id')
+    .eq('canal_id',ch.id).eq('workspace_id',ch.workspace_id).eq('externo_id',jid).maybeSingle());
+  if(!cv)return;
+  if(name && name!==jid && (cv.nome===jid||cv.nome.endsWith('@g.us')||cv.nome!==name)){
+    await q(db.from('atd_conversas').update({nome:name}).eq('id',cv.id).eq('workspace_id',ch.workspace_id));
+  }
+  await refreshAvatar(ch,cv,cfg);
+}
 async function syncConversations(ch: any,cursor?: string) {
   if (ch.provedor === 'evolution') {
     const cfg = await secret(ch.workspace_id), inst = encodeURIComponent(ch.externo_id);
     const chats = await evolution(cfg,'/chat/findChats/'+inst,'POST',{});
     const groups = await evolution(cfg,'/group/fetchAllGroups/'+inst+'?getParticipants=false');
-    const rows = [...(Array.isArray(chats)?chats:chats.chats || []),...(Array.isArray(groups)?groups:groups.groups || [])];
-    let count = 0;
-    for (const c of rows) {
-      const id = c.remoteJid || c.id; if (!id || !/@(s.whatsapp.net|g.us|lid)$/.test(id)) continue;
-      await q(db.rpc('atd_receber',{p_canal:ch.id,p_conversa:{id,nome:c.subject || c.name || c.pushName || id,endereco:id,grupo:id.endsWith('@g.us')}})); count++;
+    const chatRows=Array.isArray(chats)?chats:chats.chats||chats.data||[];
+    const groupRows=Array.isArray(groups)?groups:groups.groups||groups.data||[];
+    const byJid=new Map<string,any>();
+    for(const c of [...chatRows,...groupRows]){
+      const id=String(c.remoteJid||c.id||c.jid||c.groupJid||'');
+      if(!isJid(id))continue;
+      const prev=byJid.get(id);
+      if(!prev || (id.endsWith('@g.us') && groupName(c) && !groupName(prev)))byJid.set(id,c);
     }
-    return {total:count,cursor:null};
+    let count=0,names=0,photos=0;
+    for(const [id,c] of byJid){
+      const isGroup=id.endsWith('@g.us');
+      const realName=isGroup?groupName(c):String(c.pushName||c.name||c.contact?.pushName||'').trim().slice(0,180);
+      // Só fornece nome se identificável: nome vazio preserva o cadastro anterior na RPC.
+      await q(db.rpc('atd_receber',{p_canal:ch.id,
+        p_conversa:{id,nome:realName&&realName!==id?realName:undefined,endereco:id,grupo:isGroup}}));
+      count++;
+    }
+    // Dados adicionais custam uma requisição por grupo. Limitar trabalho por chamada
+    // para evitar timeout e permitir reexecução segura.
+    for(const [id,c] of [...byJid].filter(([id])=>id.endsWith('@g.us')).slice(0,35)){
+      await enrichGroup(ch,id,c,cfg);
+      if(groupName(c))names++;
+    }
+    // Miniaturas atualizadas gradualmente para as conversas mais recentes.
+    const cvs=await q(db.from('atd_conversas').select('id,externo_id,avatar_atualizado_em')
+      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id)
+      .order('ultima_em',{ascending:false,nullsFirst:false}).limit(20));
+    for(const cv of cvs){if(!isJid(cv.externo_id)||cv.externo_id.endsWith('@g.us'))continue;
+      await refreshAvatar(ch,cv,cfg);photos++;
+    }
+    return {total:count,cursor:null,grupos_atualizados:names,fotos_consultadas:photos};
   }
   const params = new URLSearchParams({accountId:ch.externo_id,platform:ch.canal,limit:'50'}); if(cursor) params.set('cursor',cursor);
   const r = await zernio(zp(),'/inbox/conversations?'+params);
