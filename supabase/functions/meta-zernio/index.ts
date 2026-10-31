@@ -113,6 +113,50 @@ async function post(req:Request){
       .eq('id',link.id).eq('workspace_id',ws));
     return json({ok:true,quantidade:selection.length});
   }
+  if(action==='sincronizar'){
+    let total=0;
+    const erros:string[]=[];
+    const fim=new Date().toISOString().slice(0,10);
+    const ini=new Date(Date.now()-30*86400000).toISOString().slice(0,10);
+    for(const link of links){
+      const ids=Array.isArray(link.extras?.adAccountIds)?link.extras.adAccountIds:[];
+      if(!link.sincronizar||link.extras?.growths_desconectado_em||!ids.length)continue;
+      const exec=await q(db.rpc('conexao_execucao',{p_conexao:conn.id,p_id:null,p_status:null,p_registros:null,p_erro:null,p_detalhe:null,p_por:'usuario'}));
+      for(const adAccountId of ids){
+        if(!/^act_\d+$/.test(String(adAccountId)))continue;
+        try{
+          let after='',pages=0,quantidade=0;
+          while(pages++<20){
+            const params=new URLSearchParams({accountId:link.id_externo,objectId:adAccountId,
+              level:'ad',fields:'date_start,campaign_id,campaign_name,adset_name,ad_id,ad_name,impressions,clicks,spend,reach,actions,action_values',
+              fromDate:ini,toDate:fim,timeIncrement:'1',limit:'250'});
+            if(after)params.set('after',after);
+            const result=await api('/ads/insights?'+params);
+            const rows=Array.isArray(result.data)?result.data:[];
+            const action=(list:any[],types:string[])=>Array.isArray(list)?list.filter((x:any)=>types.includes(String(x.action_type))).reduce((n:number,x:any)=>n+Number(x.value||0),0):0;
+            const converted=rows.filter((x:any)=>x.ad_id&&x.date_start).map((x:any)=>({
+              data:x.date_start,campanha_ext:String(x.campaign_id||''),campanha_nome:String(x.campaign_name||''),
+              conjunto_nome:String(x.adset_name||''),anuncio_ext:String(x.ad_id),anuncio_nome:String(x.ad_name||''),
+              impressoes:Number(x.impressions||0),cliques:Number(x.clicks||0),custo:Number(x.spend||0),
+              alcance:Number(x.reach||0),
+              leads:action(x.actions,['lead','onsite_conversion.lead_grouped','offsite_conversion.fb_pixel_lead'])||null,
+              conversoes:action(x.actions,['purchase','offsite_conversion.fb_pixel_purchase','omni_purchase'])||null,
+              receita:action(x.action_values,['purchase','offsite_conversion.fb_pixel_purchase','omni_purchase'])||null
+            }));
+            if(converted.length)quantidade+=Number(await q(db.rpc('conexao_gravar',{p_conta:link.id,p_tipo:'ads',p_linhas:converted})));
+            const next=String(result.paging?.cursors?.after||result.paging?.after||'');
+            if(!rows.length||!next||next===after)break;
+            after=next;
+          }
+          total+=quantidade;
+        }catch(e){erros.push(adAccountId+': '+(e as Error).message);}
+      }
+      await q(db.rpc('conexao_execucao',{p_conexao:conn.id,p_id:exec,p_status:erros.length?(total?'parcial':'erro'):'ok',
+        p_registros:total,p_erro:erros.join(' | ').slice(0,1500)||null,p_detalhe:{fonte:'zernio_metaads',periodo:{ini,fim}},p_por:null}));
+    }
+    if(total)await q(db.rpc('ads_externo_aplicar',{p_ws:ws}));
+    return json({ok:erros.length===0,registros:total,erros,periodo:{ini,fim}});
+  }
   if(action==='desconectar'){
     const id=String(b.zernio_account_id||'');
     const link=links.find((x:any)=>x.id_externo===id);
