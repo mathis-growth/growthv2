@@ -289,7 +289,7 @@ async function handle(req: Request, b: any) {
     const cfg=await secret(ws);
     if(!cfg)throw new Error('Configure a Evolution para excluir a instância remota.');
     const inst=String(ch.externo_id||'');
-    if(!/^growths-[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(inst))
+    if(!/^growths-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(inst))
       return json({erro:'Nome de instância não reconhecido. Exclusão remota bloqueada.'},409);
     // Exige sucesso remoto antes de desativar o canal local. Mantém histórico.
     try {
