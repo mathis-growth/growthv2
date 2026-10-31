@@ -33,18 +33,50 @@ export const providers: Record<string, {
   evolution: {
     async send(cfg, ch, cv, text, attachment) {
       const inst = encodeURIComponent(ch.externo_id);
-      const payload = attachment ? { number: cv.externo_id, mediatype: attachment.mime.startsWith('image/') ? 'image' : attachment.mime.startsWith('video/') ? 'video' : 'document',
-        mimetype: attachment.mime, fileName: attachment.nome, caption: text, media: attachment.url } : { number: cv.externo_id, text };
-      const r = await evolution(cfg, '/message/' + (attachment ? 'sendMedia/' : 'sendText/') + inst, 'POST', payload);
+      const type = attachment?.mime?.split(';')[0] || '';
+      // Gravações usam a rota de áudio da Evolution (conversão do provedor).
+      // Arquivos de áudio não gravados seguem como mídia normal (sem forçar PTT).
+      const voice = attachment?.gravado && type.startsWith('audio/') && !text;
+      const payload = voice
+        ? { number: cv.externo_id, audio: attachment.url }
+        : attachment ? { number: cv.externo_id,
+            mediatype: type.startsWith('image/') ? 'image' : type.startsWith('video/') ? 'video' : type.startsWith('audio/') ? 'audio' : 'document',
+            mimetype: type, fileName: attachment.nome, caption: text || undefined, media: attachment.url }
+          : { number: cv.externo_id, text };
+      const r = await evolution(cfg, '/message/' + (voice ? 'sendWhatsAppAudio/' : attachment ? 'sendMedia/' : 'sendText/') + inst, 'POST', payload);
       if (!r.key?.id) throw new Error('O provedor não confirmou o identificador da mensagem.');
       return r.key.id;
     },
   },
   zernio: {
     async send(cfg, ch, cv, text, attachment) {
+      // Zernio usa attachmentUrl/attachmentType, não attachments[] no envio.
+      // Faz upload no próprio provedor, sem disponibilizar permanentemente nosso bucket privado.
+      let mediaFields: Record<string,unknown> = {};
+      if (attachment) {
+        const form = new FormData();
+        const safeName = String(attachment.nome||'midia').replace(/[\\/\\r\\n]/g,'_').slice(0,140);
+        form.append('file',new Blob([attachment.bytes],{type:attachment.mime}),safeName);
+        form.append('contentType',attachment.mime.split(';')[0]);
+        const uploaded = await fetch('https://zernio.com/api/v1/media/upload-direct',{
+          method:'POST',redirect:'error',signal:AbortSignal.timeout(25000),
+          headers:{Authorization:'Bearer '+cfg.key},body:form
+        });
+        const result = await uploaded.json().catch(()=>({}));
+        if(!uploaded.ok)throw new ProviderError(uploaded.status,String(result.code||'UPLOAD_FAILED').replace(/[^A-Z_]/gi,'').slice(0,48));
+        const target = new URL(String(result.url||''));
+        if(target.protocol!=='https:')throw new Error('A Zernio não confirmou uma URL segura para o arquivo.');
+        const type = attachment.mime.split('/')[0];
+        mediaFields = {
+          attachmentUrl:target.toString(),
+          attachmentType:['image','video','audio'].includes(type) ? type : 'file',
+          ...(type==='application' ? {attachmentName:safeName} : {}),
+          // PTT nativo exige OGG/Opus mono; outros áudios são enviados como arquivo de áudio.
+          ...(ch.canal==='whatsapp' && attachment.gravado && /^(audio\/ogg)/.test(attachment.mime) ? {voiceNote:true} : {}),
+        };
+      }
       const r = await zernio(cfg.key, '/inbox/conversations/' + encodeURIComponent(cv.externo_id) + '/messages', 'POST', {
-        accountId: ch.externo_id, message: text,
-        ...(attachment ? { attachments: [{ url: attachment.url, type: attachment.mime.split('/')[0] === 'application' ? 'file' : attachment.mime.split('/')[0] }] } : {}),
+        accountId:ch.externo_id,message:text||'',...mediaFields
       });
       const id = r.data?.messageId || r.messageId;
       if (!id) throw new Error('O provedor não confirmou o identificador da mensagem.');
