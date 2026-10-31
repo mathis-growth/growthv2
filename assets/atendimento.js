@@ -155,11 +155,12 @@
     }catch(e){if(!popup.closed)popup.close();toast(e.message,true);}
   }
   async function conectarZernio(ws=S.ws) {
-    const r=await api('zernio-disponiveis',{},ws);
+    const all=await api('zernio-disponiveis',{},ws);
+    const r={contas:(all.contas||[]).filter(c=>c.canal==='whatsapp')};
     if(S.ws!==ws)return;
-    if(!r.contas.length){toast('Nenhuma conta Zernio disponível. Conecte Instagram ou WhatsApp na sua conta Zernio e confira se ela já pertence a outro cliente.',true);return;}
+    if(!r.contas.length){toast('Nenhum WhatsApp oficial disponível na conta técnica Zernio da Mathisa.',true);return;}
     const options=r.contas.map(c=>`<option value="${esc(c.id)}">${esc(label(c.canal)+' · '+c.nome+(c.vinculada?' (já vinculada)':''))}</option>`).join('');
-    modal('Vincular conta Zernio ao cliente',`<p>Cliente selecionado: vincule apenas a conta que pertence a ele. Não é necessário informar a chave da Zernio.</p><label>Conta Zernio<select name="account_id" required>${options}</select></label><p class="muted">As contas de outros clientes não aparecem na lista.</p>`,async d=>{
+    modal('Vincular WhatsApp oficial ao cliente',`<p>Cliente selecionado: vincule apenas a conta que pertence a ele. Não é necessário informar a chave da Zernio.</p><label>Conta Zernio<select name="account_id" required>${options}</select></label><p class="muted">As contas de outros clientes não aparecem na lista.</p>`,async d=>{
       await api('zernio-conectar',d,ws);
       toast('Conta Zernio vinculada ao cliente. Agora adicione-a em Atendimento → Canais e conexões.');
     });
