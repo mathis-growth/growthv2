@@ -59,3 +59,9 @@ Ferramentas de teste locais ficam em `.dev-tools`, fora do Git. Instalação rep
 A tentativa de montar **todas** as migrações no PGlite apresentou 15 falhas existentes na base, reproduzidas igualmente sem a migração de Atendimento: extensões `pg_cron`/`pg_net`, seed com workspace fixo e dependências de jornadas/conteúdo. O teste SQL de documento da v0.173 passou; o de oportunidade da v0.174 depende das migrações que falharam na base. Isso não equivale a validar toda a produção. A migração de Atendimento passou no conjunto completo e no teste isolado.
 
 Fontes conferidas: [Evolution API 2.3.7](https://github.com/evolution-foundation/evolution-api/tree/2.3.7), [Zernio Inbox](https://docs.zernio.com/multi-tenant/inbox), [Webhooks Zernio](https://docs.zernio.com/webhooks), [Storage Supabase](https://supabase.com/docs/guides/storage/security/access-control).
+
+
+## Vínculo Zernio por cliente (v0.178)
+Selecione o cliente atual e acesse Configurações → Integrações → Zernio → Vincular conta. O administrador escolhe uma conta Instagram ou WhatsApp existente na Zernio; sua chave permanece nos Secrets do servidor.
+A associação grava a conta no workspace em `conexoes` e `conexao_contas`. Depois, adicione o canal em Atendimento → Canais e conexões. Cada conta pertence explicitamente a um cliente, sem herdar outras contas do mesmo perfil.
+Publicação pendente: aplicar `supabase/migrations/20261030220000_zernio_cliente.sql` depois da v0.175, publicar a Edge Function `atendimento` e o asset da interface e testar com uma conta real.
