@@ -42,15 +42,18 @@ https://yngyghlyonybvfvjcmxl.supabase.co/functions/v1/conexoes/retorno
    - **API do Instagram**, na opção "com login do Facebook".
 4. Em **Login do Facebook → Configurações**, cole o endereço de retorno do item 1 em *URIs de redirecionamento do OAuth válidos*.
 5. Em **Configurações do app → Básico**, anote o **ID do app** e a **Chave secreta do app**.
-6. Permissões que o Growths pede:
+6. **Facebook Login for Business (seleção de ativos):** crie uma configuração de login no app da Meta para conceder acesso às contas empresariais e copie o **Configuration ID** para o Secret `META_LOGIN_CONFIG_ID` no Supabase. Com esse Secret a Edge `conexoes` inclui `config_id` na autorização. Sem ele, o login clássico continua disponível. A configuração precisa contemplar Ads, Páginas e Instagram; contas não autorizadas não ficam disponíveis.
+7. Permissões que o Growths pede:
    - `ads_read` e `read_insights`;
    - `pages_show_list` e `pages_read_engagement`;
    - `instagram_basic` e `instagram_manage_insights`;
    - `business_management`.
-7. **Enquanto o app está em modo de desenvolvimento**, só quem tem papel no app (administrador, desenvolvedor ou testador) consegue conectar.
+8. **Enquanto o app está em modo de desenvolvimento**, só quem tem papel no app (administrador, desenvolvedor ou testador) consegue conectar.
    - Para os primeiros clientes, adicione a pessoa como **testador** em *Funções do app*.
    - Para abrir para qualquer cliente, peça **Acesso avançado** dessas permissões na *Análise do app* (App Review). Para isso, a empresa precisa estar verificada (Verificação da empresa).
-8. O acesso do Meta vale cerca de **60 dias**. Antes de vencer, a tela Integrações mostra a data. Depois de vencer, mostra "Acesso expirado: conecte de novo", e basta clicar em **Conectar de novo**.
+9. O acesso do Meta vale cerca de **60 dias**. Antes de vencer, a tela Integrações mostra a data. Depois de vencer, mostra "Acesso expirado: conecte de novo", e basta clicar em **Conectar de novo**.
+
+> **WhatsApp API oficial:** não é habilitado automaticamente por este login. Para criar/associar números WhatsApp Business Platform é necessário o fluxo específico de **Embedded Signup**, permissões de WhatsApp e configuração do app; a conexão de anúncios, páginas e Instagram continua independente. Não confundir com Evolution/WhatsApp Web.
 
 O Instagram precisa ser uma **conta profissional** (comercial ou criador) ligada a uma **Página do Facebook**. É pela página que o Meta entrega o Instagram.
 
@@ -84,6 +87,7 @@ No painel do Supabase: **Edge Functions → Secrets** (ou *Project Settings → 
 |---|---|
 | `META_APP_ID` | ID do app do Meta |
 | `META_APP_SECRET` | Chave secreta do app do Meta |
+| `META_LOGIN_CONFIG_ID` | ID da configuração Facebook Login for Business (opcional; habilita seleção de ativos) |
 | `GOOGLE_CLIENT_ID` | ID do cliente OAuth do Google |
 | `GOOGLE_CLIENT_SECRET` | Chave secreta do cliente OAuth |
 | `GOOGLE_ADS_DEVELOPER_TOKEN` | Token de desenvolvedor do Google Ads (opcional) |
