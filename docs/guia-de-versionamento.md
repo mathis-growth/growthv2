@@ -1,3 +1,9 @@
+## v0.181 — Meta Business Login (em branch de revisão)
+- `supabase/functions/conexoes/meta.ts`: suporta `META_LOGIN_CONFIG_ID` opcional na URL OAuth com os escopos atuais, valida identificador numérico.
+- `tests/edge/conexoes_teste.ts`: cobre login com Business Configuration e fallback clássico.
+- `docs/conectar-meta-e-google.md`: instruções do app da Meta, OAuth e diferença com WhatsApp Embedded Signup.
+- Sem SQL; não criar novos cartões nem confundir Meta com Zernio. Para ativar em produção, configurar ID no painel da Meta, Secrets e publicar `conexoes`.
+
 ## v0.180
 - Alteração exclusiva em `assets/atendimento.js`: extensão de `cfg-integracoes` passa a configurar os cartões existentes `data-i="Instagram"`, `data-i="WhatsApp API oficial"` e `data-i="WhatsApp (grupos e API)"`.
 - Remove os painéis adicionais de Instagram e Evolution que duplicavam o catálogo nativo de Integrações. O login OAuth continua usando `instagram-oauth` v0.179.
