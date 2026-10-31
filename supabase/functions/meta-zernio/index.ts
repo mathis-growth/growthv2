@@ -121,7 +121,7 @@ async function post(req:Request){
     for(const link of links){
       const ids=Array.isArray(link.extras?.adAccountIds)?link.extras.adAccountIds:[];
       if(!link.sincronizar||link.extras?.growths_desconectado_em||!ids.length)continue;
-      const exec=await q(db.rpc('conexao_execucao',{p_conexao:conn.id,p_id:null,p_status:null,p_registros:null,p_erro:null,p_detalhe:null,p_por:'usuario'}));
+      const exec=await q(db.from('conexao_execucoes').insert({workspace_id:ws,conexao_id:conn.id,status:'rodando',disparado_por:'usuario'}).select('id').single());
       for(const adAccountId of ids){
         if(!/^act_\d+$/.test(String(adAccountId)))continue;
         try{
@@ -151,8 +151,10 @@ async function post(req:Request){
           total+=quantidade;
         }catch(e){erros.push(adAccountId+': '+(e as Error).message);}
       }
-      await q(db.rpc('conexao_execucao',{p_conexao:conn.id,p_id:exec,p_status:erros.length?(total?'parcial':'erro'):'ok',
-        p_registros:total,p_erro:erros.join(' | ').slice(0,1500)||null,p_detalhe:{fonte:'zernio_metaads',periodo:{ini,fim}},p_por:null}));
+      await q(db.from('conexao_execucoes').update({terminado_em:new Date().toISOString(),
+        status:erros.length?(total?'parcial':'erro'):'ok',registros:total,
+        erro:erros.join(' | ').slice(0,1500)||null,detalhe:{fonte:'zernio_metaads',periodo:{ini,fim}}})
+        .eq('id',exec.id).eq('workspace_id',ws));
     }
     if(total)await q(db.rpc('ads_externo_aplicar',{p_ws:ws}));
     return json({ok:erros.length===0,registros:total,erros,periodo:{ini,fim}});
