@@ -1,3 +1,9 @@
+## v0.183 — Roteamento Meta Zernio
+- Corrige a tentativa de conectar Meta via rota antiga `conexoes/iniciar`, embora a funcionalidade ativa seja `meta-zernio`.
+- `assets/atendimento.js` agora captura qualquer botão Meta ainda gerado pela interface principal antes do handler legado, e encaminha conectar/sincronizar/desconectar à Zernio.
+- `_headers`: `/assets/atendimento.js` com `Cache-Control: no-cache, must-revalidate`.
+- Não há código SQL nem Edge Function nova para publicar. Confirmar atualização da Cloudflare e recarregar sem cache para homologar.
+
 ## v0.182 — Meta OAuth diretamente pela Zernio
 - Substitui o clique Meta legado por um login Meta fornecido pela Zernio, sem `META_APP_ID`, `META_APP_SECRET` ou `META_LOGIN_CONFIG_ID`.
 - Migration `20261031030000_meta_zernio_oauth.sql`, função `meta-zernio` e atualização do cartão original em `assets/atendimento.js`.
