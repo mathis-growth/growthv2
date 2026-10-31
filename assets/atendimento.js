@@ -126,6 +126,16 @@
     const ws=S.ws,cfg=await api('config',{},ws);
     modal('Evolution API · 2.3.7',`<label>URL do servidor<input name="url" type="url" required placeholder="https://evolution.suaempresa.com" value="${esc(cfg.url)}"></label><label>API Key<input name="key" type="password" autocomplete="new-password" ${cfg.configurada?'':'required'} placeholder="${cfg.configurada?'Deixe vazio para manter a chave atual':'Chave global da Evolution'}"></label><p class="muted">A chave fica no servidor e nunca é devolvida ao navegador. Vamos testar a conexão antes de salvar.</p>`,async(d,form)=>{await api('salvar-config',d,ws);form.querySelector('[name=key]').value='';toast('Evolution configurada.');});
   }
+  async function conectarZernio(ws=S.ws) {
+    const r=await api('zernio-disponiveis',{},ws);
+    if(S.ws!==ws)return;
+    if(!r.contas.length){toast('Nenhuma conta Zernio disponível. Conecte Instagram ou WhatsApp na sua conta Zernio e confira se ela já pertence a outro cliente.',true);return;}
+    const options=r.contas.map(c=>`<option value="${esc(c.id)}">${esc(label(c.canal)+' · '+c.nome+(c.vinculada?' (já vinculada)':''))}</option>`).join('');
+    modal('Vincular conta Zernio ao cliente',`<p>Cliente selecionado: vincule apenas a conta que pertence a ele. Não é necessário informar a chave da Zernio.</p><label>Conta Zernio<select name="account_id" required>${options}</select></label><p class="muted">As contas de outros clientes não aparecem na lista.</p>`,async d=>{
+      await api('zernio-conectar',d,ws);
+      toast('Conta Zernio vinculada ao cliente. Agora adicione-a em Atendimento → Canais e conexões.');
+    });
+  }
   async function vCanais(m) {
     stop();++A.token;const ws=S.ws;
     m.innerHTML='<div class="head"><h1>Canais de atendimento</h1><button class="btn" id="atdInbox">Conversas</button></div><div id="atdCanaisCorpo">Carregando…</div>';
@@ -135,7 +145,7 @@
     $('#atdCanaisCorpo').innerHTML=`<div class="panel"><p>WhatsApp oficial e Instagram pela Zernio. WhatsApp e grupos pela Evolution 2.3.7.</p>${ctx.admin?'<div class="acts"><button class="btn" id="atdConfigEvo">Configurar Evolution</button><button class="btn pri" id="atdNovaInst">Nova instância WhatsApp</button><button class="btn" id="atdZernio">Adicionar conta Zernio</button></div>':'<p>Um administrador gerencia as conexões.</p>'}</div><div class="atd-canais">${canais.map(c=>`<article class="atd-canal"><h3>${esc(c.nome)}</h3><p>${esc(label(c.canal))} · ${esc(c.provedor)}</p><span class="pill ${c.status==='conectado'?'good':'warn'}">${esc(c.status)}</span><p class="muted">${esc(c.numero||c.externo_id)}</p><div class="acts">${ctx.admin&&c.provedor==='evolution'?`<button class="btn sm" data-ca="conectar" data-id="${c.id}">QR Code</button><button class="btn sm" data-ca="status" data-id="${c.id}">Verificar status</button>`:''}${ctx.admin?`<button class="btn sm" data-ca="webhook" data-id="${c.id}">Ativar recebimento</button>`:''}${ctx.editar?`<button class="btn sm" data-ca="sincronizar" data-id="${c.id}">${c.provedor==='evolution'?'Buscar conversas e grupos':'Buscar conversas'}</button>`:''}</div><div id="ca-${c.id}"></div></article>`).join('')||'<div class="panel">Nenhum canal adicionado.</div>'}</div>`;
     $('#atdConfigEvo')?.addEventListener('click',()=>act(configurarEvolution));
     $('#atdNovaInst')?.addEventListener('click',()=>modal('Nova instância WhatsApp','<label>Nome deste número<input name="nome" required placeholder="Comercial · Número principal" maxlength="100"></label>',async d=>{await api('criar-instancia',d,ws);toast('Instância criada. Abra QR Code para conectar.');}));
-    $('#atdZernio')?.addEventListener('click',()=>act(async()=>{const r=await api('zernio-contas',{},ws);if(!r.contas.length){toast('Conecte primeiro a Zernio deste cliente em Integrações.',true);return;}modal('Adicionar conta da Zernio',`<label>Conta<select name="account_id">${r.contas.map(c=>`<option value="${esc(c.id)}">${esc(label(c.canal)+' · '+c.nome)}</option>`).join('')}</select></label><p>Somente contas do perfil já conectado a este workspace.</p>`,async d=>{await api('zernio-vincular',d,ws);toast('Conta adicionada. Ative o recebimento e busque as conversas.');});}));
+    $('#atdZernio')?.addEventListener('click',()=>act(async()=>{const r=await api('zernio-contas',{},ws);if(!r.contas.length){await conectarZernio(ws);return;}modal('Adicionar conta da Zernio',`<label>Conta<select name="account_id">${r.contas.map(c=>`<option value="${esc(c.id)}">${esc(label(c.canal)+' · '+c.nome)}</option>`).join('')}</select></label><p>Somente contas do perfil já conectado a este workspace.</p>`,async d=>{await api('zernio-vincular',d,ws);toast('Conta adicionada. Ative o recebimento e busque as conversas.');});}));
     $('#atdCanaisCorpo').onclick=async e=>{const btn=e.target.closest('[data-ca]');if(!btn||btn.disabled)return;const id=btn.dataset.id,action=btn.dataset.ca;btn.disabled=true;
       try{const r=await api(action,{canal_id:id,cursor:btn.dataset.cursor||undefined},ws);if(S.ws!==ws||S.view!=='atd-canais')return;
         const target=$('#ca-'+id);
@@ -152,5 +162,29 @@
   VIEWS['atd-conversas']=vAtendimento;VIEWS['atd-canais']=vCanais;
   const originalIntegracoes=VIEWS['cfg-integracoes'];
   VIEWS['cfg-integracoes']=async m=>{await originalIntegracoes(m);const card=document.createElement('div');card.className='panel';card.innerHTML='<h2>Evolution API · WhatsApp e grupos</h2><p>Conecte seu servidor Evolution 2.3.7 para atender pessoas e grupos. Configure a URL e a API Key; gerencie instâncias, QR Code e status na central.</p><div class="acts"><button class="btn pri" id="atdIntegrationConfig">Configurar URL e Key</button><button class="btn" id="atdIntegrationChannels">Gerenciar canais</button></div>';m.prepend(card);card.querySelector('#atdIntegrationConfig').onclick=()=>act(configurarEvolution);card.querySelector('#atdIntegrationChannels').onclick=()=>{S.view='atd-canais';render();};};
+  // Conexão por cliente: mostra o vínculo atual e permite selecionar uma conta da Zernio.
+  const anteriorZernio=VIEWS['cfg-integracoes'];
+  VIEWS['cfg-integracoes']=async m=>{
+    await anteriorZernio(m);
+    if(S.view!=='cfg-integracoes')return;
+    const ws=S.ws;
+    const card=document.createElement('div');
+    card.className='panel';
+    card.innerHTML='<h2>Zernio · Instagram e WhatsApp oficial</h2><p id="zernioSituacao">Consultando contas deste cliente…</p><div class="acts"><button class="btn pri" id="zernioVincular">Vincular conta Zernio</button><button class="btn" id="zernioAtendimento">Canais de atendimento</button></div>';
+    m.prepend(card);
+    card.querySelector('#zernioVincular').onclick=()=>act(()=>conectarZernio(ws));
+    card.querySelector('#zernioAtendimento').onclick=()=>{S.view='atd-canais';render();};
+    try{
+      const ctx=await api('contexto',{},ws);
+      if(S.ws!==ws||S.view!=='cfg-integracoes'||!card.isConnected)return;
+      if(!ctx.admin)card.querySelector('#zernioVincular').remove();
+      if(!ctx.admin){card.querySelector('#zernioSituacao').textContent='Somente administradores podem vincular contas.';return;}
+      const r=await api('zernio-contas',{},ws);
+      if(S.ws!==ws||S.view!=='cfg-integracoes'||!card.isConnected)return;
+      card.querySelector('#zernioSituacao').textContent=r.contas.length
+        ? r.contas.map(c=>label(c.canal)+' · '+c.nome).join(' | ')
+        : 'Nenhuma conta vinculada a este cliente.';
+    }catch(e){if(S.ws===ws&&card.isConnected)card.querySelector('#zernioSituacao').textContent='Não foi possível consultar a Zernio: '+e.message;}
+  };
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.view==='atd-conversas')refreshCurrent(A.token);});
 })();
