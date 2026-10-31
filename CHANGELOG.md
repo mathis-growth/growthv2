@@ -1,3 +1,9 @@
+## v0.186 — Cards coloridos por canal no Atendimento (31/10/2026)
+- A lista de conversas utiliza todo o card em rosa para Instagram e verde para WhatsApp, com borda e faixa superior mais escuras.
+- O título do canal e perfil/número fica na faixa superior escura, em uma linha, branco e 6px conforme solicitação.
+- Remove a antiga caixa interna de identificação na lista; o cabeçalho da conversa e cartões de canais continuam funcionais.
+- Somente frontend: `assets/atendimento.js` e `assets/atendimento.css`. Não requer migração nem atualização da Edge Function.
+
 ## v0.185 — OAuth das integrações e identificação visual do Atendimento (31/10/2026)
 - Botão **Excluir instância** para WhatsApp QR Code Evolution: remove a instância por `DELETE /instance/delete/{instance}` e desativa somente o canal deste workspace depois do sucesso remoto, preservando conversas e mensagens no Supabase.
 - Faixas no topo do chat, lista de conversas e cartões: **Instagram vermelho** com nome do perfil; **WhatsApp verde** com modalidade QR Code/Evolution ou API oficial/Zernio e número, quando disponível. Consulta de identidade da instância Evolution pelo servidor.
