@@ -1,3 +1,11 @@
+## v0.188 — Atendimento multimídia (31/10/2026)
+- Prévia de imagens no chat com ampliação, player de áudio/vídeo e botão para recuperar mídia pendente; links assinados de 5 minutos em bucket privado.
+- Gravação via microfone no navegador e envio de imagens, áudio, vídeo e PDF mesmo sem texto, até 8 MB.
+- Adaptação do envio de anexos Zernio por upload-direct + attachmentUrl/attachmentType; envio Evolution por sendMedia e áudio gravado via sendWhatsAppAudio.
+- Recebimento WhatsApp API oficial via endpoint Zernio com Bearer, stream limitado a 8 MB; inferência de MIME de anexos Zernio.
+- Inclui Edge de arquivo único em `docs/edge-atendimento-v0188-index-unico.ts` e instruções em `docs/atendimento-midias-v0188.md`.
+- Sem SQL. Requer redeploy Edge `atendimento` e frontend. Webhook Instagram tempo real continua questão independente.
+
 ## v0.187 — Faixa WhatsApp simplificada (31/10/2026)
 - O cabeçalho colorido dos cards e conversas WhatsApp exibe apenas `WhatsApp - 5515981603876`, com o número do canal real, sem os termos QR Code e Número.
 - A modalidade QR Code/API oficial continua disponível nos filtros e na gestão de canais. Apenas frontend, sem Edge nem SQL.
