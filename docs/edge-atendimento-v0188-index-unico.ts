@@ -1,9 +1,8 @@
-// Growth V2 — Atendimento v0.188: áudio, imagens e anexos inline.
-// Edge Function de arquivo único; contém core.ts + providers.ts + index.ts.
-// Use como index.ts da função atendimento. Verify JWT desativado (webhook externo).
-// ATENÇÃO: o webhook Zernio de recebimento em tempo real ainda exige configuração própria.
+// Growth V2 — v0.188: Atendimento com reprodução de áudio, prévias e envio multimídia.
+// Função de arquivo único para Supabase Dashboard. Verify JWT desativado (webhooks).
+// Credenciais apenas no servidor. URLs assinadas de anexo autorizadas por workspace.
+// O webhook de novas DMs Zernio requer ativação separada para recebimento em tempo real.
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
-
 // ===== CORE =====
 // Contrato comum: canais novos implementam um adaptador, sem alterar o histórico.
 type Canal = { id: string; workspace_id: string; provedor: string; canal: string; externo_id: string; ativo: boolean };
@@ -74,7 +73,6 @@ async function segredoIgual(a: string, b: string) {
   for (let i = 0; i < x.length; i++) diff |= x[i] ^ y[i];
   return diff === 0;
 }
-
 
 // ===== PROVIDERS =====
 
@@ -164,8 +162,7 @@ const providers: Record<string, {
   },
 };
 
-
-// ===== HANDLER =====
+// ===== INDEX =====
 declare const EdgeRuntime: { waitUntil(p: Promise<unknown>): void };
 const URL_SB = Deno.env.get('SUPABASE_URL')!;
 const db = createClient(URL_SB, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
@@ -217,15 +214,37 @@ async function saveMedia(ch: any, msg: any) {
       const r = await evolution(cfg, '/chat/getBase64FromMediaMessage/' + encodeURIComponent(ch.externo_id), 'POST', { message: { key: orig.key, message: orig.message }, convertToMp4: false });
       bytes = base64Bytes(r.base64 || '');
     } else {
-      try { bytes = await mediaBytes(orig.attachments[i].url); }
-      catch {
-        const r = await zernio(zp(),'/inbox/conversations/'+encodeURIComponent(orig.conversa_id)+'/messages/'+encodeURIComponent(orig.externo_id)+'/attachments/'+i+'?accountId='+encodeURIComponent(ch.externo_id)+'&format=json');
-        bytes = await mediaBytes(r.url);
+      const meta=orig.attachments?.[i]||{}, mediaId=String(meta.payload?.id||'');
+      // WhatsApp oficial: mídia privada deve ser baixada com Bearer e accountId.
+      if(ch.canal==='whatsapp' && /^[a-zA-Z0-9_-]{1,256}$/.test(mediaId)){
+        const mediaUrl='https://zernio.com/api/v1/whatsapp/media/'+encodeURIComponent(mediaId)+'?accountId='+encodeURIComponent(ch.externo_id);
+        const resp=await fetch(mediaUrl,{redirect:'error',signal:AbortSignal.timeout(20000),headers:{Authorization:'Bearer '+zp()}});
+        if(!resp.ok || Number(resp.headers.get('content-length'))>MAX_MEDIA)throw Error('Mídia WhatsApp indisponível ou acima de 8 MB.');
+        const reader=resp.body?.getReader();
+        if(!reader)throw Error('Mídia WhatsApp sem conteúdo.');
+        const chunks:Uint8Array[]=[], limit=MAX_MEDIA;let count=0;
+        while(true){
+          const piece=await reader.read();
+          if(piece.done)break;
+          count+=piece.value.byteLength;
+          if(count>limit){await reader.cancel();throw Error('Mídia WhatsApp acima de 8 MB.');}
+          chunks.push(piece.value);
+        }
+        bytes=new Uint8Array(count);let offset=0;
+        for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}
+        const type=String(resp.headers.get('content-type')||'').split(';')[0];
+        if(/^(image|audio|video)\//.test(type))attachments[i].mime=type;
+      }else{
+        try { bytes = await mediaBytes(meta.url); }
+        catch {
+          const r = await zernio(zp(),'/inbox/conversations/'+encodeURIComponent(orig.conversa_id)+'/messages/'+encodeURIComponent(orig.externo_id)+'/attachments/'+i+'?accountId='+encodeURIComponent(ch.externo_id)+'&format=json');
+          bytes = await mediaBytes(r.url);
+        }
       }
     }
     if (!bytes.length) throw new Error('Mídia vazia.');
     const path = `${ch.workspace_id}/${msg.id}/${i}`;
-    await q(db.storage.from('atendimento').upload(path, bytes, { contentType: attachments[i].mime, upsert: true }));
+    await q(db.storage.from('atendimento').upload(path, bytes, { contentType: String(attachments[i].mime||'application/octet-stream').split(';')[0], upsert: true }));
     attachments[i] = { ...attachments[i], path, pendente: false, tamanho: bytes.length };
   }
   await q(db.from('atd_mensagens').update({ anexos: attachments }).eq('id', msg.id));
