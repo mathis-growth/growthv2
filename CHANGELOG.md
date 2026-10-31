@@ -1,3 +1,10 @@
+## v0.183 — Correção: clique Meta não chama mais a Edge legada (30/10/2026)
+- Interceptação em fase de captura dos botões legados do cartão Meta (`data-cxcon`, `data-cxsync`, `data-cxdes`) para encaminhar o fluxo ao `meta-zernio`.
+- Preserva o login Google pela `conexoes` e o cartão original Meta/Instagram sem criar outro painel.
+- Cabeçalho de cache para `assets/atendimento.js` passa a revalidar no navegador; após publicação, atualizar com Ctrl+Shift+R.
+- A Edge `conexoes` e a Edge `meta-zernio` estavam ambas ativas no Supabase; a mensagem anterior era um erro genérico do frontend antigo.
+- Sem migration, sem alteração na Edge publicada. Requer publicar o frontend na Cloudflare e validar o clique Meta.
+
 ## v0.182 — Conexão Meta via Zernio central, sem Meta App Secrets (30/10/2026)
 - Cartão Meta existente abre diretamente a autorização Facebook Login for Business fornecida pela Zernio. A Mathisa mantém apenas `ZERNIO_API_KEY` no Supabase.
 - Nova Edge `meta-zernio` com perfil Zernio específico por workspace, callback OAuth de estado de uso único, checagem de conta e seleção das ad accounts do cliente.
