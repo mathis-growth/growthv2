@@ -238,12 +238,12 @@ async function handle(req: Request, b: any) {
       if (b.lida) patch.nao_lidas = 0;
       await q(db.from('atd_conversas').update(patch).eq('id',cv.id)); return json({ok:true});
     }
-    const text = String(b.texto || '').trim(); if (!text || text.length > 4000) throw new Error('Escreva uma mensagem de até 4.000 caracteres.');
+    const text = String(b.texto || '').trim(); if ((!text && (!b.arquivo || b.action==='nota')) || text.length>4000) throw new Error('Escreva uma mensagem ou anexe um arquivo de até 8 MB.');
     if (!/^[0-9a-f-]{36}$/i.test(b.requisicao_id || '')) throw new Error('Identificador de envio inválido.');
     if (!ctx.nome) throw new Error('Não encontrei seu nome. Atualize o nome do perfil da sua conta e entre novamente.');
     const note = b.action === 'nota';
     if (!note && (!ch.ativo || ch.status !== 'conectado')) throw new Error('Conecte este canal antes de enviar.');
-    const signed = note ? text : assinatura(ctx.nome,text,ch.canal);
+    const signed = note ? text : text ? assinatura(ctx.nome,text,ch.canal) : '';
     const [pending] = await q(db.from('atd_mensagens').upsert({workspace_id:ws,conversa_id:cv.id,requisicao_id:b.requisicao_id,direcao:note?'nota':'enviada',texto:signed,autor_id:user.id,autor_nome:ctx.nome,status:note?'nota':'enviando'}, {onConflict:'workspace_id,requisicao_id',ignoreDuplicates:true}).select());
     if (!pending) return json({ok:true,repetida:true}); // nunca reenvia em timeout/duplo clique
     if (note) return json({ok:true});
@@ -254,13 +254,13 @@ async function handle(req: Request, b: any) {
       let media;
       if (b.arquivo) {
         const bytes = base64Bytes(String(b.arquivo.base64));
-        const mime = String(b.arquivo.mime || 'application/octet-stream');
-        if (!/^(image\/(jpeg|png|webp)|video\/mp4|audio\/(ogg|mpeg|mp4|webm)|application\/pdf)$/.test(mime)) throw new ProviderError(400,'TIPO_ARQUIVO_INVALIDO');
+        const mime = String(b.arquivo.mime || 'application/octet-stream').toLowerCase().split(';')[0].trim();
+        if (!/^(image\/(jpeg|png|webp)|video\/mp4|audio\/(ogg|mpeg|mp4|webm|wav|x-wav)|application\/pdf)$/.test(mime)) throw new ProviderError(400,'TIPO_ARQUIVO_INVALIDO');
         const path = `${ws}/${pending.id}/0`, nome = String(b.arquivo.nome || 'Arquivo').slice(0,150);
         await q(db.storage.from('atendimento').upload(path,bytes,{contentType:mime}));
         await q(db.from('atd_mensagens').update({anexos:[{path,nome,mime,tamanho:bytes.length}]}).eq('id',pending.id));
         const signedUrl = await q(db.storage.from('atendimento').createSignedUrl(path,300));
-        media = {url:signedUrl.signedUrl,nome,mime};
+        media = {url:signedUrl.signedUrl,nome,mime,bytes,gravado:b.arquivo.gravado===true&&mime.startsWith('audio/')};
       }
       attempted = true;
       const id = await adapter.send(cfg,ch,cv,signed,media);
@@ -278,7 +278,7 @@ async function handle(req: Request, b: any) {
     const cv = await q(db.from('atd_conversas').select('canal_id').eq('id',msg.conversa_id).single());
     if (b.action === 'recuperar-midia') { await saveMedia(await channel(cv.canal_id,ws),msg); return json({ok:true}); }
     const a = msg.anexos[Number(b.indice)]; if (!a?.path || !a.path.startsWith(ws+'/')) throw new Error('Anexo ainda não armazenado.');
-    return json(await q(db.storage.from('atendimento').createSignedUrl(a.path,60,{download:a.nome})));
+    return json(await q(db.storage.from('atendimento').createSignedUrl(a.path,b.visualizar===true?300:60,b.visualizar===true?{}:{download:a.nome})));
   }
   const ch = await channel(b.canal_id,ws);
   if (b.action === 'excluir-instancia') {
