@@ -1,3 +1,10 @@
+## v0.190 — Correção de sincronização de nomes e fotos Evolution (31/10/2026)
+- Corrigidas rotas Evolution `GET /chat/findChats/{instance}` e `GET /group/findGroupInfos/{instance}?groupJid=...`, anteriormente chamadas via POST.
+- Recuperação em lotes de oito grupos do banco (inclusive quando a listagem da API retorna vazia); aceita `pictureUrl` fornecida nos metadados de grupo, com armazenamento privado.
+- Diagnóstico visível em Canais: nomes recuperados, fotos salvas, grupos restantes sem nome, avisos e botão para o próximo lote.
+- Algumas versões da Evolution podem retornar grupos sem `subject` ou 404 nos detalhes; a interface informa a pendência, sem inventar nomes ou fotos.
+- Requer republicação de Edge `atendimento` e frontend; sem SQL.
+
 ## v0.189 — Grupos, arquivamento e thumbnails no Atendimento (31/10/2026)
 - Corrige títulos de grupos Evolution sincronizando metadados de `fetchAllGroups` e `findGroupInfos`, sem substituir títulos válidos por IDs.
 - Botão Arquivar/Desarquivar no chat e checkbox por instância **Exibir grupos arquivados**, com preferência persistida no banco.
