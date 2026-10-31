@@ -1,3 +1,10 @@
+## v0.178
+- Branch `fix/zernio-vinculo-por-cliente` (sem merge na main durante revisão).
+- Alterados: `assets/atendimento.js`, `supabase/functions/atendimento/index.ts`, documentação e README. Adicionados: `supabase/migrations/20261030220000_zernio_cliente.sql`, `docs/atendimento-edge-unica-v0178.ts`.
+- Vínculo inicial: seleção explícita de contas Zernio pela equipe interna Mathisa, seguida do cadastro do canal em Atendimento. Não expor contas sem vínculo a clientes nem outras contas do mesmo perfil.
+- SQL/Edge publicados manualmente no Supabase; a última revisão do código acrescentou validação de equipe interna, a verificar na Edge publicada. Publicação do frontend ainda pendente.
+- Verificações estáticas de sintaxe e estrutura OK; sem homologação real documentada.
+
 ## v0.177
 - Migrações:
   - `20261129100000_diagnostico_g1b.sql`: `metricas_definicoes.natureza` (valor ou taxa), `pesquisa_envios.rascunho` e `rascunho_em`, `pesquisa_rascunho_salvar`. `pesquisa_publica` passa a devolver o rascunho (troca de texto, com erro se o trecho não for encontrado);
