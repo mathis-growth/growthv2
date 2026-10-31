@@ -108,6 +108,18 @@ async function zernioCandidates(ws: string) {
   return accounts.filter((a: any) => ['instagram','whatsapp'].includes(a.platform) && (ids.has(a._id) || profiles.has(profile(a))))
     .map((a: any) => ({ id: a._id, canal: a.platform, nome: a.displayName || a.username || a._id }));
 }
+// A primeira associação é explícita por workspace; nunca expor a API Key Zernio.
+async function zernioDisponiveis(ws: string) {
+  const raw = (await zernio(zp(), '/accounts')).accounts || [];
+  const accounts = raw.filter((a: any) => ['instagram','whatsapp'].includes(a.platform) && typeof a._id === 'string');
+  const existing = await q(db.from('conexao_contas').select('workspace_id,id_externo').in('id_externo',accounts.map((a: any)=>a._id).length ? accounts.map((a: any)=>a._id) : ['__nenhuma__']));
+  const channels = await q(db.from('atd_canais').select('workspace_id,externo_id').eq('provedor','zernio').in('externo_id',accounts.length ? accounts.map((a: any)=>a._id) : ['__nenhuma__']));
+  const occupied = new Set([...existing,...channels].filter((a:any)=>a.workspace_id!==ws).map((a:any)=>a.id_externo || a.externo_id));
+  return accounts.filter((a:any)=>!occupied.has(a._id)).map((a:any)=>({
+    id:a._id, canal:a.platform, nome:String(a.displayName || a.username || a._id).slice(0,120),
+    vinculada:existing.some((x:any)=>x.workspace_id===ws && x.id_externo===a._id)
+  }));
+}
 async function handle(req: Request, b: any) {
   const userDb = createClient(URL_SB, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: req.headers.get('authorization') || '' } }, auth: { persistSession:false } });
   const { data: { user }, error } = await userDb.auth.getUser();
@@ -115,7 +127,7 @@ async function handle(req: Request, b: any) {
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
   const read = ['contexto','config','status','mensagens','anexo','zernio-contas'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
-  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','webhook','desativar'];
+  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-disponiveis','zernio-conectar','webhook','desativar'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
   const ws = b.workspace_id;
   if (b.action === 'contexto') return json(ctx);
@@ -139,6 +151,23 @@ async function handle(req: Request, b: any) {
       await setupWebhook(ch,cfg);
     } catch(e) { await q(db.from('atd_canais').update({status:'erro'}).eq('id',id)); throw e; }
     return json({ canal:ch });
+  }
+  if (b.action === 'zernio-disponiveis') return json({ contas:await zernioDisponiveis(ws) });
+  if (b.action === 'zernio-conectar') {
+    const id = String(b.account_id || '');
+    if (!id || id.length > 160) throw new Error('Selecione uma conta válida.');
+    // Nunca confiar em nome, plataforma ou workspace recebidos do navegador.
+    const account = (await zernioDisponiveis(ws)).find((a:any)=>a.id===id);
+    if (!account) throw new Error('Conta indisponível ou vinculada a outro cliente.');
+    const rows = await q(db.from('conexoes').upsert({
+      workspace_id:ws,plataforma:'zernio',status:'conectado',
+      conta_nome:'Zernio',conectado_em:new Date().toISOString(),conectado_por:user.id
+    },{onConflict:'workspace_id,plataforma'}).select('id').single());
+    const previous = await q(db.from('conexao_contas').select('id,workspace_id').eq('conexao_id',rows.id).eq('tipo',account.canal).eq('id_externo',account.id).maybeSingle());
+    if (!previous) await q(db.from('conexao_contas').insert({
+      workspace_id:ws,conexao_id:rows.id,tipo:account.canal,id_externo:account.id,nome:account.nome
+    }));
+    return json({ ok:true, conta:account.nome });
   }
   if (b.action === 'zernio-contas') return json({ contas:await zernioCandidates(ws) });
   if (b.action === 'zernio-vincular') {
