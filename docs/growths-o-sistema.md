@@ -1,3 +1,5 @@
+**Atualização v0.181 — Integração Meta:** o cartão Meta existente autoriza acesso às contas Ads, Páginas e Instagram profissional com escopos específicos; ao configurar `META_LOGIN_CONFIG_ID`, oferece seleção de ativos pelo Facebook Login for Business. WhatsApp Business Platform requer Embedded Signup próprio, não habilitado por este login. O sistema mantém um workspace por cliente e os tokens no servidor.
+
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
