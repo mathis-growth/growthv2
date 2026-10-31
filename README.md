@@ -24,6 +24,8 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 **Em desenvolvimento (branch `fix/zernio-vinculo-por-cliente`):** v0.178 — vínculo de contas Zernio por cliente em Integrações, com opção de iniciar pelo Atendimento; requer migração, publicação da Edge Function e homologação. Não está na `main` nem publicado em produção.
 
+**Correção v0.180:** o OAuth de Instagram agora aparece no cartão Instagram original de Integrações, sem painéis duplicados. Branch `fix/instagram-cartao-existente`, sem novos requisitos de banco ou Edge Function.
+
 ## Registro de versões
 
 Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já está em produção.
