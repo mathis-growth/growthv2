@@ -18,7 +18,7 @@
     :ch.canal==='whatsapp'
       ?('Número: '+(ch.numero?'+'+String(ch.numero).replace(/\D/g,''):'não identificado'))
       :(ch.nome||'Canal');
-  const faixaCanal = ch => `<span class="atd-faixa atd-faixa--${tipoCanal(ch)}"><b>${esc(nomeCanal(ch))}</b><span>${esc(identidadeCanal(ch))}</span></span>`;
+  const faixaCanal = ch => `<span class="atd-faixa atd-faixa--${tipoCanal(ch)}" title="${esc(nomeCanal(ch)+' · '+identidadeCanal(ch))}">${esc(nomeCanal(ch)+' · '+identidadeCanal(ch))}</span>`;
 
   async function api(action,body={},ws=A.ws || S.ws) {
     const {data,error} = await sb.functions.invoke('atendimento',{body:{action,workspace_id:ws,...body}});
@@ -69,7 +69,7 @@
     if(term) query=query.or('nome.ilike.%'+term+'%,endereco.ilike.%'+term+'%');
     const rows=await q(query); if(!active(token)||sequence!==A.listSeq) return;
     A.lista=more?[...A.lista,...rows]:rows;
-    $('#atdLista').innerHTML=A.lista.length?A.lista.map(c=>{const ch=A.canais.find(x=>x.id===c.canal_id)||{};return `<button class="atd-item${A.sel===c.id?' on':''}" data-conversa="${c.id}">${c.nao_lidas?`<span class="atd-count">${c.nao_lidas}</span>`:''}<span class="atd-avatar">${c.grupo?'♟':esc(c.nome.slice(0,1).toUpperCase())}</span><b>${esc(c.nome)}</b><div class="atd-identificacao">${faixaCanal(ch)}${c.grupo?'<small>Grupo</small>':''}</div><small>${esc(c.ultima_mensagem||'Histórico disponível para importar')}</small><small>${fmt(c.ultima_em)} · ${esc(c.status)}</small></button>`;}).join(''):'<div class="atd-vazio">Nenhuma conversa com estes filtros.</div>';
+    $('#atdLista').innerHTML=A.lista.length?A.lista.map(c=>{const ch=A.canais.find(x=>x.id===c.canal_id)||{};return `<button class="atd-item atd-item--${tipoCanal(ch)}${A.sel===c.id?' on':''}" data-conversa="${c.id}"><span class="atd-card-top">${faixaCanal(ch)}</span><span class="atd-card-body">${c.nao_lidas?`<span class="atd-count">${c.nao_lidas}</span>`:''}<span class="atd-avatar">${c.grupo?'♟':esc(c.nome.slice(0,1).toUpperCase())}</span><b>${esc(c.nome)}</b>${c.grupo?'<small>Grupo</small>':''}<small>${esc(c.ultima_mensagem||'Histórico disponível para importar')}</small><small>${fmt(c.ultima_em)} · ${esc(c.status)}</small></span></button>`;}).join(''):'<div class="atd-vazio">Nenhuma conversa com estes filtros.</div>';
     $('#atdMais').hidden=rows.length<(more?50:(A.page+1)*50);
     $('#atdLista').onclick=e=>{const b=e.target.closest('[data-conversa]');if(b)act(()=>openChat(b.dataset.conversa,token));};
   }
