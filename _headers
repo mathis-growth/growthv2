@@ -10,3 +10,8 @@
   Cache-Control: no-cache
 /index.html
   Cache-Control: no-cache
+
+# v0.183: o frontend de integrações muda com frequência.
+# Não servir JavaScript antigo que ainda chama /conexoes/iniciar para Meta.
+/assets/atendimento.js
+  Cache-Control: no-cache, must-revalidate
