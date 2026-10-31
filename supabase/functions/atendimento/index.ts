@@ -126,7 +126,7 @@ async function handle(req: Request, b: any) {
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
   const read = ['contexto','config','status','mensagens','anexo','zernio-contas'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
-  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-disponiveis','zernio-conectar','webhook','desativar'];
+  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
   const ws = b.workspace_id;
   if (['zernio-disponiveis','zernio-conectar'].includes(b.action)) {
@@ -256,6 +256,27 @@ async function handle(req: Request, b: any) {
     return json(await q(db.storage.from('atendimento').createSignedUrl(a.path,60,{download:a.nome})));
   }
   const ch = await channel(b.canal_id,ws);
+  if (b.action === 'excluir-instancia') {
+    if (ch.provedor !== 'evolution' || ch.canal !== 'whatsapp')
+      return json({erro:'A exclusão remota é exclusiva das instâncias QR Code da Evolution.'},400);
+    // A instância é sempre resolvida pelo canal do workspace autenticado.
+    // Não aceita nome/URL da instância enviados pelo navegador.
+    const cfg=await secret(ws);
+    if(!cfg)throw new Error('Configure a Evolution para excluir a instância remota.');
+    const inst=String(ch.externo_id||'');
+    if(!/^growths-[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(inst))
+      return json({erro:'Nome de instância não reconhecido. Exclusão remota bloqueada.'},409);
+    // Exige sucesso remoto antes de desativar o canal local. Mantém histórico.
+    try {
+      await evolution(cfg,'/instance/delete/'+encodeURIComponent(inst),'DELETE');
+    } catch(e) {
+      if(!(e instanceof ProviderError && e.status===404))throw e;
+      // 404 pode indicar instância já removida; não falhar apenas por ausência.
+    }
+    await q(db.from('atd_canais').update({ativo:false,status:'desativado'})
+      .eq('id',ch.id).eq('workspace_id',ws).eq('provedor','evolution'));
+    return json({ok:true,instancia_excluida:true,historico_preservado:true});
+  }
   if (b.action === 'desativar') { await q(db.from('atd_canais').update({ativo:false,status:'desativado'}).eq('id',ch.id)); return json({ok:true}); }
   if (b.action === 'webhook') { await setupWebhook(ch, ch.provedor === 'evolution' ? await secret(ws) : null); return json({ok:true}); }
   if (b.action === 'sincronizar') return json(await syncConversations(ch,b.cursor));
