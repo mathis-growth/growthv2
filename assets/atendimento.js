@@ -171,13 +171,65 @@
     if(!active(token)||A.sel!==id) return;
     const box=$('#atdMensagens'); if(!box)return;
     const bottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
+    // Não interromper áudio/vídeo em reprodução quando chegar atualização Realtime.
+    const reproduzindo=[...box.querySelectorAll('audio,video')].some(media=>!media.paused&&!media.ended);
+    if(reproduzindo && !before)return;
     A.loaded=[...A.loaded,...r.mensagens];
     const map=new Map(A.loaded.map(m=>[m.id,m]));A.loaded=[...map.values()].sort((a,b)=>a.em.localeCompare(b.em)||a.id.localeCompare(b.id));
-    box.innerHTML=`${r.mensagens.length===60?'<button class="btn sm" id="atdAntigas">Mensagens anteriores</button>':''}`+A.loaded.map(m=>`<article class="atd-balao ${m.direcao}">${m.autor_nome?`<span class="atd-autor">${esc(m.autor_nome)}</span>`:m.participante?`<span class="atd-autor">${esc(m.participante)}</span>`:''}${textoMensagem(m)}${listOf(m.anexos).map((a,i)=>`<div><button class="btn sm" data-midia="${m.id}" data-index="${i}" data-pendente="${a.pendente?'1':'0'}">${a.pendente?'Recuperar anexo':'↓ '+esc(a.nome)}</button></div>`).join('')}<small>${fmt(m.em)} · ${state[m.status]||esc(m.status)}</small>${m.erro?`<span class="atd-erro">${esc(m.erro)}</span>`:''}</article>`).join('');
+    box.innerHTML=`${r.mensagens.length===60?'<button class="btn sm" id="atdAntigas">Mensagens anteriores</button>':''}`+A.loaded.map(m=>`<article class="atd-balao ${m.direcao}">${m.autor_nome?`<span class="atd-autor">${esc(m.autor_nome)}</span>`:m.participante?`<span class="atd-autor">${esc(m.participante)}</span>`:''}${textoMensagem(m)}${listOf(m.anexos).map((a,i)=>`<div class="atd-midia">${mediaMarkup(m,a,i)}</div>`).join('')}<small>${fmt(m.em)} · ${state[m.status]||esc(m.status)}</small>${m.erro?`<span class="atd-erro">${esc(m.erro)}</span>`:''}</article>`).join('');
     if(!A.loaded.length)box.innerHTML='<div class="atd-vazio">Nenhuma mensagem salva ainda.<br>Use “Importar histórico” para consultar o canal.</div>';
+    // Carrega somente anexos visíveis: URLs assinadas são curtas e não expõem o bucket.
+    const mediaElements=[...box.querySelectorAll('[data-media-key]')];
+    const loadMedia=async el=>{
+      const key=el.dataset.mediaKey;
+      if(!el.isConnected||el.dataset.loaded==='1')return;
+      el.dataset.loaded='1';
+      try{
+        let signed=mediaSigned.get(key);
+        if(!signed||signed.exp<Date.now()){
+          const result=await api('anexo',{mensagem_id:el.dataset.midia,indice:Number(el.dataset.index),visualizar:true},A.ws);
+          signed={url:result.signedUrl,exp:Date.now()+240000};
+          mediaSigned.set(key,signed);
+        }
+        if(!active(token)||A.sel!==id||!el.isConnected)return;
+        if(el.matches('button.atd-media-image')){
+          const img=document.createElement('img');img.src=signed.url;img.loading='lazy';img.alt=el.title||'Imagem enviada';
+          img.onerror=()=>{if(el.isConnected)el.textContent='Imagem indisponível · tentar novamente';el.dataset.loaded='';mediaSigned.delete(key);};
+          el.replaceChildren(img);el.dataset.preview=signed.url;
+        }else if(el.matches('audio,video')){
+          el.src=signed.url;
+          el.load();
+        }
+      }catch(e){el.dataset.loaded='';if(el.matches('button'))el.textContent='Não foi possível carregar · tentar novamente';}
+    };
+    if('IntersectionObserver' in window){
+      const observer=new IntersectionObserver((entries,obs)=>{
+        for(const entry of entries)if(entry.isIntersecting){obs.unobserve(entry.target);loadMedia(entry.target);}
+      },{root:box,rootMargin:'160px'});
+      for(const el of mediaElements)observer.observe(el);
+    }else mediaElements.forEach(loadMedia);
+
     if(scroll||bottom)box.scrollTop=box.scrollHeight;
     box.querySelector('#atdAntigas')?.addEventListener('click',()=>act(()=>messages(id,token,false,{em:A.loaded[0]?.em,id:A.loaded[0]?.id})));
-    box.onclick=e=>{const b=e.target.closest('[data-midia]');if(b)act(async()=>{if(b.dataset.pendente==='1'){await api('recuperar-midia',{mensagem_id:b.dataset.midia});await messages(id,token,false);}else{const r=await api('anexo',{mensagem_id:b.dataset.midia,indice:Number(b.dataset.index)});const a=document.createElement('a');a.href=r.signedUrl;a.target='_blank';a.rel='noopener';a.click();}});};
+    box.onclick=e=>{
+      const b=e.target.closest('[data-midia]');if(!b)return;
+      if(b.dataset.pendente==='1'){act(async()=>{await api('recuperar-midia',{mensagem_id:b.dataset.midia});mediaSigned.delete(mediaKey(b.dataset.midia,Number(b.dataset.index)));await messages(id,token,false);});return;}
+      if(b.matches('button.atd-media-image')){
+        const src=b.dataset.preview;if(!src){b.dataset.loaded='';return;}
+        const modal=document.createElement('dialog');modal.className='atd-lightbox';
+        modal.innerHTML='<button type="button" class="btn sm atd-lightbox-close">Fechar ✕</button><img alt="Imagem ampliada">';
+        modal.querySelector('img').src=src;
+        modal.querySelector('button').onclick=()=>modal.close();
+        modal.onclick=ev=>{if(ev.target===modal)modal.close();};
+        modal.onclose=()=>modal.remove();
+        document.body.append(modal);modal.showModal();return;
+      }
+      if(b.matches('audio,video'))return;
+      act(async()=>{
+        const r=await api('anexo',{mensagem_id:b.dataset.midia,indice:Number(b.dataset.index)});
+        const a=document.createElement('a');a.href=r.signedUrl;a.target='_blank';a.rel='noopener';a.click();
+      });
+    };
   }
   async function ficha(cv,token,generation) {
     const ws=A.ws, rows=await q(sb.from('equipe').select('nome,user_id').eq('workspace_id',ws).eq('ativo',true).not('user_id','is',null));
