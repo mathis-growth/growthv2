@@ -2,6 +2,13 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.180 — Sem cartões duplicados em Integrações (31/10/2026)
+- O botão de OAuth direto usa o cartão **Instagram** já presente em **Redes sociais e conteúdo**, substituindo o antigo formulário manual de status.
+- Estado e nomes das contas Instagram agora refletem `conexao_contas` do cliente (plataforma `zernio`), sem confundir Meta Ads com Instagram orgânico.
+- Os cartões nativos `WhatsApp API oficial` e `WhatsApp (grupos e API)` acessam respectivamente a vinculação técnica Zernio e a configuração Evolution, sem painéis extras.
+- Mantidos o botão `Conectar Instagram` em Atendimento, a Edge Function `instagram-oauth` e a migration v0.179.
+- Ações privilegiadas de Instagram/WhatsApp são ocultadas se a verificação de permissão falhar. Não há migração ou nova Edge Function nesta entrega.
+
 ## v0.179 — Conectar Instagram por OAuth direto (31/10/2026)
 - Interface: botão **Conectar Instagram** em Configurações → Integrações e Atendimento → Canais e conexões. O navegador abre o login OAuth do Instagram, sem exibir escolha manual de conta na Zernio.
 - API: nova Edge Function `instagram-oauth`; usa `ZERNIO_API_KEY` central, cria um perfil Zernio por workspace quando necessário, inicia `GET /v1/connect/instagram` com `loginMethod=instagram_login` e recebe o retorno OAuth.
