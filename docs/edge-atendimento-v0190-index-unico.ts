@@ -1,6 +1,6 @@
-// Growth V2 — Atendimento v0.190. Código único para Supabase Dashboard.
-// Evolution GET findChats/findGroupInfos; diagnósticos seguros para nome/foto.
-// Verify JWT false para webhooks; autenticação validada na função.
+// Growth V2 — Atendimento v0.190 (arquivo único).
+// Corrige GET de grupos e busca de fotos com diagnóstico por instância.
+// Verify JWT false: webhooks autenticados internamente e sessão via auth.getUser.
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 // === CORE ===
 // Contrato comum: canais novos implementam um adaptador, sem alterar o histórico.
@@ -563,13 +563,12 @@ async function storedAvatar(ch:any,jid:string,cfg:any,preferredUrl=''):Promise<s
   if(!isJid(jid))return null;
   const urls:string[]=[];
   if(preferredUrl.startsWith('https://'))urls.push(preferredUrl);
-  if(!urls.length){
-    try{
-      const photo=await evolution(cfg,'/chat/fetchProfilePictureUrl/'+encodeURIComponent(ch.externo_id),'POST',{number:jid});
-      const url=String(photo.profilePictureUrl||photo.profilePicture||photo.picture||photo.url||'');
-      if(url.startsWith('https://'))urls.push(url);
-    }catch{/* O contato pode não ter foto visível. */}
-  }
+  try{
+    // Usar pictureUrl do grupo primeiro; fallback ao endpoint do perfil se falhar.
+    const photo=await evolution(cfg,'/chat/fetchProfilePictureUrl/'+encodeURIComponent(ch.externo_id),'POST',{number:jid});
+    const url=String(photo.profilePictureUrl||photo.profilePicture||photo.picture||photo.url||'');
+    if(url.startsWith('https://')&&!urls.includes(url))urls.push(url);
+  }catch{/* O contato pode não ter foto visível. */}
   for(const url of urls){
     try{
       const bytes=await mediaBytes(url); // HTTPS e SSRF verificados pelo helper existente.
