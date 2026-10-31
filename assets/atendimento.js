@@ -304,6 +304,15 @@
         status.textContent=escolhidas.length?escolhidas.length+' conta(s) de anúncios Meta autorizadas.':ativas.length?'Login autorizado. Escolha quais contas deste cliente deseja usar.':'A conexão Meta usa a Zernio da Mathisa.';
         const buttons=metaCard.querySelector('[data-cxcon]')?.parentElement||metaCard.querySelector('.btn')?.parentElement;
         if(ativas.length){
+          if(escolhidas.length){
+            const sync=document.createElement('button');sync.className='btn pri sm';sync.textContent='Sincronizar Meta Ads';
+            sync.onclick=e=>{e.stopPropagation();sync.disabled=true;
+              act(async()=>{const r=await metaZernio(ws,'sincronizar');
+                toast(r.erros?.length?'Sincronização parcial: '+r.erros.join(' | '):'Sincronizados '+r.registros+' registros Meta Ads.',!!r.erros?.length);
+                if(S.ws===ws)render();
+              }).finally(()=>{sync.disabled=false;});};
+            buttons?.append(sync);
+          }
           const selecionar=document.createElement('button');selecionar.className='btn sm';selecionar.textContent='Escolher contas';
           selecionar.onclick=e=>{e.stopPropagation();act(async()=>{const r=await metaZernio(ws,'contas');await escolherMetaZernio(ws,r.contas);});};
           buttons?.append(selecionar);
