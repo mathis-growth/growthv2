@@ -195,35 +195,65 @@
   MOD_GRUPO.Atendimento='vendas';
   ICO.Atendimento=ICO['crm-dms']||ICO.Vendas||'';ICO['atd-conversas']=ICO['crm-dms']||'';ICO['atd-canais']=ICO['cfg-integracoes'];
   VIEWS['atd-conversas']=vAtendimento;VIEWS['atd-canais']=vCanais;
+  // Não criar novos painéis em Integrações: usar os cartões do catálogo nativo.
   const originalIntegracoes=VIEWS['cfg-integracoes'];
-  VIEWS['cfg-integracoes']=async m=>{await originalIntegracoes(m);const card=document.createElement('div');card.className='panel';card.innerHTML='<h2>Evolution API · WhatsApp e grupos</h2><p>Conecte seu servidor Evolution 2.3.7 para atender pessoas e grupos. Configure a URL e a API Key; gerencie instâncias, QR Code e status na central.</p><div class="acts"><button class="btn pri" id="atdIntegrationConfig">Configurar URL e Key</button><button class="btn" id="atdIntegrationChannels">Gerenciar canais</button></div>';m.prepend(card);card.querySelector('#atdIntegrationConfig').onclick=()=>act(configurarEvolution);card.querySelector('#atdIntegrationChannels').onclick=()=>{S.view='atd-canais';render();};};
-  // Conexão por cliente: mostra o vínculo atual e permite selecionar uma conta da Zernio.
-  const anteriorZernio=VIEWS['cfg-integracoes'];
   VIEWS['cfg-integracoes']=async m=>{
-    await anteriorZernio(m);
-    if(S.view!=='cfg-integracoes')return;
+    await originalIntegracoes(m);
     const ws=S.ws;
-    const card=document.createElement('div');
-    card.className='panel';
-    card.innerHTML='<h2>Instagram</h2><p>Conecte sua conta profissional do Instagram diretamente pelo login seguro. A integração técnica é administrada pela Mathisa.</p><p id="zernioSituacao">Consultando contas deste cliente…</p><div class="acts"><button class="btn pri" id="instagramOAuthBtn">Conectar Instagram</button><button class="btn" id="zernioAtendimento">Canais de atendimento</button><button class="btn" id="zernioVincular">Vincular WhatsApp oficial (Mathisa)</button></div>';
-    m.prepend(card);
-    card.querySelector('#instagramOAuthBtn').onclick=()=>conectarInstagram(ws);
-    card.querySelector('#zernioVincular').onclick=()=>act(()=>conectarZernio(ws));
-    card.querySelector('#zernioAtendimento').onclick=()=>{S.view='atd-canais';render();};
+    if(S.view!=='cfg-integracoes'||!m.isConnected)return;
+    const vaiCanais=()=>{if(S.ws!==ws)return;S.view='atd-canais';render();};
+    const substituirAcao=(nome,rotulo,acao,secundario)=>{
+      const botao=Array.from(m.querySelectorAll('[data-i]')).find(b=>b.dataset.i===nome);
+      if(!botao)return null;
+      // Remove o atributo antes do clique: vIntegracoes trata [data-i] como modal manual.
+      botao.removeAttribute('data-i');
+      botao.textContent=rotulo;
+      botao.classList.add('pri');
+      botao.onclick=e=>{e.stopPropagation();if(S.ws===ws)acao();};
+      if(secundario){
+        const extra=document.createElement('button');
+        extra.type='button';extra.className='btn sm';extra.textContent='Gerenciar canais';
+        extra.onclick=e=>{e.stopPropagation();vaiCanais();};
+        botao.parentElement.append(extra);
+      }
+      return {botao,card:botao.closest('.ad')};
+    };
+    const instagram=substituirAcao('Instagram','Conectar Instagram',()=>conectarInstagram(ws),true);
+    const whatsapp=substituirAcao('WhatsApp API oficial','Vincular WhatsApp oficial',()=>act(()=>conectarZernio(ws)),true);
+    substituirAcao('WhatsApp (grupos e API)','Configurar Evolution API',()=>act(configurarEvolution),true);
+    // O status do Instagram deve refletir a conta realmente vinculada, não um registro manual.
+    if(instagram){
+      const conta=document.createElement('small');
+      conta.className='muted';conta.textContent='Conferindo conta Instagram vinculada…';
+      instagram.card.insertBefore(conta,instagram.botao.parentElement);
+      try{
+        const rows=await q(sb.from('conexao_contas')
+          .select('nome,id_externo,conexoes!inner(plataforma)')
+          .eq('workspace_id',ws).eq('tipo','instagram')
+          .eq('conexoes.plataforma','zernio'));
+        if(S.ws!==ws||S.view!=='cfg-integracoes'||!instagram.card.isConnected)return;
+        const nomes=rows.map(c=>c.nome||c.id_externo);
+        const pill=instagram.card.querySelector('.pill');
+        if(pill){pill.className='pill '+(nomes.length?'good':'neutral');pill.textContent=nomes.length?'Conectado':'Não conectado';}
+        conta.textContent=nomes.length?'Contas: '+nomes.join(' · '):'Nenhuma conta Instagram conectada neste cliente.';
+        instagram.botao.textContent=nomes.length?'Conectar outra conta Instagram':'Conectar Instagram';
+      }catch(e){
+        if(S.ws===ws&&instagram.card.isConnected)conta.textContent='Não foi possível consultar as contas conectadas.';
+      }
+    }
+    if(S.ws!==ws||S.view!=='cfg-integracoes')return;
     try{
-      const ctx=await api('contexto',{},ws);
-      if(S.ws!==ws||S.view!=='cfg-integracoes'||!card.isConnected)return;
-      const interna=ctx.admin ? await q(sb.rpc('sou_equipe_interna')) : false;
-      const permiteOAuth=await q(sb.rpc('zernio_oauth_permitido',{p_ws:ws}));
-      if(!permiteOAuth)card.querySelector('#instagramOAuthBtn').remove();
-      if(!ctx.admin||!interna)card.querySelector('#zernioVincular').remove();
-      if(!ctx.admin){card.querySelector('#zernioSituacao').textContent='Somente administradores podem consultar as conexões.';return;}
-      const r=await api('zernio-contas',{},ws);
-      if(S.ws!==ws||S.view!=='cfg-integracoes'||!card.isConnected)return;
-      card.querySelector('#zernioSituacao').textContent=r.contas.length
-        ? r.contas.map(c=>label(c.canal)+' · '+c.nome).join(' | ')
-        : 'Nenhuma conta vinculada a este cliente.';
-    }catch(e){if(S.ws===ws&&card.isConnected)card.querySelector('#zernioSituacao').textContent='Não foi possível consultar a Zernio: '+e.message;}
+      const [permiteOAuth,interna]=await Promise.all([
+        q(sb.rpc('zernio_oauth_permitido',{p_ws:ws})),
+        q(sb.rpc('sou_equipe_interna'))
+      ]);
+      if(S.ws!==ws||S.view!=='cfg-integracoes')return;
+      if(!permiteOAuth)instagram?.botao.remove();
+      if(!permiteOAuth||!interna)whatsapp?.botao.remove();
+    }catch(e){
+      // Falha em verificar permissão: não disponibilizar uma ação privilegiada.
+      instagram?.botao.remove();whatsapp?.botao.remove();
+    }
   };
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.view==='atd-conversas')refreshCurrent(A.token);});
 })();
