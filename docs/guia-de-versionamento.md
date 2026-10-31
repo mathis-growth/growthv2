@@ -1,3 +1,8 @@
+## v0.190 — GET correto para grupos Evolution
+- `findChats` e `findGroupInfos` passam a usar GET; `findGroupInfos` recebe `groupJid` na URL.
+- Corrige recuperação por lote e apresenta resultado real no botão Buscar conversas e grupos.
+- Sem migration; Edge e frontend exigem publicação. Ver `docs/edge-atendimento-v0190-index-unico.ts`.
+
 ## v0.189 — Identificação de grupos e arquivo operacional por instância
 - `supabase/migrations/20261031050000_atendimento_grupos_arquivo_avatares.sql`: preferências de instância, `arquivada` e `avatar_path` na conversa.
 - Edge `atendimento` atualizada, sincroniza nome/thumbnail com Evolution e serve imagens com URL assinada em lote por workspace.
