@@ -20,7 +20,7 @@
       :(ch.nome||'Canal');
   // A faixa superior é compacta; detalhes QR Code/API permanecem disponíveis nos filtros e canais.
   const textoFaixaCanal = ch => ch.canal==='whatsapp'
-    ? 'WhatsApp - '+(ch.numero?String(ch.numero).replace(/\\D/g,''):'não identificado')
+    ? 'WhatsApp - '+(ch.numero?String(ch.numero).replace(/\D/g,''):'não identificado')
     : nomeCanal(ch)+' · '+identidadeCanal(ch);
   const faixaCanal = ch => `<span class="atd-faixa atd-faixa--${tipoCanal(ch)}" title="${esc(textoFaixaCanal(ch))}">${esc(textoFaixaCanal(ch))}</span>`;
 
