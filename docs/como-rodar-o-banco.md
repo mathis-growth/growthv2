@@ -1,3 +1,10 @@
+## v0.179 — Instagram OAuth direto (pendente de publicação)
+1. Aplicar `supabase/migrations/20261031020000_instagram_oauth_direto.sql` após v0.178; conferir `conexoes.zernio_profile_id` e a existência de `privado.conexao_estados`.
+2. Publicar a nova Edge Function `instagram-oauth` **sem verificação automática de JWT** para permitir o callback GET. A função valida o JWT explicitamente no POST de início.
+3. Usar o Secret já existente `ZERNIO_API_KEY`. Não acrescentar chave no workspace e não substituir a Edge `atendimento`.
+4. Publicar `assets/atendimento.js`, abrir Cliente → Configurações → Integrações → **Conectar Instagram** e autorizar uma conta profissional. Verificar vínculos nas tabelas `conexoes`, `conexao_contas` e `atd_canais` do mesmo workspace.
+5. Testar: cliente sem permissão, estado expirado/reutilizado, cancelamento OAuth, conta em outro workspace, retorno de perfil divergente e reconexão da conta Mathisa. Os botões de Atendimento permanecem para sincronização de conversas e ativação de webhook.
+
 ## v0.178 — Conexão Zernio por cliente (ainda não publicada)
 1. Exige a Central de Atendimento v0.175 no banco.
 2. Aplicar `supabase/migrations/20261030220000_zernio_cliente.sql` no banco correto.
