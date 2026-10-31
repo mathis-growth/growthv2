@@ -126,6 +126,34 @@
     const ws=S.ws,cfg=await api('config',{},ws);
     modal('Evolution API · 2.3.7',`<label>URL do servidor<input name="url" type="url" required placeholder="https://evolution.suaempresa.com" value="${esc(cfg.url)}"></label><label>API Key<input name="key" type="password" autocomplete="new-password" ${cfg.configurada?'':'required'} placeholder="${cfg.configurada?'Deixe vazio para manter a chave atual':'Chave global da Evolution'}"></label><p class="muted">A chave fica no servidor e nunca é devolvida ao navegador. Vamos testar a conexão antes de salvar.</p>`,async(d,form)=>{await api('salvar-config',d,ws);form.querySelector('[name=key]').value='';toast('Evolution configurada.');});
   }
+  // Popup criado sincronamente no clique para não ser bloqueado pelo navegador.
+  async function conectarInstagram(ws=S.ws) {
+    const popup=window.open('about:blank','growthsInstagramOAuth','width=620,height=760');
+    if(!popup){toast('Permita popups para conectar o Instagram.',true);return;}
+    popup.document.body.innerHTML='<p style="font:16px system-ui;padding:24px">Abrindo autorização do Instagram…</p>';
+    try{
+      const {data,error}=await sb.functions.invoke('instagram-oauth',{body:{workspace_id:ws}});
+      if(error){let msg;try{msg=(await error.context.json()).erro;}catch{}throw new Error(msg||'Não foi possível iniciar o login do Instagram.');}
+      if(data?.erro)throw new Error(data.erro);
+      const auth=new URL(String(data?.authUrl||''));
+      if(auth.protocol!=='https:'||!['instagram.com','www.instagram.com','facebook.com','www.facebook.com'].includes(auth.hostname))
+        throw new Error('URL de autorização inválida.');
+      if(popup.closed)throw new Error('Janela de autorização fechada.');
+      popup.location.replace(auth.toString());
+      const timer=setInterval(async()=>{
+        if(!popup.closed)return;
+        clearInterval(timer);
+        if(S.ws!==ws)return;
+        // A finalização é confirmada pelo servidor; fechar a janela não significa sucesso.
+        try{
+          const r=await api('zernio-contas',{},ws);
+          if(r.contas?.some(c=>c.canal==='instagram'))toast('Instagram conectado. A conta está pronta em Atendimento.');
+          else toast('Autorização não concluída. Confira a janela do Instagram e tente novamente.',true);
+          if(S.view==='cfg-integracoes'||S.view==='atd-canais')await render();
+        }catch(e){toast('Atualize a tela para conferir a conexão do Instagram.',true);}
+      },1000);
+    }catch(e){if(!popup.closed)popup.close();toast(e.message,true);}
+  }
   async function conectarZernio(ws=S.ws) {
     const r=await api('zernio-disponiveis',{},ws);
     if(S.ws!==ws)return;
@@ -142,10 +170,11 @@
     $('#atdInbox').onclick=()=>{S.view='atd-conversas';render();};
     const [ctx,canais]=await Promise.all([api('contexto',{},ws),q(sb.from('atd_canais').select('*').eq('workspace_id',ws).order('nome'))]);
     if(S.ws!==ws||S.view!=='atd-canais')return;
-    $('#atdCanaisCorpo').innerHTML=`<div class="panel"><p>WhatsApp oficial e Instagram pela Zernio. WhatsApp e grupos pela Evolution 2.3.7.</p>${ctx.admin?'<div class="acts"><button class="btn" id="atdConfigEvo">Configurar Evolution</button><button class="btn pri" id="atdNovaInst">Nova instância WhatsApp</button><button class="btn" id="atdZernio">Adicionar conta Zernio</button></div>':'<p>Um administrador gerencia as conexões.</p>'}</div><div class="atd-canais">${canais.map(c=>`<article class="atd-canal"><h3>${esc(c.nome)}</h3><p>${esc(label(c.canal))} · ${esc(c.provedor)}</p><span class="pill ${c.status==='conectado'?'good':'warn'}">${esc(c.status)}</span><p class="muted">${esc(c.numero||c.externo_id)}</p><div class="acts">${ctx.admin&&c.provedor==='evolution'?`<button class="btn sm" data-ca="conectar" data-id="${c.id}">QR Code</button><button class="btn sm" data-ca="status" data-id="${c.id}">Verificar status</button>`:''}${ctx.admin?`<button class="btn sm" data-ca="webhook" data-id="${c.id}">Ativar recebimento</button>`:''}${ctx.editar?`<button class="btn sm" data-ca="sincronizar" data-id="${c.id}">${c.provedor==='evolution'?'Buscar conversas e grupos':'Buscar conversas'}</button>`:''}</div><div id="ca-${c.id}"></div></article>`).join('')||'<div class="panel">Nenhum canal adicionado.</div>'}</div>`;
+    $('#atdCanaisCorpo').innerHTML=`<div class="panel"><p>WhatsApp oficial e Instagram pela Zernio. WhatsApp e grupos pela Evolution 2.3.7.</p>${ctx.admin?'<div class="acts"><button class="btn" id="atdConfigEvo">Configurar Evolution</button><button class="btn pri" id="atdNovaInst">Nova instância WhatsApp</button><button class="btn pri" id="atdInstagramConectar">Conectar Instagram</button><button class="btn" id="atdZernio">Adicionar canal já conectado</button></div>':'<p>Um administrador gerencia as conexões.</p>'}</div><div class="atd-canais">${canais.map(c=>`<article class="atd-canal"><h3>${esc(c.nome)}</h3><p>${esc(label(c.canal))} · ${esc(c.provedor)}</p><span class="pill ${c.status==='conectado'?'good':'warn'}">${esc(c.status)}</span><p class="muted">${esc(c.numero||c.externo_id)}</p><div class="acts">${ctx.admin&&c.provedor==='evolution'?`<button class="btn sm" data-ca="conectar" data-id="${c.id}">QR Code</button><button class="btn sm" data-ca="status" data-id="${c.id}">Verificar status</button>`:''}${ctx.admin?`<button class="btn sm" data-ca="webhook" data-id="${c.id}">Ativar recebimento</button>`:''}${ctx.editar?`<button class="btn sm" data-ca="sincronizar" data-id="${c.id}">${c.provedor==='evolution'?'Buscar conversas e grupos':'Buscar conversas'}</button>`:''}</div><div id="ca-${c.id}"></div></article>`).join('')||'<div class="panel">Nenhum canal adicionado.</div>'}</div>`;
     $('#atdConfigEvo')?.addEventListener('click',()=>act(configurarEvolution));
+    $('#atdInstagramConectar')?.addEventListener('click',()=>conectarInstagram(ws));
     $('#atdNovaInst')?.addEventListener('click',()=>modal('Nova instância WhatsApp','<label>Nome deste número<input name="nome" required placeholder="Comercial · Número principal" maxlength="100"></label>',async d=>{await api('criar-instancia',d,ws);toast('Instância criada. Abra QR Code para conectar.');}));
-    $('#atdZernio')?.addEventListener('click',()=>act(async()=>{const r=await api('zernio-contas',{},ws);if(!r.contas.length){const interna=await q(sb.rpc('sou_equipe_interna'));if(!interna){toast('Peça à equipe Mathisa para vincular sua conta Zernio em Integrações.',true);return;}await conectarZernio(ws);return;}modal('Adicionar conta da Zernio',`<label>Conta<select name="account_id">${r.contas.map(c=>`<option value="${esc(c.id)}">${esc(label(c.canal)+' · '+c.nome)}</option>`).join('')}</select></label><p>Somente contas do perfil já conectado a este workspace.</p>`,async d=>{await api('zernio-vincular',d,ws);toast('Conta adicionada. Ative o recebimento e busque as conversas.');});}));
+    $('#atdZernio')?.addEventListener('click',()=>act(async()=>{const r=await api('zernio-contas',{},ws);if(!r.contas.length){toast('Nenhum canal vinculado. Clique em Conectar Instagram ou solicite a configuração do WhatsApp oficial.',true);return;}modal('Adicionar conta da Zernio',`<label>Conta<select name="account_id">${r.contas.map(c=>`<option value="${esc(c.id)}">${esc(label(c.canal)+' · '+c.nome)}</option>`).join('')}</select></label><p>Somente contas do perfil já conectado a este workspace.</p>`,async d=>{await api('zernio-vincular',d,ws);toast('Conta adicionada. Ative o recebimento e busque as conversas.');});}));
     $('#atdCanaisCorpo').onclick=async e=>{const btn=e.target.closest('[data-ca]');if(!btn||btn.disabled)return;const id=btn.dataset.id,action=btn.dataset.ca;btn.disabled=true;
       try{const r=await api(action,{canal_id:id,cursor:btn.dataset.cursor||undefined},ws);if(S.ws!==ws||S.view!=='atd-canais')return;
         const target=$('#ca-'+id);
@@ -170,14 +199,17 @@
     const ws=S.ws;
     const card=document.createElement('div');
     card.className='panel';
-    card.innerHTML='<h2>Zernio · Instagram e WhatsApp oficial</h2><p id="zernioSituacao">Consultando contas deste cliente…</p><div class="acts"><button class="btn pri" id="zernioVincular">Vincular conta Zernio</button><button class="btn" id="zernioAtendimento">Canais de atendimento</button></div>';
+    card.innerHTML='<h2>Instagram</h2><p>Conecte sua conta profissional do Instagram diretamente pelo login seguro. A integração técnica é administrada pela Mathisa.</p><p id="zernioSituacao">Consultando contas deste cliente…</p><div class="acts"><button class="btn pri" id="instagramOAuthBtn">Conectar Instagram</button><button class="btn" id="zernioAtendimento">Canais de atendimento</button><button class="btn" id="zernioVincular">Vincular WhatsApp oficial (Mathisa)</button></div>';
     m.prepend(card);
+    card.querySelector('#instagramOAuthBtn').onclick=()=>conectarInstagram(ws);
     card.querySelector('#zernioVincular').onclick=()=>act(()=>conectarZernio(ws));
     card.querySelector('#zernioAtendimento').onclick=()=>{S.view='atd-canais';render();};
     try{
       const ctx=await api('contexto',{},ws);
       if(S.ws!==ws||S.view!=='cfg-integracoes'||!card.isConnected)return;
       const interna=ctx.admin ? await q(sb.rpc('sou_equipe_interna')) : false;
+      const permiteOAuth=await q(sb.rpc('zernio_oauth_permitido',{p_ws:ws}));
+      if(!permiteOAuth)card.querySelector('#instagramOAuthBtn').remove();
       if(!ctx.admin||!interna)card.querySelector('#zernioVincular').remove();
       if(!ctx.admin){card.querySelector('#zernioSituacao').textContent='Somente administradores podem consultar as conexões.';return;}
       const r=await api('zernio-contas',{},ws);
