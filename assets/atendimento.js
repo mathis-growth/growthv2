@@ -132,7 +132,12 @@
     $('#atdArquivarGrupo')?.addEventListener('click',()=>act(async()=>{
       await api('arquivar-grupo',{conversa_id:id,arquivar:!cv.arquivada},ws);
       toast(cv.arquivada?'Grupo desarquivado.':'Grupo arquivado no Growth V2.');
-      if(!cv.arquivada&&!ch.exibir_grupos_arquivados){A.sel=null;await vAtendimento(m);}else await openChat(id,token);
+      if(!cv.arquivada&&!ch.exibir_grupos_arquivados){
+        A.sel=null;
+        await render();
+        return;
+      }
+      await openChat(id,token);
       await refresh(token);
     }));
     $('#atdVoltar').onclick=()=>$('#atdRoot').classList.remove('selecionada');
