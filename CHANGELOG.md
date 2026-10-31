@@ -1,3 +1,10 @@
+## v0.181 — Meta: Login for Business com seleção de ativos (30/10/2026)
+- OAuth Meta mantém os escopos de Ads, páginas e Instagram; usa a configuração `META_LOGIN_CONFIG_ID` na URL de autorização quando o Secret está presente no Supabase.
+- Sem o Secret, preserva o OAuth clássico. O botão Meta original em Integrações permanece e a conexão é registrada por workspace nas tabelas existentes.
+- Não altera ou habilita automaticamente WhatsApp API oficial: para WABA/números é necessário Embedded Signup separado.
+- Testes de geração de URLs adicionados; sem migration. Requer republicar a Edge Function `conexoes` com todos seus arquivos e cadastrar Meta App ID/Secret e o Configuration ID no Supabase.
+- Não altera Meta Ads, a conexão Zernio do Instagram, ou a conexão do Google.
+
 # Histórico de versões
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
