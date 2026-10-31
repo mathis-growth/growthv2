@@ -440,7 +440,7 @@
         if(action==='excluir-instancia'){toast('Instância excluída da Evolution. Histórico preservado.');await render();return;}if(S.ws!==ws||S.view!=='atd-canais')return;
         const target=$('#ca-'+id);
         if(action==='conectar'){target.innerHTML=r.qrcode&&/^data:image\/(png|jpeg);base64,/.test(r.qrcode)?`<img class="atd-qr" alt="QR Code para conectar o WhatsApp" src="${r.qrcode}"><p>WhatsApp → Aparelhos conectados → Conectar aparelho. Se expirar, clique em QR Code novamente.</p>`:'<p>QR Code indisponível. Confira o status ou tente novamente.</p>';}
-        else if(action==='sincronizar'){btn.dataset.cursor=r.cursor||'';btn.textContent=r.cursor?'Buscar mais conversas':'Atualizar conversas';target.textContent=r.total+' conversas consultadas.';}
+        else if(action==='sincronizar'){btn.dataset.cursor=r.cursor||'';btn.textContent=r.cursor?'Buscar próximos grupos':'Atualizar conversas';const groupInfo=canais.find(c=>c.id===id)?.provedor==='evolution';target.textContent=groupInfo?`${r.grupos_consultados||0} grupos verificados · ${r.nomes_atualizados||0} nomes recuperados · ${r.fotos_salvas||0} fotos salvas · ${r.grupos_sem_nome??'?'} ainda sem nome. ${(r.avisos||[]).join(' | ')}${r.cursor?' Clique novamente para consultar mais grupos.':''}`:r.total+' conversas consultadas.';}
         else if(action==='status'){target.textContent='Status: '+r.status;if(r.status==='conectado')target.querySelector('img')?.remove();}
         else target.textContent='Recebimento por webhook ativado.';
       }catch(err){toast(err.message,true);}finally{btn.disabled=false;}
