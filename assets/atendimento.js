@@ -159,6 +159,63 @@
       },1000);
     }catch(e){if(!popup.closed)popup.close();toast(e.message,true);}
   }
+  // A Meta é autorizada pela conta Zernio central, sem secrets META_* no Growth V2.
+  async function metaZernio(ws,action,body={}) {
+    const {data,error}=await sb.functions.invoke('meta-zernio',{body:{action,workspace_id:ws,...body}});
+    if(error){let msg;try{msg=(await error.context.json()).erro;}catch{}throw new Error(msg||'Não foi possível consultar a Zernio.');}
+    if(data?.erro)throw new Error(data.erro);
+    return data;
+  }
+  async function escolherMetaZernio(ws,contas) {
+    if(S.ws!==ws||!contas?.length)return;
+    // Um anunciante pode ter dezenas de contas de outros clientes: não selecionar todas automaticamente.
+    const agrupadas={};
+    for(const c of contas)(agrupadas[c.zernioId] ||= []).push(c);
+    const grupos=Object.entries(agrupadas);
+    if(grupos.length===1 && contas.length===1){
+      const c=contas[0];
+      await metaZernio(ws,'selecionar',{zernio_account_id:c.zernioId,ad_account_ids:[c.id]});
+      toast('Meta conectada. Conta de anúncios autorizada: '+c.nome);
+      if(S.ws===ws&&S.view==='cfg-integracoes')render();
+      return;
+    }
+    const campos=grupos.map(([zid,rows],i)=>`<fieldset style="border:1px solid var(--line);border-radius:8px;margin:8px 0;padding:10px"><legend>Conexão Meta ${i+1}</legend>${rows.map((c,j)=>`<label style="display:flex;align-items:center;gap:8px"><input type="checkbox" name="ma_${i}_${j}" style="width:auto" ${c.selecionada?'checked':''}>${esc(c.nome)} (${esc(c.id)})</label>`).join('')}</fieldset>`).join('');
+    modal('Selecionar contas de anúncios',`<p>Marque apenas as contas de anúncios que pertencem ao cliente atual. Contas de outros clientes não serão sincronizadas.</p>${campos}`,async(d)=>{
+      let total=0;
+      for(let i=0;i<grupos.length;i++){
+        const [zid,rows]=grupos[i];
+        const ids=rows.filter((c,j)=>d['ma_'+i+'_'+j]).map(c=>c.id);
+        if(!ids.length)continue;
+        await metaZernio(ws,'selecionar',{zernio_account_id:zid,ad_account_ids:ids});total+=ids.length;
+      }
+      if(!total)throw new Error('Escolha pelo menos uma conta de anúncios.');
+      toast(total+' conta(s) de anúncios vinculadas ao cliente.');
+    },'Vincular contas');
+  }
+  async function conectarMetaZernio(ws=S.ws){
+    // Abrir popup durante o clique (antes do await) para evitar bloqueio de navegadores.
+    const popup=window.open('about:blank','growthsMetaOAuth','width=650,height=780');
+    if(!popup){toast('Permita popups para autorizar a Meta.',true);return;}
+    popup.document.body.textContent='Preparando o login seguro da Meta…';
+    try{
+      const started=await metaZernio(ws,'iniciar');
+      const url=new URL(started.authUrl);
+      if(url.protocol!=='https:'||!['facebook.com','www.facebook.com'].includes(url.hostname))throw Error('URL Meta inválida.');
+      if(S.ws!==ws){popup.close();return;}
+      popup.location.replace(url.toString());
+      const timer=setInterval(async()=>{
+        if(!popup.closed)return;
+        clearInterval(timer);
+        if(S.ws!==ws)return;
+        try{
+          const result=await metaZernio(ws,'contas');
+          if(!result.contas?.length){toast('Nenhuma conta Meta autorizada. Confira se concluiu o login.',true);return;}
+          await escolherMetaZernio(ws,result.contas);
+          if(S.view==='cfg-integracoes')render();
+        }catch(e){toast(e.message,true);}
+      },1000);
+    }catch(e){if(!popup.closed)popup.close();toast(e.message,true);}
+  }
   async function conectarZernio(ws=S.ws) {
     const all=await api('zernio-disponiveis',{},ws);
     const r={contas:(all.contas||[]).filter(c=>c.canal==='whatsapp')};
@@ -218,6 +275,49 @@
       }
       return {botao,card:botao.closest('.ad')};
     };
+    // Reutiliza o cartão Meta original da área Conexões automáticas.
+    const metaBtn=m.querySelector('[data-cxcon="meta"]');
+    const metaCard=metaBtn?.closest('.ad');
+    if(metaCard){
+      const antigoSync=metaCard.querySelector('[data-cxsync="meta"]');
+      if(antigoSync)antigoSync.remove(); // Era a sincronização que exigia META_APP_ID.
+      const antigoDesconectar=metaCard.querySelector('[data-cxdes="meta"]');
+      if(antigoDesconectar)antigoDesconectar.remove();
+      const novos=[...metaCard.querySelectorAll('[data-cxcon="meta"]')];
+      for(const btn of novos){
+        btn.removeAttribute('data-cxcon');
+        btn.textContent='Conectar Meta';
+        btn.onclick=e=>{e.stopPropagation();if(S.ws===ws)conectarMetaZernio(ws);};
+      }
+      const status=document.createElement('small');status.className='muted';
+      status.textContent='Verificando contas Meta vinculadas pela Zernio…';
+      metaCard.append(status);
+      try{
+        const rows=await q(sb.from('conexao_contas')
+          .select('id_externo,nome,sincronizar,extras,conexoes!inner(plataforma)')
+          .eq('workspace_id',ws).eq('tipo','meta_ads').eq('conexoes.plataforma','zernio'));
+        if(S.ws!==ws||S.view!=='cfg-integracoes'||!metaCard.isConnected)return;
+        const ativas=rows.filter(x=>!x.extras?.growths_desconectado_em);
+        const escolhidas=ativas.flatMap(x=>x.extras?.adAccountIds||[]);
+        const pill=metaCard.querySelector('.pill');
+        if(pill){pill.className='pill '+(escolhidas.length?'good':ativas.length?'warn':'neutral');pill.textContent=escolhidas.length?'Conectado':ativas.length?'Escolher contas':'Não conectado';}
+        status.textContent=escolhidas.length?escolhidas.length+' conta(s) de anúncios Meta autorizadas.':ativas.length?'Login autorizado. Escolha quais contas deste cliente deseja usar.':'A conexão Meta usa a Zernio da Mathisa.';
+        const buttons=metaCard.querySelector('[data-cxcon]')?.parentElement||metaCard.querySelector('.btn')?.parentElement;
+        if(ativas.length){
+          const selecionar=document.createElement('button');selecionar.className='btn sm';selecionar.textContent='Escolher contas';
+          selecionar.onclick=e=>{e.stopPropagation();act(async()=>{const r=await metaZernio(ws,'contas');await escolherMetaZernio(ws,r.contas);});};
+          buttons?.append(selecionar);
+          const desconectar=document.createElement('button');desconectar.className='btn sm bad';desconectar.textContent='Desconectar';
+          desconectar.onclick=e=>{e.stopPropagation();if(!confirm('Desconectar Meta deste cliente? O histórico será preservado e a autorização seguirá ativa na Zernio até revogação por lá.'))return;
+            act(async()=>{for(const a of ativas)await metaZernio(ws,'desconectar',{zernio_account_id:a.id_externo});toast('Meta desconectada do Growth V2.');render();});};
+          buttons?.append(desconectar);
+        }
+      }catch(e){if(metaCard.isConnected)status.textContent='Não foi possível consultar o estado Meta.';}
+      try{
+        const permission=await q(sb.rpc('zernio_oauth_permitido',{p_ws:ws}));
+        if(!permission && metaCard.isConnected)metaCard.querySelectorAll('button').forEach(b=>b.remove());
+      }catch(e){metaCard.querySelectorAll('button').forEach(b=>b.remove());}
+    }
     const instagram=substituirAcao('Instagram','Conectar Instagram',()=>conectarInstagram(ws),true);
     const whatsapp=substituirAcao('WhatsApp API oficial','Vincular WhatsApp oficial',()=>act(()=>conectarZernio(ws)),true);
     substituirAcao('WhatsApp (grupos e API)','Configurar Evolution API',()=>act(configurarEvolution),true);
