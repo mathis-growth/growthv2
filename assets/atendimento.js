@@ -18,7 +18,11 @@
     :ch.canal==='whatsapp'
       ?('Número: '+(ch.numero?'+'+String(ch.numero).replace(/\D/g,''):'não identificado'))
       :(ch.nome||'Canal');
-  const faixaCanal = ch => `<span class="atd-faixa atd-faixa--${tipoCanal(ch)}" title="${esc(nomeCanal(ch)+' · '+identidadeCanal(ch))}">${esc(nomeCanal(ch)+' · '+identidadeCanal(ch))}</span>`;
+  // A faixa superior é compacta; detalhes QR Code/API permanecem disponíveis nos filtros e canais.
+  const textoFaixaCanal = ch => ch.canal==='whatsapp'
+    ? 'WhatsApp - '+(ch.numero?String(ch.numero).replace(/\\D/g,''):'não identificado')
+    : nomeCanal(ch)+' · '+identidadeCanal(ch);
+  const faixaCanal = ch => `<span class="atd-faixa atd-faixa--${tipoCanal(ch)}" title="${esc(textoFaixaCanal(ch))}">${esc(textoFaixaCanal(ch))}</span>`;
 
   async function api(action,body={},ws=A.ws || S.ws) {
     const {data,error} = await sb.functions.invoke('atendimento',{body:{action,workspace_id:ws,...body}});
