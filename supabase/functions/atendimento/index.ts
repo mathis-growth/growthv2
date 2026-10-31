@@ -111,7 +111,7 @@ async function zernioCandidates(ws: string) {
 async function zernioDisponiveis(ws: string) {
   const raw = (await zernio(zp(), '/accounts')).accounts || [];
   const accounts = raw.filter((a: any) => ['instagram','whatsapp'].includes(a.platform) && typeof a._id === 'string');
-  const existing = await q(db.from('conexao_contas').select('workspace_id,id_externo').in('id_externo',accounts.map((a: any)=>a._id).length ? accounts.map((a: any)=>a._id) : ['__nenhuma__']));
+  const existing = await q(db.from('conexao_contas').select('workspace_id,id_externo,conexoes!inner(plataforma)').eq('conexoes.plataforma','zernio').in('id_externo',accounts.length ? accounts.map((a: any)=>a._id) : ['__nenhuma__']));
   const channels = await q(db.from('atd_canais').select('workspace_id,externo_id').eq('provedor','zernio').in('externo_id',accounts.length ? accounts.map((a: any)=>a._id) : ['__nenhuma__']));
   const occupied = new Set([...existing,...channels].filter((a:any)=>a.workspace_id!==ws).map((a:any)=>a.id_externo || a.externo_id));
   return accounts.filter((a:any)=>!occupied.has(a._id)).map((a:any)=>({
@@ -129,6 +129,10 @@ async function handle(req: Request, b: any) {
   const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-disponiveis','zernio-conectar','webhook','desativar'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
   const ws = b.workspace_id;
+  if (['zernio-disponiveis','zernio-conectar'].includes(b.action)) {
+    const interna = await q(userDb.rpc('sou_equipe_interna'));
+    if (!interna) return json({ erro:'Somente a equipe interna pode vincular contas da Zernio.' },403);
+  }
   if (b.action === 'contexto') return json(ctx);
   if (b.action === 'config') { const cfg = await secret(ws); return json({ url: cfg?.evolution_url || '', configurada: !!cfg, versao:'2.3.7' }); }
   if (b.action === 'salvar-config') {
