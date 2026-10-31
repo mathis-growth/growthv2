@@ -100,12 +100,11 @@ async function webhook(req: Request, url: URL, raw: string) {
   return json({ ok: true });
 }
 async function zernioCandidates(ws: string) {
-  const linked = await q(db.from('conexao_contas').select('id_externo').eq('workspace_id',ws));
+  const linked = await q(db.from('conexao_contas').select('id_externo,conexoes!inner(plataforma)').eq('workspace_id',ws).eq('conexoes.plataforma','zernio'));
   const accounts = (await zernio(zp(), '/accounts')).accounts || [];
   const ids = new Set(linked.map((a: any) => a.id_externo));
-  const profile = (a: any) => typeof a.profileId === 'object' ? a.profileId?._id : a.profileId;
-  const profiles = new Set(accounts.filter((a: any) => ids.has(a._id)).map(profile).filter(Boolean));
-  return accounts.filter((a: any) => ['instagram','whatsapp'].includes(a.platform) && (ids.has(a._id) || profiles.has(profile(a))))
+  // Não herdar todas as contas do mesmo perfil: cada cliente escolhe suas contas explicitamente.
+  return accounts.filter((a: any) => ['instagram','whatsapp'].includes(a.platform) && ids.has(a._id))
     .map((a: any) => ({ id: a._id, canal: a.platform, nome: a.displayName || a.username || a._id }));
 }
 // A primeira associação é explícita por workspace; nunca expor a API Key Zernio.
