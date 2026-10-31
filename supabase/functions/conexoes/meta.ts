@@ -7,7 +7,16 @@ const G = () => `https://graph.facebook.com/${META_V()}`;
 
 export function metaUrlLogin(redirect: string, state: string): string {
   if (!env('META_APP_ID')) throw new ErroPlataforma('Meta', 'falta cadastrar o segredo META_APP_ID no Supabase');
-  return `https://www.facebook.com/${META_V()}/dialog/oauth?` + qs({ client_id: env('META_APP_ID'), redirect_uri: redirect, state, scope: META_ESCOPOS.join(','), response_type: 'code' });
+  // Facebook Login for Business: configuração do app controla quais ativos são
+  // apresentados (Ads, Páginas e Instagram). Não é o Embedded Signup WhatsApp.
+  const configId = env('META_LOGIN_CONFIG_ID');
+  if (configId && !/^[0-9]+$/.test(configId))
+    throw new ErroPlataforma('Meta', 'META_LOGIN_CONFIG_ID deve ser um identificador numérico válido');
+  return `https://www.facebook.com/${META_V()}/dialog/oauth?` + qs({
+    client_id: env('META_APP_ID'), redirect_uri: redirect, state,
+    scope: META_ESCOPOS.join(','), response_type: 'code',
+    ...(configId ? { config_id:configId } : {})
+  });
 }
 
 export async function metaTrocaCodigo(code: string, redirect: string) {
