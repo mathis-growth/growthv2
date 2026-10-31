@@ -4,6 +4,8 @@
   'use strict';
   const LABELS = {whatsapp:'WhatsApp',instagram:'Instagram',telegram:'Telegram',tiktok:'TikTok'};
   const A = {ws:null,sel:null,lista:[],canais:[],ctx:null,token:0,chatToken:0,drafts:new Map(),busca:'',canal:'',tipo:'',status:'',minhas:'',page:0,cursor:null,loaded:[],subscription:null,timer:null};
+  let recorder=null, recorderStream=null, recordedFile=null, recordingTimer=null;
+  const mediaSigned=new Map();
   const listOf = x => Array.isArray(x)?x:[];
   A.listSeq=0;
   const label = c => LABELS[c] || c;
@@ -24,12 +26,36 @@
     : nomeCanal(ch)+' · '+identidadeCanal(ch);
   const faixaCanal = ch => `<span class="atd-faixa atd-faixa--${tipoCanal(ch)}" title="${esc(textoFaixaCanal(ch))}">${esc(textoFaixaCanal(ch))}</span>`;
 
+  const MIME_IMAGE=/^image\/(?:jpeg|png|webp)$/;
+  const MIME_AUDIO=/^audio\/(?:ogg|mpeg|mp4|webm|wav|x-wav)$/;
+  const MIME_VIDEO=/^video\/mp4$/;
+  const kindOf=a=>{const mime=String(a.mime||'').split(';')[0].toLowerCase();
+    return MIME_IMAGE.test(mime)?'image':MIME_AUDIO.test(mime)?'audio':MIME_VIDEO.test(mime)?'video':'file';};
+  const mediaKey=(msg,i)=>msg+':'+i;
+  const arquivoNome=(a)=>String(a.nome||'Anexo').slice(0,150);
+  const mediaMarkup=(msg,a,i)=>{
+    const key=mediaKey(msg.id,i),mime=kindOf(a);
+    if(a.pendente)return `<button class="btn sm" data-midia="${msg.id}" data-index="${i}" data-pendente="1">↻ Recuperar ${esc(arquivoNome(a))}</button>`;
+    if(!a.path)return `<span class="muted">Mídia indisponível</span>`;
+    const common=`data-media-key="${esc(key)}" data-midia="${msg.id}" data-index="${i}"`;
+    if(mime==='image')return `<button class="atd-media-image" ${common} aria-label="Ampliar imagem" title="${esc(arquivoNome(a))}"><span class="atd-media-placeholder">Carregando imagem…</span></button>`;
+    if(mime==='audio')return `<div class="atd-media-audio"><audio controls preload="none" ${common}></audio><button class="btn sm atd-baixar" data-midia="${msg.id}" data-index="${i}">↓</button></div>`;
+    if(mime==='video')return `<video controls playsinline preload="none" class="atd-media-video" ${common}></video>`;
+    return `<button class="btn sm atd-baixar" data-midia="${msg.id}" data-index="${i}">↓ ${esc(arquivoNome(a))}</button>`;
+  };
   async function api(action,body={},ws=A.ws || S.ws) {
     const {data,error} = await sb.functions.invoke('atendimento',{body:{action,workspace_id:ws,...body}});
     if(error) { let msg; try { msg=(await error.context.json()).erro; } catch {} throw new Error(msg || 'Atendimento indisponível. Confira a publicação da função e sua conexão.'); }
     if(data?.erro) throw new Error(data.erro); return data;
   }
-  function stop() { clearInterval(A.timer); A.timer=null; if(A.subscription) { sb.removeChannel(A.subscription); A.subscription=null; } }
+  function stopRecording(discard=true){
+    if(recordingTimer){clearInterval(recordingTimer);recordingTimer=null;}
+    if(recorder&&recorder.state!=='inactive') {recorder.onstop=null;recorder.stop();}
+    recorderStream?.getTracks().forEach(track=>track.stop());
+    recorderStream=null;recorder=null;
+    if(discard)recordedFile=null;
+  }
+  function stop() { stopRecording();mediaSigned.clear();clearInterval(A.timer); A.timer=null; if(A.subscription) { sb.removeChannel(A.subscription); A.subscription=null; } }
   const active = token => token===A.token && S.ws===A.ws && S.view==='atd-conversas';
   function draftKey(cv) { return A.ws+':'+cv; }
   async function vAtendimento(m) {
@@ -84,24 +110,57 @@
     if(!active(token)||generation!==A.chatToken) return;
     const ch=A.canais.find(c=>c.id===cv.canal_id)||{}, draft=A.drafts.get(draftKey(id))||'';
     $('#atdRoot').classList.add('selecionada');$('#atdRoot').classList.remove('ficha');
-    $('#atdChat').innerHTML=`<header class="atd-top"><div><button class="btn sm atd-mobile" id="atdVoltar">← Conversas</button><strong>${esc(cv.nome)}</strong><div class="atd-identificacao">${faixaCanal(ch)}${cv.grupo?'<small>Grupo</small>':''}</div></div><div><select id="atdSituacao" aria-label="Situação da conversa" ${A.ctx.editar?'':'disabled'}>${['aberta','aguardando','resolvida'].map(s=>`<option value="${s}"${cv.status===s?' selected':''}>${s==='aberta'?'Aberta':s==='aguardando'?'Aguardando':'Resolvida'}</option>`).join('')}</select> <button class="btn sm atd-mobile" id="atdVerFicha">Ficha</button></div></header><div class="atd-msgs" id="atdMensagens"></div><form class="atd-compose" id="atdCompose"><div class="atd-dupla"><select id="atdModo" aria-label="Tipo de mensagem"><option value="enviar">Mensagem</option><option value="nota">Nota interna</option></select><button type="button" class="btn sm" id="atdHistorico">Importar histórico</button></div><textarea id="atdTexto" aria-label="Mensagem" maxlength="4000" placeholder="Escreva sua mensagem…" ${A.ctx.editar?'':'disabled'}>${esc(draft)}</textarea><div class="atd-arquivo" id="atdArquivoNome"></div><footer><label class="btn sm">Anexar<input type="file" id="atdArquivo" class="atd-hidden" accept="image/jpeg,image/png,image/webp,video/mp4,audio/ogg,audio/mpeg,audio/mp4,audio/webm,application/pdf"></label><small class="muted">${A.ctx.nome?'Assinado por '+esc(A.ctx.nome):'Cadastre seu nome na equipe para enviar.'}</small><button class="btn pri" id="atdEnviar" ${A.ctx.editar?'':'disabled'}>Enviar</button></footer></form>`;
+    $('#atdChat').innerHTML=`<header class="atd-top"><div><button class="btn sm atd-mobile" id="atdVoltar">← Conversas</button><strong>${esc(cv.nome)}</strong><div class="atd-identificacao">${faixaCanal(ch)}${cv.grupo?'<small>Grupo</small>':''}</div></div><div><select id="atdSituacao" aria-label="Situação da conversa" ${A.ctx.editar?'':'disabled'}>${['aberta','aguardando','resolvida'].map(s=>`<option value="${s}"${cv.status===s?' selected':''}>${s==='aberta'?'Aberta':s==='aguardando'?'Aguardando':'Resolvida'}</option>`).join('')}</select> <button class="btn sm atd-mobile" id="atdVerFicha">Ficha</button></div></header><div class="atd-msgs" id="atdMensagens"></div><form class="atd-compose" id="atdCompose"><div class="atd-dupla"><select id="atdModo" aria-label="Tipo de mensagem"><option value="enviar">Mensagem</option><option value="nota">Nota interna</option></select><button type="button" class="btn sm" id="atdHistorico">Importar histórico</button></div><textarea id="atdTexto" aria-label="Mensagem" maxlength="4000" placeholder="Escreva sua mensagem…" ${A.ctx.editar?'':'disabled'}>${esc(draft)}</textarea><div class="atd-arquivo" id="atdArquivoNome"></div><div class="atd-gravacao" id="atdGravacao" aria-live="polite"></div><footer><label class="btn sm">Anexar<input type="file" id="atdArquivo" class="atd-hidden" accept="image/jpeg,image/png,image/webp,video/mp4,audio/ogg,audio/mpeg,audio/mp4,audio/webm,application/pdf"></label><button type="button" class="btn sm" id="atdGravar" ${A.ctx.editar?'':'disabled'} aria-label="Gravar áudio pelo microfone">🎤 Gravar áudio</button><small class="muted">${A.ctx.nome?'Assinado por '+esc(A.ctx.nome):'Cadastre seu nome na equipe para enviar.'}</small><button class="btn pri" id="atdEnviar" ${A.ctx.editar?'':'disabled'}>Enviar</button></footer></form>`;
     $('#atdVoltar').onclick=()=>$('#atdRoot').classList.remove('selecionada');
     $('#atdVerFicha').onclick=()=>$('#atdRoot').classList.toggle('ficha');
     $('#atdSituacao').onchange=e=>act(()=>api('atualizar',{conversa_id:id,status:e.target.value},ws));
     $('#atdTexto').oninput=e=>A.drafts.set(draftKey(id),e.target.value);
     $('#atdModo').onchange=e=>{$('#atdEnviar').textContent=e.target.value==='nota'?'Salvar nota':'Enviar';};
-    $('#atdArquivo').onchange=e=>{const f=e.target.files[0];if(f?.size>8*1024*1024){toast('Limite de 8 MB por anexo.',true);e.target.value='';}$('#atdArquivoNome').textContent=e.target.files[0]?.name||'';};
+    $('#atdArquivo').onchange=e=>{const f=e.target.files[0];if(f?.size>8*1024*1024){toast('Limite de 8 MB por anexo.',true);e.target.value='';}if(f)recordedFile=null;$('#atdArquivoNome').textContent=e.target.files[0]?.name||'';};
+    const recordingStatus=$('#atdGravacao'), recordingBtn=$('#atdGravar');
+    recordingBtn.onclick=async()=>{
+      if(recorder&&recorder.state==='recording'){recorder.stop();return;}
+      if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){toast('Microfone indisponível neste navegador.',true);return;}
+      try{
+        recordedFile=null;
+        recorderStream=await navigator.mediaDevices.getUserMedia({audio:true});
+        if(!active(token)||A.sel!==id){stopRecording();return;}
+        const supported=['audio/ogg;codecs=opus','audio/webm;codecs=opus','audio/mp4','audio/webm'].find(t=>MediaRecorder.isTypeSupported(t));
+        recorder=new MediaRecorder(recorderStream,supported?{mimeType:supported}:undefined);
+        const chunks=[],started=Date.now();let total=0;
+        recorder.ondataavailable=e=>{if(e.data?.size){chunks.push(e.data);total+=e.data.size;if(total>8*1024*1024&&recorder?.state==='recording'){toast('Áudio excedeu 8 MB. Gravação interrompida.',true);recorder.stop();}}};
+        recorder.onstop=()=>{
+          clearInterval(recordingTimer);recordingTimer=null;
+          recorderStream?.getTracks().forEach(t=>t.stop());recorderStream=null;
+          const type=String(recorder?.mimeType||supported||'audio/webm').split(';')[0];
+          recorder=null;recordingBtn.textContent='🎤 Gravar áudio';
+          if(total>8*1024*1024){recordedFile=null;recordingStatus.textContent='Áudio descartado: limite de 8 MB.';return;}
+          const blob=new Blob(chunks,{type});
+          if(blob.size&&active(token)&&A.sel===id){
+            const ext=type.includes('ogg')?'ogg':type.includes('mp4')?'m4a':'webm';
+            recordedFile=new File([blob],'gravacao.'+ext,{type});
+            recordingStatus.innerHTML='<span>Áudio gravado · '+Math.ceil((Date.now()-started)/1000)+'s</span> <button type="button" class="btn sm" id="atdDescartarAudio">Descartar</button>';
+            recordingStatus.querySelector('#atdDescartarAudio').onclick=()=>{recordedFile=null;recordingStatus.textContent='';};
+          }
+        };
+        recorder.start(250);
+        recordingBtn.textContent='■ Parar gravação';
+        recordingStatus.textContent='● Gravando…';
+        recordingTimer=setInterval(()=>{if(recorder?.state==='recording')recordingStatus.textContent='● Gravando '+Math.floor((Date.now()-started)/1000)+'s';},1000);
+      }catch(e){stopRecording();toast('Não foi possível acessar o microfone. Verifique a permissão no navegador.',true);}
+    };
     $('#atdHistorico').onclick=()=>act(async()=>{const b=$('#atdHistorico');b.disabled=true;try {const r=await api('historico',{conversa_id:id,cursor:A.cursor},ws);A.cursor=r.cursor;if(active(token)&&A.sel===id){b.textContent=r.cursor?'Importar mais histórico':'Atualizar histórico';await messages(id,token);toast(r.total+' mensagens consultadas.');}}finally{if(b.isConnected)b.disabled=false;}});
     $('#atdCompose').onsubmit=async e=>{
       e.preventDefault();const form=e.currentTarget,btn=form.querySelector('#atdEnviar');if(btn.disabled)return;
-      const text=form.querySelector('#atdTexto').value.trim(),mode=form.querySelector('#atdModo').value,file=form.querySelector('#atdArquivo').files[0];
-      if(!text){toast('Escreva uma mensagem ou legenda.',true);return;}
+      const text=form.querySelector('#atdTexto').value.trim(),mode=form.querySelector('#atdModo').value,file=form.querySelector('#atdArquivo').files[0]||recordedFile;
+      if(recorder?.state==='recording'){toast('Pare a gravação antes de enviar.',true);return;}
+      if(!text&&!file){toast('Escreva uma mensagem, anexe uma imagem ou grave um áudio.',true);return;}
       if(mode==='nota'&&file){toast('Remova o anexo para salvar uma nota interna.',true);return;}
       btn.disabled=true;const rid=crypto.randomUUID();
       try{
-        let arquivo;if(file){const base64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});arquivo={nome:file.name,mime:file.type,base64};}
+        let arquivo;if(file){const base64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});arquivo={nome:file.name,mime:file.type,base64,gravado:file===recordedFile};}
         await api(mode,{conversa_id:id,texto:text,requisicao_id:rid,arquivo},ws);
-        A.drafts.delete(ws+':'+id);if(active(token)&&A.sel===id){form.querySelector('#atdTexto').value='';form.querySelector('#atdArquivo').value='';$('#atdArquivoNome').textContent='';}
+        A.drafts.delete(ws+':'+id);if(active(token)&&A.sel===id){form.querySelector('#atdTexto').value='';form.querySelector('#atdArquivo').value='';$('#atdArquivoNome').textContent='';recordedFile=null;recordingStatus.textContent='';}
       }catch(err){toast(err.message,true);}finally{if(form.isConnected)btn.disabled=false;if(active(token)&&A.sel===id)await messages(id,token);}
     };
     await Promise.all([messages(id,token),ficha(cv,token,generation)]);
