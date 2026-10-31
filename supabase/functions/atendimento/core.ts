@@ -47,7 +47,11 @@ export function zernioMensagem(p: any) {
     mensagem: { id: m.platformMessageId || m.id, direcao: p.event === 'message.sent' ? 'enviada' : 'recebida', texto: m.text || m.message || '',
       participante: m.sender?.id, autor_nome: m.sender?.name, em: m.createdAt || m.sentAt || p.timestamp,
       status: p.event === 'message.sent' ? 'enviada' : 'recebida',
-      anexos: (m.attachments || []).map((a: any) => ({ nome: a.name || a.type || 'Anexo', mime: a.mimeType || 'application/octet-stream', pendente: true })) },
+      anexos: (m.attachments || []).map((a: any) => ({
+        nome: a.name || a.filename || a.type || 'Anexo',
+        mime: a.mimeType || a.contentType || ({image:'image/jpeg',audio:'audio/ogg',video:'video/mp4'} as Record<string,string>)[a.type] || 'application/octet-stream',
+        pendente: true
+      })) },
     media: m.attachments?.length ? { provider: 'zernio', attachments: m.attachments } : null };
 }
 export async function hmacValido(raw: string, signature: string, secret: string) {
