@@ -65,3 +65,8 @@ Fontes conferidas: [Evolution API 2.3.7](https://github.com/evolution-foundation
 Selecione o cliente atual e acesse Configurações → Integrações → Zernio → Vincular conta. O administrador escolhe uma conta Instagram ou WhatsApp existente na Zernio; sua chave permanece nos Secrets do servidor.
 A associação grava a conta no workspace em `conexoes` e `conexao_contas`. Depois, adicione o canal em Atendimento → Canais e conexões. Cada conta pertence explicitamente a um cliente, sem herdar outras contas do mesmo perfil.
 Publicação pendente: aplicar `supabase/migrations/20261030220000_zernio_cliente.sql` depois da v0.175, publicar a Edge Function `atendimento` e o asset da interface e testar com uma conta real.
+
+
+## v0.179 — OAuth direto de Instagram
+A equipe não precisa escolher manualmente uma conta Instagram em Zernio. Em Configurações → Integrações, `Conectar Instagram` abre a autorização Meta/Instagram numa janela. O Growths chama a Edge `instagram-oauth` usando o Secret global `ZERNIO_API_KEY`, com um perfil Zernio por workspace. O callback seguro valida conta, perfil e workspace e registra a conta em `conexao_contas` e `atd_canais` sem perda de histórico. A conexão é confirmada somente após verificar o retorno na API Zernio. O botão de Atendimento também abre OAuth diretamente. WhatsApp oficial permanece com vínculo administrativo gerenciado pela Mathisa.
+Pré-requisitos: migration `20261031020000_instagram_oauth_direto.sql`, Edge `instagram-oauth` ativa com JWT automático desabilitado (auth manual no POST), e assets publicados. Instagram Login padrão requer conta profissional e não habilita Meta Ads. Para receber novas mensagens via Atendimento pode ser necessário ativar o webhook do canal.
