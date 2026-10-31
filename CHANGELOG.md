@@ -4,7 +4,7 @@
 - Uma ad account autorizada é selecionada automaticamente; múltiplas exigem seleção explícita para não misturar clientes.
 - Ação de **Desconectar** remove a seleção local e preserva históricos, mas não revoga o acesso na Zernio/Meta.
 - Migration `20261031030000_meta_zernio_oauth.sql`: permite `meta_ads` sob a Zernio, sem substituir conexões antigas.
-- **Escopo:** login e vínculo das contas de anúncio. Ainda falta integrar a sincronização de insights da Zernio nos dashboards. O Facebook Page/Instagram orgânico/WhatsApp oficial têm permissões e fluxos próprios.
+- **Escopo:** login, vínculo e sincronização manual Meta Ads via Zernio (`/ads/insights` → `ads_externo_dia` → `ads_externo_aplicar`). A rotina por cron e o funcionamento com contas reais ainda precisam ser homologados. Facebook Page/Instagram orgânico/WhatsApp oficial têm permissões e fluxos próprios.
 - Publicação separada: aplicar SQL, publicar Edge `meta-zernio` e frontend; ver `docs/meta-zernio-v0182.md`.
 
 ## v0.181 — Meta: Login for Business com seleção de ativos (30/10/2026)
