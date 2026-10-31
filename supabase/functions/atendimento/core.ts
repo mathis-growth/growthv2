@@ -31,6 +31,8 @@ export function evolutionMensagem(d: any) {
   const texto = m.conversation || m.extendedTextMessage?.text || media?.caption || '';
   if (!texto && !media) return null;
   return {
+    // O pushName de uma mensagem de grupo é o nome do REMETENTE, nunca do grupo.
+    // Não substituir o título do grupo pelo nome de um participante.
     conversa: { id: jid, nome: jid.endsWith('@g.us') ? undefined : (key.fromMe ? undefined : d.pushName), endereco: jid, grupo: jid.endsWith('@g.us') },
     mensagem: { id: key.id, direcao: key.fromMe ? 'enviada' : 'recebida', texto,
       autor_nome: d.pushName || null, participante: key.participant || key.remoteJid,
