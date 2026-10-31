@@ -1,3 +1,9 @@
+## v0.180
+- Alteração exclusiva em `assets/atendimento.js`: extensão de `cfg-integracoes` passa a configurar os cartões existentes `data-i="Instagram"`, `data-i="WhatsApp API oficial"` e `data-i="WhatsApp (grupos e API)"`.
+- Remove os painéis adicionais de Instagram e Evolution que duplicavam o catálogo nativo de Integrações. O login OAuth continua usando `instagram-oauth` v0.179.
+- O status do cartão Instagram é informado a partir das contas `zernio` efetivamente vinculadas no workspace.
+- Sem SQL novo nem alteração de Edge Function. Publicação: atualizar frontend do Cloudflare.
+
 ## v0.179
 - A partir da v0.178: novo botão **Conectar Instagram** em `assets/atendimento.js`, OAuth direto sem etapa de selecionar contas Zernio.
 - Migration `20261031020000_instagram_oauth_direto.sql`: `conexoes.zernio_profile_id`, índice de isolamento, RPCs `zernio_oauth_permitido` e `zernio_oauth_iniciar` com nonce privado de 15 minutos.
