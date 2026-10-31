@@ -2,7 +2,7 @@
 - Substitui o clique Meta legado por um login Meta fornecido pela Zernio, sem `META_APP_ID`, `META_APP_SECRET` ou `META_LOGIN_CONFIG_ID`.
 - Migration `20261031030000_meta_zernio_oauth.sql`, função `meta-zernio` e atualização do cartão original em `assets/atendimento.js`.
 - Seleção das contas de anúncios por cliente, callback com nonce e perfil Zernio isolado; desconexão apenas local com histórico preservado.
-- Sincronização Zernio Ads ainda pendente, não confundir com o conector Meta antigo. Instruções em `docs/meta-zernio-v0182.md`.
+- Sincronização manual via Zernio Ads implementada (`/ads/insights` → `conexao_gravar` → `ads_externo_aplicar`), ainda sem homologação real ou cron. Não confundir com o conector Meta antigo. Instruções em `docs/meta-zernio-v0182.md`.
 
 ## v0.181 — Meta Business Login (em branch de revisão)
 - `supabase/functions/conexoes/meta.ts`: suporta `META_LOGIN_CONFIG_ID` opcional na URL OAuth com os escopos atuais, valida identificador numérico.
