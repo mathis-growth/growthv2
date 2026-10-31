@@ -146,7 +146,7 @@ async function handle(req: Request, b: any) {
   const { data: { user }, error } = await userDb.auth.getUser();
   if (error || !user) return json({ erro: 'Faça login novamente.' },401);
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
-  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar'];
+  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
   const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
@@ -216,6 +216,21 @@ async function handle(req: Request, b: any) {
     await q(db.from('atd_conversas').update({arquivada:b.arquivar===true})
       .eq('id',cv.id).eq('workspace_id',ws).eq('canal_id',ch.id));
     return json({ok:true,arquivada:b.arquivar===true});
+  }
+  if(b.action==='avatars'){
+    const ids=Array.isArray(b.ids)?b.ids.filter((x:any)=>typeof x==='string'&&/^[a-f0-9-]{36}$/i.test(x)).slice(0,35):[];
+    if(!ids.length)return json({avatares:{}});
+    const rows=await q(db.from('atd_conversas').select('id,avatar_path')
+      .eq('workspace_id',ws).in('id',ids));
+    const out:Record<string,string>={};
+    for(const cv of rows){
+      if(!cv.avatar_path?.startsWith(ws+'/avatars/'))continue;
+      try{
+        const signed=await q(db.storage.from('atendimento').createSignedUrl(cv.avatar_path,300));
+        out[cv.id]=signed.signedUrl;
+      }catch{}
+    }
+    return json({avatares:out});
   }
   if(b.action==='avatar'){
     const cv=await q(db.from('atd_conversas').select('id,avatar_path').eq('id',b.conversa_id)
