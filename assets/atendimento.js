@@ -456,6 +456,22 @@
         if(S.ws===ws&&instagram.card.isConnected)conta.textContent='Não foi possível consultar as contas conectadas.';
       }
     }
+    if(whatsapp){
+      const summary=document.createElement('small');
+      summary.className='muted';summary.textContent='Conferindo autorização WhatsApp oficial…';
+      whatsapp.card.insertBefore(summary,whatsapp.botao.parentElement);
+      try{
+        const linked=await q(sb.from('atd_canais').select('nome,numero,ativo,status')
+          .eq('workspace_id',ws).eq('provedor','zernio').eq('canal','whatsapp').eq('ativo',true));
+        if(S.ws!==ws||S.view!=='cfg-integracoes'||!whatsapp.card.isConnected)return;
+        const active=linked.filter(x=>x.status==='conectado');
+        const pill=whatsapp.card.querySelector('.pill');
+        if(pill){pill.className='pill '+(active.length?'good':'neutral');pill.textContent=active.length?'Conectado':'Não conectado';}
+        summary.textContent=active.length?active.map(x=>'API oficial · '+(x.numero?'+'+String(x.numero).replace(/\D/g,''):x.nome||'Número não identificado')).join(' · '):
+          'Nenhum número WhatsApp oficial autorizado neste cliente.';
+        whatsapp.botao.textContent=active.length?'Conectar outro WhatsApp oficial':'Conectar WhatsApp oficial';
+      }catch{summary.textContent='Não foi possível consultar os números oficiais.';}
+    }
     if(S.ws!==ws||S.view!=='cfg-integracoes')return;
     try{
       const [permiteOAuth,interna]=await Promise.all([
