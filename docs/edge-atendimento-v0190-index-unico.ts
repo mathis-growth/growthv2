@@ -1,6 +1,6 @@
 // Growth V2 — Atendimento v0.190. Código único para Supabase Dashboard.
-// Corrige busca Evolution por GET e informa diagnósticos de grupos e fotos.
-// Verify JWT false para webhooks; valida autenticação no código.
+// Evolution GET findChats/findGroupInfos; diagnósticos seguros para nome/foto.
+// Verify JWT false para webhooks; autenticação validada na função.
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 // === CORE ===
 // Contrato comum: canais novos implementam um adaptador, sem alterar o histórico.
@@ -633,7 +633,7 @@ async function syncConversations(ch:any,cursor?:string){
       Array.isArray(raw?.data?.chats)?raw.data.chats:[];
     let chatRows:any[]=[],groupRows:any[]=[];
     try{
-      chatRows=shape(await evolution(cfg,'/chat/findChats/'+inst,'POST',{}));
+      chatRows=shape(await evolution(cfg,'/chat/findChats/'+inst));
     }catch(e){warnings.push('Conversas: '+(e instanceof ProviderError?'HTTP '+e.status:'consulta indisponível'));}
     try{
       groupRows=shape(await evolution(cfg,'/group/fetchAllGroups/'+inst+'?getParticipants=false'));
