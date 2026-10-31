@@ -132,6 +132,10 @@
     if(!popup){toast('Permita popups para conectar o Instagram.',true);return;}
     popup.document.body.innerHTML='<p style="font:16px system-ui;padding:24px">Abrindo autorização do Instagram…</p>';
     try{
+      // Compara contas antes/depois: fechar a janela não indica autorização concluída.
+      const before=await api('zernio-contas',{},ws).catch(()=>({contas:[]}));
+      const instagramAntes=new Set((before.contas||[]).filter(c=>c.canal==='instagram').map(c=>c.id));
+      if(S.ws!==ws){popup.close();return;}
       const {data,error}=await sb.functions.invoke('instagram-oauth',{body:{workspace_id:ws}});
       if(error){let msg;try{msg=(await error.context.json()).erro;}catch{}throw new Error(msg||'Não foi possível iniciar o login do Instagram.');}
       if(data?.erro)throw new Error(data.erro);
@@ -147,8 +151,9 @@
         // A finalização é confirmada pelo servidor; fechar a janela não significa sucesso.
         try{
           const r=await api('zernio-contas',{},ws);
-          if(r.contas?.some(c=>c.canal==='instagram'))toast('Instagram conectado. A conta está pronta em Atendimento.');
-          else toast('Autorização não concluída. Confira a janela do Instagram e tente novamente.',true);
+          const novas=(r.contas||[]).filter(c=>c.canal==='instagram'&&!instagramAntes.has(c.id));
+          if(novas.length)toast('Instagram conectado. A conta está pronta em Atendimento.');
+          else toast('Janela encerrada. Nenhuma nova conta detectada; confira o status em Integrações.');
           if(S.view==='cfg-integracoes'||S.view==='atd-canais')await render();
         }catch(e){toast('Atualize a tela para conferir a conexão do Instagram.',true);}
       },1000);
