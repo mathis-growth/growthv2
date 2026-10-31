@@ -2,6 +2,7 @@
 // Banco: fa (auditoria) com as migrações 20261022100000 e 20261022200000.
 //   PGDB=fa deno run --allow-all --import-map=tests/edge/import_map_papeis.json tests/edge/conexoes_teste.ts
 import { atende } from '../../supabase/functions/conexoes/rotas.ts';
+import { metaUrlLogin, META_ESCOPOS } from '../../supabase/functions/conexoes/meta.ts';
 
 const WS = 'ac56e719-7325-4062-aa47-74bc2141f89d', UID = '00000000-0000-0000-0000-00000000a0a0';
 let falhas = 0;
@@ -76,6 +77,16 @@ const limpa = async () => { await sql(`delete from conexoes where workspace_id =
   delete from integracoes where workspace_id = '${WS}' and provedor in ('Meta Ads','Instagram','Google Ads','YouTube');`); };
 await limpa();
 const FONTE = await sql(`insert into fontes_video (workspace_id, nome, tipo, plataforma, id_externo, ativo) values ('${WS}', 'Teste conexões', 'aula', 'youtube', 'https://youtu.be/vid00000001', true) returning id`);
+
+// Facebook Login for Business: respeita a configuração opcional sem reduzir escopos.
+Deno.env.set('META_LOGIN_CONFIG_ID', '123456789012');
+const loginBusiness = new URL(metaUrlLogin('https://proj.supabase.co/functions/v1/conexoes/retorno', 'estado-test'));
+ok(loginBusiness.searchParams.get('config_id') === '123456789012', 'Meta: configuração Business Login ativa');
+ok(META_ESCOPOS.every(scope => (loginBusiness.searchParams.get('scope') || '').split(',').includes(scope)),
+  'Meta: escopos de anúncios, páginas e Instagram preservados');
+Deno.env.delete('META_LOGIN_CONFIG_ID');
+const loginClassico = new URL(metaUrlLogin('https://proj.supabase.co/functions/v1/conexoes/retorno', 'estado-test'));
+ok(!loginClassico.searchParams.has('config_id'), 'Meta: login clássico permanece sem configuração Business');
 
 // ---------- Meta ----------
 let r = await req('iniciar', { ws: WS, plataforma: 'meta', volta: 'https://app.growths.test/#cfg-integracoes' });
