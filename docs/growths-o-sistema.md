@@ -1,9 +1,11 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 31/10/2026, versão 0.179 (OAuth Instagram em desenvolvimento).
+**Última atualização:** 31/10/2026, versão 0.180 (ajuste de Integrações).
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
+
+**Evolução v0.180 · Uma integração, um cartão.** Em Configurações → Integrações, o cartão já existente de Instagram oferece Conectar Instagram e exibe as contas autorizadas pelo cliente. O login OAuth não cria cartões ou seções extras; WhatsApp e Evolution também utilizam seus cartões existentes.
 
 **Evolução v0.179 · Instagram direto.** Em Integrações e Atendimento, Conectar Instagram abre o login da própria plataforma, sem exigir cadastro manual na Zernio. A conta Zernio e a API Key são centrais na Mathisa; cada cliente recebe um perfil técnico próprio e só acessa suas contas sociais. O retorno OAuth é validado no servidor e gera vínculo de conta e canal no workspace. Para anúncios Meta Ads há um processo de autorização distinto.
 
