@@ -1,3 +1,12 @@
+## v0.182 — Conexão Meta via Zernio central, sem Meta App Secrets (30/10/2026)
+- Cartão Meta existente abre diretamente a autorização Facebook Login for Business fornecida pela Zernio. A Mathisa mantém apenas `ZERNIO_API_KEY` no Supabase.
+- Nova Edge `meta-zernio` com perfil Zernio específico por workspace, callback OAuth de estado de uso único, checagem de conta e seleção das ad accounts do cliente.
+- Uma ad account autorizada é selecionada automaticamente; múltiplas exigem seleção explícita para não misturar clientes.
+- Ação de **Desconectar** remove a seleção local e preserva históricos, mas não revoga o acesso na Zernio/Meta.
+- Migration `20261031030000_meta_zernio_oauth.sql`: permite `meta_ads` sob a Zernio, sem substituir conexões antigas.
+- **Escopo:** login e vínculo das contas de anúncio. Ainda falta integrar a sincronização de insights da Zernio nos dashboards. O Facebook Page/Instagram orgânico/WhatsApp oficial têm permissões e fluxos próprios.
+- Publicação separada: aplicar SQL, publicar Edge `meta-zernio` e frontend; ver `docs/meta-zernio-v0182.md`.
+
 ## v0.181 — Meta: Login for Business com seleção de ativos (30/10/2026)
 - OAuth Meta mantém os escopos de Ads, páginas e Instagram; usa a configuração `META_LOGIN_CONFIG_ID` na URL de autorização quando o Secret está presente no Supabase.
 - Sem o Secret, preserva o OAuth clássico. O botão Meta original em Integrações permanece e a conexão é registrada por workspace nas tabelas existentes.
