@@ -400,13 +400,12 @@ async function storedAvatar(ch:any,jid:string,cfg:any,preferredUrl=''):Promise<s
   if(!isJid(jid))return null;
   const urls:string[]=[];
   if(preferredUrl.startsWith('https://'))urls.push(preferredUrl);
-  if(!urls.length){
-    try{
-      const photo=await evolution(cfg,'/chat/fetchProfilePictureUrl/'+encodeURIComponent(ch.externo_id),'POST',{number:jid});
-      const url=String(photo.profilePictureUrl||photo.profilePicture||photo.picture||photo.url||'');
-      if(url.startsWith('https://'))urls.push(url);
-    }catch{/* O contato pode não ter foto visível. */}
-  }
+  try{
+    // Usar pictureUrl do grupo primeiro; fallback ao endpoint do perfil se falhar.
+    const photo=await evolution(cfg,'/chat/fetchProfilePictureUrl/'+encodeURIComponent(ch.externo_id),'POST',{number:jid});
+    const url=String(photo.profilePictureUrl||photo.profilePicture||photo.picture||photo.url||'');
+    if(url.startsWith('https://')&&!urls.includes(url))urls.push(url);
+  }catch{/* O contato pode não ter foto visível. */}
   for(const url of urls){
     try{
       const bytes=await mediaBytes(url); // HTTPS e SSRF verificados pelo helper existente.
