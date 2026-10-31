@@ -402,6 +402,14 @@
     const instagram=substituirAcao('Instagram','Conectar Instagram',()=>conectarInstagram(ws),true);
     const whatsapp=substituirAcao('WhatsApp API oficial','Conectar WhatsApp oficial',()=>conectarSocialZernio('whatsapp',ws),true);
     substituirAcao('WhatsApp (grupos e API)','Configurar Evolution API',()=>act(configurarEvolution),true);
+    // Google Ads utiliza o OAuth Google já implementado em conexoes,
+    // não a API de redes sociais da Zernio.
+    substituirAcao('Google Ads','Conectar Google Ads',()=>act(async()=>{
+      const volta=location.origin+location.pathname+'?v=cfg-integracoes';
+      const result=await cxChama('iniciar',{ws,plataforma:'google',volta});
+      if(!result?.url||new URL(result.url).protocol!=='https:')throw Error('URL Google OAuth inválida.');
+      location.href=result.url;
+    }),false);
     // Cartões de conteúdo: não confundir com Google Ads/TikTok Ads/LinkedIn Ads.
     for(const [catalogo,platform] of [['YouTube','youtube'],['LinkedIn','linkedin'],['TikTok','tiktok']]){
       const item=substituirAcao(catalogo,'Conectar '+catalogo,()=>conectarSocialZernio(platform,ws),false);
