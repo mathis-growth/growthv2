@@ -3,3 +3,18 @@
 @media(min-width:1201px){.atd-mobile{display:none}}
 @media(max-width:1200px){.atd-layout{grid-template-columns:270px minmax(300px,1fr)}.atd-ficha{display:none}.atd-layout.ficha .atd-ficha{display:block}.atd-layout.ficha .atd-chat{display:none}}
 @media(max-width:760px){.atd-layout{grid-template-columns:1fr;height:calc(100dvh - 180px);min-height:420px}.atd-layout .atd-chat,.atd-layout .atd-ficha{display:none}.atd-layout.selecionada .atd-lista{display:none}.atd-layout.selecionada .atd-chat{display:flex}.atd-layout.ficha .atd-chat{display:none}.atd-layout.ficha .atd-ficha{display:block}.atd-balao{max-width:93%}.atd-top{padding:8px}.atd-top .btn{font-size:11px}}
+
+
+/* v0.185 — Canal e identidade da conta visíveis na lista e no topo do chat. */
+.atd-identificacao{display:block;margin-top:6px;min-width:0}
+.atd-faixa{display:flex;gap:5px 10px;align-items:center;flex-wrap:wrap;padding:5px 8px;border-radius:6px;border-left:3px solid var(--line);background:var(--surface-2);color:var(--ink);font-size:11px;line-height:1.4;max-width:100%;overflow-wrap:anywhere}
+.atd-faixa b{font-size:11px;flex-shrink:0}
+.atd-faixa span{min-width:0;overflow-wrap:anywhere}
+.atd-faixa--instagram{background:rgba(174,35,63,.13);border-left-color:#d83c58;color:#ffc0c9}
+.atd-faixa--whatsapp{background:rgba(20,140,79,.13);border-left-color:#25b86d;color:#aaf0c9}
+.atd-faixa--outro{border-left-color:var(--accent)}
+.atd-item .atd-faixa{margin-right:4px}
+.atd-top .atd-faixa{margin-top:4px}
+[data-theme="light"] .atd-faixa--instagram{color:#981b39;background:#ffe7ec}
+[data-theme="light"] .atd-faixa--whatsapp{color:#12693b;background:#e3f8eb}
+.atd-canal .atd-faixa{margin:8px 0}
