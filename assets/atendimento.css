@@ -61,3 +61,11 @@
 .atd-lightbox img{display:block;max-width:calc(95vw - 40px);max-height:calc(90vh - 95px);object-fit:contain;margin:auto}
 .atd-lightbox-close{display:block;margin:0 0 12px auto}
 @media(max-width:760px){.atd-media-audio audio{width:220px}.atd-media-image{width:min(260px,100%)}}
+
+/* v0.189 — thumbnails privadas e preferência por instância. */
+.atd-avatar{overflow:hidden;flex-shrink:0}
+.atd-avatar img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%}
+.atd-arquivados{display:flex;gap:8px;align-items:center;margin:10px 0 3px;font-weight:600;cursor:pointer}
+.atd-arquivados input{width:auto;accent-color:#591111}
+.atd-canal .atd-arquivados+small{display:block;margin-bottom:8px;color:var(--muted);font-size:11px}
+.atd-top #atdArquivarGrupo{margin-left:8px}
