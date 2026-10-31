@@ -145,7 +145,7 @@
     $('#atdCanaisCorpo').innerHTML=`<div class="panel"><p>WhatsApp oficial e Instagram pela Zernio. WhatsApp e grupos pela Evolution 2.3.7.</p>${ctx.admin?'<div class="acts"><button class="btn" id="atdConfigEvo">Configurar Evolution</button><button class="btn pri" id="atdNovaInst">Nova instância WhatsApp</button><button class="btn" id="atdZernio">Adicionar conta Zernio</button></div>':'<p>Um administrador gerencia as conexões.</p>'}</div><div class="atd-canais">${canais.map(c=>`<article class="atd-canal"><h3>${esc(c.nome)}</h3><p>${esc(label(c.canal))} · ${esc(c.provedor)}</p><span class="pill ${c.status==='conectado'?'good':'warn'}">${esc(c.status)}</span><p class="muted">${esc(c.numero||c.externo_id)}</p><div class="acts">${ctx.admin&&c.provedor==='evolution'?`<button class="btn sm" data-ca="conectar" data-id="${c.id}">QR Code</button><button class="btn sm" data-ca="status" data-id="${c.id}">Verificar status</button>`:''}${ctx.admin?`<button class="btn sm" data-ca="webhook" data-id="${c.id}">Ativar recebimento</button>`:''}${ctx.editar?`<button class="btn sm" data-ca="sincronizar" data-id="${c.id}">${c.provedor==='evolution'?'Buscar conversas e grupos':'Buscar conversas'}</button>`:''}</div><div id="ca-${c.id}"></div></article>`).join('')||'<div class="panel">Nenhum canal adicionado.</div>'}</div>`;
     $('#atdConfigEvo')?.addEventListener('click',()=>act(configurarEvolution));
     $('#atdNovaInst')?.addEventListener('click',()=>modal('Nova instância WhatsApp','<label>Nome deste número<input name="nome" required placeholder="Comercial · Número principal" maxlength="100"></label>',async d=>{await api('criar-instancia',d,ws);toast('Instância criada. Abra QR Code para conectar.');}));
-    $('#atdZernio')?.addEventListener('click',()=>act(async()=>{const r=await api('zernio-contas',{},ws);if(!r.contas.length){await conectarZernio(ws);return;}modal('Adicionar conta da Zernio',`<label>Conta<select name="account_id">${r.contas.map(c=>`<option value="${esc(c.id)}">${esc(label(c.canal)+' · '+c.nome)}</option>`).join('')}</select></label><p>Somente contas do perfil já conectado a este workspace.</p>`,async d=>{await api('zernio-vincular',d,ws);toast('Conta adicionada. Ative o recebimento e busque as conversas.');});}));
+    $('#atdZernio')?.addEventListener('click',()=>act(async()=>{const r=await api('zernio-contas',{},ws);if(!r.contas.length){const interna=await q(sb.rpc('sou_equipe_interna'));if(!interna){toast('Peça à equipe Mathisa para vincular sua conta Zernio em Integrações.',true);return;}await conectarZernio(ws);return;}modal('Adicionar conta da Zernio',`<label>Conta<select name="account_id">${r.contas.map(c=>`<option value="${esc(c.id)}">${esc(label(c.canal)+' · '+c.nome)}</option>`).join('')}</select></label><p>Somente contas do perfil já conectado a este workspace.</p>`,async d=>{await api('zernio-vincular',d,ws);toast('Conta adicionada. Ative o recebimento e busque as conversas.');});}));
     $('#atdCanaisCorpo').onclick=async e=>{const btn=e.target.closest('[data-ca]');if(!btn||btn.disabled)return;const id=btn.dataset.id,action=btn.dataset.ca;btn.disabled=true;
       try{const r=await api(action,{canal_id:id,cursor:btn.dataset.cursor||undefined},ws);if(S.ws!==ws||S.view!=='atd-canais')return;
         const target=$('#ca-'+id);
@@ -177,8 +177,9 @@
     try{
       const ctx=await api('contexto',{},ws);
       if(S.ws!==ws||S.view!=='cfg-integracoes'||!card.isConnected)return;
-      if(!ctx.admin)card.querySelector('#zernioVincular').remove();
-      if(!ctx.admin){card.querySelector('#zernioSituacao').textContent='Somente administradores podem vincular contas.';return;}
+      const interna=ctx.admin ? await q(sb.rpc('sou_equipe_interna')) : false;
+      if(!ctx.admin||!interna)card.querySelector('#zernioVincular').remove();
+      if(!ctx.admin){card.querySelector('#zernioSituacao').textContent='Somente administradores podem consultar as conexões.';return;}
       const r=await api('zernio-contas',{},ws);
       if(S.ws!==ws||S.view!=='cfg-integracoes'||!card.isConnected)return;
       card.querySelector('#zernioSituacao').textContent=r.contas.length
