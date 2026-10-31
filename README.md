@@ -138,3 +138,6 @@ lovable/                  material de apoio
 - O `index.html` leva só o endereço do Supabase e a chave pública (anon). Quem protege os dados é o RLS e as permissões por módulo, no banco.
 - Segredos (tokens do Meta e do Google, chaves de IA e o segredo do agendamento) **nunca** entram no repositório. Eles ficam em Edge Functions → Secrets, no Supabase, e os tokens das conexões ficam no schema `privado`.
 - O repositório é público: se for guardar dados reais de cliente aqui, torne-o privado antes.
+
+
+**Em desenvolvimento — v0.179:** `feat/instagram-oauth-direto` abre o Instagram OAuth direto no cliente e salva o vínculo com perfil Zernio por workspace. SQL, Edge `instagram-oauth` e frontend ainda não publicados nesta entrega.
