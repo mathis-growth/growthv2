@@ -2,6 +2,15 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.179 — Conectar Instagram por OAuth direto (31/10/2026)
+- Interface: botão **Conectar Instagram** em Configurações → Integrações e Atendimento → Canais e conexões. O navegador abre o login OAuth do Instagram, sem exibir escolha manual de conta na Zernio.
+- API: nova Edge Function `instagram-oauth`; usa `ZERNIO_API_KEY` central, cria um perfil Zernio por workspace quando necessário, inicia `GET /v1/connect/instagram` com `loginMethod=instagram_login` e recebe o retorno OAuth.
+- Segurança: autorização da administração do cliente com permissão em Configurações; estado aleatório com expiração e uso único; callback verifica `profileId`, conta na Zernio e isolamento entre workspaces antes de associar a conta.
+- Persistência: vínculo reutiliza `conexoes`, `conexao_contas` e `atd_canais`, sem apagar métricas, mensagens ou canais preexistentes. Perfil Zernio da Mathisa é reaproveitado quando identificável.
+- WhatsApp oficial mantém administração técnica separada pela Mathisa; nenhuma chave de provedor é enviada ao navegador.
+- Migration: `20261031020000_instagram_oauth_direto.sql`. Edge: `supabase/functions/instagram-oauth/index.ts` (publicar sem JWT automático, pois recebe o callback GET público).
+- **Em desenvolvimento:** branch isolada; requer aplicar SQL, publicar Edge e frontend, testar OAuth real antes de `main`. O login direto do Instagram não concede permissões de Meta Ads; isso exige outro fluxo.
+
 ## v0.178 — Zernio por cliente: vínculo explícito (30/10/2026)
 - Configurações → Integrações: selecionar uma conta Zernio (Instagram/WhatsApp oficial) para o cliente atual; somente a equipe interna da Mathisa pode listar e vincular contas globais.
 - Atendimento → Canais e conexões: iniciar vínculo quando não houver contas previamente associadas ao cliente.
