@@ -252,6 +252,28 @@
   MOD_GRUPO.Atendimento='vendas';
   ICO.Atendimento=ICO['crm-dms']||ICO.Vendas||'';ICO['atd-conversas']=ICO['crm-dms']||'';ICO['atd-canais']=ICO['cfg-integracoes'];
   VIEWS['atd-conversas']=vAtendimento;VIEWS['atd-canais']=vCanais;
+  // v0.183: intercepta cliques que ainda apontam para a Edge conexoes legada.
+  // O cxLiga() original registra handlers na renderização de Integrações;
+  // na fase de captura, esta ponte impede que Meta execute esses handlers.
+  document.addEventListener('click',e=>{
+    if(S.view!=='cfg-integracoes')return;
+    const target=e.target.closest?.('[data-cxcon="meta"],[data-cxsync="meta"],[data-cxdes="meta"]');
+    if(!target||!document.getElementById('main')?.contains(target))return;
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    if(target.hasAttribute('data-cxcon'))conectarMetaZernio(S.ws);
+    else if(target.hasAttribute('data-cxsync'))act(async()=>{const r=await metaZernio(S.ws,'sincronizar');
+      toast(r.erros?.length?'Sincronização parcial: '+r.erros.join(' | '):'Sincronizados '+r.registros+' registros Meta Ads.',!!r.erros?.length);
+      render();
+    });
+    else act(async()=>{const r=await metaZernio(S.ws,'contas');const ids=[...new Set((r.contas||[]).map(c=>c.zernioId))];
+      if(!ids.length){toast('Nenhuma conta Zernio ativa para desconectar.');return;}
+      if(!confirm('Desconectar as contas Meta deste cliente? As métricas históricas permanecem.'))return;
+      for(const id of ids)await metaZernio(S.ws,'desconectar',{zernio_account_id:id});
+      toast('Meta desconectada do Growth V2.');render();
+    });
+  },true);
   // Não criar novos painéis em Integrações: usar os cartões do catálogo nativo.
   const originalIntegracoes=VIEWS['cfg-integracoes'];
   VIEWS['cfg-integracoes']=async m=>{
