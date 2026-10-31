@@ -1,3 +1,10 @@
+## v0.179
+- A partir da v0.178: novo botão **Conectar Instagram** em `assets/atendimento.js`, OAuth direto sem etapa de selecionar contas Zernio.
+- Migration `20261031020000_instagram_oauth_direto.sql`: `conexoes.zernio_profile_id`, índice de isolamento, RPCs `zernio_oauth_permitido` e `zernio_oauth_iniciar` com nonce privado de 15 minutos.
+- Nova Edge Function `supabase/functions/instagram-oauth/index.ts`: um arquivo, endpoint POST autenticado para iniciar e GET de callback OAuth público com estado de uso único; Zernio central com perfil separado por cliente.
+- Não alterar `supabase/functions/atendimento` nem `zernio-sync`; canais Instagram ficam imediatamente vinculados em `atd_canais` após conexão confirmada.
+- Status: implementação na branch de desenvolvimento, sem deployment de SQL/Edge/frontend por esta entrega; validação real pendente.
+
 ## v0.178
 - Branch `fix/zernio-vinculo-por-cliente` (sem merge na main durante revisão).
 - Alterados: `assets/atendimento.js`, `supabase/functions/atendimento/index.ts`, documentação e README. Adicionados: `supabase/migrations/20261030220000_zernio_cliente.sql`, `docs/atendimento-edge-unica-v0178.ts`.
