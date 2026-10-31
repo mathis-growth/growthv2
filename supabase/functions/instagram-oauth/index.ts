@@ -30,7 +30,7 @@ async function accounts(profileId?:string){
   return r.accounts;
 }
 async function ensureProfile(ws:string,userId:string){
-  const existing=await q(service.from('conexoes').select('id,zernio_profile_id').eq('workspace_id',ws).eq('plataforma','zernio').maybeSingle());
+  const existing=await q(service.from('conexoes').select('id,zernio_profile_id,status,conta_nome,conectado_por').eq('workspace_id',ws).eq('plataforma','zernio').maybeSingle());
   if(existing?.zernio_profile_id)return String(existing.zernio_profile_id);
   // Compatibilidade: perfil já conectado no Growth V2 continua o mesmo.
   const linked=await q(service.from('conexao_contas').select('id_externo,conexoes!inner(plataforma)').eq('workspace_id',ws).eq('conexoes.plataforma','zernio'));
@@ -48,8 +48,9 @@ async function ensureProfile(ws:string,userId:string){
     if(!validId(profileId))throw new Error('A Zernio não retornou um identificador de perfil válido.');
   }
   const row=await q(service.from('conexoes').upsert({
-    workspace_id:ws,plataforma:'zernio',conta_nome:'Zernio',status:existing?'conectado':'desconectado',
-    zernio_profile_id:profileId,conectado_por:userId
+    workspace_id:ws,plataforma:'zernio',conta_nome:existing?.conta_nome||'Zernio',
+    status:existing?.status||'desconectado',
+    zernio_profile_id:profileId,conectado_por:existing?.conectado_por||userId
   },{onConflict:'workspace_id,plataforma'}).select('id,zernio_profile_id').single());
   if(row.zernio_profile_id!==profileId)throw new Error('Perfil Zernio inconsistente.');
   return profileId;
