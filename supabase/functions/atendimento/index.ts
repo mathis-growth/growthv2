@@ -388,101 +388,160 @@ async function setupWebhook(ch: any,cfg: any) {
 }
 // Metadados de grupo e foto: sempre por instância autenticada do workspace.
 // Evita misturar fotos/nomes de clientes, sem expor URLs remotas no frontend.
+// Metadados Evolution v2.3.x: GET /group/findGroupInfos/{instance}?groupJid=...
+// Todas as buscas usam a credencial do workspace e nunca expõem URLs externas.
 const isJid=(jid:string)=>/^[0-9]{5,22}@(g\.us|s\.whatsapp\.net|lid)$/.test(jid);
-const groupName=(g:any)=>String(g?.subject||g?.groupMetadata?.subject||g?.name||g?.title||g?.groupName||'').trim().slice(0,180);
-async function storedAvatar(ch:any,jid:string, cfg:any):Promise<string|null>{
+const groupName=(g:any):string=>{
+  const value=String(g?.subject||g?.groupMetadata?.subject||g?.name||g?.title||g?.groupName||'').trim().slice(0,180);
+  return value.endsWith('@g.us')?'':value;
+};
+const groupPicture=(g:any):string=>String(g?.pictureUrl||g?.profilePictureUrl||g?.groupMetadata?.pictureUrl||'');
+async function storedAvatar(ch:any,jid:string,cfg:any,preferredUrl=''):Promise<string|null>{
   if(!isJid(jid))return null;
-  try{
-    const result=await evolution(cfg,'/chat/fetchProfilePictureUrl/'+encodeURIComponent(ch.externo_id),'POST',{number:jid});
-    const url=String(result.profilePictureUrl||result.profilePicture||result.picture||result.url||'');
-    if(!url)return null;
-    const bytes=await mediaBytes(url);
-    if(!bytes.length||bytes.length>512*1024)return null;
-    const mime=bytes[0]===0xff&&bytes[1]===0xd8?'image/jpeg':
-      bytes[0]===0x89&&bytes[1]===0x50?'image/png':
-      new TextDecoder().decode(bytes.slice(0,4))==='RIFF'?'image/webp':null;
-    if(!mime)return null;
-    const encoded=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(jid));
-    const hash=Array.from(new Uint8Array(encoded),v=>v.toString(16).padStart(2,'0')).join('').slice(0,32);
-    const path=ch.workspace_id+'/avatars/'+ch.id+'/'+hash+
-      (mime==='image/png'?'.png':mime==='image/webp'?'.webp':'.jpg');
-    await q(db.storage.from('atendimento').upload(path,bytes,{contentType:mime,upsert:true}));
-    return path;
-  }catch{return null;} // Fotos ausentes ou privadas não devem bloquear mensagens.
-}
-async function refreshAvatar(ch:any,cv:any,cfg:any){
-  if(cv.avatar_atualizado_em&&Date.now()-Date.parse(cv.avatar_atualizado_em)<86400000)return;
-  const path=await storedAvatar(ch,cv.externo_id,cfg);
-  if(path)await q(db.from('atd_conversas').update({avatar_path:path,avatar_atualizado_em:new Date().toISOString()})
-    .eq('id',cv.id).eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id));
-}
-async function enrichGroup(ch:any, jid:string, original:any,cfg:any){
-  if(!isJid(jid)||!jid.endsWith('@g.us'))return;
-  let name=groupName(original);
-  if(!name || name===jid){
+  const urls:string[]=[];
+  if(preferredUrl.startsWith('https://'))urls.push(preferredUrl);
+  if(!urls.length){
     try{
-      const r=await evolution(cfg,'/group/findGroupInfos/'+encodeURIComponent(ch.externo_id),'POST',{groupJid:jid});
-      name=groupName(r)||groupName(r?.data);
-    }catch{} // A versão do servidor pode não expor o endpoint.
+      const photo=await evolution(cfg,'/chat/fetchProfilePictureUrl/'+encodeURIComponent(ch.externo_id),'POST',{number:jid});
+      const url=String(photo.profilePictureUrl||photo.profilePicture||photo.picture||photo.url||'');
+      if(url.startsWith('https://'))urls.push(url);
+    }catch{/* O contato pode não ter foto visível. */}
   }
-  const cv=await q(db.from('atd_conversas').select('id,nome,avatar_atualizado_em,externo_id')
-    .eq('canal_id',ch.id).eq('workspace_id',ch.workspace_id).eq('externo_id',jid).maybeSingle());
-  if(!cv)return;
-  if(name && name!==jid && cv.nome!==name)
-    await q(db.from('atd_conversas').update({nome:name}).eq('id',cv.id).eq('workspace_id',ch.workspace_id));
-  await refreshAvatar(ch,cv,cfg);
+  for(const url of urls){
+    try{
+      const bytes=await mediaBytes(url); // HTTPS e SSRF verificados pelo helper existente.
+      if(!bytes.length||bytes.length>512*1024)continue;
+      const mime=bytes[0]===255&&bytes[1]===216?'image/jpeg':
+        bytes[0]===137&&bytes[1]===80?'image/png':
+        new TextDecoder().decode(bytes.slice(0,4))==='RIFF'?'image/webp':null;
+      if(!mime)continue;
+      const hashBuffer=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(jid));
+      const hash=Array.from(new Uint8Array(hashBuffer),v=>v.toString(16).padStart(2,'0')).join('').slice(0,32);
+      const ext=mime==='image/png'?'.png':mime==='image/webp'?'.webp':'.jpg';
+      const path=ch.workspace_id+'/avatars/'+ch.id+'/'+hash+ext;
+      await q(db.storage.from('atendimento').upload(path,bytes,{contentType:mime,upsert:true}));
+      return path;
+    }catch{/* Fotos protegidas/expiradas não devem travar a importação. */}
+  }
+  return null;
 }
-async function syncConversations(ch: any,cursor?: string) {
-  if (ch.provedor === 'evolution') {
-    const cfg = await secret(ch.workspace_id), inst = encodeURIComponent(ch.externo_id);
-    const chats = await evolution(cfg,'/chat/findChats/'+inst,'POST',{});
-    const groups = await evolution(cfg,'/group/fetchAllGroups/'+inst+'?getParticipants=false');
-    const chatRows=Array.isArray(chats)?chats:chats.chats||chats.data||[];
-    const groupRows=Array.isArray(groups)?groups:groups.groups||groups.data||[];
+async function refreshAvatar(ch:any,cv:any,cfg:any,url=''):Promise<boolean>{
+  if(cv.avatar_atualizado_em&&Date.now()-Date.parse(cv.avatar_atualizado_em)<86400000)return false;
+  const path=await storedAvatar(ch,cv.externo_id,cfg,url);
+  if(!path)return false;
+  await q(db.from('atd_conversas').update({avatar_path:path,avatar_atualizado_em:new Date().toISOString()})
+    .eq('id',cv.id).eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id));
+  return true;
+}
+async function enrichGroup(ch:any,cv:any,original:any,cfg:any):
+  Promise<{named:boolean,photo:boolean,detailsOk:boolean}>{
+  const jid=String(cv.externo_id||'');
+  if(!isJid(jid)||!jid.endsWith('@g.us'))return {named:false,photo:false,detailsOk:false};
+  let meta=original||{},name=groupName(meta),detailsOk=Boolean(name);
+  if(!name){
+    try{
+      // Corrigido v0.190: a rota é GET e groupJid pertence à query, não ao corpo POST.
+      const response=await evolution(cfg,'/group/findGroupInfos/'+encodeURIComponent(ch.externo_id)
+        +'?groupJid='+encodeURIComponent(jid)+'&getParticipants=false');
+      meta=response?.data?.subject?response.data:response;
+      name=groupName(meta);
+      detailsOk=Boolean(name);
+    }catch{/* Algumas versões da Evolution retornam 404 para grupos antigos. */}
+  }
+  let named=false;
+  if(name&&name!==jid&&name!==cv.nome){
+    await q(db.from('atd_conversas').update({nome:name})
+      .eq('id',cv.id).eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id));
+    named=true;
+  }
+  const photo=await refreshAvatar(ch,cv,cfg,groupPicture(meta)||groupPicture(original));
+  return {named,photo,detailsOk};
+}
+async function syncConversations(ch:any,cursor?:string){
+  if(ch.provedor==='evolution'){
+    const cfg=await secret(ch.workspace_id),inst=encodeURIComponent(ch.externo_id);
+    if(!cfg)throw Error('A Evolution não está configurada para este cliente.');
+    const warnings:string[]=[];
+    const shape=(raw:any):any[]=>Array.isArray(raw)?raw:
+      Array.isArray(raw?.groups)?raw.groups:
+      Array.isArray(raw?.chats)?raw.chats:
+      Array.isArray(raw?.data)?raw.data:
+      Array.isArray(raw?.data?.groups)?raw.data.groups:
+      Array.isArray(raw?.data?.chats)?raw.data.chats:[];
+    let chatRows:any[]=[],groupRows:any[]=[];
+    try{
+      chatRows=shape(await evolution(cfg,'/chat/findChats/'+inst,'POST',{}));
+    }catch(e){warnings.push('Conversas: '+(e instanceof ProviderError?'HTTP '+e.status:'consulta indisponível'));}
+    try{
+      groupRows=shape(await evolution(cfg,'/group/fetchAllGroups/'+inst+'?getParticipants=false'));
+    }catch(e){warnings.push('Grupos: '+(e instanceof ProviderError?'HTTP '+e.status:'consulta indisponível'));}
     const byJid=new Map<string,any>();
-    for(const c of [...chatRows,...groupRows]){
-      const id=String(c.remoteJid||c.id||c.jid||c.groupJid||'');
+    for(const item of [...chatRows,...groupRows]){
+      const id=String(item?.remoteJid||item?.id||item?.jid||item?.groupJid||'');
       if(!isJid(id))continue;
-      const prev=byJid.get(id);
-      if(!prev || (id.endsWith('@g.us') && groupName(c) && !groupName(prev)))byJid.set(id,c);
+      const previous=byJid.get(id);
+      if(!previous||(id.endsWith('@g.us')&&groupName(item)&&!groupName(previous)))byJid.set(id,item);
     }
-    let count=0,names=0,photos=0;
-    for(const [id,c] of byJid){
-      const isGroup=id.endsWith('@g.us');
-      const realName=isGroup?groupName(c):String(c.pushName||c.name||c.contact?.pushName||'').trim().slice(0,180);
-      // Só fornece nome se identificável: nome vazio preserva o cadastro anterior na RPC.
+    for(const [id,item] of byJid){
+      const group=id.endsWith('@g.us');
+      const name=group?groupName(item):
+        String(item.pushName||item.name||item.contact?.pushName||'').trim().slice(0,180);
       await q(db.rpc('atd_receber',{p_canal:ch.id,
-        p_conversa:{id,nome:realName&&realName!==id?realName:undefined,endereco:id,grupo:isGroup}}));
-      count++;
+        p_conversa:{id,nome:name&&name!==id?name:undefined,endereco:id,grupo:group}}));
     }
-    // Dados adicionais custam uma requisição por grupo. Limitar trabalho por chamada
-    // para evitar timeout e permitir reexecução segura.
-    // Nomes já presentes em fetchAllGroups são aplicados a todos. Requisições
-    // extras só para grupos cujo título continua um JID, limitadas por execução.
-    const unresolved=await q(db.from('atd_conversas').select('externo_id,nome')
+    // A recuperação deve funcionar mesmo que fetchAllGroups falhe: usar grupos
+    // do banco, sem depender de um novo evento do WhatsApp.
+    const groups=await q(db.from('atd_conversas')
+      .select('id,externo_id,nome,avatar_path,avatar_atualizado_em')
       .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',true)
       .order('ultima_em',{ascending:false,nullsFirst:false}).limit(150));
-    let enriched=0;
-    for(const g of unresolved){
-      if(g.nome!==g.externo_id || !g.externo_id.endsWith('@g.us'))continue;
-      await enrichGroup(ch,g.externo_id,byJid.get(g.externo_id)||{},cfg);
-      enriched++;if(enriched>=10)break;
+    const initialMissing=groups.filter((g:any)=>g.nome===g.externo_id).length;
+    const offset=/^g:(\d+)$/.test(String(cursor||''))?Number(String(cursor).split(':')[1]):0;
+    const start=Math.min(Number.isFinite(offset)?offset:0,Math.max(0,groups.length-1));
+    const subset=groups.slice(start,start+8);
+    let named=0,photos=0,details=0;
+    for(let i=0;i<subset.length;i+=4){
+      const results=await Promise.allSettled(subset.slice(i,i+4).map((g:any)=>
+        enrichGroup(ch,g,byJid.get(g.externo_id)||{},cfg)));
+      for(const result of results){
+        if(result.status!=='fulfilled'){warnings.push('Detalhes do grupo: falha de consulta');continue;}
+        if(result.value.named)named++;
+        if(result.value.photo)photos++;
+        if(result.value.detailsOk)details++;
+      }
     }
-    names=enriched;
-    // Miniaturas atualizadas gradualmente para as conversas mais recentes.
-    const cvs=await q(db.from('atd_conversas').select('id,externo_id,avatar_atualizado_em')
-      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id)
-      .order('ultima_em',{ascending:false,nullsFirst:false}).limit(8));
-    for(const cv of cvs){if(!isJid(cv.externo_id)||cv.externo_id.endsWith('@g.us'))continue;
-      await refreshAvatar(ch,cv,cfg);photos++;
-    }
-    return {total:count,cursor:null,grupos_atualizados:names,fotos_consultadas:photos};
+    // Buscar fotos também dos contatos recentes, independentemente dos grupos.
+    const contacts=await q(db.from('atd_conversas')
+      .select('id,externo_id,avatar_atualizado_em')
+      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',false)
+      .order('ultima_em',{ascending:false,nullsFirst:false}).limit(4));
+    const cp=await Promise.allSettled(contacts.filter((cv:any)=>isJid(cv.externo_id))
+      .map((cv:any)=>refreshAvatar(ch,cv,cfg)));
+    photos+=cp.filter(x=>x.status==='fulfilled'&&x.value===true).length;
+    const current=await q(db.from('atd_conversas').select('id,externo_id,nome,avatar_path')
+      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',true).limit(150));
+    const remaining=current.filter((g:any)=>g.nome===g.externo_id).length;
+    const next=start+8<groups.length?'g:'+(start+8):null;
+    if(!chatRows.length&&!groupRows.length&&!groups.length)
+      warnings.push('Nenhuma conversa/grupo disponível; verifique a conexão Evolution.');
+    return {
+      total:byJid.size,cursor:next,grupos_no_banco:groups.length,
+      nomes_atualizados:Math.max(0,initialMissing-remaining),
+      detalhes_confirmados:details,fotos_salvas:photos,
+      grupos_sem_nome:remaining,grupos_consultados:subset.length,
+      avisos:[...new Set(warnings)].slice(0,4)
+    };
   }
-  const params = new URLSearchParams({accountId:ch.externo_id,platform:ch.canal,limit:'50'}); if(cursor) params.set('cursor',cursor);
-  const r = await zernio(zp(),'/inbox/conversations?'+params);
-  for (const c of r.data || []) await q(db.rpc('atd_receber',{p_canal:ch.id,p_conversa:{id:c.id,nome:c.participantName || c.participantUsername,endereco:c.participantId,grupo:false}}));
-  return {total:(r.data || []).length,cursor:r.pagination?.nextCursor || null};
+  const params=new URLSearchParams({accountId:ch.externo_id,platform:ch.canal,limit:'50'});
+  if(cursor)params.set('cursor',cursor);
+  const response=await zernio(zp(),'/inbox/conversations?'+params);
+  for(const item of response.data||[])
+    await q(db.rpc('atd_receber',{p_canal:ch.id,p_conversa:{
+      id:item.id,nome:item.participantName||item.participantUsername,
+      endereco:item.participantId,grupo:false}}));
+  return {total:(response.data||[]).length,cursor:response.pagination?.nextCursor||null};
 }
+
 async function backfill(ch: any,cv: any,cursor?: string) {
   if (ch.provedor === 'evolution') {
     const r = await evolution(await secret(ch.workspace_id),'/chat/findMessages/'+encodeURIComponent(ch.externo_id),'POST',{where:{key:{remoteJid:cv.externo_id}},page:Number(cursor || 1),offset:50});
