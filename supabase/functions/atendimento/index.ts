@@ -398,10 +398,14 @@ async function storedAvatar(ch:any,jid:string, cfg:any):Promise<string|null>{
     if(!url)return null;
     const bytes=await mediaBytes(url);
     if(!bytes.length||bytes.length>512*1024)return null;
-    const mime='image/jpeg';
+    const mime=bytes[0]===0xff&&bytes[1]===0xd8?'image/jpeg':
+      bytes[0]===0x89&&bytes[1]===0x50?'image/png':
+      new TextDecoder().decode(bytes.slice(0,4))==='RIFF'?'image/webp':null;
+    if(!mime)return null;
     const encoded=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(jid));
     const hash=Array.from(new Uint8Array(encoded),v=>v.toString(16).padStart(2,'0')).join('').slice(0,32);
-    const path=ch.workspace_id+'/avatars/'+ch.id+'/'+hash+'.jpg';
+    const path=ch.workspace_id+'/avatars/'+ch.id+'/'+hash+
+      (mime==='image/png'?'.png':mime==='image/webp'?'.webp':'.jpg');
     await q(db.storage.from('atendimento').upload(path,bytes,{contentType:mime,upsert:true}));
     return path;
   }catch{return null;} // Fotos ausentes ou privadas não devem bloquear mensagens.
@@ -424,9 +428,8 @@ async function enrichGroup(ch:any, jid:string, original:any,cfg:any){
   const cv=await q(db.from('atd_conversas').select('id,nome,avatar_atualizado_em,externo_id')
     .eq('canal_id',ch.id).eq('workspace_id',ch.workspace_id).eq('externo_id',jid).maybeSingle());
   if(!cv)return;
-  if(name && name!==jid && (cv.nome===jid||cv.nome.endsWith('@g.us')||cv.nome!==name)){
+  if(name && name!==jid && cv.nome!==name)
     await q(db.from('atd_conversas').update({nome:name}).eq('id',cv.id).eq('workspace_id',ch.workspace_id));
-  }
   await refreshAvatar(ch,cv,cfg);
 }
 async function syncConversations(ch: any,cursor?: string) {
@@ -454,14 +457,22 @@ async function syncConversations(ch: any,cursor?: string) {
     }
     // Dados adicionais custam uma requisição por grupo. Limitar trabalho por chamada
     // para evitar timeout e permitir reexecução segura.
-    for(const [id,c] of [...byJid].filter(([id])=>id.endsWith('@g.us')).slice(0,35)){
-      await enrichGroup(ch,id,c,cfg);
-      if(groupName(c))names++;
+    // Nomes já presentes em fetchAllGroups são aplicados a todos. Requisições
+    // extras só para grupos cujo título continua um JID, limitadas por execução.
+    const unresolved=await q(db.from('atd_conversas').select('externo_id,nome')
+      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',true)
+      .order('ultima_em',{ascending:false,nullsFirst:false}).limit(150));
+    let enriched=0;
+    for(const g of unresolved){
+      if(g.nome!==g.externo_id || !g.externo_id.endsWith('@g.us'))continue;
+      await enrichGroup(ch,g.externo_id,byJid.get(g.externo_id)||{},cfg);
+      enriched++;if(enriched>=10)break;
     }
+    names=enriched;
     // Miniaturas atualizadas gradualmente para as conversas mais recentes.
     const cvs=await q(db.from('atd_conversas').select('id,externo_id,avatar_atualizado_em')
       .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id)
-      .order('ultima_em',{ascending:false,nullsFirst:false}).limit(20));
+      .order('ultima_em',{ascending:false,nullsFirst:false}).limit(8));
     for(const cv of cvs){if(!isJid(cv.externo_id)||cv.externo_id.endsWith('@g.us'))continue;
       await refreshAvatar(ch,cv,cfg);photos++;
     }
