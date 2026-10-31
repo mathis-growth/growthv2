@@ -124,7 +124,8 @@ async function post(req:Request){
   return json({erro:'Operação inválida.'},400);
 }
 function reply(ok:boolean,message:string){
-  const escape=(s:string)=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
+  const entities:Record<string,string>={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+  const escape=(s:string)=>s.replace(/[&<>"']/g,c=>entities[c]||c);
   const text=escape(message);
   return new Response('<!doctype html><meta charset="utf-8"><title>Conexão Meta</title><body style="font:16px system-ui;padding:15vh 24px;text-align:center"><h2>'+(ok?'Meta autorizada':'Não foi possível autorizar a Meta')+'</h2><p>'+text+'</p><p>Volte ao Growth V2. Você pode fechar esta janela.</p>'+(ok?'<script>window.close()<\/script>':'')+'</body>',{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'"}});
 }
