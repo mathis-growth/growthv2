@@ -1,3 +1,7 @@
+## v0.187 — Faixa WhatsApp simplificada (31/10/2026)
+- O cabeçalho colorido dos cards e conversas WhatsApp exibe apenas `WhatsApp - 5515981603876`, com o número do canal real, sem os termos QR Code e Número.
+- A modalidade QR Code/API oficial continua disponível nos filtros e na gestão de canais. Apenas frontend, sem Edge nem SQL.
+
 ## v0.186 — Cards coloridos por canal no Atendimento (31/10/2026)
 - A lista de conversas utiliza todo o card em rosa para Instagram e verde para WhatsApp, com borda e faixa superior mais escuras.
 - O título do canal e perfil/número fica na faixa superior escura, em uma linha, branco e 6px conforme solicitação.
