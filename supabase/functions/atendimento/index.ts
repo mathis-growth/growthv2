@@ -52,15 +52,28 @@ async function saveMedia(ch: any, msg: any) {
       const r = await evolution(cfg, '/chat/getBase64FromMediaMessage/' + encodeURIComponent(ch.externo_id), 'POST', { message: { key: orig.key, message: orig.message }, convertToMp4: false });
       bytes = base64Bytes(r.base64 || '');
     } else {
-      try { bytes = await mediaBytes(orig.attachments[i].url); }
-      catch {
-        const r = await zernio(zp(),'/inbox/conversations/'+encodeURIComponent(orig.conversa_id)+'/messages/'+encodeURIComponent(orig.externo_id)+'/attachments/'+i+'?accountId='+encodeURIComponent(ch.externo_id)+'&format=json');
-        bytes = await mediaBytes(r.url);
+      const meta=orig.attachments?.[i]||{}, mediaId=String(meta.payload?.id||'');
+      // WhatsApp oficial: mídia privada deve ser baixada com Bearer e accountId.
+      if(ch.canal==='whatsapp' && /^[a-zA-Z0-9_-]{1,256}$/.test(mediaId)){
+        const mediaUrl='https://zernio.com/api/v1/whatsapp/media/'+encodeURIComponent(mediaId)+'?accountId='+encodeURIComponent(ch.externo_id);
+        const resp=await fetch(mediaUrl,{redirect:'error',signal:AbortSignal.timeout(20000),headers:{Authorization:'Bearer '+zp()}});
+        if(!resp.ok || Number(resp.headers.get('content-length'))>MAX_MEDIA)throw Error('Mídia WhatsApp indisponível ou acima de 8 MB.');
+        const buffer=await resp.arrayBuffer();
+        if(buffer.byteLength>MAX_MEDIA)throw Error('Mídia WhatsApp acima de 8 MB.');
+        bytes=new Uint8Array(buffer);
+        const type=String(resp.headers.get('content-type')||'').split(';')[0];
+        if(/^(image|audio|video)\//.test(type))attachments[i].mime=type;
+      }else{
+        try { bytes = await mediaBytes(meta.url); }
+        catch {
+          const r = await zernio(zp(),'/inbox/conversations/'+encodeURIComponent(orig.conversa_id)+'/messages/'+encodeURIComponent(orig.externo_id)+'/attachments/'+i+'?accountId='+encodeURIComponent(ch.externo_id)+'&format=json');
+          bytes = await mediaBytes(r.url);
+        }
       }
     }
     if (!bytes.length) throw new Error('Mídia vazia.');
     const path = `${ch.workspace_id}/${msg.id}/${i}`;
-    await q(db.storage.from('atendimento').upload(path, bytes, { contentType: attachments[i].mime, upsert: true }));
+    await q(db.storage.from('atendimento').upload(path, bytes, { contentType: String(attachments[i].mime||'application/octet-stream').split(';')[0], upsert: true }));
     attachments[i] = { ...attachments[i], path, pendente: false, tamanho: bytes.length };
   }
   await q(db.from('atd_mensagens').update({ anexos: attachments }).eq('id', msg.id));
