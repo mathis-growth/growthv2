@@ -1,3 +1,11 @@
+## v0.189 — Grupos, arquivamento e thumbnails no Atendimento (31/10/2026)
+- Corrige títulos de grupos Evolution sincronizando metadados de `fetchAllGroups` e `findGroupInfos`, sem substituir títulos válidos por IDs.
+- Botão Arquivar/Desarquivar no chat e checkbox por instância **Exibir grupos arquivados**, com preferência persistida no banco.
+- Arquivamento é do Growth V2, não garante refletir o arquivo nativo WhatsApp/Evolution.
+- Fotos de perfil de contatos e grupos são obtidas da Evolution, armazenadas em bucket privado, e exibidas via URLs assinadas autorizadas no workspace.
+- Migration aditiva `20261031050000_atendimento_grupos_arquivo_avatares.sql` e Edge `atendimento` v0.189; arquivo único em `docs/edge-atendimento-v0189-index-unico.ts`.
+- É necessário sincronizar cada instância após publicação. Não apaga mensagens, grupos ou clientes existentes.
+
 ## v0.188 — Atendimento multimídia (31/10/2026)
 - Prévia de imagens no chat com ampliação, player de áudio/vídeo e botão para recuperar mídia pendente; links assinados de 5 minutos em bucket privado.
 - Gravação via microfone no navegador e envio de imagens, áudio, vídeo e PDF mesmo sem texto, até 8 MB.
