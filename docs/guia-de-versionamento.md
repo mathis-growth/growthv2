@@ -1,3 +1,9 @@
+## v0.189 — Identificação de grupos e arquivo operacional por instância
+- `supabase/migrations/20261031050000_atendimento_grupos_arquivo_avatares.sql`: preferências de instância, `arquivada` e `avatar_path` na conversa.
+- Edge `atendimento` atualizada, sincroniza nome/thumbnail com Evolution e serve imagens com URL assinada em lote por workspace.
+- `assets/atendimento.js` e CSS: checkbox **Exibir grupos arquivados**, arquivar/desarquivar no chat e avatares.
+- Ver `docs/atendimento-grupos-arquivo-fotos-v0189.md`. O estado arquivado não vem automaticamente do WhatsApp.
+
 ## v0.188 — Atendimento com áudio e imagens inline
 - UI `assets/atendimento.js`/`assets/atendimento.css` suporta imagem em miniatura, zoom, áudio/vídeo inline, gravação por microfone e envio sem texto.
 - Edge `atendimento` adaptada para anexos de Instagram/Zernio, Evolution e WhatsApp oficial, sem bucket público. Arquivo único `docs/edge-atendimento-v0188-index-unico.ts` pronto para editor do Supabase.
