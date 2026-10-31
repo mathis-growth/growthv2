@@ -1,3 +1,10 @@
+## v0.178 — Conexão Zernio por cliente (ainda não publicada)
+1. Exige a Central de Atendimento v0.175 no banco.
+2. Aplicar `supabase/migrations/20261030220000_zernio_cliente.sql` no banco correto.
+3. Publicar a Edge Function `atendimento` e a interface atualizada, mantendo `ZERNIO_API_KEY` em Secrets.
+4. Selecionar cliente → Configurações → Integrações → Zernio → Vincular conta. Depois Atendimento → Canais e conexões → Adicionar conta.
+5. Testar isolamento entre clientes, conta já vinculada, credenciais ausentes e WhatsApp oficial.
+
 
 
 ## v0.163 — Customer Growth
