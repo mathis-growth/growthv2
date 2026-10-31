@@ -1,3 +1,10 @@
+## v0.185 — Atendimento e OAuth de canais (branch `feat/atendimento-canais-oauth-evolution-v0185`)
+- Atualiza `assets/atendimento.js` e `assets/atendimento.css` para identificar com faixas Instagram/vermelho e WhatsApp/verde, incluindo QR Code vs API Oficial e número/perfil.
+- `supabase/functions/atendimento/index.ts`: função administrativa `excluir-instancia` invoca DELETE remoto na Evolution, preserva histórico, além de `identidades` para telefone da instância.
+- `supabase/functions/zernio-social-oauth/index.ts`: OAuth de YouTube, TikTok e LinkedIn orgânicos, Facebook Page e WhatsApp Oficial; requer `ZERNIO_API_KEY` central e migração 20261031040000.
+- `Google Ads` passa a invocar OAuth Google da Edge `conexoes`; plataformas de anúncios não contempladas pela Zernio social continuam sem conector de Ads.
+- Não avançar para produção sem publicar SQL, a função `zernio-social-oauth`, a atualização de `atendimento` (com `providers.ts` e `core.ts`) e verificar os fluxos no navegador.
+
 ## v0.183 — Roteamento Meta Zernio
 - Corrige a tentativa de conectar Meta via rota antiga `conexoes/iniciar`, embora a funcionalidade ativa seja `meta-zernio`.
 - `assets/atendimento.js` agora captura qualquer botão Meta ainda gerado pela interface principal antes do handler legado, e encaminha conectar/sincronizar/desconectar à Zernio.
