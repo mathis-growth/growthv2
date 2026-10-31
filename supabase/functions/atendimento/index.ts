@@ -124,7 +124,7 @@ async function handle(req: Request, b: any) {
   const { data: { user }, error } = await userDb.auth.getUser();
   if (error || !user) return json({ erro: 'Faça login novamente.' },401);
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
-  const read = ['contexto','config','status','mensagens','anexo','zernio-contas'];
+  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
   const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
@@ -154,6 +154,31 @@ async function handle(req: Request, b: any) {
       await setupWebhook(ch,cfg);
     } catch(e) { await q(db.from('atd_canais').update({status:'erro'}).eq('id',id)); throw e; }
     return json({ canal:ch });
+  }
+  if (b.action === 'identidades') {
+    const channels=await q(db.from('atd_canais').select('id,nome,numero,provedor,canal,externo_id')
+      .eq('workspace_id',ws).eq('ativo',true));
+    // Atualiza o número da Evolution a partir da instância real, nunca por input do usuário.
+    const evo=channels.filter((x:any)=>x.provedor==='evolution'&&x.canal==='whatsapp');
+    if(evo.length){
+      const cfg=await secret(ws);
+      if(cfg){
+        try{
+          const result=await evolution(cfg,'/instance/fetchInstances');
+          const instances=Array.isArray(result)?result:Array.isArray(result.instances)?result.instances:[];
+          for(const c of evo){
+            const item=instances.find((x:any)=>String(x.name||x.instance?.instanceName||x.instanceName||'')===c.externo_id);
+            const raw=String(item?.ownerJid||item?.instance?.ownerJid||item?.number||item?.instance?.number||'');
+            const number=raw.split('@')[0].replace(/\D/g,'');
+            if(number.length>=10&&number.length<=15&&number!==c.numero){
+              await q(db.from('atd_canais').update({numero:number}).eq('id',c.id).eq('workspace_id',ws));
+              c.numero=number;
+            }
+          }
+        }catch{/* Não impedir a caixa de entrada de abrir por falha no servidor Evolution. */}
+      }
+    }
+    return json({canais:channels.map((c:any)=>({id:c.id,nome:c.nome,numero:c.numero||null}))});
   }
   if (b.action === 'zernio-disponiveis') return json({ contas:await zernioDisponiveis(ws) });
   if (b.action === 'zernio-conectar') {
