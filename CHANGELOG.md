@@ -2,6 +2,14 @@
 
 Formato: [Versão] - data. Seguimos o padrão `MAIOR.MENOR.CORREÇÃO`. Enquanto o sistema estiver em construção, a versão começa em 0.
 
+## v0.178 — Zernio por cliente: vínculo explícito (30/10/2026)
+- Configurações → Integrações: selecionar uma conta Zernio (Instagram/WhatsApp oficial) para o cliente atual; somente a equipe interna da Mathisa pode listar e vincular contas globais.
+- Atendimento → Canais e conexões: iniciar vínculo quando não houver contas previamente associadas ao cliente.
+- Backend: consulta protegida, isolamento por workspace e sem herdar contas de um mesmo perfil Zernio.
+- Migration `20261030220000_zernio_cliente.sql`: suporte a WhatsApp em `conexao_contas` e trigger de isolamento.
+- Publicação via código da Edge Function em arquivo único (`docs/atendimento-edge-unica-v0178.ts`) quando usar o editor do Supabase.
+- **Status do repositório:** implementação na branch de revisão, ainda fora da main. SQL e Edge Function publicados manualmente no Supabase pelo operador; precisam ser compatibilizados com a última revisão de autorização e homologados antes do deploy do frontend.
+
 ## v0.177 — Diagnóstico 360°: formulário curto, arquivos e reunião (G1b, G2 e G3) (30/10/2026)
 Depois do teste da G1, a parte técnica sai do formulário do cliente e vai para a reunião, preenchida pela equipe. O documento de Arquitetura de Métricas continua respondido por inteiro: o que sai do formulário entra no roteiro da reunião. Plano: `docs/diagnostico-360-plano.md`, seção 8.
 - **G1b · formulário curto do cliente:**
