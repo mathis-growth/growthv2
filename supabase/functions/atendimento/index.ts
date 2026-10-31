@@ -58,9 +58,18 @@ async function saveMedia(ch: any, msg: any) {
         const mediaUrl='https://zernio.com/api/v1/whatsapp/media/'+encodeURIComponent(mediaId)+'?accountId='+encodeURIComponent(ch.externo_id);
         const resp=await fetch(mediaUrl,{redirect:'error',signal:AbortSignal.timeout(20000),headers:{Authorization:'Bearer '+zp()}});
         if(!resp.ok || Number(resp.headers.get('content-length'))>MAX_MEDIA)throw Error('Mídia WhatsApp indisponível ou acima de 8 MB.');
-        const buffer=await resp.arrayBuffer();
-        if(buffer.byteLength>MAX_MEDIA)throw Error('Mídia WhatsApp acima de 8 MB.');
-        bytes=new Uint8Array(buffer);
+        const reader=resp.body?.getReader();
+        if(!reader)throw Error('Mídia WhatsApp sem conteúdo.');
+        const chunks:Uint8Array[]=[], limit=MAX_MEDIA;let count=0;
+        while(true){
+          const piece=await reader.read();
+          if(piece.done)break;
+          count+=piece.value.byteLength;
+          if(count>limit){await reader.cancel();throw Error('Mídia WhatsApp acima de 8 MB.');}
+          chunks.push(piece.value);
+        }
+        bytes=new Uint8Array(count);let offset=0;
+        for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}
         const type=String(resp.headers.get('content-type')||'').split(';')[0];
         if(/^(image|audio|video)\//.test(type))attachments[i].mime=type;
       }else{
