@@ -1,3 +1,12 @@
+## v0.185 — OAuth das integrações e identificação visual do Atendimento (31/10/2026)
+- Botão **Excluir instância** para WhatsApp QR Code Evolution: remove a instância por `DELETE /instance/delete/{instance}` e desativa somente o canal deste workspace depois do sucesso remoto, preservando conversas e mensagens no Supabase.
+- Faixas no topo do chat, lista de conversas e cartões: **Instagram vermelho** com nome do perfil; **WhatsApp verde** com modalidade QR Code/Evolution ou API oficial/Zernio e número, quando disponível. Consulta de identidade da instância Evolution pelo servidor.
+- OAuth Zernio de **YouTube**, **LinkedIn orgânico**, **TikTok orgânico**, **Página do Facebook** e **WhatsApp API oficial** nos cartões existentes, sem Meta Secrets; login com nonce de uso único, validação de profileId e vínculo ao workspace.
+- Cartão **Google Ads** encaminha para o OAuth Google já implementado na função `conexoes` (não depende da Zernio).
+- Migration `20261031040000_social_oauth_atendimento.sql` amplia tipos e isolamento; nova Edge `zernio-social-oauth`; Edge `atendimento` atualizada; frontend e CSS modificados.
+- Não confundir OAuth de redes sociais com integração de anúncios do TikTok/LinkedIn; outros provedores ainda exigem conectores específicos. Webhook de DMs Zernio em investigação separada.
+- **Ainda não publicado/homologado.** Ver `docs/canais-e-oauth-v0185.md` para ordem de implantação.
+
 ## v0.183 — Correção: clique Meta não chama mais a Edge legada (30/10/2026)
 - Interceptação em fase de captura dos botões legados do cartão Meta (`data-cxcon`, `data-cxsync`, `data-cxdes`) para encaminhar o fluxo ao `meta-zernio`.
 - Preserva o login Google pela `conexoes` e o cartão original Meta/Instagram sem criar outro painel.
