@@ -1,3 +1,8 @@
+## v0.188 — Atendimento com áudio e imagens inline
+- UI `assets/atendimento.js`/`assets/atendimento.css` suporta imagem em miniatura, zoom, áudio/vídeo inline, gravação por microfone e envio sem texto.
+- Edge `atendimento` adaptada para anexos de Instagram/Zernio, Evolution e WhatsApp oficial, sem bucket público. Arquivo único `docs/edge-atendimento-v0188-index-unico.ts` pronto para editor do Supabase.
+- Sem migration. Publicar Edge e frontend; homologar por provedor e verificar o webhook de entrada separadamente.
+
 ## v0.185 — Atendimento e OAuth de canais (branch `feat/atendimento-canais-oauth-evolution-v0185`)
 - Atualiza `assets/atendimento.js` e `assets/atendimento.css` para identificar com faixas Instagram/vermelho e WhatsApp/verde, incluindo QR Code vs API Oficial e número/perfil.
 - `supabase/functions/atendimento/index.ts`: função administrativa `excluir-instancia` invoca DELETE remoto na Evolution, preserva histórico, além de `identidades` para telefone da instância.
