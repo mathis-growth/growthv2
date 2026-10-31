@@ -57,7 +57,8 @@ async function ensureProfile(ws:string,userId:string){
 }
 function page(ok:boolean,message:string){
   const title=ok?'Instagram conectado':'Não foi possível conectar o Instagram';
-  const safe=message.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
+  const entities:Record<string,string>={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+  const safe=message.replace(/[&<>"']/g,c=>entities[c]||c);
   return new Response('<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+title+'</title></head><body style="font:16px system-ui;background:#faf8f7;color:#242424;text-align:center;padding:12vh 24px"><h2>'+title+'</h2><p>'+safe+'</p><p>Você pode fechar esta janela e retornar ao Growths.</p>'+(ok?'<script>window.close()<\/script>':'')+'</body></html>',{status:200,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'"}});
 }
 async function start(req:Request){
