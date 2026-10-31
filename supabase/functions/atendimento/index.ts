@@ -470,7 +470,7 @@ async function syncConversations(ch:any,cursor?:string){
       Array.isArray(raw?.data?.chats)?raw.data.chats:[];
     let chatRows:any[]=[],groupRows:any[]=[];
     try{
-      chatRows=shape(await evolution(cfg,'/chat/findChats/'+inst,'POST',{}));
+      chatRows=shape(await evolution(cfg,'/chat/findChats/'+inst));
     }catch(e){warnings.push('Conversas: '+(e instanceof ProviderError?'HTTP '+e.status:'consulta indisponível'));}
     try{
       groupRows=shape(await evolution(cfg,'/group/fetchAllGroups/'+inst+'?getParticipants=false'));
