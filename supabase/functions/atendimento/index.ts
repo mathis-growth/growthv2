@@ -141,12 +141,50 @@ async function zernioDisponiveis(ws: string) {
     vinculada:existing.some((x:any)=>x.workspace_id===ws && x.id_externo===a._id)
   }));
 }
+async function processarAgendamentos(req:Request) {
+  const expected=Deno.env.get('ATD_AGENDADOR_TOKEN')||'';
+  if(!expected||!await segredoIgual(req.headers.get('x-atd-agenda-token')||'',expected))
+    return json({erro:'Agendador não autorizado.'},401);
+  const jobs=await q(db.rpc('atd_agenda_reservar',{p_limite:20}));
+  let enviados=0,erros=0,incertos=0;
+  for(const job of jobs){
+    let attempted=false;
+    let messageId:string|null=null;
+    try{
+      const cv=await q(db.from('atd_conversas').select('*').eq('id',job.conversa_id).eq('workspace_id',job.workspace_id).single());
+      const ch=await channel(cv.canal_id,job.workspace_id);
+      if(!ch.ativo||ch.status!=='conectado')throw Error('Canal desconectado no horário programado.');
+      const adapter=providers[ch.provedor];if(!adapter)throw Error('Provedor indisponível para envio.');
+      const signed=assinatura(job.autor_nome,job.texto,ch.canal);
+      const [msg]=await q(db.from('atd_mensagens').upsert({
+        workspace_id:job.workspace_id,conversa_id:cv.id,requisicao_id:job.id,
+        direcao:'enviada',texto:signed,autor_id:job.autor_id,autor_nome:job.autor_nome,status:'enviando'
+      },{onConflict:'workspace_id,requisicao_id',ignoreDuplicates:true}).select());
+      if(!msg)throw Error('Envio anterior sem confirmação. Verifique o histórico.');
+      messageId=msg.id;
+      await q(db.from('atd_agendamentos').update({mensagem_id:msg.id}).eq('id',job.id).eq('status','processando'));
+      const cfg=ch.provedor==='evolution'?await secret(job.workspace_id):{key:zp()};
+      attempted=true;
+      const external=await adapter.send(cfg,ch,cv,signed);
+      await q(db.rpc('atd_confirmar_envio',{p_mensagem:msg.id,p_externo:external}));
+      await q(db.from('atd_agendamentos').update({status:'enviado',externo_id:external,enviado_em:new Date().toISOString(),atualizado_em:new Date().toISOString(),erro:null}).eq('id',job.id).eq('status','processando'));
+      enviados++;
+    }catch(e){
+      const known=!attempted||(e instanceof ProviderError && e.status<500 && e.status!==408);
+      const state=known?'erro':'incerto';
+      await q(db.from('atd_agendamentos').update({status:state,atualizado_em:new Date().toISOString(),erro:known?(e as Error).message.slice(0,220):'Envio sem confirmação. Confira o provedor antes de reenviar.'}).eq('id',job.id).eq('status','processando'));
+      if(messageId)await q(db.from('atd_mensagens').update({status:known?'falhou':'incerto',erro:known?(e as Error).message.slice(0,220):'Envio sem confirmação.'}).eq('id',messageId).eq('status','enviando'));
+      if(known)erros++;else incertos++;
+    }
+  }
+  return json({ok:true,reservados:jobs.length,enviados,erros,incertos});
+}
 async function handle(req: Request, b: any) {
   const userDb = createClient(URL_SB, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: req.headers.get('authorization') || '' } }, auth: { persistSession:false } });
   const { data: { user }, error } = await userDb.auth.getUser();
   if (error || !user) return json({ erro: 'Faça login novamente.' },401);
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
-  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','templates-list','rapidas-list'];
+  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','templates-list','rapidas-list','agendamentos-list'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
   const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
@@ -156,6 +194,31 @@ async function handle(req: Request, b: any) {
     if (!interna) return json({ erro:'Somente a equipe interna pode vincular contas da Zernio.' },403);
   }
   if (b.action === 'contexto') return json(ctx);
+  if(b.action==='agendamentos-list'){
+    const cv=await q(db.from('atd_conversas').select('id').eq('id',b.conversa_id).eq('workspace_id',ws).single());
+    return json({agendamentos:await q(db.from('atd_agendamentos').select('id,texto,enviar_em,fuso,status,erro,criado_em')
+      .eq('workspace_id',ws).eq('conversa_id',cv.id).order('criado_em',{ascending:false}).limit(50))});
+  }
+  if(b.action==='agendar'){
+    const cv=await q(db.from('atd_conversas').select('id,canal_id').eq('id',b.conversa_id).eq('workspace_id',ws).single());
+    const ch=await channel(cv.canal_id,ws);
+    if(!ch.ativo||ch.status!=='conectado')throw Error('Conecte o canal antes de agendar.');
+    const texto=String(b.texto||'').trim(),quando=new Date(b.enviar_em);
+    if(!texto||texto.length>4000||!Number.isFinite(quando.getTime()))throw Error('Informe a mensagem e um horário válido.');
+    if(quando.getTime()<Date.now()+60000||quando.getTime()>Date.now()+365*86400000)
+      throw Error('Escolha um horário com pelo menos 1 minuto de antecedência, dentro dos próximos 365 dias.');
+    if(!ctx.nome)throw Error('Cadastre seu nome na equipe antes de agendar.');
+    const row=await q(db.from('atd_agendamentos').insert({workspace_id:ws,conversa_id:cv.id,texto,
+      enviar_em:quando.toISOString(),fuso:'America/Sao_Paulo',autor_id:user.id,autor_nome:ctx.nome}).select('id').single());
+    return json({ok:true,id:row.id});
+  }
+  if(b.action==='cancelar-agendamento'){
+    const id=String(b.agendamento_id||'');if(!/^[a-f0-9-]{36}$/i.test(id))throw Error('Agendamento inválido.');
+    const cancelled=await q(db.from('atd_agendamentos').update({status:'cancelado',atualizado_em:new Date().toISOString()})
+      .eq('id',id).eq('workspace_id',ws).eq('status','agendado').select('id'));
+    if(!cancelled.length)throw Error('Este envio já foi iniciado, cancelado ou concluído.');
+    return json({ok:true});
+  }
   if (b.action === 'rapidas-list') {
     return json({respostas:await q(db.from('atd_respostas_rapidas').select('id,atalho,titulo,texto')
       .eq('workspace_id',ws).order('titulo'))});
@@ -618,7 +681,10 @@ Deno.serve(async req => {
     if(Number(req.headers.get('content-length')) > 12*1024*1024) return json({erro:'Requisição muito grande.'},413);
     const raw = await req.text(); if(raw.length > 12*1024*1024) return json({erro:'Requisição muito grande.'},413);
     const url = new URL(req.url);
-    return url.searchParams.has('provider') ? await webhook(req,url,raw) : await handle(req,JSON.parse(raw));
+    if(url.searchParams.has('provider'))return await webhook(req,url,raw);
+    const b=JSON.parse(raw);
+    if(b.action==='processar-agendamentos')return await processarAgendamentos(req);
+    return await handle(req,b);
   } catch(e) {
     // Sem logs de payload, URL com token ou chaves. Mensagens conhecidas são seguras.
     return json({erro:e instanceof ProviderError ? e.message : (e as Error).message?.slice(0,220) || 'Não foi possível concluir.'},400);
