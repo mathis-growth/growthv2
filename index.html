@@ -422,6 +422,22 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .pa-cam label.chk{align-items:flex-start;gap:8px}
 @media (max-width:900px){.pa-cards,.pa-tris{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:600px){.pa-cards,.pa-tris{grid-template-columns:1fr}.pa-pr{grid-template-columns:1fr}}
+/* v0.199 Editar a meta em quatro passos e "do faturamento ao lucro" */
+.pa-steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pa-steps button{flex:1 1 140px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-weight:600;font-size:13px;cursor:pointer;text-align:left}
+.pa-steps button.on{border:2px solid var(--accent);color:var(--text);background:var(--accent-soft)}
+.pa-steps button.ok{color:var(--text)}.pa-steps button.ok::after{content:" ✓";color:var(--good,#17803d)}
+.pa-step{display:flex;flex-direction:column;gap:10px}.pa-step[hidden],.pa-ic[hidden]{display:none!important}
+.pa-step>label{display:flex;flex-direction:column;gap:4px}
+.pa-icx{padding:10px 12px;border-radius:10px;background:var(--surface-2);font-size:13px}.pa-icx:empty{display:none}
+.pa-nav{display:flex;align-items:center;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}.pa-nav .sp{flex:1}
+.pa-wiz .acts .pri[hidden]{display:none!important}
+.pa-luc td{padding:7px 8px;font-size:13.5px}.pa-luc tr.tot td{border-top:1px solid var(--line)}
+.pa-luc tr.pa-lf td{border-top:2px solid var(--text);font-size:15px}
+.vpos{color:var(--good,#17803d)}.vneg{color:var(--bad,#c0392b)}
+.pa-card small b{font-size:inherit}
+.pa-wiz .acts [data-pn="-1"]{margin-right:auto}
+.pa-conta .tw td:first-child{min-width:160px}.pa-reg{font-size:13.5px;padding-top:6px;border-top:1px solid var(--line)}
 /* v0.197 pesquisas: ações na lista */
 .pq-acoes{white-space:nowrap;text-align:right}
 .pq-acoes .btn{margin-left:4px}
@@ -16376,24 +16392,26 @@ async function pqExcluir(p) {
   const b = $('#modalRoot .modal .pri'); if (b) b.classList.add('bad');
 }
 
-/* ================= v0.198 — Planejamento anual, etapa 1: meta do ano e trimestres =================
+/* ================= v0.198/v0.199 — Planejamento anual: meta do ano e trimestres =================
    Pedido da Rebecka (01/11), documento "Planejamento anual no Growths: desenho das telas".
-   Seção 1: caminho da meta (só pela ambição, só pelo realista ou as duas comparadas); cada premissa com a origem
-   (do sistema, digitado ou estimativa pela ajuda); três cenários; a diferença entre as duas contas e as saídas.
-   Seção 2: meta por trimestre e a sugestão mês a mês (campanhas + base + o resto pela sazonalidade), que preenche
-   as metas mensais (planejamento_mensal); gráfico acumulado com a previsão. Sem dado, "sem dado": nunca zero inventado. */
+   v0.198: caminho da meta (ambição, realista ou os dois), premissas do sistema / digitadas / com ajuda, três cenários, diferença,
+   trimestres com ritmo, sugestão mês a mês e gráfico acumulado.
+   v0.199: "Editar a meta" em quatro passos (caminho, premissas, impostos, cenários); impostos pelo regime (MEI, Simples III/V pelo
+   fator R, Lucro Presumido, Lucro Real, alíquota manual), vindo do cadastro da empresa; a margem passa a ser
+   faturamento − impostos − custos variáveis (taxas e comissões); e "Do faturamento ao lucro" mostra o lucro final.
+   Sem dado, "sem dado": nunca zero inventado. */
 const PA_PREM = [
-  { k: 'custos_fixos', l: 'Custos fixos do ano', un: 'brl', conta: 'ambicao', modo: 'lucro', sug: 'custos_fixos_ano',
+  { k: 'custos_fixos', l: 'Custos fixos do ano', un: 'brl', conta: 'todas', sug: 'custos_fixos_ano',
     ajuda: [['Quanto sai por mês com equipe, ferramentas, pró-labore e escritório? (R$)']], calc: v => v[0] * 12, como: 'gasto do mês × 12' },
-  { k: 'lucro_desejado', l: 'Lucro desejado no ano', un: 'brl', conta: 'ambicao', modo: 'lucro', so: 'digitar' },
-  { k: 'margem', l: 'Margem de contribuição', un: 'pct', conta: 'ambicao', modo: 'lucro', sug: 'margem_contribuicao',
-    ajuda: [['Taxa da plataforma (% do preço)'], ['Impostos (% do preço)'], ['Comissões (% do preço)'], ['Custo de entrega (% do preço)']], calc: v => 100 - v.reduce((a, b) => a + b, 0), como: '100% − os custos que saem de cada venda' },
+  { k: 'custos_variaveis', l: 'Custos variáveis da venda (sem impostos)', un: 'pct', conta: 'todas', sug: 'custos_variaveis_pct',
+    ajuda: [['Taxa da plataforma de venda (% do preço)'], ['Comissões e afiliados (% do preço)'], ['Custo de entrega por venda (% do preço)']], calc: v => v.reduce((a, b) => a + b, 0), como: 'a soma dos três' },
+  { k: 'lucro_desejado', l: 'Lucro desejado no ano (o que sobra no fim)', un: 'brl', conta: 'ambicao', modo: 'lucro', so: 'digitar' },
   { k: 'receita_anterior', l: 'Receita do ano anterior', un: 'brl', conta: 'ambicao', modo: 'crescimento', sug: 'receita_ano_anterior',
     ajuda: [['Quanto você faturou por mês, em média, no ano passado? (R$)']], calc: v => v[0] * 12, como: 'média do mês × 12' },
   { k: 'crescimento', l: 'Crescimento desejado', un: 'pct', conta: 'ambicao', modo: 'crescimento', so: 'digitar' },
   { k: 'mrr', l: 'Receita recorrente de hoje (por mês)', un: 'brl', conta: 'realista', sug: 'mrr',
-    ajuda: [['Quantos clientes pagam todo mês?'], ['Quanto cada um paga por mês? (R$)']], calc: v => v[0] * v[1], como: 'clientes × mensalidade', zeroOk: true },
-  { k: 'churn', l: 'Perda esperada no ano (churn)', un: 'pct', conta: 'realista', sug: 'churn_anual', dep: 'mrr',
+    ajuda: [['Quantos clientes pagam todo mês?'], ['Quanto cada um paga por mês? (R$)']], calc: v => v[0] * v[1], como: 'clientes × mensalidade' },
+  { k: 'churn', l: 'Perda esperada no ano (churn)', un: 'pct', conta: 'realista', sug: 'churn_anual',
     ajuda: [['Quantos clientes pagavam há um ano?'], ['Desses, quantos ainda pagam?']], calc: v => v[0] > 0 ? (1 - v[1] / v[0]) * 100 : null, como: '1 − (ainda pagam ÷ pagavam)' },
   { k: 'clientes', l: 'Clientes atuais (compraram nos últimos 12 meses)', un: 'numero', conta: 'realista', sug: 'clientes_ativos',
     ajuda: [['Quantos clientes compraram de você nos últimos 12 meses?']], calc: v => v[0], como: 'a resposta' },
@@ -16403,20 +16421,54 @@ const PA_PREM = [
     ajuda: [['Preço do produto principal (R$)'], ['Extra médio por venda com order bump ou upsell (R$)']], calc: v => v[0] + v[1], como: 'preço + extra' }
 ];
 const PA_FONTE = { sistema: 'do sistema', digitado: 'digitado', estimativa: 'estimativa' };
+const PA_REG = [['mei', 'MEI'], ['simples_auto', 'Simples Nacional (anexo III ou V pelo fator R)'], ['simples_III', 'Simples Nacional — anexo III'], ['simples_V', 'Simples Nacional — anexo V'],
+  ['presumido', 'Lucro Presumido (serviços)'], ['real', 'Lucro Real'], ['manual', 'Outro: alíquota que eu informar']];
+const PA_PRES = { pis: 0.65, cofins: 3, irpj: 4.8, csll: 2.88 };   // Lucro Presumido, serviços: % do faturamento (presunção de 32%)
 const paFmt = (v, un) => v == null || !isFinite(v) ? 'sem dado' : un === 'brl' ? brl(v) : un === 'pct' ? String(Math.round(v * 10) / 10).replace('.', ',') + '%' : num(Math.round(v));
-const paNum = v => v === '' || v == null ? null : Number(String(v).replace(',', '.'));
-/* premissas visíveis pelo caminho escolhido */
-const paVisiveis = pa => PA_PREM.filter(p => (pa.caminho === 'ambos' || pa.caminho === p.conta) && (p.conta !== 'ambicao' || !p.modo || p.modo === pa.modo_ambicao));
-const paVal = (pa, k) => { const x = (pa.premissas || {})[k]; return x && x.valor != null && x.valor !== '' ? Number(x.valor) : null; };
-/* as contas: ambição, realista (com as partes) e os cenários */
+const paNum = v => v === '' || v == null ? null : Number(String(v).replace(/\./g, '').replace(',', '.').replace(/[^0-9.\-]/g, '')) ;
+const paVisiveis = pa => PA_PREM.filter(p => p.conta === 'todas' || ((pa.caminho === 'ambos' || pa.caminho === p.conta) && (p.conta !== 'ambicao' || !p.modo || p.modo === pa.modo_ambicao)));
+const paVal = (pa, k) => { const x = (pa.premissas || {})[k]; return x && x.valor != null && x.valor !== '' && isFinite(Number(x.valor)) ? Number(x.valor) : null; };
+const paImpCfg = pa => (pa.premissas || {})._imposto || {};
+/* imposto sobre um faturamento anual R: alíquota sobre o faturamento e o IR sobre o lucro (só no Lucro Real) */
+function paImposto(R, ic) {
+  const reg = ic.regime || 'manual', o = { reg, aliq: null, irLucro: 0, anexo: null, fatorR: null, fixo: 0, avisos: [], nome: (PA_REG.find(x => x[0] === reg) || [0, reg])[1] };
+  if (!(R > 0)) R = 0;
+  if (reg === 'mei') { o.fixo = CO_MEI_DAS * 12; o.aliq = R > 0 ? o.fixo / R : 0; if (R > CO_MEI_LIMITE) o.avisos.push(`Acima de ${brl(CO_MEI_LIMITE)} por ano o MEI deixa de valer: a empresa passa para o Simples Nacional.`); return o; }
+  if (reg.startsWith('simples')) { const folha = Number(ic.folha); o.fatorR = R > 0 && folha >= 0 && ic.folha != null && ic.folha !== '' ? folha / R : null;
+    o.anexo = reg === 'simples_III' ? 'III' : reg === 'simples_V' ? 'V' : o.fatorR == null ? null : o.fatorR >= 0.28 ? 'III' : 'V';
+    if (!o.anexo) { o.avisos.push('Informe a folha do ano (pró-labore e salários) para saber o anexo pelo fator R.'); return o; }
+    o.aliq = coAliqSimples(o.anexo, R); if (R > 4800000) o.avisos.push('Acima de R$ 4,8 milhões por ano a empresa sai do Simples Nacional.'); return o; }
+  if (reg === 'presumido') { if (ic.iss == null || ic.iss === '') { o.avisos.push('Informe o ISS da cidade (de 2% a 5%).'); return o; }
+    const adic = R > 0 ? 0.10 * Math.max(0, 0.32 * R - 240000) / R : 0;
+    o.aliq = (PA_PRES.pis + PA_PRES.cofins + PA_PRES.irpj + PA_PRES.csll + Number(ic.iss)) / 100 + adic; if (adic > 0) o.avisos.push('Inclui o adicional de 10% do IRPJ sobre o lucro presumido acima de R$ 240 mil no ano.'); return o; }
+  if (reg === 'real') { if (ic.iss == null || ic.iss === '') { o.avisos.push('Informe o ISS da cidade (de 2% a 5%).'); return o; }
+    o.aliq = (9.25 + Number(ic.iss)) / 100; o.irLucro = 0.34; o.avisos.push('PIS e COFINS de 9,25% sem descontar créditos; IRPJ e CSLL de 34% sobre o lucro. Confirme com o contador.'); return o; }
+  if (ic.manual == null || ic.manual === '') { o.avisos.push('Informe a alíquota de imposto sobre o faturamento.'); return o; }
+  o.aliq = Number(ic.manual) / 100; return o;
+}
+/* do faturamento ao lucro: impostos, custos variáveis, margem, custos fixos, IR (Lucro Real) e lucro final */
+function paLucro(R, pa) {
+  const cf = paVal(pa, 'custos_fixos'), cv = paVal(pa, 'custos_variaveis'), I = paImposto(R, paImpCfg(pa));
+  if (R == null || cf == null || cv == null || I.aliq == null) return { R, I, ok: false };
+  const imp = I.fixo || R * I.aliq, vari = R * cv / 100, mc = R - imp - vari, antes = mc - cf, ir = I.irLucro && antes > 0 ? antes * I.irLucro : 0;
+  return { R, I, ok: true, imp, vari, mc, cf, antes, ir, lucro: antes - ir };
+}
+/* as contas: ambição, realista (com as partes), cenários e o lucro da meta */
 function paContas(pa, camps) {
-  const v = k => paVal(pa, k), falta = [];
+  const v = k => paVal(pa, k), falta = [], ic = paImpCfg(pa);
+  if (v('custos_fixos') == null) falta.push('custos fixos'); if (v('custos_variaveis') == null) falta.push('custos variáveis da venda');
+  if (paImposto(500000, ic).aliq == null && ic.regime !== 'mei') falta.push('dados do imposto');
   let A = null;
   if (pa.caminho !== 'realista') {
     if (pa.modo_ambicao === 'crescimento') { if (v('receita_anterior') == null) falta.push('receita do ano anterior'); if (v('crescimento') == null) falta.push('crescimento desejado');
       if (v('receita_anterior') != null && v('crescimento') != null) A = v('receita_anterior') * (1 + v('crescimento') / 100); }
-    else { ['custos_fixos', 'lucro_desejado', 'margem'].forEach(k => { if (v(k) == null) falta.push(PA_PREM.find(p => p.k === k).l.toLowerCase()); });
-      if (v('custos_fixos') != null && v('lucro_desejado') != null && v('margem') > 0) A = (v('custos_fixos') + v('lucro_desejado')) / (v('margem') / 100); }
+    else { if (v('lucro_desejado') == null) falta.push('lucro desejado');
+      const cf = v('custos_fixos'), cv = v('custos_variaveis'), L = v('lucro_desejado');
+      if (cf != null && cv != null && L != null) { const I0 = paImposto(500000, ic); if (I0.aliq != null || ic.regime === 'mei') {
+        const Lb = I0.irLucro ? L / (1 - I0.irLucro) : L; let R = (cf + Lb) / Math.max(0.01, 1 - cv / 100);
+        for (let i = 0; i < 200; i++) { const I = paImposto(R, ic); const den = 1 - cv / 100 - (I.fixo ? 0 : I.aliq); if (den <= 0) { R = null; falta.push('margem: impostos e custos variáveis passam de 100% da venda'); break; }
+          const n = (cf + Lb + (I.fixo || 0)) / den; if (Math.abs(n - R) < 0.01) { R = n; break; } R = n; }
+        A = R; } } }
   }
   let R = null, partes = null;
   if (pa.caminho !== 'ambicao') {
@@ -16429,10 +16481,16 @@ function paContas(pa, camps) {
   }
   const base = pa.caminho === 'ambicao' ? A : pa.caminho === 'realista' ? R : (pa.base_de === 'realista' ? R : A);
   const cen = base == null ? null : { pessimista: base * (1 - Number(pa.pct_pessimista) / 100), base, otimista: base * (1 + Number(pa.pct_otimista) / 100) };
-  return { A, R, partes, cen, meta: cen ? cen[pa.cenario_meta || 'base'] : null, falta: [...new Set(falta)] };
+  const meta = cen ? cen[pa.cenario_meta || 'base'] : null;
+  return { A, R, partes, cen, meta, lucro: meta != null ? paLucro(meta, pa) : null, falta: [...new Set(falta)] };
 }
-const paPadrao = (a) => ({ ano: a, caminho: 'ambicao', modo_ambicao: 'lucro', premissas: {}, pct_pessimista: 20, pct_otimista: 20, base_de: 'ambicao', cenario_meta: 'base' });
-/* campanhas do ano e a meta delas por mês (mesma regra da linha do tempo: lançamento no mês em que o carrinho fecha; perpétua dividida até dezembro) */
+const paPadrao = (a, emp) => ({ ano: a, caminho: 'ambicao', modo_ambicao: 'lucro', premissas: { _imposto: paImpDoCadastro(emp) }, pct_pessimista: 20, pct_otimista: 20, base_de: 'ambicao', cenario_meta: 'base' });
+function paImpDoCadastro(e) {
+  e = e || {}; const r = e.regime_tributario;
+  const regime = r === 'mei' ? 'mei' : r === 'simples_nacional' ? (e.anexo_simples === 'III' ? 'simples_III' : e.anexo_simples === 'V' ? 'simples_V' : 'simples_auto') : r === 'lucro_presumido' ? 'presumido' : r === 'lucro_real' ? 'real' : r ? 'manual' : 'simples_auto';
+  return { regime, manual: regime === 'manual' && e.aliquota_manual != null ? e.aliquota_manual : null, do_cadastro: !!r };
+}
+/* campanhas do ano e a meta delas por mês (lançamento no mês em que o carrinho fecha; perpétua dividida até dezembro) */
 function paCampMes(camps, a) {
   const ini = `${a}-01-01`, fim = `${a}-12-31`, porMes = Array(12).fill(0), lanc = Array(12).fill(0), perp = Array(12).fill(0);
   camps.forEach(c => { const m = Number(c.meta_receita || 0); if (!m) return;
@@ -16441,25 +16499,41 @@ function paCampMes(camps, a) {
   return { porMes, lanc, perp };
 }
 function paSecao(n, t, p, corpo, acts = '') { return `<section class="pa-sec" data-pa="${n}"><header class="pa-h"><div><h2>${n}. ${esc(t)}</h2><p>${esc(p)}</p></div>${acts ? `<div class="acts">${acts}</div>` : ''}</header>${corpo}</section>`; }
+/* tabela "do faturamento ao lucro" (na tela e no último passo) */
+function paLucroHtml(Lc) {
+  if (!Lc || !Lc.ok) return `<div class="pa-falta">O lucro aparece quando estiverem preenchidos os custos fixos, os custos variáveis e o imposto.${Lc && Lc.I && Lc.I.avisos.length ? ' ' + Lc.I.avisos.map(esc).join(' ') : ''}</div>`;
+  const I = Lc.I, pct = v => Lc.R > 0 ? ` <span class="muted">(${String(Math.round(v / Lc.R * 1000) / 10).replace('.', ',')}%)</span>` : '';
+  return `<div class="tw pa-luc"><table><tbody>
+    <tr><td><b>Faturamento (a meta)</b></td><td class="n"><b>${brl(Lc.R)}</b></td></tr>
+    <tr><td>− Impostos sobre o faturamento <span class="muted">· ${esc(I.nome)}${I.anexo ? ' · anexo ' + I.anexo : ''}${I.fatorR != null ? ' · fator R ' + String(Math.round(I.fatorR * 1000) / 10).replace('.', ',') + '%' : ''}</span></td><td class="n">${brl(Lc.imp)}${pct(Lc.imp)}</td></tr>
+    <tr><td>− Custos variáveis da venda <span class="muted">· taxas, comissões, entrega</span></td><td class="n">${brl(Lc.vari)}${pct(Lc.vari)}</td></tr>
+    <tr class="tot"><td>= Margem de contribuição</td><td class="n">${brl(Lc.mc)}${pct(Lc.mc)}</td></tr>
+    <tr><td>− Custos fixos do ano</td><td class="n">${brl(Lc.cf)}</td></tr>
+    ${Lc.ir ? `<tr class="tot"><td>= Lucro antes do IR</td><td class="n">${brl(Lc.antes)}</td></tr><tr><td>− IRPJ e CSLL sobre o lucro (34%)</td><td class="n">${brl(Lc.ir)}</td></tr>` : ''}
+    <tr class="tot pa-lf"><td><b>= Lucro no fim do ano</b></td><td class="n ${Lc.lucro >= 0 ? 'vpos' : 'vneg'}"><b>${brl(Lc.lucro)}</b>${pct(Lc.lucro)}</td></tr></tbody></table></div>
+    ${I.avisos.length ? `<p class="muted pa-rod">${I.avisos.map(esc).join(' ')}</p>` : ''}<p class="muted pa-rod">Lucro antes da retirada dos sócios além do pró-labore. Valores de imposto para planejamento: confirme com o contador.</p>`;
+}
 
 async function paAno(el, a, Pm) {
   const w = S.ws, temT = await temColuna('plano_anual', 'caminho');
   if (!temT) { el.innerHTML = paSecao(1, 'Meta do ano', 'Quanto a empresa precisa faturar no ano, e isso é possível?', '<div class="panel" style="border-left:4px solid var(--warn)"><b>Falta atualizar o banco.</b> <span class="muted">Rode supabase/RODAR_v0.198_plano_anual.sql no SQL Editor do Supabase para montar a meta do ano e a divisão por trimestre. As metas mês a mês, mais abaixo, continuam funcionando.</span></div>'); return; }
-  const [rows, sug0, camps0] = await Promise.all([q(sb.from('plano_anual').select('*').eq('workspace_id', w).eq('ano', a)).catch(() => []),
+  const [rows, sug0, camps0, emp] = await Promise.all([q(sb.from('plano_anual').select('*').eq('workspace_id', w).eq('ano', a)).catch(() => []),
     q(sb.rpc('plano_anual_sugestoes', { p_ws: w, p_ano: a, p_hoje: hoje() })).catch(() => null),
-    q(sb.from('campanhas').select('id,nome,modelo,meta_receita,data_inicio,data_fim,data_carrinho_fecha,status').eq('workspace_id', w)).catch(() => [])]);
+    q(sb.from('campanhas').select('id,nome,modelo,meta_receita,data_inicio,data_fim,data_carrinho_fecha,status').eq('workspace_id', w)).catch(() => []),
+    q(sb.from('empresa').select('*').eq('workspace_id', w)).then(one).catch(() => null)]);
   const sug = sug0 || {}, pa = rows[0] || null, ini = `${a}-01-01`, fim = `${a}-12-31`;
   const camps = camps0.filter(c => c.data_inicio && c.data_inicio <= fim && (!c.data_fim || c.data_fim >= ini) && c.status !== 'cancelada');
   if (!pa) {
-    el.innerHTML = paSecao(1, 'Meta do ano', 'Quanto a empresa precisa faturar no ano, e isso é possível?', `<div class="pa-vazio"><p>Ainda não há meta para ${a}. Monte em três passos: escolha o caminho da conta, preencha as premissas (do sistema, digitando ou com a ajuda) e escolha o cenário que vira a meta.</p>
+    el.innerHTML = paSecao(1, 'Meta do ano', 'Quanto a empresa precisa faturar no ano, e isso é possível?', `<div class="pa-vazio"><p>Ainda não há meta para ${a}. São quatro passos: o caminho da conta, as premissas (do sistema, digitando ou com a ajuda), os impostos e os cenários.</p>
       <button class="btn pri" id="paMonta">Montar a meta de ${a}</button>${sug.receita_ano_anterior != null || sug.dre_meses ? `<p class="muted">O Growths já tem dados deste cliente: ${sug.dre_meses || 0} mês(es) de DRE${sug.receita_ano_anterior != null ? ' e vendas de ' + (a - 1) : ''}. Onde houver dado, a premissa pode vir "do sistema".</p>` : '<p class="muted">Ainda sem histórico no Growths: use "Digitar" ou "Não sei, me ajude" em cada premissa. No ano que vem, o sistema calcula pelo ano anterior.</p>'}</div>`);
-    $('#paMonta').onclick = () => paModal(a, paPadrao(a), sug, camps); return;
+    $('#paMonta').onclick = () => paModal(a, paPadrao(a, emp), sug, camps, emp); return;
   }
+  if (!paImpCfg(pa).regime) pa.premissas = { ...(pa.premissas || {}), _imposto: paImpDoCadastro(emp) };
   const C = paContas(pa, camps), vis = paVisiveis(pa), est = vis.filter(p => ((pa.premissas || {})[p.k] || {}).fonte === 'estimativa').length;
-  const card = (k, nome, sub) => `<div class="pa-card${pa.cenario_meta === k ? ' on' : ''}"><span class="l">${nome}${pa.cenario_meta === k ? ' <span class="pill info">a meta</span>' : ''}</span><b>${C.cen ? brl(C.cen[k]) : 'sem dado'}</b><small class="muted">${sub}</small></div>`;
+  const card = (k, nome, sub) => { const Lk = C.cen ? paLucro(C.cen[k], pa) : null; return `<div class="pa-card${pa.cenario_meta === k ? ' on' : ''}"><span class="l">${nome}${pa.cenario_meta === k ? ' <span class="pill info">a meta</span>' : ''}</span><b>${C.cen ? brl(C.cen[k]) : 'sem dado'}</b><small class="muted">${sub}</small>${Lk && Lk.ok ? `<small>lucro no fim: <b class="${Lk.lucro >= 0 ? 'vpos' : 'vneg'}">${brl(Lk.lucro)}</b></small>` : ''}</div>`; };
   const cresc = C.meta != null && sug.receita_ano_anterior ? (C.meta / sug.receita_ano_anterior - 1) * 100 : null;
   const linhaP = p => { const x = (pa.premissas || {})[p.k] || {}; return `<tr><td>${esc(p.l)}</td><td class="n"><b>${paFmt(paVal(pa, p.k), p.un)}</b></td><td>${x.fonte ? `<span class="pill ${x.fonte === 'estimativa' ? 'warn' : x.fonte === 'sistema' ? 'info' : 'neutral'}">${PA_FONTE[x.fonte]}</span>` : '<span class="muted">—</span>'}${x.nota ? `<br><span class="muted">${esc(x.nota)}</span>` : ''}</td></tr>`; };
-  const contaA = pa.caminho !== 'realista' ? `<div class="pa-conta"><h3>De cima para baixo: a ambição</h3><p class="muted">${pa.modo_ambicao === 'crescimento' ? 'Receita do ano anterior × (1 + crescimento desejado)' : '(Custos fixos + lucro desejado) ÷ margem de contribuição'}</p>
+  const contaA = pa.caminho !== 'realista' ? `<div class="pa-conta"><h3>De cima para baixo: a ambição</h3><p class="muted">${pa.modo_ambicao === 'crescimento' ? 'Receita do ano anterior × (1 + crescimento desejado)' : 'O faturamento em que, depois de impostos, custos variáveis e custos fixos, sobra o lucro desejado'}</p>
       <div class="tw"><table><tbody>${vis.filter(p => p.conta === 'ambicao').map(linhaP).join('')}</tbody></table></div><div class="pa-tot">Resultado: <b>${C.A != null ? brl(C.A) : 'sem dado'}</b></div></div>` : '';
   const contaR = pa.caminho !== 'ambicao' ? `<div class="pa-conta"><h3>De baixo para cima: o realista</h3><p class="muted">Base recorrente + recompra + campanhas do calendário</p>
       <div class="tw"><table><tbody>${vis.filter(p => p.conta === 'realista').map(linhaP).join('')}
@@ -16472,15 +16546,18 @@ async function paAno(el, a, Pm) {
     dif = gap > 0 ? `<div class="pa-dif"><b>Faltam ${brl(gap)} entre a ambição e o realista.</b> Três jeitos de fechar:<ul>
         <li><b>Mais campanhas:</b> ${med ? `cerca de ${Math.ceil(gap / med)} lançamento(s) do tamanho médio dos seus (${brl(med)})` : 'cadastre a meta dos lançamentos para o Growths calcular quantos faltam'}.</li>
         <li><b>Mais clientes:</b> ${tk ? `cerca de ${num(Math.ceil(gap / tk))} venda(s) a mais no ticket de ${brl(tk)}; a verba para isso entra na etapa da Verba de marketing` : 'informe o ticket médio'}.</li>
-        <li><b>Meta menor:</b> usar o realista, ${brl(C.R)}.</li></ul></div>`
+        <li><b>Meta menor:</b> usar o realista, ${brl(C.R)}${(() => { const Lr = paLucro(C.R, pa); return Lr.ok ? `, com lucro no fim de ${brl(Lr.lucro)}` : ''; })()}.</li></ul></div>`
       : `<div class="pa-dif ok"><b>O realista (${brl(C.R)}) já cobre a ambição (${brl(C.A)}).</b> Dá para usar o realista como base ou subir a ambição.</div>`;
   }
+  const ic = paImpCfg(pa), linhaFixas = vis.filter(p => p.conta === 'todas');
   const corpo1 = `${C.falta.length ? `<div class="pa-falta">Para fechar a conta falta: <b>${C.falta.map(esc).join(', ')}</b>. Use "Editar a meta".</div>` : ''}
     <div class="pa-cards">${card('pessimista', 'Pessimista', `−${String(pa.pct_pessimista).replace('.', ',')}% · piso para o caixa`)}${card('base', 'Base', cresc != null ? `${cresc >= 0 ? '+' : ''}${String(Math.round(cresc * 10) / 10).replace('.', ',')}% sobre ${a - 1}` : pa.caminho === 'ambos' ? 'base: ' + (pa.base_de === 'realista' ? 'o realista' : 'a ambição') : 'o cenário do caminho escolhido')}${card('otimista', 'Otimista', `+${String(pa.pct_otimista).replace('.', ',')}% · se as primeiras campanhas performarem`)}</div>
     <div class="pa-contas">${contaA}${contaR}</div>${dif}
+    <div class="pa-contas"><div class="pa-conta"><h3>Do faturamento ao lucro</h3><p class="muted">O que sobra da meta de ${a} depois de impostos e custos</p>${paLucroHtml(C.lucro)}</div>
+      <div class="pa-conta"><h3>Custos e imposto usados na conta</h3><div class="tw"><table><tbody>${linhaFixas.map(linhaP).join('')}</tbody></table></div><p class="pa-reg">Regime tributário: <b>${esc((PA_REG.find(x => x[0] === ic.regime) || [0, '—'])[1])}</b>${ic.do_cadastro ? ' <span class="muted">· do cadastro da empresa</span>' : ''}</p></div></div>
     <p class="muted pa-rod">Caminho: <b>${{ ambicao: 'só pela ambição', realista: 'só pelo realista', ambos: 'as duas contas, comparadas' }[pa.caminho]}</b>${est ? ` · <span class="pill warn">${est} de ${vis.length} premissas são estimativa</span> revise no fim do 1º trimestre` : ''}. Dados do sistema: vendas aprovadas e DRE${sug.dre_meses ? ` (${sug.dre_meses} mês(es) de DRE, ${dd(sug.dre_de)} a ${dd(sug.dre_ate)})` : ''}.</p>`;
   el.innerHTML = paSecao(1, 'Meta do ano', 'Quanto a empresa precisa faturar no ano, e isso é possível?', corpo1, '<button class="btn" id="paEd">Editar a meta</button>') + '<div id="paTri"></div>';
-  $('#paEd').onclick = () => paModal(a, pa, sug, camps);
+  $('#paEd').onclick = () => paModal(a, pa, sug, camps, emp);
   paTrimestres($('#paTri'), a, pa, C, sug, camps, Pm);
 }
 
@@ -16497,16 +16574,15 @@ function paTrimestres(el, a, pa, C, sug, camps, Pm) {
   const atual = i => Pm[i + 1] && Pm[i + 1].meta_receita != null ? Number(Pm[i + 1].meta_receita) : null;
   const metaM = i => atual(i) != null ? atual(i) : sugM ? sugM[i] : null;
   const tri = [0, 1, 2, 3].map(t => { const ms = [0, 1, 2].map(j => t * 3 + j), mt = ms.reduce((s, i) => s + (metaM(i) || 0), 0), rl = ms.reduce((s, i) => s + (i + 1 <= mesAt ? real[i] : 0), 0);
-    const emCurso = mesAt >= ms[0] + 1 && mesAt <= ms[2] + 1, fechado = mesAt > ms[2] + 1;
+    const emCurso = mesAt >= ms[0] + 1 && mesAt <= ms[2] + 1, fech = mesAt > ms[2] + 1;
     let esperado = null; if (emCurso) { const d0 = new Date(`${a}-${String(ms[0] + 1).padStart(2, '0')}-01T12:00:00`), d1 = new Date(a, ms[2] + 1, 0, 12), hj = new Date(h + 'T12:00:00'); esperado = mt * Math.min(1, (hj - d0) / (d1 - d0 + 864e5)); }
-    const ritmo = esperado != null && mt ? (rl >= esperado ? ['good', 'no ritmo'] : ['bad', 'atrás do ritmo']) : fechado && mt ? (!ms.some(i => atual(i) != null) ? ['neutral', 'já fechado'] : rl >= mt ? ['good', 'meta batida'] : ['bad', 'meta não batida']) : null;
-    return { t, ms, mt, rl, emCurso, fechado, ritmo, lanc: ms.reduce((s, i) => s + CM.lanc[i], 0), perp: ms.reduce((s, i) => s + CM.perp[i], 0) }; });
+    const ritmo = esperado != null && mt ? (rl >= esperado ? ['good', 'no ritmo'] : ['bad', 'atrás do ritmo']) : fech && mt ? (!ms.some(i => atual(i) != null) ? ['neutral', 'já fechado'] : rl >= mt ? ['good', 'meta batida'] : ['bad', 'meta não batida']) : null;
+    return { t, ms, mt, rl, emCurso, fechado: fech, ritmo, lanc: ms.reduce((s, i) => s + CM.lanc[i], 0), perp: ms.reduce((s, i) => s + CM.perp[i], 0) }; });
   const vazios = MESES.filter((_, i) => atual(i) == null).length;
   const cardT = x => `<div class="pa-tri${x.emCurso ? ' on' : ''}"><span class="l">T${x.t + 1} · ${MESES[x.ms[0]]} a ${MESES[x.ms[2]]}${x.emCurso ? ' <span class="pill info">em curso</span>' : ''}</span>
     <b>${x.mt ? brl(x.mt) : 'sem meta'}</b><div class="pa-bar"><i style="width:${x.mt ? Math.min(100, x.rl / x.mt * 100).toFixed(1) : 0}%"></i></div>
     <small>${x.fechado || x.emCurso ? 'realizado ' + brl(x.rl) + (x.mt ? ' (' + Math.round(x.rl / x.mt * 100) + '%)' : '') : 'ainda não começou'}${x.ritmo ? ` · <span class="pill ${x.ritmo[0]}">${x.ritmo[1]}</span>` : ''}</small>
     <small class="muted">${x.lanc ? 'lançamentos ' + GC.fmtK(x.lanc) : ''}${x.lanc && x.perp ? ' · ' : ''}${x.perp ? 'perpétuo ' + GC.fmtK(x.perp) : ''}${!x.lanc && !x.perp ? 'sem campanha com meta' : ''}</small></div>`;
-  // acumulados para o gráfico: meta, realizado até o mês atual e a previsão (realizado + meta que falta)
   const acc = f => { let s = 0; return MESES.map((_, i) => { const v = f(i); if (v == null) return null; s += v; return Math.round(s); }); };
   const metaAc = acc(i => metaM(i) || 0), realAc = acc(i => i + 1 <= Math.min(mesAt, 12) ? real[i] : null);
   const ultReal = mesAt >= 1 ? Math.min(mesAt, 12) - 1 : -1, prev = MESES.map((_, i) => { if (ultReal < 0 || i < ultReal) return null; let s = realAc[ultReal]; for (let j = ultReal + 1; j <= i; j++) s += metaM(j) || 0; return Math.round(s); });
@@ -16516,7 +16592,7 @@ function paTrimestres(el, a, pa, C, sug, camps, Pm) {
     <tr><td>Sugestão</td>${sugM.map(v => `<td class="n">${GC.fmtK(v)}</td>`).join('')}<td class="n"><b>${GC.fmtK(sugM.reduce((t, v) => t + v, 0))}</b></td></tr>
     <tr><td>Meta salva</td>${MESES.map((_, i) => `<td class="n">${atual(i) != null ? GC.fmtK(atual(i)) : '<span class="muted">—</span>'}</td>`).join('')}<td class="n">${GC.fmtK(MESES.reduce((t, _, i) => t + (atual(i) || 0), 0))}</td></tr>
     <tr><td>Realizado</td>${real.map((v, i) => `<td class="n">${i + 1 <= mesAt ? GC.fmtK(v) : '<span class="muted">—</span>'}</td>`).join('')}<td class="n">${GC.fmtK(real.reduce((t, v, i) => t + (i + 1 <= mesAt ? v : 0), 0))}</td></tr></tbody></table></div>
-    ${soma > (meta || 0) && meta != null ? `<p class="pa-falta">As campanhas e a base já somam ${brl(soma)}, mais que a meta (${brl(meta)}): a sugestão fica com esse valor.</p>` : ''}
+    ${soma > (meta || 0) && meta != null ? `<p class="pa-falta">O realizado, as campanhas e a base já somam ${brl(soma)}, mais que a meta (${brl(meta)}): a sugestão fica com esse valor.</p>` : ''}
     <div class="acts"><button class="btn sm pri" id="paVazios"${vazios ? '' : ' disabled'}>Preencher os ${vazios} mês(es) sem meta</button><button class="btn sm" id="paTodos">Refazer todos pela sugestão</button></div></details>` : '';
   el.innerHTML = paSecao(2, 'Por trimestre', 'Quanto cabe em cada trimestre, e onde estamos agora?', meta == null ? '<p class="muted">A divisão aparece quando a meta do ano estiver fechada (seção 1).</p>' : `<div class="pa-tris">${tri.map(cardT).join('')}</div>
     <div class="panel pa-graf"><h3>Acumulado no ano: meta, realizado e previsão</h3>${gcLinhas({ series: [{ nome: 'Meta acumulada', valores: metaAc, cor: 'var(--muted)' }, { nome: 'Realizado acumulado', valores: realAc, cor: 'var(--accent)' }, { nome: 'Previsão (realizado + meta que falta)', valores: prev, cor: 'var(--gc-c3)' }], rotulos: MESES, W: 900, altura: 220 })}
@@ -16527,45 +16603,68 @@ function paTrimestres(el, a, pa, C, sug, camps, Pm) {
   if ($('#paTodos')) $('#paTodos').onclick = () => modal('Refazer todos os meses', '<p>As metas de receita dos 12 meses passam a ser a sugestão. As metas de leads, vendas e orçamento não mudam.</p>', async () => { const rows = sugM.map((v, i) => ({ workspace_id: S.ws, ano: a, mes: i + 1, meta_receita: v })); await q(sb.from('planejamento_mensal').upsert(rows, { onConflict: 'workspace_id,ano,mes' })); toast('Metas refeitas pela sugestão'); }, 'Refazer');
 }
 
-/* formulário da meta: caminho, premissas (do sistema / digitar / me ajude), cenários */
-function paModal(a, pa0, sug, camps) {
-  const pa = JSON.parse(JSON.stringify(pa0)); pa.premissas = pa.premissas || {};
-  const temSug = p => p.sug && sug[p.sug] != null;
+/* "Editar a meta" em quatro passos: caminho, premissas, impostos, cenários (com o lucro ao vivo) */
+const PA_PASSOS = [[1, 'Caminho'], [2, 'Premissas'], [3, 'Impostos'], [4, 'Cenários e lucro']];
+function paModal(a, pa0, sug, camps, emp) {
+  const pa = JSON.parse(JSON.stringify(pa0)); pa.premissas = pa.premissas || {}; if (!pa.premissas._imposto || !pa.premissas._imposto.regime) pa.premissas._imposto = paImpDoCadastro(emp);
+  const ic0 = pa.premissas._imposto, temSug = p => p.sug && sug[p.sug] != null;
   const linha = p => { const x = pa.premissas[p.k] || {}, fonte = x.fonte || (temSug(p) ? 'sistema' : 'digitado');
     const opts = [temSug(p) ? ['sistema', 'Do sistema'] : null, ['digitado', 'Digitar'], p.ajuda ? ['estimativa', 'Não sei, me ajude'] : null].filter(Boolean);
     const val = fonte === 'sistema' && temSug(p) ? sug[p.sug] : x.valor;
-    return `<div class="pa-pr" data-pk="${p.k}" data-conta="${p.conta}" data-modo="${p.modo || ''}"><label>${esc(p.l)}${p.un === 'pct' ? ' (%)' : p.un === 'brl' ? ' (R$)' : ''}<input type="number" step="0.01" data-v value="${val ?? ''}"${fonte === 'sistema' ? ' readonly' : ''}></label>
+    return `<div class="pa-pr" data-pk="${p.k}" data-conta="${p.conta}" data-modo="${p.modo || ''}"><label>${esc(p.l)}${p.un === 'pct' ? ' (%)' : p.un === 'brl' ? ' (R$)' : ''}<input type="number" step="0.01" data-v value="${val ?? ''}"${fonte !== 'digitado' ? ' readonly' : ''}></label>
       <label>De onde vem<select data-f>${opts.map(([k, l]) => `<option value="${k}"${fonte === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
       <div class="pa-aj"${fonte === 'estimativa' ? '' : ' hidden'}>${(p.ajuda || []).map(([q0], i) => `<label>${esc(q0)}<input type="number" step="0.01" data-aj="${i}" value="${((x.ajuda || [])[i]) ?? ''}"></label>`).join('')}<small class="muted">Conta: ${esc(p.como || '')}</small></div>
-      <small class="muted pa-src">${temSug(p) ? `No sistema: ${paFmt(sug[p.sug], p.un)}${p.k === 'custos_fixos' || p.k === 'margem' ? ` (DRE, ${sug.dre_meses} mês(es)${sug.dre_meses < 6 ? ': pouco dado, confira' : ''})` : p.k === 'receita_anterior' ? ` (vendas de ${a - 1}, ${sug.receita_ano_anterior_meses} mês(es))` : ' (últimos 12 meses)'}` : p.so === 'digitar' ? 'Só você define.' : 'O Growths ainda não tem este dado.'}${p.k === 'mrr' ? ' Sem cliente recorrente, use 0.' : ''}</small></div>`; };
-  const f = modal('Meta do ano ' + a, `<fieldset class="pa-cam"><legend>Por qual caminho calcular a meta?</legend>
+      <small class="muted pa-src">${temSug(p) ? `No sistema: ${paFmt(sug[p.sug], p.un)}${p.k === 'custos_fixos' || p.k === 'custos_variaveis' ? ` (DRE, ${sug.dre_meses} mês(es)${sug.dre_meses < 6 ? ': pouco dado, confira' : ''})` : p.k === 'receita_anterior' ? ` (vendas de ${a - 1}, ${sug.receita_ano_anterior_meses} mês(es))` : ' (últimos 12 meses)'}` : p.so === 'digitar' ? 'Só você define.' : 'O Growths ainda não tem este dado.'}${p.k === 'mrr' ? ' Sem cliente recorrente, use 0.' : ''}${p.k === 'custos_variaveis' ? ' Os impostos ficam no passo 3.' : ''}${p.k === 'lucro_desejado' ? ' É o que sobra depois de impostos e custos.' : ''}</small></div>`; };
+  const corpo = `<div class="pa-steps">${PA_PASSOS.map(([n, t]) => `<button type="button" data-ps="${n}">${n}. ${t}</button>`).join('')}</div>
+    <div class="pa-step" data-st="1"><fieldset class="pa-cam"><legend>Por qual caminho calcular a meta?</legend>
       ${[['ambicao', 'Só pela ambição', 'De cima para baixo: o lucro que você quer ou o crescimento sobre o ano passado. O caminho para quem não tem histórico.'], ['realista', 'Só pelo realista', 'De baixo para cima: base recorrente, recompra e campanhas.'], ['ambos', 'As duas, comparadas', 'Mostra a diferença entre a ambição e o realista. O recomendado quando há dados.']].map(([k, l, d]) => `<label class="chk"><input type="radio" name="caminho" value="${k}"${pa.caminho === k ? ' checked' : ''}> <span><b>${l}</b><br><span class="muted">${d}</span></span></label>`).join('')}</fieldset>
-    <div class="pa-modo"><label>A ambição vem<select name="modo_ambicao"><option value="lucro"${pa.modo_ambicao === 'lucro' ? ' selected' : ''}>do lucro que eu quero</option><option value="crescimento"${pa.modo_ambicao === 'crescimento' ? ' selected' : ''}>do crescimento sobre o ano passado</option></select></label></div>
-    <div class="pa-prs">${PA_PREM.map(linha).join('')}</div>
-    <fieldset><legend>Cenários</legend><div class="grid2"><label>Pessimista: quanto abaixo da base (%)<input type="number" name="pct_pessimista" min="0" max="90" value="${pa.pct_pessimista}"></label><label>Otimista: quanto acima da base (%)<input type="number" name="pct_otimista" min="0" max="300" value="${pa.pct_otimista}"></label>
+      <div class="pa-modo"><label>A ambição vem<select name="modo_ambicao"><option value="lucro"${pa.modo_ambicao === 'lucro' ? ' selected' : ''}>do lucro que eu quero</option><option value="crescimento"${pa.modo_ambicao === 'crescimento' ? ' selected' : ''}>do crescimento sobre o ano passado</option></select></label></div></div>
+    <div class="pa-step" data-st="2" hidden><p class="muted">Cada número pode vir do sistema (quando o Growths já tem o dado), ser digitado ou calculado com uma pergunta simples.</p><div class="pa-prs">${PA_PREM.map(linha).join('')}</div></div>
+    <div class="pa-step" data-st="3" hidden><p class="muted">O imposto depende do regime da empresa${ic0.do_cadastro ? ' (veio do cadastro da empresa; mude aqui se precisar)' : ''}. No Simples Nacional e no Lucro Presumido ele é um percentual do faturamento; no Lucro Real, uma parte sai sobre o lucro.</p>
+      <label>Regime tributário<select name="regime">${PA_REG.map(([k, l]) => `<option value="${k}"${ic0.regime === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+      <label class="pa-ic" data-ic="simples_auto">Folha do ano: pró-labore e salários (R$)<input type="number" step="0.01" name="folha" value="${ic0.folha ?? ''}"><small class="muted">Fator R = folha ÷ faturamento. A partir de 28%, anexo III (começa em 6%); abaixo, anexo V (começa em 15,5%).</small></label>
+      <label class="pa-ic" data-ic="presumido real">ISS da cidade (%)<input type="number" step="0.01" name="iss" min="2" max="5" value="${ic0.iss ?? ''}"><small class="muted">De 2% a 5%, conforme o município.</small></label>
+      <label class="pa-ic" data-ic="manual">Alíquota sobre o faturamento (%)<input type="number" step="0.01" name="manual" value="${ic0.manual ?? ''}"></label>
+      <div class="pa-icx muted"></div></div>
+    <div class="pa-step" data-st="4" hidden><fieldset><legend>Cenários</legend><div class="grid2"><label>Pessimista: quanto abaixo da base (%)<input type="number" name="pct_pessimista" min="0" max="90" value="${pa.pct_pessimista}"></label><label>Otimista: quanto acima da base (%)<input type="number" name="pct_otimista" min="0" max="300" value="${pa.pct_otimista}"></label>
       <label class="pa-basede">Com as duas contas, a base é<select name="base_de"><option value="ambicao"${pa.base_de === 'ambicao' ? ' selected' : ''}>a ambição</option><option value="realista"${pa.base_de === 'realista' ? ' selected' : ''}>o realista</option></select></label>
-      <label>A meta do ano é o cenário<select name="cenario_meta">${['pessimista', 'base', 'otimista'].map(k => `<option value="${k}"${pa.cenario_meta === k ? ' selected' : ''}>${k}</option>`).join('')}</select></label></div></fieldset>`,
-    async (d, form) => {
-      const caminho = (form.querySelector('[name=caminho]:checked') || {}).value || 'ambicao', modo = form.modo_ambicao.value, prem = {};
-      form.querySelectorAll('.pa-pr').forEach(r => { const p = PA_PREM.find(x => x.k === r.dataset.pk), fonte = r.querySelector('[data-f]').value, v = paNum(r.querySelector('[data-v]').value);
-        const aj = [...r.querySelectorAll('[data-aj]')].map(i => paNum(i.value));
-        if (v != null || fonte === 'sistema') prem[p.k] = { valor: fonte === 'sistema' ? sug[p.sug] : v, fonte, ...(fonte === 'estimativa' ? { ajuda: aj } : {}), ...(fonte === 'sistema' ? { nota: p.k === 'custos_fixos' || p.k === 'margem' ? `DRE ${dd(sug.dre_de)} a ${dd(sug.dre_ate)}` : p.k === 'receita_anterior' ? `vendas de ${a - 1}` : 'últimos 12 meses' } : {}) }; });
-      const novo = { workspace_id: S.ws, ano: a, caminho, modo_ambicao: modo, premissas: prem, pct_pessimista: Number(d.pct_pessimista || 0), pct_otimista: Number(d.pct_otimista || 0), base_de: d.base_de || 'ambicao', cenario_meta: d.cenario_meta || 'base', atualizado_em: new Date().toISOString() };
-      const C = paContas(novo, camps); novo.meta_receita = C.meta != null ? Math.round(C.meta * 100) / 100 : null;
+      <label>A meta do ano é o cenário<select name="cenario_meta">${['pessimista', 'base', 'otimista'].map(k => `<option value="${k}"${pa.cenario_meta === k ? ' selected' : ''}>${k}</option>`).join('')}</select></label></div></fieldset>
+      <div class="pa-resumo"></div></div>
+    <div class="pa-nav"><button type="button" class="btn" data-pn="-1">Voltar</button><span class="sp"></span><button type="button" class="btn pri" data-pn="1">Continuar</button></div>`;
+  const ler = form => { const caminho = (form.querySelector('[name=caminho]:checked') || {}).value || 'ambicao', prem = {};
+    form.querySelectorAll('.pa-pr').forEach(r => { const p = PA_PREM.find(x => x.k === r.dataset.pk), fonte = r.querySelector('[data-f]').value, v = paNum(r.querySelector('[data-v]').value), aj = [...r.querySelectorAll('[data-aj]')].map(i => paNum(i.value));
+      if (v != null || fonte === 'sistema') prem[p.k] = { valor: fonte === 'sistema' ? sug[p.sug] : v, fonte, ...(fonte === 'estimativa' ? { ajuda: aj } : {}), ...(fonte === 'sistema' ? { nota: p.k === 'custos_fixos' || p.k === 'custos_variaveis' ? `DRE ${dd(sug.dre_de)} a ${dd(sug.dre_ate)}` : p.k === 'receita_anterior' ? `vendas de ${a - 1}` : 'últimos 12 meses' } : {}) }; });
+    const reg = form.regime.value; prem._imposto = { regime: reg, folha: paNum(form.folha.value), iss: paNum(form.iss.value), manual: paNum(form.manual.value), do_cadastro: !!ic0.do_cadastro && reg === ic0.regime };
+    return { workspace_id: S.ws, ano: a, caminho, modo_ambicao: form.modo_ambicao.value, premissas: prem, pct_pessimista: Number(form.pct_pessimista.value || 0), pct_otimista: Number(form.pct_otimista.value || 0), base_de: form.base_de.value || 'ambicao', cenario_meta: form.cenario_meta.value || 'base', atualizado_em: new Date().toISOString() }; };
+  const f = modal('Meta do ano ' + a, corpo, async (d, form) => {
+      const novo = ler(form), C = paContas(novo, camps); novo.meta_receita = C.meta != null ? Math.round(C.meta * 100) / 100 : null;
       await q(sb.from('plano_anual').upsert(novo, { onConflict: 'workspace_id,ano' }));
-      toast(C.meta != null ? 'Meta do ano: ' + brl(C.meta) : 'Plano salvo; falta ' + C.falta.join(', '));
+      toast(C.meta != null ? 'Meta do ano: ' + brl(C.meta) + (C.lucro && C.lucro.ok ? ' · lucro no fim: ' + brl(C.lucro.lucro) : '') : 'Plano salvo; falta ' + C.falta.join(', '));
     }, 'Salvar a meta', true);
-  const vis = () => { const cam = (f.querySelector('[name=caminho]:checked') || {}).value, modo = f.modo_ambicao.value;
+  f.closest('.modal').classList.add('pa-wiz');
+  let passo = 1; const salvar = f.querySelector('.acts .pri'), acts = f.querySelector('.acts'), nav = f.querySelector('.pa-nav');
+  acts.prepend(nav.querySelector('[data-pn="-1"]')); acts.append(nav.querySelector('[data-pn="1"]')); nav.remove();
+  f.addEventListener('keydown', e => { if (e.key === 'Enter' && passo < 4 && e.target.tagName === 'INPUT') { e.preventDefault(); vai(passo + 1); } });
+  const vis = () => { const cam = (f.querySelector('[name=caminho]:checked') || {}).value, modo = f.modo_ambicao.value, reg = f.regime.value;
     f.querySelector('.pa-modo').hidden = cam === 'realista'; f.querySelector('.pa-basede').hidden = cam !== 'ambos';
-    f.querySelectorAll('.pa-pr').forEach(r => { r.hidden = !((cam === 'ambos' || cam === r.dataset.conta) && (r.dataset.conta !== 'ambicao' || !r.dataset.modo || r.dataset.modo === modo)); }); };
+    f.querySelectorAll('.pa-pr').forEach(r => { r.hidden = !(r.dataset.conta === 'todas' || ((cam === 'ambos' || cam === r.dataset.conta) && (r.dataset.conta !== 'ambicao' || !r.dataset.modo || r.dataset.modo === modo))); });
+    f.querySelectorAll('.pa-ic').forEach(l => { l.hidden = !l.dataset.ic.split(' ').includes(reg); });
+    const novo = ler(f), C = paContas(novo, camps), I = paImposto(C.meta || C.A || C.R || 0, novo.premissas._imposto);
+    f.querySelector('.pa-icx').innerHTML = I.aliq != null ? `Com a meta atual, o imposto fica em <b>${String(Math.round(I.aliq * 1000) / 10).replace('.', ',')}% do faturamento</b>${I.anexo ? ' (anexo ' + I.anexo + ')' : ''}${I.irLucro ? ', mais 34% de IRPJ e CSLL sobre o lucro' : ''}. ${I.avisos.map(esc).join(' ')}` : I.avisos.map(esc).join(' ');
+    f.querySelector('.pa-resumo').innerHTML = `${C.falta.length ? `<div class="pa-falta">Falta: <b>${C.falta.map(esc).join(', ')}</b>. Volte aos passos anteriores.</div>` : ''}
+      ${C.cen ? `<div class="pa-cards">${['pessimista', 'base', 'otimista'].map(k => `<div class="pa-card${novo.cenario_meta === k ? ' on' : ''}"><span class="l">${k[0].toUpperCase() + k.slice(1)}</span><b>${brl(C.cen[k])}</b></div>`).join('')}</div>` : ''}
+      <h3 style="margin:10px 0 4px;font-size:15px">Do faturamento ao lucro (a meta escolhida)</h3>${paLucroHtml(C.lucro)}`; };
+  const vai = n => { passo = Math.max(1, Math.min(4, n)); f.querySelectorAll('.pa-step').forEach(s => { s.hidden = Number(s.dataset.st) !== passo; });
+    f.querySelectorAll('[data-ps]').forEach(b => { b.classList.toggle('on', Number(b.dataset.ps) === passo); b.classList.toggle('ok', Number(b.dataset.ps) < passo); });
+    f.querySelector('[data-pn="-1"]').style.visibility = passo > 1 ? '' : 'hidden'; f.querySelector('[data-pn="1"]').hidden = passo === 4; if (salvar) salvar.hidden = passo !== 4; vis(); };
+  f.addEventListener('click', e => { const n = e.target.closest('[data-pn]'), s = e.target.closest('[data-ps]'); if (n) vai(passo + Number(n.dataset.pn)); if (s) vai(Number(s.dataset.ps)); });
   f.addEventListener('change', e => { const r = e.target.closest('.pa-pr');
     if (r && e.target.matches('[data-f]')) { const p = PA_PREM.find(x => x.k === r.dataset.pk), v = r.querySelector('[data-v]'), fo = e.target.value;
-      r.querySelector('.pa-aj').hidden = fo !== 'estimativa'; v.readOnly = fo === 'sistema' || fo === 'estimativa'; if (fo === 'sistema') v.value = sug[p.sug]; }
+      r.querySelector('.pa-aj').hidden = fo !== 'estimativa'; v.readOnly = fo !== 'digitado'; if (fo === 'sistema') v.value = sug[p.sug]; }
     vis(); });
-  f.addEventListener('input', e => { const r = e.target.closest('.pa-pr'); if (!r || !e.target.matches('[data-aj]')) return; const p = PA_PREM.find(x => x.k === r.dataset.pk), vals = [...r.querySelectorAll('[data-aj]')].map(i => paNum(i.value));
-    const v = vals.every(x => x != null) ? p.calc(vals) : null; r.querySelector('[data-v]').value = v != null && isFinite(v) ? Math.round(v * 100) / 100 : ''; });
-  f.querySelectorAll('.pa-pr').forEach(r => { if (r.querySelector('[data-f]').value === 'estimativa') r.querySelector('[data-v]').readOnly = true; });
-  vis();
+  f.addEventListener('input', e => { const r = e.target.closest('.pa-pr'); if (r && e.target.matches('[data-aj]')) { const p = PA_PREM.find(x => x.k === r.dataset.pk), vals = [...r.querySelectorAll('[data-aj]')].map(i => paNum(i.value));
+    const v = vals.every(x => x != null) ? p.calc(vals) : null; r.querySelector('[data-v]').value = v != null && isFinite(v) ? Math.round(v * 100) / 100 : ''; } if (passo === 4 || passo === 3) vis(); });
+  vai(1);
 }
 
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;

@@ -34,7 +34,7 @@ create or replace function public.plano_anual_sugestoes(p_ws uuid, p_ano int, p_
 returns jsonb language plpgsql stable security definer set search_path to 'public' as $$
 declare h date := coalesce(p_hoje, (now() at time zone 'America/Sao_Paulo')::date);
   ini12 date; fim12 date; r jsonb := '{}'::jsonb; v numeric; n int; rec12 numeric; ded12 numeric; mrr numeric;
-  ativos int; cancel int; comp int; recomp int; saz jsonb;
+  ativos int; cancel int; comp int; recomp int; saz jsonb; imp12 numeric; var12 numeric;
 begin
   if not (pertence_ao_workspace(p_ws) or sou_equipe_interna()) then raise exception 'Sem acesso a este cliente'; end if;
   fim12 := (date_trunc('month', h) - interval '1 day')::date;             -- último mês fechado
@@ -43,12 +43,17 @@ begin
   select coalesce(sum(valor_bruto), 0), count(distinct date_trunc('month', data_venda at time zone 'America/Sao_Paulo')) into v, n
     from vendas where workspace_id = p_ws and status = 'aprovada' and extract(year from data_venda at time zone 'America/Sao_Paulo') = p_ano - 1;
   r := r || jsonb_build_object('receita_ano_anterior', case when n > 0 then round(v, 2) end, 'receita_ano_anterior_meses', n);
-  -- DRE dos últimos 12 meses fechados: margem de contribuição e custos fixos (sem mídia paga, contas 6.1)
+  -- DRE dos últimos 12 meses fechados (v0.199): impostos sobre vendas (5.1.02) à parte; custos variáveis = taxas de plataforma e
+  -- outras deduções + comissões (6.2.03); custos fixos = despesas sem mídia paga (6.1) e sem comissões
   select coalesce(sum(valor) filter (where tipo = 'receita'), 0), coalesce(sum(valor) filter (where tipo = 'deducao'), 0),
-         coalesce(sum(valor) filter (where tipo = 'despesa' and coalesce(codigo, '') not like '6.1%'), 0), count(distinct mes) filter (where tipo = 'receita')
-    into rec12, ded12, v, n from v_dre_mensal where workspace_id = p_ws and mes between ini12 and fim12;
+         coalesce(sum(valor) filter (where tipo = 'despesa' and coalesce(codigo, '') not like '6.1%' and coalesce(codigo, '') <> '6.2.03'), 0), count(distinct mes) filter (where tipo = 'receita'),
+         coalesce(sum(valor) filter (where tipo = 'deducao' and codigo = '5.1.02'), 0),
+         coalesce(sum(valor) filter (where (tipo = 'deducao' and coalesce(codigo, '') <> '5.1.02') or (tipo = 'despesa' and codigo = '6.2.03')), 0)
+    into rec12, ded12, v, n, imp12, var12 from v_dre_mensal where workspace_id = p_ws and mes between ini12 and fim12;
   r := r || jsonb_build_object('dre_meses', n, 'dre_de', ini12, 'dre_ate', fim12,
     'margem_contribuicao', case when rec12 > 0 then round((rec12 - ded12) / rec12 * 100, 1) end,
+    'custos_variaveis_pct', case when rec12 > 0 then round(var12 / rec12 * 100, 1) end,
+    'imposto_hist_pct', case when rec12 > 0 then round(imp12 / rec12 * 100, 1) end,
     'custos_fixos_ano', case when n > 0 then round(v / n * 12, 2) end);
   -- recorrência de hoje (mesma regra do contas a receber) e perda dos últimos 12 meses
   mrr := nullif(((receber_periodo(p_ws, h, h, h)) ->> 'mrr')::numeric, 0);

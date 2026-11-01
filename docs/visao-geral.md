@@ -1,3 +1,6 @@
+## v0.199
+**Do faturamento ao lucro.** Editar a meta do ano agora é um passo a passo (caminho, premissas, impostos, cenários). O imposto sai do regime da empresa (MEI, Simples pelo fator R, Lucro Presumido, Lucro Real), as comissões passam a contar como custo da venda e a tela mostra quanto sobra de lucro no fim de cada cenário.
+
 ## v0.198
 **Planejamento anual com método.** A aba Planejamento anual agora começa pela meta do ano: você escolhe se calcula pela ambição (o lucro que quer ou o crescimento), pelo realista (clientes, recompra e campanhas) ou pelas duas, e cada número vem do sistema, digitado ou de uma pergunta simples quando você não sabe. Saem três cenários, a diferença entre a ambição e o realista com o que fazer, a meta por trimestre com o ritmo e a sugestão mês a mês que preenche as metas mensais.
 

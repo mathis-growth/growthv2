@@ -1,3 +1,7 @@
+## v0.199
+- `plano_anual.premissas`: sai a chave `margem`; entram `custos_variaveis` (% do preço, sem impostos) e `_imposto` { regime mei|simples_auto|simples_III|simples_V|presumido|real|manual, folha, iss, manual, do_cadastro }.
+- `plano_anual_sugestoes`: novos `custos_variaveis_pct` (deduções fora 5.1.02 + comissões 6.2.03, ÷ receita) e `imposto_hist_pct` (5.1.02 ÷ receita); `custos_fixos_ano` sem mídia paga e sem comissões.
+
 ## v0.198
 - `plano_anual` (workspace_id, ano, caminho ambicao|realista|ambos, modo_ambicao lucro|crescimento, premissas jsonb { chave: { valor, fonte sistema|digitado|estimativa, nota, ajuda } }, pct_pessimista, pct_otimista, base_de, cenario_meta, meta_receita; único por cliente e ano).
 - Função `plano_anual_sugestoes(ws, ano, hoje)`: receita do ano anterior, margem de contribuição e custos fixos (DRE), recorrência e perda (contratos), clientes, recompra e ticket (vendas), sazonalidade (12 pesos, com 6 meses ou mais) e realizado do ano mês a mês.

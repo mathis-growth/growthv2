@@ -1,5 +1,16 @@
 
 
+## v0.199 — Editar a meta em quatro passos, impostos e lucro final
+**Pedido da Rebecka (01/11)**, ao testar a v0.198: a tela de editar era extensa (dividir em passos, como a nova campanha); considerar o regime tributário; entender se o resultado de (custos fixos + lucro) ÷ margem é o lucro que sobra; e qual o lucro final. Ela aprovou a proposta ("pode").
+Decisões:
+- **Editar a meta** vira quatro passos com Voltar e Continuar: 1. Caminho, 2. Premissas, 3. Impostos, 4. Cenários e lucro. Salvar só no último, com o resumo do faturamento ao lucro ao vivo.
+- **Correção da margem (fato)**: na v0.198 as comissões (6.2.03) estavam nos custos fixos, mas elas acompanham cada venda. Agora a margem não é premissa: sai de faturamento − impostos − custos variáveis (taxas de plataforma, comissões, entrega). Os custos fixos do sistema não contam mídia paga (6.1) nem comissões.
+- **Impostos pelo regime**, que vem do cadastro da empresa (dá para mudar no passo 3): MEI (DAS fixo × 12, avisa acima do limite); Simples Nacional com a alíquota efetiva da faixa, anexo III ou V pelo fator R (folha ÷ faturamento, 28%); Lucro Presumido de serviços (PIS 0,65 + COFINS 3 + IRPJ 4,8 + CSLL 2,88 + ISS, mais o adicional de 10% do IRPJ acima de R$ 240 mil de lucro presumido no ano); Lucro Real (PIS e COFINS 9,25% sem créditos + ISS sobre o faturamento e 34% de IRPJ e CSLL sobre o lucro); ou alíquota manual.
+- A meta pela ambição agora é o faturamento em que, **depois** de impostos, custos variáveis, custos fixos (e do IR, no Lucro Real), sobra o lucro desejado. Ou seja: o lucro digitado é o lucro final.
+- Cada cenário mostra o lucro no fim; "Meta menor" mostra o lucro do realista.
+- **Hipótese**: as alíquotas são para planejamento; Lucro Real sem créditos de PIS/COFINS fica conservador. A tela pede para confirmar com o contador.
+- Fica para a etapa 4: KPIs por ritmo (mês, trimestre, ano).
+
 ## v0.198 — Planejamento anual, etapa 1: meta do ano e trimestres
 **Pedido da Rebecka (01/11)**: melhorar o Planejamento anual com um método validado (meta de faturamento, divisão por trimestre, campanhas, verba). Desenho no documento "Planejamento anual no Growths: desenho das telas". Ela apontou que o cliente chega sem dados: o sistema traz as contas, deixa escolher o caminho e de onde vem cada número, e no ano seguinte calcula pelo ano anterior.
 Decisões (com as recomendações do documento, que ela aprovou ao pedir para fazer):

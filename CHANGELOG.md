@@ -1,3 +1,11 @@
+## v0.199 — Meta do ano: quatro passos, impostos e lucro final (01/11/2026)
+- **Editar a meta** em quatro passos: Caminho, Premissas, Impostos, Cenários e lucro (Salvar no último, com o resumo ao vivo).
+- **Impostos** pelo regime do cadastro da empresa: MEI, Simples (anexo III ou V pelo fator R, alíquota efetiva da faixa), Lucro Presumido, Lucro Real (IR sobre o lucro à parte) ou alíquota manual.
+- **Margem corrigida**: comissões e custos de cada venda saem dos custos fixos; a margem é faturamento − impostos − custos variáveis.
+- **Do faturamento ao lucro** na seção 1 e lucro no fim em cada cenário. O lucro desejado agora é o lucro final.
+- Banco: `RODAR_v0.198_plano_anual.sql` atualizado (função de sugestões) — **ainda não aplicado em produção**.
+- Teste: `t198_plano_anual.py` reescrito (0 falhas).
+
 ## v0.198 — Planejamento anual: meta do ano e trimestres (01/11/2026)
 - Aba **Planejamento anual** em seções: 1. Meta do ano, 2. Por trimestre, 3. Calendário de campanhas, Metas mês a mês.
 - **Meta do ano**: caminho (ambição, realista ou os dois), premissas do sistema / digitadas / "não sei, me ajude", três cenários, diferença entre as contas com três saídas, aviso de estimativas.

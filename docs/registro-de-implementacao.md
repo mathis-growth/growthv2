@@ -1,5 +1,9 @@
 
 
+## Editar a meta em passos, impostos e lucro final (v0.199)
+- `g198.js`: `paImposto(R, cfg)` por regime (usa `CO_SIMPLES`, `coAliqSimples`, `CO_MEI_DAS`); `paContas` resolve a meta pela ambição por iteração (a alíquota do Simples muda com o faturamento); `paLucro` e a tabela "Do faturamento ao lucro" na seção 1 e no passo 4; cards com o lucro no fim.
+- Teste `t198_plano_anual.py` (37 verificações, 0 falhas): sugestões novas; custos fixos sem comissões; quatro passos; Salvar só no passo 4; margem fora das premissas; regime do cadastro; folha no Simples e ISS no Lucro Real; alíquota e anexo; resumo no passo 4; meta com Simples confere com a conta feita no teste; lucro na meta = lucro desejado; Lucro Real com IR separado; trimestres e metas mensais como antes. t124 e t127 sem falhas.
+
 ## Planejamento anual, etapa 1 (v0.198)
 - `g198.js`: premissas e as contas na tela (deterministas, com a fórmula escrita ao lado); formulário com caminho, origem de cada premissa e a ajuda que calcula; trimestres com ritmo; sugestão mês a mês; gráfico acumulado com previsão.
 - Teste `t198_plano_anual.py`: tela sem plano; seções; três caminhos; premissas que aparecem por caminho; "do sistema" só com dado e travado; ajuda calcula; plano gravado com a origem; meta = (custos + lucro) ÷ margem; diferença com as três saídas; aviso de estimativa; conta realista; trimestres; gráfico; preencher meses soma a meta; mês fechado com o realizado; botão desligado sem mês vazio; caminho só ambição. 0 falhas. t121 e t124 sem falhas.

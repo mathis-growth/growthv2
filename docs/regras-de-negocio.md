@@ -1,3 +1,11 @@
+## v0.199
+- Lucro final = faturamento − impostos sobre o faturamento − custos variáveis − custos fixos − IR sobre o lucro (só no Lucro Real, 34%).
+- Meta pela ambição (lucro) = o faturamento R em que o lucro final é o desejado: R = (custos fixos + lucro ÷ (1 − IR)) ÷ (1 − custos variáveis − alíquota(R)); no MEI, o DAS anual entra como custo fixo.
+- Simples: alíquota efetiva = (R × alíquota da faixa − parcela a deduzir) ÷ R; anexo III se folha ÷ R ≥ 28%, se não V.
+- Presumido (serviços): 0,65% + 3% + 4,8% + 2,88% + ISS, mais 10% × (32% × R − 240 mil) ÷ R quando positivo.
+- Real: 9,25% + ISS sobre o faturamento; 34% sobre o lucro antes do IR, quando positivo.
+- Se impostos + custos variáveis chegam a 100% da venda, a meta fica "sem dado" e a tela diz o motivo.
+
 ## v0.198
 - Meta pela ambição (lucro) = (custos fixos do ano + lucro desejado) ÷ margem de contribuição. Pelo crescimento = receita do ano anterior × (1 + crescimento).
 - Meta realista = recorrente do mês × 12 × (1 − perda ÷ 2) + clientes × recompra × ticket + metas das campanhas do ano. Sem recorrência, a base é 0 e a perda não entra.
