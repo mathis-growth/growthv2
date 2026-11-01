@@ -1,3 +1,6 @@
+## v0.211
+**Um período para todos os dashboards.** Administrativo, Marketing, Vendas e Mídia paga têm o mesmo filtro (com os mesmos atalhos) e o período escolhido vale em todos.
+
 ## v0.210
 **Financeiro simplificado para todos.** No Go-to-Market ele é o financeiro do cliente; no completo, uma visão rápida ao lado do financeiro completo. As comissões dos parceiros podem ser gerais ou com uma % diferente por produto.
 

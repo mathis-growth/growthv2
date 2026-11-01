@@ -1,3 +1,8 @@
+## v0.211 — Período padrão nos dashboards (01/11/2026)
+- Administrativo, Marketing, Vendas e Mídia paga com o mesmo filtro (Período, De, Até; atalhos iguais) e o mesmo período em todos.
+- Planejamento da empresa: atalho para o planejamento do ano (Marketing › Campanhas e planejamento › Planejamento anual).
+- Teste: `t211_periodo_padrao.py` (0 falhas).
+
 ## v0.210 — Financeiro simplificado no completo e comissão geral ou por produto (01/11/2026)
 - Financeiro simplificado no Growths completo e dentro do Go-to-Market (sai o pacote separado).
 - Parceiros com comissão geral e % diferente por produto (a do produto vale no lugar da geral); mudar a % não muda o passado.

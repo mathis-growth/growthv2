@@ -1,3 +1,6 @@
+## v0.211
+- Período padrão (S.per): o mesmo nos dashboards Administrativo, Marketing, Vendas e Mídia paga, enquanto a sessão está aberta. Padrão: últimos 30 dias. Este mês e Este ano vão até hoje; Mês passado é o mês inteiro.
+
 ## v0.210
 - Comissão do parceiro numa venda = % do produto da venda, se cadastrada; senão a geral; sobre o valor da venda ou o valor − taxa. Só parceiros ativos; só a % vigente no mês da venda.
 

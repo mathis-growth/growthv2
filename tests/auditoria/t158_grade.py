@@ -14,7 +14,7 @@ LETRA = """() => { let mn = 99, onde = ''; document.querySelectorAll('#main .pan
   const svg = t.ownerSVGElement, k = svg.getBoundingClientRect().width / svg.viewBox.baseVal.width, px = parseFloat(getComputedStyle(t).fontSize) * k;
   if (px < mn) { mn = px; onde = (svg.closest('.panel').querySelector('h2') || {}).textContent; } }); return [Math.round(mn * 10) / 10, onde]; }"""
 SET_P = "S.pg = { per: 'custom', de: '2026-09-01', ate: '2026-09-30' }"
-SET_F = "S.per = { pre: 'pers', de: '2026-09-01', ate: '2026-09-30' }"
+SET_F = "S.perD = { pre: 'pers', de: '2026-09-01', ate: '2026-09-30' }"
 with sync_playwright() as pw:
     b = pw.chromium.launch(); erros = []
     ctx, pg = front.abre(b, hoje='2026-10-15', vw=1440, vh=1000)
@@ -49,7 +49,7 @@ with sync_playwright() as pw:
     chk(mn[0] >= 9.5, 'Dashboard: textos dos gráficos legíveis ' + str(mn))
     pg.screenshot(path=SHOT + 't158_dashboard.png', full_page=True); erros += pg.errs
     # ---------- outras telas não mudam ----------
-    front.vai(pg, 'mkt-dash', "S.mg = { ini: '2026-09-01', fim: '2026-09-30', camp: '', funil: '', tab: 'visao', gran: 'campanha', cv: 'ret', sel: null }", 8000)
+    front.vai(pg, 'mkt-dash', "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }; S.mg = { ini: '2026-09-01', fim: '2026-09-30', camp: '', funil: '', tab: 'visao', gran: 'campanha', cv: 'ret', sel: null }", 8000)
     chk(pg.evaluate("() => !document.querySelector('#main').classList.contains('grade158') && getComputedStyle(document.querySelector('#main')).display !== 'grid'"), 'outras telas continuam como estavam (Marketing)')
     erros += pg.errs; ctx.close()
     # ---------- celular: uma coluna ----------

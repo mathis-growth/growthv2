@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.211 | 01/11/2026 | Dashboards com o mesmo filtro de período, que vale em todos. | nada |
 | 0.210 | 01/11/2026 | Financeiro simplificado também no completo; comissão de parceiro geral ou por produto. | `RODAR_v0.209_financeiro_simplificado.sql` (atualizado), **ainda não aplicado** |
 | 0.209 | 01/11/2026 | **Financeiro simplificado**: DRE simplificado sem contas a pagar, custos por grupo, comissões de parceiros. | `RODAR_v0.209_financeiro_simplificado.sql`, **ainda não aplicado** |
 | 0.208 | 01/11/2026 | **Dashboard de vendas** no padrão: filtro de período e os números de vendas e clientes no topo. | `RODAR_v0.208_vendas_periodo.sql`, **ainda não aplicado** |

@@ -1927,6 +1927,7 @@ const fU = n => 'R$ ' + (n < 10 ? n.toFixed(1) : Math.round(n)).toString().repla
 /* ---------- Marketing: dashboard geral (todas as campanhas) ---------- */
 async function vMktDash(m) {
   const w = S.ws, h = hoje(), A = S.mg = S.mg || { ini: diaMais(h, -89), fim: h, camp: '', funil: '', tab: 'visao', gran: 'campanha', cv: 'ret', sel: null };
+  { const P0 = perGlobal(); A.ini = P0.ini; A.fim = P0.fim; } // v0.211: período padrão
   if (A.tab !== 'funil') A.tab = 'visao';
   const camps = await q(sb.from('campanhas').select('id,nome').eq('workspace_id', w).order('nome'));
   let R = null, C = null, erro = '';
@@ -1935,13 +1936,9 @@ async function vMktDash(m) {
     if (A.tab === 'visao') C = await q(sb.rpc('funil_cohorts', { p_ws: w, p_ini: A.ini, p_fim: A.fim, p_campanha: nul(A.camp), p_gran: A.gran }));
   } catch (e) { erro = e.message || String(e); }
   m.innerHTML = `<div class="head"><div><h1>Dashboard de marketing</h1><span class="muted">Todas as campanhas juntas, no período que você escolher. Lead = pessoa cadastrada no período, seguida até hoje. Para ver uma campanha só, abra-a em Campanhas e planejamento.</span></div></div>
-  <div class="filters"><label>De<input type="date" id="mgIni" value="${A.ini}"></label><label>Até<input type="date" id="mgFim" value="${A.fim}"></label>
-  <label>Atalho<select id="mgAt"><option value="">Período</option><option value="7">Últimos 7 dias</option><option value="30">Últimos 30 dias</option><option value="90">Últimos 90 dias</option><option value="365">Últimos 12 meses</option></select></label>
-  <label>Campanha<select id="mgCamp"><option value="">Todas</option>${opts(camps, 'id', 'nome', A.camp)}</select></label></div>
+  ${perPadrao(A, `<label>Campanha<select id="mgCamp"><option value="">Todas</option>${opts(camps, 'id', 'nome', A.camp)}</select></label>`)}
   <div class="tabs"><button data-t="visao" class="${A.tab === 'visao' ? 'on' : ''}">Visão geral e cohorts</button><button data-t="funil" class="${A.tab === 'funil' ? 'on' : ''}">Funil</button></div><div id="mgBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
-  const val = () => { const a = $('#mgIni').value, b = $('#mgFim').value; if (!a || !b || a > b) { toast('Informe um período válido.', true); return false; } A.ini = a; A.fim = b; return true; };
-  $('#mgIni').onchange = () => { if (val()) render(); }; $('#mgFim').onchange = () => { if (val()) render(); };
-  $('#mgAt').onchange = e => { if (e.target.value) { A.fim = h; A.ini = diaMais(h, -(Number(e.target.value) - 1)); render(); } };
+  perLiga(m, A, () => render());
   $('#mgCamp').onchange = e => { A.camp = e.target.value; A.sel = null; render(); };
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { A.tab = b.dataset.t; render(); });
   const body = $('#mgBody');
@@ -2101,6 +2098,7 @@ const ORD_RANK = {
 };
 
 async function vTrafego(m) {
+  { const P0 = perGlobal(); S.tDe = P0.ini; S.tAte = P0.fim; } // v0.211: período padrão
   const w = S.ws, ate = S.tAte || hoje(), de = S.tDe || diaMais(ate, -13);
   const nDias = listaDias(de, ate).length, pAte = diaMais(de, -1), pDe = diaMais(pAte, -(nDias - 1));
   const todas = await q(sb.from('v_trafego_anuncio_dia').select('*').eq('workspace_id', w).gte('data', pDe).lte('data', ate).limit(40000));
@@ -2166,8 +2164,7 @@ async function vTrafego(m) {
     <tr class="tot"><td>Todos os canais</td><td class="n">${brl(totC.custo)}</td><td class="n">100%</td><td class="n">${num(totC.leads)}</td><td class="n">${fB(rzC.cpl)}</td><td class="n">${num(totC.clientes)}</td><td class="n">${fB(rzC.cac)}</td><td class="n">1,00x</td><td class="n">${brl(totC.receita)}</td><td class="n">${fX(rzC.roas)}</td></tr></tbody></table></div>` : '<div class="empty">Sem dados de mídia no período.</div>'}</div>`;
   const sp = `vs. ${dd(pDe).slice(0, 5)}–${dd(pAte).slice(0, 5)}`;
   m.innerHTML = `<div class="head"><div><h1>Mídia paga</h1><span class="muted">Saúde dos anúncios pagos e oportunidades de escala. Comparado ao período anterior de mesmo tamanho (${dd(pDe)} a ${dd(pAte)}).</span></div><div class="acts"><button class="btn" id="bImp">Importar planilha (recuperação)</button></div></div>
-  <div id="impAviso"></div><div class="filters">
-    <label>De<input id="tDe" type="date" value="${de}"></label><label>Até<input id="tAte" type="date" value="${ate}"></label>
+  <div id="impAviso"></div>${perPadrao({ ini: de, fim: ate })}<div class="filters">
     <label>Canal<select id="tCanal"><option value="">Todos os canais</option>${canais.map(c => `<option value="${esc(c)}"${c === cs ? ' selected' : ''}>${esc(nomeCanal(c))}</option>`).join('')}</select></label>
     <label>Campanha<select id="tCamp"><option value="">Todas</option>${camps.map(([id, n]) => `<option value="${id}"${id === cp ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select></label>
     <label>CPL limite (R$)<input id="tLimCpl" type="number" min="0" step="0.01" value="${LIM.cpl || ''}" style="max-width:110px"></label>
@@ -2204,15 +2201,14 @@ async function vTrafego(m) {
     ${dias.length ? dias.slice().reverse().map(d => { const t = somaT(porDia(d)), z = razoes(t); return `<tr class="clk${d === diaSel ? ' sel' : ''}" data-d="${d}"><td>${dd(d)}</td><td class="n">${brl(t.custo)}</td><td class="n">${num(t.impressoes)}</td><td class="n">${num(t.cliques)}</td><td class="n">${fP(z.ctr)}</td><td class="n">${fB(z.cpc)}</td><td class="n">${fP(z.connect)}</td><td class="n">${num(t.leads)}</td><td class="n">${fB(z.cpl)}</td><td class="n">${num(t.vendas)}</td><td class="n">${fX(z.roas)}</td></tr>`; }).join('') : '<tr><td colspan="11" class="empty">Sem métricas no período.</td></tr>'}
     </tbody></table></div></div>`;
   const nav = () => render();
-  $('#tDe').onchange = e => { S.tDe = e.target.value; S.tDia = ''; nav(); };
-  $('#tAte').onchange = e => { S.tAte = e.target.value; S.tDia = ''; nav(); };
+  perLiga(m, { ini: de, fim: ate }, () => { S.tDe = S.perD.ini; S.tAte = S.perD.fim; S.tDia = ''; nav(); });
   $('#tCanal').onchange = e => { S.tCanal = e.target.value; S.tDia = ''; nav(); };
   m.querySelectorAll('tr[data-canal]').forEach(r => r.onclick = () => { S.tCanal = S.tCanal === r.dataset.canal ? '' : r.dataset.canal; S.tDia = ''; nav(); });
   $('#tCamp').onchange = e => { S.tCamp = e.target.value; S.tDia = ''; nav(); };
   $('#tOrd').onchange = e => { S.tOrd = e.target.value; nav(); };
   $('#tLimCpl').onchange = e => { LIM.cpl = e.target.value; gravaLim(LIM); nav(); };
   $('#tLimCtr').onchange = e => { LIM.ctr = e.target.value; gravaLim(LIM); nav(); };
-  m.querySelectorAll('[data-pre]').forEach(b => b.onclick = () => { S.tAte = hoje(); S.tDe = diaMais(hoje(), -(Number(b.dataset.pre) - 1)); S.tDia = ''; nav(); });
+  m.querySelectorAll('[data-pre]').forEach(b => b.onclick = () => { S.tAte = hoje(); S.tDe = diaMais(hoje(), -(Number(b.dataset.pre) - 1)); S.perD = { ini: S.tDe, fim: S.tAte }; S.tDia = ''; nav(); });
   m.querySelectorAll('tr[data-d]').forEach(r => r.onclick = () => { S.tDia = S.tDia === r.dataset.d ? '' : r.dataset.d; nav(); });
   if ($('#tTodo')) $('#tTodo').onclick = () => { S.tDia = ''; nav(); };
   $('#bImp').onclick = modalImportarTrafego;
@@ -4526,6 +4522,7 @@ async function vPagar(m) {
 async function vPainel(m) {
   await provisionaAuto();
   const w = S.ws, PG = S.pg = S.pg || { per: '30d', de: '', ate: '' }, h = hoje();
+  { const P0 = perGlobal(); PG.per = 'custom'; PG.de = P0.ini; PG.ate = P0.fim; } // v0.211: período padrão, o mesmo em todos os dashboards
   // período escolhido (atalhos ou datas manuais)
   let ini = h, fim = h;
   if (PG.per === '7d') ini = diaMais(h, -6); else if (PG.per === '15d') ini = diaMais(h, -14); else if (PG.per === '30d') ini = diaMais(h, -29);
@@ -4555,7 +4552,7 @@ async function vPainel(m) {
       <td class="n">${brl(inv)}</td><td class="n">${brl(rb)}</td><td class="n">${v.cac != null ? brl(v.cac) : '—'}</td><td class="n">${v.roas != null ? Number(v.roas).toFixed(2).replace('.', ',') + 'x' : '—'}</td></tr>`; };
   const campHtml = ativasC.length ? `<div class="tw"><table><thead><tr><th>Campanha</th><th>Leads (meta)</th><th>Vendas (meta)</th><th class="n">Investido</th><th class="n">Receita</th><th class="n">CAC de mídia</th><th class="n">ROAS</th></tr></thead><tbody>${ativasC.map(linhaCamp).join('')}</tbody></table></div><span class="muted">Totais da campanha desde o início. O CAC por campanha com todos os custos está mais abaixo, no período escolhido.</span>` : '<div class="empty">Nenhuma campanha ativa. Ative uma em Marketing → Campanhas e planejamento.</div>';
   const optPer = [['7d', 'Últimos 7 dias'], ['15d', 'Últimos 15 dias'], ['30d', 'Últimos 30 dias'], ['mes', 'Mês atual'], ['12m', 'Últimos 12 meses'], ['ano', 'Ano atual'], ['tudo', 'Todo o período'], ['custom', 'Período personalizado']];
-  const seletor = `<div class="filters" style="margin:0"><select id="pgPer">${optPer.map(([k, l]) => `<option value="${k}"${PG.per === k ? ' selected' : ''}>${l}</option>`).join('')}</select>${PG.per === 'custom' ? `<label>De<input type="date" id="pgDe" value="${ini}" max="${h}"></label><label>Até<input type="date" id="pgAte" value="${fim}" max="${h}"></label>` : ''}</div>`;
+  const seletor = perPadrao(perGlobal());
   const finHtml = `<div class="panel"><h2 style="margin:0 0 4px">Métricas financeiras <span class="muted" style="font-weight:400">· ${perRot}</span></h2>
     <div class="kpis" style="margin-top:8px" data-sem="1">
       ${semKpi('Margem', semFmt(RS.margem, 'pct'), 'lucro ÷ receita', semStatus(RS.margem, 'margem'), 'pgMgSt')}
@@ -4637,8 +4634,7 @@ async function vPainel(m) {
   painelSemRefs(m, { lucro: Number(RS.lucro || 0), margemNum: RS.margem, saldo: Number(CX.saldo || 0) });
   painelV124(m, { h, ini, fim, perRot, dre, P }).catch(e => console.warn('painel v0.124', e));
   { const bx = m.querySelector('.gc-sec'); if (bx) painelObs(bx, { h, ini, fim, P }).catch(e => console.warn('obs v0.125', e)); painelNovosExist(bx); }
-  $('#pgPer').onchange = e => { PG.per = e.target.value; if (PG.per === 'custom' && !PG.de) { PG.de = diaMais(h, -29); PG.ate = h; } render(); };
-  if ($('#pgDe')) { $('#pgDe').onchange = e => { PG.de = e.target.value; render(); }; $('#pgAte').onchange = e => { PG.ate = e.target.value; render(); }; }
+  perLiga(m, perGlobal(), () => render());
   m.onclick = e => {
     const fx = e.target.closest('[data-fx]'), dr = e.target.closest('[data-dre]');
     if (dr) { const [cod, mes, nome] = dr.dataset.dre.split('|'); return detalheDre(cod, mes, cod + ' ' + nome); }
@@ -9697,7 +9693,7 @@ async function vCrmDash(m) {
   const pes = { length: D.total }, cliAt = D.ativos, qual = D.qualificados, pend = D.pendentes, ven = { length: D.vendas_aprovadas };
   m.innerHTML = `<div class="head"><h1>Dashboard de Vendas</h1><div class="acts">${ir('crm-leads', 'Funil comercial')}${ir('crm-vendas', 'Vendas')}${ir('crm-alunos', 'Alunos')}${ir('cad-clientes', 'Clientes')}</div></div>
   ${painelVenc(ctsAtivos, h, true)}
-  ${vdFiltros(S.vd = S.vd || { ini: diaMais(h, -29), fim: h })}
+  ${perPadrao(S.vd = perGlobal())}
   ${MP ? painelMetasVendas(MP) : ''}
   <div class="kpis" id="vdKpis">${kpi('Valor das vendas', '…', 'calculando')}</div>
   <div class="kpis vd-cad">
@@ -13912,6 +13908,7 @@ function irMidiaCampanha(c) {
   S.tCamp = c.id; S.tCanal = ''; S.tDia = '';
   S.tDe = c.data_inicio && c.data_inicio <= h ? c.data_inicio : diaMais(h, -29);
   S.tAte = c.data_fim && c.data_fim < h ? c.data_fim : h;
+  S.perD = { ini: S.tDe, fim: S.tAte }; // v0.211: o período padrão segue a campanha aberta
   S.view = ehStarter() ? 'mkt-midia' : 'mkt-trafego'; S.campSel = null; render();
 }
 
@@ -14526,7 +14523,7 @@ function cpGrade(el, c, X) {
           return `<button type="button" class="cp-c ${k}${dias[i] === h ? ' hoje' : ''}" data-cpdia="${d}" ${alfa ? `style="opacity:${alfa}"` : ''} title="${esc(l.nome)} · ${dd(d)}${d === h ? ' (hoje, incompleto)' : ''}: ${v == null ? 'sem dado' : l.fmt(v)}"></button>`; }).join('')}
           <div class="cp-gs">${aval ? `<span class="vpos">${b}</span>/<span class="vneg">${r}</span>` : ''}</div>`; }).join('')}</div>
     ${GC.fonte('Leads: pessoas que entraram na campanha (a mesma conta da meta de leads). Investimento, CTR e CPC: números diários dos anúncios da campanha. Vendas e receita: vendas aprovadas ligadas à campanha. Sem meta cadastrada, o dia é comparado com a média da própria campanha no período (verde = melhor que a média; vermelho = 15% pior). A última coluna conta dias verdes / vermelhos.')}`;
-  el.querySelectorAll('[data-cpdia]').forEach(b => b.onclick = () => { S.tCamp = c.id; S.tCanal = ''; S.tDia = ''; S.tDe = b.dataset.cpdia; S.tAte = b.dataset.cpdia; S.view = ehStarter() ? 'mkt-midia' : 'mkt-trafego'; S.campSel = null; render(); });
+  el.querySelectorAll('[data-cpdia]').forEach(b => b.onclick = () => { S.tCamp = c.id; S.tCanal = ''; S.tDia = ''; S.tDe = b.dataset.cpdia; S.tAte = b.dataset.cpdia; S.perD = { ini: S.tDe, fim: S.tAte }; S.view = ehStarter() ? 'mkt-midia' : 'mkt-trafego'; S.campSel = null; render(); });
 }
 
 /* onde caiu: últimos 7 dias completos × os 7 anteriores, etapa por etapa */
@@ -16802,7 +16799,7 @@ async function mktResultadoPainel(body, A) {
 }
 /* Vendas por plataforma (Dashboard de vendas): o que cada plataforma deve repassar */
 async function vendasPlataformas(m) {
-  const A = S.vd = S.vd || { ini: diaMais(hoje(), -29), fim: hoje() }; // v0.208: o mesmo período do filtro do dashboard
+  const A = S.vd = perGlobal(); // v0.208/v0.211: o período padrão do dashboard
   const L = await q(sb.rpc('vendas_por_plataforma', { p_ws: S.ws, p_ini: A.ini, p_fim: A.fim })).catch(() => null); if (L == null) return;
   const tot = k => L.reduce((t, x) => t + Number(x[k] || 0), 0);
   const d = document.createElement('div'); d.className = 'panel'; d.id = 'vpPlat';
@@ -17032,10 +17029,7 @@ function vdFiltros(A) {
 }
 async function vdKpis(m) {
   const A = S.vd, el = m.querySelector('#vdKpis'); if (!el) return;
-  const h = hoje(), muda = () => { const a = $('#vdIni').value, b = $('#vdFim').value; if (!a || !b || a > b) { toast('Informe um período válido.', true); return; } A.ini = a; A.fim = b; render(); };
-  $('#vdIni').onchange = muda; $('#vdFim').onchange = muda;
-  $('#vdAt').onchange = e => { const v = e.target.value; if (!v) return;
-    if (v === 'mes') { A.ini = h.slice(0, 8) + '01'; A.fim = h; } else if (v === 'mesant') { const p = mcMais(h.slice(0, 8) + '01', -1); A.ini = p; A.fim = mcUlt(p); } else { A.fim = h; A.ini = diaMais(h, -(Number(v) - 1)); } render(); };
+  perLiga(m, A, () => render());
   let R; try { R = await q(sb.rpc('vendas_periodo', { p_ws: S.ws, p_ini: A.ini, p_fim: A.fim })); }
   catch (e) { el.outerHTML = '<div class="panel" style="border-left:4px solid var(--warn)"><b>Falta atualizar o banco.</b> <span class="muted">Rode supabase/RODAR_v0.208_vendas_periodo.sql no Supabase para os números do período. Abaixo, os números de sempre.</span></div>'; m.querySelector('.vd-cad') && m.querySelector('.vd-cad').classList.remove('vd-cad'); return; }
   const tk = R.vendas ? R.valor / R.vendas : null, tkA = R.vendas_ant ? R.valor_ant / R.vendas_ant : null;
@@ -17046,7 +17040,7 @@ async function vdKpis(m) {
     kpi('Clientes ativos', num(R.clientes_ativos), `hoje · ${num(R.clientes_inativos)} inativo(s)`),
     kpi('Lead → cliente', fP(div(R.leads_clientes, R.leads)), `${num(R.leads_clientes)} dos ${num(R.leads)} lead(s) que entraram no período`)].join('');
 }
-GRADE_SECOES['crm-dash'].topo.push(['.vd-filtros', 12]);
+GRADE_SECOES['crm-dash'].topo.push(['.per-padrao', 12]);
 (GRADE_SECOES['crm-dash'].secoes.find(s => s.k === 'funil') || { itens: [] }).itens.unshift(['.vd-cad', 12]);
 
 /* ================= v0.209 — Financeiro simplificado (DRE simplificado) =================
@@ -17148,6 +17142,39 @@ async function fsParceiros(el) {
 }
 VIEWS['adm-financeiro'] = vFinSimples;
 if (ICO['fin-dash']) ICO['adm-financeiro'] = ICO['fin-dash'];
+
+/* ================= v0.211 — Período padrão nos dashboards =================
+   Pedido da Rebecka (01/11): os dashboards têm de ser padronizados. Todos os dashboards de período usam o mesmo filtro (Período,
+   De, Até) com os mesmos atalhos, e o período escolhido vale para todos: trocou no de Marketing, o de Vendas e o Administrativo
+   abrem no mesmo período. O Financeiro (vencimentos futuros) e o Customer Success (janela de dias) têm lógica própria. */
+const PER_AT = [['7', 'Últimos 7 dias'], ['30', 'Últimos 30 dias'], ['90', 'Últimos 90 dias'], ['365', 'Últimos 12 meses'], ['mes', 'Este mês'], ['mesant', 'Mês passado'], ['ano', 'Este ano']];
+function perAtalho(k, h = hoje()) {
+  if (k === 'mes') return { ini: h.slice(0, 8) + '01', fim: h };
+  if (k === 'mesant') { const p = mcMais(h.slice(0, 8) + '01', -1); return { ini: p, fim: mcUlt(p) }; }
+  if (k === 'ano') return { ini: h.slice(0, 4) + '-01-01', fim: h };
+  return { ini: diaMais(h, -(Number(k) - 1)), fim: h };
+}
+const perGlobal = () => S.perD = S.perD || perAtalho('30');
+function perPadrao(A, extra = '') {
+  const at = (PER_AT.find(([k]) => { const p = perAtalho(k); return p.ini === A.ini && p.fim === A.fim; }) || [''])[0];
+  return `<div class="filters per-padrao"><label>Período<select data-per-at>${PER_AT.map(([k, l]) => `<option value="${k}"${at === k ? ' selected' : ''}>${l}</option>`).join('')}<option value=""${at ? '' : ' selected'}>Personalizado</option></select></label>
+    <label>De<input type="date" data-per-de value="${A.ini}" max="${hoje()}"></label><label>Até<input type="date" data-per-ate value="${A.fim}"></label>${extra}</div>`;
+}
+/* liga o filtro: muda o período global (e o do dashboard) e chama cb */
+function perLiga(root, A, cb) {
+  const sel = root.querySelector('[data-per-at]'), de = root.querySelector('[data-per-de]'), ate = root.querySelector('[data-per-ate]'); if (!sel) return;
+  const aplica = (ini, fim) => { if (!ini || !fim || ini > fim) { toast('Informe um período válido: o início antes do fim.', true); return; } A.ini = ini; A.fim = fim; S.perD = { ini, fim }; cb(); };
+  sel.onchange = () => { if (sel.value) { const p = perAtalho(sel.value); aplica(p.ini, p.fim); } };
+  de.onchange = () => aplica(de.value, ate.value); ate.onchange = () => aplica(de.value, ate.value);
+}
+GRADE_SECOES['adm-painel'].topo = GRADE_SECOES['adm-painel'].topo.map(t => typeof t[0] === 'function' && /pgPer/.test(String(t[0])) ? [m => GS_todos(m).find(e => e.matches && (e.matches('.per-padrao') || (e.querySelector && e.querySelector('.per-padrao')))), t[1]] : t);
+/* "Planejamento da empresa" (objetivos) e o planejamento do ano (meta, cenários, trimestres) moram em telas diferentes: atalho no topo */
+const vPlano211 = VIEWS['adm-plano'];
+if (vPlano211) VIEWS['adm-plano'] = async m => { await vPlano211(m); if (m.querySelector('#plAnoAtalho')) return;
+  const d = document.createElement('div'); d.className = 'panel'; d.id = 'plAnoAtalho'; d.style.borderLeft = '4px solid var(--accent)';
+  d.innerHTML = `<div class="head" style="margin:0"><div><h2 style="margin:0">Meta do ano, cenários e trimestres</h2><span class="muted">O planejamento anual (a meta pela ambição ou pelo realista, os impostos, os 3 cenários com o lucro, a divisão por trimestre e mês) fica em Marketing › Campanhas e planejamento › Planejamento anual. Aqui ficam os objetivos e as metas da empresa.</span></div><div class="acts"><button class="btn pri" id="plAnoIr">Abrir o planejamento do ano</button></div></div>`;
+  const hd = m.querySelector(':scope > .head'); if (hd) hd.after(d); else m.prepend(d);
+  d.querySelector('#plAnoIr').onclick = () => { S.view = 'mkt-camp'; S.tabMkt = 'plan'; S.campSel = null; render(); }; };
 
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;
 const fonteLink = () => location.protocol === 'file:' ? '<div class="panel"><b>Atenção:</b> o arquivo está aberto do seu computador, então o link de resposta não funciona para outras pessoas. Hospede o arquivo (por exemplo no GitHub Pages) antes de enviar.</div>' : '';
@@ -20439,7 +20466,7 @@ async function vMetricas157(m) {
 const GRADE_TELAS = {
   'adm-painel': [
     ['.head', 12],
-    [m => [...m.children].find(e => e.querySelector && e.querySelector('#pgPer')), m => m.querySelector(':scope > .dq88') ? 8 : 12],
+    [m => [...m.children].find(e => e.matches && e.matches('.per-padrao') || (e.querySelector && e.querySelector('.per-padrao'))), m => m.querySelector(':scope > .dq88') ? 8 : 12],
     ['.dq88', 4],
     [m => GR_secl(m, 'O que importa'), 12], ['.kpis.hero', 12],
     [m => GR_secl(m, 'Funil, vendas'), 12], ['.kpis.mini', 12],

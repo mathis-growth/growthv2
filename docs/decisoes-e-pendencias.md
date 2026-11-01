@@ -1,5 +1,16 @@
 
 
+## v0.211 — Período padrão nos dashboards
+**Pedido da Rebecka (01/11)**: os dashboards têm de ser padronizados (o de Vendas não tinha o filtro igual aos outros). Levantamento (fato): Administrativo com uma lista só (7, 15, 30 dias, mês, 12 meses, ano, personalizado); Marketing com De, Até e atalho; Mídia paga com De e Até; Vendas com De, Até e atalho (v0.208); Financeiro com vencimentos futuros; Customer Success com "produtos nos últimos 30, 90 ou 180 dias"; Cockpit com botões.
+Decisões:
+- **Filtro padrão** nos dashboards de período — Administrativo, Marketing, Vendas e Mídia paga: "Período" (Últimos 7, 30 e 90 dias, Últimos 12 meses, Este mês, Mês passado, Este ano, Personalizado), "De" e "Até". Mudar a data à mão vira "Personalizado".
+- **O período vale para todos**: escolher "Mês passado" no Marketing faz o Vendas, o Administrativo e a Mídia paga abrirem em outubro. Abrir a Mídia paga de uma campanha (ou de um dia do gráfico) também muda o período padrão.
+- Começa nos últimos 30 dias (o Marketing começava em 90 e a Mídia paga em 14).
+- **Ficam com a lógica própria (por ora)**: Financeiro (o filtro é de vencimentos futuros: próximos 7 dias, 30 dias…), Customer Success (janela dos produtos) e Cockpit (botões de resumo). Se quiser, dá para trazer os três para o mesmo componente numa próxima versão.
+- Os números principais já ficam no topo em todos (Visão geral).
+- **Fato**: o Financeiro já guardava o período de vencimento em `S.per`; o período padrão novo usa `S.perD` para não misturar os dois.
+- **Planejamento da empresa × planejamento do ano**: a Rebecka procurou o planejamento anual (meta, 3 cenários, trimestres) em Administrativo › Planejamento da empresa, que é a tela de objetivos. Ele está em Marketing › Campanhas e planejamento › Planejamento anual, e a meta de 2026 do Lumen está salva em produção. Agora o Planejamento da empresa tem no topo um atalho, "Abrir o planejamento do ano".
+
 ## v0.210 — Financeiro simplificado no completo e comissão geral ou por produto
 **Pedido da Rebecka (01/11)**:
 - O Financeiro simplificado também vale para o **Growths completo**; no **Go-to-Market** ele é o único financeiro. Decisão: a tela Administrativo › Financeiro simplificado aparece para todos (cliente sem pacote vê tudo; o Go-to-Market passa a incluir a tela) e o pacote separado "Financeiro simplificado" da v0.209 deixa de existir. No completo, a tela avisa que os custos são os lançados ali (não vêm das contas a pagar) e que o DRE completo fica em Financeiro. Os Custos de marketing (menu Marketing) continuam só para cliente sem financeiro.

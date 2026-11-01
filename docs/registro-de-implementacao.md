@@ -1,5 +1,8 @@
 
 
+## Período padrão nos dashboards (v0.211)
+- Teste `t211_periodo_padrao.py` (17 verificações, 0 falhas): os 4 dashboards com o mesmo filtro e atalhos; começam em 30 dias; o "Mês passado" do Marketing vale no Vendas, Administrativo e Mídia paga; data à mão vira Personalizado e vale no Administrativo; filtro no topo; atalho do Planejamento da empresa abre o Planejamento anual. t192, t205, t208, t158 sem falhas.
+
 ## Financeiro simplificado no completo e comissão por produto (v0.210)
 - Teste `t209_financeiro_simplificado.py` (21 verificações, 0 falhas): Go-to-Market com a tela; custos com grupo; parceiro com 10% geral e 20% no Curso Base; gravado em duas linhas; comissão de outubro = 20% no produto e 10% no resto, sem somar; DRE; mudar a geral a partir de novembro fecha a antiga e não muda outubro; Growths completo com o Financeiro simplificado e o completo, e o aviso. `t205` 0 falhas.
 

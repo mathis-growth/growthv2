@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.210 (Financeiro simplificado no completo e comissão por produto).
+**Última atualização:** 01/11/2026, versão 0.211 (período padrão nos dashboards).
+
+**v0.211 · Um período para todos os dashboards.** O mesmo filtro (Período, De, Até) no Administrativo, Marketing, Vendas e Mídia paga, e o período escolhido vale em todos.
 
 **v0.209 · Financeiro simplificado.** DRE do mês sem contas a pagar: o cliente lança os totais e as % dos parceiros, e o Growths mostra receita líquida, Resultado de marketing e Resultado da operação.
 
@@ -547,6 +549,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.211):** Dashboards com o mesmo filtro de período, que vale em todos.
 - **01/11 (v0.210):** Financeiro simplificado também no completo; comissão de parceiro geral ou por produto.
 - **01/11 (v0.209):** Financeiro simplificado: DRE do mês sem contas a pagar, com custos por grupo e comissões de parceiros.
 - **01/11 (v0.208):** Dashboard de vendas no padrão dos outros: filtro de período e os números de vendas e clientes no topo.
