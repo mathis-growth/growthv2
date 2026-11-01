@@ -388,7 +388,41 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.197 pesquisas: ações na lista */
+<style id="v122">/* v0.198 planejamento anual: seções, meta do ano e trimestres */
+.pa-wrap{display:flex;flex-direction:column;gap:28px;margin-bottom:28px}
+.pa-sec{display:flex;flex-direction:column;gap:16px;padding:18px 20px 20px;background:var(--surface-2);border:1px solid var(--line);border-left:4px solid rgba(var(--accent-rgb),.6);border-radius:calc(var(--raio) + 4px);margin-bottom:28px}
+.pa-wrap .pa-sec{margin-bottom:0}
+.pa-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.pa-h h2{margin:0;font-size:19px}.pa-h p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.pa-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pa-card,.pa-tri{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.pa-card.on,.pa-tri.on{border:2px solid var(--accent);background:var(--accent-soft)}
+.pa-card .l,.pa-tri .l{font-size:12.5px;font-weight:600;color:var(--muted)}
+.pa-card b{font-size:24px}.pa-tri b{font-size:20px}
+.pa-contas{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.pa-conta{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.pa-conta h3{margin:0;font-size:15px}.pa-conta p{margin:0}
+.pa-tot{font-size:15px;padding-top:6px;border-top:1px solid var(--line)}
+.pa-dif{padding:12px 14px;border-radius:10px;background:var(--warn-soft,rgba(245,158,66,.12));border:1px solid rgba(245,158,66,.4)}
+.pa-dif.ok{background:var(--good-soft,rgba(23,128,61,.1));border-color:rgba(23,128,61,.35)}
+.pa-dif ul{margin:6px 0 0;padding-left:18px}
+.pa-falta{margin:0;padding:10px 12px;border-radius:10px;background:var(--warn-soft,rgba(245,158,66,.12));border:1px solid rgba(245,158,66,.4);font-size:13px}
+.pa-rod{margin:0;font-size:12.5px}
+.pa-vazio{display:flex;flex-direction:column;gap:10px;align-items:flex-start}.pa-vazio p{margin:0}
+.pa-tris{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.pa-bar{height:8px;border-radius:9px;background:var(--line);overflow:hidden}.pa-bar i{display:block;height:100%;background:var(--accent)}
+.pa-graf h3{margin:0;font-size:15px}
+.pa-det summary{cursor:pointer;font-weight:600}
+.pa-det .tw td,.pa-det .tw th{font-size:12px;padding:6px 6px}
+.pa-pr{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:8px 12px;padding:10px 0;border-top:1px solid var(--line)}
+.pa-pr .pa-aj{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;padding:10px;border-radius:10px;background:var(--surface-2)}
+.pa-pr .pa-src{grid-column:1/-1}
+.pa-pr[hidden],.pa-aj[hidden],.pa-modo[hidden],.pa-basede[hidden]{display:none!important}
+.pa-cam{display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.pa-cam label.chk{align-items:flex-start;gap:8px}
+@media (max-width:900px){.pa-cards,.pa-tris{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.pa-cards,.pa-tris{grid-template-columns:1fr}.pa-pr{grid-template-columns:1fr}}
+/* v0.197 pesquisas: ações na lista */
 .pq-acoes{white-space:nowrap;text-align:right}
 .pq-acoes .btn{margin-left:4px}
 tr.pq-oc td{opacity:.6}
@@ -2746,7 +2780,7 @@ async function tabPlan(el) {
   const P = Object.fromEntries(pl.map(x => [x.mes, x]));
   const agora = new Date(), mesAtual = agora.getFullYear() === a ? agora.getMonth() + 1 : (a < agora.getFullYear() ? 12 : 0);
   const val = (mes, k) => P[mes] && P[mes][k] != null ? P[mes][k] : '';
-  el.innerHTML = `<div id="planCamp" style="display:flex;flex-direction:column;gap:16px"></div><div class="head"><div><h2 style="margin:0">Metas mensais da empresa</h2><span class="muted">Meta e orçamento mês a mês, independente das campanhas.</span></div><div class="filters"><label>Ano<select id="anoSel">${[a - 1, a, a + 1].map(x => `<option${x === a ? ' selected' : ''}>${x}</option>`).join('')}</select></label></div><div class="acts"><button class="btn pri" id="salvaPlan">Salvar planejamento</button></div></div>
+  el.innerHTML = `<div id="paAno" class="pa-wrap"></div><section class="pa-sec"><header class="pa-h"><div><h2>3. Calendário de campanhas</h2><p>Quais campanhas fazem a meta, e quanto falta planejar?</p></div></header><div id="planCamp" style="display:flex;flex-direction:column;gap:16px"></div></section><section class="pa-sec" id="paMeses"><header class="pa-h"><div><h2>Metas mês a mês</h2><p>O detalhe de cada mês: leads, vendas, receita e orçamento. A receita pode vir da sugestão da seção 2.</p></div></header><div class="head"><div><h2 style="margin:0">Metas mensais da empresa</h2><span class="muted">Meta e orçamento mês a mês, independente das campanhas.</span></div><div class="filters"><label>Ano<select id="anoSel">${[a - 1, a, a + 1].map(x => `<option${x === a ? ' selected' : ''}>${x}</option>`).join('')}</select></label></div><div class="acts"><button class="btn pri" id="salvaPlan">Salvar planejamento</button></div></div>
   <div class="panel"><div class="tw"><table><thead><tr><th>Mês</th><th class="n">Meta leads</th><th class="n">Leads</th><th class="n">Meta vendas</th><th class="n">Vendas</th><th class="n">Meta receita</th><th class="n">Receita</th><th class="n">Orçamento</th></tr></thead><tbody>
   ${MESES.map((n, i) => { const k = i + 1; return `<tr><td>${n}</td>
     <td class="n"><input type="number" data-m="${k}" data-k="meta_leads" value="${val(k, 'meta_leads')}"></td><td class="n">${k <= mesAtual ? num(rl[i]) : '—'}</td>
@@ -2755,8 +2789,9 @@ async function tabPlan(el) {
     <td class="n"><input type="number" step="0.01" data-m="${k}" data-k="orcamento" value="${val(k, 'orcamento')}"></td></tr>`; }).join('')}
   </tbody></table></div></div>
   <div class="cols"><div class="panel"><h2>Receita bruta: meta x realizado</h2>${linhas(MESES, MESES.map((_, i) => P[i + 1] ? P[i + 1].meta_receita : null).map(v => v == null ? null : Number(v)), rr.map((v, i) => i + 1 <= mesAtual ? v : null), v => 'R$ ' + (v >= 1000 ? Math.round(v / 1000) + 'k' : Math.round(v)))}</div>
-  <div class="panel"><h2>Leads: meta x realizado</h2>${linhas(MESES, MESES.map((_, i) => P[i + 1] ? P[i + 1].meta_leads : null), rl.map((v, i) => i + 1 <= mesAtual ? v : null), v => String(Math.round(v)))}</div></div>`;
+  <div class="panel"><h2>Leads: meta x realizado</h2>${linhas(MESES, MESES.map((_, i) => P[i + 1] ? P[i + 1].meta_leads : null), rl.map((v, i) => i + 1 <= mesAtual ? v : null), v => String(Math.round(v)))}</div></div></section>`;
   await planCamp($('#planCamp'), a, P);
+  await paAno($('#paAno'), a, P);
   $('#anoSel').onchange = e => { S.ano = Number(e.target.value); render(); };
   $('#salvaPlan').onclick = () => act(async () => {
     const linhasN = [];
@@ -16339,6 +16374,198 @@ async function pqExcluir(p) {
       if (S.pqSel === p.id) S.pqSel = null; toast('Pesquisa excluída');
     }, 'Excluir pesquisa');
   const b = $('#modalRoot .modal .pri'); if (b) b.classList.add('bad');
+}
+
+/* ================= v0.198 — Planejamento anual, etapa 1: meta do ano e trimestres =================
+   Pedido da Rebecka (01/11), documento "Planejamento anual no Growths: desenho das telas".
+   Seção 1: caminho da meta (só pela ambição, só pelo realista ou as duas comparadas); cada premissa com a origem
+   (do sistema, digitado ou estimativa pela ajuda); três cenários; a diferença entre as duas contas e as saídas.
+   Seção 2: meta por trimestre e a sugestão mês a mês (campanhas + base + o resto pela sazonalidade), que preenche
+   as metas mensais (planejamento_mensal); gráfico acumulado com a previsão. Sem dado, "sem dado": nunca zero inventado. */
+const PA_PREM = [
+  { k: 'custos_fixos', l: 'Custos fixos do ano', un: 'brl', conta: 'ambicao', modo: 'lucro', sug: 'custos_fixos_ano',
+    ajuda: [['Quanto sai por mês com equipe, ferramentas, pró-labore e escritório? (R$)']], calc: v => v[0] * 12, como: 'gasto do mês × 12' },
+  { k: 'lucro_desejado', l: 'Lucro desejado no ano', un: 'brl', conta: 'ambicao', modo: 'lucro', so: 'digitar' },
+  { k: 'margem', l: 'Margem de contribuição', un: 'pct', conta: 'ambicao', modo: 'lucro', sug: 'margem_contribuicao',
+    ajuda: [['Taxa da plataforma (% do preço)'], ['Impostos (% do preço)'], ['Comissões (% do preço)'], ['Custo de entrega (% do preço)']], calc: v => 100 - v.reduce((a, b) => a + b, 0), como: '100% − os custos que saem de cada venda' },
+  { k: 'receita_anterior', l: 'Receita do ano anterior', un: 'brl', conta: 'ambicao', modo: 'crescimento', sug: 'receita_ano_anterior',
+    ajuda: [['Quanto você faturou por mês, em média, no ano passado? (R$)']], calc: v => v[0] * 12, como: 'média do mês × 12' },
+  { k: 'crescimento', l: 'Crescimento desejado', un: 'pct', conta: 'ambicao', modo: 'crescimento', so: 'digitar' },
+  { k: 'mrr', l: 'Receita recorrente de hoje (por mês)', un: 'brl', conta: 'realista', sug: 'mrr',
+    ajuda: [['Quantos clientes pagam todo mês?'], ['Quanto cada um paga por mês? (R$)']], calc: v => v[0] * v[1], como: 'clientes × mensalidade', zeroOk: true },
+  { k: 'churn', l: 'Perda esperada no ano (churn)', un: 'pct', conta: 'realista', sug: 'churn_anual', dep: 'mrr',
+    ajuda: [['Quantos clientes pagavam há um ano?'], ['Desses, quantos ainda pagam?']], calc: v => v[0] > 0 ? (1 - v[1] / v[0]) * 100 : null, como: '1 − (ainda pagam ÷ pagavam)' },
+  { k: 'clientes', l: 'Clientes atuais (compraram nos últimos 12 meses)', un: 'numero', conta: 'realista', sug: 'clientes_ativos',
+    ajuda: [['Quantos clientes compraram de você nos últimos 12 meses?']], calc: v => v[0], como: 'a resposta' },
+  { k: 'recompra', l: 'Taxa de recompra', un: 'pct', conta: 'realista', sug: 'taxa_recompra',
+    ajuda: [['De cada 10 clientes, quantos compraram de novo outro produto?']], calc: v => v[0] * 10, como: 'resposta × 10%' },
+  { k: 'ticket', l: 'Ticket médio', un: 'brl', conta: 'realista', sug: 'ticket_medio',
+    ajuda: [['Preço do produto principal (R$)'], ['Extra médio por venda com order bump ou upsell (R$)']], calc: v => v[0] + v[1], como: 'preço + extra' }
+];
+const PA_FONTE = { sistema: 'do sistema', digitado: 'digitado', estimativa: 'estimativa' };
+const paFmt = (v, un) => v == null || !isFinite(v) ? 'sem dado' : un === 'brl' ? brl(v) : un === 'pct' ? String(Math.round(v * 10) / 10).replace('.', ',') + '%' : num(Math.round(v));
+const paNum = v => v === '' || v == null ? null : Number(String(v).replace(',', '.'));
+/* premissas visíveis pelo caminho escolhido */
+const paVisiveis = pa => PA_PREM.filter(p => (pa.caminho === 'ambos' || pa.caminho === p.conta) && (p.conta !== 'ambicao' || !p.modo || p.modo === pa.modo_ambicao));
+const paVal = (pa, k) => { const x = (pa.premissas || {})[k]; return x && x.valor != null && x.valor !== '' ? Number(x.valor) : null; };
+/* as contas: ambição, realista (com as partes) e os cenários */
+function paContas(pa, camps) {
+  const v = k => paVal(pa, k), falta = [];
+  let A = null;
+  if (pa.caminho !== 'realista') {
+    if (pa.modo_ambicao === 'crescimento') { if (v('receita_anterior') == null) falta.push('receita do ano anterior'); if (v('crescimento') == null) falta.push('crescimento desejado');
+      if (v('receita_anterior') != null && v('crescimento') != null) A = v('receita_anterior') * (1 + v('crescimento') / 100); }
+    else { ['custos_fixos', 'lucro_desejado', 'margem'].forEach(k => { if (v(k) == null) falta.push(PA_PREM.find(p => p.k === k).l.toLowerCase()); });
+      if (v('custos_fixos') != null && v('lucro_desejado') != null && v('margem') > 0) A = (v('custos_fixos') + v('lucro_desejado')) / (v('margem') / 100); }
+  }
+  let R = null, partes = null;
+  if (pa.caminho !== 'ambicao') {
+    const base = v('mrr') == null ? null : v('mrr') === 0 ? 0 : v('churn') == null ? null : v('mrr') * 12 * (1 - v('churn') / 200);
+    const rec = v('clientes') != null && v('recompra') != null && v('ticket') != null ? v('clientes') * v('recompra') / 100 * v('ticket') : null;
+    const cmp = camps.reduce((t, c) => t + Number(c.meta_receita || 0), 0);
+    if (base == null) falta.push(v('mrr') == null ? 'receita recorrente de hoje (0 se não tem)' : 'perda esperada'); if (rec == null) falta.push('clientes, recompra ou ticket');
+    partes = { base, recompra: rec, campanhas: cmp };
+    if (base != null && rec != null) R = base + rec + cmp;
+  }
+  const base = pa.caminho === 'ambicao' ? A : pa.caminho === 'realista' ? R : (pa.base_de === 'realista' ? R : A);
+  const cen = base == null ? null : { pessimista: base * (1 - Number(pa.pct_pessimista) / 100), base, otimista: base * (1 + Number(pa.pct_otimista) / 100) };
+  return { A, R, partes, cen, meta: cen ? cen[pa.cenario_meta || 'base'] : null, falta: [...new Set(falta)] };
+}
+const paPadrao = (a) => ({ ano: a, caminho: 'ambicao', modo_ambicao: 'lucro', premissas: {}, pct_pessimista: 20, pct_otimista: 20, base_de: 'ambicao', cenario_meta: 'base' });
+/* campanhas do ano e a meta delas por mês (mesma regra da linha do tempo: lançamento no mês em que o carrinho fecha; perpétua dividida até dezembro) */
+function paCampMes(camps, a) {
+  const ini = `${a}-01-01`, fim = `${a}-12-31`, porMes = Array(12).fill(0), lanc = Array(12).fill(0), perp = Array(12).fill(0);
+  camps.forEach(c => { const m = Number(c.meta_receita || 0); if (!m) return;
+    if (c.modelo === 'perpetuo') { const i0 = c.data_inicio < ini ? 0 : Number(c.data_inicio.slice(5, 7)) - 1, n = 12 - i0; for (let i = i0; i < 12; i++) { porMes[i] += m / n; perp[i] += m / n; } }
+    else { let d = c.data_carrinho_fecha || c.data_fim || c.data_inicio; if (d < ini) d = ini; if (d > fim) d = fim; const i = Number(d.slice(5, 7)) - 1; porMes[i] += m; lanc[i] += m; } });
+  return { porMes, lanc, perp };
+}
+function paSecao(n, t, p, corpo, acts = '') { return `<section class="pa-sec" data-pa="${n}"><header class="pa-h"><div><h2>${n}. ${esc(t)}</h2><p>${esc(p)}</p></div>${acts ? `<div class="acts">${acts}</div>` : ''}</header>${corpo}</section>`; }
+
+async function paAno(el, a, Pm) {
+  const w = S.ws, temT = await temColuna('plano_anual', 'caminho');
+  if (!temT) { el.innerHTML = paSecao(1, 'Meta do ano', 'Quanto a empresa precisa faturar no ano, e isso é possível?', '<div class="panel" style="border-left:4px solid var(--warn)"><b>Falta atualizar o banco.</b> <span class="muted">Rode supabase/RODAR_v0.198_plano_anual.sql no SQL Editor do Supabase para montar a meta do ano e a divisão por trimestre. As metas mês a mês, mais abaixo, continuam funcionando.</span></div>'); return; }
+  const [rows, sug0, camps0] = await Promise.all([q(sb.from('plano_anual').select('*').eq('workspace_id', w).eq('ano', a)).catch(() => []),
+    q(sb.rpc('plano_anual_sugestoes', { p_ws: w, p_ano: a, p_hoje: hoje() })).catch(() => null),
+    q(sb.from('campanhas').select('id,nome,modelo,meta_receita,data_inicio,data_fim,data_carrinho_fecha,status').eq('workspace_id', w)).catch(() => [])]);
+  const sug = sug0 || {}, pa = rows[0] || null, ini = `${a}-01-01`, fim = `${a}-12-31`;
+  const camps = camps0.filter(c => c.data_inicio && c.data_inicio <= fim && (!c.data_fim || c.data_fim >= ini) && c.status !== 'cancelada');
+  if (!pa) {
+    el.innerHTML = paSecao(1, 'Meta do ano', 'Quanto a empresa precisa faturar no ano, e isso é possível?', `<div class="pa-vazio"><p>Ainda não há meta para ${a}. Monte em três passos: escolha o caminho da conta, preencha as premissas (do sistema, digitando ou com a ajuda) e escolha o cenário que vira a meta.</p>
+      <button class="btn pri" id="paMonta">Montar a meta de ${a}</button>${sug.receita_ano_anterior != null || sug.dre_meses ? `<p class="muted">O Growths já tem dados deste cliente: ${sug.dre_meses || 0} mês(es) de DRE${sug.receita_ano_anterior != null ? ' e vendas de ' + (a - 1) : ''}. Onde houver dado, a premissa pode vir "do sistema".</p>` : '<p class="muted">Ainda sem histórico no Growths: use "Digitar" ou "Não sei, me ajude" em cada premissa. No ano que vem, o sistema calcula pelo ano anterior.</p>'}</div>`);
+    $('#paMonta').onclick = () => paModal(a, paPadrao(a), sug, camps); return;
+  }
+  const C = paContas(pa, camps), vis = paVisiveis(pa), est = vis.filter(p => ((pa.premissas || {})[p.k] || {}).fonte === 'estimativa').length;
+  const card = (k, nome, sub) => `<div class="pa-card${pa.cenario_meta === k ? ' on' : ''}"><span class="l">${nome}${pa.cenario_meta === k ? ' <span class="pill info">a meta</span>' : ''}</span><b>${C.cen ? brl(C.cen[k]) : 'sem dado'}</b><small class="muted">${sub}</small></div>`;
+  const cresc = C.meta != null && sug.receita_ano_anterior ? (C.meta / sug.receita_ano_anterior - 1) * 100 : null;
+  const linhaP = p => { const x = (pa.premissas || {})[p.k] || {}; return `<tr><td>${esc(p.l)}</td><td class="n"><b>${paFmt(paVal(pa, p.k), p.un)}</b></td><td>${x.fonte ? `<span class="pill ${x.fonte === 'estimativa' ? 'warn' : x.fonte === 'sistema' ? 'info' : 'neutral'}">${PA_FONTE[x.fonte]}</span>` : '<span class="muted">—</span>'}${x.nota ? `<br><span class="muted">${esc(x.nota)}</span>` : ''}</td></tr>`; };
+  const contaA = pa.caminho !== 'realista' ? `<div class="pa-conta"><h3>De cima para baixo: a ambição</h3><p class="muted">${pa.modo_ambicao === 'crescimento' ? 'Receita do ano anterior × (1 + crescimento desejado)' : '(Custos fixos + lucro desejado) ÷ margem de contribuição'}</p>
+      <div class="tw"><table><tbody>${vis.filter(p => p.conta === 'ambicao').map(linhaP).join('')}</tbody></table></div><div class="pa-tot">Resultado: <b>${C.A != null ? brl(C.A) : 'sem dado'}</b></div></div>` : '';
+  const contaR = pa.caminho !== 'ambicao' ? `<div class="pa-conta"><h3>De baixo para cima: o realista</h3><p class="muted">Base recorrente + recompra + campanhas do calendário</p>
+      <div class="tw"><table><tbody>${vis.filter(p => p.conta === 'realista').map(linhaP).join('')}
+      <tr class="tot"><td>Base recorrente no ano</td><td class="n">${paFmt(C.partes.base, 'brl')}</td><td class="muted">recorrente × 12, menos metade da perda</td></tr>
+      <tr class="tot"><td>Recompra</td><td class="n">${paFmt(C.partes.recompra, 'brl')}</td><td class="muted">clientes × recompra × ticket</td></tr>
+      <tr class="tot"><td>Campanhas do calendário</td><td class="n">${brl(C.partes.campanhas)}</td><td class="muted">${camps.filter(c => Number(c.meta_receita) > 0).length} campanha(s) com meta em ${a}</td></tr></tbody></table></div><div class="pa-tot">Resultado: <b>${C.R != null ? brl(C.R) : 'sem dado'}</b></div></div>` : '';
+  let dif = '';
+  if (pa.caminho === 'ambos' && C.A != null && C.R != null) {
+    const gap = C.A - C.R, lancs = camps.filter(c => c.modelo !== 'perpetuo' && Number(c.meta_receita) > 0), med = lancs.length ? lancs.reduce((t, c) => t + Number(c.meta_receita), 0) / lancs.length : null, tk = paVal(pa, 'ticket');
+    dif = gap > 0 ? `<div class="pa-dif"><b>Faltam ${brl(gap)} entre a ambição e o realista.</b> Três jeitos de fechar:<ul>
+        <li><b>Mais campanhas:</b> ${med ? `cerca de ${Math.ceil(gap / med)} lançamento(s) do tamanho médio dos seus (${brl(med)})` : 'cadastre a meta dos lançamentos para o Growths calcular quantos faltam'}.</li>
+        <li><b>Mais clientes:</b> ${tk ? `cerca de ${num(Math.ceil(gap / tk))} venda(s) a mais no ticket de ${brl(tk)}; a verba para isso entra na etapa da Verba de marketing` : 'informe o ticket médio'}.</li>
+        <li><b>Meta menor:</b> usar o realista, ${brl(C.R)}.</li></ul></div>`
+      : `<div class="pa-dif ok"><b>O realista (${brl(C.R)}) já cobre a ambição (${brl(C.A)}).</b> Dá para usar o realista como base ou subir a ambição.</div>`;
+  }
+  const corpo1 = `${C.falta.length ? `<div class="pa-falta">Para fechar a conta falta: <b>${C.falta.map(esc).join(', ')}</b>. Use "Editar a meta".</div>` : ''}
+    <div class="pa-cards">${card('pessimista', 'Pessimista', `−${String(pa.pct_pessimista).replace('.', ',')}% · piso para o caixa`)}${card('base', 'Base', cresc != null ? `${cresc >= 0 ? '+' : ''}${String(Math.round(cresc * 10) / 10).replace('.', ',')}% sobre ${a - 1}` : pa.caminho === 'ambos' ? 'base: ' + (pa.base_de === 'realista' ? 'o realista' : 'a ambição') : 'o cenário do caminho escolhido')}${card('otimista', 'Otimista', `+${String(pa.pct_otimista).replace('.', ',')}% · se as primeiras campanhas performarem`)}</div>
+    <div class="pa-contas">${contaA}${contaR}</div>${dif}
+    <p class="muted pa-rod">Caminho: <b>${{ ambicao: 'só pela ambição', realista: 'só pelo realista', ambos: 'as duas contas, comparadas' }[pa.caminho]}</b>${est ? ` · <span class="pill warn">${est} de ${vis.length} premissas são estimativa</span> revise no fim do 1º trimestre` : ''}. Dados do sistema: vendas aprovadas e DRE${sug.dre_meses ? ` (${sug.dre_meses} mês(es) de DRE, ${dd(sug.dre_de)} a ${dd(sug.dre_ate)})` : ''}.</p>`;
+  el.innerHTML = paSecao(1, 'Meta do ano', 'Quanto a empresa precisa faturar no ano, e isso é possível?', corpo1, '<button class="btn" id="paEd">Editar a meta</button>') + '<div id="paTri"></div>';
+  $('#paEd').onclick = () => paModal(a, pa, sug, camps);
+  paTrimestres($('#paTri'), a, pa, C, sug, camps, Pm);
+}
+
+function paTrimestres(el, a, pa, C, sug, camps, Pm) {
+  const meta = C.meta, CM = paCampMes(camps, a), real = (sug.realizado_mes || Array(12).fill(0)).map(Number);
+  const h = hoje(), mesAt = Number(h.slice(0, 4)) === a ? Number(h.slice(5, 7)) : Number(h.slice(0, 4)) > a ? 13 : 0;
+  // sugestão mês a mês: o mês que já fechou fica com o realizado; nos outros, campanhas + base e recompra (iguais) + o resto pela sazonalidade (ou igual)
+  const lin = pa.caminho !== 'ambicao' && C.partes && C.partes.base != null && C.partes.recompra != null ? (C.partes.base + C.partes.recompra) / 12 : 0;
+  const fechado = i => i + 1 < mesAt, abertos = MESES.map((_, i) => i).filter(i => !fechado(i));
+  const fixo = MESES.map((_, i) => fechado(i) ? real[i] : CM.porMes[i] + lin), soma = fixo.reduce((t, v) => t + v, 0);
+  const saz = Array.isArray(sug.sazonalidade) ? sug.sazonalidade.map(Number) : null, sw = saz ? abertos.reduce((t, i) => t + saz[i], 0) : 0;
+  const resto = meta != null ? Math.max(0, meta - soma) : 0, pesos = MESES.map((_, i) => fechado(i) ? 0 : saz && sw > 0 ? saz[i] / sw : 1 / (abertos.length || 1));
+  const sugM = meta == null ? null : fixo.map((v, i) => Math.round((v + resto * pesos[i]) * 100) / 100);
+  const atual = i => Pm[i + 1] && Pm[i + 1].meta_receita != null ? Number(Pm[i + 1].meta_receita) : null;
+  const metaM = i => atual(i) != null ? atual(i) : sugM ? sugM[i] : null;
+  const tri = [0, 1, 2, 3].map(t => { const ms = [0, 1, 2].map(j => t * 3 + j), mt = ms.reduce((s, i) => s + (metaM(i) || 0), 0), rl = ms.reduce((s, i) => s + (i + 1 <= mesAt ? real[i] : 0), 0);
+    const emCurso = mesAt >= ms[0] + 1 && mesAt <= ms[2] + 1, fechado = mesAt > ms[2] + 1;
+    let esperado = null; if (emCurso) { const d0 = new Date(`${a}-${String(ms[0] + 1).padStart(2, '0')}-01T12:00:00`), d1 = new Date(a, ms[2] + 1, 0, 12), hj = new Date(h + 'T12:00:00'); esperado = mt * Math.min(1, (hj - d0) / (d1 - d0 + 864e5)); }
+    const ritmo = esperado != null && mt ? (rl >= esperado ? ['good', 'no ritmo'] : ['bad', 'atrás do ritmo']) : fechado && mt ? (rl >= mt ? ['good', 'meta batida'] : ['bad', 'meta não batida']) : null;
+    return { t, ms, mt, rl, emCurso, fechado, ritmo, lanc: ms.reduce((s, i) => s + CM.lanc[i], 0), perp: ms.reduce((s, i) => s + CM.perp[i], 0) }; });
+  const vazios = MESES.filter((_, i) => atual(i) == null).length;
+  const cardT = x => `<div class="pa-tri${x.emCurso ? ' on' : ''}"><span class="l">T${x.t + 1} · ${MESES[x.ms[0]]} a ${MESES[x.ms[2]]}${x.emCurso ? ' <span class="pill info">em curso</span>' : ''}</span>
+    <b>${x.mt ? brl(x.mt) : 'sem meta'}</b><div class="pa-bar"><i style="width:${x.mt ? Math.min(100, x.rl / x.mt * 100).toFixed(1) : 0}%"></i></div>
+    <small>${x.fechado || x.emCurso ? 'realizado ' + brl(x.rl) + (x.mt ? ' (' + Math.round(x.rl / x.mt * 100) + '%)' : '') : 'ainda não começou'}${x.ritmo ? ` · <span class="pill ${x.ritmo[0]}">${x.ritmo[1]}</span>` : ''}</small>
+    <small class="muted">${x.lanc ? 'lançamentos ' + GC.fmtK(x.lanc) : ''}${x.lanc && x.perp ? ' · ' : ''}${x.perp ? 'perpétuo ' + GC.fmtK(x.perp) : ''}${!x.lanc && !x.perp ? 'sem campanha com meta' : ''}</small></div>`;
+  // acumulados para o gráfico: meta, realizado até o mês atual e a previsão (realizado + meta que falta)
+  const acc = f => { let s = 0; return MESES.map((_, i) => { const v = f(i); if (v == null) return null; s += v; return Math.round(s); }); };
+  const metaAc = acc(i => metaM(i) || 0), realAc = acc(i => i + 1 <= Math.min(mesAt, 12) ? real[i] : null);
+  const ultReal = mesAt >= 1 ? Math.min(mesAt, 12) - 1 : -1, prev = MESES.map((_, i) => { if (ultReal < 0 || i < ultReal) return null; let s = realAc[ultReal]; for (let j = ultReal + 1; j <= i; j++) s += metaM(j) || 0; return Math.round(s); });
+  const tabela = sugM ? `<details class="pa-det"><summary>Sugestão mês a mês (${vazios ? vazios + ' mês(es) sem meta' : 'todos os meses com meta'})</summary>
+    <p class="muted">${mesAt > 1 ? 'Os meses que já fecharam ficam com o realizado. ' : ''}Campanhas no mês em que o carrinho fecha (perpétua dividida até dezembro)${lin ? ', base e recompra iguais todo mês' : ''} e o resto da meta pela ${saz ? 'sazonalidade das vendas dos últimos 12 meses' : 'divisão igual (ainda sem 6 meses de vendas para a sazonalidade)'}. Quem digitou um mês continua mandando nele.</p>
+    <div class="tw"><table><thead><tr><th></th>${MESES.map(n => `<th class="n">${n}</th>`).join('')}<th class="n">Ano</th></tr></thead><tbody>
+    <tr><td>Sugestão</td>${sugM.map(v => `<td class="n">${GC.fmtK(v)}</td>`).join('')}<td class="n"><b>${GC.fmtK(sugM.reduce((t, v) => t + v, 0))}</b></td></tr>
+    <tr><td>Meta salva</td>${MESES.map((_, i) => `<td class="n">${atual(i) != null ? GC.fmtK(atual(i)) : '<span class="muted">—</span>'}</td>`).join('')}<td class="n">${GC.fmtK(MESES.reduce((t, _, i) => t + (atual(i) || 0), 0))}</td></tr>
+    <tr><td>Realizado</td>${real.map((v, i) => `<td class="n">${i + 1 <= mesAt ? GC.fmtK(v) : '<span class="muted">—</span>'}</td>`).join('')}<td class="n">${GC.fmtK(real.reduce((t, v, i) => t + (i + 1 <= mesAt ? v : 0), 0))}</td></tr></tbody></table></div>
+    ${soma > (meta || 0) && meta != null ? `<p class="pa-falta">As campanhas e a base já somam ${brl(soma)}, mais que a meta (${brl(meta)}): a sugestão fica com esse valor.</p>` : ''}
+    <div class="acts"><button class="btn sm pri" id="paVazios"${vazios ? '' : ' disabled'}>Preencher os ${vazios} mês(es) sem meta</button><button class="btn sm" id="paTodos">Refazer todos pela sugestão</button></div></details>` : '';
+  el.innerHTML = paSecao(2, 'Por trimestre', 'Quanto cabe em cada trimestre, e onde estamos agora?', meta == null ? '<p class="muted">A divisão aparece quando a meta do ano estiver fechada (seção 1).</p>' : `<div class="pa-tris">${tri.map(cardT).join('')}</div>
+    <div class="panel pa-graf"><h3>Acumulado no ano: meta, realizado e previsão</h3>${gcLinhas({ series: [{ nome: 'Meta acumulada', valores: metaAc, cor: 'var(--muted)' }, { nome: 'Realizado acumulado', valores: realAc, cor: 'var(--accent)' }, { nome: 'Previsão (realizado + meta que falta)', valores: prev, cor: 'var(--gc-c3)' }], rotulos: MESES, W: 900, altura: 220 })}
+    <p class="muted gc-fonte">Realizado: vendas aprovadas pelo valor bruto, a mesma regra das metas mês a mês e do Dashboard. Meta do mês: a salva; sem ela, a sugestão.</p></div>${tabela}`);
+  const grava = soVazios => act(async () => { const rows = []; sugM.forEach((v, i) => { if (!soVazios || atual(i) == null) rows.push({ workspace_id: S.ws, ano: a, mes: i + 1, meta_receita: v }); });
+    if (rows.length) await q(sb.from('planejamento_mensal').upsert(rows, { onConflict: 'workspace_id,ano,mes' })); render(); }, soVazios ? 'Meses sem meta preenchidos' : 'Metas refeitas pela sugestão');
+  if ($('#paVazios')) $('#paVazios').onclick = () => grava(true);
+  if ($('#paTodos')) $('#paTodos').onclick = () => modal('Refazer todos os meses', '<p>As metas de receita dos 12 meses passam a ser a sugestão. As metas de leads, vendas e orçamento não mudam.</p>', async () => { const rows = sugM.map((v, i) => ({ workspace_id: S.ws, ano: a, mes: i + 1, meta_receita: v })); await q(sb.from('planejamento_mensal').upsert(rows, { onConflict: 'workspace_id,ano,mes' })); toast('Metas refeitas pela sugestão'); }, 'Refazer');
+}
+
+/* formulário da meta: caminho, premissas (do sistema / digitar / me ajude), cenários */
+function paModal(a, pa0, sug, camps) {
+  const pa = JSON.parse(JSON.stringify(pa0)); pa.premissas = pa.premissas || {};
+  const temSug = p => p.sug && sug[p.sug] != null;
+  const linha = p => { const x = pa.premissas[p.k] || {}, fonte = x.fonte || (temSug(p) ? 'sistema' : 'digitado');
+    const opts = [temSug(p) ? ['sistema', 'Do sistema'] : null, ['digitado', 'Digitar'], p.ajuda ? ['estimativa', 'Não sei, me ajude'] : null].filter(Boolean);
+    const val = fonte === 'sistema' && temSug(p) ? sug[p.sug] : x.valor;
+    return `<div class="pa-pr" data-pk="${p.k}" data-conta="${p.conta}" data-modo="${p.modo || ''}"><label>${esc(p.l)}${p.un === 'pct' ? ' (%)' : p.un === 'brl' ? ' (R$)' : ''}<input type="number" step="0.01" data-v value="${val ?? ''}"${fonte === 'sistema' ? ' readonly' : ''}></label>
+      <label>De onde vem<select data-f>${opts.map(([k, l]) => `<option value="${k}"${fonte === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+      <div class="pa-aj"${fonte === 'estimativa' ? '' : ' hidden'}>${(p.ajuda || []).map(([q0], i) => `<label>${esc(q0)}<input type="number" step="0.01" data-aj="${i}" value="${((x.ajuda || [])[i]) ?? ''}"></label>`).join('')}<small class="muted">Conta: ${esc(p.como || '')}</small></div>
+      <small class="muted pa-src">${temSug(p) ? `No sistema: ${paFmt(sug[p.sug], p.un)}${p.k === 'custos_fixos' || p.k === 'margem' ? ` (DRE, ${sug.dre_meses} mês(es)${sug.dre_meses < 6 ? ': pouco dado, confira' : ''})` : p.k === 'receita_anterior' ? ` (vendas de ${a - 1}, ${sug.receita_ano_anterior_meses} mês(es))` : ' (últimos 12 meses)'}` : p.so === 'digitar' ? 'Só você define.' : 'O Growths ainda não tem este dado.'}${p.k === 'mrr' ? ' Sem cliente recorrente, use 0.' : ''}</small></div>`; };
+  const f = modal('Meta do ano ' + a, `<fieldset class="pa-cam"><legend>Por qual caminho calcular a meta?</legend>
+      ${[['ambicao', 'Só pela ambição', 'De cima para baixo: o lucro que você quer ou o crescimento sobre o ano passado. O caminho para quem não tem histórico.'], ['realista', 'Só pelo realista', 'De baixo para cima: base recorrente, recompra e campanhas.'], ['ambos', 'As duas, comparadas', 'Mostra a diferença entre a ambição e o realista. O recomendado quando há dados.']].map(([k, l, d]) => `<label class="chk"><input type="radio" name="caminho" value="${k}"${pa.caminho === k ? ' checked' : ''}> <span><b>${l}</b><br><span class="muted">${d}</span></span></label>`).join('')}</fieldset>
+    <div class="pa-modo"><label>A ambição vem<select name="modo_ambicao"><option value="lucro"${pa.modo_ambicao === 'lucro' ? ' selected' : ''}>do lucro que eu quero</option><option value="crescimento"${pa.modo_ambicao === 'crescimento' ? ' selected' : ''}>do crescimento sobre o ano passado</option></select></label></div>
+    <div class="pa-prs">${PA_PREM.map(linha).join('')}</div>
+    <fieldset><legend>Cenários</legend><div class="grid2"><label>Pessimista: quanto abaixo da base (%)<input type="number" name="pct_pessimista" min="0" max="90" value="${pa.pct_pessimista}"></label><label>Otimista: quanto acima da base (%)<input type="number" name="pct_otimista" min="0" max="300" value="${pa.pct_otimista}"></label>
+      <label class="pa-basede">Com as duas contas, a base é<select name="base_de"><option value="ambicao"${pa.base_de === 'ambicao' ? ' selected' : ''}>a ambição</option><option value="realista"${pa.base_de === 'realista' ? ' selected' : ''}>o realista</option></select></label>
+      <label>A meta do ano é o cenário<select name="cenario_meta">${['pessimista', 'base', 'otimista'].map(k => `<option value="${k}"${pa.cenario_meta === k ? ' selected' : ''}>${k}</option>`).join('')}</select></label></div></fieldset>`,
+    async (d, form) => {
+      const caminho = (form.querySelector('[name=caminho]:checked') || {}).value || 'ambicao', modo = form.modo_ambicao.value, prem = {};
+      form.querySelectorAll('.pa-pr').forEach(r => { const p = PA_PREM.find(x => x.k === r.dataset.pk), fonte = r.querySelector('[data-f]').value, v = paNum(r.querySelector('[data-v]').value);
+        const aj = [...r.querySelectorAll('[data-aj]')].map(i => paNum(i.value));
+        if (v != null || fonte === 'sistema') prem[p.k] = { valor: fonte === 'sistema' ? sug[p.sug] : v, fonte, ...(fonte === 'estimativa' ? { ajuda: aj } : {}), ...(fonte === 'sistema' ? { nota: p.k === 'custos_fixos' || p.k === 'margem' ? `DRE ${dd(sug.dre_de)} a ${dd(sug.dre_ate)}` : p.k === 'receita_anterior' ? `vendas de ${a - 1}` : 'últimos 12 meses' } : {}) }; });
+      const novo = { workspace_id: S.ws, ano: a, caminho, modo_ambicao: modo, premissas: prem, pct_pessimista: Number(d.pct_pessimista || 0), pct_otimista: Number(d.pct_otimista || 0), base_de: d.base_de || 'ambicao', cenario_meta: d.cenario_meta || 'base', atualizado_em: new Date().toISOString() };
+      const C = paContas(novo, camps); novo.meta_receita = C.meta != null ? Math.round(C.meta * 100) / 100 : null;
+      await q(sb.from('plano_anual').upsert(novo, { onConflict: 'workspace_id,ano' }));
+      toast(C.meta != null ? 'Meta do ano: ' + brl(C.meta) : 'Plano salvo; falta ' + C.falta.join(', '));
+    }, 'Salvar a meta', true);
+  const vis = () => { const cam = (f.querySelector('[name=caminho]:checked') || {}).value, modo = f.modo_ambicao.value;
+    f.querySelector('.pa-modo').hidden = cam === 'realista'; f.querySelector('.pa-basede').hidden = cam !== 'ambos';
+    f.querySelectorAll('.pa-pr').forEach(r => { r.hidden = !((cam === 'ambos' || cam === r.dataset.conta) && (r.dataset.conta !== 'ambicao' || !r.dataset.modo || r.dataset.modo === modo)); }); };
+  f.addEventListener('change', e => { const r = e.target.closest('.pa-pr');
+    if (r && e.target.matches('[data-f]')) { const p = PA_PREM.find(x => x.k === r.dataset.pk), v = r.querySelector('[data-v]'), fo = e.target.value;
+      r.querySelector('.pa-aj').hidden = fo !== 'estimativa'; v.readOnly = fo === 'sistema' || fo === 'estimativa'; if (fo === 'sistema') v.value = sug[p.sug]; }
+    vis(); });
+  f.addEventListener('input', e => { const r = e.target.closest('.pa-pr'); if (!r || !e.target.matches('[data-aj]')) return; const p = PA_PREM.find(x => x.k === r.dataset.pk), vals = [...r.querySelectorAll('[data-aj]')].map(i => paNum(i.value));
+    const v = vals.every(x => x != null) ? p.calc(vals) : null; r.querySelector('[data-v]').value = v != null && isFinite(v) ? Math.round(v * 100) / 100 : ''; });
+  f.querySelectorAll('.pa-pr').forEach(r => { if (r.querySelector('[data-f]').value === 'estimativa') r.querySelector('[data-v]').readOnly = true; });
+  vis();
 }
 
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;

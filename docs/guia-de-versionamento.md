@@ -1,3 +1,6 @@
+## v0.198
+- index.html: aplicado sobre a v0.197 (`aplica198.py`; novos `g198.js` e `g198.css`): `PA_PREM`, `paContas`, `paCampMes`, `paAno`, `paTrimestres`, `paModal`; `tabPlan` em seções. Migração `20261201100000_plano_anual.sql` / `RODAR_v0.198_plano_anual.sql`. Teste novo `t198_plano_anual.py`.
+
 ## v0.197
 - index.html: aplicado sobre a v0.196 (`aplica197.py`; novos `g197.js` e `g197.css`): `pqOcultos`, `pqOcultar`, `pqModelosDisp`, `pqModelosModal`, `pqExcluir`; lista e topo da pesquisa com Editar e Excluir. Migração `20261130100000_pesquisa_modelos_ocultos.sql` / `RODAR_v0.197_pesquisa_modelos.sql`. Teste novo `t197_pesquisas_editar_excluir.py`.
 

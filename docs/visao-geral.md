@@ -1,3 +1,6 @@
+## v0.198
+**Planejamento anual com método.** A aba Planejamento anual agora começa pela meta do ano: você escolhe se calcula pela ambição (o lucro que quer ou o crescimento), pelo realista (clientes, recompra e campanhas) ou pelas duas, e cada número vem do sistema, digitado ou de uma pergunta simples quando você não sabe. Saem três cenários, a diferença entre a ambição e o realista com o que fazer, a meta por trimestre com o ritmo e a sugestão mês a mês que preenche as metas mensais.
+
 ## v0.197
 **Pesquisas mais fáceis de manter.** Cada pesquisa da lista tem Editar e Excluir à vista, e o topo da pesquisa também. Antes de excluir, o Growths diz quantas respostas vão junto. Os modelos prontos que você não usa saem da lista com um clique e voltam quando quiser.
 

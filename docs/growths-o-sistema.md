@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.197 (pesquisas: editar, excluir e modelos).
+**Última atualização:** 01/11/2026, versão 0.198 (planejamento anual: meta do ano e trimestres).
+
+**v0.198 · Planejamento anual.** A meta do ano sai de uma conta escolhida (ambição, realista ou as duas), com cada número do sistema, digitado ou estimado com ajuda, e vira meta por trimestre e por mês.
 
 **v0.197 · Pesquisas.** Editar e Excluir à vista em cada pesquisa; os modelos que você não usa saem da lista.
 
@@ -515,6 +517,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - Fechar o mês em um clique: pagar dez contas de uma vez sem perder o lançamento de cada uma.
 - Dashboard não é relatório: por que cada bloco da tela precisa responder uma pergunta só.
 - A pesquisa na página de obrigado: o momento em que o lead mais quer falar com você.
+- Ambição × realista: por que a meta do ano precisa de duas contas, e o que fazer com a diferença.
 
 ---
 
@@ -597,4 +600,5 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - mapa da estratégia com order bump e downsell, tela cheia e edição com dois cliques;
   - menu RevOps passa a se chamar Customer Success;
   - bolinha de ligação nos quatro lados dos blocos do mapa, com mais de uma ligação se precisar;
-  - pesquisas com Editar e Excluir à vista e modelos que saem da lista.
+  - pesquisas com Editar e Excluir à vista e modelos que saem da lista;
+  - planejamento anual com meta do ano por método (ambição × realista), cenários e divisão por trimestre e mês.

@@ -1,3 +1,10 @@
+## v0.198 — Planejamento anual: meta do ano e trimestres (01/11/2026)
+- Aba **Planejamento anual** em seções: 1. Meta do ano, 2. Por trimestre, 3. Calendário de campanhas, Metas mês a mês.
+- **Meta do ano**: caminho (ambição, realista ou os dois), premissas do sistema / digitadas / "não sei, me ajude", três cenários, diferença entre as contas com três saídas, aviso de estimativas.
+- **Por trimestre**: meta, realizado e ritmo; gráfico acumulado com a previsão; sugestão mês a mês (meses fechados com o realizado) que preenche as metas mensais.
+- Banco: `RODAR_v0.198_plano_anual.sql` (**ainda não aplicado em produção**).
+- Teste: `t198_plano_anual.py` (0 falhas).
+
 ## v0.197 — Pesquisas: editar, excluir e modelos (01/11/2026)
 - **Editar** e **Excluir** em cada pesquisa da lista e no topo da pesquisa ("Configurar" virou "Editar pesquisa").
 - Excluir avisa quantas respostas e envios vão junto e quais campanhas usam a pesquisa.

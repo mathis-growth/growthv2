@@ -18,7 +18,7 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 | **Versão da tela** | 0.177 · 30/10/2026 (`index.html` + `assets/atendimento.*`) |
 | **Atendimento (0.175)** | Código preparado; falta aplicar `supabase/migrations/20261030021541_central_atendimento.sql`, publicar a função `atendimento`, configurar canais e liberar as telas nos pacotes. [Guia](docs/atendimento.md). |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | conferido em 31/10/2026: tem tudo até a **v0.189**, inclusive as narrativas (v0.157, 39 modelos), o Growth's Content simplificado (v0.159), os subtemas (v0.160), o Customer Growth (v0.163), o Atendimento e o Diagnóstico 360° (v0.177) |
-| **Falta aplicar no banco** | `supabase/RODAR_v0.197_pesquisa_modelos.sql` (modelos de pesquisa fora da lista) |
+| **Falta aplicar no banco** | `supabase/RODAR_v0.197_pesquisa_modelos.sql` (modelos de pesquisa fora da lista) e `supabase/RODAR_v0.198_plano_anual.sql` (meta do ano) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta; crédito na conta da API da Anthropic (a chave `ANTHROPIC_API_KEY` está cadastrada e funciona, mas as pesquisas de 25 e 26/10 voltaram com "credit balance is too low"); o app do Google já existe (segredos conferidos em 25/10/2026): [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
 
@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.198 | 01/11/2026 | **Planejamento anual**: meta do ano (caminho, premissas com origem, cenários, diferença) e trimestres (ritmo, sugestão mês a mês, previsão). | `RODAR_v0.198_plano_anual.sql`, **ainda não aplicado** |
 | 0.197 | 01/11/2026 | **Pesquisas**: Editar e Excluir à vista (lista e topo), aviso do que vai junto ao excluir, e Modelos (usar, tirar da lista, mostrar de novo). | `RODAR_v0.197_pesquisa_modelos.sql`, **ainda não aplicado** |
 | 0.196 | 01/11/2026 | **Mapa da estratégia**: bolinha de ligação nos quatro lados do bloco, mais de uma ligação entre os mesmos blocos e escolha do lado no painel. | Só tela |
 | 0.195 | 01/11/2026 | **Mapa da estratégia**: order bump, downsell, tela cheia e edição com dois cliques; menu **RevOps → Customer Success**. | Só tela |

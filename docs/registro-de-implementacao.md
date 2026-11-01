@@ -1,5 +1,9 @@
 
 
+## Planejamento anual, etapa 1 (v0.198)
+- `g198.js`: premissas e as contas na tela (deterministas, com a fórmula escrita ao lado); formulário com caminho, origem de cada premissa e a ajuda que calcula; trimestres com ritmo; sugestão mês a mês; gráfico acumulado com previsão.
+- Teste `t198_plano_anual.py`: tela sem plano; seções; três caminhos; premissas que aparecem por caminho; "do sistema" só com dado e travado; ajuda calcula; plano gravado com a origem; meta = (custos + lucro) ÷ margem; diferença com as três saídas; aviso de estimativa; conta realista; trimestres; gráfico; preencher meses soma a meta; mês fechado com o realizado; botão desligado sem mês vazio; caminho só ambição. 0 falhas. t121 e t124 sem falhas.
+
 ## Pesquisas: editar, excluir e modelos (v0.197)
 - `g197.js`: modelos ocultos lidos da tabela (ou do navegador, sem a tabela); modal Modelos; exclusão com contagem de respostas e envios e limpeza da pesquisa nas campanhas.
 - Teste `t197_pesquisas_editar_excluir.py`: Editar e Excluir na lista; edição grava; aviso com 3 respostas; Cancelar não exclui; topo com Editar pesquisa e Excluir; excluir sem respostas; modelo fora da lista (no banco), some do seletor e volta. 0 falhas. t161, t193 e testes de tela de pesquisa sem falhas.

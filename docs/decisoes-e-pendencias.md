@@ -1,5 +1,16 @@
 
 
+## v0.198 — Planejamento anual, etapa 1: meta do ano e trimestres
+**Pedido da Rebecka (01/11)**: melhorar o Planejamento anual com um método validado (meta de faturamento, divisão por trimestre, campanhas, verba). Desenho no documento "Planejamento anual no Growths: desenho das telas". Ela apontou que o cliente chega sem dados: o sistema traz as contas, deixa escolher o caminho e de onde vem cada número, e no ano seguinte calcula pelo ano anterior.
+Decisões (com as recomendações do documento, que ela aprovou ao pedir para fazer):
+- A aba **Marketing › Campanhas › Planejamento anual** vira o painel do ano em seções: 1. Meta do ano, 2. Por trimestre, 3. Calendário de campanhas (o que já existia), e o detalhe Metas mês a mês.
+- **Caminho da meta**: só pela ambição (lucro: (custos fixos + lucro) ÷ margem; ou crescimento sobre o ano anterior), só pelo realista (base recorrente × 12 menos metade da perda + clientes × recompra × ticket + metas das campanhas do ano) ou as duas comparadas, com a diferença e três saídas (mais campanhas, mais vendas, meta menor).
+- **Cada premissa**: do sistema (só quando o Growths tem o dado; com o período), digitada ou "não sei, me ajude" (pergunta simples que calcula; fica marcada como estimativa). Sem dado, "sem dado", nunca zero inventado. A tela avisa quantas premissas são estimativa.
+- **Do sistema**: margem de contribuição = (receita − deduções) ÷ receita e custos fixos = despesas fora de mídia paga (contas 6.1), ambos da DRE dos últimos 12 meses fechados (custos levados ao ano pela média do mês); receita do ano anterior, clientes, recompra e ticket pelas vendas aprovadas; recorrência e perda pelos contratos recorrentes.
+- **Cenários**: pessimista e otimista em % sobre a base (você define; vem 20%); você escolhe qual vira a meta (vem o base).
+- **Trimestres**: meta e realizado com o ritmo do trimestre em curso; a sugestão mês a mês deixa os meses que já fecharam com o realizado e, nos outros, põe as campanhas, a base e a recompra, e o resto pela sazonalidade das vendas (com 6 meses ou mais; se não, igual). "Preencher os meses sem meta" e "Refazer todos pela sugestão" gravam só a meta de receita das metas mensais; quem digitou um mês continua mandando nele.
+- Próximas etapas: funil reverso por campanha (etapa 2), verba de marketing (etapa 3), prioridades do trimestre e índices (etapa 4).
+
 ## v0.197 — Pesquisas: editar, excluir e modelos
 **Pedido da Rebecka (01/11)**: poder excluir um modelo; depois de criar a pesquisa, editar ou excluir ("tô sentindo falta disso").
 Fato: editar e excluir a pesquisa já existiam, mas escondidos (botão Configurar no topo da pesquisa; Excluir só dentro do formulário).

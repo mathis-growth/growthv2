@@ -1,3 +1,8 @@
+## v0.198
+- `plano_anual` (workspace_id, ano, caminho ambicao|realista|ambos, modo_ambicao lucro|crescimento, premissas jsonb { chave: { valor, fonte sistema|digitado|estimativa, nota, ajuda } }, pct_pessimista, pct_otimista, base_de, cenario_meta, meta_receita; único por cliente e ano).
+- Função `plano_anual_sugestoes(ws, ano, hoje)`: receita do ano anterior, margem de contribuição e custos fixos (DRE), recorrência e perda (contratos), clientes, recompra e ticket (vendas), sazonalidade (12 pesos, com 6 meses ou mais) e realizado do ano mês a mês.
+- A meta mês a mês continua em `planejamento_mensal.meta_receita`.
+
 ## v0.197
 - `pesquisa_modelos_ocultos` (workspace_id, modelo, ocultado_em; chave workspace + modelo): modelos prontos que o cliente tirou da lista. Ver: quem é do cliente ou da equipe interna; gravar e apagar: quem edita Growth ou Marketing.
 

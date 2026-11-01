@@ -1,3 +1,8 @@
+## v0.198 — Planejamento anual (meta do ano)
+1. `supabase/RODAR_v0.198_plano_anual.sql`: cria `plano_anual` (caminho, premissas com a origem, cenários, meta escolhida) e a função `plano_anual_sugestoes` (o que o Growths já sabe do cliente). Pode rodar de novo sem erro. **Ainda não aplicado em produção.**
+2. Sem ele, a tela Planejamento anual avisa e as metas mês a mês continuam funcionando.
+3. Ordem dos pendentes: `RODAR_v0.197_pesquisa_modelos.sql`, `RODAR_v0.198_plano_anual.sql`.
+
 ## v0.197 — Modelos de pesquisa fora da lista
 1. `supabase/RODAR_v0.197_pesquisa_modelos.sql`: cria `pesquisa_modelos_ocultos` (cliente + modelo) com acesso por cliente. Pode rodar de novo sem erro. **Ainda não aplicado em produção.**
 2. Sem ele, tirar um modelo da lista vale só no navegador de quem tirou (a tela avisa).

@@ -1,3 +1,10 @@
+## v0.198
+- Meta pela ambição (lucro) = (custos fixos do ano + lucro desejado) ÷ margem de contribuição. Pelo crescimento = receita do ano anterior × (1 + crescimento).
+- Meta realista = recorrente do mês × 12 × (1 − perda ÷ 2) + clientes × recompra × ticket + metas das campanhas do ano. Sem recorrência, a base é 0 e a perda não entra.
+- Pessimista e otimista = base × (1 ∓ %). A meta do ano é o cenário escolhido.
+- Sugestão por mês: mês fechado = realizado; nos outros, campanhas (lançamento no mês do fim do carrinho; perpétua dividida até dezembro) + (base + recompra) ÷ 12 + o resto da meta pela sazonalidade dos últimos 12 meses (com 6 meses de venda ou mais; se não, igual).
+- Realizado = vendas aprovadas pelo valor bruto (a mesma regra das metas mensais e do Dashboard).
+
 ## v0.197
 - Excluir a pesquisa apaga junto as perguntas, as respostas, os envios da fila, os insights e os arquivos (regra do banco); experimentos e diagnósticos ligados a ela ficam sem a pesquisa. A campanha que usava a pesquisa passa a não usar.
 - Tirar um modelo da lista vale por cliente e não apaga nada.
