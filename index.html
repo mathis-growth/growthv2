@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Growths</title>
-<link rel="stylesheet" href="assets/atendimento.css?v=0198">
+<link rel="stylesheet" href="assets/atendimento.css?v=0199">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -3116,14 +3116,15 @@ async function vCrmOport(m) {
   <div class="panel">${quadro(et, abertas, o => `<div class="card" draggable="true" data-id="${o.id}"><b>${esc(o.titulo)}</b><br><a data-f="${o.pessoa_id}" style="cursor:pointer">${esc((one(o.pessoas) || {}).nome || '')}</a>
     <div class="muted" style="margin:4px 0"><span class="pill ${o.tipo === 'renovacao' ? 'warn' : 'info'}">${OP_TIPO[o.tipo] || o.tipo}</span>${o.valor_estimado != null ? ' ' + brl(o.valor_estimado) : ''}${o.previsao_fechamento ? ' · fecha ' + dd(o.previsao_fechamento) : ''}${o.responsavel_id ? ' · 👤 ' + esc((nomeEq(eqs, o.responsavel_id) || '?').split(' ')[0]) : ''}</div>
     ${ctsDe(o.id).length ? `<div class="op-cts">${ctsDe(o.id).map(c => `<a data-oct="${c.id}">${ctTxt(c)}</a>`).join('')}</div>` : ''}
-    <div class="ca">${e2 ? `<button class="btn sm" data-oc="${o.id}">Proposta</button>` : ''}<button class="btn sm" data-og="${o.id}">Ganhou</button><button class="btn sm bad" data-op="${o.id}">Perdeu</button><button class="btn sm" data-oe="${o.id}">Editar</button></div></div>`, 'oportunidades')}</div>
+    <div class="ca">${o.pessoa_id ? `<button class="btn sm" data-atd-conversar="${esc(o.pessoa_id)}">Conversar</button>` : ''}${e2 ? `<button class="btn sm" data-oc="${o.id}">Proposta</button>` : ''}<button class="btn sm" data-og="${o.id}">Ganhou</button><button class="btn sm bad" data-op="${o.id}">Perdeu</button><button class="btn sm" data-oe="${o.id}">Editar</button></div></div>`, 'oportunidades')}</div>
   ${fechadas.length ? `<div class="panel"><h2>Já decididas</h2><div class="tw"><table><thead><tr><th>Cliente</th><th>Negócio</th><th>Tipo</th><th class="n">Valor</th><th>Resultado</th><th></th></tr></thead><tbody>${fechadas.map(o => `<tr><td><a data-f="${o.pessoa_id}" style="cursor:pointer">${esc((one(o.pessoas) || {}).nome || '')}</a></td><td>${esc(o.titulo)}${o.motivo ? '<br><span class="muted">' + esc(o.motivo) + '</span>' : ''}</td><td>${OP_TIPO[o.tipo] || o.tipo}</td><td class="n">${o.valor_estimado != null ? brl(o.valor_estimado) : '—'}</td><td><span class="pill ${o.status === 'ganha' ? 'good' : 'bad'}">${o.status === 'ganha' ? 'Ganha' : 'Perdida'}</span> <small>${o.fechado_em ? dd(String(o.fechado_em).slice(0, 10)) : ''}</small></td><td class="n"><button class="btn sm" data-oa="${o.id}">Reabrir</button></td></tr>`).join('')}</tbody></table></div></div>` : ''}`;
   ligaArrastar(m);
   if (S.opFoco) { const cd = m.querySelector(`.card[data-id="${S.opFoco}"]`); S.opFoco = null; if (cd) { cd.classList.add('op-foco'); cd.scrollIntoView({ block: 'center' }); } }
   $('#opNova').onclick = () => modalOport();
   $('#opEt').onclick = () => gerirEtapas('oportunidades');
   m.onclick = e => {
-    const g = e.target.closest('[data-og]'), p = e.target.closest('[data-op]'), ed = e.target.closest('[data-oe]'), a = e.target.closest('[data-oa]'), f = e.target.closest('[data-f]');
+    const g = e.target.closest('[data-og]'), p = e.target.closest('[data-op]'), ed = e.target.closest('[data-oe]'), a = e.target.closest('[data-oa]'), f = e.target.closest('[data-f]'), talk = e.target.closest('[data-atd-conversar]');
+    if (talk) return window.atendimentoConversarPessoa?.(talk.dataset.atdConversar);
     const oc = e.target.closest('[data-oc]'), oct = e.target.closest('[data-oct]');
     if (oct) return detalheContrato(oct.dataset.oct);
     if (oc) { const o = ops.find(x => x.id === oc.dataset.oc);
@@ -20859,7 +20860,7 @@ function modalSubtemas(t, D) {
 }
 
 </script>
-<script src="assets/atendimento.js?v=0198"></script>
+<script src="assets/atendimento.js?v=0199"></script>
 <script>
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
 if (PQ_TOKEN) vPesquisaPublica(PQ_TOKEN);

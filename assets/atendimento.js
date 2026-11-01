@@ -322,10 +322,13 @@
       q(sb.from('oportunidades').select('titulo,status').eq('workspace_id',ws).eq('pessoa_id',cv.pessoa_id).limit(10)),
     ]);
     if(!active(token)||generation!==A.chatToken)return;
-    $('#atdFicha').innerHTML=`<button class="btn sm atd-mobile" id="atdFichaVoltar">← Conversa</button><h3>${cv.grupo?'Grupo de WhatsApp':p?'Lead / Cliente':'Contato ainda não vinculado'}</h3><p><b>${esc(p?.nome||cv.nome)}</b><br>${esc(p?.telefone||cv.endereco||'')}<br>${esc(p?.email||'')}</p><label>Responsável<select id="atdResponsavel" ${A.ctx.editar?'':'disabled'}><option value="">Sem responsável</option>${rows.map(r=>`<option value="${r.user_id}"${cv.responsavel_id===r.user_id?' selected':''}>${esc(r.nome)}</option>`).join('')}</select></label>${cv.grupo?'<p class="muted">As mensagens identificam cada participante. O grupo não é vinculado a um único lead.</p>':p?`<p>${esc(p.status_funil)} · ${esc(p.qualificacao||'')}</p><button class="btn" id="atdFichaCompleta">Abrir ficha completa</button><details open><summary>Oportunidades</summary>${opps.map(o=>`<p>${esc(o.titulo)} · ${esc(o.status)}</p>`).join('')||'<p>Nenhuma oportunidade.</p>'}</details><details><summary>Últimas compras</summary>${sales.map(v=>`<p>${brl(v.valor_bruto)} · ${esc(v.status)}<br>${esc(v.data_venda)}</p>`).join('')||'<p>Nenhuma compra.</p>'}</details><details><summary>Notas do cadastro</summary>${notes.map(n=>`<p>${esc(n.texto)}</p>`).join('')||'<p>Nenhuma nota.</p>'}</details><p class="muted">Na ficha completa: jornada, campos extras, contratos, atividades e histórico.</p>`:'<p>Vincule a uma pessoa do CRM para reunir o histórico dos canais.</p><button class="btn" id="atdCriarLead">Criar lead</button>'}${!cv.grupo&&A.ctx.editar?'<button class="btn sm" id="atdVincular">'+(p?'Alterar vínculo':'Vincular pessoa existente')+'</button>':''}`;
+    $('#atdFicha').innerHTML=`<button class="btn sm atd-mobile" id="atdFichaVoltar">← Conversa</button><h3>${cv.grupo?'Grupo de WhatsApp':p?'Lead / Cliente':'Contato ainda não vinculado'}</h3><p><b>${esc(p?.nome||cv.nome)}</b><br>${esc(p?.telefone||cv.endereco||'')}<br>${esc(p?.email||'')}</p><label>Responsável<select id="atdResponsavel" ${A.ctx.editar?'':'disabled'}><option value="">Sem responsável</option>${rows.map(r=>`<option value="${r.user_id}"${cv.responsavel_id===r.user_id?' selected':''}>${esc(r.nome)}</option>`).join('')}</select></label>${cv.grupo?'<p class="muted">As mensagens identificam cada participante. O grupo não é vinculado a um único lead.</p>':p?`<p>${esc(p.status_funil)} · ${esc(p.qualificacao||'')}</p><button class="btn" id="atdFichaCompleta">Abrir ficha completa</button><details open><summary>Oportunidades</summary>${opps.map(o=>`<div class="atd-ficha-oportunidade"><span>${esc(o.titulo)} · ${esc(o.status)}</span><button type="button" class="btn sm" data-atd-ver-negocio="${o.id}">Ver negócio</button></div>`).join('')||'<p>Nenhuma oportunidade.</p>'}</details><details><summary>Últimas compras</summary>${sales.map(v=>`<p>${brl(v.valor_bruto)} · ${esc(v.status)}<br>${esc(v.data_venda)}</p>`).join('')||'<p>Nenhuma compra.</p>'}</details><details><summary>Notas do cadastro</summary>${notes.map(n=>`<p>${esc(n.texto)}</p>`).join('')||'<p>Nenhuma nota.</p>'}</details><p class="muted">Na ficha completa: jornada, campos extras, contratos, atividades e histórico.</p>`:'<p>Vincule a uma pessoa do CRM para reunir o histórico dos canais.</p><button class="btn" id="atdCriarLead">Criar lead</button>'}${!cv.grupo&&A.ctx.editar?'<button class="btn sm" id="atdVincular">'+(p?'Alterar vínculo':'Vincular pessoa existente')+'</button>':''}`;
     $('#atdFichaVoltar').onclick=()=>$('#atdRoot').classList.remove('ficha');
     $('#atdResponsavel').onchange=e=>act(()=>api('atualizar',{conversa_id:cv.id,responsavel_id:e.target.value},ws));
     $('#atdFichaCompleta')?.addEventListener('click',()=>act(()=>fichaPessoa(cv.pessoa_id)));
+    $('#atdFicha').querySelectorAll('[data-atd-ver-negocio]').forEach(b=>b.addEventListener('click',()=>{
+      S.view='crm-oport';S.opFoco=b.dataset.atdVerNegocio;abreMenu(S.view);render();
+    }));
     $('#atdCriarLead')?.addEventListener('click',()=>act(async()=>{await api('criar-lead',{conversa_id:cv.id},ws);await openChat(cv.id,token);}));
     $('#atdVincular')?.addEventListener('click',()=>{
       const form=modal('Vincular pessoa do CRM','<input id="atdPessoaBusca" placeholder="Buscar por nome ou telefone" aria-label="Buscar pessoa"><div id="atdPessoas" class="atd-pessoa-busca"></div>',null);
@@ -816,6 +819,25 @@
       // Falha em verificar permissão: não disponibilizar uma ação privilegiada.
       instagram?.botao.remove();whatsapp?.botao.remove();
     }
+  };
+  window.atendimentoAbrirConversa=async id=>{
+    S.view='atd-conversas';abreMenu(S.view);await render();
+    const token=A.token;
+    if(active(token))await openChat(id,token);
+  };
+  window.atendimentoConversarPessoa=async pessoaId=>{
+    const ws=S.ws;
+    try{
+      const rows=await q(sb.from('atd_conversas').select('id,nome,canal_id,ultima_em,atd_canais(nome,canal,provedor,numero)')
+        .eq('workspace_id',ws).eq('pessoa_id',pessoaId).order('ultima_em',{ascending:false,nullsFirst:false}));
+      if(S.ws!==ws)return;
+      if(!rows.length){toast('Este contato ainda não tem conversa vinculada a um canal. Abra uma conversa no Atendimento ou vincule o contato primeiro.',true);return;}
+      const canalLabel=r=>{const c=Array.isArray(r.atd_canais)?r.atd_canais[0]:r.atd_canais;return [c?.canal==='whatsapp'?'WhatsApp':c?.canal==='instagram'?'Instagram':c?.canal||'Canal',c?.nome||c?.numero||r.nome].filter(Boolean).join(' · ');};
+      modal('Escolher canal para conversar',`<label>Conversa<select name="conversa">${rows.map(r=>`<option value="${r.id}">${esc(canalLabel(r))}</option>`).join('')}</select></label><p class="muted">Mostrando os canais que já têm uma conversa salva para este contato.</p>`,async d=>{
+        if(!rows.some(r=>r.id===d.conversa))throw Error('Conversa indisponível. Atualize a tela.');
+        await window.atendimentoAbrirConversa(d.conversa);
+      },'Abrir conversa');
+    }catch(e){toast(e.message||'Não foi possível carregar as conversas deste contato.',true);}
   };
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.view==='atd-conversas')refreshCurrent(A.token);});
 })();
