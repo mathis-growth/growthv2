@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.199 (meta do ano: passos, impostos e lucro final).
+**Última atualização:** 01/11/2026, versão 0.200 (planejar outro ano).
+
+**v0.200 · Planeje o ano que vem.** O ano fica no topo do Planejamento anual, e o ano novo pode começar com as premissas do anterior.
 
 **v0.199 · Do faturamento ao lucro.** Editar a meta virou um passo a passo; o imposto vem do regime da empresa e a tela mostra o lucro que sobra em cada cenário.
 
@@ -164,7 +166,7 @@ A campanha é uma página com abas: dashboard, estratégia e etapas, metas, capt
   - quanto custou e o que trouxe cada vídeo ou criativo.
 - **Ofertas e esteira.** Oferta principal com order bumps, upsells, downsells e cross-sells. Cada item tem condição (sempre, se aceitou, se recusou), validações contra ciclos e taxa de aceite medida com o denominador certo (quem recebeu a oferta, não todos).
 - **Calculadora de campanha.** Preencha o que souber e o resto se ajusta: CPL e conversão dão o CAC, a margem-alvo dá o CAC máximo, e assim por diante. "Salvar metas na campanha" leva tudo para a campanha.
-- **Planejamento anual.** Em seções: 1. Meta do ano (ambição, realista ou as duas, com cada premissa do sistema, digitada ou estimada; impostos pelo regime; do faturamento ao lucro; três cenários com o lucro no fim), 2. Por trimestre (ritmo, previsão e sugestão mês a mês), 3. Calendário de campanhas (linha do tempo com lançamentos e perpétuas, meta por campanha, orçamento planejado contra realizado) e as metas mês a mês.
+- **Planejamento anual.** Ano escolhido no topo (do ano passado até dois à frente; o ano novo pode começar com as premissas do anterior). Em seções: 1. Meta do ano (ambição, realista ou as duas, com cada premissa do sistema, digitada ou estimada; impostos pelo regime; do faturamento ao lucro; três cenários com o lucro no fim), 2. Por trimestre (ritmo, previsão e sugestão mês a mês), 3. Calendário de campanhas (linha do tempo com lançamentos e perpétuas, meta por campanha, orçamento planejado contra realizado) e as metas mês a mês.
 - **Projeto da campanha.** Toda campanha pode gerar o próprio projeto com as atividades dos blocos (ex.: tráfego pago → públicos, criativos, configurar, acompanhar), com responsável por função.
 - **Links e tracking.** Monta a URL com UTM e liga o criativo pelo utm_content.
 - **Fechamento oficial.** Fechar a campanha guarda a foto do planejado contra o realizado, o debriefing e as melhorias. Fechar de novo cria uma versão nova e mantém a anterior.
@@ -520,12 +522,14 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - Dashboard não é relatório: por que cada bloco da tela precisa responder uma pergunta só.
 - A pesquisa na página de obrigado: o momento em que o lead mais quer falar com você.
 - Ambição × realista: por que a meta do ano precisa de duas contas, e o que fazer com a diferença.
+- Novembro é mês de planejar o ano que vem: o que levar do ano que termina e o que recalcular.
 - "Quero lucrar 200 mil": quanto precisa faturar depois do imposto e das comissões (a conta que quase ninguém faz).
 
 ---
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.200):** Planejar outro ano: ano no topo, começar com as premissas do ano anterior, excluir a meta.
 - **01/11 (v0.199):** Meta do ano em quatro passos, impostos pelo regime, comissões fora dos custos fixos e o lucro final por cenário.
 - **01/11 (v0.198):** Planejamento anual com meta do ano por método (ambição × realista), cenários e trimestres.
 - **30/10 (v0.177):** Diagnóstico 360°: formulário curto do cliente (salva e continua depois), envio de arquivos pelo link e a reunião do diagnóstico, com a leitura dos arquivos no Diagnóstico Growth.

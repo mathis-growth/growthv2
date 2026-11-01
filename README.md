@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.200 | 01/11/2026 | **Planejar outro ano**: ano no topo da aba, começar com as premissas do ano anterior, excluir a meta. | `RODAR_v0.198_plano_anual.sql` (atualizado), **ainda não aplicado** |
 | 0.199 | 01/11/2026 | **Meta do ano** em quatro passos, impostos pelo regime (MEI, Simples pelo fator R, Presumido, Real), margem corrigida e lucro final por cenário. | `RODAR_v0.198_plano_anual.sql` (atualizado), **ainda não aplicado** |
 | 0.198 | 01/11/2026 | **Planejamento anual**: meta do ano (caminho, premissas com origem, cenários, diferença) e trimestres (ritmo, sugestão mês a mês, previsão). | `RODAR_v0.198_plano_anual.sql`, **ainda não aplicado** |
 | 0.197 | 01/11/2026 | **Pesquisas**: Editar e Excluir à vista (lista e topo), aviso do que vai junto ao excluir, e Modelos (usar, tirar da lista, mostrar de novo). | `RODAR_v0.197_pesquisa_modelos.sql`, **ainda não aplicado** |

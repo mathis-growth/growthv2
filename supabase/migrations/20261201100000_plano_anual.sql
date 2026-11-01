@@ -42,7 +42,13 @@ begin
   -- receita do ano anterior (vendas aprovadas, valor bruto) e quantos meses têm venda
   select coalesce(sum(valor_bruto), 0), count(distinct date_trunc('month', data_venda at time zone 'America/Sao_Paulo')) into v, n
     from vendas where workspace_id = p_ws and status = 'aprovada' and extract(year from data_venda at time zone 'America/Sao_Paulo') = p_ano - 1;
-  r := r || jsonb_build_object('receita_ano_anterior', case when n > 0 then round(v, 2) end, 'receita_ano_anterior_meses', n);
+  r := r || jsonb_build_object('receita_ano_anterior', case when n > 0 then round(v, 2) end, 'receita_ano_anterior_meses', n, 'receita_ano_anterior_base', 'ano');
+  -- v0.200: planejando o ano que vem com o ano anterior ainda aberto, a receita é a dos últimos 12 meses fechados
+  if p_ano - 1 >= extract(year from h) then
+    select coalesce(sum(valor_bruto), 0), count(distinct date_trunc('month', data_venda at time zone 'America/Sao_Paulo')) into v, n
+      from vendas where workspace_id = p_ws and status = 'aprovada' and (data_venda at time zone 'America/Sao_Paulo')::date between ini12 and fim12;
+    r := r || jsonb_build_object('receita_ano_anterior', case when n > 0 then round(v, 2) end, 'receita_ano_anterior_meses', n, 'receita_ano_anterior_base', '12m');
+  end if;
   -- DRE dos últimos 12 meses fechados (v0.199): impostos sobre vendas (5.1.02) à parte; custos variáveis = taxas de plataforma e
   -- outras deduções + comissões (6.2.03); custos fixos = despesas sem mídia paga (6.1) e sem comissões
   select coalesce(sum(valor) filter (where tipo = 'receita'), 0), coalesce(sum(valor) filter (where tipo = 'deducao'), 0),

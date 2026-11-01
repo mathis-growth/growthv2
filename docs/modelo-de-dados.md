@@ -1,3 +1,7 @@
+## v0.200
+- `plano_anual_sugestoes`: novo `receita_ano_anterior_base` ('ano' ou '12m'); com '12m', `receita_ano_anterior` são as vendas aprovadas dos últimos 12 meses fechados.
+- Sem mudança de tabela: cada ano é uma linha de `plano_anual` (único por cliente e ano).
+
 ## v0.199
 - `plano_anual.premissas`: sai a chave `margem`; entram `custos_variaveis` (% do preço, sem impostos) e `_imposto` { regime mei|simples_auto|simples_III|simples_V|presumido|real|manual, folha, iss, manual, do_cadastro }.
 - `plano_anual_sugestoes`: novos `custos_variaveis_pct` (deduções fora 5.1.02 + comissões 6.2.03, ÷ receita) e `imposto_hist_pct` (5.1.02 ÷ receita); `custos_fixos_ano` sem mídia paga e sem comissões.

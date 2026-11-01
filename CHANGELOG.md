@@ -1,3 +1,10 @@
+## v0.200 — Planejar outro ano (01/11/2026)
+- **Ano do planejamento** no topo da aba Planejamento anual, do ano passado até dois à frente, com ✓ onde há meta; o ano padrão é o ano corrente.
+- A partir de outubro, convite para planejar o ano seguinte.
+- **Começar com as premissas do ano anterior** e **Excluir a meta**.
+- Receita do ano anterior pelos últimos 12 meses fechados quando o ano ainda não acabou (`RODAR_v0.198_plano_anual.sql` atualizado, **ainda não aplicado**).
+- Teste: `t200_plano_outro_ano.py` (0 falhas).
+
 ## v0.199 — Meta do ano: quatro passos, impostos e lucro final (01/11/2026)
 - **Editar a meta** em quatro passos: Caminho, Premissas, Impostos, Cenários e lucro (Salvar no último, com o resumo ao vivo).
 - **Impostos** pelo regime do cadastro da empresa: MEI, Simples (anexo III ou V pelo fator R, alíquota efetiva da faixa), Lucro Presumido, Lucro Real (IR sobre o lucro à parte) ou alíquota manual.

@@ -1,3 +1,8 @@
+## v0.200
+- Receita do ano anterior (premissa do crescimento): se o ano anterior ao planejado ainda não fechou, usa as vendas aprovadas dos últimos 12 meses fechados.
+- Copiar premissas: valores digitados e estimados vêm iguais; os "do sistema" são recalculados com os dados de hoje.
+- Ano que ainda não começou: nenhum trimestre em curso, nada de realizado; a sugestão mês a mês usa só campanhas, base, recompra e sazonalidade.
+
 ## v0.199
 - Lucro final = faturamento − impostos sobre o faturamento − custos variáveis − custos fixos − IR sobre o lucro (só no Lucro Real, 34%).
 - Meta pela ambição (lucro) = o faturamento R em que o lucro final é o desejado: R = (custos fixos + lucro ÷ (1 − IR)) ÷ (1 − custos variáveis − alíquota(R)); no MEI, o DAS anual entra como custo fixo.

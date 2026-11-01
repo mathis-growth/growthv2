@@ -1,5 +1,9 @@
 
 
+## Planejar outro ano (v0.200)
+- `g198.js`: barra de anos no topo; vazio com cópia das premissas do último ano com plano; Excluir a meta; textos da receita com base nos últimos 12 meses.
+- Teste `t200_plano_outro_ano.py` (18 verificações, 0 falhas): anos 2025–2028, ✓ no ano com meta, convite em novembro, Excluir, 2027 vazio com cópia, metas mensais acompanham o ano, caminho/premissas/imposto/cenários copiados, receita dos 12 meses, 2027 gravado e 2026 intacto, trimestres de 2027 por começar, Excluir apaga só 2027. `t198_plano_anual.py` 0 falhas.
+
 ## Editar a meta em passos, impostos e lucro final (v0.199)
 - `g198.js`: `paImposto(R, cfg)` por regime (usa `CO_SIMPLES`, `coAliqSimples`, `CO_MEI_DAS`); `paContas` resolve a meta pela ambição por iteração (a alíquota do Simples muda com o faturamento); `paLucro` e a tabela "Do faturamento ao lucro" na seção 1 e no passo 4; cards com o lucro no fim.
 - Teste `t198_plano_anual.py` (37 verificações, 0 falhas): sugestões novas; custos fixos sem comissões; quatro passos; Salvar só no passo 4; margem fora das premissas; regime do cadastro; folha no Simples e ISS no Lucro Real; alíquota e anexo; resumo no passo 4; meta com Simples confere com a conta feita no teste; lucro na meta = lucro desejado; Lucro Real com IR separado; trimestres e metas mensais como antes. t124 e t127 sem falhas.

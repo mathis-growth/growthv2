@@ -1,5 +1,15 @@
 
 
+## v0.200 — Planejar outro ano (2027)
+**Pedido da Rebecka (01/11)**: ela queria fazer a meta de 2027, mas a tela só deixava 2026 (o seletor de ano ficava escondido lá embaixo, nas metas mês a mês, e o ano padrão era fixo em 2026); queria também poder ajustar o que salvou em 2026, que mostrou meta só no último trimestre.
+Decisões:
+- **Ano do planejamento no topo da aba**, com o ano passado até dois anos à frente e "✓ meta" nos anos que já têm meta. O ano padrão passa a ser o ano corrente (não mais fixo em 2026). As metas mês a mês acompanham o ano escolhido.
+- De outubro em diante, o ano corrente mostra "O ano está acabando: planeje o próximo".
+- **Ano novo vazio**: "Montar a meta" ou "Começar com as premissas do ano anterior" (traz caminho, imposto, cenários e números digitados; o que vem do sistema é recalculado). Revisa nos quatro passos antes de salvar; o ano anterior não muda.
+- **Excluir a meta** do ano (as metas mês a mês, as campanhas e o calendário ficam).
+- **Receita do ano anterior**: planejando 2027 com 2026 ainda aberto, o sistema usa os últimos 12 meses fechados e diz isso na premissa.
+- **Por que 2026 só mostrou meta no T4 (fato, não erro)**: na meta de 2026, os meses que já fecharam ficam com o realizado e o resto da meta vai para os meses que faltam; montada em novembro, quase tudo cai em out–dez. Para 2026, o uso é acompanhar; o planejamento de verdade é o de 2027.
+
 ## v0.199 — Editar a meta em quatro passos, impostos e lucro final
 **Pedido da Rebecka (01/11)**, ao testar a v0.198: a tela de editar era extensa (dividir em passos, como a nova campanha); considerar o regime tributário; entender se o resultado de (custos fixos + lucro) ÷ margem é o lucro que sobra; e qual o lucro final. Ela aprovou a proposta ("pode").
 Decisões:

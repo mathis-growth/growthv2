@@ -1,3 +1,6 @@
+## v0.200
+- index.html: aplicado sobre a v0.197 (`aplica200.py`, com `g198.js` e `g198.css`): `paAnos` (barra de anos), `#paAnos` na aba, "Começar com as premissas de", "Excluir a meta"; `S.ano` padrão = ano corrente. Função `plano_anual_sugestoes` com `receita_ano_anterior_base`. Teste novo `t200_plano_outro_ano.py`.
+
 ## v0.199
 - index.html: aplicado sobre a v0.197 (`aplica199.py`, com `g198.js` e `g198.css` reescritos): `paImposto`, `paLucro`, `paLucroHtml`, `paImpDoCadastro`, `PA_REG`; `paModal` em quatro passos. Função `plano_anual_sugestoes` atualizada na mesma migração `20261201100000_plano_anual.sql` / `RODAR_v0.198_plano_anual.sql` (ainda não aplicada em produção). Teste `t198_plano_anual.py` reescrito para os passos e os impostos.
 

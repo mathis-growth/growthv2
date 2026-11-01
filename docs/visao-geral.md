@@ -1,3 +1,6 @@
+## v0.200
+**Planeje o ano que vem.** O ano do planejamento fica no topo da aba (do ano passado até dois à frente). O ano novo pode começar com as premissas do ano anterior, e a meta de um ano pode ser excluída.
+
 ## v0.199
 **Do faturamento ao lucro.** Editar a meta do ano agora é um passo a passo (caminho, premissas, impostos, cenários). O imposto sai do regime da empresa (MEI, Simples pelo fator R, Lucro Presumido, Lucro Real), as comissões passam a contar como custo da venda e a tela mostra quanto sobra de lucro no fim de cada cenário.
 
