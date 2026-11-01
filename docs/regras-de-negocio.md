@@ -1,3 +1,6 @@
+## v0.192
+Sem regra nova: só a disposição dos dashboards mudou.
+
 ## v0.191
 - Pagar ou receber em lote: só contas em aberto (previstas); a conta a pagar estimada precisa do valor confirmado antes. Cada conta é baixada pelo valor inteiro, na data escolhida, com o mesmo lançamento contábil da baixa individual.
 - Conta bancária do lote: a escolhida para todas, ou a de cada conta (forma de pagamento na conta a pagar; a da parcela na conta a receber) e, sem nenhuma, a conta padrão. Recebimento nunca entra em cartão de crédito.

@@ -1,3 +1,11 @@
+## v0.192 — Dashboards em seções (31/10/2026)
+- O Dashboard do Administrativo, o Dashboard financeiro e o Dashboard de Vendas são divididos em **seções com moldura** (fundo, borda, faixa de cor e título com a pergunta que a seção responde), a pedido da Rebecka: antes os quadros pareciam um relatório corrido.
+- **Dashboard (Administrativo):** Visão geral · Alertas · Evolução e meta · De onde vem a receita · Saúde financeira · Funil e campanhas · Tabelas completas.
+- **Dashboard financeiro:** Visão geral · Resultado do período · Resultado e despesas · Caixa e bancos · Próximos vencimentos.
+- **Dashboard de Vendas:** Visão geral · Metas e renovações · Cadastros e funil · De onde vêm os clientes · Cadastros recentes.
+- Mesmos quadros, dados, frases e cliques; só muda a disposição. No celular, um quadro embaixo do outro.
+- Teste: `t192_secoes.py` (0 falhas); `t158_grade.py` ajustado (0 falhas). Sem mudança no banco.
+
 ## v0.191 — Pagar e receber várias contas de uma vez (31/10/2026)
 - **Contas a pagar** e **Contas a receber**: quadradinho em cada conta em aberto e no cabeçalho (seleciona todas da lista). Uma barra embaixo mostra quantas estão marcadas e o total, com **Limpar seleção** e **Pagar as selecionadas** / **Receber as selecionadas**.
 - A confirmação lista as contas e o total, pede a data e a conta bancária (uma para todas, ou a de cada conta) e dá baixa em todas pelo valor inteiro. Baixa parcial continua no botão da conta.

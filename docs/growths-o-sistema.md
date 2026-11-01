@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 31/10/2026, versão 0.191 (pagar e receber em lote).
+**Última atualização:** 31/10/2026, versão 0.192 (dashboards em seções).
+
+**Visual v0.192 · Dashboards em seções.** O Dashboard, o Dashboard financeiro e o Dashboard de Vendas são divididos em seções com moldura e título: cada uma responde uma pergunta (como está o negócio, o que mudou, de onde vem a receita...).
 
 **Financeiro v0.191 · Pagar e receber em lote.** Em Contas a pagar e a receber, um quadradinho em cada conta em aberto: marque as que quiser e dê baixa em todas de uma vez.
 
@@ -79,6 +81,8 @@ O detalhe do painel Geral do Cockpit. Mostra o negócio inteiro num período esc
 - o ritmo da meta do mês (está no caminho ou atrás?);
 - de onde vem a receita, por produto e por campanha, contra o período anterior;
 - DRE e fluxo de caixa recolhidos, para abrir quando quiser.
+
+Desde a v0.192 a tela é dividida em seções com moldura e título (Visão geral, Alertas, Evolução e meta, De onde vem a receita, Saúde financeira, Funil e campanhas, Tabelas completas), para cada assunto ficar separado do outro. O Dashboard financeiro e o Dashboard de Vendas seguem o mesmo padrão.
 
 O desenho é em camadas: 4 cartões grandes com tendência e, abaixo, cartões menores com números compactos. Saldo em banco, a receber e a pagar abrem o extrato e as listas na hora.
 
@@ -496,6 +500,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - "O que você teria feito no lugar?": descobrir o concorrente real de uma consultoria.
 - O backup antes da mudança: por que toda versão do Growths tem caminho de volta.
 - Fechar o mês em um clique: pagar dez contas de uma vez sem perder o lançamento de cada uma.
+- Dashboard não é relatório: por que cada bloco da tela precisa responder uma pergunta só.
 
 ---
 
@@ -570,4 +575,5 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - Mapa de métricas com a North Star em destaque e as alavancas que movem a NSM agrupadas embaixo dela.
 - **31/10 (Financeiro):**
   - pagar e receber várias contas de uma vez, com seleção, total e baixa em lote;
-  - plano da North Star no Growths (onde cadastrar e como configurar), a partir do documento de NSM da consultoria.
+  - plano da North Star no Growths (onde cadastrar e como configurar), a partir do documento de NSM da consultoria;
+  - Dashboard, Dashboard financeiro e Dashboard de Vendas divididos em seções com moldura e título.

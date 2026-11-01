@@ -1,3 +1,6 @@
+## v0.192
+**Dashboards divididos em seções.** O Dashboard, o Dashboard financeiro e o Dashboard de Vendas deixaram de ser uma sequência de quadros parecidos. Cada um tem seções com moldura e título que diz qual pergunta ela responde: como o negócio está, o que mudou, se a receita está no ritmo da meta, de onde vem a receita, a saúde financeira, o funil e as campanhas. Dá para ver de longe onde termina um assunto e começa outro.
+
 ## v0.191
 **Pagar várias contas de uma vez.** Em Contas a pagar e Contas a receber, cada conta em aberto tem um quadradinho. Marque as que quiser, ou todas de uma vez pelo quadradinho do cabeçalho, e uma barra embaixo mostra quantas são e o total. Um clique abre a confirmação com a lista, a data e a conta bancária, e todas recebem baixa juntas, com os mesmos lançamentos da baixa de uma por uma.
 

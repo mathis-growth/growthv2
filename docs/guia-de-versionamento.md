@@ -1,3 +1,6 @@
+## v0.192
+- index.html: aplicado sobre a v0.191 (`aplica192.py`; novos `g192.js` e `g192.css`). `GRADE_SECOES` (plano por tela: itens do topo e seções com título, pergunta e quadros em 12 colunas), `gradeSecoes`, `GS_todos`, `GS_painel`; `gradeAplica` passa para `gradeSecoes` quando a tela tem plano de seções; `gradeLarg` desconta a moldura da seção. Teste novo `t192_secoes.py`; `t158_grade.py` ajustado à nova disposição.
+
 ## v0.191
 - index.html: aplicado sobre a v0.190 do repositório (mesmas substituições do `integra162.py`, com `g162.js` e `g162.css`; o rótulo da tela não muda). Coluna de seleção em `vPagar` e `vReceber` (`loteTodos`, `loteCaixa`), barra e modal (`loteLigar`, `loteModal`). Teste novo `t191_lote.py`.
 

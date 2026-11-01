@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.192 | 31/10/2026 | **Dashboards em seções**: Dashboard, Dashboard financeiro e Dashboard de Vendas com seções de moldura e título (visão geral, alertas, evolução e meta, de onde vem a receita, saúde financeira, funil e campanhas...). | Só tela |
 | 0.191 | 31/10/2026 | **Pagar e receber várias contas de uma vez**: seleção em Contas a pagar e Contas a receber, com barra de total e baixa em lote. | Só tela |
 | 0.177 | 30/10/2026 | **Diagnóstico 360°: formulário curto, arquivos e reunião (G1b, G2, G3)**: modelo curto do cliente com métricas no modo simples e rascunho; envio de arquivos pelo link para um local privado; reunião da equipe com perguntas por natureza da métrica, roteiro do modelo completo e leitura dos arquivos no Diagnóstico Growth guardada no diagnóstico do cliente. | `20261129100000_diagnostico_g1b.sql`, `20261129110000_diagnostico_g2_arquivos.sql`, `20261129120000_diagnostico_g3_reuniao.sql` + função `diagnostico-arquivo` |
 | 0.176 | 30/10/2026 | **Diagnóstico 360° (G1)**: formulário do cliente (para lead ou cliente), tipos de pergunta novos (métricas do funil pirata com tenho/não tenho e o detalhe de cada uma, mês a mês, lista, documentos), perguntas condicionais, link com validade e o modelo pronto com as 8 seções; catálogo de métricas por etapa do funil pirata. | `20261128100000_diagnostico_g1.sql` — aplicado em produção |

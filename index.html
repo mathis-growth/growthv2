@@ -388,7 +388,23 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.162 — seleção em lote em Contas a pagar e a receber */
+<style id="v122">/* v0.192 dashboards em seções */
+#main.secoes192{row-gap:28px}
+#main.secoes192 .secl{display:none!important}
+#main.secoes192>.dsec{grid-column:1/-1;display:flex;flex-direction:column;gap:16px;min-width:0;margin:0!important;
+  padding:18px 20px 20px;background:var(--surface-2);border:1px solid var(--line);border-left:4px solid rgba(var(--accent-rgb),.6);border-radius:calc(var(--raio) + 4px)}
+#main.secoes192>.dsec[hidden]{display:none}
+.dsec-h{display:flex;flex-direction:column;gap:2px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.dsec-h h2{margin:0;font-size:19px;line-height:1.25;color:var(--ink)}
+.dsec-h p{margin:0;font-size:13px;color:var(--muted);max-width:72ch}
+.dsec-b{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;align-items:stretch}
+.dsec-b>*{grid-column:span var(--sp,12);min-width:0;margin:0!important}
+.dsec-b>.kpis{align-self:start}
+@media (max-width:1100px){.dsec-b>*{grid-column:span var(--sp2,12)}}
+@media (max-width:760px){.dsec-b>*{grid-column:1/-1}#main.secoes192>.dsec{padding:14px 12px 16px}}
+.dsec-b>.kpis,.dsec .panel>.kpis{grid-template-columns:repeat(auto-fit,minmax(128px,1fr))}
+@media (max-width:760px){.dsec-b>.kpis.hero{grid-template-columns:1fr}}
+/* v0.162 — seleção em lote em Contas a pagar e a receber */
 th.lote-c,td.lote-c{width:28px;padding-right:0;text-align:center}
 .lote-chk{width:16px;height:16px;margin:0;cursor:pointer;accent-color:var(--accent)}
 .lote-chk:disabled{cursor:not-allowed;opacity:.35}
@@ -15908,6 +15924,75 @@ async function loteModal(tipo, itens, extra) {
   }, L.verbo + ' ' + itens.length + ' · ' + brl(total), true);
 }
 
+/* ================= v0.192 — Dashboards em seções =================
+   Pedido da Rebecka (31/10): o Dashboard "parece um relatório de Word": não se vê onde termina uma informação e começa outra.
+   Agora cada tela é dividida em seções com moldura própria (fundo, borda e título com a pergunta que a seção responde):
+   visão geral, o que mudou, evolução e meta, de onde vem a receita, saúde financeira, funil e campanhas...
+   Só muda a disposição: os painéis, os dados e as frases são os mesmos. O que o plano não conhece fica no fim, fora das seções. */
+const GRADE_SECOES = {
+  'adm-painel': {
+    topo: [['.head', 12], [m => GS_todos(m).find(e => e.querySelector && e.querySelector('#pgPer')), m => GS_todos(m).some(e => e.matches('.dq88')) ? 8 : 12], ['.dq88', 4]],
+    secoes: [
+      { k: 'geral', t: 'Visão geral', p: 'Como o negócio está no período: receita, lucro, caixa, CAC, funil, vendas e contas.', itens: [['.kpis.hero', 12], ['.kpis.mini', 12]] },
+      { k: 'mudou', t: 'Alertas', p: 'O que melhorou ou piorou contra o período anterior e o que investigar.', itens: [['.gc-obs', 12]] },
+      { k: 'evo', t: 'Evolução e meta', p: 'A receita e o lucro estão crescendo? O mês está no ritmo da meta?', itens: [['#pgEvo', 8], ['#pgRit', 4]] },
+      { k: 'origem', t: 'De onde vem a receita', p: 'Clientes novos ou quem já era cliente, qual produto e qual campanha.', itens: [['#pgNovEx', 4], ['#pgProd', 4], ['#pgCampR', 4]] },
+      { k: 'saude', t: 'Saúde financeira', p: 'Margem, retorno, recorrência e quanto custa conquistar cada cliente.', itens: [[m => GS_painel(m, 'Métricas financeiras'), 12], ['#pgCac', 12]] },
+      { k: 'funil', t: 'Funil e campanhas', p: 'Quantas pessoas avançam até virar cliente e como cada campanha está contra a meta.', itens: [[m => GS_painel(m, 'Funil'), 4], [m => GS_painel(m, 'Campanhas: meta e realizado'), 8], [m => GS_painel(m, 'Campanhas ativas'), 12]] },
+      { k: 'tabelas', t: 'Tabelas completas', p: 'A DRE gerencial e o fluxo de caixa, mês a mês. Clique para abrir.', itens: [[m => GS_todos(m).filter(e => e.matches('details.gc-det')), 12]] }
+    ]
+  },
+  'fin-dash': {
+    topo: [[m => m.querySelector('#navVoltar') && m.querySelector('#navVoltar').parentElement, 12], ['.head', 12], ['.filters', 12]],
+    secoes: [
+      { k: 'geral', t: 'Visão geral', p: 'Resultado, caixa e contas do período em números.', itens: [['.sem-recado', 12], ['.kpis', 12]] },
+      { k: 'result', t: 'Resultado do período', p: 'Da receita ao lucro, e o que mudou contra o mês anterior.', itens: [['#finCasc', 5], ['#finPonte', 7]] },
+      { k: 'mes', t: 'Resultado e despesas', p: 'O resultado mês a mês e para onde foi o dinheiro.', itens: [[m => GS_painel(m, 'Resultado por mês'), 5], [m => GS_painel(m, 'Maiores despesas'), 7]] },
+      { k: 'caixa', t: 'Caixa e bancos', p: 'Quanto há em cada conta, quanto vai sobrar nos próximos dias e se o lucro virou dinheiro.', itens: [['#finSmin', 4], [m => GS_painel(m, 'Saldo por conta'), 3], [m => GS_painel(m, 'Resultado × dinheiro'), 5]] },
+      { k: 'venc', t: 'Próximos vencimentos', p: 'O que entra e o que sai nos próximos dias.', itens: [[m => GS_painel(m, 'Próximos a receber'), 6], [m => GS_painel(m, 'Próximos a pagar'), 6]] }
+    ]
+  },
+  'crm-dash': {
+    topo: [['.head', 12]],
+    secoes: [
+      { k: 'geral', t: 'Visão geral', p: 'Cadastros, vendas e clientes do período em números.', itens: [['.kpis', 12]] },
+      { k: 'metas', t: 'Metas e renovações', p: 'As vendas contra a meta e os contratos que vencem e precisam de renovação.', itens: [[m => GS_painel(m, 'Metas x vendas'), 12], [m => GS_painel(m, 'Contratos vencendo'), 12]] },
+      { k: 'funil', t: 'Cadastros e funil', p: 'Quantas pessoas entram por dia e quantas avançam até a compra.', itens: [[m => GS_painel(m, 'Novos cadastros por dia'), 8], [m => GS_painel(m, 'Funil'), 4]] },
+      { k: 'origem', t: 'De onde vêm os clientes', p: 'Origem dos cadastros, canal das vendas e produto comprado.', itens: [[m => GS_painel(m, 'Origem dos cadastros'), 6], [m => GS_painel(m, 'Clientes por produto'), 6], ['.vpc89', 12]] },
+      { k: 'ultimos', t: 'Cadastros recentes', p: 'As últimas pessoas que entraram, com a origem.', itens: [[m => GS_painel(m, 'Últimos cadastros'), 12]] }
+    ]
+  }
+};
+/* todos os blocos da tela, inclusive os que já estão dentro de uma seção ou de um agrupamento invisível */
+const GS_todos = m => [...m.children].flatMap(e => e.matches('.cols, .gc-sec') ? GS_todos(e) : e.matches('.dsec') ? GS_todos(e.querySelector('.dsec-b') || document.createElement('div')) : [e]);
+const GS_painel = (m, t) => GS_todos(m).find(e => e.matches('.panel') && ((e.querySelector(':scope > h2, :scope > summary, :scope > .head h2, :scope > div > h2') || {}).textContent || '').includes(t));
+function gradeSecoes(m, semTexto) {
+  const P = GRADE_SECOES[m.dataset.tela];
+  m.classList.add('grade158', 'secoes192');
+  const usados = new Set(); let ordem = 1;
+  const acha = sel => typeof sel === 'function' ? sel(m) : GS_todos(m).find(x => x.matches(sel));
+  const larg = (e, sp) => { const n = typeof sp === 'function' ? sp(m) : sp; e.style.setProperty('--sp', n); e.style.setProperty('--sp2', Math.max(6, n)); };
+  P.topo.forEach(([sel, sp]) => { const e = acha(sel); if (!e || usados.has(e)) return; usados.add(e); if (e.closest('.dsec')) m.insertBefore(e, m.firstChild); e.style.order = ordem++; larg(e, sp); });
+  P.secoes.forEach(s => {
+    let sec = m.querySelector(`:scope > .dsec[data-sec="${s.k}"]`);
+    const els = [];
+    s.itens.forEach(([sel, sp]) => { const r = acha(sel); [].concat(r || []).forEach(e => { if (e && !usados.has(e)) { usados.add(e); els.push([e, sp]); } }); });
+    if (!els.length) { if (sec) sec.hidden = true; return; }
+    if (!sec) {
+      sec = document.createElement('section'); sec.className = 'dsec'; sec.dataset.sec = s.k; sec.setAttribute('aria-label', s.t);
+      sec.innerHTML = `<header class="dsec-h"><h2>${esc(s.t)}</h2><p>${esc(s.p)}</p></header><div class="dsec-b"></div>`;
+      m.appendChild(sec);
+    }
+    sec.hidden = false; sec.style.order = ordem++;
+    const b = sec.querySelector('.dsec-b');
+    els.forEach(([e, sp], i) => { if (e.parentElement !== b) b.appendChild(e); e.style.order = i + 1; larg(e, sp); });
+  });
+  GS_todos(m).forEach(e => { if (!usados.has(e) && !e.matches('.dsec')) { e.style.order = 900; larg(e, 12); } });
+  /* os cliques da árvore eram ligados no agrupamento de origem (gcLiga(box)); dentro da seção, liga de novo (não duplica) */
+  m.querySelectorAll(':scope > .dsec').forEach(sec => gcLiga(sec));
+  if (!semTexto) gradeTextos(m);
+}
+
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;
 const fonteLink = () => location.protocol === 'file:' ? '<div class="panel"><b>Atenção:</b> o arquivo está aberto do seu computador, então o link de resposta não funciona para outras pessoas. Hospede o arquivo (por exemplo no GitHub Pages) antes de enviar.</div>' : '';
 
@@ -19217,6 +19302,8 @@ const GR_itens = m => [...m.children].flatMap(e => e.matches('.cols, .gc-sec') ?
 const GR_secl = (m, t) => GR_itens(m).find(e => e.matches('.secl') && e.textContent.trim().startsWith(t));
 const GR_painel = (m, t) => GR_itens(m).find(e => e.matches('.panel') && GR_titulo(e).startsWith(t));
 function gradeAplica(m, semTexto) {
+  if (GRADE_SECOES[m.dataset.tela]) return gradeSecoes(m, semTexto);
+  m.classList.remove('secoes192');
   const plano = GRADE_TELAS[m.dataset.tela]; if (!plano) return;
   m.classList.add('grade158');
   const usados = new Set();
@@ -19246,20 +19333,20 @@ function gradeTextos(m) {
 let GR_obs = null, GR_t = null;
 function gradeLiga(m, vk) {
   m.dataset.tela = vk;
-  m.classList.toggle('grade158', !!GRADE_TELAS[vk]);
+  m.classList.toggle('grade158', !!(GRADE_TELAS[vk] || GRADE_SECOES[vk])); if (!GRADE_SECOES[vk]) m.classList.remove('secoes192');
   if (!GR_obs) {
-    const agenda = () => { const mm = $('#main'); if (!mm || !GRADE_TELAS[mm.dataset.tela]) return; gradeAplica(mm, true); clearTimeout(GR_t); GR_t = setTimeout(() => gradeTextos(mm), 80); };
+    const agenda = () => { const mm = $('#main'); if (!mm || !(GRADE_TELAS[mm.dataset.tela] || GRADE_SECOES[mm.dataset.tela])) return; gradeAplica(mm, true); clearTimeout(GR_t); GR_t = setTimeout(() => gradeTextos(mm), 80); };
     GR_obs = new MutationObserver(agenda);
     GR_obs.observe(m, { childList: true, subtree: true });
     if (window.ResizeObserver) new ResizeObserver(agenda).observe(m);
   }
-  if (GRADE_TELAS[vk]) gradeAplica(m);
+  if (GRADE_TELAS[vk] || GRADE_SECOES[vk]) gradeAplica(m);
 }
 /* largura útil (px) de um bloco de sp colunas na tela em grade; fora da grade, a largura de desenho de sempre */
 function gradeLarg(sp, def) {
   const m = $('#main'); if (!m || !m.classList.contains('grade158') || !m.clientWidth) return def;
   const vw = window.innerWidth; if (vw <= 760) sp = 12; else if (vw <= 1100) sp = Math.max(6, sp);
-  const col = (m.clientWidth - 11 * 16) / 12;
+  const W0 = m.clientWidth - (m.classList.contains('secoes192') ? 44 : 0), col = (W0 - 11 * 16) / 12;
   return Math.max(300, Math.round(col * sp + 16 * (sp - 1) - 40));
 }
 

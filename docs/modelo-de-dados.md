@@ -1,3 +1,6 @@
+## v0.192
+Sem mudança no banco.
+
 ## v0.191
 Sem mudança no banco: a baixa em lote chama `registrar_pagamento` e `registrar_recebimento`, uma vez por conta.
 

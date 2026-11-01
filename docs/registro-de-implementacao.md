@@ -1,5 +1,10 @@
 
 
+## Dashboards em seções (v0.192)
+- `g192.js`: `GRADE_SECOES` para `adm-painel`, `fin-dash` e `crm-dash`; `gradeSecoes` cria `section.dsec` (cabeçalho `.dsec-h` com título e pergunta, corpo `.dsec-b` em 12 colunas), move os quadros para dentro na ordem do plano e esconde seção vazia; o que o plano não conhece fica no fim. Reaplicado a cada mudança da tela pelo observador da v0.158, sem mover o que já está no lugar.
+- `g192.css`: moldura da seção (fundo `--surface-2`, borda, faixa de 4 px na cor de destaque), cartões em uma linha dentro da seção, cartões principais em uma coluna no celular.
+- Teste `t192_secoes.py`: ordem das seções nas três telas, quadros dentro da seção certa, nenhuma seção vazia, rótulos antigos escondidos, moldura e fundo diferentes dos quadros, clique no cartão continua abrindo a árvore, Marketing sem mudança, celular sem rolagem lateral e com um quadro embaixo do outro (modo escuro). 0 falhas. `t158_grade.py` ajustado: 0 falhas.
+
 ## Pagar e receber em lote (v0.191)
 - `g162.js`: `loteCaixa` (quadradinho só para conta em aberto; estimada desligada), `loteTodos` (selecionar todas da lista, com estado "pela metade"), `loteLigar` (barra fixa embaixo com quantidade, total, Limpar seleção e Pagar/Receber; linha marcada em destaque), `loteModal` (lista, total, data, conta bancária; baixa uma a uma e resume o resultado).
 - `vPagar` e `vReceber` ganham a primeira coluna de seleção; totais e linhas vazias ajustados à coluna nova.

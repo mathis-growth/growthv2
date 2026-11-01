@@ -1,3 +1,6 @@
+## v0.192
+Nada a rodar no banco (só tela).
+
 ## v0.191
 Nada a rodar no banco (só tela). Continuam pendentes os SQL da v0.157, v0.159 e v0.160.
 

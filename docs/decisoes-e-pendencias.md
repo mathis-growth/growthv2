@@ -1,5 +1,16 @@
 
 
+## v0.192 — Dashboards em seções
+**Pedido da Rebecka (31/10)**: o Dashboard do Administrativo "parece um relatório de Word": evolução e meta, de onde vem a receita, clientes novos e existentes, produto e campanha não ficam delimitados, e não se vê onde termina uma informação e começa outra. Acontece em quase todos os dashboards.
+Decisões:
+- Cada dashboard é dividido em **seções com moldura**: fundo próprio, borda, uma faixa de cor à esquerda e um título com a pergunta que a seção responde. Os quadros (brancos) ficam dentro da seção (fundo tingido), então a separação entre uma informação e outra é visível.
+- **Dashboard (Administrativo):** Visão geral · Alertas · Evolução e meta · De onde vem a receita · Saúde financeira · Funil e campanhas · Tabelas completas.
+- **Dashboard financeiro:** Visão geral · Resultado do período · Resultado e despesas · Caixa e bancos · Próximos vencimentos.
+- **Dashboard de Vendas:** Visão geral · Metas e renovações · Cadastros e funil · De onde vêm os clientes · Cadastros recentes.
+- Só muda a disposição: quadros, dados, frases e cliques são os mesmos. Os rótulos soltos de antes ("O que importa agora", "Funil, vendas e contas"...) saem, porque a seção já tem título.
+- No celular, cada quadro ocupa a largura da seção, um embaixo do outro.
+- Pendente: levar o mesmo padrão para os outros dashboards (Marketing, Mídia, Retenção, Customer Growth, Growth's Content, Projetos) depois que a Rebecka aprovar estes três.
+
 ## v0.191 — Pagar e receber várias contas de uma vez
 **Pedido da Rebecka (31/10)**: em Contas a pagar e Contas a receber, um quadradinho de seleção para escolher as contas que quiser e pagar (ou receber) todas de uma vez.
 Decisões técnicas:
