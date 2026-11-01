@@ -1,5 +1,8 @@
 
 
+## Pacote Go-to-Market e Custos de marketing (v0.205)
+- Teste `t205_go_to_market.py` (27 verificações, 0 falhas): pacote sem financeiro; menu; reconhece sem financeiro; ligar; itens fixo e variável; meses desde o primeiro custo; não fecha com variável faltando; rotina cria a atividade no último dia, não repete, avisa a agência no dia 3; lançar; fechar conclui a atividade; mês fechado trava; resultado de outubro confere com o banco (receita − mídia − 6.200); painéis de marketing, vendas (com a seção) e administrativo (sem lucro, saldo, CAC total, saúde financeira e DRE); cliente completo não muda. t198 0 falhas.
+
 ## Título que o cliente vê (v0.204)
 - Teste `t201_entrada_cliente.py` (29 verificações, 0 falhas): nasce com o título; o cliente vê o título no formulário e na aba do navegador, não o nome interno; Editar mostra os dois campos; salvar o título mantém a aparência. `t197_pesquisas_editar_excluir.py` 0 falhas.
 

@@ -1,3 +1,11 @@
+## v0.205
+- `mkt_custos_config` (workspace_id, ativo, responsavel_id → equipe).
+- `mkt_custos_itens` (nome, tipo fixo|variavel, valor (fixo), desde, ate — sempre o 1º dia do mês).
+- `mkt_custos_valores` (item_id, mes, valor, lancado_em, lancado_por) — trava em mês fechado.
+- `mkt_custos_meses` (workspace_id, mes, fechado_em, fechado_por, atividade_id, aviso_cliente_em, aviso_equipe_em) — só muda pelas funções.
+- Funções: `mkt_custos_mes` (interna), `mkt_resultado(ws, ini, fim)`, `vendas_por_plataforma(ws, ini, fim)`, `mkt_custos_fechar`, `mkt_custos_reabrir`, `mkt_custos_rodar(ref)` (rotina).
+- `acesso_telas`: `mkt-custos`. `pacotes_acesso`: "Go-to-Market".
+
 ## v0.204
 - Sem mudança: o título público é `pesquisas.visual.titulo`.
 

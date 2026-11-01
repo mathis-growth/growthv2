@@ -1,5 +1,20 @@
 
 
+## v0.205 — Pacote Go-to-Market e Custos de marketing (etapa 4)
+**Pedido da Rebecka (01/11)**: cliente que não quer o financeiro no Growths. Ela escolhe os módulos no cadastro do cliente; o pacote se chama **Go-to-Market**; o número se chama **Resultado de marketing**; a atividade do fim do mês é do cliente e a equipe da Mathisa recebe alerta se não foi preenchido; antes de fechar o mês, sempre conferir. Ela pediu para fazer a etapa 4 antes das 2 e 3.
+Decisões:
+- **Pacote "Go-to-Market"** em Configurações › Pacotes de acesso dos clientes (o sistema de pacotes da v0.85): todas as telas menos o Financeiro (dashboard, contas a pagar e a receber, custos e margens, lançamentos) e o cadastro financeiro e contábil. Os pacotes já bloqueiam no banco o módulo sem tela.
+- **"Sem financeiro"** = o cliente tem pacote e nenhuma tela do Financeiro. Vale para o Go-to-Market e para qualquer pacote sem financeiro (por exemplo, Disparo).
+- **Custos de marketing** (Marketing › Custos de marketing, só para cliente sem financeiro; desligado até ligar): itens **fixos** (repetem todo mês do "a partir de" ao "até") e **variáveis** (lançados mês a mês); um valor fechado por mês, sem detalhar quem é quem. Mudou um fixo: encerra e cria outro, para os meses passados não mudarem.
+- **Fechar o mês**: só a partir do último dia e com todos os variáveis lançados (0 se não teve); mês fechado não muda (só reabrindo); fechar conclui a atividade.
+- **Rotina diária**: no último dia do mês, cria a atividade "Lançar os custos de marketing de MM/AAAA" no projeto "Rotinas do mês" do cliente (criado se não existir), para o responsável escolhido (equipe do cliente), com aviso; a partir do dia 3 do mês seguinte, se faltar lançar ou fechar, avisa a equipe da agência (workspace marcado como agência: Mathisa) uma vez por mês.
+- **Resultado de marketing** = receita − mídia − custos de marketing (proporcionais aos dias do mês no período), sempre com o aviso de que as outras despesas da empresa não entram; ROAS de mídia (receita ÷ mídia) e ROAS total (receita ÷ (mídia + marketing)); CAC de mídia e CAC completo (clientes novos = primeira compra aprovada no período). Faltou variável: o número aparece, marcado como incompleto.
+- Aparece em: Custos de marketing (mês a mês), Dashboard de marketing (período) e Dashboard administrativo (mês atual), que também tira lucro, saldo em banco, CAC total, Saúde financeira e DRE/fluxo de caixa.
+- **Vendas por plataforma** (Dashboard de vendas, para todos os clientes): vendas aprovadas, bruto, taxa, impostos, comissões da equipe, reembolsos e o que a plataforma deve repassar; sem financeiro, avisa que não dá para saber se caiu na conta.
+- Planejamento anual sem financeiro: o "Do faturamento ao lucro" ganha o aviso de que é estimativa com os custos digitados.
+- **Fica para depois**: Cockpit (painel Financeiro) no Go-to-Market; comissão de afiliado e coprodutor por plataforma (hoje só as comissões da equipe); o de-para dos relatórios das plataformas (etapa 2).
+- **Hipótese a testar em produção**: com o módulo financeiro bloqueado no banco, as rotinas que geram contas a receber a partir das vendas (integrações, importação) podem recusar; testar com o cliente de teste antes de usar com um cliente real.
+
 ## v0.204 — Nome da pesquisa × título que o cliente vê
 **Pedido da Rebecka (01/11)**: "Entrada do cliente (números e arquivos)" serve como nome para ela, mas o cliente via esse nome no alto do formulário, e ficou feio.
 Decisões:

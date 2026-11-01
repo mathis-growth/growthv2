@@ -1,3 +1,10 @@
+## v0.205
+- Sem financeiro = pacote sem nenhuma tela `fin-*`.
+- Custos de marketing do mês = fixos vigentes + variáveis lançados. No período, cada mês entra proporcional aos dias dentro do período.
+- Resultado de marketing = receita (vendas aprovadas, valor bruto) − mídia (custo dos anúncios) − custos de marketing. ROAS de mídia = receita ÷ mídia; ROAS total = receita ÷ (mídia + marketing). CAC de mídia = mídia ÷ clientes novos; CAC completo = (mídia + marketing) ÷ clientes novos; cliente novo = primeira compra aprovada no período.
+- Fechar o mês: a partir do último dia, com todos os variáveis lançados. Atividade do cliente no último dia; aviso à agência a partir do dia 3 do mês seguinte, uma vez.
+- Vendas por plataforma: a receber = valor a receber da venda (ou bruto − taxa), só aprovadas.
+
 ## v0.204
 - Quem responde vê `visual.titulo`; sem ele, o nome da pesquisa.
 

@@ -1,3 +1,6 @@
+## v0.205
+**Go-to-Market: o Growths sem o financeiro.** Para o cliente que cuida do caixa por fora: marketing, vendas, atendimento e CS, com o Resultado de marketing (receita menos mídia e custos de marketing), ROAS, CAC de mídia e CAC completo, uma rotina de fim de mês para lançar os custos e as vendas por plataforma.
+
 ## v0.204
 **Nome para você, título para o cliente.** Toda pesquisa pode ter um nome interno e um título diferente para quem responde.
 

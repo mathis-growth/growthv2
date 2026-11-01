@@ -12,7 +12,7 @@ ESPERADO = {
     'adm-painel': [('Visão geral', ['.kpis.hero', '.kpis.mini']), ('Alertas', ['.gc-obs']), ('Evolução e meta', ['#pgEvo', '#pgRit']),
                    ('De onde vem a receita', ['#pgNovEx', '#pgProd', '#pgCampR']), ('Saúde financeira', ['#pgCac']), ('Funil e campanhas', []), ('Tabelas completas', ['details.gc-det'])],
     'fin-dash': [('Visão geral', ['.kpis']), ('Resultado do período', ['#finCasc', '#finPonte']), ('Resultado e despesas', []), ('Caixa e bancos', ['#finSmin']), ('Próximos vencimentos', [])],
-    'crm-dash': [('Visão geral', ['.kpis']), ('Metas e renovações', []), ('Cadastros e funil', []), ('De onde vêm os clientes', []), ('Cadastros recentes', [])]
+    'crm-dash': [('Visão geral', ['.kpis']), ('Metas e renovações', []), ('Cadastros e funil', []), ('De onde vêm os clientes', []), ('Vendas por plataforma', ['#vpPlat']), ('Cadastros recentes', [])]
 }
 SECOES = "() => [...document.querySelectorAll('#main > section.dsec:not([hidden])')].sort((a, b) => a.getBoundingClientRect().y - b.getBoundingClientRect().y).map(s => s.querySelector('.dsec-h h2').textContent)"
 DENTRO = "([t, sel]) => { const s = [...document.querySelectorAll('#main > section.dsec')].find(x => x.querySelector('.dsec-h h2').textContent === t); return !!s && !!s.querySelector('.dsec-b > ' + sel); }"

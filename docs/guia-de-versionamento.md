@@ -1,3 +1,6 @@
+## v0.205
+- index.html: aplicado sobre a v0.204 (`aplica205.py`, `g205.js`, `g205.css`): `semFin`, `mrNums`, `mrKpis`, `mktResultadoPainel`, `vendasPlataformas`, `vMktCustos`; tela `mkt-custos` no menu (só sem financeiro); ganchos no Dashboard de marketing, de vendas (seção nova) e administrativo; aviso em `paLucroHtml`. Migração `20261202100000_go_to_market.sql` / `RODAR_v0.205_go_to_market.sql`. Teste novo `t205_go_to_market.py`.
+
 ## v0.204
 - index.html: aplicado sobre a v0.200 (`aplica204.py`): `modalPesquisa` com `titulo_publico` (gravado em `visual.titulo`, mantendo o resto da aparência); `criarDeModelo` grava `visual.titulo` quando o modelo tem `titulo_publico`. `t201_entrada_cliente.py` ampliado; `t197` sem falhas.
 

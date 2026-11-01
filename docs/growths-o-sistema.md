@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.204 (pesquisas: nome interno e título para quem responde).
+**Última atualização:** 01/11/2026, versão 0.205 (pacote Go-to-Market e custos de marketing).
+
+**v0.205 · Go-to-Market.** Pacote para quem não quer o financeiro no Growths: o resultado vira Resultado de marketing (receita menos mídia e custos de marketing), com rotina de fim de mês.
 
 **v0.201 · Entrada do cliente.** Formulário curto para quem está chegando, com a visão dos números e as planilhas do último ano (com modelo para baixar).
 
@@ -165,9 +167,11 @@ A campanha é uma página com abas: dashboard, estratégia e etapas, metas, capt
   - onde a campanha caiu (últimos 7 dias contra os 7 anteriores, etapa por etapa);
   - movimento por dia num gráfico só, com as métricas que você escolher;
   - vendas por produto e oferta;
+  - vendas por plataforma (Hotmart, Kiwify, Eduzz…): bruto, taxas, reembolsos e o que a plataforma deve repassar;
   - quanto custou e o que trouxe cada vídeo ou criativo.
 - **Ofertas e esteira.** Oferta principal com order bumps, upsells, downsells e cross-sells. Cada item tem condição (sempre, se aceitou, se recusou), validações contra ciclos e taxa de aceite medida com o denominador certo (quem recebeu a oferta, não todos).
 - **Calculadora de campanha.** Preencha o que souber e o resto se ajusta: CPL e conversão dão o CAC, a margem-alvo dá o CAC máximo, e assim por diante. "Salvar metas na campanha" leva tudo para a campanha.
+- **Custos de marketing e Resultado de marketing** (cliente sem financeiro, pacote Go-to-Market). Custos fixos (repetem todo mês) e variáveis (lançados no fim do mês), sem detalhar a equipe; no último dia do mês o cliente recebe a atividade para lançar e, se não lançar, a Mathisa é avisada; o mês só fecha com tudo lançado. Resultado de marketing = receita − mídia − custos de marketing, sempre com o aviso de que as outras despesas da empresa não entram, com ROAS de mídia, ROAS total, CAC de mídia e CAC completo.
 - **Planejamento anual.** Ano escolhido no topo (do ano passado até dois à frente; o ano novo pode começar com as premissas do anterior). Em seções: 1. Meta do ano (ambição, realista ou as duas, com cada premissa do sistema, digitada ou estimada; impostos pelo regime; do faturamento ao lucro; três cenários com o lucro no fim), 2. Por trimestre (ritmo, previsão e sugestão mês a mês), 3. Calendário de campanhas (linha do tempo com lançamentos e perpétuas, meta por campanha, orçamento planejado contra realizado) e as metas mês a mês.
 - **Projeto da campanha.** Toda campanha pode gerar o próprio projeto com as atividades dos blocos (ex.: tráfego pago → públicos, criativos, configurar, acompanhar), com responsável por função.
 - **Links e tracking.** Monta a URL com UTM e liga o criativo pelo utm_content.
@@ -525,6 +529,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - Dashboard não é relatório: por que cada bloco da tela precisa responder uma pergunta só.
 - A pesquisa na página de obrigado: o momento em que o lead mais quer falar com você.
 - Ambição × realista: por que a meta do ano precisa de duas contas, e o que fazer com a diferença.
+- "Seu lucro de marketing não é o lucro da empresa": ROAS, CAC de mídia e CAC completo, e por que separar.
 - "Me manda suas planilhas": o que pedir a um cliente novo para montar o histórico e o diagnóstico (e por que o relatório da plataforma basta).
 - Novembro é mês de planejar o ano que vem: o que levar do ano que termina e o que recalcular.
 - "Quero lucrar 200 mil": quanto precisa faturar depois do imposto e das comissões (a conta que quase ninguém faz).
@@ -533,6 +538,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.205):** Pacote Go-to-Market (sem financeiro), Custos de marketing com rotina mensal, Resultado de marketing e vendas por plataforma.
 - **01/11 (v0.204):** Pesquisas: nome só para a equipe e título para quem responde.
 - **01/11 (v0.203):** Entrada do cliente: vendas por plataforma marcada.
 - **01/11 (v0.202):** Entrada do cliente: cada arquivo é enviar ou "Não tenho".

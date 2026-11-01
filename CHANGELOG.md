@@ -1,3 +1,11 @@
+## v0.205 — Pacote Go-to-Market e Custos de marketing (01/11/2026)
+- Pacote **Go-to-Market** (sem financeiro) em Pacotes de acesso dos clientes.
+- **Custos de marketing**: fixos e variáveis, meses, fechar e reabrir, rotina de fim de mês (atividade do cliente e aviso à Mathisa).
+- **Resultado de marketing** com ROAS, CAC de mídia e CAC completo nos dashboards de marketing e administrativo; o administrativo tira lucro, caixa e DRE quando não há financeiro.
+- **Vendas por plataforma** no Dashboard de vendas.
+- Banco: `RODAR_v0.205_go_to_market.sql` (**ainda não aplicado**).
+- Teste: `t205_go_to_market.py` (0 falhas).
+
 ## v0.204 — Título que quem responde vê (01/11/2026)
 - Editar pesquisa: "Nome da pesquisa (só a equipe vê)" e "Título que quem responde vê".
 - Entrada do cliente nasce com o título "Boas-vindas! Vamos conhecer o seu negócio".
