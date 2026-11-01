@@ -1,3 +1,7 @@
+## v0.194 — Campos de formulário mais legíveis (31/10/2026)
+- Nome do campo em negrito e na cor principal; caixa de preencher com borda visível e texto digitado na cor principal; exemplo dentro do campo em itálico e mais claro; campo desativado com fundo diferente. Vale para todos os formulários (menos o formulário público da pesquisa).
+- Só CSS. Sem mudança no banco.
+
 ## v0.193 — Pesquisa na campanha (31/10/2026)
 - **Nova campanha → passo 4, Pesquisa**: vai usar pesquisa? Qual (existente, de um modelo pronto ou nova)? Onde entra: **na captação**, **na página de obrigado**, **em disparo** (quando e por onde).
 - Aba **Planejamento e metas** da campanha: painel **Pesquisa da campanha** com Configurar, Abrir a pesquisa, links de captação por canal (com UTM), **código para a página de obrigado** (iframe que ajusta a altura) e o disparo: leads da campanha, na fila, responderam, **Colocar N leads na fila** e Abrir a fila de envio.

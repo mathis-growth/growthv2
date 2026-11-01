@@ -1,3 +1,6 @@
+## v0.194
+Nada a rodar no banco (só tela).
+
 ## v0.193
 Nada a rodar no banco (só tela). A escolha da pesquisa fica em `campanhas.extras` (coluna que já existe).
 

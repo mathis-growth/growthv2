@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 31/10/2026, versão 0.193 (pesquisa na campanha).
+**Última atualização:** 31/10/2026, versão 0.194 (campos de formulário).
+
+**Visual v0.194 · Campos legíveis.** Em todos os formulários, o nome do campo em negrito, a caixa com borda visível e o exemplo em itálico.
 
 **Marketing v0.193 · Pesquisa na campanha.** A nova campanha pergunta se vai ter pesquisa, qual e onde entra (captação, página de obrigado com o código pronto, disparo para os leads).
 
@@ -581,4 +583,5 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - pagar e receber várias contas de uma vez, com seleção, total e baixa em lote;
   - plano da North Star no Growths (onde cadastrar e como configurar), a partir do documento de NSM da consultoria;
   - Dashboard, Dashboard financeiro e Dashboard de Vendas divididos em seções com moldura e título;
-  - pesquisa dentro da campanha: escolher qual e onde entra, código para a página de obrigado e leads na fila de envio.
+  - pesquisa dentro da campanha: escolher qual e onde entra, código para a página de obrigado e leads na fila de envio;
+  - campos de formulário com o nome em negrito e a caixa bem marcada.

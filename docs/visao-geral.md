@@ -1,3 +1,6 @@
+## v0.194
+**Campos mais fáceis de ler.** Em todos os formulários, o nome do campo fica em negrito e a caixa de preencher tem borda visível; o exemplo dentro do campo fica em itálico e mais claro. Não dá mais para confundir o título com o conteúdo.
+
 ## v0.193
 **Pesquisa dentro da campanha.** Ao criar uma campanha, um passo novo pergunta se ela vai ter pesquisa, qual (uma que já existe, um modelo pronto ou uma nova) e onde ela entra: na captação, na página de obrigado ou em disparo para os leads. Para a página de obrigado, o Growths entrega o código pronto para colar, e a pesquisa aparece dentro da página. No disparo, os leads da campanha vão para a fila com um clique; o envio automático vem quando a ferramenta for escolhida.
 

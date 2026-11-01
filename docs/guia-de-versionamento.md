@@ -1,3 +1,6 @@
+## v0.194
+- index.html: aplicado sobre a v0.193 (`g194.css`, só CSS): `label`, `input`, `select`, `textarea`, `::placeholder`, desativados.
+
 ## v0.193
 - index.html: aplicado sobre a v0.192 (`aplica193.py`; novos `g193.js` e `g193.css`). `WZ_ETAPAS` com o passo 4; assistente da campanha (`tela`, `salvar`) com o passo de pesquisa; `cpqCampos`, `cpqLiga`, `cpqSalva`, `cpqDados`, `cpqModal`, `cpqDoModelo`, `cpqCodigo`, `cpqUtm`, `campPesquisaPainel` (chamado no fim de `tcResumo`); `pubPesqAltura` na página pública. Teste novo `t193_pesquisa_campanha.py`.
 

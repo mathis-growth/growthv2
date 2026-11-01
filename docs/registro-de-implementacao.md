@@ -1,5 +1,8 @@
 
 
+## Campos de formulário (v0.194)
+- `g194.css`: regras gerais de rótulo e campo no bloco de estilos mais recente (vencem as regras base de mesma força; as de componentes, como o formulário público, continuam valendo). Conferido no assistente da nova campanha e na nova conta a pagar, modo claro e escuro.
+
 ## Pesquisa na campanha (v0.193)
 - `g193.js`: bloco de pesquisa (passo 4 da nova campanha e modal Configurar), criação da pesquisa a partir do modelo sem abrir outro modal, painel "Pesquisa da campanha" com captação (link por canal), página de obrigado (código e copiar) e disparo (leads da campanha, na fila, responderam, sem envio; colocar na fila; abrir a fila).
 - Página pública: dentro de um iframe, avisa a altura do conteúdo (`postMessage` `growthsPesquisa`) medindo o conteúdo e não a página, para não crescer sem fim.

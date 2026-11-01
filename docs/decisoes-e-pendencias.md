@@ -1,5 +1,14 @@
 
 
+## v0.194 — Campos de formulário mais legíveis
+**Pedido da Rebecka (31/10)**: o nome do campo e o que está dentro dele estavam iguais (mesma cor e peso), e a caixa de preencher não tinha uma borda visível. Exemplo: "Nome" e o exemplo dentro do campo, na nova campanha.
+Decisões (vale para todos os formulários do sistema, menos o formulário público da pesquisa, que tem a identidade visual do cliente):
+- **Nome do campo** em negrito (600), na cor do texto principal, um pouco maior (12,5 px). Antes era cinza claro, peso 500.
+- **Caixa de preencher** com borda bem visível (cor do texto a 28%, mais forte ao passar o mouse), leve sombra interna e o texto digitado na cor principal (antes herdava o cinza do rótulo).
+- **Exemplo dentro do campo** (placeholder) em itálico e mais claro, para não ser confundido com um valor preenchido.
+- Campo desativado ou só de leitura: fundo diferente e borda tracejada.
+- Caixas de marcar e opções continuam com peso normal.
+
 ## v0.193 — Pesquisa na campanha
 **Pedido da Rebecka (31/10)**: ao criar a campanha, dizer se vai usar pesquisa, escolher qual (um modelo pronto ou uma nova) e onde ela entra: na captação, na página de obrigado (com o código HTML para colar) ou em disparo. Para o disparo, "tenho que criar um processo para automatizar… não sei o que a gente pode fazer".
 Decisões:
