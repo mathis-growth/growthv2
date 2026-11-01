@@ -27,6 +27,9 @@ async function receive(ch: any, normalized: any, historical = false) {
   }
   normalized.mensagem.historica = historical;
   const cv = await q(db.rpc('atd_receber', { p_canal: ch.id, p_conversa: normalized.conversa, p_mensagem: normalized.mensagem }));
+  if (!normalized.conversa?.grupo && ch.canal === 'whatsapp') {
+    await identificarPessoaPorTelefone(ch.workspace_id, cv, normalized.conversa?.endereco || normalized.conversa?.id);
+  }
   if (normalized.media) {
     const msg = await q(db.from('atd_mensagens').select('id,anexos').eq('conversa_id', cv).eq('externo_id', normalized.mensagem.id).single());
     if (msg.anexos.some((a: any) => a.pendente)) {
@@ -36,49 +39,120 @@ async function receive(ch: any, normalized: any, historical = false) {
   }
   return cv;
 }
-async function executarAutomacoes(ch: any, conversaId: string, mensagem: any) {
-  if (!conversaId || mensagem?.direcao !== 'recebida' || !mensagem?.id) return;
-  const automacoes = await q(db.from('atd_automacoes').select('*')
-    .eq('workspace_id',ch.workspace_id).eq('ativo',true));
-  const cv = await q(db.from('atd_conversas').select('*').eq('id',conversaId)
-    .eq('workspace_id',ch.workspace_id).single());
-  if(cv.grupo)return;
-  const adapter = providers[ch.provedor];
-  if (!adapter) return;
-  for (const flow of automacoes) {
-    if (flow.canal_id && flow.canal_id !== ch.id) continue;
-    const keyword=String(flow.gatilho_valor||'').trim().toLocaleLowerCase();
-    if (flow.gatilho_tipo==='palavra_chave' &&
-        (!keyword || !String(mensagem.texto||'').toLocaleLowerCase().includes(keyword))) continue;
-    // Reserva idempotente antes do envio: retries de webhook nunca disparam a resposta duas vezes.
-    const runs = await q(db.from('atd_automacao_execucoes').upsert({
-      workspace_id:ch.workspace_id,automacao_id:flow.id,conversa_id:cv.id,
-      mensagem_gatilho:ch.id+':'+String(mensagem.id),status:'processando'
-    },{onConflict:'automacao_id,mensagem_gatilho',ignoreDuplicates:true}).select('id'));
-    const run = runs?.[0]; if (!run) continue;
-    let pending: any = null, attempted=false;
-    try {
-      if (!ch.ativo || ch.status!=='conectado') throw new Error('Canal desconectado durante a execução da automação.');
-      const text=String(flow.resposta||'').replace(/\{\{nome\}\}/gi,cv.nome||'').trim();
-      if (!text) throw new Error('A resposta automática está vazia.');
-      pending=await q(db.from('atd_mensagens').insert({
-        workspace_id:ch.workspace_id,conversa_id:cv.id,requisicao_id:run.id,
-        direcao:'enviada',texto:text,autor_nome:'Automação · '+flow.nome,status:'enviando'
-      }).select('id').single());
-      await q(db.from('atd_automacao_execucoes').update({mensagem_id:pending.id}).eq('id',run.id));
-      const cfg=ch.provedor==='evolution'?await secret(ch.workspace_id):{key:zp()};
-      attempted=true;
-      const external=await adapter.send(cfg,ch,cv,text);
-      await q(db.rpc('atd_confirmar_envio',{p_mensagem:pending.id,p_externo:external}));
-      await q(db.from('atd_automacao_execucoes').update({status:'enviado',erro:null}).eq('id',run.id));
-    } catch(e) {
-      const known=!attempted || (e instanceof ProviderError && e.status<500 && e.status!==408);
-      const state=known?'erro':'incerto';
-      const detail=known?(e as Error).message.slice(0,220):'Envio sem confirmação. Confira o provedor antes de reenviar.';
-      if(pending) await q(db.from('atd_mensagens').update({status:known?'falhou':'incerto',erro:detail}).eq('id',pending.id));
-      await q(db.from('atd_automacao_execucoes').update({status:state,erro:detail}).eq('id',run.id));
-      console.error('atd automacao falhou',flow.id,state);
+function telefoneNormalizado(endereco: unknown) {
+  const bruto=String(endereco||'').split('@')[0].replace(/\D/g,'');
+  if(bruto.length===10||bruto.length===11)return '55'+bruto;
+  return bruto.length>=12&&bruto.length<=13?bruto:null;
+}
+async function identificarPessoaPorTelefone(ws:string,conversaId:string,endereco:unknown) {
+  const telefone=telefoneNormalizado(endereco);if(!telefone)return null;
+  const cv=await q(db.from('atd_conversas').select('id,pessoa_id,grupo').eq('id',conversaId).eq('workspace_id',ws).maybeSingle());
+  if(!cv||cv.grupo||cv.pessoa_id)return cv?.pessoa_id||null;
+  const encontrados=await q(db.from('pessoas').select('id').eq('workspace_id',ws).eq('telefone_norm',telefone).limit(2));
+  // Não escolhe arbitrariamente se a base já tiver telefone duplicado.
+  if(encontrados.length!==1)return null;
+  await q(db.from('atd_conversas').update({pessoa_id:encontrados[0].id}).eq('id',cv.id).eq('workspace_id',ws).is('pessoa_id',null));
+  return encontrados[0].id;
+}
+async function resumoContato(ws:string,conversaId:string) {
+  const cv=await q(db.from('atd_conversas').select('id,pessoa_id,endereco,externo_id,grupo,canal_id').eq('id',conversaId).eq('workspace_id',ws).single());
+  if(cv.grupo)return {pessoa:null};
+  let pessoaId=cv.pessoa_id;
+  if(!pessoaId){const ch=await channel(cv.canal_id,ws);if(ch.canal==='whatsapp')pessoaId=await identificarPessoaPorTelefone(ws,cv.id,cv.endereco||cv.externo_id);}
+  if(!pessoaId)return {pessoa:null};
+  const pessoa=await q(db.from('pessoas').select('id,nome,telefone,email,status_funil,status_cliente,qualificacao,criado_em,convertido_em,campanha_id,utm_campaign').eq('id',pessoaId).eq('workspace_id',ws).single());
+  const [toques,participacoes,alunos,vendas]=await Promise.all([
+    q(db.from('pessoa_toques').select('em,campanha_id').eq('workspace_id',ws).eq('pessoa_id',pessoaId).in('tipo',['entrada','captura']).order('em').limit(1)).catch(()=>[]),
+    q(db.from('campanha_participacoes').select('campanha_id,entrou_em').eq('workspace_id',ws).eq('pessoa_id',pessoaId).order('entrou_em').limit(1)).catch(()=>[]),
+    q(db.from('alunos').select('produto_id,entrou_em,status').eq('workspace_id',ws).eq('pessoa_id',pessoaId).order('entrou_em',{ascending:false}).limit(10)).catch(()=>[]),
+    q(db.from('vendas').select('produto_id,data_venda,status').eq('workspace_id',ws).eq('pessoa_id',pessoaId).eq('status','aprovada').order('data_venda',{ascending:false}).limit(10)).catch(()=>[])
+  ]);
+  const toque=toques[0],participacao=participacoes[0];
+  const campanhaId=pessoa.campanha_id||toque?.campanha_id||participacao?.campanha_id;
+  const campanha=campanhaId?await q(db.from('campanhas').select('id,nome,produto_id').eq('workspace_id',ws).eq('id',campanhaId).maybeSingle()).catch(()=>null):null;
+  const produtoIds=[...new Set([...alunos,...vendas].map((r:any)=>r.produto_id).filter(Boolean))];
+  if(campanha?.produto_id)produtoIds.unshift(campanha.produto_id);
+  const produtos=produtoIds.length?await q(db.from('produtos').select('id,nome').eq('workspace_id',ws).in('id',[...new Set(produtoIds)])).catch(()=>[]):[];
+  const produtoNomes=[...new Set(produtoIds.map(id=>produtos.find((p:any)=>p.id===id)?.nome).filter(Boolean))];
+  return {pessoa:{...pessoa,tipo:pessoa.status_funil==='cliente'||alunos.length?'Aluno/Cliente':'Lead',campanha:campanha?.nome||null,
+    produto:produtoNomes.join(', ')||null,capturado_em:toque?.em||participacao?.entrou_em||pessoa.criado_em}};
+}
+function fluxoCompativel(flow:any) {
+  if(Array.isArray(flow.fluxo?.nodes)&&flow.fluxo.nodes.length)return flow.fluxo;
+  const trigger='legacy-trigger',message='legacy-message';
+  return {versao:1,nodes:[{id:trigger,tipo:'gatilho',x:40,y:190,data:{}},{id:message,tipo:'mensagem',x:390,y:190,data:{texto:String(flow.resposta||'')}}],edges:[{origem:trigger,destino:message,saida:'seguir'}]};
+}
+function aresta(fluxo:any,id:string,saida='seguir') { return fluxo.edges.find((e:any)=>e.origem===id&&e.saida===saida)?.destino||null; }
+async function executarFluxo(ch:any,cv:any,flow:any,run:any,estado:any) {
+  const adapter=providers[ch.provedor];if(!adapter)throw new Error('Provedor indisponível para executar o fluxo.');
+  const graph=estado.fluxo||fluxoCompativel(flow),nodes=graph.nodes||[],edges=graph.edges||[];
+  const snapshot={...estado,fluxo:graph,entrada_texto:String(estado.entrada_texto||''),enviadas:Array.isArray(estado.enviadas)?estado.enviadas:[],visitados:Array.isArray(estado.visitados)?estado.visitados:[]};
+  let current=snapshot.no_id||nodes.find((n:any)=>n.tipo==='gatilho')?.id||nodes[0]?.id||null,steps=0;
+  const resumo=await resumoContato(ch.workspace_id,cv.id),p=resumo.pessoa||{};
+  while(current&&steps++<60){
+    const node=nodes.find((n:any)=>n.id===current);if(!node)break;
+    if(snapshot.visitados.includes(node.id))throw new Error('O fluxo contém um ciclo entre blocos. Revise as ligações no canvas.');
+    snapshot.visitados.push(node.id);
+    if(node.tipo==='gatilho'){current=aresta(graph,node.id,'seguir')||nodes.find((n:any)=>n.tipo!=='gatilho')?.id||null;continue;}
+    if(node.tipo==='fim')break;
+    if(node.tipo==='condicao'){
+      const value=String(node.data?.valor||'').trim().toLocaleLowerCase();
+      current=String(snapshot.entrada_texto).toLocaleLowerCase().includes(value)?aresta(graph,node.id,'sim'):aresta(graph,node.id,'nao');
+      continue;
     }
+    const next=aresta(graph,node.id,'seguir');
+    if(node.tipo==='espera'){
+      if(!next)break;
+      const count=Math.max(1,Math.min(365,Number(node.data?.quantidade)||1)),unit=node.data?.unidade||'minutos';
+      const ms=count*(unit==='dias'?86400000:unit==='horas'?3600000:60000),retomarEm=new Date(Date.now()+ms).toISOString();
+      snapshot.no_id=next;
+      await q(db.from('atd_automacao_execucoes').update({status:'aguardando',retomar_em:retomarEm,estado:snapshot,erro:null}).eq('id',run.id).eq('status','processando'));
+      return 'aguardando';
+    }
+    if(node.tipo==='mensagem'){
+      const text=String(node.data?.texto||'').replace(/\{\{nome\}\}/gi,cv.nome||'').replace(/\{\{produto\}\}/gi,p.produto||'').replace(/\{\{campanha\}\}/gi,p.campanha||'').trim();
+      if(!text)throw new Error('Uma ação de mensagem está vazia.');
+      if(!ch.ativo||ch.status!=='conectado')throw new Error('Canal desconectado durante a execução do fluxo.');
+      const pending=await q(db.from('atd_mensagens').insert({workspace_id:ch.workspace_id,conversa_id:cv.id,
+        requisicao_id:snapshot.enviadas.length?null:run.id,direcao:'enviada',texto:text,autor_nome:'Automação · '+flow.nome,status:'enviando'}).select('id').single());
+      if(!run.mensagem_id){await q(db.from('atd_automacao_execucoes').update({mensagem_id:pending.id}).eq('id',run.id));run.mensagem_id=pending.id;}
+      let attempted=false;
+      try{
+        const cfg=ch.provedor==='evolution'?await secret(ch.workspace_id):{key:zp()};
+        attempted=true;
+        const external=await adapter.send(cfg,ch,cv,text);
+        await q(db.rpc('atd_confirmar_envio',{p_mensagem:pending.id,p_externo:external}));
+      }catch(e){
+        const known=!attempted||(e instanceof ProviderError&&e.status<500&&e.status!==408);
+        const detail=known?String((e as Error).message||'Falha no envio').slice(0,220):'Envio sem confirmação. Confira o provedor antes de reenviar.';
+        await q(db.from('atd_mensagens').update({status:known?'falhou':'incerto',erro:detail}).eq('id',pending.id));
+        const failure=new Error(detail);(failure as any).fluxoIncerto=!known;throw failure;
+      }
+      snapshot.enviadas.push(node.id);snapshot.no_id=next;
+      await q(db.from('atd_automacao_execucoes').update({estado:snapshot}).eq('id',run.id).eq('status','processando'));
+    }
+    current=next;
+  }
+  if(steps>=60)throw new Error('O fluxo ultrapassou o limite de 60 blocos por execução.');
+  await q(db.from('atd_automacao_execucoes').update({status:'enviado',retomar_em:null,estado:{...snapshot,no_id:null},erro:null}).eq('id',run.id).eq('status','processando'));
+  return 'enviado';
+}
+async function executarAutomacoes(ch:any,conversaId:string,mensagem:any) {
+  if(!conversaId||mensagem?.direcao!=='recebida'||!mensagem?.id)return;
+  const automacoes=await q(db.from('atd_automacoes').select('*').eq('workspace_id',ch.workspace_id).eq('ativo',true));
+  const cv=await q(db.from('atd_conversas').select('*').eq('id',conversaId).eq('workspace_id',ch.workspace_id).single());if(cv.grupo)return;
+  for(const flow of automacoes){
+    if(flow.canal_id&&flow.canal_id!==ch.id)continue;
+    const keyword=String(flow.gatilho_valor||'').trim().toLocaleLowerCase();
+    if(flow.gatilho_tipo==='palavra_chave'&&(!keyword||!String(mensagem.texto||'').toLocaleLowerCase().includes(keyword)))continue;
+    const estado={fluxo:fluxoCompativel(flow),entrada_texto:String(mensagem.texto||''),no_id:null,enviadas:[]};
+    estado.no_id=estado.fluxo.nodes.find((n:any)=>n.tipo==='gatilho')?.id||estado.fluxo.nodes[0]?.id||null;
+    const rows=await q(db.from('atd_automacao_execucoes').upsert({workspace_id:ch.workspace_id,automacao_id:flow.id,
+      conversa_id:cv.id,mensagem_gatilho:ch.id+':'+String(mensagem.id),status:'processando',estado},
+      {onConflict:'automacao_id,mensagem_gatilho',ignoreDuplicates:true}).select('id,mensagem_id'));
+    const run=rows?.[0];if(!run)continue;
+    try{await executarFluxo(ch,cv,flow,run,estado);}
+    catch(e){const message=String((e as Error).message||'Falha no fluxo').slice(0,220),state=(e as any).fluxoIncerto?'incerto':'erro';await q(db.from('atd_automacao_execucoes').update({status:state,retomar_em:null,erro:message}).eq('id',run.id).eq('status','processando'));console.error('atd automacao falhou',flow.id,state);}
   }
 }
 async function mediaBytes(url: string) {
@@ -161,7 +235,7 @@ async function webhook(req: Request, url: URL, raw: string) {
     if (event === 'CONNECTION_UPDATE') await q(db.from('atd_canais').update({ status: p.data?.state === 'open' ? 'conectado' : p.data?.state === 'connecting' ? 'conectando' : 'desconectado' }).eq('id', ch.id));
     if (event === 'MESSAGES_UPSERT') for (const d of Array.isArray(p.data) ? p.data : [p.data]) {
       const normalized=evolutionMensagem(d), cvId=await receive(ch,normalized);
-      if(cvId&&normalized?.mensagem.direcao==='recebida')
+      if(normalized&&cvId&&normalized.mensagem.direcao==='recebida')
         EdgeRuntime.waitUntil(executarAutomacoes(ch,cvId,normalized.mensagem).catch(()=>console.error('atd automacoes worker falhou',ch.id)));
     }
     if (event === 'MESSAGES_UPDATE') for (const d of Array.isArray(p.data) ? p.data : [p.data]) {
@@ -176,7 +250,7 @@ async function webhook(req: Request, url: URL, raw: string) {
     if (ch?.ativo) {
       const normalized = zernioMensagem(p);
       const cvId=normalized?await receive(ch,normalized):null;
-      if(cvId&&normalized.mensagem.direcao==='recebida')
+      if(normalized&&cvId&&normalized.mensagem.direcao==='recebida')
         EdgeRuntime.waitUntil(executarAutomacoes(ch,cvId,normalized.mensagem).catch(()=>console.error('atd automacoes worker falhou',ch.id)));
       const st: Record<string,string> = { 'message.delivered':'entregue','message.read':'lida','message.failed':'falhou' };
       if (st[p.event]) await updateDelivery(ch, p.message?.platformMessageId || p.message?.id, st[p.event], p.conversation?.id || p.conversation?.platformConversationId);
@@ -243,14 +317,36 @@ async function processarAgendamentos(req:Request) {
       if(known)erros++;else incertos++;
     }
   }
-  return json({ok:true,reservados:jobs.length,enviados,erros,incertos});
+  let fluxosRetomados=0,fluxosFalhos=0;
+  const due=await q(db.from('atd_automacao_execucoes').select('id,workspace_id,automacao_id,conversa_id,estado')
+    .eq('status','aguardando').lte('retomar_em',new Date().toISOString()).order('retomar_em').limit(20));
+  for(const row of due){
+    const claimed=await q(db.from('atd_automacao_execucoes').update({status:'processando',retomar_em:null})
+      .eq('id',row.id).eq('status','aguardando').select('id'));
+    if(!claimed.length)continue;
+    try{
+      const [flow,cv]=await Promise.all([
+        q(db.from('atd_automacoes').select('*').eq('id',row.automacao_id).eq('workspace_id',row.workspace_id).single()),
+        q(db.from('atd_conversas').select('*').eq('id',row.conversa_id).eq('workspace_id',row.workspace_id).single())
+      ]);
+      if(!flow.ativo)throw new Error('Fluxo pausado antes do próximo passo.');
+      const ch=await channel(cv.canal_id,row.workspace_id);
+      await executarFluxo(ch,cv,flow,{id:row.id,mensagem_id:null},row.estado||{});
+      fluxosRetomados++;
+    }catch(e){
+      const state=(e as any).fluxoIncerto?'incerto':'erro';
+      await q(db.from('atd_automacao_execucoes').update({status:state,retomar_em:null,erro:String((e as Error).message||'Falha ao retomar fluxo').slice(0,220)}).eq('id',row.id).eq('status','processando'));
+      fluxosFalhos++;
+    }
+  }
+  return json({ok:true,reservados:jobs.length,enviados,erros,incertos,fluxosRetomados,fluxosFalhos});
 }
 async function handle(req: Request, b: any) {
   const userDb = createClient(URL_SB, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: req.headers.get('authorization') || '' } }, auth: { persistSession:false } });
   const { data: { user }, error } = await userDb.auth.getUser();
   if (error || !user) return json({ erro: 'Faça login novamente.' },401);
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
-  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes'];
+  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
   const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
@@ -260,6 +356,10 @@ async function handle(req: Request, b: any) {
     if (!interna) return json({ erro:'Somente a equipe interna pode vincular contas da Zernio.' },403);
   }
   if (b.action === 'contexto') return json(ctx);
+  if (b.action === 'contato-resumo') {
+    if(!/^[0-9a-f-]{36}$/i.test(String(b.conversa_id||'')))throw new Error('Conversa inválida.');
+    return json(await resumoContato(ws,b.conversa_id));
+  }
   if(b.action==='agendamentos-list'){
     const cv=await q(db.from('atd_conversas').select('id').eq('id',b.conversa_id).eq('workspace_id',ws).single());
     return json({agendamentos:await q(db.from('atd_agendamentos').select('id,texto,enviar_em,fuso,status,erro,criado_em')
@@ -290,11 +390,11 @@ async function handle(req: Request, b: any) {
       .eq('workspace_id',ws).order('titulo'))});
   }
   if(b.action==='automacoes-list'){
-    return json({automacoes:await q(db.from('atd_automacoes').select('id,nome,canal_id,gatilho_tipo,gatilho_valor,resposta,ativo,criado_em,atualizado_em')
+    return json({automacoes:await q(db.from('atd_automacoes').select('id,nome,canal_id,gatilho_tipo,gatilho_valor,resposta,fluxo,ativo,criado_em,atualizado_em')
       .eq('workspace_id',ws).order('atualizado_em',{ascending:false}))});
   }
   if(b.action==='automacoes-execucoes'){
-    const runs=await q(db.from('atd_automacao_execucoes').select('id,automacao_id,conversa_id,status,erro,executado_em')
+    const runs=await q(db.from('atd_automacao_execucoes').select('id,automacao_id,conversa_id,status,erro,executado_em,retomar_em')
       .eq('workspace_id',ws).order('executado_em',{ascending:false}).limit(30));
     return json({execucoes:runs});
   }
@@ -303,9 +403,29 @@ async function handle(req: Request, b: any) {
     const tipo=b.gatilho_tipo==='qualquer_mensagem'?'qualquer_mensagem':'palavra_chave';
     const gatilho=tipo==='palavra_chave'?String(b.gatilho_valor||'').trim():'';
     const canalId=String(b.canal_id||'').trim()||null, ativo=b.ativo===true;
+    let fluxo=b.fluxo&&typeof b.fluxo==='object'?b.fluxo:null;
     if(!nome||nome.length>120||!resposta||resposta.length>4000||
       (tipo==='palavra_chave'&&(!gatilho||gatilho.length>100)))
       throw Error('Informe nome, gatilho e uma resposta de até 4.000 caracteres.');
+    if(!fluxo||!Array.isArray(fluxo.nodes)||!Array.isArray(fluxo.edges))
+      fluxo={versao:1,nodes:[],edges:[]};
+    if(!fluxo.nodes.length){
+      const start=crypto.randomUUID(),message=crypto.randomUUID();
+      fluxo={versao:1,nodes:[{id:start,tipo:'gatilho',x:40,y:190,data:{}},{id:message,tipo:'mensagem',x:390,y:190,data:{texto:resposta}}],edges:[{origem:start,destino:message,saida:'seguir'}]};
+    }
+    if(fluxo.nodes.length>60||fluxo.edges.length>120)
+      throw Error('O canvas precisa ter até 60 blocos e 120 ligações.');
+    const nodeIds=new Set<string>();
+    for(const node of fluxo.nodes){
+      if(!node||!/^[0-9a-f-]{36}$/i.test(String(node.id||''))||nodeIds.has(node.id)||!['gatilho','mensagem','condicao','espera','fim'].includes(node.tipo))throw Error('Bloco inválido no canvas.');
+      nodeIds.add(node.id);
+      const x=Number(node.x),y=Number(node.y);if(!Number.isFinite(x)||!Number.isFinite(y)||x<0||y<0||x>50000||y>50000)throw Error('Posição de bloco inválida.');
+      if(node.tipo==='mensagem'&&(!String(node.data?.texto||'').trim()||String(node.data.texto).length>4000))throw Error('Toda ação de mensagem precisa de um texto de até 4.000 caracteres.');
+      if(node.tipo==='condicao'&&!String(node.data?.valor||'').trim())throw Error('Informe o trecho de mensagem na condição.');
+      if(node.tipo==='espera'&&(!Number.isFinite(Number(node.data?.quantidade))||Number(node.data.quantidade)<1||Number(node.data.quantidade)>365||!['minutos','horas','dias'].includes(node.data?.unidade)))throw Error('Tempo de espera inválido (1 a 365 minutos, horas ou dias).');
+    }
+    if(!fluxo.nodes.some((n:any)=>n.tipo==='gatilho')||!fluxo.nodes.some((n:any)=>n.tipo==='mensagem'))throw Error('O canvas precisa conter um gatilho e ao menos uma ação de mensagem.');
+    for(const edge of fluxo.edges)if(!nodeIds.has(edge.origem)||!nodeIds.has(edge.destino)||edge.origem===edge.destino||!['seguir','sim','nao'].includes(edge.saida))throw Error('Ligação inválida no canvas.');
     let canais:any[]=[];
     if(canalId){
       const ch=await channel(canalId,ws);canais=[ch];
@@ -319,7 +439,7 @@ async function handle(req: Request, b: any) {
     if(ativo&&!canais.some((ch:any)=>ch.ativo&&ch.status==='conectado'))
       throw Error('Para ativar, conecte um canal compatível ao Atendimento.');
     const row:any={workspace_id:ws,nome,canal_id:canalId,gatilho_tipo:tipo,gatilho_valor:gatilho,
-      resposta,ativo,atualizado_em:new Date().toISOString()};
+      resposta,fluxo,ativo,atualizado_em:new Date().toISOString()};
     if(b.id){
       if(!/^[a-f0-9-]{36}$/i.test(String(b.id)))throw Error('Automação inválida.');
       const updated=await q(db.from('atd_automacoes').update(row).eq('workspace_id',ws).eq('id',b.id).select('id'));

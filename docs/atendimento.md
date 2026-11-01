@@ -44,7 +44,13 @@ O endpoint da Evolution recebe os eventos `MESSAGES_UPSERT`, `MESSAGES_UPDATE` e
 
 O banco usa textos para `provedor` e `canal`, sem enum fechado. O registro `providers` em `supabase/functions/atendimento/providers.ts` define envio; normalizadores em `core.ts` traduzem os eventos para o contrato comum. Para Telegram ou TikTok: implementar/registrar adaptador e normalizador, habilitar descoberta de contas daquele canal, documentar suas capacidades e adicionar testes. O seletor e o histórico usam os registros do banco. Telegram/TikTok não aparecem como conectáveis antes dessa implementação.
 
-Fluxos condicionais e visuais com múltiplos blocos, disparos em massa e indicadores de automação ficam para próximas etapas. A versão inicial responde mensagens recebidas com um único bloco de resposta por automação; uma mensagem recebida só dispara cada automação uma vez. Respostas automáticas respeitam as janelas e políticas de cada provedor. As DMs antigas permanecem disponíveis nas telas anteriores. WhatsApp oficial continua exigindo template aprovado quando a janela de resposta estiver fechada.
+## Automações visuais e identificação de contatos
+
+O editor de Automações usa o padrão de canvas da Estratégia: blocos interligados por setas, com gatilho, ações de mensagem, condições por palavra/trecho recebido, espera em minutos/horas/dias e encerramento. A Edge executa condições e mensagens em sequência; esperas ficam persistidas e são retomadas pelo mesmo agendador de Atendimento. Cada mensagem recebida dispara cada fluxo no máximo uma vez. Templates respeitam a janela e as regras do provedor; WhatsApp oficial pode exigir template aprovado fora da janela.
+
+Ao receber mensagem do WhatsApp, o Atendimento normaliza o número e associa a conversa automaticamente apenas quando encontra exatamente uma pessoa com aquele telefone no mesmo workspace. Se houver duplicidade, não escolhe um cadastro arbitrariamente. A faixa acima do chat resume tipo Lead/Aluno, produto, campanha/lançamento e data de captura. Produto considera matrícula e compra aprovada; campanha e data de captura vêm do CRM e do histórico de captação. Para números antigos, a associação automática também ocorre quando a conversa é aberta. Instagram não é associado por número porque o identificador do participante não é telefone.
+
+Pré-requisitos desta versão: aplicar `20261204110000_atendimento_canvas_automacoes.sql`, publicar `assets/atendimento.js` e `assets/atendimento.css` e implantar a Edge `atendimento`. Para enviar um arquivo único pelo Dashboard, usar `docs/edge-atendimento-v0198-index-unico.ts`; pelo CLI, implantar a pasta completa com `index.ts`, `core.ts` e `providers.ts`.
 
 ## Validação e integração
 
