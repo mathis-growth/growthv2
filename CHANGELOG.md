@@ -1,3 +1,10 @@
+## v0.209 — Financeiro simplificado (01/11/2026)
+- Pacote **Financeiro simplificado** (Go-to-Market + DRE simplificado).
+- Custos do mês com grupo (marketing ou outros da operação) e **comissões de parceiros** (coprodutor, afiliado, vendedor, com %).
+- **DRE simplificado** mês a mês: receita líquida, Resultado de marketing e Resultado da operação, % do faturamento, médias, gráfico e "para onde vai cada R$ 100".
+- Banco: `RODAR_v0.209_financeiro_simplificado.sql` (**ainda não aplicado**).
+- Teste: `t209_financeiro_simplificado.py` (0 falhas).
+
 ## v0.208 — Dashboard de vendas no padrão (01/11/2026)
 - Filtro de período (de, até, atalhos) e, no topo, valor das vendas, vendas, ticket, clientes novos, clientes ativos e lead → cliente, contra o período anterior.
 - Cadastros em "Cadastros e funil"; Vendas por plataforma no mesmo período.

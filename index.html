@@ -388,7 +388,7 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">.pf-doc.pf-ok{border-left:4px solid #17803d;padding-left:10px}.pf-doc.pf-ok > b::after{content:" ✓ arquivo anexado";color:#17803d;font-size:13px;margin-left:6px}.pf-arqs li span{color:#17803d}.pf-dmsg{display:block;margin:6px 0 0;font-size:13px;color:#17803d}.pf-dmsg.ruim{color:#b42318}.pf-dmsg:empty{display:none}.hv-st{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}.hv-st label{display:flex;flex-direction:column;gap:4px;font-size:13px}.hv-outra[hidden]{display:none!important}/* v0.205 Go-to-Market: resultado de marketing e custos */
+<style id="v122">.fs-dre td,.fs-dre th{font-size:12.5px;padding:6px 8px}.fs-dre tr.tot td{border-top:1px solid var(--line)}.fs-cem{display:flex;flex-direction:column;gap:8px}.fs-cr{display:grid;grid-template-columns:minmax(150px,240px) 1fr 90px 120px;gap:10px;align-items:center;font-size:13.5px}.fs-cr b{text-align:right}.fs-cr small{text-align:right}.fs-cr.neg i{background:var(--bad)}.fs-cr.neg b{color:var(--bad)}@media (max-width:700px){.fs-cr{grid-template-columns:1fr 70px}.fs-cr .pa-bar,.fs-cr small{display:none}}.pf-doc.pf-ok{border-left:4px solid #17803d;padding-left:10px}.pf-doc.pf-ok > b::after{content:" ✓ arquivo anexado";color:#17803d;font-size:13px;margin-left:6px}.pf-arqs li span{color:#17803d}.pf-dmsg{display:block;margin:6px 0 0;font-size:13px;color:#17803d}.pf-dmsg.ruim{color:#b42318}.pf-dmsg:empty{display:none}.hv-st{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}.hv-st label{display:flex;flex-direction:column;gap:4px;font-size:13px}.hv-outra[hidden]{display:none!important}/* v0.205 Go-to-Market: resultado de marketing e custos */
 .mr-aviso{margin:8px 0 0;font-size:12.5px}
 .mc-sel td{background:var(--accent-soft)}
 .mc-val[hidden]{display:none!important}
@@ -1384,7 +1384,7 @@ setTimeout(() => { if ($('#login').classList.contains('hide') && $('#app').class
 const NAV = [
   { g: 'Growth Starter', flat: true, starter: true, items: [['st-dash', 'Dashboard'], ['mkt-dash', 'Aquisição'], ['mkt-midia', 'Mídia'], ['crm-vendas', 'Vendas'], ['ho-retencao', 'Retenção & Expansão'], ['cad-produtos', 'Produtos'], ['crm-alunos', 'Clientes / Alunos'], ['fin-dash', 'Financeiro'], ['st-relatorios', 'Relatórios'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['gro-ciclo', 'Experimentos']] },
   { g: 'Cockpit', flat: true, livre: true, items: [['cockpit', 'Cockpit']] },
-  { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['adm-plano', 'Planejamento da empresa'], ['adm-empresa', 'Cadastro da empresa']] },
+  { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['adm-plano', 'Planejamento da empresa'], ['adm-empresa', 'Cadastro da empresa'], ['adm-financeiro', 'Financeiro simplificado']] },
   { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-estrategias', 'Estratégias (Canvas)'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários'], ['mkt-custos', 'Custos de marketing']], subs: [{ g: 'Growth\'s Content', mod: 'mkt', items: [['mkt-cont', 'Estratégia de conteúdo'], ['mkt-insta', 'Instagram']] }] },
   { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['crm-dms', 'DMs do Instagram'], ['mkt-origem', 'Leads por origem']] },
   { g: 'Customer Success', items: [['ho-dash', 'Dashboard'], ['ho-cg', 'Customer Growth'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
@@ -1758,7 +1758,7 @@ function desenhaNav() {
     if (!!g.starter !== ehStarter() && !(ehStarter() && g.g === 'Configurações')) return '';
     if (g.casa) return casaDe(S.wsBase) ? `<div class="grp">${gh(g.g)}${isOpen(g.g) ? `<div class="lv2">${btns(g.items)}</div>` : ''}</div>` : '';
     if (g.flat) return !g.livre && nivelMod(MOD_GRUPO[g.g]) === 'nenhum' ? '' : `<div class="grp">${btns(g.items.filter(i => telaLiberada(i[0])))}</div>`;
-    const vis = items => items.filter(i => (!SO_ADMIN.includes(i[0]) || souAdmin()) && telaLiberada(i[0]) && (!TELAS_INT.includes(i[0]) || S.interno) && (i[0] !== 'cfg-custos' || S.verCustos) && (i[0] !== 'mkt-custos' || semFin()));
+    const vis = items => items.filter(i => (!SO_ADMIN.includes(i[0]) || souAdmin()) && telaLiberada(i[0]) && (!TELAS_INT.includes(i[0]) || S.interno) && (i[0] !== 'cfg-custos' || S.verCustos) && (i[0] !== 'mkt-custos' || semFin()) && (i[0] !== 'adm-financeiro' || semFin()));
     const okG = g.items.length ? nivelMod(MOD_GRUPO[g.g]) !== 'nenhum' && vis(g.items).length > 0 : false, subs = subsDe(g).filter(x => nivelMod(modSub(x)) !== 'nenhum' && vis(x.items).length);
     if (!okG && !subs.length) return '';
     return `<div class="grp${g.adm ? ' adm' : ''}">${gh(g.g)}${isOpen(g.g) ? `<div class="lv2">${(okG ? btns(vis(g.items)) : '') + subs.map(x => gh(x.g, 'sub') + (isOpen(x.g) ? `<div class="sublist">${btns(vis(x.items))}</div>` : '')).join('')}</div>` : ''}</div>`;
@@ -16816,20 +16816,21 @@ async function vendasPlataformas(m) {
 GRADE_SECOES['crm-dash'].secoes.splice(4, 0, { k: 'plataformas', t: 'Vendas por plataforma', p: 'Quanto cada plataforma vendeu, as taxas, os reembolsos e o que ela deve repassar.', itens: [['#vpPlat', 12]] });
 
 /* Marketing › Custos de marketing */
-async function vMktCustos(m) {
-  const w = S.ws, h = hoje(), mesAt = h.slice(0, 8) + '01';
+async function vMktCustos(m, op = {}) {
+  const w = S.ws, h = hoje(), mesAt = h.slice(0, 8) + '01', grupos = op.grupos || ['marketing'], emb = !!op.embutido, GR = { marketing: 'Marketing', operacional: 'Outros custos da operação' }; // v0.209: o Financeiro simplificado usa esta tela com os dois grupos
   if (!(await temColuna('mkt_custos_itens', 'tipo'))) { m.innerHTML = '<div class="panel" style="border-left:4px solid var(--warn)"><h1>Custos de marketing</h1><b>Falta atualizar o banco.</b> <span class="muted">Rode supabase/RODAR_v0.205_go_to_market.sql no SQL Editor do Supabase.</span></div>'; return; }
-  const [cf0, itens, eqs] = await Promise.all([q(sb.from('mkt_custos_config').select('*').eq('workspace_id', w)).then(one).catch(() => null),
+  const [cf0, itensT, eqs] = await Promise.all([q(sb.from('mkt_custos_config').select('*').eq('workspace_id', w)).then(one).catch(() => null),
     q(sb.from('mkt_custos_itens').select('*').eq('workspace_id', w).order('criado_em')), equipeAtiva()]);
+  const itens = itensT.filter(it => grupos.includes(it.grupo || 'marketing'));
   const cf = cf0 || { ativo: false }, pode = souAdmin() || S.interno;
-  const cab = `<div class="head"><div><h1>Custos de marketing</h1><span class="muted">Os custos que entram no CAC completo e no Resultado de marketing: equipe de marketing, ferramentas, agência. Um valor fechado por mês, sem detalhar quem é quem. Fixo repete todo mês até mudar; variável é lançado no fim de cada mês.</span></div></div>`;
+  const cab = emb ? '' : `<div class="head"><div><h1>Custos de marketing</h1><span class="muted">Os custos que entram no CAC completo e no Resultado de marketing: equipe de marketing, ferramentas, agência. Um valor fechado por mês, sem detalhar quem é quem. Fixo repete todo mês até mudar; variável é lançado no fim de cada mês.</span></div></div>`;
   if (!cf.ativo) {
     m.innerHTML = cab + `<div class="panel"><h2>Desligado para este cliente</h2><p>Sem os custos de marketing, o Growths mostra o CAC de mídia (anúncios ÷ clientes novos) e o resultado só com a mídia. Ligando, entram a equipe, as ferramentas e a agência, com uma rotina no fim de cada mês para lançar os variáveis.</p>
-      ${pode ? '<button class="btn pri" id="mcLiga">Ligar os custos de marketing</button>' : '<p class="muted">Peça ao administrador para ligar.</p>'}</div>`;
+      ${pode ? `<button class="btn pri" id="mcLiga">${emb ? 'Ligar o lançamento de custos' : 'Ligar os custos de marketing'}</button>` : '<p class="muted">Peça ao administrador para ligar.</p>'}</div>`;
     if ($('#mcLiga')) $('#mcLiga').onclick = () => act(async () => { await q(sb.from('mkt_custos_config').upsert({ workspace_id: w, ativo: true, atualizado_em: new Date().toISOString() }, { onConflict: 'workspace_id' })); render(); }, 'Custos de marketing ligados');
     return;
   }
-  const ini0 = itens.reduce((a, it) => !a || it.desde < a ? it.desde : a, null); // meses desde o primeiro custo, até 12
+  const ini0 = itensT.reduce((a, it) => !a || it.desde < a ? it.desde : a, null); // meses desde o primeiro custo, até 12
   const meses = Array.from({ length: 12 }, (_, i) => mcMais(mesAt, i - 11)).reverse().filter(mm => ini0 && mm >= ini0);
   const Rs = await Promise.all(meses.map(mm => q(sb.rpc('mkt_resultado', { p_ws: w, p_ini: mm, p_fim: mcUlt(mm) < h ? mcUlt(mm) : h })).catch(() => null))); // mês em curso: até hoje (custos proporcionais aos dias)
   const vars = meses.length ? await q(sb.from('mkt_custos_valores').select('*').eq('workspace_id', w).gte('mes', meses[meses.length - 1])).catch(() => []) : [];
@@ -16838,15 +16839,15 @@ async function vMktCustos(m) {
   const vig = (it, mm) => it.desde <= mm && (!it.ate || it.ate >= mm);
   const sit = (R, mm) => { const x = (R && R.meses && R.meses[0]) || {}; const terminou = h >= mcUlt(mm);
     return x.fechado_em ? ['good', 'Fechado'] : !terminou ? ['neutral', 'Em curso (até hoje)'] : Number(x.faltam) ? ['bad', `Falta lançar ${x.faltam}`] : ['warn', 'Pronto para fechar']; };
-  const linhaMes = (mm, i) => { const R = Rs[i] || {}, x = (R.meses || [])[0] || {}, N = R.receita != null ? mrNums(R) : null, s = sit(R, mm), terminou = h >= mcUlt(mm), nvar = itens.filter(it => it.tipo === 'variavel' && vig(it, mm)).length;
-    return `<tr${mm === S0 ? ' class="mc-sel"' : ''}><td><a href="#" data-mcv="${mm}"><b>${mcMesTxt(mm)}</b></a></td><td class="n">${N ? brl(N.mid) : '—'}</td><td class="n">${brl(x.fixos || 0)}</td><td class="n">${nvar ? brl(x.variaveis || 0) : '<span class="muted">—</span>'}</td>
-      <td class="n"><b>${brl(Number(x.fixos || 0) + Number(x.variaveis || 0))}</b></td><td class="n">${N ? `<span class="${N.res >= 0 ? 'pos' : 'neg'}">${brl(N.res)}</span>` : '—'}</td><td><span class="pill ${s[0]}">${s[1]}</span></td>
+  const linhaMes = (mm, i) => { const R = Rs[i] || {}, x = (R.meses || [])[0] || {}, N = R.receita != null ? mrNums(R) : null, s = sit(R, mm), terminou = h >= mcUlt(mm), nvar = itensT.filter(it => it.tipo === 'variavel' && vig(it, mm)).length, op_ = grupos.includes('operacional'), fx = Number(x.fixos || 0) + (op_ ? Number(x.fixos_op || 0) : 0), vr = Number(x.variaveis || 0) + (op_ ? Number(x.variaveis_op || 0) : 0);
+    return `<tr${mm === S0 ? ' class="mc-sel"' : ''}><td><a href="#" data-mcv="${mm}"><b>${mcMesTxt(mm)}</b></a></td><td class="n">${N ? brl(N.mid) : '—'}</td><td class="n">${brl(fx)}</td><td class="n">${nvar ? brl(vr) : '<span class="muted">—</span>'}</td>
+      <td class="n"><b>${brl(fx + vr)}</b></td>${emb ? '' : `<td class="n">${N ? `<span class="${N.res >= 0 ? 'pos' : 'neg'}">${brl(N.res)}</span>` : '—'}</td>`}<td><span class="pill ${s[0]}">${s[1]}</span></td>
       <td style="white-space:nowrap">${x.fechado_em ? (pode ? `<button class="btn sm" data-mcr="${mm}">Reabrir</button>` : '') : `${nvar ? `<button class="btn sm" data-mcl="${mm}">Lançar variáveis</button>` : ''}${terminou ? `<button class="btn sm pri" data-mcf="${mm}">Fechar o mês</button>` : ''}`}</td></tr>`; };
-  const linhaItem = it => `<tr><td><b>${esc(it.nome)}</b></td><td>${it.tipo === 'fixo' ? '<span class="pill info">Fixo</span>' : '<span class="pill warn">Variável</span>'}</td><td class="n">${it.tipo === 'fixo' ? brl(it.valor) + '/mês' : '<span class="muted">lançado todo mês</span>'}</td>
+  const linhaItem = it => `<tr><td><b>${esc(it.nome)}</b>${grupos.length > 1 ? `<br><span class="muted">${GR[it.grupo || 'marketing']}</span>` : ''}</td><td>${it.tipo === 'fixo' ? '<span class="pill info">Fixo</span>' : '<span class="pill warn">Variável</span>'}</td><td class="n">${it.tipo === 'fixo' ? brl(it.valor) + '/mês' : '<span class="muted">lançado todo mês</span>'}</td>
     <td>${mcMesTxt(it.desde)}${it.ate ? ' a ' + mcMesTxt(it.ate) : ' em diante'}</td><td style="white-space:nowrap"><button class="btn sm" data-mie="${it.id}">Editar</button>${!it.ate ? `<button class="btn sm" data-mia="${it.id}">Encerrar</button>` : ''}</td></tr>`;
-  m.innerHTML = cab + `${S0 ? `<div class="panel"><div class="head" style="margin:0 0 6px"><h2 style="margin:0">Resultado de marketing · ${mcMesTxt(S0)}</h2><span class="muted">clique num mês da tabela para ver outro</span></div>${Rsel ? mrKpis(Rsel) : '<div class="empty">Sem dados.</div>'}</div>` : ''}
+  m.innerHTML = cab + `${S0 && !emb ? `<div class="panel"><div class="head" style="margin:0 0 6px"><h2 style="margin:0">Resultado de marketing · ${mcMesTxt(S0)}</h2><span class="muted">clique num mês da tabela para ver outro</span></div>${Rsel ? mrKpis(Rsel) : '<div class="empty">Sem dados.</div>'}</div>` : ''}
     <div class="panel"><h2>Meses</h2><p class="muted" style="margin-top:0">No último dia do mês o Growths cria a atividade "Lançar os custos de marketing" para ${cf.responsavel_id ? '<b>' + esc((eqs.find(e => e.id === cf.responsavel_id) || {}).nome || 'o responsável') + '</b>' : 'o responsável (escolha abaixo)'}; a partir do dia 3, se faltar lançar ou fechar, a equipe da Mathisa é avisada. Mês fechado não muda, a não ser que seja reaberto.</p>
-      ${meses.length ? '' : '<div class="empty">Cadastre o primeiro custo (abaixo) para os meses aparecerem.</div>'}<div class="tw"${meses.length ? '' : ' hidden'}><table><thead><tr><th>Mês</th><th class="n">Mídia</th><th class="n">Fixos</th><th class="n">Variáveis</th><th class="n">Total de marketing</th><th class="n">Resultado de marketing</th><th>Situação</th><th></th></tr></thead><tbody>${meses.map(linhaMes).join('')}</tbody></table></div></div>
+      ${meses.length ? '' : '<div class="empty">Cadastre o primeiro custo (abaixo) para os meses aparecerem.</div>'}<div class="tw"${meses.length ? '' : ' hidden'}><table><thead><tr><th>Mês</th><th class="n">Mídia</th><th class="n">Fixos</th><th class="n">Variáveis</th><th class="n">${emb ? 'Total de custos' : 'Total de marketing'}</th>${emb ? '' : '<th class="n">Resultado de marketing</th>'}<th>Situação</th><th></th></tr></thead><tbody>${meses.map(linhaMes).join('')}</tbody></table></div></div>
     <div class="panel"><div class="head" style="margin:0 0 6px"><h2 style="margin:0">Itens de custo</h2><div class="acts"><button class="btn pri" id="mcNovo">+ Novo custo</button></div></div>
       ${itens.length ? `<div class="tw"><table><thead><tr><th>Custo</th><th>Tipo</th><th class="n">Valor</th><th>Vale</th><th></th></tr></thead><tbody>${itens.map(linhaItem).join('')}</tbody></table></div>` : '<div class="empty">Nenhum custo ainda. Ex.: "Equipe de marketing" (fixo), "Ferramentas" (fixo), "Freelancers e agência" (variável).</div>'}</div>
     <div class="panel"><h2>Configuração</h2><div class="grid2"><label>Quem lança os variáveis no fim do mês (equipe do cliente)<select id="mcResp"><option value="">— escolha —</option>${eqs.map(e => `<option value="${e.id}"${e.id === cf.responsavel_id ? ' selected' : ''}>${esc(e.nome)}</option>`).join('')}</select></label>
@@ -16854,14 +16855,14 @@ async function vMktCustos(m) {
   m.querySelectorAll('[data-mcv]').forEach(a => a.onclick = e => { e.preventDefault(); S.mcSel = a.dataset.mcv; render(); });
   $('#mcResp').onchange = e => act(async () => { await q(sb.from('mkt_custos_config').update({ responsavel_id: e.target.value || null, atualizado_em: new Date().toISOString() }).eq('workspace_id', w)); render(); }, 'Responsável salvo');
   if ($('#mcDesliga')) $('#mcDesliga').onclick = () => modal('Desligar os custos de marketing', '<p>Os itens e os valores ficam guardados. O CAC completo e os custos somem dos painéis, e a rotina do fim do mês para.</p>', async () => { await q(sb.from('mkt_custos_config').update({ ativo: false }).eq('workspace_id', w)); toast('Custos de marketing desligados'); }, 'Desligar');
-  const item = it => { const f = modal(it ? 'Editar custo' : 'Novo custo de marketing', `<div class="grid2"><label class="full">Nome<input name="nome" required maxlength="120" value="${esc(it ? it.nome : '')}" placeholder="Ex.: Equipe de marketing"></label>
+  const item = it => { const f = modal(it ? 'Editar custo' : (grupos.length > 1 ? 'Novo custo' : 'Novo custo de marketing'), `<div class="grid2"><label class="full">Nome<input name="nome" required maxlength="120" value="${esc(it ? it.nome : '')}" placeholder="Ex.: Equipe de marketing"></label>${grupos.length > 1 ? `<label class="full">Grupo<select name="grupo">${grupos.map(g => `<option value="${g}"${((it && it.grupo) || grupos[0]) === g ? ' selected' : ''}>${GR[g]}${g === 'marketing' ? ' (entra no CAC e no Resultado de marketing)' : ' (pró-labore, administrativo, aluguel…)'}</option>`).join('')}</select></label>` : ''}
       <label>Tipo<select name="tipo"><option value="fixo"${!it || it.tipo === 'fixo' ? ' selected' : ''}>Fixo: o mesmo valor todo mês</option><option value="variavel"${it && it.tipo === 'variavel' ? ' selected' : ''}>Variável: lançado no fim de cada mês</option></select></label>
       <label class="mc-val">Valor por mês (R$)<input name="valor" type="number" step="0.01" min="0" value="${it && it.valor != null ? it.valor : ''}"></label>
       <label>Vale a partir de<input name="desde" type="month" required value="${(it ? it.desde : mesAt).slice(0, 7)}"></label>
       <label>Até (opcional)<input name="ate" type="month" value="${it && it.ate ? it.ate.slice(0, 7) : ''}"></label></div>
       <p class="muted">Mudou o valor de um custo fixo? Encerre o atual no mês anterior e crie um novo a partir do mês da mudança: os meses passados continuam com o valor de antes.</p>`, async d => {
       if (d.tipo === 'fixo' && !(Number(d.valor) >= 0 && d.valor !== '')) throw new Error('Informe o valor por mês do custo fixo.');
-      const row = { workspace_id: w, nome: d.nome.trim(), tipo: d.tipo, valor: d.tipo === 'fixo' ? Number(d.valor) : null, desde: d.desde + '-01', ate: d.ate ? d.ate + '-01' : null };
+      const row = { workspace_id: w, nome: d.nome.trim(), grupo: d.grupo || (it && it.grupo) || grupos[0], tipo: d.tipo, valor: d.tipo === 'fixo' ? Number(d.valor) : null, desde: d.desde + '-01', ate: d.ate ? d.ate + '-01' : null };
       if (row.ate && row.ate < row.desde) throw new Error('"Até" não pode ser antes de "Vale a partir de".');
       if (it) await q(sb.from('mkt_custos_itens').update(row).eq('id', it.id)); else await q(sb.from('mkt_custos_itens').insert(row));
       toast(it ? 'Custo salvo' : 'Custo criado'); });
@@ -16870,8 +16871,8 @@ async function vMktCustos(m) {
   m.querySelectorAll('[data-mie]').forEach(b => b.onclick = () => item(itens.find(x => x.id === b.dataset.mie)));
   m.querySelectorAll('[data-mia]').forEach(b => b.onclick = () => { const it = itens.find(x => x.id === b.dataset.mia);
     modal('Encerrar ' + it.nome, `<label>Último mês em que vale<input name="ate" type="month" required value="${mcMais(mesAt, -1).slice(0, 7)}"></label>`, async d => { const ate = d.ate + '-01'; if (ate < it.desde) throw new Error('O último mês não pode ser antes do início.'); await q(sb.from('mkt_custos_itens').update({ ate }).eq('id', it.id)); toast('Custo encerrado'); }, 'Encerrar'); });
-  m.querySelectorAll('[data-mcl]').forEach(b => b.onclick = () => { const mm = b.dataset.mcl, V = itens.filter(it => it.tipo === 'variavel' && vig(it, mm));
-    modal('Custos variáveis de ' + mcMesTxt(mm), V.map(it => { const x = vars.find(v => v.item_id === it.id && v.mes === mm); return `<label>${esc(it.nome)} (R$)<input name="v_${it.id}" type="number" step="0.01" min="0" value="${x ? x.valor : ''}"></label>`; }).join('') + '<p class="muted">Deixe em branco o que ainda não sabe. Para fechar o mês, todos precisam estar lançados (0 se não teve).</p>', async d => {
+  m.querySelectorAll('[data-mcl]').forEach(b => b.onclick = () => { const mm = b.dataset.mcl, V = itensT.filter(it => it.tipo === 'variavel' && vig(it, mm));
+    modal('Custos variáveis de ' + mcMesTxt(mm), V.map(it => { const x = vars.find(v => v.item_id === it.id && v.mes === mm); return `<label>${esc(it.nome)}${it.grupo === 'operacional' ? ' · operação' : ''} (R$)<input name="v_${it.id}" type="number" step="0.01" min="0" value="${x ? x.valor : ''}"></label>`; }).join('') + '<p class="muted">Deixe em branco o que ainda não sabe. Para fechar o mês, todos precisam estar lançados (0 se não teve).</p>', async d => {
       const rows = V.filter(it => d['v_' + it.id] !== '' && d['v_' + it.id] != null).map(it => ({ item_id: it.id, mes: mm, workspace_id: w, valor: Number(d['v_' + it.id]), lancado_em: new Date().toISOString() }));
       if (rows.length) await q(sb.from('mkt_custos_valores').upsert(rows, { onConflict: 'item_id,mes' }));
       toast('Custos de ' + mcMesTxt(mm) + ' lançados'); }); });
@@ -17047,6 +17048,79 @@ async function vdKpis(m) {
 }
 GRADE_SECOES['crm-dash'].topo.push(['.vd-filtros', 12]);
 (GRADE_SECOES['crm-dash'].secoes.find(s => s.k === 'funil') || { itens: [] }).itens.unshift(['.vd-cad', 12]);
+
+/* ================= v0.209 — Financeiro simplificado (DRE simplificado) =================
+   Pedido da Rebecka (01/11): para o cliente que não usa contas a pagar e a receber, um "livro financeiro do mês": ele lança os
+   totais (custos de marketing, outros custos da operação) e as comissões dos parceiros (% de coprodutor, afiliado, vendedor), e
+   o Growths monta o DRE simplificado com as taxas e a mídia que já tem. Sem caixa, sem o que foi pago ou não, sem lançamento. */
+const FS_PAPEL = { coprodutor: 'Coprodutor', afiliado: 'Afiliado', vendedor: 'Vendedor', outro: 'Outro' };
+const FS_AVISO = 'DRE simplificado: o que foi vendido e o que foi gasto em cada mês. Sem caixa e sem contas a pagar e a receber: não mostra o que já foi pago ou recebido. Os custos são os que o cliente informou; as taxas, impostos e a mídia vêm das vendas e dos anúncios.';
+function fsLinhas(x) {
+  const fat = +x.faturamento, taxa = +x.taxa, imp = +x.impostos, com = +x.comissoes_parceiros + +x.comissoes_equipe, liq = fat - taxa - imp - com,
+    mid = +x.midia, mkt = +x.custos_mkt, rmkt = liq - mid - mkt, op = +x.custos_op, rop = rmkt - op;
+  return { fat, taxa, imp, com, cp: +x.comissoes_parceiros, ce: +x.comissoes_equipe, liq, mid, mkt, rmkt, op, rop };
+}
+const FS_ROWS = [['fat', 'Faturamento (vendas aprovadas)'], ['taxa', '− Taxa da plataforma'], ['imp', '− Impostos sobre as vendas'], ['com', '− Comissões (parceiros e equipe)'], ['liq', '= Receita líquida', 1],
+  ['mid', '− Mídia (anúncios)'], ['mkt', '− Custos de marketing'], ['rmkt', '= Resultado de marketing', 1], ['op', '− Outros custos da operação'], ['rop', '= Resultado da operação', 1]];
+async function vFinSimples(m) {
+  const w = S.ws, T = S.fsTab = S.fsTab || 'dre';
+  m.innerHTML = `<div class="head"><div><h1>Financeiro simplificado</h1><span class="muted">O DRE do mês sem contas a pagar e a receber: o cliente informa os totais (marketing e outros custos) e as comissões dos parceiros; as vendas, as taxas e a mídia o Growths já tem.</span></div></div>
+    <div class="tabs">${[['dre', 'DRE simplificado'], ['custos', 'Custos do mês'], ['parc', 'Comissões de parceiros']].map(([k, l]) => `<button data-fst="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="fsBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
+  m.querySelectorAll('[data-fst]').forEach(b => b.onclick = () => { S.fsTab = b.dataset.fst; render(); });
+  const body = $('#fsBody');
+  if (!(await temColuna('parceiros_comissao', 'percentual'))) { body.innerHTML = '<div class="panel" style="border-left:4px solid var(--warn)"><b>Falta atualizar o banco.</b> <span class="muted">Rode supabase/RODAR_v0.209_financeiro_simplificado.sql no Supabase (depois do v0.205 e do v0.206).</span></div>'; return; }
+  if (T === 'custos') return vMktCustos(body, { grupos: ['marketing', 'operacional'], embutido: true });
+  if (T === 'parc') return fsParceiros(body);
+  return fsDre(body);
+}
+async function fsDre(el) {
+  const h = hoje(), A = S.fsA = S.fsA || { n: 6, ate: mcMais(h.slice(0, 8) + '01', -1) };
+  const R = await q(sb.rpc('dre_simplificado', { p_ws: S.ws, p_ate: A.ate, p_meses: A.n }));
+  const M = R.meses || [], L = M.map(fsLinhas), tot = k => L.reduce((t, x) => t + x[k], 0), fatT = tot('fat');
+  const pct = (v, b) => b > 0 ? String(Math.round(v / b * 1000) / 10).replace('.', ',') + '%' : '—';
+  const temImp = L.some(x => x.imp), semTaxa = M.reduce((t, x) => t + Number(x.vendas_sem_taxa || 0), 0), falta = M.filter(x => Number(x.faltam) > 0);
+  const linhas = FS_ROWS.filter(([k]) => k !== 'imp' || temImp);
+  const celula = (k, v) => `<td class="n${k === 'rmkt' || k === 'rop' ? (v >= 0 ? ' pos' : ' neg') : ''}">${GC.fmtK(v)}</td>`;
+  const opcoes = Array.from({ length: 13 }, (_, i) => mcMais(h.slice(0, 8) + '01', -i));
+  el.innerHTML = `<div class="filters"><label>Até o mês<select id="fsAte">${opcoes.map(o => `<option value="${o}"${o === A.ate ? ' selected' : ''}>${mcMesTxt(o)}${o === h.slice(0, 8) + '01' ? ' (em curso)' : ''}</option>`).join('')}</select></label>
+      <label>Meses<select id="fsN">${[3, 6, 12].map(n => `<option${n === A.n ? ' selected' : ''}>${n}</option>`).join('')}</select></label></div>
+    <div class="kpis">${kpi('Faturamento', brl(fatT), `${A.n} mês(es) · média ${brl(fatT / A.n)}/mês`)}${kpi('Marketing', pct(tot('mid') + tot('mkt'), fatT), `do faturamento · mídia ${brl(tot('mid'))} + custos ${brl(tot('mkt'))}`)}
+      ${kpi('Resultado de marketing', `<span class="${tot('rmkt') >= 0 ? 'pos' : 'neg'}">${brl(tot('rmkt'))}</span>`, pct(tot('rmkt'), fatT) + ' do faturamento')}${kpi('Outros custos da operação', pct(tot('op'), fatT), brl(tot('op')) + ' no período')}
+      ${kpi('Resultado da operação', `<span class="${tot('rop') >= 0 ? 'pos' : 'neg'}">${brl(tot('rop'))}</span>`, pct(tot('rop'), fatT) + ' do faturamento · média ' + brl(tot('rop') / A.n) + '/mês')}</div>
+    ${falta.length ? `<div class="pa-falta">Faltam custos variáveis em ${falta.map(x => mcMesTxt(x.mes)).join(', ')}: o resultado desses meses está incompleto. Lance em "Custos do mês".</div>` : ''}
+    ${R.custos_ativo ? '' : '<div class="pa-falta">O lançamento de custos está desligado: o DRE mostra só vendas, taxas, comissões e mídia. Ligue em "Custos do mês".</div>'}
+    <div class="panel"><h2>DRE simplificado, mês a mês</h2><div class="tw"><table class="fs-dre"><thead><tr><th></th>${M.map(x => `<th class="n">${mcMesTxt(x.mes)}${Number(x.faltam) ? ' <span class="pill bad" title="Faltam custos variáveis">!</span>' : x.fechado_em ? ' <span class="pill good" title="Mês fechado">✓</span>' : ''}</th>`).join('')}<th class="n">Total</th><th class="n">% do fat.</th><th class="n">Média/mês</th></tr></thead><tbody>
+      ${linhas.map(([k, l, t]) => `<tr${t ? ' class="tot"' : ''}><td>${t ? '<b>' + l + '</b>' : l}</td>${L.map(x => celula(k, x[k])).join('')}<td class="n"><b>${GC.fmtK(tot(k))}</b></td><td class="n">${pct(['liq', 'rmkt', 'rop', 'fat'].includes(k) ? tot(k) : Math.abs(tot(k)), fatT)}</td><td class="n">${GC.fmtK(tot(k) / A.n)}</td></tr>`).join('')}</tbody></table></div>
+      <p class="muted gc-fonte">${esc(FS_AVISO)}${semTaxa ? ` ${num(semTaxa)} venda(s) sem a taxa da plataforma informada: a taxa delas entra como zero.` : ''} Comissões: parceiros ${brl(tot('cp'))} (pelas % cadastradas) e equipe ${brl(tot('ce'))}.</p></div>
+    <div class="panel"><h2>Faturamento e resultados por mês</h2>${gcLinhas({ series: [{ nome: 'Faturamento', valores: L.map(x => Math.round(x.fat)), cor: 'var(--muted)' }, { nome: 'Resultado de marketing', valores: L.map(x => Math.round(x.rmkt)), cor: 'var(--accent)' }, { nome: 'Resultado da operação', valores: L.map(x => Math.round(x.rop)), cor: 'var(--gc-c3)' }], rotulos: M.map(x => mcMesTxt(x.mes)), W: 900, altura: 220 })}</div>
+    <div class="panel"><h2>Para onde vai cada R$ 100 vendidos</h2>${fatT > 0 ? `<div class="fs-cem">${[['Taxas e impostos', tot('taxa') + tot('imp')], ['Comissões', tot('com')], ['Mídia', tot('mid')], ['Custos de marketing', tot('mkt')], ['Outros custos da operação', tot('op')], [tot('rop') >= 0 ? 'Sobra (resultado da operação)' : 'Falta (resultado da operação negativo)', Math.abs(tot('rop')), tot('rop') < 0]].map(([n, v, neg]) => `<div class="fs-cr${neg ? ' neg' : ''}"><span>${n}</span><div class="pa-bar"><i style="width:${Math.min(100, v / fatT * 100).toFixed(1)}%"></i></div><b>R$ ${(v / fatT * 100).toFixed(2).replace('.', ',')}</b><small class="muted">${brl(v)}</small></div>`).join('')}</div>` : '<div class="empty">Sem faturamento no período.</div>'}</div>`;
+  gcLiga(el);
+  $('#fsAte').onchange = e => { A.ate = e.target.value; render(); }; $('#fsN').onchange = e => { A.n = Number(e.target.value); render(); };
+}
+async function fsParceiros(el) {
+  const w = S.ws, mesAt = hoje().slice(0, 8) + '01';
+  const [P, prods] = await Promise.all([q(sb.from('parceiros_comissao').select('*').eq('workspace_id', w).order('criado_em')), q(sb.from('produtos').select('id,nome').eq('workspace_id', w).order('nome'))]);
+  const pn = id => (prods.find(p => p.id === id) || {}).nome;
+  el.innerHTML = `<div class="panel"><div class="head" style="margin:0 0 6px"><div><h2 style="margin:0">Comissões de parceiros</h2><span class="muted">Quem ganha uma % das vendas: coprodutor, afiliado, vendedor. O Growths calcula a comissão de cada mês sobre as vendas aprovadas e põe no DRE.</span></div><div class="acts"><button class="btn pri" id="fsNovoP">+ Novo parceiro</button></div></div>
+    ${P.length ? `<div class="tw"><table><thead><tr><th>Parceiro</th><th>Papel</th><th class="n">%</th><th>Sobre</th><th>Produto</th><th>Vale</th><th></th></tr></thead><tbody>${P.map(x => `<tr><td><b>${esc(x.nome)}</b></td><td>${FS_PAPEL[x.papel]}</td><td class="n">${String(x.percentual).replace('.', ',')}%</td><td>${x.base === 'liquido' ? 'valor − taxa da plataforma' : 'valor da venda'}</td><td>${x.produto_id ? esc(pn(x.produto_id) || '') : 'todos'}</td><td>${mcMesTxt(x.desde)}${x.ate ? ' a ' + mcMesTxt(x.ate) : ' em diante'}</td><td style="white-space:nowrap"><button class="btn sm" data-fpe="${x.id}">Editar</button><button class="btn sm" data-fpx="${x.id}">Excluir</button></td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">Nenhum parceiro ainda. Ex.: "Maria (coprodutora), 30% sobre o valor − taxa, todos os produtos".</div>'}</div>`;
+  const edita = x => modal(x ? 'Editar parceiro' : 'Novo parceiro', `<div class="grid2"><label class="full">Nome<input name="nome" required maxlength="120" value="${esc(x ? x.nome : '')}"></label>
+      <label>Papel<select name="papel">${Object.entries(FS_PAPEL).map(([k, l]) => `<option value="${k}"${(x ? x.papel : 'coprodutor') === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+      <label>Percentual (%)<input name="percentual" type="number" step="0.01" min="0.01" max="100" required value="${x ? x.percentual : ''}"></label>
+      <label>Sobre<select name="base"><option value="bruto"${!x || x.base === 'bruto' ? ' selected' : ''}>o valor da venda</option><option value="liquido"${x && x.base === 'liquido' ? ' selected' : ''}>o valor menos a taxa da plataforma</option></select></label>
+      <label>Produto<select name="produto_id"><option value="">Todos os produtos</option>${prods.map(p => `<option value="${p.id}"${x && x.produto_id === p.id ? ' selected' : ''}>${esc(p.nome)}</option>`).join('')}</select></label>
+      <label>Vale a partir de<input name="desde" type="month" required value="${(x ? x.desde : mesAt).slice(0, 7)}"></label><label>Até (opcional)<input name="ate" type="month" value="${x && x.ate ? x.ate.slice(0, 7) : ''}"></label></div>`, async d => {
+      const row = { workspace_id: w, nome: d.nome.trim(), papel: d.papel, percentual: Number(String(d.percentual).replace(',', '.')), base: d.base, produto_id: d.produto_id || null, desde: d.desde + '-01', ate: d.ate ? d.ate + '-01' : null };
+      if (!(row.percentual > 0 && row.percentual <= 100)) throw new Error('O percentual vai de 0,01 a 100.');
+      if (row.ate && row.ate < row.desde) throw new Error('"Até" não pode ser antes de "Vale a partir de".');
+      if (x) await q(sb.from('parceiros_comissao').update(row).eq('id', x.id)); else await q(sb.from('parceiros_comissao').insert(row));
+      toast(x ? 'Parceiro salvo' : 'Parceiro cadastrado'); });
+  $('#fsNovoP').onclick = () => edita(null);
+  el.querySelectorAll('[data-fpe]').forEach(b => b.onclick = () => edita(P.find(x => x.id === b.dataset.fpe)));
+  el.querySelectorAll('[data-fpx]').forEach(b => b.onclick = () => { const x = P.find(y => y.id === b.dataset.fpx);
+    modal('Excluir parceiro', `<p>Excluir ${esc(x.nome)}? As comissões dele saem do DRE de todos os meses. Se ele só parou, use "Até" no lugar de excluir.</p>`, async () => { await q(sb.from('parceiros_comissao').delete().eq('id', x.id)); toast('Parceiro excluído'); }, 'Excluir'); });
+}
+VIEWS['adm-financeiro'] = vFinSimples;
+if (ICO['fin-dash']) ICO['adm-financeiro'] = ICO['fin-dash'];
 
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;
 const fonteLink = () => location.protocol === 'file:' ? '<div class="panel"><b>Atenção:</b> o arquivo está aberto do seu computador, então o link de resposta não funciona para outras pessoas. Hospede o arquivo (por exemplo no GitHub Pages) antes de enviar.</div>' : '';

@@ -1,3 +1,8 @@
+## v0.209
+- Comissão de parceiro no mês = Σ vendas aprovadas do mês (do produto, ou todas) × % (sobre o valor, ou valor − taxa), para parceiros vigentes no mês.
+- Receita líquida = faturamento − taxa − impostos − comissões. Resultado de marketing = receita líquida − mídia − custos de marketing. Resultado da operação = Resultado de marketing − outros custos da operação.
+- % do faturamento: deduções em valor absoluto; resultados com o sinal.
+
 ## v0.208
 - Período anterior = os mesmos dias imediatamente antes. Cliente novo = primeira compra aprovada (Growths ou histórico) no período. Lead → cliente = leads captados no período que hoje são clientes ÷ leads captados no período.
 

@@ -1,5 +1,16 @@
 
 
+## v0.209 — Financeiro simplificado (DRE simplificado)
+**Pedido da Rebecka (01/11)**: para o cliente que não faz contas a pagar e a receber no Growths, um DRE simplificado: quanto vende, taxa da plataforma, comissões (coprodutor, vendedor com a %), mídia, custos de marketing (equipe, ferramentas) e outros custos da operação numa linha geral, com a margem, médias e gráficos. Nome: **Financeiro simplificado**. Sem caixa, sem o que foi pago ou não, sem lançamento contábil e sem custo por funcionário.
+Decisões:
+- **Pacote "Financeiro simplificado"** = Go-to-Market + a tela Administrativo › Financeiro simplificado. O Go-to-Market continua só com os custos de marketing.
+- **Custos do mês** (a mesma rotina dos custos de marketing: fixo repete, variável no fim do mês, fechar o mês, aviso à Mathisa) com **grupo**: Marketing (entra no CAC e no Resultado de marketing) ou **Outros custos da operação** (pró-labore, administrativo, aluguel…; só no DRE).
+- **Comissões de parceiros**: nome, papel (coprodutor, afiliado, vendedor, outro), %, sobre o valor da venda ou o valor menos a taxa, de um produto ou de todos, com vigência. O Growths calcula a comissão de cada mês sobre as vendas aprovadas. As comissões da equipe (já calculadas no Growths) entram junto.
+- **DRE simplificado mês a mês** (3, 6 ou 12 meses até o mês escolhido): Faturamento (vendas aprovadas, com o histórico importado) − taxa da plataforma − impostos sobre as vendas − comissões = **Receita líquida** − mídia − custos de marketing = **Resultado de marketing** − outros custos da operação = **Resultado da operação**; total, % do faturamento e média por mês. Cartões com os totais e o peso do marketing; gráfico de faturamento e resultados; "para onde vai cada R$ 100 vendidos".
+- Avisos na tela: sem caixa e sem contas a pagar e a receber; mês com custo variável faltando aparece marcado e incompleto; vendas sem taxa informada entram com taxa zero.
+- O Resultado de marketing (Custos de marketing, dashboards) continua só com o grupo marketing.
+- **Hipótese**: comissões de parceiros só sobre as vendas do Growths (o histórico importado não tem produto ligado); taxa e impostos só das vendas do Growths.
+
 ## v0.208 — Dashboard de vendas no padrão
 **Pedido da Rebecka (01/11)**: o Dashboard de vendas mostrava pessoas e leads no topo e não tinha o filtro de período dos outros; o que importa é clientes ativos, novos, valor das vendas, ticket e conversão. Os dashboards têm de ser padronizados.
 Decisões:
