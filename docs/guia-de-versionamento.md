@@ -1,3 +1,6 @@
+## v0.204
+- index.html: aplicado sobre a v0.200 (`aplica204.py`): `modalPesquisa` com `titulo_publico` (gravado em `visual.titulo`, mantendo o resto da aparência); `criarDeModelo` grava `visual.titulo` quando o modelo tem `titulo_publico`. `t201_entrada_cliente.py` ampliado; `t197` sem falhas.
+
 ## v0.203
 - index.html: aplicado sobre a v0.200 (`aplica203.py`, `g201.js`): `ENT_PLAT`, `entPlataformas`; `data-se` nos grupos; `config.onde` (ligado à pergunta "Onde vende?" ao criar do modelo); cobrança e leitura ignoram grupos escondidos; tela da equipe com os rótulos das plataformas. `t201_entrada_cliente.py` ampliado.
 

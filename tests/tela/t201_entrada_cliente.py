@@ -31,6 +31,7 @@ with sync_playwright() as p:
     pg.evaluate("document.querySelector('#modalRoot form').requestSubmit()"); pg.wait_for_timeout(1500)
     pq = ev(pg, "__D.pesquisas[__D.pesquisas.length - 1]"); pp = ev(pg, "__D.pesquisa_perguntas.filter(x => x.pesquisa_id === __D.pesquisas[__D.pesquisas.length - 1].id)")
     chk(pq['tipo'] == 'diagnostico' and pq['ativa'] is False and pq['nome'].startswith('Entrada do cliente'), 'cria a pesquisa, desativada, no tipo diagnóstico (mesmo link e envio de arquivos)', pq)
+    chk((pq.get('visual') or {}).get('titulo') == 'Boas-vindas! Vamos conhecer o seu negócio', 'nasce com um título para o cliente, diferente do nome interno', pq.get('visual'))
     textos = ' | '.join(x['texto'] for x in pp)
     chk(all(t in textos for t in ['Faturamento médio por mês', 'Ticket médio', 'clientes ativos', 'investe em anúncios', 'custa a operação', 'Regime tributário']), 'a visão do cliente: faturamento, ticket, clientes, investimento, custo e regime')
     doc = [x for x in pp if x['tipo'] == 'documentos'][0]; cats = doc['config']['categorias']
@@ -42,9 +43,11 @@ with sync_playwright() as p:
     chk('do ano passado inteiro' in per1 and 'jan/2026' in per1 and 'fev/2027' in per1, 'em março pede o ano passado inteiro e este ano até agora: ' + per1)
     # formulário público
     pg.evaluate("""(() => { const pq = __D.pesquisas[__D.pesquisas.length - 1], pp = __D.pesquisa_perguntas.filter(x => x.pesquisa_id === pq.id).sort((a, b) => a.ordem - b.ordem);
-      __D['rpc:pesquisa_publica'] = { nome: pq.nome, descricao: pq.descricao, tipo: 'diagnostico', perguntas: pp, aberto: false, ja_respondida: false, visual: {}, captacao: null, metricas: [], rascunho: null, expira_em: '2026-12-01T00:00:00Z' };
+      __D['rpc:pesquisa_publica'] = { nome: pq.nome, descricao: pq.descricao, tipo: 'diagnostico', perguntas: pp, aberto: false, ja_respondida: false, visual: pq.visual || {}, captacao: null, metricas: [], rascunho: null, expira_em: '2026-12-01T00:00:00Z' };
       document.querySelectorAll('#pubPesq').forEach(x => x.remove()); vPesquisaPublica('t'.repeat(40)); })()"""); pg.wait_for_timeout(1500)
     chk(ev(pg, "document.querySelectorAll('#pubPesq [data-passo]').length") == 4, 'o cliente vê 4 partes')
+    h1 = ev(pg, "document.querySelector('#pubPesq h1').textContent")
+    chk(h1 == 'Boas-vindas! Vamos conhecer o seu negócio' and 'Entrada do cliente' not in h1 and ev(pg, 'document.title') == h1, 'o cliente vê o título, não o nome interno: ' + h1)
     links = ev(pg, "[...document.querySelectorAll('#pubPesq .pf-doc .pf-mod')].map(a => [a.closest('.pf-doc').dataset.g, a.getAttribute('download'), a.getAttribute('href')])")
     chk(len(links) == 5 and links[0][0] == 'vendas', 'os grupos com planilha-modelo (vendas fora das plataformas, clientes, leads, anúncios, custos) têm "Baixar planilha-modelo"; o relatório da plataforma vai como sai', links and [l[:2] for l in links])
     vis = lambda: ev(pg, "[...document.querySelectorAll('#pubPesq .pf-doc[data-g]')].filter(d => !d.hidden).map(d => d.dataset.g)")
@@ -82,6 +85,14 @@ with sync_playwright() as p:
         pg.screenshot(path=FOTOS + '/t201_arquivos.png', full_page=True)
         pg.evaluate("document.querySelectorAll('#pubPesq [data-passo]').forEach(s => s.hidden = s.dataset.passo !== '1')"); pg.wait_for_timeout(200)
         pg.screenshot(path=FOTOS + '/t201_numeros.png', full_page=True)
+    # editar: nome (só a equipe vê) e título que quem responde vê
+    pg.evaluate("document.querySelectorAll('#pubPesq').forEach(x => x.remove()); S.pqSel = __D.pesquisas[__D.pesquisas.length - 1].id; render();"); pg.wait_for_timeout(1500)
+    pg.evaluate("__D.pesquisas[__D.pesquisas.length - 1].visual.cor_primaria = '#112233'")
+    pg.click('#pqEd'); pg.wait_for_timeout(800)
+    chk(pg.input_value('#modalRoot [name=titulo_publico]') == 'Boas-vindas! Vamos conhecer o seu negócio' and 'só a equipe vê' in pg.inner_text('#modalRoot'), 'Editar mostra o nome (só a equipe vê) e o título que quem responde vê')
+    pg.fill('#modalRoot [name=titulo_publico]', 'Bem-vinda à Mathisa'); pg.evaluate("document.querySelector('#modalRoot form').requestSubmit()"); pg.wait_for_timeout(1500)
+    vv = ev(pg, "__D.pesquisas[__D.pesquisas.length - 1].visual")
+    chk(vv.get('titulo') == 'Bem-vinda à Mathisa' and vv.get('cor_primaria') == '#112233' and 'titulo_publico' not in ev(pg, "__D.pesquisas[__D.pesquisas.length - 1]"), 'salva o título sem perder a aparência', vv)
     chk(not errs, 'sem erros de página', errs[:3])
     b.close()
 print('\n' + ('OK' if ok else 'FALHAS'))

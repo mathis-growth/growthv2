@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.204 | 01/11/2026 | Pesquisas: nome interno e título para quem responde. | nada |
 | 0.203 | 01/11/2026 | Entrada do cliente: vendas por plataforma marcada (Hotmart, Kiwify, Eduzz, Hubla). | nada |
 | 0.202 | 01/11/2026 | Entrada do cliente: cada grupo de arquivos é enviar ou "Não tenho" (sem "Mando depois"). | nada |
 | 0.201 | 01/11/2026 | **Entrada do cliente**: formulário curto com a visão do cliente e checklist de arquivos com planilha-modelo. | nada |

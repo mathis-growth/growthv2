@@ -1,5 +1,8 @@
 
 
+## Título que o cliente vê (v0.204)
+- Teste `t201_entrada_cliente.py` (29 verificações, 0 falhas): nasce com o título; o cliente vê o título no formulário e na aba do navegador, não o nome interno; Editar mostra os dois campos; salvar o título mantém a aparência. `t197_pesquisas_editar_excluir.py` 0 falhas.
+
 ## Vendas por plataforma na Entrada do cliente (v0.203)
 - Teste `t201_entrada_cliente.py` (24 verificações, 0 falhas): 9 grupos no modelo; ligação com "Onde vende?" (com Hubla); sem plataforma, o genérico; Hotmart + Kiwify, um grupo para cada sem o genérico; texto do relatório sem mexer; Contrato direto traz o genérico de volta; cobra só os grupos à mostra; grava só os à mostra. `t177` mantém as 2 falhas antigas do Diagnóstico Growth (anteriores à v0.201).
 

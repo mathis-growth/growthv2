@@ -15692,7 +15692,7 @@ const PQ_ENTRADA = () => { const P = entPeriodo(); return [
   { s: 'O que você espera', t: 'O que você espera deste trabalho?', tp: 'texto' },
   { s: 'O que você espera', t: 'Quanto quer faturar nos próximos 12 meses?', tp: 'moeda', o: false, cfg: { naosei: true } },
   { s: 'Seus arquivos', t: `Precisamos dos arquivos ${P.txt}. As vendas aparecem por plataforma, conforme o que você marcou em "Onde vende". Para cada grupo, envie o arquivo agora ou marque "Não tenho". Se ajudar, baixe a planilha-modelo e preencha.`, tp: 'documentos', cfg: { categorias: ENT_CATS(), upload: true, sem_depois: true, onde: 'onde', aviso: DG_AVISO, periodo: P } }]; };
-PQ_MODELOS.entrada_cliente = { nome: 'Entrada do cliente (números e arquivos)', tipo: 'diagnostico', publico: 'cliente', gatilho: 'manual', get objetos() { return PQ_ENTRADA(); },
+PQ_MODELOS.entrada_cliente = { nome: 'Entrada do cliente (números e arquivos)', titulo_publico: 'Boas-vindas! Vamos conhecer o seu negócio', tipo: 'diagnostico', publico: 'cliente', gatilho: 'manual', get objetos() { return PQ_ENTRADA(); },
   descricao: 'Bem-vindo! Estas perguntas e arquivos são o ponto de partida do nosso trabalho: com eles montamos o seu histórico, o diagnóstico e o planejamento do ano. Leva uns 10 minutos (sem contar os arquivos) e fica salvo: pode parar e voltar pelo mesmo link.' };
 
 /* mostra só os grupos de vendas das plataformas marcadas em "Onde vende?" */
@@ -16200,7 +16200,7 @@ async function cpqDoModelo(k, nomeCamp) {
   const nome = (md.nome + ' · ' + nomeCamp).slice(0, 200);
   if (md.objetos) {
     const pid = crypto.randomUUID(), ids = {}; md.objetos.forEach((x, i) => { ids[x.k || ('_' + i)] = crypto.randomUUID(); });
-    await q(sb.from('pesquisas').insert({ id: pid, workspace_id: S.ws, nome, tipo: md.tipo, publico: md.publico, gatilho: md.gatilho, descricao: md.descricao, ativa: false }));
+    await q(sb.from('pesquisas').insert({ id: pid, workspace_id: S.ws, nome, tipo: md.tipo, publico: md.publico, gatilho: md.gatilho, descricao: md.descricao, ativa: false, ...(md.titulo_publico ? { visual: { titulo: md.titulo_publico } } : {}) }));
     await q(sb.from('pesquisa_perguntas').insert(md.objetos.map((x, i) => { const cfg = { ...(x.cfg || {}) }; if (cfg.modelo) cfg.modelo = ids[cfg.modelo]; if (cfg.onde) cfg.onde = ids[cfg.onde];
       return { id: ids[x.k || ('_' + i)], workspace_id: S.ws, pesquisa_id: pid, ordem: i + 1, texto: x.t, tipo: x.tp, opcoes: x.op || [], papel: 'livre', obrigatoria: x.o !== false, secao: x.s, config: cfg,
         condicao: x.c ? { pergunta: ids[x.c.k], valores: x.c.v } : null }; })));
@@ -16771,7 +16771,7 @@ function criarDeModelo(k) {
   const md = PQ_MODELOS[k];
   if (md.objetos) return modal('Criar do modelo', `<p>Vai criar <b>${esc(md.nome)}</b> com ${md.objetos.length} perguntas em ${new Set(md.objetos.map(x => x.s)).size} passos, para <b>cliente</b>. Ela nasce desativada: revise, ative e mande pelo link individual de cada cliente (aba Fila de envio). O link vale 30 dias.</p>`, async () => {
     const pid = crypto.randomUUID(), ids = {}; md.objetos.forEach((x, i) => { ids[x.k || ('_' + i)] = crypto.randomUUID(); });
-    await q(sb.from('pesquisas').insert({ id: pid, workspace_id: S.ws, nome: md.nome, tipo: md.tipo, publico: md.publico, gatilho: md.gatilho, descricao: md.descricao, ativa: false }));
+    await q(sb.from('pesquisas').insert({ id: pid, workspace_id: S.ws, nome: md.nome, tipo: md.tipo, publico: md.publico, gatilho: md.gatilho, descricao: md.descricao, ativa: false, ...(md.titulo_publico ? { visual: { titulo: md.titulo_publico } } : {}) }));
     await q(sb.from('pesquisa_perguntas').insert(md.objetos.map((x, i) => { const cfg = { ...(x.cfg || {}) }; if (cfg.modelo) cfg.modelo = ids[cfg.modelo]; if (cfg.onde) cfg.onde = ids[cfg.onde];
       return { id: ids[x.k || ('_' + i)], workspace_id: S.ws, pesquisa_id: pid, ordem: i + 1, texto: x.t, tipo: x.tp, opcoes: x.op || [], papel: 'livre', obrigatoria: x.o !== false, secao: x.s, config: cfg,
         condicao: x.c ? { pergunta: ids[x.c.k], valores: x.c.v } : null }; })));
@@ -16794,7 +16794,9 @@ async function modalPesquisa(row, pre) {
   const cgC = cgA && await temColuna('pesquisas', 'checkin_dias');
   const gats = Object.entries(PQ_GAT).filter(([k]) => (cgA || k !== 'etapa_aluno') && (cgC || k !== 'checkin'));
   const pubOk = await temColuna('pesquisas', 'publico');
-  const campos = [{ k: 'nome', l: 'Nome da pesquisa', req: 1, full: 1 }, { k: 'tipo', l: 'Tipo', t: 'select', req: 1, def: 'lead', opts: Object.entries(PQ_TIPO).filter(([k]) => pubOk || k !== 'diagnostico') },
+  const temVis = await temColuna('pesquisas', 'visual'); // v0.204: o nome é seu; o título é o que quem responde vê
+  if (row && temVis) row = { ...row, titulo_publico: (row.visual || {}).titulo || '' };
+  const campos = [{ k: 'nome', l: 'Nome da pesquisa (só a equipe vê)', req: 1, full: 1 }, ...(temVis ? [{ k: 'titulo_publico', l: 'Título que quem responde vê', full: 1, hint: 'Aparece no alto do formulário e na aba do navegador. Vazio: aparece o nome da pesquisa.' }] : []), { k: 'tipo', l: 'Tipo', t: 'select', req: 1, def: 'lead', opts: Object.entries(PQ_TIPO).filter(([k]) => pubOk || k !== 'diagnostico') },
     ...(pubOk ? [{ k: 'publico', l: 'Para quem é', t: 'select', req: 1, def: 'lead', opts: [['lead', 'Lead (captação)'], ['cliente', 'Cliente (diagnóstico, onboarding, jornada)']], hint: 'Lead entra pelo link aberto ou pelo cadastro; cliente recebe o link individual, e a resposta cai no cadastro dele.' }] : []), { k: 'descricao', l: 'Texto de abertura (a pessoa vê)', t: 'textarea' },
     { k: 'gatilho', l: 'Quando enviar', t: 'select', req: 1, def: 'manual', opts: gats },
     ...(cgA ? [{ k: 'etapa_aluno_id', l: 'Etapa da jornada do aluno (se o gatilho for etapa do aluno)', t: 'select', opts: sel(etA, 'id', 'nome') },
@@ -16807,7 +16809,7 @@ async function modalPesquisa(row, pre) {
     { k: 'mensagem', l: 'Mensagem do convite', t: 'textarea', def: 'Oi {nome}! Pode responder uma pesquisa rápida? Leva 2 minutos: {link}', hint: 'Use {nome} e {link}.' },
     { k: 'aceita_link_aberto', l: 'Aceitar também o link aberto (qualquer pessoa com o link responde, ligando por e-mail)', t: 'check', hint: 'Use na página de obrigado. Sem ele, só quem recebeu o link único responde.' }, { k: 'ativa', l: 'Ativa', t: 'check', def: false }];
   if (pre && !row) campos.forEach(c => { if (c.k && pre[c.k] !== undefined) c.def = pre[c.k]; });
-  const f = abrirForm(row ? 'Editar pesquisa' : 'Nova pesquisa', 'pesquisas', campos, row, { antes: v => { if (pubOk && v.tipo === 'diagnostico') v.publico = 'cliente'; if (v.gatilho === 'etapa' && !v.gatilho_etapa) throw new Error('Escolha a etapa do funil.'); if (v.gatilho !== 'etapa') v.gatilho_etapa = null;
+  const f = abrirForm(row ? 'Editar pesquisa' : 'Nova pesquisa', 'pesquisas', campos, row, { antes: v => { if (temVis) { v.visual = { ...((row && row.visual) || {}), titulo: String(v.titulo_publico || '').trim().slice(0, 160) }; if (!v.visual.titulo) delete v.visual.titulo; } delete v.titulo_publico; if (pubOk && v.tipo === 'diagnostico') v.publico = 'cliente'; if (v.gatilho === 'etapa' && !v.gatilho_etapa) throw new Error('Escolha a etapa do funil.'); if (v.gatilho !== 'etapa') v.gatilho_etapa = null;
     if (cgA) { if (v.gatilho === 'etapa_aluno' && !v.etapa_aluno_id) throw new Error('Escolha a etapa da jornada do aluno.'); if (v.gatilho !== 'etapa_aluno') v.etapa_aluno_id = null; if (!['entrada_aluno', 'etapa_aluno', 'checkin'].includes(v.gatilho)) v.produto_id = null; }
     if (cgC) { if (v.gatilho === 'checkin') { v.checkin_dias = Number(v.checkin_dias); if (!(v.checkin_dias >= 1 && v.checkin_dias <= 365)) throw new Error('Diga a cada quantos dias vai o check-in (de 1 a 365).'); v.checkin_max = v.checkin_max ? Number(v.checkin_max) : null; } else { v.checkin_dias = null; v.checkin_max = null; } }
     return v; }, ok: 'Pesquisa salva' });

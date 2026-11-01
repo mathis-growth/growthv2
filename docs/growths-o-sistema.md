@@ -15,7 +15,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.203 (entrada do cliente: vendas por plataforma).
+**Última atualização:** 01/11/2026, versão 0.204 (pesquisas: nome interno e título para quem responde).
 
 **v0.201 · Entrada do cliente.** Formulário curto para quem está chegando, com a visão dos números e as planilhas do último ano (com modelo para baixar).
 
@@ -411,7 +411,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - **Resultados e aprendizados.** Baseline, projeção e realizado de cada teste, com a decisão: escalar, iterar ou interromper.
 - **Pesquisas:**
   - construtor de perguntas, com modelos de lead, onboarding, jornada, descoberta da North Star e **must-have de consultoria** (o cliente diz quão desapontado ficaria sem a consultoria, o que faria no lugar, quanto valeu cada entrega e o que travou a execução);
-  - página pública de resposta;
+  - página pública de resposta, com um título para quem responde diferente do nome interno da pesquisa;
   - NPS, PMF e insights; o must-have aparece em três faixas (40% ou mais, 25% a 40%, menos de 25%) com o próximo passo, sem contar quem marcou "Não se aplica";
   - **qualificação por pontos:** cada resposta vale pontos e tags, e a nota de corte decide quem é qualificado na hora;
   - **formulário de captação** com a cara do cliente (fontes e cores), em passos, que coloca quem responde direto no funil de leads;
@@ -533,6 +533,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.204):** Pesquisas: nome só para a equipe e título para quem responde.
 - **01/11 (v0.203):** Entrada do cliente: vendas por plataforma marcada.
 - **01/11 (v0.202):** Entrada do cliente: cada arquivo é enviar ou "Não tenho".
 - **01/11 (v0.201):** Entrada do cliente: formulário curto com os números do cliente e o checklist de arquivos com planilha-modelo.

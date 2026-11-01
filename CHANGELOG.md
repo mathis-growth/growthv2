@@ -1,3 +1,8 @@
+## v0.204 — Título que quem responde vê (01/11/2026)
+- Editar pesquisa: "Nome da pesquisa (só a equipe vê)" e "Título que quem responde vê".
+- Entrada do cliente nasce com o título "Boas-vindas! Vamos conhecer o seu negócio".
+- Teste: `t201_entrada_cliente.py` (0 falhas), `t197` (0 falhas).
+
 ## v0.203 — Entrada do cliente: vendas por plataforma (01/11/2026)
 - "Onde vende?" com Hubla; um grupo de vendas para cada plataforma marcada (relatório do jeito que sai) e "Vendas fora das plataformas" com planilha-modelo.
 - Só os grupos à mostra são cobrados e gravados.

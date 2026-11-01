@@ -1,3 +1,6 @@
+## v0.204
+- Quem responde vê `visual.titulo`; sem ele, o nome da pesquisa.
+
 ## v0.203
 - Grupo de vendas à mostra = uma plataforma marcada (Hotmart, Kiwify, Eduzz, Hubla) para cada; o genérico, quando há Contrato direto, Loja própria, Outro ou nenhuma plataforma.
 - Grupo escondido não é cobrado nem gravado na resposta.

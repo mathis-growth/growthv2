@@ -1,3 +1,6 @@
+## v0.204
+**Nome para você, título para o cliente.** Toda pesquisa pode ter um nome interno e um título diferente para quem responde.
+
 ## v0.203
 **Vendas por plataforma.** Na Entrada do cliente, o pedido de vendas segue o que o cliente marcou: um relatório da Hotmart, da Kiwify, da Eduzz ou da Hubla para cada uma, do jeito que a plataforma exporta.
 

@@ -1,3 +1,6 @@
+## v0.204
+- Sem mudança: o título público é `pesquisas.visual.titulo`.
+
 ## v0.203
 - Grupos novos de arquivo: `vendas_hotmart`, `vendas_kiwify`, `vendas_eduzz`, `vendas_hubla` (em `pesquisa_arquivos.grupo` e na resposta de documentos). Cada categoria pode ter `se` (os valores de "Onde vende?" que a mostram; `_nenhuma` = nenhuma plataforma marcada); a pergunta de documentos tem `config.onde` = id da pergunta "Onde vende?".
 

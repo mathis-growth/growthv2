@@ -1,5 +1,11 @@
 
 
+## v0.204 — Nome da pesquisa × título que o cliente vê
+**Pedido da Rebecka (01/11)**: "Entrada do cliente (números e arquivos)" serve como nome para ela, mas o cliente via esse nome no alto do formulário, e ficou feio.
+Decisões:
+- Em **Editar pesquisa**, o campo vira "Nome da pesquisa (só a equipe vê)" e entra **"Título que quem responde vê"** (vazio: aparece o nome). Vale para todas as pesquisas; é o mesmo título da aba Formulário e aparência.
+- A Entrada do cliente já nasce com o título **"Boas-vindas! Vamos conhecer o seu negócio"**. Pesquisa já criada: ponha o título em Editar.
+
 ## v0.203 — Entrada do cliente: vendas por plataforma
 **Pedido da Rebecka (01/11)**: os clientes usam Hotmart, Eduzz, Kiwify e, em breve, Hubla, às vezes mais de uma. A planilha de vendas deve seguir a plataforma que o cliente marca, e o de-para fica com a equipe.
 Decisões:
