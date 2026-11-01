@@ -129,6 +129,7 @@
     const ch=A.canais.find(c=>c.id===cv.canal_id)||{}, draft=A.drafts.get(draftKey(id))||'';
     $('#atdRoot').classList.add('selecionada');$('#atdRoot').classList.remove('ficha');
     $('#atdChat').innerHTML=`<header class="atd-top"><div><button class="btn sm atd-mobile" id="atdVoltar">← Conversas</button><strong>${esc(cv.nome)}</strong>${cv.grupo&&ch.provedor==='evolution'?` <button class="btn sm" id="atdArquivarGrupo">${cv.arquivada?'Desarquivar grupo':'Arquivar grupo'}</button>`:''}<div class="atd-identificacao">${faixaCanal(ch)}${cv.grupo?'<small>Grupo</small>':''}</div></div><div><select id="atdSituacao" aria-label="Situação da conversa" ${A.ctx.editar?'':'disabled'}>${['aberta','aguardando','resolvida'].map(s=>`<option value="${s}"${cv.status===s?' selected':''}>${s==='aberta'?'Aberta':s==='aguardando'?'Aguardando':'Resolvida'}</option>`).join('')}</select> <button class="btn sm atd-mobile" id="atdVerFicha">Ficha</button></div></header><div class="atd-msgs" id="atdMensagens"></div><form class="atd-compose" id="atdCompose"><div class="atd-dupla"><select id="atdModo" aria-label="Tipo de mensagem"><option value="enviar">Mensagem</option><option value="nota">Nota interna</option></select><button type="button" class="btn sm" id="atdHistorico">Importar histórico</button></div><textarea id="atdTexto" aria-label="Mensagem" maxlength="4000" placeholder="Escreva sua mensagem…" ${A.ctx.editar?'':'disabled'}>${esc(draft)}</textarea><div class="atd-arquivo" id="atdArquivoNome"></div><div class="atd-gravacao" id="atdGravacao" aria-live="polite"></div><footer><label class="btn sm">Anexar<input type="file" id="atdArquivo" class="atd-hidden" accept="image/jpeg,image/png,image/webp,video/mp4,audio/ogg,audio/mpeg,audio/mp4,audio/webm,audio/wav,application/pdf"></label><button type="button" class="btn sm" id="atdGravar" ${A.ctx.editar?'':'disabled'} aria-label="Gravar áudio pelo microfone">🎤 Gravar áudio</button><small class="muted">${A.ctx.nome?'Assinado por '+esc(A.ctx.nome):'Cadastre seu nome na equipe para enviar.'}</small><button class="btn pri" id="atdEnviar" ${A.ctx.editar?'':'disabled'}>Enviar</button></footer></form>`;
+    $('#atdModo').insertAdjacentHTML('afterend','<button type="button" class="btn sm" id="atdRapidas">⚡ Respostas rápidas</button>');
     $('#atdArquivarGrupo')?.addEventListener('click',()=>act(async()=>{
       await api('arquivar-grupo',{conversa_id:id,arquivar:!cv.arquivada},ws);
       toast(cv.arquivada?'Grupo desarquivado.':'Grupo arquivado no Growth V2.');
@@ -179,6 +180,17 @@
       }catch(e){stopRecording();toast('Não foi possível acessar o microfone. Verifique a permissão no navegador.',true);}
     };
     $('#atdHistorico').onclick=()=>act(async()=>{const b=$('#atdHistorico');b.disabled=true;try {const r=await api('historico',{conversa_id:id,cursor:A.cursor},ws);A.cursor=r.cursor;if(active(token)&&A.sel===id){b.textContent=r.cursor?'Importar mais histórico':'Atualizar histórico';await messages(id,token);toast(r.total+' mensagens consultadas.');}}finally{if(b.isConnected)b.disabled=false;}});
+    // Inserção no rascunho: o atendente revisa antes de enviar.
+    $('#atdRapidas')?.addEventListener('click',()=>act(async()=>{
+      const {respostas}=await api('rapidas-list',{},ws);
+      if(!respostas.length){toast('Cadastre respostas rápidas em Atendimento → Templates.',true);return;}
+      const form=modal('Inserir resposta rápida',`<label>Resposta<select name="resposta">${respostas.map(r=>`<option value="${r.id}">/${esc(r.atalho)} · ${esc(r.titulo)}</option>`).join('')}</select></label>`,async d=>{
+        const item=respostas.find(r=>r.id===d.resposta);
+        if(!item||!active(token)||A.sel!==id)return;
+        const area=$('#atdTexto');area.value=[area.value.trim(),item.texto].filter(Boolean).join('\n\n');
+        A.drafts.set(draftKey(id),area.value);area.focus();
+      },'Inserir no texto');
+    }));
     $('#atdCompose').onsubmit=async e=>{
       e.preventDefault();const form=e.currentTarget,btn=form.querySelector('#atdEnviar');if(btn.disabled)return;
       const text=form.querySelector('#atdTexto').value.trim(),mode=form.querySelector('#atdModo').value,file=form.querySelector('#atdArquivo').files[0]||recordedFile;
@@ -451,10 +463,75 @@
       }catch(err){toast(err.message,true);}finally{btn.disabled=false;}
     };
   }
-  NAV.splice(NAV.findIndex(g=>g.g==='Vendas')+1,0,{g:'Atendimento',items:[['atd-conversas','Conversas'],['atd-canais','Canais e conexões']]});
+  async function vTemplates(m){
+    stop();++A.token;const ws=S.ws;
+    m.innerHTML='<div class="head"><div><h1>Templates</h1><span class="muted">Modelos Meta e respostas rápidas para atendimento.</span></div></div><div id="atdTemplates" class="panel">Carregando…</div>';
+    try{
+      const [ctx,canais,rapidas]=await Promise.all([
+        api('contexto',{},ws),q(sb.from('atd_canais').select('*').eq('workspace_id',ws).eq('provedor','zernio').eq('canal','whatsapp').eq('ativo',true)),api('rapidas-list',{},ws)
+      ]);
+      if(S.ws!==ws||S.view!=='atd-templates')return;
+      const root=$('#atdTemplates');
+      root.innerHTML=`<div class="atd-dupla"><button class="btn pri" id="tplMetaTab">Templates Meta</button><button class="btn" id="tplRapidasTab">Respostas rápidas</button></div><div id="tplConteudo"></div>`;
+      let aba='meta',templates=[];
+      const canalOptions=canais.map(c=>`<option value="${c.id}">${esc(c.nome)} · ${esc(c.numero||c.externo_id)}</option>`).join('');
+      let canalId=canais[0]?.id||'';
+      const meta=async()=>{
+        if(!canalId){$('#tplConteudo').innerHTML='<p>Conecte um WhatsApp oficial pela Zernio em Canais e conexões para gerenciar templates aprovados pela Meta. Instâncias Evolution não têm aprovação de templates.</p>';return;}
+        $('#tplConteudo').innerHTML=`<h3>Modelos oficiais do WhatsApp</h3><label>Conta WhatsApp<select id="tplCanal">${canalOptions}</select></label><p class="muted">A Meta analisa os modelos. Apenas os aprovados podem ser enviados pela API oficial.</p><button class="btn sm" id="tplAtualizar">Atualizar status na Meta</button><div id="tplLista">Consultando…</div>${ctx.admin?'<button class="btn pri" id="tplNovo">Enviar novo modelo para aprovação</button>':''}`;
+        $('#tplCanal').value=canalId;
+        $('#tplCanal').onchange=e=>{canalId=e.target.value;act(meta);};
+        $('#tplAtualizar').onclick=()=>act(meta);
+        try{
+          const result=await api('templates-list',{canal_id:canalId},ws);
+          if(S.ws!==ws||S.view!=='atd-templates'||aba!=='meta')return;
+          templates=result.templates||[];
+          $('#tplLista').innerHTML=templates.length?templates.map((t,i)=>`<article class="panel" style="margin:12px 0"><b>${esc(t.name)}</b> · ${esc(t.language)} <span class="pill ${t.status==='APPROVED'?'good':'warn'}">${esc(t.status)}</span><p>${esc(t.category||'')}</p><p style="white-space:pre-wrap">${esc((t.components||[]).find(c=>String(c.type).toUpperCase()==='BODY')?.text||'')}</p>${t.reason&&t.reason!=='NONE'?`<small>${esc(t.reason)}</small>`:''}${ctx.admin?`<div class="acts"><button class="btn sm" data-tpl-edit="${i}">Editar e reenviar</button><button class="btn sm bad" data-tpl-delete="${i}">Excluir na Meta</button></div>`:''}</article>`).join(''):'<p>Nenhum template encontrado para esta conta.</p>';
+        }catch(err){$('#tplLista').textContent=err.message;}
+        $('#tplNovo')?.addEventListener('click',()=>editor());
+        $('#tplLista').onclick=e=>{
+          const edit=e.target.closest('[data-tpl-edit]'),del=e.target.closest('[data-tpl-delete]');
+          if(edit){editor(templates[Number(edit.dataset.tplEdit)]);return;}
+          if(del)act(async()=>{
+            const t=templates[Number(del.dataset.tplDelete)];if(!t?.id||!confirm(`Excluir o modelo ${t.name} (${t.language}) da Meta? Essa ação pode impedir envios que o utilizem.`))return;
+            await api('templates-delete',{canal_id:canalId,template_id:t.id},ws);toast('Exclusão solicitada na Meta.');await meta();
+          });
+        };
+      };
+      const editor=t=>{
+        const body=(t?.components||[]).find(c=>String(c.type).toUpperCase()==='BODY');
+        const sample=body?.example?.body_text?.[0]||[];
+        const content=`<p>Nome em minúsculas, sem espaços. Use {{1}}, {{2}} para variáveis e informe exemplos reais de formato, mas sem dados pessoais.</p><label>Nome<input name="nome" required pattern="[a-z][a-z0-9_]*" value="${esc(t?.name||'')}"></label><label>Categoria<select name="categoria"><option value="UTILITY">Utilidade</option><option value="MARKETING">Marketing</option></select></label><label>Idioma<input name="idioma" required value="${esc(t?.language||'pt_BR')}"></label><label>Mensagem<textarea name="texto" required maxlength="1024" rows="6">${esc(body?.text||'')}</textarea></label><label>Exemplos das variáveis (um por linha, na ordem)<textarea name="exemplos" rows="3" placeholder="Exemplo da variável 1&#10;Exemplo da variável 2">${esc(sample.join('\n'))}</textarea></label><p class="muted">Editar um template existente o submete novamente à análise da Meta.</p>`;
+        const form=modal(t?'Editar modelo Meta':'Novo modelo Meta',content,async d=>{
+          const action=t?'templates-update':'templates-create';
+          await api(action,{canal_id:canalId,template_id:t?.id,nome:d.nome,categoria:d.categoria,idioma:d.idioma,texto:d.texto,exemplos:String(d.exemplos||'').split('\n').map(x=>x.trim()).filter(Boolean)},ws);
+          toast('Modelo enviado à Meta. Acompanhe o status nesta aba.');await meta();
+        },t?'Salvar e reenviar':'Enviar para aprovação');
+        if(t)form.querySelector('[name=categoria]').value=t.category||'UTILITY';
+      };
+      const rapidaView=async()=>{
+        const result=await api('rapidas-list',{},ws),rows=result.respostas||[];
+        if(S.ws!==ws||S.view!=='atd-templates'||aba!=='rapidas')return;
+        $('#tplConteudo').innerHTML=`<h3>Respostas rápidas</h3><p class="muted">Use o botão ⚡ em uma conversa para inserir a resposta no texto, revisar e enviar.</p>${ctx.editar?'<button class="btn pri" id="rapidaNova">Nova resposta</button>':''}<div id="rapidaLista">${rows.map((r,i)=>`<article class="panel" style="margin:12px 0"><b>/${esc(r.atalho)}</b> · ${esc(r.titulo)}<p style="white-space:pre-wrap">${esc(r.texto)}</p>${ctx.editar?`<div class="acts"><button class="btn sm" data-rapida-edit="${i}">Editar</button><button class="btn sm bad" data-rapida-delete="${i}">Excluir</button></div>`:''}</article>`).join('')||'<p>Nenhuma resposta rápida cadastrada.</p>'}</div>`;
+        const formResposta=r=>modal(r?'Editar resposta':'Nova resposta rápida',`<label>Atalho (sem espaços)<input name="atalho" required value="${esc(r?.atalho||'')}"></label><label>Título<input name="titulo" required value="${esc(r?.titulo||'')}"></label><label>Mensagem<textarea name="texto" required rows="6" maxlength="4000">${esc(r?.texto||'')}</textarea></label>`,async d=>{
+          await api('rapidas-save',{id:r?.id,...d},ws);toast('Resposta salva.');await rapidaView();
+        },'Salvar resposta');
+        $('#rapidaNova')?.addEventListener('click',()=>formResposta());
+        $('#rapidaLista').onclick=e=>{
+          const ed=e.target.closest('[data-rapida-edit]'),del=e.target.closest('[data-rapida-delete]');
+          if(ed)formResposta(rows[Number(ed.dataset.rapidaEdit)]);
+          if(del)act(async()=>{const r=rows[Number(del.dataset.rapidaDelete)];if(!confirm('Excluir a resposta rápida /'+r.atalho+'?'))return;await api('rapidas-delete',{id:r.id},ws);await rapidaView();});
+        };
+      };
+      $('#tplMetaTab').onclick=()=>{aba='meta';$('#tplMetaTab').classList.add('pri');$('#tplRapidasTab').classList.remove('pri');act(meta);};
+      $('#tplRapidasTab').onclick=()=>{aba='rapidas';$('#tplRapidasTab').classList.add('pri');$('#tplMetaTab').classList.remove('pri');act(rapidaView);};
+      await meta();
+    }catch(e){if(S.ws===ws&&S.view==='atd-templates')$('#atdTemplates').textContent=e.message;}
+  }
+  NAV.splice(NAV.findIndex(g=>g.g==='Vendas')+1,0,{g:'Atendimento',items:[['atd-conversas','Conversas'],['atd-canais','Canais e conexões'],['atd-templates','Templates']]});
   MOD_GRUPO.Atendimento='vendas';
-  ICO.Atendimento=ICO['crm-dms']||ICO.Vendas||'';ICO['atd-conversas']=ICO['crm-dms']||'';ICO['atd-canais']=ICO['cfg-integracoes'];
-  VIEWS['atd-conversas']=vAtendimento;VIEWS['atd-canais']=vCanais;
+  ICO.Atendimento=ICO['crm-dms']||ICO.Vendas||'';ICO['atd-conversas']=ICO['crm-dms']||'';ICO['atd-canais']=ICO['cfg-integracoes'];ICO['atd-templates']=ICO['crm-dms']||'';
+  VIEWS['atd-conversas']=vAtendimento;VIEWS['atd-canais']=vCanais;VIEWS['atd-templates']=vTemplates;
   // v0.183: intercepta cliques que ainda apontam para a Edge conexoes legada.
   // O cxLiga() original registra handlers na renderização de Integrações;
   // na fase de captura, esta ponte impede que Meta execute esses handlers.
