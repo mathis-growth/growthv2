@@ -15,7 +15,7 @@ async function channel(id: string, ws?: string) {
   return q(query.single());
 }
 async function receive(ch: any, normalized: any, historical = false) {
-  if (!normalized) return;
+  if (!normalized) return null;
   // Na caixa Zernio, o ID interno da conversa pode mudar entre o histórico
   // sincronizado e o webhook. Para Instagram, o participante é estável e há
   // uma conversa por participante e conta; reaproveita a conversa já gravada.
@@ -32,6 +32,52 @@ async function receive(ch: any, normalized: any, historical = false) {
     if (msg.anexos.some((a: any) => a.pendente)) {
       await q(db.rpc('atd_midia_pendente', { p_mensagem: msg.id, p_origem: {...normalized.media,conversa_id:normalized.conversa.id,externo_id:normalized.mensagem.id} }));
       EdgeRuntime.waitUntil(saveMedia(ch, msg).catch(() => {})); // pendência permanece recuperável
+    }
+  }
+  return cv;
+}
+async function executarAutomacoes(ch: any, conversaId: string, mensagem: any) {
+  if (!conversaId || mensagem?.direcao !== 'recebida' || !mensagem?.id) return;
+  const automacoes = await q(db.from('atd_automacoes').select('*')
+    .eq('workspace_id',ch.workspace_id).eq('ativo',true));
+  const cv = await q(db.from('atd_conversas').select('*').eq('id',conversaId)
+    .eq('workspace_id',ch.workspace_id).single());
+  if(cv.grupo)return;
+  const adapter = providers[ch.provedor];
+  if (!adapter) return;
+  for (const flow of automacoes) {
+    if (flow.canal_id && flow.canal_id !== ch.id) continue;
+    const keyword=String(flow.gatilho_valor||'').trim().toLocaleLowerCase();
+    if (flow.gatilho_tipo==='palavra_chave' &&
+        (!keyword || !String(mensagem.texto||'').toLocaleLowerCase().includes(keyword))) continue;
+    // Reserva idempotente antes do envio: retries de webhook nunca disparam a resposta duas vezes.
+    const runs = await q(db.from('atd_automacao_execucoes').upsert({
+      workspace_id:ch.workspace_id,automacao_id:flow.id,conversa_id:cv.id,
+      mensagem_gatilho:ch.id+':'+String(mensagem.id),status:'processando'
+    },{onConflict:'automacao_id,mensagem_gatilho',ignoreDuplicates:true}).select('id'));
+    const run = runs?.[0]; if (!run) continue;
+    let pending: any = null, attempted=false;
+    try {
+      if (!ch.ativo || ch.status!=='conectado') throw new Error('Canal desconectado durante a execução da automação.');
+      const text=String(flow.resposta||'').replace(/\{\{nome\}\}/gi,cv.nome||'').trim();
+      if (!text) throw new Error('A resposta automática está vazia.');
+      pending=await q(db.from('atd_mensagens').insert({
+        workspace_id:ch.workspace_id,conversa_id:cv.id,requisicao_id:run.id,
+        direcao:'enviada',texto:text,autor_nome:'Automação · '+flow.nome,status:'enviando'
+      }).select('id').single());
+      await q(db.from('atd_automacao_execucoes').update({mensagem_id:pending.id}).eq('id',run.id));
+      const cfg=ch.provedor==='evolution'?await secret(ch.workspace_id):{key:zp()};
+      attempted=true;
+      const external=await adapter.send(cfg,ch,cv,text);
+      await q(db.rpc('atd_confirmar_envio',{p_mensagem:pending.id,p_externo:external}));
+      await q(db.from('atd_automacao_execucoes').update({status:'enviado',erro:null}).eq('id',run.id));
+    } catch(e) {
+      const known=!attempted || (e instanceof ProviderError && e.status<500 && e.status!==408);
+      const state=known?'erro':'incerto';
+      const detail=known?(e as Error).message.slice(0,220):'Envio sem confirmação. Confira o provedor antes de reenviar.';
+      if(pending) await q(db.from('atd_mensagens').update({status:known?'falhou':'incerto',erro:detail}).eq('id',pending.id));
+      await q(db.from('atd_automacao_execucoes').update({status:state,erro:detail}).eq('id',run.id));
+      console.error('atd automacao falhou',flow.id,state);
     }
   }
 }
@@ -113,7 +159,11 @@ async function webhook(req: Request, url: URL, raw: string) {
     if (!cfg || !await segredoIgual(req.headers.get('x-atd-secret') || '', cfg.webhook_secret) || p.instance !== ch.externo_id) return json({ ok: false }, 401);
     const event = String(p.event || '').toUpperCase().replaceAll('.', '_');
     if (event === 'CONNECTION_UPDATE') await q(db.from('atd_canais').update({ status: p.data?.state === 'open' ? 'conectado' : p.data?.state === 'connecting' ? 'conectando' : 'desconectado' }).eq('id', ch.id));
-    if (event === 'MESSAGES_UPSERT') for (const d of Array.isArray(p.data) ? p.data : [p.data]) await receive(ch, evolutionMensagem(d));
+    if (event === 'MESSAGES_UPSERT') for (const d of Array.isArray(p.data) ? p.data : [p.data]) {
+      const normalized=evolutionMensagem(d), cvId=await receive(ch,normalized);
+      if(cvId&&normalized?.mensagem.direcao==='recebida')
+        EdgeRuntime.waitUntil(executarAutomacoes(ch,cvId,normalized.mensagem).catch(()=>console.error('atd automacoes worker falhou',ch.id)));
+    }
     if (event === 'MESSAGES_UPDATE') for (const d of Array.isArray(p.data) ? p.data : [p.data]) {
       const st: Record<string,string> = { DELIVERY_ACK: 'entregue', READ: 'lida', PLAYED: 'lida', SERVER_ACK: 'enviada', '2':'enviada','3':'entregue','4':'lida','5':'lida' };
       const s = st[d.status || d.update?.status]; if (s) await updateDelivery(ch, d.keyId || d.key?.id, s, d.remoteJid || d.key?.remoteJid);
@@ -125,7 +175,9 @@ async function webhook(req: Request, url: URL, raw: string) {
     const ch = accountId ? await q(db.from('atd_canais').select('*').eq('provedor','zernio').eq('externo_id',accountId).maybeSingle()) : null;
     if (ch?.ativo) {
       const normalized = zernioMensagem(p);
-      if (normalized) await receive(ch, normalized);
+      const cvId=normalized?await receive(ch,normalized):null;
+      if(cvId&&normalized.mensagem.direcao==='recebida')
+        EdgeRuntime.waitUntil(executarAutomacoes(ch,cvId,normalized.mensagem).catch(()=>console.error('atd automacoes worker falhou',ch.id)));
       const st: Record<string,string> = { 'message.delivered':'entregue','message.read':'lida','message.failed':'falhou' };
       if (st[p.event]) await updateDelivery(ch, p.message?.platformMessageId || p.message?.id, st[p.event], p.conversation?.id || p.conversation?.platformConversationId);
     }
@@ -198,7 +250,7 @@ async function handle(req: Request, b: any) {
   const { data: { user }, error } = await userDb.auth.getUser();
   if (error || !user) return json({ erro: 'Faça login novamente.' },401);
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
-  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','templates-list','rapidas-list','agendamentos-list'];
+  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
   const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
@@ -236,6 +288,52 @@ async function handle(req: Request, b: any) {
   if (b.action === 'rapidas-list') {
     return json({respostas:await q(db.from('atd_respostas_rapidas').select('id,atalho,titulo,texto')
       .eq('workspace_id',ws).order('titulo'))});
+  }
+  if(b.action==='automacoes-list'){
+    return json({automacoes:await q(db.from('atd_automacoes').select('id,nome,canal_id,gatilho_tipo,gatilho_valor,resposta,ativo,criado_em,atualizado_em')
+      .eq('workspace_id',ws).order('atualizado_em',{ascending:false}))});
+  }
+  if(b.action==='automacoes-execucoes'){
+    const runs=await q(db.from('atd_automacao_execucoes').select('id,automacao_id,conversa_id,status,erro,executado_em')
+      .eq('workspace_id',ws).order('executado_em',{ascending:false}).limit(30));
+    return json({execucoes:runs});
+  }
+  if(b.action==='automacoes-save'){
+    const nome=String(b.nome||'').trim(), resposta=String(b.resposta||'').trim();
+    const tipo=b.gatilho_tipo==='qualquer_mensagem'?'qualquer_mensagem':'palavra_chave';
+    const gatilho=tipo==='palavra_chave'?String(b.gatilho_valor||'').trim():'';
+    const canalId=String(b.canal_id||'').trim()||null, ativo=b.ativo===true;
+    if(!nome||nome.length>120||!resposta||resposta.length>4000||
+      (tipo==='palavra_chave'&&(!gatilho||gatilho.length>100)))
+      throw Error('Informe nome, gatilho e uma resposta de até 4.000 caracteres.');
+    let canais:any[]=[];
+    if(canalId){
+      const ch=await channel(canalId,ws);canais=[ch];
+      if(!((ch.canal==='instagram'&&ch.provedor==='zernio')||
+           (ch.canal==='whatsapp'&&['zernio','evolution'].includes(ch.provedor))))
+        throw Error('Este canal ainda não é compatível com automações.');
+    }else canais=await q(db.from('atd_canais').select('id,canal,provedor,ativo,status')
+      .eq('workspace_id',ws).eq('ativo',true));
+    canais=canais.filter((ch:any)=>(ch.canal==='instagram'&&ch.provedor==='zernio')||
+      (ch.canal==='whatsapp'&&['zernio','evolution'].includes(ch.provedor)));
+    if(ativo&&!canais.some((ch:any)=>ch.ativo&&ch.status==='conectado'))
+      throw Error('Para ativar, conecte um canal compatível ao Atendimento.');
+    const row:any={workspace_id:ws,nome,canal_id:canalId,gatilho_tipo:tipo,gatilho_valor:gatilho,
+      resposta,ativo,atualizado_em:new Date().toISOString()};
+    if(b.id){
+      if(!/^[a-f0-9-]{36}$/i.test(String(b.id)))throw Error('Automação inválida.');
+      const updated=await q(db.from('atd_automacoes').update(row).eq('workspace_id',ws).eq('id',b.id).select('id'));
+      if(!updated.length)throw Error('Automação não encontrada neste workspace.');
+    }else{
+      row.criado_por=user.id;
+      await q(db.from('atd_automacoes').insert(row));
+    }
+    return json({ok:true});
+  }
+  if(b.action==='automacoes-delete'){
+    if(!/^[a-f0-9-]{36}$/i.test(String(b.id||'')))throw Error('Automação inválida.');
+    await q(db.from('atd_automacoes').delete().eq('workspace_id',ws).eq('id',b.id));
+    return json({ok:true});
   }
   if (b.action === 'rapidas-save') {
     const atalho=String(b.atalho||'').trim().toLowerCase(),titulo=String(b.titulo||'').trim(),texto=String(b.texto||'').trim();
@@ -718,3 +816,4 @@ Deno.serve(async req => {
     return json({erro:e instanceof ProviderError ? e.message : (e as Error).message?.slice(0,220) || 'Não foi possível concluir.'},400);
   }
 });
+
