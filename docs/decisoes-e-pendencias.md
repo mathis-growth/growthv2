@@ -1,5 +1,17 @@
 
 
+## v0.214 — Growth's Brain, incremento 2
+**Pedido da Rebecka (01/11)**: seguir para o próximo passo (leads e vendas no registro de metas, metas por produto e por campanha).
+Decisões:
+- **Leads e vendas da empresa** no registro, vindos da tabela do mês do Planejamento (mesmo espelho do faturamento). O orçamento continua só no planejamento (não é meta de resultado).
+- **Metas de campanha**: a meta de leads, vendas e receita de cada campanha entra no registro com escopo "campanha". A campanha continua sendo o lugar de editar (espelho de mão única). Janela, para não supor resultado linear no mês: leads nos dias da captação; vendas e faturamento nos dias do carrinho aberto; sem essas datas, do início ao fim da campanha.
+- **Campanha perpétua com meta por mês** (meta_leads_mes) e **metas por fase e canal** (campanha_metas, 27 em produção) ficam para o próximo incremento.
+- **Meta por produto**: nova, criada no Planejamento anual (faturamento ou vendas, com janela, premissa e objetivo). Conta só as vendas do Growths ligadas ao produto: **fato**, o histórico importado guarda o produto como texto, sem ligação.
+- **Mesmos números das telas**: leads da empresa = pessoas captadas (Dashboard de vendas); leads da campanha = pessoas que entraram na campanha (Dashboard da campanha); vendas = vendas aprovadas.
+- **Cobertura parcial**: se só parte do período tem meta (ex.: setembro e outubro, com meta só em outubro), o realizado conta só nos dias com meta e a linha mostra "parcial". Assim a comparação não fica injusta.
+- **Cockpit**: a faixa virou "Metas do período". Mostra o faturamento, a tabela de leads e vendas da empresa e a tabela de campanhas e produtos com meta (cada uma na sua janela; clicar abre a campanha).
+- **Pendência**: vendas e leads de uma campanha fora da janela da meta (ex.: venda depois do carrinho fechar) não entram na meta da campanha.
+
 ## v0.213 — Growth's Brain, incremento 1
 **Pedido da Rebecka (01/11)**: documento "Growth's Brain" (planejar → executar → monitorar → detectar → investigar → simular → decidir → aprender). Etapa 1 = auditoria (`docs/growths-brain-auditoria.md`). Decisões dela depois da auditoria: começar pelo **faturamento**; as metas que já existem são **absorvidas aos poucos**; **objetivos dentro do Planejamento anual**; NSM "Receita bruta" **marcada como provisória**.
 Decisões de implementação:

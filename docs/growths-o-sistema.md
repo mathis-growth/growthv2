@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.213 (Growth's Brain: meta de faturamento no Cockpit).
+**Última atualização:** 01/11/2026, versão 0.214 (Growth's Brain: metas de leads, vendas, campanhas e produtos).
+
+**v0.214 · Todas as metas no mesmo lugar.** Leads, vendas, as metas de cada campanha e as metas por produto entram no mesmo registro da meta de faturamento e aparecem no Cockpit com o esperado até hoje, o realizado, a projeção e o status.
 
 **v0.213 · A meta no centro.** A meta de faturamento do Planejamento anual aparece no topo do Cockpit com o esperado até hoje, o realizado, o desvio, a projeção e o status. O Planejamento anual tem os objetivos do ano, e a North Star tem status.
 
@@ -104,7 +106,7 @@ A ideia central: o dono do negócio e a consultoria olham para os mesmos número
 ### Cockpit
 A tela inicial. Um painel pequeno por área (Geral, Marketing, Vendas, Financeiro, Projetos, Growth e Clientes), dois lado a lado, cada um com os números que mais importam no período: caixa, receita, margem e lucro; campanhas e leads; vendas, ticket e conversão; a receber, a pagar e MRR; projetos e atividades atrasadas; North Star e experimentos; alunos ativos, alertas e satisfação. Cada painel traz também um gráfico: receita e lucro por mês, leads e faturamento por dia, o que entra e o que sai, alunos por etapa. Clicar num painel abre o dashboard daquela área, com tudo em detalhe. Cada pessoa só vê os painéis das áreas a que tem acesso. Em cima, o mesmo filtro de período de todos os dashboards (começa no mês corrente); mudar o período muda todos os painéis.
 
-Logo abaixo, a **Meta de faturamento**: a meta do período (vinda do Planejamento anual), quanto deveria ter sido vendido até hoje, quanto foi vendido, o desvio, a projeção até o fim do período e o status (Dentro do esperado, Atenção, Em risco, Atingida…). Embaixo, o mesmo para o ano. "Como calculamos" mostra a conta, o método da projeção e a regra do status, sem prometer probabilidade. Se as metas dos meses não somam a meta do ano, o Cockpit avisa.
+Logo abaixo, a **Meta de faturamento**: a meta do período (vinda do Planejamento anual), quanto deveria ter sido vendido até hoje, quanto foi vendido, o desvio, a projeção até o fim do período e o status (Dentro do esperado, Atenção, Em risco, Atingida…). Embaixo, o mesmo para o ano. "Como calculamos" mostra a conta, o método da projeção e a regra do status, sem prometer probabilidade. Se as metas dos meses não somam a meta do ano, o Cockpit avisa. Logo depois vêm as metas de leads e de vendas da empresa e as metas de cada campanha e produto, cada uma na sua janela (a campanha conta leads nos dias da captação e vendas nos dias do carrinho aberto); clicar numa campanha abre a campanha.
 
 ### Dashboard geral
 O detalhe do painel Geral do Cockpit. Mostra o negócio inteiro num período escolhido:
@@ -141,7 +143,7 @@ O Growths confere os números de hora em hora e avisa quando:
 Toda manhã chega o resumo de ontem. Os avisos vão para o sino do sistema, por e-mail e por WhatsApp.
 
 ### Planejamento da empresa
-Saiu do menu na v0.212. O planejamento do ano (meta, 3 cenários, trimestres) fica em Marketing › Campanhas e planejamento › Planejamento anual. Desde a v0.213, os objetivos do ano também ficam lá, na seção "Objetivos e metas do ano", ligados às metas que medem cada um.
+Saiu do menu na v0.212. O planejamento do ano (meta, 3 cenários, trimestres) fica em Marketing › Campanhas e planejamento › Planejamento anual. Desde a v0.213, os objetivos do ano também ficam lá, na seção "Objetivos e metas do ano", ligados às metas que medem cada um. Na mesma seção ficam as metas por produto (criadas ali) e as metas das campanhas (editadas na própria campanha).
 
 ### Cadastro da empresa
 Dados da empresa, CNPJ validado e responsáveis. Inclui também:
@@ -506,6 +508,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - Por que "sem dado" é melhor do que zero.
 - Meta, previsão e probabilidade não são a mesma coisa (e por que o Growths ainda não mostra probabilidade).
 - "Esperado até hoje": o número que diz se você está atrasado antes do fim do mês.
+- Meta de lançamento não é linear: por que o Growths mede leads na captação e vendas no carrinho.
 - Um período só para a empresa inteira: por que marketing, vendas e financeiro precisam olhar a mesma janela de tempo.
 - Fato, hipótese e recomendação: como ler um insight sem se enganar.
 - A árvore dos números: de onde vem cada número do seu dashboard.
@@ -559,6 +562,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.214):** metas de leads, vendas, campanhas e produtos no registro central e no Cockpit.
 - **01/11 (v0.213):** Growth's Brain, primeiro fluxo: meta de faturamento no Cockpit, objetivos do ano, NSM com status.
 - **01/11 (v0.212):** Financeiro, Customer Success e Cockpit no mesmo filtro de período; sem o Planejamento da empresa antigo.
 - **01/11 (v0.211):** Dashboards com o mesmo filtro de período, que vale em todos.

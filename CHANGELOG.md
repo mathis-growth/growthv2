@@ -1,3 +1,9 @@
+## v0.214 — Growth's Brain: leads, vendas, campanhas e produtos nas metas (01/11/2026)
+- Metas de leads e vendas do mês e metas das campanhas no registro central (na janela da captação e do carrinho).
+- Metas por produto, criadas no Planejamento anual.
+- Cockpit: "Metas do período" com faturamento, leads e vendas da empresa, e campanhas e produtos com meta.
+- Banco: `RODAR_v0.214_brain_metas_2.sql`. Teste: `t214_metas_leads_campanhas.py` (0 falhas).
+
 ## v0.213 — Growth's Brain: meta de faturamento no Cockpit (01/11/2026)
 - Registro central de metas (começando pelo faturamento), ligado ao Planejamento anual, com versões.
 - Cockpit: meta do período, esperado até hoje, realizado, desvio, projeção e status, mais a linha do ano; "Como calculamos".

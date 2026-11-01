@@ -1,3 +1,8 @@
+## v0.214
+- `metas.metrica`: faturamento, leads, vendas.
+- `metas_fotos`: escopo e ref; a chave vira índice único (workspace, métrica, escopo, ref, ini, fim, dia).
+- Funções: `metas_grava` (geral), `metas_serie`, `metas_realizado_dia`, `metas_recortes`, `metas_avaliar(ws, metrica, ini, fim, hoje, escopo, ref)`; `metas_no_intervalo` sai. Gatilho `metas_de_campanha` em `campanhas`.
+
 ## v0.213
 - `metas`: id, workspace_id, metrica (faturamento), escopo (empresa | produto | campanha) + produto_id/campanha_id, granularidade (ano | trimestre | mes | personalizado), ini, fim, valor, valor_max, unidade, direcao (maior | menor | faixa | minimo | maximo), trajetoria (linear | sazonal | personalizada) + trajetoria_pesos, objetivo_id → plano_objetivos, plano_anual_id, origem (plano_anual | historico | manual | hibrido | migrada), premissa, versao, status (rascunho | aprovada | arquivada), aprovado_por/em. Uma meta aprovada por métrica, escopo e período.
 - `metas_historico` (versões anteriores), `metas_regras` (atencao_pct, risco_pct, min_dias por cliente), `metas_fotos` (meta, esperado, realizado, projeção, método e status por dia).

@@ -1,3 +1,8 @@
+## v0.214
+- Metas de leads e vendas: as do mês vêm da tabela do Planejamento; as da campanha, da campanha (leads nos dias da captação; vendas e faturamento nos dias do carrinho; sem datas, a campanha toda).
+- Meta de produto: faturamento ou vendas numa janela, dividida por igual nos dias; conta só as vendas do Growths ligadas ao produto.
+- Cobertura parcial: o realizado conta só nos dias que têm meta.
+
 ## v0.213
 - Meta de faturamento: vem do Planejamento anual (meta do ano e de cada mês). Faturamento = vendas aprovadas pela data da venda, com o histórico importado.
 - Meta de um período = soma diária (meta do mês ÷ dias do mês; mês sem meta = sobra da meta do ano ÷ dias livres).

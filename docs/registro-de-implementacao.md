@@ -1,5 +1,9 @@
 
 
+## Growth's Brain, incremento 2 (v0.214)
+- `t214_metas_leads_campanhas.py` (21 verificações, 0 falhas): leads e vendas do mês no registro (espelho só da coluna certa); leads e vendas de outubro iguais ao Dashboard de vendas; cobertura parcial; metas da campanha (janela da campanha e do carrinho, versão nova ao mudar, perpétua fora); recortes; foto das campanhas; Cockpit com as tabelas e o clique na campanha; Planejamento anual (listar, criar, editar e tirar meta de produto; abrir a campanha).
+- Regressão: t213, t211, t198, t200, t192, t205 sem falhas.
+
 ## Growth's Brain, incremento 1 (v0.213)
 - `t213_metas.py` (31 verificações, 0 falhas): espelho plano anual ↔ registro ↔ mês (com versões); ano soma a meta do ano; outubro encerrado; meio do mês (esperado linear, projeção pelo ritmo, status pela regra); dia 1 = sem dados suficientes; sem meta = sem número; regra por cliente; foto diária; acesso negado sem login; NSM provisória com versão; Cockpit (mês e mês passado, aviso da soma, Como calculamos, Ver as vendas com o mesmo faturamento); objetivos do ano (criar, ligar a meta); salvar o mês pela tabela antiga atualiza o registro; Growth Model com status; celular.
 - Regressão: ver a entrega.

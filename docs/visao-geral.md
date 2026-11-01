@@ -1,3 +1,6 @@
+## v0.214
+**Metas de leads, vendas, campanhas e produtos.** O Cockpit mostra, além do faturamento, as metas de leads e de vendas e as metas de cada campanha e produto, com esperado até hoje, realizado, projeção e status. Metas de produto são criadas no Planejamento anual.
+
 ## v0.213
 **Growth's Brain, primeiro fluxo completo.** A meta de faturamento do Planejamento anual aparece no topo do Cockpit: quanto devia ter vendido até hoje, quanto vendeu, o desvio, a projeção até o fim do período e o status. O Planejamento anual ganhou os objetivos do ano, e a North Star tem status (provisória até ser validada).
 

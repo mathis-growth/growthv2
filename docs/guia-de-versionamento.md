@@ -1,3 +1,6 @@
+## v0.214
+- Migration `20261208100000_brain_metas_2.sql` + `RODAR_v0.214_brain_metas_2.sql`. index.html montado sobre o HEAD do GitHub (v0.213) com `aplica214.py`, trocando o bloco de `g213.js` (agora v0.213/v0.214): `ckMetasOutras`, `metaFmt`, `META_NOME`, metas por produto e por campanha em `paObjetivos`. Teste novo `t214_metas_leads_campanhas.py`; `t213` ajustado (filtra faturamento e não apaga as metas de campanha).
+
 ## v0.213
 - Migration `20261207100000_brain_metas.sql` + `RODAR_v0.213_brain_metas.sql`. index.html montado sobre o HEAD do GitHub (v0.212 + `docs/growths-brain-auditoria.md`) com `aplica213.py` e `g213.js`: `ckMetasHtml`/`ckMetasLiga` (Cockpit), `paObjetivos` (Planejamento anual), `META_ST`, `NSM_ST`, `nsmPill`. Cockpit pede `metas_painel`; o Growth Model tem o status da NSM no mapa e no formulário. Teste novo `t213_metas.py`.
 

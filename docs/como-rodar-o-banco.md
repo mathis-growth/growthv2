@@ -1,3 +1,8 @@
+## v0.214 — Growth's Brain: leads, vendas, campanhas e produtos nas metas
+1. `supabase/RODAR_v0.214_brain_metas_2.sql`: leads e vendas no registro de metas; metas das campanhas no registro (espelho de mão única: a campanha continua sendo o lugar de editar); metas por produto; avaliação por séries diárias (`metas_serie`, `metas_realizado_dia`), `metas_recortes`; `metas_painel` devolve faturamento, leads, vendas e os recortes; foto diária com escopo.
+2. **Mexe em dados de produção (sem apagar nada):** copia para `metas` as metas de leads e vendas do planejamento mensal (hoje vazio) e as metas de leads, vendas e receita das campanhas que têm meta. Em `metas_fotos`, a chave primária vira um índice único com o escopo (as fotos antigas ficam).
+3. Pode rodar de novo sem erro. Pendentes em produção: `RODAR_v0.197`, `RODAR_v0.209` (versão da v0.210), `RODAR_v0.214`.
+
 ## v0.213 — Growth's Brain: metas num lugar só (faturamento)
 1. `supabase/RODAR_v0.213_brain_metas.sql`: cria o registro central `metas` (com histórico de versões), `metas_regras`, `metas_fotos`, as funções `metas_avaliar`, `metas_painel`, `metas_consistencia`, `metas_fotografar`, o status da NSM (`growth_metricas.nsm_status` + `nsm_historico`) e os objetivos do ano (`plano_objetivos.ano`). Agenda a foto diária (`growths-metas-foto`, 23:53).
 2. **Mexe em dados de produção (sem apagar nada):** copia para `metas` a meta do ano que já existe (`plano_anual`) e as metas de receita dos meses (`planejamento_mensal`, hoje vazio); marca como "provisória" as North Stars que existem; inclui "faturamento" no dicionário.
