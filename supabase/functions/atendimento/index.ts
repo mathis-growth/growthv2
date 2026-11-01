@@ -142,7 +142,10 @@ async function zernioDisponiveis(ws: string) {
   }));
 }
 async function processarAgendamentos(req:Request) {
-  const expected=Deno.env.get('ATD_AGENDADOR_TOKEN')||'';
+  // O token fica no banco (RLS + sem GRANT de SELECT para clientes), não no navegador.
+  // Evita exigir criação de novos Edge Function Secrets neste projeto.
+  const config=await q(db.from('sistema_config').select('valor').eq('chave','atd_agenda_token').maybeSingle());
+  const expected=String(config?.valor||'');
   if(!expected||!await segredoIgual(req.headers.get('x-atd-agenda-token')||'',expected))
     return json({erro:'Agendador não autorizado.'},401);
   const jobs=await q(db.rpc('atd_agenda_reservar',{p_limite:20}));
