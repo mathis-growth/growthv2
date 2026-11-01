@@ -1,3 +1,7 @@
+## v0.197
+- Excluir a pesquisa apaga junto as perguntas, as respostas, os envios da fila, os insights e os arquivos (regra do banco); experimentos e diagnósticos ligados a ela ficam sem a pesquisa. A campanha que usava a pesquisa passa a não usar.
+- Tirar um modelo da lista vale por cliente e não apaga nada.
+
 ## v0.196
 - Dois blocos podem ter mais de uma ligação, desde que por lados diferentes; a mesma ligação pelos mesmos lados não se repete.
 

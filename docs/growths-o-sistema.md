@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.196 (ligações por qualquer lado no mapa).
+**Última atualização:** 01/11/2026, versão 0.197 (pesquisas: editar, excluir e modelos).
+
+**v0.197 · Pesquisas.** Editar e Excluir à vista em cada pesquisa; os modelos que você não usa saem da lista.
 
 **v0.196 · Ligações por qualquer lado.** No mapa da estratégia, cada bloco tem bolinhas de ligação nos quatro lados.
 
@@ -594,4 +596,5 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - **01/11:**
   - mapa da estratégia com order bump e downsell, tela cheia e edição com dois cliques;
   - menu RevOps passa a se chamar Customer Success;
-  - bolinha de ligação nos quatro lados dos blocos do mapa, com mais de uma ligação se precisar.
+  - bolinha de ligação nos quatro lados dos blocos do mapa, com mais de uma ligação se precisar;
+  - pesquisas com Editar e Excluir à vista e modelos que saem da lista.

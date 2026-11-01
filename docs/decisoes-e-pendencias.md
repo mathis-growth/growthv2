@@ -1,5 +1,15 @@
 
 
+## v0.197 — Pesquisas: editar, excluir e modelos
+**Pedido da Rebecka (01/11)**: poder excluir um modelo; depois de criar a pesquisa, editar ou excluir ("tô sentindo falta disso").
+Fato: editar e excluir a pesquisa já existiam, mas escondidos (botão Configurar no topo da pesquisa; Excluir só dentro do formulário).
+Decisões:
+- Lista de pesquisas: **Editar** e **Excluir** em cada linha (clicar no resto da linha continua abrindo a pesquisa).
+- Topo da pesquisa: "Configurar" vira **Editar pesquisa**, e há **Excluir**.
+- Excluir avisa o que vai junto (respostas e envios da fila, que o banco apaga junto) e as campanhas que usam a pesquisa (elas ficam sem pesquisa). Sugere desativar, se a ideia for só parar de receber respostas.
+- Modelos: botão **Modelos** ao lado de "Começar de um modelo" lista os prontos, com **Usar** e **Excluir da lista**; o modelo sai da lista deste cliente e pode voltar com **Mostrar de novo**. Os modelos vêm do código, então "excluir" esconde; as pesquisas já criadas a partir dele não mudam.
+- Pendente: rodar `RODAR_v0.197_pesquisa_modelos.sql` em produção para a escolha valer para toda a equipe.
+
 ## v0.196 — Mapa: ligar por qualquer lado do bloco
 **Pedido da Rebecka (01/11)**: a bolinha de ligação em cima, embaixo, à esquerda e à direita, para conectar por todos os lados e mais de uma vez se precisar.
 Decisões:

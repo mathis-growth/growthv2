@@ -388,7 +388,11 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.196 mapa: bolinha de ligação nos quatro lados do bloco */
+<style id="v122">/* v0.197 pesquisas: ações na lista */
+.pq-acoes{white-space:nowrap;text-align:right}
+.pq-acoes .btn{margin-left:4px}
+tr.pq-oc td{opacity:.6}
+/* v0.196 mapa: bolinha de ligação nos quatro lados do bloco */
 .cv-pino{width:16px;height:16px;z-index:3;transition:transform .12s}
 .cv-pino:hover{transform:scale(1.35)}
 .cv-pino[data-lado="r"]{right:-9px;left:auto;top:54px;bottom:auto}
@@ -16288,6 +16292,55 @@ function cvLadoPerto(p, w, h, pt) {
   return Object.entries(d).sort((x, y) => x[1] - y[1])[0][0];
 }
 
+/* ================= v0.197 — Pesquisas: editar e excluir à vista, e tirar modelos da lista =================
+   Pedido da Rebecka (01/11): poder excluir um modelo e, depois de criar a pesquisa, editar ou excluir. Editar e excluir já existiam,
+   mas escondidos (Configurar → Excluir); agora aparecem na lista e no topo da pesquisa. Os modelos prontos ficam no código:
+   "excluir o modelo" tira da lista deste cliente (tabela pesquisa_modelos_ocultos; sem ela, vale só neste navegador) e dá para mostrar de novo. */
+let PQ_OCULTOS = null;
+async function pqOcultos() {
+  if (PQ_OCULTOS && PQ_OCULTOS.ws === S.ws) return PQ_OCULTOS;
+  let set = new Set(), banco = false;
+  try { const r = await sb.from('pesquisa_modelos_ocultos').select('modelo').eq('workspace_id', S.ws); if (!r.error) { banco = true; set = new Set((r.data || []).map(x => x.modelo)); } } catch (e) {}
+  if (!banco) { try { set = new Set(JSON.parse(localStorage.getItem('pqOcultos:' + S.ws) || '[]')); } catch (e) {} }
+  return (PQ_OCULTOS = { ws: S.ws, set, banco });
+}
+async function pqOcultar(k, ocultar) {
+  const O = await pqOcultos();
+  if (O.banco) { if (ocultar) await q(sb.from('pesquisa_modelos_ocultos').insert({ workspace_id: S.ws, modelo: k })); else await q(sb.from('pesquisa_modelos_ocultos').delete().eq('workspace_id', S.ws).eq('modelo', k)); }
+  if (ocultar) O.set.add(k); else O.set.delete(k);
+  if (!O.banco) { try { localStorage.setItem('pqOcultos:' + S.ws, JSON.stringify([...O.set])); } catch (e) {} }
+}
+const pqModelosDisp = () => Object.entries(PQ_MODELOS).filter(([k, v]) => !v.objetos || S.pqCfg);
+async function pqModelosModal() {
+  const O = await pqOcultos();
+  const linha = ([k, v]) => { const oc = O.set.has(k), n = v.objetos ? v.objetos.length : (v.perguntas || []).length;
+    return `<tr class="${oc ? 'pq-oc' : ''}"><td><b>${esc(v.nome)}</b><br><span class="muted">${n} pergunta(s)${oc ? ' · fora da lista' : ''}</span></td>
+      <td style="white-space:nowrap;text-align:right">${oc ? `<button type="button" class="btn sm" data-pqmv="${esc(k)}">Mostrar de novo</button>` : `<button type="button" class="btn sm" data-pqmu="${esc(k)}">Usar</button> <button type="button" class="btn sm bad" data-pqmx="${esc(k)}">Excluir da lista</button>`}</td></tr>`; };
+  const f = modal('Modelos de pesquisa', `<p class="muted">Os modelos prontos vêm com o Growths. Excluir tira o modelo da lista "Começar de um modelo" deste cliente; as pesquisas já criadas a partir dele não mudam e dá para mostrar de novo aqui.${O.banco ? '' : ' <b>Por enquanto vale só neste navegador:</b> para valer para toda a equipe, rode supabase/RODAR_v0.197_pesquisa_modelos.sql.'}</p>
+    <div class="tw"><table><tbody>${pqModelosDisp().map(linha).join('')}</tbody></table></div>`, null, 'Fechar', true);
+  f.addEventListener('click', e => {
+    const u = e.target.closest('[data-pqmu]'), x = e.target.closest('[data-pqmx]'), v = e.target.closest('[data-pqmv]');
+    if (u) { $('#modalRoot').innerHTML = ''; return criarDeModelo(u.dataset.pqmu); }
+    if (x || v) act(async () => { await pqOcultar((x || v).dataset[x ? 'pqmx' : 'pqmv'], !!x); $('#modalRoot').innerHTML = ''; await pqModelosModal(); render(); }, x ? 'Modelo tirado da lista' : 'Modelo de volta na lista');
+  });
+}
+/* excluir a pesquisa: diz o que vai junto (respostas, fila, campanhas que usam) antes de apagar */
+async function pqExcluir(p) {
+  const cs = await q(sb.from('campanhas').select('id,nome,extras').eq('workspace_id', S.ws)).catch(() => []);
+  const cnt = async (t) => { try { const x = await sb.from(t).select('id', { count: 'exact', head: true }).eq('pesquisa_id', p.id); return x.count || 0; } catch (er) { return 0; } };
+  const nR = await cnt('pesquisa_respostas'), nE = await cnt('pesquisa_envios');
+  const camps = (cs || []).filter(c => ((c.extras || {}).pesquisa || {}).pesquisa_id === p.id);
+  modal('Excluir pesquisa', `<p>Excluir <b>${esc(p.nome)}</b>?</p>
+    ${nR || nE ? `<p class="cpq-aviso">Vão junto <b>${num(nR)} resposta(s)</b> e <b>${num(nE)} envio(s) da fila</b>. Não dá para desfazer. Se quiser só parar de receber respostas, desative a pesquisa em Editar.</p>` : '<p class="muted">Ela ainda não tem respostas nem envios.</p>'}
+    ${camps.length ? `<p class="muted">Usada na campanha ${camps.map(c => '<b>' + esc(c.nome) + '</b>').join(', ')}: a campanha fica sem pesquisa.</p>` : ''}`,
+    async () => {
+      await q(sb.from('pesquisas').delete().eq('id', p.id));
+      for (const c of camps) { const ex = { ...(c.extras || {}) }; ex.pesquisa = { ...(ex.pesquisa || {}), usa: false, pesquisa_id: null }; await q(sb.from('campanhas').update({ extras: ex }).eq('id', c.id)).catch(() => {}); }
+      if (S.pqSel === p.id) S.pqSel = null; toast('Pesquisa excluída');
+    }, 'Excluir pesquisa');
+  const b = $('#modalRoot .modal .pri'); if (b) b.classList.add('bad');
+}
+
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;
 const fonteLink = () => location.protocol === 'file:' ? '<div class="panel"><b>Atenção:</b> o arquivo está aberto do seu computador, então o link de resposta não funciona para outras pessoas. Hospede o arquivo (por exemplo no GitHub Pages) antes de enviar.</div>' : '';
 
@@ -16298,10 +16351,14 @@ async function vPesquisas(m) {
   const [ps, env, perg] = await Promise.all([q(sb.from('pesquisas').select('*').eq('workspace_id', w).order('criado_em', { ascending: false })), q(sb.from('pesquisa_envios').select('pesquisa_id,status').eq('workspace_id', w).limit(20000)), q(sb.from('pesquisa_perguntas').select('pesquisa_id').eq('workspace_id', w))]);
   const E = {}; env.forEach(e => { const o = E[e.pesquisa_id] = E[e.pesquisa_id] || { total: 0, respondido: 0, enviado: 0, pendente: 0 }; o.total++; o[e.status] = (o[e.status] || 0) + 1; });
   const NP = {}; perg.forEach(x => NP[x.pesquisa_id] = (NP[x.pesquisa_id] || 0) + 1);
-  m.innerHTML = `<div class="head"><div><h1>Pesquisas</h1><span class="muted">Monte a pesquisa, escolha em que momento ela vai para o lead, o aluno ou o cliente, e traga as respostas para o ciclo de experimentos.</span></div><div class="acts"><button class="btn pri" id="pqNova">Nova pesquisa</button><select id="pqModelo" aria-label="Usar modelo"><option value="">Começar de um modelo…</option>${Object.entries(PQ_MODELOS).filter(([k, v]) => !v.objetos || S.pqCfg).map(([k, v]) => `<option value="${k}">${esc(v.nome)}</option>`).join('')}</select></div></div>
+  const PQ_OC = await pqOcultos();
+  m.innerHTML = `<div class="head"><div><h1>Pesquisas</h1><span class="muted">Monte a pesquisa, escolha em que momento ela vai para o lead, o aluno ou o cliente, e traga as respostas para o ciclo de experimentos.</span></div><div class="acts"><button class="btn pri" id="pqNova">Nova pesquisa</button><select id="pqModelo" aria-label="Usar modelo"><option value="">Começar de um modelo…</option>${pqModelosDisp().filter(([k]) => !PQ_OC.set.has(k)).map(([k, v]) => `<option value="${k}">${esc(v.nome)}</option>`).join('')}</select><button class="btn" id="pqModelos" title="Ver, usar ou tirar modelos da lista">Modelos</button></div></div>
   <div class="panel"><span class="muted"><b>O envio automático ainda não está conectado.</b> Quando o gatilho acontece (cadastro, entrada em etapa, virar aluno), o Growths coloca a pessoa na fila com um link único. Hoje você envia pelo botão de WhatsApp da fila ou copia o link; o disparo sozinho por WhatsApp e e-mail depende de integração com um provedor.</span></div>
-  <div class="panel"><div class="tw"><table><thead><tr><th>Pesquisa</th><th>Tipo</th><th>Quando vai</th><th class="n">Perguntas</th><th class="n">Na fila</th><th class="n">Respondidas</th><th class="n">Taxa</th><th>Situação</th></tr></thead><tbody>${ps.map(p => { const e = E[p.id] || { total: 0, respondido: 0, enviado: 0, pendente: 0 }; return `<tr class="clk" data-pq="${p.id}"><td><b>${esc(p.nome)}</b></td><td>${PQ_TIPO[p.tipo]}</td><td>${esc(PQ_GAT[p.gatilho])}${p.gatilho === 'etapa' ? ': ' + esc(p.gatilho_etapa) : ''}</td><td class="n">${NP[p.id] || 0}</td><td class="n">${num(e.pendente)}</td><td class="n">${num(e.respondido)}</td><td class="n">${fP(div(e.respondido, e.enviado + e.respondido))}</td><td>${pillAtivo(p.ativa)}</td></tr>`; }).join('') || '<tr><td colspan="8" class="empty">Nenhuma pesquisa ainda. Comece de um modelo ou crie a sua.</td></tr>'}</tbody></table></div></div>`;
-  m.querySelectorAll('[data-pq]').forEach(r => r.onclick = () => { S.pqSel = r.dataset.pq; S.pqTab = 'perguntas'; render(); });
+  <div class="panel"><div class="tw"><table><thead><tr><th>Pesquisa</th><th>Tipo</th><th>Quando vai</th><th class="n">Perguntas</th><th class="n">Na fila</th><th class="n">Respondidas</th><th class="n">Taxa</th><th>Situação</th><th></th></tr></thead><tbody>${ps.map(p => { const e = E[p.id] || { total: 0, respondido: 0, enviado: 0, pendente: 0 }; return `<tr class="clk" data-pq="${p.id}"><td><b>${esc(p.nome)}</b></td><td>${PQ_TIPO[p.tipo]}</td><td>${esc(PQ_GAT[p.gatilho])}${p.gatilho === 'etapa' ? ': ' + esc(p.gatilho_etapa) : ''}</td><td class="n">${NP[p.id] || 0}</td><td class="n">${num(e.pendente)}</td><td class="n">${num(e.respondido)}</td><td class="n">${fP(div(e.respondido, e.enviado + e.respondido))}</td><td>${pillAtivo(p.ativa)}</td><td class="pq-acoes"><button type="button" class="btn sm" data-pqe="${p.id}">Editar</button><button type="button" class="btn sm bad" data-pqx="${p.id}">Excluir</button></td></tr>`; }).join('') || '<tr><td colspan="9" class="empty">Nenhuma pesquisa ainda. Comece de um modelo ou crie a sua.</td></tr>'}</tbody></table></div></div>`;
+  m.querySelectorAll('[data-pq]').forEach(r => r.onclick = ev => { if (ev.target.closest('.pq-acoes')) return; S.pqSel = r.dataset.pq; S.pqTab = 'perguntas'; render(); });
+  m.querySelectorAll('[data-pqe]').forEach(b => b.onclick = ev => { ev.stopPropagation(); modalPesquisa(ps.find(x => x.id === b.dataset.pqe)); });
+  m.querySelectorAll('[data-pqx]').forEach(b => b.onclick = ev => { ev.stopPropagation(); pqExcluir(ps.find(x => x.id === b.dataset.pqx)); });
+  $('#pqModelos').onclick = () => pqModelosModal();
   $('#pqNova').onclick = () => modalPesquisa(null);
   $('#pqModelo').onchange = e => { if (e.target.value) criarDeModelo(e.target.value); };
 }
@@ -16358,9 +16415,9 @@ async function vPesquisaDet(m) {
   S.pqSecao = await temColuna('pesquisa_perguntas', 'secao');
   S.dgOk = p.tipo === 'diagnostico' && await temColuna('diagnosticos', 'resposta_id');
   if (S.dgReu && S.dgOk) return dgReuniao(m, p, perg);
-  m.innerHTML = `<div class="head"><div><button class="btn sm" id="pqVolta">← Pesquisas</button><h1 style="margin-top:8px">${esc(p.nome)} ${pillAtivo(p.ativa)}</h1><span class="muted">${PQ_TIPO[p.tipo]} · ${esc(PQ_GAT[p.gatilho])}${p.gatilho === 'etapa' ? ': ' + esc(p.gatilho_etapa) : ''}${p.gatilho === 'checkin' && p.checkin_dias ? ': a cada ' + p.checkin_dias + ' dias' : ''}${p.gatilho === 'etapa_aluno' && p.etapa_aluno_id ? ': ' + esc(((await q(sb.from('etapas_kanban').select('nome').eq('id', p.etapa_aluno_id)).catch(() => []))[0] || {}).nome || 'etapa') : ''}</span></div><div class="acts"><button class="btn" id="pqEd">Configurar</button></div></div>
+  m.innerHTML = `<div class="head"><div><button class="btn sm" id="pqVolta">← Pesquisas</button><h1 style="margin-top:8px">${esc(p.nome)} ${pillAtivo(p.ativa)}</h1><span class="muted">${PQ_TIPO[p.tipo]} · ${esc(PQ_GAT[p.gatilho])}${p.gatilho === 'etapa' ? ': ' + esc(p.gatilho_etapa) : ''}${p.gatilho === 'checkin' && p.checkin_dias ? ': a cada ' + p.checkin_dias + ' dias' : ''}${p.gatilho === 'etapa_aluno' && p.etapa_aluno_id ? ': ' + esc(((await q(sb.from('etapas_kanban').select('nome').eq('id', p.etapa_aluno_id)).catch(() => []))[0] || {}).nome || 'etapa') : ''}</span></div><div class="acts"><button class="btn" id="pqEd">Editar pesquisa</button><button class="btn bad" id="pqDel">Excluir</button></div></div>
   <div class="tabs">${[['perguntas', 'Perguntas'], ['form', 'Formulário e aparência'], ['qual', 'Qualificação e pontos'], ['quem', 'Quem respondeu'], ['envios', 'Fila de envio'], ['res', 'Resultados'], ['ins', 'Insights']].map(([k, l]) => `<button data-t="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="pqBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
-  $('#pqVolta').onclick = () => { S.pqSel = null; render(); }; $('#pqEd').onclick = () => modalPesquisa(p);
+  $('#pqVolta').onclick = () => { S.pqSel = null; render(); }; $('#pqEd').onclick = () => modalPesquisa(p); $('#pqDel').onclick = () => pqExcluir(p);
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { S.pqTab = b.dataset.t; render(); });
   const body = $('#pqBody');
   if (T === 'envios') return pqEnvios(body, p); if (T === 'res') return pqResultados(body, p, perg); if (T === 'ins') return pqInsights(body, p, perg); if (T === 'qual') return pqQualif(body, p, perg); if (T === 'form') return pqForm(body, p, perg); if (T === 'quem') return pqRespondentes(body, p, perg);

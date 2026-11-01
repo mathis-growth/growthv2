@@ -1,3 +1,6 @@
+## v0.197
+- `pesquisa_modelos_ocultos` (workspace_id, modelo, ocultado_em; chave workspace + modelo): modelos prontos que o cliente tirou da lista. Ver: quem é do cliente ou da equipe interna; gravar e apagar: quem edita Growth ou Marketing.
+
 ## v0.196
 Sem mudança no banco. `estrategia_blocos.props.lados` = { id da ligação: { de: r|l|t|b, para: r|l|t|b } }, no bloco de onde a ligação sai.
 

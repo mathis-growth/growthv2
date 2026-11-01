@@ -1,3 +1,6 @@
+## v0.197
+- index.html: aplicado sobre a v0.196 (`aplica197.py`; novos `g197.js` e `g197.css`): `pqOcultos`, `pqOcultar`, `pqModelosDisp`, `pqModelosModal`, `pqExcluir`; lista e topo da pesquisa com Editar e Excluir. Migração `20261130100000_pesquisa_modelos_ocultos.sql` / `RODAR_v0.197_pesquisa_modelos.sql`. Teste novo `t197_pesquisas_editar_excluir.py`.
+
 ## v0.196
 - index.html: aplicado sobre a v0.195 (`aplica196.py`; novos `g196.js` e `g196.css`). Quatro `.cv-pino` com `data-lado`; `seta` desenha pelos lados (`cvLados`, `cvPonto`, `CV_DIR`); `cvLadoPerto` na hora de soltar; painel da ligação com `lado_de` e `lado_para`; setas redesenhadas com a altura real dos blocos. Teste novo `tests/tela/t196_canvas_lados.py`; t165 e t168 ajustados (bolinha da direita).
 

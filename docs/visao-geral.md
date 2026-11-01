@@ -1,3 +1,6 @@
+## v0.197
+**Pesquisas mais fáceis de manter.** Cada pesquisa da lista tem Editar e Excluir à vista, e o topo da pesquisa também. Antes de excluir, o Growths diz quantas respostas vão junto. Os modelos prontos que você não usa saem da lista com um clique e voltam quando quiser.
+
 ## v0.196
 **Ligar blocos por qualquer lado.** No mapa da estratégia, cada bloco tem bolinhas de ligação em cima, embaixo, à esquerda e à direita. A seta sai pelo lado que você puxou e chega pelo lado mais perto de onde soltou; dá para ligar os mesmos blocos mais de uma vez e trocar os lados depois no painel da ligação.
 

@@ -1,3 +1,10 @@
+## v0.197 — Pesquisas: editar, excluir e modelos (01/11/2026)
+- **Editar** e **Excluir** em cada pesquisa da lista e no topo da pesquisa ("Configurar" virou "Editar pesquisa").
+- Excluir avisa quantas respostas e envios vão junto e quais campanhas usam a pesquisa.
+- Botão **Modelos**: usar, **excluir da lista** e mostrar de novo os modelos prontos.
+- Banco: `RODAR_v0.197_pesquisa_modelos.sql` (**ainda não aplicado em produção**; sem ele, tirar modelo da lista vale só no navegador).
+- Teste: `t197_pesquisas_editar_excluir.py` (0 falhas).
+
 ## v0.196 — Mapa: ligar por qualquer lado do bloco (01/11/2026)
 - Bolinha de ligação nos quatro lados do bloco; a seta sai pelo lado puxado e chega pelo lado mais perto de onde foi solta.
 - Mais de uma ligação entre os mesmos blocos, por lados diferentes; **Sai por** e **Chega por** no painel da ligação.

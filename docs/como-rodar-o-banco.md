@@ -1,3 +1,7 @@
+## v0.197 — Modelos de pesquisa fora da lista
+1. `supabase/RODAR_v0.197_pesquisa_modelos.sql`: cria `pesquisa_modelos_ocultos` (cliente + modelo) com acesso por cliente. Pode rodar de novo sem erro. **Ainda não aplicado em produção.**
+2. Sem ele, tirar um modelo da lista vale só no navegador de quem tirou (a tela avisa).
+
 ## v0.196
 Nada a rodar no banco (só tela). O lado de cada ligação fica em `estrategia_blocos.props.lados` do bloco de origem.
 

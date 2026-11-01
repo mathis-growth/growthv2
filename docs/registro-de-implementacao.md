@@ -1,5 +1,9 @@
 
 
+## Pesquisas: editar, excluir e modelos (v0.197)
+- `g197.js`: modelos ocultos lidos da tabela (ou do navegador, sem a tabela); modal Modelos; exclusão com contagem de respostas e envios e limpeza da pesquisa nas campanhas.
+- Teste `t197_pesquisas_editar_excluir.py`: Editar e Excluir na lista; edição grava; aviso com 3 respostas; Cancelar não exclui; topo com Editar pesquisa e Excluir; excluir sem respostas; modelo fora da lista (no banco), some do seletor e volta. 0 falhas. t161, t193 e testes de tela de pesquisa sem falhas.
+
 ## Mapa: ligar por qualquer lado (v0.196)
 - `g196.js`: `CV_DIR`, `CV_LADOS`, `cvPonto` (direita e esquerda na altura do título, em cima e embaixo no meio), `cvLados` (o guardado ou o automático pela posição), `cvLadoPerto`.
 - Teste `t196_canvas_lados.py` (banco de mentira): quatro bolinhas por bloco; ligação antiga com destino embaixo sai por baixo; arrastar de baixo até o topo liga baixo → cima; segunda ligação entre os mesmos blocos por outros lados; direita → esquerda; painel troca o lado de chegada. OK. t165 a t172 e t195 sem falhas.
