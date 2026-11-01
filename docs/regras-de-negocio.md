@@ -1,3 +1,6 @@
+## v0.196
+- Dois blocos podem ter mais de uma ligação, desde que por lados diferentes; a mesma ligação pelos mesmos lados não se repete.
+
 ## v0.195
 - Order bump e Downsell no mapa: métricas manuais, não entram em clientes novos nem na receita do funil (a venda principal já é contada no Checkout).
 - Nome de bloco é único na estratégia (também na edição pelo próprio bloco).

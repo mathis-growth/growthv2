@@ -1,3 +1,6 @@
+## v0.196
+Nada a rodar no banco (só tela). O lado de cada ligação fica em `estrategia_blocos.props.lados` do bloco de origem.
+
 ## v0.195
 Nada a rodar no banco (só tela). Os blocos novos usam `estrategia_blocos.tipo` = `order_bump` e `downsell` (o campo aceita qualquer texto).
 

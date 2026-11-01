@@ -86,7 +86,7 @@ with sync_playwright() as p:
     b4 = pg.evaluate("__D.estrategia_blocos.find(b => b.id === 'b4')")
     chk(b4['x'] != 820 or b4['y'] != 260, 'arrastar o bloco salva a posição', b4)
     # ligar pelo pino
-    pn = pg.locator('[data-pino=b2]').bounding_box(); al = pg.locator('[data-no=b4] .cv-nm').bounding_box()
+    pn = pg.locator('[data-pino=b2][data-lado=r]').bounding_box(); al = pg.locator('[data-no=b4] .cv-nm').bounding_box()
     pg.mouse.move(pn['x'] + 4, pn['y'] + 4); pg.mouse.down(); pg.mouse.move(al['x'] + 10, al['y'] + 5, steps=6); pg.mouse.up(); pg.wait_for_timeout(1000)
     chk(any(c['de_bloco'] == 'b2' and c['para_bloco'] == 'b4' for c in pg.evaluate("__D.estrategia_conexoes")), 'arrastar do pino até outro bloco cria a ligação')
     # adicionar componente pelo clique

@@ -388,7 +388,17 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.195 mapa da estratégia: tela cheia, nome editável no bloco, alça de tamanho maior */
+<style id="v122">/* v0.196 mapa: bolinha de ligação nos quatro lados do bloco */
+.cv-pino{width:16px;height:16px;z-index:3;transition:transform .12s}
+.cv-pino:hover{transform:scale(1.35)}
+.cv-pino[data-lado="r"]{right:-9px;left:auto;top:54px;bottom:auto}
+.cv-pino[data-lado="l"]{left:-9px;right:auto;top:54px;bottom:auto}
+.cv-pino[data-lado="t"]{top:-9px;bottom:auto;left:calc(50% - 8px);right:auto}
+.cv-pino[data-lado="b"]{bottom:-9px;top:auto;left:calc(50% - 8px);right:auto}
+.cv-no .cv-pino:not([data-lado="r"]){opacity:0}
+.cv-no:hover .cv-pino,.cv-no.on .cv-pino,.cv-palco.ligando .cv-pino{opacity:1}
+.cv-lados{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+/* v0.195 mapa da estratégia: tela cheia, nome editável no bloco, alça de tamanho maior */
 .cv.cv-cheia{position:fixed;inset:0;z-index:30;height:100vh!important;min-height:0;padding:12px;background:var(--bg);grid-template-columns:200px minmax(0,1fr) 290px}
 .cv.cv-cheia .cv-pal{max-height:none}
 body.cv-cheia-on{overflow:hidden}
@@ -10357,11 +10367,14 @@ function cvMapa(el, f, ctx) {
       ${b.tipo === 'api' || b.tipo === 'grupo' ? `<div class="cv-sw">${[['api', 'API'], ['grupo', 'Grupo']].map(([k, l]) => `<button type="button" data-wa="${k}" class="${b.tipo === k ? 'on' : ''}"${edita ? '' : ' disabled'}>${l}</button>`).join('')}</div>`
         : (b.props || {}).canal && !cvLogoDe(b.tipo, b.nome, b.props.canal) ? `<small>${esc(b.props.canal)}</small>` : ''}
       ${pr ? `<small class="cv-kpi"><span class="blk-dot"></span>${esc(blkCurto(pr, b))}</small>` : lg ? '' : '<small class="muted">sem métrica</small>'}
-      ${edita ? `<span class="cv-pino" data-pino="${b.id}" title="Arraste até outro bloco para ligar"></span><span class="cv-rs" data-rs="${b.id}" title="Arraste para mudar o tamanho"></span>` : ''}</div>`; };
+      ${edita ? `${[['r', 'direita'], ['l', 'esquerda'], ['t', 'em cima'], ['b', 'embaixo']].map(([l, n]) => `<span class="cv-pino" data-pino="${b.id}" data-lado="${l}" title="Ligar por ${n}: arraste até outro bloco"></span>`).join('')}<span class="cv-rs" data-rs="${b.id}" title="Arraste para mudar o tamanho"></span>` : ''}</div>`; };
   const H = b => ({ x: P[b].x + CV_W * T[b], y: P[b].y + 62 * T[b] }), E = b => ({ x: P[b].x, y: P[b].y + 62 * T[b] });
   const alt = id => { const n = mundo.querySelector(`[data-no="${id}"]`); return (n ? n.offsetHeight : 175) * T[id]; };
-  const seta = c => { if (!P[c.de_bloco] || !P[c.para_bloco]) return ''; const a = H(c.de_bloco), z = E(c.para_bloco), dx = Math.max(40, Math.abs(z.x - a.x) / 2);
-    const d = `M${a.x},${a.y} C${a.x + dx},${a.y} ${z.x - dx},${z.y} ${z.x},${z.y}`, mx = (a.x + z.x) / 2, my = (a.y + z.y) / 2;
+  const altS = id => { try { return alt(id); } catch (e) { return 175 * T[id]; } };  /* antes do mapa existir, a altura padrão */
+  const ptL = (id, l) => cvPonto(P[id], CV_W * T[id], altS(id), 62 * T[id], l);
+  const seta = c => { if (!P[c.de_bloco] || !P[c.para_bloco]) return ''; const ld = cvLados(c, BL, P, T, altS), a = ptL(c.de_bloco, ld.de), z = ptL(c.para_bloco, ld.para);
+    const k = Math.max(40, Math.hypot(z.x - a.x, z.y - a.y) / 2.5), da = CV_DIR[ld.de], dz = CV_DIR[ld.para];
+    const d = `M${a.x},${a.y} C${a.x + da[0] * k},${a.y + da[1] * k} ${z.x + dz[0] * k},${z.y + dz[1] * k} ${z.x},${z.y}`, mx = (a.x + z.x) / 2, my = (a.y + z.y) / 2;
     const rot = c.rotulo || (c.tipo === 'sim' ? 'Sim' : c.tipo === 'nao' ? 'Não' : c.tipo === 'divisao' ? (c.peso != null ? c.peso + '%' : 'Divisão') : '');
     return `<g class="cv-ar${sel && sel.id === c.id ? ' on' : ''} cv-t-${c.tipo}" data-ar="${c.id}"><path d="${d}" class="cv-hit"/><path d="${d}" class="cv-ln" marker-end="url(#cvSeta)"/>
       ${rot || c.nota || c.condicao ? `<foreignObject x="${mx - 60}" y="${my - 12}" width="120" height="24"><div class="cv-rot">${esc(rot || (c.nota ? '📝' : '?'))}</div></foreignObject>` : ''}</g>`; };
@@ -10378,6 +10391,7 @@ function cvMapa(el, f, ctx) {
     <aside class="cv-prop" id="cvProp"></aside></div>`;
   const palco = $('#cvPalco'), mundo = $('#cvMundo'), salvo = t => { const s = $('#cvSalvo'); if (s) { s.textContent = t; clearTimeout(cvMapa._t); cvMapa._t = setTimeout(() => { if (s.isConnected) s.textContent = ''; }, 1800); } };
   const aplica = () => { const zp = $('#cvZp'); if (zp) zp.textContent = Math.round(V.z * 100) + '%'; mundo.style.transform = `translate(${V.x}px,${V.y}px) scale(${V.z})`; palco.style.backgroundSize = `${CV_GRADE * V.z}px ${CV_GRADE * V.z}px`; palco.style.backgroundPosition = `${V.x}px ${V.y}px`; };
+  requestAnimationFrame(() => CN.forEach(c => { const g = mundo.querySelector(`[data-ar="${c.id}"]`); if (g) g.outerHTML = seta(c); }));
   const mundoXY = e => { const r = palco.getBoundingClientRect(); return { x: (e.clientX - r.left - V.x) / V.z, y: (e.clientY - r.top - V.y) / V.z }; };
   const ajusta = () => { if (!BL.length) { V.x = 0; V.y = 0; V.z = 1; return aplica(); } const xs = BL.map(b => P[b.id].x), ys = BL.map(b => P[b.id].y), r = palco.getBoundingClientRect();
     const w = Math.max(...BL.map(b => P[b.id].x + CV_W * T[b.id])) - Math.min(...xs) + 120, h = Math.max(...BL.map(b => P[b.id].y + alt(b.id))) - Math.min(...ys) + 120; V.z = Math.max(.35, Math.min(1.2, Math.min(r.width / w, r.height / h)));
@@ -10406,7 +10420,7 @@ function cvMapa(el, f, ctx) {
   let arr = null;
   palco.addEventListener('pointerdown', e => {
     const pino = e.target.closest('[data-pino]'), cab = e.target.closest('[data-arr]'), nob = e.target.closest('[data-no]');
-    if (pino && edita) { arr = { tipo: 'liga', de: pino.dataset.pino }; e.preventDefault(); return; }
+    if (pino && edita) { arr = { tipo: 'liga', de: pino.dataset.pino, lado: pino.dataset.lado || 'r' }; palco.classList.add('ligando'); e.preventDefault(); return; }
     if (e.target.closest('[data-wa]') || e.target.closest('[data-lx]') || e.target.closest('[data-fz]') || e.target.closest('.cv-fzm')) return;
     const rs = e.target.closest('[data-rs]');
     if (rs && edita) { arr = { tipo: 'tam', id: rs.dataset.rs, s0: T[rs.dataset.rs] }; e.preventDefault(); return; }
@@ -10423,8 +10437,8 @@ function cvMapa(el, f, ctx) {
       const n = mundo.querySelector(`[data-no="${arr.id}"]`); n.style.left = P[arr.id].x + 'px'; n.style.top = P[arr.id].y + 'px'; n.classList.add('cv-arr'); refaz(arr.id); return; }
     if (arr.tipo === 'tam') { const sz = Math.max(.6, Math.min(2, Math.round((w.x - P[arr.id].x) / CV_W * 20) / 20)); if (sz === T[arr.id]) return; T[arr.id] = sz; arr.mexeu = true;
       const n = mundo.querySelector(`[data-no="${arr.id}"]`); n.style.transform = sz === 1 ? '' : `scale(${sz})`; refaz(arr.id); salvo(Math.round(sz * 100) + '%'); return; }
-    if (arr.tipo === 'liga') { const a = H(arr.de); $('#cvTemp').setAttribute('d', `M${a.x},${a.y} L${w.x},${w.y}`); } };
-  const solta = e => { if (!arr) return; const a = arr; arr = null; palco.classList.remove('arrasta'); $('#cvTemp') && $('#cvTemp').setAttribute('d', '');
+    if (arr.tipo === 'liga') { const a = ptL(arr.de, arr.lado); $('#cvTemp').setAttribute('d', `M${a.x},${a.y} L${w.x},${w.y}`); } };
+  const solta = e => { if (!arr) return; const a = arr; arr = null; palco.classList.remove('arrasta'); palco.classList.remove('ligando'); $('#cvTemp') && $('#cvTemp').setAttribute('d', '');
     if (a.tipo === 'no' && a.mexeu) { const n = mundo.querySelector(`[data-no="${a.id}"]`); if (n) { n.classList.remove('cv-arr'); n.dataset.solto = '1'; setTimeout(() => { delete n.dataset.solto; }, 0); }
       act(async () => { await q(sb.from('estrategia_blocos').update({ x: P[a.id].x, y: P[a.id].y }).eq('id', a.id)); const b = BL.find(x => x.id === a.id); b.x = P[a.id].x; b.y = P[a.id].y; salvo('Posição salva'); }); bandas(); }
     else if (a.tipo === 'tam') { const b = BL.find(x => x.id === a.id); if (a.mexeu && b) act(async () => { const pz = { ...(b.props || {}) }; if (T[a.id] === 1) delete pz.tam; else pz.tam = T[a.id];
@@ -10433,8 +10447,11 @@ function cvMapa(el, f, ctx) {
     if (a.tipo === 'liga') { const alvo = document.elementFromPoint(e.clientX, e.clientY), nb = alvo && alvo.closest('[data-no]');
       if (nb && nb.dataset.no !== a.de) act(async () => { const de = BL.find(b => b.id === a.de), saem = CN.filter(c => c.de_bloco === a.de);
         const tipo = ['condicao', 'decisao'].includes(de.tipo) ? (saem.some(c => c.tipo === 'sim') ? 'nao' : 'sim') : de.tipo === 'divisao' ? 'divisao' : 'segue';
-        if (CN.some(c => c.de_bloco === a.de && c.para_bloco === nb.dataset.no)) throw new Error('Esses dois blocos já estão ligados.');
-        await q(sb.from('estrategia_conexoes').insert({ workspace_id: S.ws, funil_id: f.id, de_bloco: a.de, para_bloco: nb.dataset.no, tipo, peso: tipo === 'divisao' ? 50 : null })); render(); }, 'Blocos ligados'); } };
+        const pa = nb.dataset.no, w = mundoXY(e), ladoPara = cvLadoPerto(P[pa], CV_W * T[pa], alt(pa), w), ld0 = (de.props || {}).lados || {};
+        if (CN.some(c => c.de_bloco === a.de && c.para_bloco === pa && (ld0[c.id] || {}).de === a.lado && (ld0[c.id] || {}).para === ladoPara)) throw new Error('Esses dois blocos já estão ligados por esses lados.');
+        const id = crypto.randomUUID();
+        await q(sb.from('estrategia_conexoes').insert({ id, workspace_id: S.ws, funil_id: f.id, de_bloco: a.de, para_bloco: pa, tipo, peso: tipo === 'divisao' ? 50 : null }));
+        const pz = { ...(de.props || {}), lados: { ...ld0, [id]: { de: a.lado, para: ladoPara } } }; await q(sb.from('estrategia_blocos').update({ props: pz }).eq('id', de.id)); de.props = pz; render(); }, 'Blocos ligados'); } };
   window.addEventListener('pointermove', move); window.addEventListener('pointerup', solta, { once: false });
   const limpa = new MutationObserver(() => { if (!palco.isConnected) { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', solta); limpa.disconnect(); } });
   limpa.observe(document.body, { childList: true, subtree: true });
@@ -10489,13 +10506,17 @@ function cvMapa(el, f, ctx) {
       box.innerHTML = `<div class="cv-pt">Ligação</div><span class="muted">${esc(de ? de.nome : '')} → ${esc(pa ? pa.nome : '')}</span>
         <form id="cvFa"><label>Tipo<select name="tipo"${edita ? '' : ' disabled'}>${CV_CON.map(([k, l]) => `<option value="${k}"${c.tipo === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
         <label data-peso>Percentual (%)<input name="peso" type="number" min="0" max="100" value="${c.peso ?? ''}"${edita ? '' : ' disabled'}></label>
+        <div class="cv-lados">${['de', 'para'].map(k => `<label>${k === 'de' ? 'Sai por' : 'Chega por'}<select name="lado_${k}"${edita ? '' : ' disabled'}>${CV_LADOS.map(([v, l]) => `<option value="${v}"${((((BL.find(b => b.id === c.de_bloco) || {}).props || {}).lados || {})[c.id] || {})[k] === v || (!v && !((((BL.find(b => b.id === c.de_bloco) || {}).props || {}).lados || {})[c.id] || {})[k]) ? ' selected' : ''}>${l}</option>`).join('')}</select></label>`).join('')}</div>
         <label>Rótulo<input name="rotulo" maxlength="80" value="${esc(c.rotulo || '')}"${edita ? '' : ' disabled'}></label>
         <label>Condição<input name="condicao" maxlength="500" value="${esc(c.condicao || '')}" placeholder="Ex.: assistiu 30 min da aula"${edita ? '' : ' disabled'}></label>
         <label>Nota ou decisão<textarea name="nota" rows="3"${edita ? '' : ' disabled'}>${esc(c.nota || '')}</textarea></label>
         ${edita ? '<div class="acts"><button class="btn pri sm" type="submit">Salvar</button><button class="btn bad sm" type="button" id="cvArDel">Excluir ligação</button></div>' : ''}</form>`;
       const fa = $('#cvFa'), vis = () => { fa.querySelector('[data-peso]').style.display = fa.tipo.value === 'divisao' ? '' : 'none'; }; fa.tipo.onchange = vis; vis();
       fa.onsubmit = ev => { ev.preventDefault(); act(async () => { await q(sb.from('estrategia_conexoes').update({ tipo: fa.tipo.value, peso: fa.tipo.value === 'divisao' && fa.peso.value !== '' ? Number(fa.peso.value) : null,
-        rotulo: fa.rotulo.value.trim() || null, condicao: fa.condicao.value.trim() || null, nota: fa.nota.value.trim() || null }).eq('id', c.id)); render(); }, 'Ligação salva'); };
+        rotulo: fa.rotulo.value.trim() || null, condicao: fa.condicao.value.trim() || null, nota: fa.nota.value.trim() || null }).eq('id', c.id));
+        const de = BL.find(b => b.id === c.de_bloco); if (de) { const ld = { ...((de.props || {}).lados || {}) }, nv = { de: fa.lado_de.value || null, para: fa.lado_para.value || null };
+          if (nv.de || nv.para) ld[c.id] = nv; else delete ld[c.id]; const pz = { ...(de.props || {}), lados: ld }; await q(sb.from('estrategia_blocos').update({ props: pz }).eq('id', de.id)); de.props = pz; }
+        render(); }, 'Ligação salva'); };
       if ($('#cvArDel')) $('#cvArDel').onclick = () => act(async () => { await q(sb.from('estrategia_conexoes').delete().eq('id', c.id)); S.cvSel = null; render(); }, 'Ligação excluída');
       return; }
     const b = BL.find(x => x.id === sel.id); if (!b) return; const pr0 = b.props || {}, et = L.filter(e => e.bloco_id === b.id).sort((x, y) => x.ordem - y.ordem);
@@ -16240,6 +16261,31 @@ function cvEdicaoRapida(mundo, BL, CN, L) {
       async d => { await q(sb.from('estrategia_conexoes').update({ tipo: d.tipo, rotulo: (d.rotulo || '').trim() || null, condicao: (d.condicao || '').trim() || null, peso: d.tipo === 'divisao' ? c.peso : null }).eq('id', c.id)); toast('Ligação salva'); }, 'Salvar');
     const r = f.querySelector('[name=rotulo]'); if (r) { r.focus(); r.select(); }
   });
+}
+
+/* ================= v0.196 — Mapa da estratégia: ligar por qualquer lado do bloco =================
+   Pedido da Rebecka (01/11): a bolinha de ligação em cima, embaixo, à esquerda e à direita, para conectar por todos os lados
+   e mais de uma vez se precisar. O lado de saída é a bolinha arrastada; o de chegada é o lado do bloco mais perto de onde soltou.
+   Fica em props.lados do bloco de origem ({ id da ligação: { de, para } }), sem mudança no banco. Ligação sem lado escolhido
+   (as de antes) usa o lado que faz sentido pela posição dos blocos. Os dois lados podem ser trocados no painel da ligação. */
+const CV_DIR = { r: [1, 0], l: [-1, 0], t: [0, -1], b: [0, 1] };
+const CV_LADOS = [['', 'Automático'], ['r', 'Direita'], ['l', 'Esquerda'], ['t', 'Em cima'], ['b', 'Embaixo']];
+/* ponto de ligação de um lado do bloco: direita e esquerda na altura do título (como antes); em cima e embaixo no meio */
+const cvPonto = (p, w, h, yl, l) => l === 'l' ? { x: p.x, y: p.y + yl } : l === 't' ? { x: p.x + w / 2, y: p.y } : l === 'b' ? { x: p.x + w / 2, y: p.y + h } : { x: p.x + w, y: p.y + yl };
+function cvLados(c, BL, P, T, alt) {
+  const g = (((BL.find(b => b.id === c.de_bloco) || {}).props || {}).lados || {})[c.id] || {};
+  if (g.de && g.para) return g;
+  const a = P[c.de_bloco], z = P[c.para_bloco], wa = CV_W * T[c.de_bloco], wz = CV_W * T[c.para_bloco], ha = alt(c.de_bloco), hz = alt(c.para_bloco);
+  let auto;
+  if (z.x >= a.x + wa - 10) auto = { de: 'r', para: 'l' };                                   /* o destino está à direita: como sempre foi */
+  else if (z.x + wz <= a.x + 10) auto = { de: 'l', para: 'r' };                              /* à esquerda */
+  else auto = z.y > a.y + ha / 2 ? { de: 'b', para: 't' } : { de: 't', para: 'b' };          /* em cima ou embaixo */
+  return { de: g.de || auto.de, para: g.para || auto.para };
+}
+/* lado do bloco mais perto do ponto onde a ligação foi solta */
+function cvLadoPerto(p, w, h, pt) {
+  const d = { l: Math.abs(pt.x - p.x), r: Math.abs(pt.x - (p.x + w)), t: Math.abs(pt.y - p.y), b: Math.abs(pt.y - (p.y + h)) };
+  return Object.entries(d).sort((x, y) => x[1] - y[1])[0][0];
 }
 
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;

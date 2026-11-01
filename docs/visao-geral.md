@@ -1,3 +1,6 @@
+## v0.196
+**Ligar blocos por qualquer lado.** No mapa da estratégia, cada bloco tem bolinhas de ligação em cima, embaixo, à esquerda e à direita. A seta sai pelo lado que você puxou e chega pelo lado mais perto de onde soltou; dá para ligar os mesmos blocos mais de uma vez e trocar os lados depois no painel da ligação.
+
 ## v0.195
 **Mapa da estratégia mais completo e mais fácil de usar.** Order bump e downsell entraram na biblioteca de blocos, o mapa abre em tela cheia e o nome de qualquer bloco (inclusive a Condição) ou o rótulo de uma seta se edita com dois cliques. O menu RevOps agora se chama **Customer Success**.
 

@@ -1,5 +1,9 @@
 
 
+## Mapa: ligar por qualquer lado (v0.196)
+- `g196.js`: `CV_DIR`, `CV_LADOS`, `cvPonto` (direita e esquerda na altura do título, em cima e embaixo no meio), `cvLados` (o guardado ou o automático pela posição), `cvLadoPerto`.
+- Teste `t196_canvas_lados.py` (banco de mentira): quatro bolinhas por bloco; ligação antiga com destino embaixo sai por baixo; arrastar de baixo até o topo liga baixo → cima; segunda ligação entre os mesmos blocos por outros lados; direita → esquerda; painel troca o lado de chegada. OK. t165 a t172 e t195 sem falhas.
+
 ## Mapa da estratégia e Customer Success (v0.195)
 - `g195.js`: `cvTelaCheia` (classe `cv-cheia`, trava a rolagem da página, Esc fecha, lembra em `S.cvCheia`), `cvEdicaoRapida` (dois cliques no nome: campo no próprio bloco, checa nome repetido, renomeia métricas; dois cliques na seta: modal de rótulo).
 - Teste `t195_canvas_bump_downsell.py` (banco de mentira): menu Customer Success, biblioteca com Order bump e Downsell, métricas criadas, desenho, zoom com percentual, tela cheia e Esc, editar nome com Enter e cancelar com Esc, Condição renomeada, rótulo da seta. OK. t165 a t172 e t163 sem falhas.

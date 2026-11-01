@@ -1,5 +1,15 @@
 
 
+## v0.196 — Mapa: ligar por qualquer lado do bloco
+**Pedido da Rebecka (01/11)**: a bolinha de ligação em cima, embaixo, à esquerda e à direita, para conectar por todos os lados e mais de uma vez se precisar.
+Decisões:
+- Cada bloco tem quatro bolinhas. A da direita fica sempre à vista (como antes); as outras aparecem ao passar o mouse, com o bloco selecionado ou durante uma ligação.
+- A ligação sai pelo lado da bolinha arrastada e chega pelo lado do outro bloco mais perto de onde ela foi solta.
+- Os mesmos dois blocos podem ter mais de uma ligação, desde que por lados diferentes.
+- No painel da ligação, **Sai por** e **Chega por** (Automático, Direita, Esquerda, Em cima, Embaixo) trocam os lados depois.
+- Ligações de antes (sem lado escolhido) seguem a posição dos blocos: destino à direita, sai pela direita e chega pela esquerda (como sempre); destino à esquerda, o contrário; destino embaixo ou em cima, sai e chega pelo meio de baixo ou de cima.
+- Sem mudança no banco: o lado fica em `props.lados` do bloco de origem ({ id da ligação: { de, para } }).
+
 ## v0.195 — Mapa da estratégia: order bump, downsell, tela cheia, edição rápida; menu Customer Success
 **Pedido da Rebecka (31/10)**: no mapa (Canvas) da estratégia faltavam downsell e order bump, era ruim aumentar a tela e ruim mudar o nome da condição. E o menu RevOps passa a se chamar Customer Success.
 Decisões:

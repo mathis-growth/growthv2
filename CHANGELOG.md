@@ -1,3 +1,9 @@
+## v0.196 — Mapa: ligar por qualquer lado do bloco (01/11/2026)
+- Bolinha de ligação nos quatro lados do bloco; a seta sai pelo lado puxado e chega pelo lado mais perto de onde foi solta.
+- Mais de uma ligação entre os mesmos blocos, por lados diferentes; **Sai por** e **Chega por** no painel da ligação.
+- Ligações antigas seguem a posição dos blocos (destino embaixo: sai embaixo, chega em cima).
+- Teste: `tests/tela/t196_canvas_lados.py` (OK); t165 a t172 e t195 sem falhas. Sem mudança no banco.
+
 ## v0.195 — Mapa da estratégia (order bump, downsell, tela cheia, edição rápida) e menu Customer Success (01/11/2026)
 - Mapa (Canvas) da estratégia: blocos **Order bump** e **Downsell** com métricas próprias; **Tela cheia** (Esc fecha); zoom pelo centro com o percentual; alça de tamanho maior.
 - **Dois cliques** no nome de um bloco (ex.: Condição) editam ali mesmo; dois cliques numa seta editam o rótulo e a condição.

@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.195 (mapa da estratégia e Customer Success).
+**Última atualização:** 01/11/2026, versão 0.196 (ligações por qualquer lado no mapa).
+
+**v0.196 · Ligações por qualquer lado.** No mapa da estratégia, cada bloco tem bolinhas de ligação nos quatro lados.
 
 **v0.195 · Mapa da estratégia e Customer Success.** Order bump e downsell no mapa, tela cheia, nome do bloco e rótulo da seta editados com dois cliques. O menu RevOps passa a se chamar Customer Success.
 
@@ -591,4 +593,5 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - campos de formulário com o nome em negrito e a caixa bem marcada.
 - **01/11:**
   - mapa da estratégia com order bump e downsell, tela cheia e edição com dois cliques;
-  - menu RevOps passa a se chamar Customer Success.
+  - menu RevOps passa a se chamar Customer Success;
+  - bolinha de ligação nos quatro lados dos blocos do mapa, com mais de uma ligação se precisar.

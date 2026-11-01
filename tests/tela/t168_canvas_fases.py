@@ -55,7 +55,7 @@ with sync_playwright() as p:
     pg.mouse.move(bx['x'] + 5, bx['y'] + 5); pg.mouse.down(); pg.mouse.move(bx['x'] + 125, bx['y'] + 45, steps=8); pg.mouse.up(); pg.wait_for_timeout(800)
     chk(ev(pg, "document.querySelector('[data-banda=retencao]').style.left") != w0, 'mover o bloco leva a faixa junto')
     # ligar um bloco de captação a um de vendas (a ligação vale entre fases)
-    pn = pg.locator('[data-pino=b2]').bounding_box(); al = pg.locator('[data-no=b5] .cv-nm').bounding_box()
+    pn = pg.locator('[data-pino=b2][data-lado=r]').bounding_box(); al = pg.locator('[data-no=b5] .cv-nm').bounding_box()
     pg.mouse.move(pn['x'] + 4, pn['y'] + 4); pg.mouse.down(); pg.mouse.move(al['x'] + 10, al['y'] + 5, steps=8); pg.mouse.up(); pg.wait_for_timeout(1000)
     chk(any(c['de_bloco'] == 'b2' and c['para_bloco'] == 'b5' for c in ev(pg, "__D.estrategia_conexoes")), 'liga Landing page (captação) ao Formulário (vendas)')
     novo = [c for c in ev(pg, "__D.estrategia_conexoes") if c['de_bloco'] == 'b2' and c['para_bloco'] == 'b5']

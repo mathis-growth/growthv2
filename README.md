@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.196 | 01/11/2026 | **Mapa da estratégia**: bolinha de ligação nos quatro lados do bloco, mais de uma ligação entre os mesmos blocos e escolha do lado no painel. | Só tela |
 | 0.195 | 01/11/2026 | **Mapa da estratégia**: order bump, downsell, tela cheia e edição com dois cliques; menu **RevOps → Customer Success**. | Só tela |
 | 0.194 | 31/10/2026 | **Campos de formulário mais legíveis**: nome do campo em negrito, caixa com borda visível, exemplo em itálico. | Só tela |
 | 0.193 | 31/10/2026 | **Pesquisa na campanha**: passo 4 na nova campanha (usar pesquisa, qual, onde entra), código para a página de obrigado e leads da campanha na fila de envio. | Só tela |

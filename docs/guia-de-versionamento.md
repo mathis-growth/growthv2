@@ -1,3 +1,6 @@
+## v0.196
+- index.html: aplicado sobre a v0.195 (`aplica196.py`; novos `g196.js` e `g196.css`). Quatro `.cv-pino` com `data-lado`; `seta` desenha pelos lados (`cvLados`, `cvPonto`, `CV_DIR`); `cvLadoPerto` na hora de soltar; painel da ligação com `lado_de` e `lado_para`; setas redesenhadas com a altura real dos blocos. Teste novo `tests/tela/t196_canvas_lados.py`; t165 e t168 ajustados (bolinha da direita).
+
 ## v0.195
 - index.html: aplicado sobre a v0.194 (`aplica195.py`; novos `g195.js` e `g195.css`). `EST_BLOCOS.order_bump` e `.downsell`, `CV_GRUPOS`, `cvTipoArte`; barra do mapa com `#cvZp` e `#cvCheia` (`cvTelaCheia`); zoom pelo centro; `cvEdicaoRapida` (nome do bloco e ligação). Menu: grupo `Customer Success`, `MOD_GRUPO` com as duas chaves, ícone. Teste novo `tests/tela/t195_canvas_bump_downsell.py`.
 

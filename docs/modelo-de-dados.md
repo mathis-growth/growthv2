@@ -1,3 +1,6 @@
+## v0.196
+Sem mudança no banco. `estrategia_blocos.props.lados` = { id da ligação: { de: r|l|t|b, para: r|l|t|b } }, no bloco de onde a ligação sai.
+
 ## v0.195
 Sem mudança no banco. Tipos novos de bloco (texto livre em `estrategia_blocos.tipo`): `order_bump`, `downsell`.
 
