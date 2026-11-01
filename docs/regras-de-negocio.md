@@ -1,3 +1,7 @@
+## v0.203
+- Grupo de vendas à mostra = uma plataforma marcada (Hotmart, Kiwify, Eduzz, Hubla) para cada; o genérico, quando há Contrato direto, Loja própria, Outro ou nenhuma plataforma.
+- Grupo escondido não é cobrado nem gravado na resposta.
+
 ## v0.202
 - Entrada do cliente: cada grupo de arquivo só fica respondido com um arquivo enviado ou "Não tenho".
 

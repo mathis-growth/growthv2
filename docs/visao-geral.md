@@ -1,3 +1,6 @@
+## v0.203
+**Vendas por plataforma.** Na Entrada do cliente, o pedido de vendas segue o que o cliente marcou: um relatório da Hotmart, da Kiwify, da Eduzz ou da Hubla para cada uma, do jeito que a plataforma exporta.
+
 ## v0.202
 **Entrada do cliente, sem adiar.** Cada grupo de arquivos é enviar agora ou dizer que não tem.
 

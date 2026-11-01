@@ -1,3 +1,6 @@
+## v0.203
+- index.html: aplicado sobre a v0.200 (`aplica203.py`, `g201.js`): `ENT_PLAT`, `entPlataformas`; `data-se` nos grupos; `config.onde` (ligado à pergunta "Onde vende?" ao criar do modelo); cobrança e leitura ignoram grupos escondidos; tela da equipe com os rótulos das plataformas. `t201_entrada_cliente.py` ampliado.
+
 ## v0.202
 - index.html: aplicado sobre a v0.200 (`aplica202.py`, `g201.js`): `config.sem_depois` na pergunta de documentos tira "Mando depois" e muda a cobrança em `pfValidaG1`. `t201_entrada_cliente.py` com 3 verificações a mais.
 

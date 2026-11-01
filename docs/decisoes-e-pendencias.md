@@ -1,5 +1,13 @@
 
 
+## v0.203 — Entrada do cliente: vendas por plataforma
+**Pedido da Rebecka (01/11)**: os clientes usam Hotmart, Eduzz, Kiwify e, em breve, Hubla, às vezes mais de uma. A planilha de vendas deve seguir a plataforma que o cliente marca, e o de-para fica com a equipe.
+Decisões:
+- "Onde vende?" ganhou **Hubla**. No checklist, aparece **um grupo "Vendas da <plataforma>" para cada plataforma marcada**, pedindo o relatório exportado do jeito que sai (todas as vendas, com reembolsos e cancelamentos), sem planilha-modelo: o de-para das colunas é feito na importação (etapa 2).
+- **"Vendas fora das plataformas"** (com planilha-modelo) aparece quando o cliente marca Contrato direto, Loja própria ou Outro, ou quando não marca nenhuma plataforma.
+- Só os grupos à mostra são cobrados e gravados.
+- **Hipótese a confirmar**: os nomes das colunas de cada relatório (Hotmart, Kiwify, Eduzz, Hubla) não foram confirmados em fonte oficial; o de-para da importação vai reconhecer por sinônimos e deixar ligar à mão, e fica afinado com o primeiro arquivo real de cada plataforma.
+
 ## v0.202 — Entrada do cliente sem "Mando depois"
 **Pedido da Rebecka (01/11)**: nos grupos de arquivos da Entrada do cliente, "Mando depois" não pode ser opção (o cliente não manda). Agora cada grupo é **enviar o arquivo** ou **"Não tenho"**; a cobrança e o texto da pergunta dizem o mesmo. O Diagnóstico 360° continua com "Mando depois". Pesquisa já criada com o modelo da v0.201 precisa ser criada de novo para pegar a mudança (a configuração fica gravada na pergunta).
 

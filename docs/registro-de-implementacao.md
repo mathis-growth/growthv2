@@ -1,5 +1,8 @@
 
 
+## Vendas por plataforma na Entrada do cliente (v0.203)
+- Teste `t201_entrada_cliente.py` (24 verificações, 0 falhas): 9 grupos no modelo; ligação com "Onde vende?" (com Hubla); sem plataforma, o genérico; Hotmart + Kiwify, um grupo para cada sem o genérico; texto do relatório sem mexer; Contrato direto traz o genérico de volta; cobra só os grupos à mostra; grava só os à mostra. `t177` mantém as 2 falhas antigas do Diagnóstico Growth (anteriores à v0.201).
+
 ## Entrada do cliente sem "Mando depois" (v0.202)
 - Teste `t201_entrada_cliente.py` (15 verificações, 0 falhas): config e texto sem "Mando depois"; no formulário, só "Não tenho" ao lado de Enviar arquivo; a cobrança pede o arquivo ou "Não tenho".
 

@@ -15665,8 +15665,11 @@ function entPeriodo(h = hoje()) {
   if (m === 1) return { de: mes(y - 1, 1), ate: mes(y - 1, 12), txt: `do ano passado inteiro (de ${mes(y - 1, 1)} a ${mes(y - 1, 12)})` };
   return { de: mes(y - 1, 1), ate: mes(y, Math.max(1, m - 1)), txt: `do ano passado inteiro e deste ano até agora (de ${mes(y - 1, 1)} a ${mes(y, Math.max(1, m - 1))})` };
 }
-const ENT_CATS = () => [
-  { k: 'vendas', l: 'Vendas', d: 'Todas as vendas do período, uma por linha: data, produto, valor, status (aprovada, reembolsada, cancelada), plataforma e o e-mail do cliente. Se vende pela Hotmart, Kiwify ou Eduzz, pode mandar o relatório de vendas que a plataforma exporta, do jeito que sai.', ...ENT_COLS.vendas },
+/* v0.203: um grupo de vendas por plataforma marcada em "Onde vende?" (o relatório exportado, do jeito que sai: o de-para é nosso) */
+const ENT_PLAT = ['Hotmart', 'Kiwify', 'Eduzz', 'Hubla'].map(n => ({ k: 'vendas_' + n.toLowerCase(), l: 'Vendas da ' + n, se: [n],
+  d: `No painel da ${n}, exporte o relatório de vendas do período (CSV ou Excel), do jeito que sai, com todas as vendas, inclusive reembolsos e cancelamentos. Não precisa arrumar nada: nós fazemos o de-para das colunas.` }));
+const ENT_CATS = () => [...ENT_PLAT,
+  { k: 'vendas', l: 'Vendas fora das plataformas', se: ['Contrato direto', 'Loja própria', 'Outro', '_nenhuma'], d: 'As vendas que não passam pelas plataformas (contrato direto, loja própria, outra), uma por linha: data, produto, valor, status (aprovada, reembolsada, cancelada) e o e-mail do cliente. Use a planilha-modelo.', ...ENT_COLS.vendas },
   { k: 'alunos', l: 'Clientes', d: 'Quem já comprou: nome, e-mail, telefone, produto, quando entrou e a situação hoje (ativo, inativo, cancelado). A lista de alunos da área de membros também serve.', ...ENT_COLS.alunos },
   { k: 'crm', l: 'Leads', d: 'Os leads do período: nome, e-mail, telefone, data de entrada e de onde vieram (origem ou UTM). Pode ser a exportação da ferramenta de e-mail, do CRM ou a planilha do lançamento.', ...ENT_COLS.crm },
   { k: 'marketing', l: 'Investimento em anúncios', d: 'Quanto investiu por mês em cada canal (Meta Ads, Google Ads…). O relatório do gerenciador de anúncios por mês também serve.', ...ENT_COLS.marketing },
@@ -15678,7 +15681,7 @@ function entModeloLink(c) {
 const PQ_ENTRADA = () => { const P = entPeriodo(); return [
   { s: 'Sobre o seu negócio', t: 'Nome da empresa', tp: 'texto' },
   { s: 'Sobre o seu negócio', t: 'Como você vende? (pode marcar mais de um)', tp: 'multipla', op: ['Lançamento', 'Perpétuo', 'Assinatura ou recorrência', 'Mentoria ou high ticket', 'Comercial ou SDR', 'Eventos', 'Outro'] },
-  { s: 'Sobre o seu negócio', t: 'Onde vende? (pode marcar mais de um)', tp: 'multipla', op: ['Hotmart', 'Kiwify', 'Eduzz', 'Contrato direto', 'Loja própria', 'Outro'] },
+  { k: 'onde', s: 'Sobre o seu negócio', t: 'Onde vende? (pode marcar mais de um)', tp: 'multipla', op: ['Hotmart', 'Kiwify', 'Eduzz', 'Hubla', 'Contrato direto', 'Loja própria', 'Outro'] },
   { s: 'Seus números, do seu jeito', t: 'Faturamento médio por mês', tp: 'moeda', cfg: { naosei: true } },
   { s: 'Seus números, do seu jeito', t: 'Faturamento dos últimos 6 meses (o que souber)', tp: 'meses', o: false, cfg: { meses: 6 } },
   { s: 'Seus números, do seu jeito', t: 'Ticket médio (valor médio de cada venda)', tp: 'moeda', cfg: { naosei: true } },
@@ -15688,9 +15691,17 @@ const PQ_ENTRADA = () => { const P = entPeriodo(); return [
   { s: 'Seus números, do seu jeito', t: 'Regime tributário da empresa', tp: 'escolha', o: false, op: ['MEI', 'Simples Nacional', 'Lucro Presumido', 'Lucro Real', 'Não sei'] },
   { s: 'O que você espera', t: 'O que você espera deste trabalho?', tp: 'texto' },
   { s: 'O que você espera', t: 'Quanto quer faturar nos próximos 12 meses?', tp: 'moeda', o: false, cfg: { naosei: true } },
-  { s: 'Seus arquivos', t: `Precisamos dos arquivos ${P.txt}. Para cada grupo, envie o arquivo agora ou marque "Não tenho". Se ajudar, baixe a planilha-modelo e preencha.`, tp: 'documentos', cfg: { categorias: ENT_CATS(), upload: true, sem_depois: true, aviso: DG_AVISO, periodo: P } }]; };
+  { s: 'Seus arquivos', t: `Precisamos dos arquivos ${P.txt}. As vendas aparecem por plataforma, conforme o que você marcou em "Onde vende". Para cada grupo, envie o arquivo agora ou marque "Não tenho". Se ajudar, baixe a planilha-modelo e preencha.`, tp: 'documentos', cfg: { categorias: ENT_CATS(), upload: true, sem_depois: true, onde: 'onde', aviso: DG_AVISO, periodo: P } }]; };
 PQ_MODELOS.entrada_cliente = { nome: 'Entrada do cliente (números e arquivos)', tipo: 'diagnostico', publico: 'cliente', gatilho: 'manual', get objetos() { return PQ_ENTRADA(); },
   descricao: 'Bem-vindo! Estas perguntas e arquivos são o ponto de partida do nosso trabalho: com eles montamos o seu histórico, o diagnóstico e o planejamento do ano. Leva uns 10 minutos (sem contar os arquivos) e fica salvo: pode parar e voltar pelo mesmo link.' };
+
+/* mostra só os grupos de vendas das plataformas marcadas em "Onde vende?" */
+function entPlataformas(f, d, valores) {
+  (d.perguntas || []).filter(x => x.tipo === 'documentos' && (x.config || {}).onde).forEach(x => {
+    const vs = valores(x.config.onde), plat = ENT_PLAT.map(c => c.se[0]), nenhuma = !vs.some(v => plat.includes(v));
+    f.querySelectorAll(`.pf-q[data-q="${x.id}"] .pf-doc[data-se]`).forEach(el => { const se = JSON.parse(el.dataset.se); el.hidden = !(se.some(v => vs.includes(v)) || (nenhuma && se.includes('_nenhuma'))); });
+  });
+}
 
 /* rascunho do link individual: guarda o estado dos campos (não as respostas finais) para continuar depois */
 function pfRascChave(i) {
@@ -15782,7 +15793,7 @@ function pfCampoG1(x, d) {
       : `<input class="pf-lc" ${c.t === 'texto' ? 'type="text" maxlength="300"' : 'type="number" step="0.01" min="0" inputmode="decimal"'}>`;
     const linha = () => `<div class="pf-lr">${cols.map(c => `<label><span>${esc(c.l)}</span>${campoL(c)}</label>`).join('')}<button type="button" class="pf-b2 pf-lx" title="Tirar esta linha">×</button></div>`;
     return `<div class="pf-lista" data-cols='${esc(JSON.stringify(cols.map(c => c.k)))}'>${linha()}</div><button type="button" class="pf-b2 pf-lmais" data-tpl='${esc(linha())}'>+ Adicionar linha</button>`; }
-  if (x.tipo === 'documentos' && cfg.upload) return `${(cfg.categorias || []).map(c => `<div class="pf-doc" data-g="${esc(c.k)}"><b>${esc(c.l)}</b>${c.d ? `<small>${esc(c.d)}</small>` : ''}${c.cols ? entModeloLink(c) : ''}
+  if (x.tipo === 'documentos' && cfg.upload) return `${(cfg.categorias || []).map(c => `<div class="pf-doc" data-g="${esc(c.k)}"${c.se ? ` data-se='${esc(JSON.stringify(c.se))}'` : ''}><b>${esc(c.l)}</b>${c.d ? `<small>${esc(c.d)}</small>` : ''}${c.cols ? entModeloLink(c) : ''}
       <div class="pf-ops"><label class="pf-b pf-b2 pf-up">Enviar arquivo<input type="file" multiple data-up="${esc(c.k)}" accept="${DG_EXT.map(z => '.' + z).join(',')}"></label>
         ${[['depois', 'Mando depois'], ['nao', 'Não tenho']].filter(([k]) => !(cfg.sem_depois && k === 'depois')).map(([k, l]) => `<label class="pf-op"><input type="radio" name="${n}_${c.k}" value="${k}"><span>${l}</span></label>`).join('')}
         <input type="radio" name="${n}_${c.k}" value="sim" class="pf-upsim" hidden tabindex="-1" aria-hidden="true"></div><ul class="pf-arqs"></ul></div>`).join('')}${cfg.aviso ? `<p class="pf-aviso2">${esc(cfg.aviso)}</p>` : ''}`;
@@ -15809,6 +15820,7 @@ function pfLigaG1(f, d) {
   const porK = Object.fromEntries((d.perguntas || []).map(x => [x.id, x]));
   const valores = id => { const q = porK[id]; if (!q) return []; return [...f.querySelectorAll(`[name="q_${id}"]`)].filter(i => (i.type === 'radio' || i.type === 'checkbox') ? i.checked : i.value).map(i => i.value); };
   const atualiza = () => {
+    entPlataformas(f, d, valores);
     f.querySelectorAll('.pf-q[data-cond]').forEach(fs => { const c = JSON.parse(fs.dataset.cond); const vs = valores(c.pergunta); fs.hidden = !vs.some(v => (c.valores || []).includes(v)); });
     f.querySelectorAll('.pf-q[data-tipo="metricas"]').forEach(fs => { const x = porK[fs.dataset.q], cfg = (x && x.config) || {};
       const mods = cfg.modelo ? valores(cfg.modelo).map(v => cfg.modelo_mapa ? cfg.modelo_mapa[v] : MOD_MAPA[v]).filter(Boolean) : [];
@@ -15834,7 +15846,7 @@ function pfValidaG1(fs, x) {
   if (x.tipo === 'meses') return x.obrigatoria && ![...fs.querySelectorAll('[data-mes]')].some(i => i.value !== '') ? 'Preencha pelo menos um mês em: ' : '';
   if (x.tipo === 'lista') return x.obrigatoria && ![...fs.querySelectorAll('.pf-lc')].some(i => i.value !== '') ? 'Preencha pelo menos uma linha em: ' : '';
   if (x.tipo === 'documentos' && fs.querySelector('.pf-up.envia')) return 'Espere terminar o envio dos arquivos em: ';
-  if (x.tipo === 'documentos') return x.obrigatoria && (cfg.categorias || []).some(c => !fs.querySelector(`[name="${n}_${c.k}"]:checked`)) ? (cfg.upload ? (cfg.sem_depois ? 'Para cada grupo, envie o arquivo ou marque "Não tenho" em: ' : 'Para cada grupo, envie um arquivo ou marque "Mando depois" ou "Não tenho" em: ') : 'Marque cada grupo de arquivos em: ') : '';
+  if (x.tipo === 'documentos') return x.obrigatoria && (cfg.categorias || []).some(c => !fs.querySelector(`[name="${n}_${c.k}"]:checked`) && !(fs.querySelector(`.pf-doc[data-g="${c.k}"]`) || {}).hidden) ? (cfg.upload ? (cfg.sem_depois ? 'Para cada grupo, envie o arquivo ou marque "Não tenho" em: ' : 'Para cada grupo, envie um arquivo ou marque "Mando depois" ou "Não tenho" em: ') : 'Marque cada grupo de arquivos em: ') : '';
   if (x.tipo === 'metricas') {
     const vis = [...fs.querySelectorAll('.pf-m:not([hidden])')];
     const falta = vis.find(m => !m.querySelector('input[type=radio]:checked'));
@@ -15853,7 +15865,7 @@ function pfLeG1(fs, x) {
   if (x.tipo === 'lista') { const ks = JSON.parse(fs.querySelector('.pf-lista').dataset.cols), cols = cfg.colunas || [];
     const L = [...fs.querySelectorAll('.pf-lr')].map(r => { const o = {}; [...r.querySelectorAll('.pf-lc')].forEach((i, j) => { if (i.value !== '') o[ks[j]] = (cols[j] && ['numero', 'moeda'].includes(cols[j].t)) ? Number(i.value) : i.value.trim(); }); return o; }).filter(o => Object.keys(o).length);
     return L.length ? L : null; }
-  if (x.tipo === 'documentos') { const o = {}; (cfg.categorias || []).forEach(c => { const r = fs.querySelector(`[name="${n}_${c.k}"]:checked`); if (r) o[c.k] = r.value; }); return Object.keys(o).length ? o : null; }
+  if (x.tipo === 'documentos') { const o = {}; (cfg.categorias || []).forEach(c => { const r = fs.querySelector(`[name="${n}_${c.k}"]:checked`); if (r && !(r.closest('.pf-doc') || {}).hidden) o[c.k] = r.value; }); return Object.keys(o).length ? o : null; }
   if (x.tipo === 'metricas') { const o = {};
     fs.querySelectorAll('.pf-m:not([hidden])').forEach(m => { const st = m.querySelector('input[type=radio]:checked'); if (!st) return; const r = { status: st.value };
       const box = m.querySelector(['regular', 'ocasional'].includes(st.value) ? '.pf-md' : '.pf-mn');
@@ -15874,7 +15886,7 @@ function pqVerResposta(perg, its, titulo) {
       return `<b>${tem.length} acompanham</b> · ${nao.length} não acompanham<br>${tem.map(([k, v]) => `<details><summary>${esc(k)} · ${esc((MET_ST.find(s => s[0] === v.status) || [0, v.status])[1])}${v.decide ? ' · <b>usada para decidir</b>' : ''}</summary><ul>${MET_CAMPOS.filter(c => v[c[0]] != null && c[0] !== 'decide').map(c => `<li><b>${esc(c[1])}:</b> ${esc(Array.isArray(v[c[0]]) ? v[c[0]].join(', ') : String(v[c[0]]))}</li>`).join('')}</ul></details>`).join('')}${nao.length ? `<small class="muted">Não acompanham: ${nao.map(([k, v]) => esc(k) + (v.tem_dados ? ' (dados: ' + esc(v.tem_dados) + ')' : '')).join(', ')}</small>` : ''}`; }
     if (x.tipo === 'meses' && j) return Object.entries(j).map(([k, v]) => `${esc(k)}: <b>${brl(v)}</b>`).join(' · ');
     if (x.tipo === 'lista' && j) return `<ul>${j.map(o => `<li>${Object.values(o).map(v => esc(String(v))).join(' · ')}</li>`).join('')}</ul>`;
-    if (x.tipo === 'documentos' && j) return Object.entries(j).map(([k, v]) => `${esc((DOC_CATS.find(c => c.k === k) || { l: k }).l)}: <b>${esc((DOC_ST.find(s => s[0] === v) || [0, v])[1])}</b>`).join('<br>');
+    if (x.tipo === 'documentos' && j) return Object.entries(j).map(([k, v]) => `${esc((DOC_CATS.concat(ENT_PLAT).find(c => c.k === k) || { l: k }).l)}: <b>${esc((DOC_ST.find(s => s[0] === v) || [0, v])[1])}</b>`).join('<br>');
     if (x.tipo === 'moeda') return brl(L[0].valor_num);
     return L.map(i => esc(String(i.valor_texto ?? i.valor_num))).join(', '); };
   let sec = '';
@@ -15967,9 +15979,9 @@ async function dgReuniao(m, p, perg) {
     let i = 0;
     return secs.map(s => { const qs = L.filter(x => x.s === s), n = qs.filter(x => { const v = RT[x.t]; return Array.isArray(v) ? v.length : String(v ?? '').trim(); }).length;
       return `<details class="dg-sec"${S.dgAberta === s ? ' open' : ''} data-dgs="${esc(s)}"><summary><b>${esc(s)}</b> <span class="pill ${n === qs.length ? 'good' : n ? 'warn' : ''}">${n} de ${qs.length}</span></summary><div class="dg-rl">${qs.map(x => fld(x, i++)).join('')}</div></details>`; }).join(''); };
-  const docs = () => { const G = DOC_CATS.map(c => ({ ...c, st: DOCR[c.k], fs: arqs.filter(a => a.grupo === c.k) }));
+  const docs = () => { const G = DOC_CATS.concat(ENT_PLAT.filter(c => DOCR[c.k] || arqs.some(a => a.grupo === c.k))).map(c => ({ ...c, st: DOCR[c.k], fs: arqs.filter(a => a.grupo === c.k) }));
     const rot = { sim: ['good', 'Tem'], parte: ['warn', 'Tem em parte'], depois: ['warn', 'Vai mandar depois'], nao: ['bad', 'Não tem'] };
-    const extra = arqs.filter(a => !DOC_CATS.some(c => c.k === a.grupo)), L = D.leitura;
+    const extra = arqs.filter(a => !DOC_CATS.concat(ENT_PLAT).some(c => c.k === a.grupo)), L = D.leitura;
     const cor = { ok: 'good', parcial: 'warn', falta: 'bad' }, tx = { ok: 'Tem', parcial: 'Parcial', falta: 'Falta' };
     return `<div class="tw"><table><thead><tr><th>Grupo</th><th>O cliente disse</th><th>Arquivos</th></tr></thead><tbody>${G.concat(extra.length ? [{ l: 'Outros', fs: extra }] : []).map(g => `<tr><td>${esc(g.l)}</td>
       <td>${g.fs.length ? '<span class="pill good">Recebido</span>' : g.st ? `<span class="pill ${rot[g.st][0]}">${rot[g.st][1]}</span>` : '<span class="muted">sem resposta</span>'}</td>
@@ -16189,7 +16201,7 @@ async function cpqDoModelo(k, nomeCamp) {
   if (md.objetos) {
     const pid = crypto.randomUUID(), ids = {}; md.objetos.forEach((x, i) => { ids[x.k || ('_' + i)] = crypto.randomUUID(); });
     await q(sb.from('pesquisas').insert({ id: pid, workspace_id: S.ws, nome, tipo: md.tipo, publico: md.publico, gatilho: md.gatilho, descricao: md.descricao, ativa: false }));
-    await q(sb.from('pesquisa_perguntas').insert(md.objetos.map((x, i) => { const cfg = { ...(x.cfg || {}) }; if (cfg.modelo) cfg.modelo = ids[cfg.modelo];
+    await q(sb.from('pesquisa_perguntas').insert(md.objetos.map((x, i) => { const cfg = { ...(x.cfg || {}) }; if (cfg.modelo) cfg.modelo = ids[cfg.modelo]; if (cfg.onde) cfg.onde = ids[cfg.onde];
       return { id: ids[x.k || ('_' + i)], workspace_id: S.ws, pesquisa_id: pid, ordem: i + 1, texto: x.t, tipo: x.tp, opcoes: x.op || [], papel: 'livre', obrigatoria: x.o !== false, secao: x.s, config: cfg,
         condicao: x.c ? { pergunta: ids[x.c.k], valores: x.c.v } : null }; })));
     return pid;
@@ -16760,7 +16772,7 @@ function criarDeModelo(k) {
   if (md.objetos) return modal('Criar do modelo', `<p>Vai criar <b>${esc(md.nome)}</b> com ${md.objetos.length} perguntas em ${new Set(md.objetos.map(x => x.s)).size} passos, para <b>cliente</b>. Ela nasce desativada: revise, ative e mande pelo link individual de cada cliente (aba Fila de envio). O link vale 30 dias.</p>`, async () => {
     const pid = crypto.randomUUID(), ids = {}; md.objetos.forEach((x, i) => { ids[x.k || ('_' + i)] = crypto.randomUUID(); });
     await q(sb.from('pesquisas').insert({ id: pid, workspace_id: S.ws, nome: md.nome, tipo: md.tipo, publico: md.publico, gatilho: md.gatilho, descricao: md.descricao, ativa: false }));
-    await q(sb.from('pesquisa_perguntas').insert(md.objetos.map((x, i) => { const cfg = { ...(x.cfg || {}) }; if (cfg.modelo) cfg.modelo = ids[cfg.modelo];
+    await q(sb.from('pesquisa_perguntas').insert(md.objetos.map((x, i) => { const cfg = { ...(x.cfg || {}) }; if (cfg.modelo) cfg.modelo = ids[cfg.modelo]; if (cfg.onde) cfg.onde = ids[cfg.onde];
       return { id: ids[x.k || ('_' + i)], workspace_id: S.ws, pesquisa_id: pid, ordem: i + 1, texto: x.t, tipo: x.tp, opcoes: x.op || [], papel: 'livre', obrigatoria: x.o !== false, secao: x.s, config: cfg,
         condicao: x.c ? { pergunta: ids[x.c.k], valores: x.c.v } : null }; })));
     S.pqSel = pid; S.pqTab = 'perguntas'; toast('Diagnóstico criado, desativado. Revise e ative.');

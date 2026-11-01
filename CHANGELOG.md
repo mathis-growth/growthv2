@@ -1,3 +1,8 @@
+## v0.203 — Entrada do cliente: vendas por plataforma (01/11/2026)
+- "Onde vende?" com Hubla; um grupo de vendas para cada plataforma marcada (relatório do jeito que sai) e "Vendas fora das plataformas" com planilha-modelo.
+- Só os grupos à mostra são cobrados e gravados.
+- Teste: `t201_entrada_cliente.py` (0 falhas).
+
 ## v0.202 — Entrada do cliente sem "Mando depois" (01/11/2026)
 - Cada grupo de arquivos: enviar o arquivo ou "Não tenho". O Diagnóstico 360° não muda.
 - Teste: `t201_entrada_cliente.py` (0 falhas).
