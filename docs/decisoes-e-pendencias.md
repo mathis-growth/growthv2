@@ -1,5 +1,8 @@
 
 
+## v0.202 — Entrada do cliente sem "Mando depois"
+**Pedido da Rebecka (01/11)**: nos grupos de arquivos da Entrada do cliente, "Mando depois" não pode ser opção (o cliente não manda). Agora cada grupo é **enviar o arquivo** ou **"Não tenho"**; a cobrança e o texto da pergunta dizem o mesmo. O Diagnóstico 360° continua com "Mando depois". Pesquisa já criada com o modelo da v0.201 precisa ser criada de novo para pegar a mudança (a configuração fica gravada na pergunta).
+
 ## v0.201 — Entrada do cliente (etapa 1 do plano de primeira carga)
 **Pedido da Rebecka (01/11)**: um "board inicial" para o cliente que está entrando responder a visão dele (ticket, faturamento…) e mandar as planilhas de clientes, leads e vendas, para gerar o diagnóstico e o planejamento. O Diagnóstico 360° ficou grande demais para isso. Plano aprovado em 5 etapas: 1 Entrada do cliente; 2 Importar histórico; 3 Histórico na ficha; 4 modo "só marketing" (redefinido por ela: sem financeiro, administrativo e custos; só marketing, vendas, atendimento e CS); 5 comparar os anos.
 Decisões da etapa 1:

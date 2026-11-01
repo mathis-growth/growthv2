@@ -1,5 +1,5 @@
 import json, os, tempfile, urllib.parse
-# Teste de tela da v0.201: modelo "Entrada do cliente (números e arquivos)" — formulário curto (4 partes), a visão do cliente
+# Teste de tela da v0.201/v0.202 (sem "Mando depois": envia o arquivo ou marca "Não tenho"): modelo "Entrada do cliente (números e arquivos)" — formulário curto (4 partes), a visão do cliente
 # (faturamento, ticket, clientes, investimento, custo, regime), o período pedido pela data e o checklist de arquivos com
 # planilha-modelo (CSV com ; e as colunas que a importação vai ler). Rodar: python3 tests/tela/t201_entrada_cliente.py
 from playwright.sync_api import sync_playwright
@@ -48,6 +48,12 @@ with sync_playwright() as p:
     csv = urllib.parse.unquote(links[0][2].split(',', 1)[1]) if links else ''
     chk(csv.startswith('﻿data_venda;produto;valor;status;plataforma;email_cliente') and 'Hotmart' in csv, 'a planilha-modelo de vendas vem com as colunas e uma linha de exemplo, separada por ;', csv[:120])
     chk('Hotmart, Kiwify ou Eduzz' in ev(pg, "document.querySelector('#pubPesq .pf-doc[data-g=vendas] small').textContent"), 'vendas aceita o relatório que a plataforma exporta')
+    chk(doc['config'].get('sem_depois') is True and 'Mando depois' not in doc['texto'], 'Entrada do cliente sem "Mando depois" (config e texto)')
+    ops = ev(pg, "[...document.querySelectorAll('#pubPesq .pf-doc[data-g=vendas] .pf-op span')].map(x => x.textContent)")
+    chk(ops == ['Não tenho'], 'cada grupo: só "Enviar arquivo" ou "Não tenho"', ops)
+    pg.evaluate("document.querySelectorAll('#pubPesq [data-passo]').forEach(s => s.hidden = s.dataset.passo !== '3')")
+    m = ev(pg, "(() => { const fs = document.querySelector('#pubPesq .pf-doc').closest('.pf-q'); const x = __D['rpc:pesquisa_publica'].perguntas.find(p => p.tipo === 'documentos'); return pfValidaG1(fs, x); })()")
+    chk(m and 'Não tenho' in m and 'Mando depois' not in m, 'a cobrança fala em enviar o arquivo ou marcar "Não tenho": ' + str(m))
     if FOTOS:
         pg.evaluate("document.querySelectorAll('#pubPesq [data-passo]').forEach(s => s.hidden = s.dataset.passo !== '3')"); pg.wait_for_timeout(200)
         pg.screenshot(path=FOTOS + '/t201_arquivos.png', full_page=True)

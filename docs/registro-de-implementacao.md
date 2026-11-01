@@ -1,5 +1,8 @@
 
 
+## Entrada do cliente sem "Mando depois" (v0.202)
+- Teste `t201_entrada_cliente.py` (15 verificações, 0 falhas): config e texto sem "Mando depois"; no formulário, só "Não tenho" ao lado de Enviar arquivo; a cobrança pede o arquivo ou "Não tenho".
+
 ## Entrada do cliente (v0.201)
 - `g201.js`: modelo com `get objetos()` (o período é calculado quando a pesquisa é criada), planilhas-modelo geradas no navegador (CSV com BOM, separador ;).
 - Teste `t201_entrada_cliente.py` (12 verificações, 0 falhas): modelo na lista; 13 perguntas em 4 passos; criado desativado no tipo diagnóstico; perguntas da visão do cliente; 5 grupos com envio; período em novembro e em março; 4 partes no formulário; 5 planilhas-modelo; colunas e exemplo de vendas; texto do export das plataformas.

@@ -1,3 +1,6 @@
+## v0.202
+- `pesquisa_perguntas.config.sem_depois` (documentos com envio): só "enviar" ou "Não tenho".
+
 ## v0.201
 - Sem tabela nova. As perguntas do modelo vão para `pesquisa_perguntas`; no grupo de documentos, `config.categorias[]` ganha `cols` e `ex` (colunas e exemplo da planilha-modelo) e `config.periodo` (de, até, texto).
 

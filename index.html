@@ -15688,7 +15688,7 @@ const PQ_ENTRADA = () => { const P = entPeriodo(); return [
   { s: 'Seus números, do seu jeito', t: 'Regime tributário da empresa', tp: 'escolha', o: false, op: ['MEI', 'Simples Nacional', 'Lucro Presumido', 'Lucro Real', 'Não sei'] },
   { s: 'O que você espera', t: 'O que você espera deste trabalho?', tp: 'texto' },
   { s: 'O que você espera', t: 'Quanto quer faturar nos próximos 12 meses?', tp: 'moeda', o: false, cfg: { naosei: true } },
-  { s: 'Seus arquivos', t: `Precisamos dos arquivos ${P.txt}. Para cada grupo, envie o arquivo ou marque "Mando depois" ou "Não tenho". Se ajudar, baixe a planilha-modelo e preencha.`, tp: 'documentos', cfg: { categorias: ENT_CATS(), upload: true, aviso: DG_AVISO, periodo: P } }]; };
+  { s: 'Seus arquivos', t: `Precisamos dos arquivos ${P.txt}. Para cada grupo, envie o arquivo agora ou marque "Não tenho". Se ajudar, baixe a planilha-modelo e preencha.`, tp: 'documentos', cfg: { categorias: ENT_CATS(), upload: true, sem_depois: true, aviso: DG_AVISO, periodo: P } }]; };
 PQ_MODELOS.entrada_cliente = { nome: 'Entrada do cliente (números e arquivos)', tipo: 'diagnostico', publico: 'cliente', gatilho: 'manual', get objetos() { return PQ_ENTRADA(); },
   descricao: 'Bem-vindo! Estas perguntas e arquivos são o ponto de partida do nosso trabalho: com eles montamos o seu histórico, o diagnóstico e o planejamento do ano. Leva uns 10 minutos (sem contar os arquivos) e fica salvo: pode parar e voltar pelo mesmo link.' };
 
@@ -15784,7 +15784,7 @@ function pfCampoG1(x, d) {
     return `<div class="pf-lista" data-cols='${esc(JSON.stringify(cols.map(c => c.k)))}'>${linha()}</div><button type="button" class="pf-b2 pf-lmais" data-tpl='${esc(linha())}'>+ Adicionar linha</button>`; }
   if (x.tipo === 'documentos' && cfg.upload) return `${(cfg.categorias || []).map(c => `<div class="pf-doc" data-g="${esc(c.k)}"><b>${esc(c.l)}</b>${c.d ? `<small>${esc(c.d)}</small>` : ''}${c.cols ? entModeloLink(c) : ''}
       <div class="pf-ops"><label class="pf-b pf-b2 pf-up">Enviar arquivo<input type="file" multiple data-up="${esc(c.k)}" accept="${DG_EXT.map(z => '.' + z).join(',')}"></label>
-        ${[['depois', 'Mando depois'], ['nao', 'Não tenho']].map(([k, l]) => `<label class="pf-op"><input type="radio" name="${n}_${c.k}" value="${k}"><span>${l}</span></label>`).join('')}
+        ${[['depois', 'Mando depois'], ['nao', 'Não tenho']].filter(([k]) => !(cfg.sem_depois && k === 'depois')).map(([k, l]) => `<label class="pf-op"><input type="radio" name="${n}_${c.k}" value="${k}"><span>${l}</span></label>`).join('')}
         <input type="radio" name="${n}_${c.k}" value="sim" class="pf-upsim" hidden tabindex="-1" aria-hidden="true"></div><ul class="pf-arqs"></ul></div>`).join('')}${cfg.aviso ? `<p class="pf-aviso2">${esc(cfg.aviso)}</p>` : ''}`;
   if (x.tipo === 'documentos') return `${(cfg.categorias || []).map(c => `<div class="pf-doc"><b>${esc(c.l)}</b>${c.d ? `<small>${esc(c.d)}</small>` : ''}<div class="pf-ops">${DOC_ST.map(([k, l]) => `<label class="pf-op"><input type="radio" name="${n}_${c.k}" value="${k}"><span>${l}</span></label>`).join('')}</div></div>`).join('')}${cfg.aviso ? `<p class="pf-aviso2">${esc(cfg.aviso)}</p>` : ''}`;
   if (x.tipo === 'metricas') {
@@ -15834,7 +15834,7 @@ function pfValidaG1(fs, x) {
   if (x.tipo === 'meses') return x.obrigatoria && ![...fs.querySelectorAll('[data-mes]')].some(i => i.value !== '') ? 'Preencha pelo menos um mês em: ' : '';
   if (x.tipo === 'lista') return x.obrigatoria && ![...fs.querySelectorAll('.pf-lc')].some(i => i.value !== '') ? 'Preencha pelo menos uma linha em: ' : '';
   if (x.tipo === 'documentos' && fs.querySelector('.pf-up.envia')) return 'Espere terminar o envio dos arquivos em: ';
-  if (x.tipo === 'documentos') return x.obrigatoria && (cfg.categorias || []).some(c => !fs.querySelector(`[name="${n}_${c.k}"]:checked`)) ? (cfg.upload ? 'Para cada grupo, envie um arquivo ou marque "Mando depois" ou "Não tenho" em: ' : 'Marque cada grupo de arquivos em: ') : '';
+  if (x.tipo === 'documentos') return x.obrigatoria && (cfg.categorias || []).some(c => !fs.querySelector(`[name="${n}_${c.k}"]:checked`)) ? (cfg.upload ? (cfg.sem_depois ? 'Para cada grupo, envie o arquivo ou marque "Não tenho" em: ' : 'Para cada grupo, envie um arquivo ou marque "Mando depois" ou "Não tenho" em: ') : 'Marque cada grupo de arquivos em: ') : '';
   if (x.tipo === 'metricas') {
     const vis = [...fs.querySelectorAll('.pf-m:not([hidden])')];
     const falta = vis.find(m => !m.querySelector('input[type=radio]:checked'));

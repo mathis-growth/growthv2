@@ -1,3 +1,6 @@
+## v0.202
+- index.html: aplicado sobre a v0.200 (`aplica202.py`, `g201.js`): `config.sem_depois` na pergunta de documentos tira "Mando depois" e muda a cobrança em `pfValidaG1`. `t201_entrada_cliente.py` com 3 verificações a mais.
+
 ## v0.201
 - index.html: aplicado sobre a v0.200 (`aplica201.py`, `g201.js`, `g201.css`): `ENT_COLS`, `entPeriodo`, `ENT_CATS`, `entModeloLink`, `PQ_ENTRADA`, `PQ_MODELOS.entrada_cliente`; `pfCampoG1` mostra "Baixar planilha-modelo" quando o grupo tem colunas. Teste novo `tests/tela/t201_entrada_cliente.py`.
 

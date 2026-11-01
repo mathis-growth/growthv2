@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.202 | 01/11/2026 | Entrada do cliente: cada grupo de arquivos é enviar ou "Não tenho" (sem "Mando depois"). | nada |
 | 0.201 | 01/11/2026 | **Entrada do cliente**: formulário curto com a visão do cliente e checklist de arquivos com planilha-modelo. | nada |
 | 0.200 | 01/11/2026 | **Planejar outro ano**: ano no topo da aba, começar com as premissas do ano anterior, excluir a meta. | `RODAR_v0.198_plano_anual.sql` (atualizado), **ainda não aplicado** |
 | 0.199 | 01/11/2026 | **Meta do ano** em quatro passos, impostos pelo regime (MEI, Simples pelo fator R, Presumido, Real), margem corrigida e lucro final por cenário. | `RODAR_v0.198_plano_anual.sql` (atualizado), **ainda não aplicado** |

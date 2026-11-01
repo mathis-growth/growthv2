@@ -15,7 +15,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.201 (entrada do cliente).
+**Última atualização:** 01/11/2026, versão 0.202 (entrada do cliente sem "Mando depois").
 
 **v0.201 · Entrada do cliente.** Formulário curto para quem está chegando, com a visão dos números e as planilhas do último ano (com modelo para baixar).
 
@@ -416,7 +416,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - **qualificação por pontos:** cada resposta vale pontos e tags, e a nota de corte decide quem é qualificado na hora;
   - **formulário de captação** com a cara do cliente (fontes e cores), em passos, que coloca quem responde direto no funil de leads;
   - a aba "Quem respondeu";
-  - **Entrada do cliente**: formulário curto para o cliente que está chegando (faturamento, ticket, clientes, investimento, custo e regime, do jeito dele) e o checklist de arquivos do período certo (vendas, clientes, leads, anúncios, custos), cada um com planilha-modelo para baixar.
+  - **Entrada do cliente**: formulário curto para o cliente que está chegando (faturamento, ticket, clientes, investimento, custo e regime, do jeito dele) e o checklist de arquivos do período certo (vendas, clientes, leads, anúncios, custos), cada um com planilha-modelo para baixar; cada grupo é enviar o arquivo ou "Não tenho", sem deixar para depois.
 
 ---
 
@@ -533,6 +533,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.202):** Entrada do cliente: cada arquivo é enviar ou "Não tenho".
 - **01/11 (v0.201):** Entrada do cliente: formulário curto com os números do cliente e o checklist de arquivos com planilha-modelo.
 - **01/11 (v0.200):** Planejar outro ano: ano no topo, começar com as premissas do ano anterior, excluir a meta.
 - **01/11 (v0.199):** Meta do ano em quatro passos, impostos pelo regime, comissões fora dos custos fixos e o lucro final por cenário.

@@ -1,3 +1,6 @@
+## v0.202
+- Entrada do cliente: cada grupo de arquivo só fica respondido com um arquivo enviado ou "Não tenho".
+
 ## v0.201
 - Período dos arquivos da Entrada do cliente: julho a dezembro → últimos 12 meses completos; fevereiro a junho → ano anterior inteiro + ano atual até o mês passado; janeiro → ano anterior inteiro.
 - Colunas das planilhas-modelo: vendas (data_venda, produto, valor, status, plataforma, email_cliente, nome_cliente, telefone, forma_pagamento, parcelas, utm_source, utm_campaign); clientes (nome, email, telefone, produto, data_entrada, situacao, data_cancelamento); leads (nome, email, telefone, data_entrada, origem, utm_source, utm_campaign, etapa, resultado); anúncios (mes, canal, investimento, impressoes, cliques, leads, vendas); custos (mes, descricao, valor, tipo fixo|variavel).

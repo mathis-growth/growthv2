@@ -1,3 +1,6 @@
+## v0.202
+**Entrada do cliente, sem adiar.** Cada grupo de arquivos é enviar agora ou dizer que não tem.
+
 ## v0.201
 **Entrada do cliente.** Um formulário curto para o cliente que está chegando: a visão dele dos números (faturamento, ticket, clientes, investimento) e o envio das planilhas de vendas, clientes, leads e anúncios do período certo, com planilha-modelo para baixar. É o ponto de partida do histórico, do diagnóstico e do planejamento.
 

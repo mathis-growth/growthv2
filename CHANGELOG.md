@@ -1,3 +1,7 @@
+## v0.202 — Entrada do cliente sem "Mando depois" (01/11/2026)
+- Cada grupo de arquivos: enviar o arquivo ou "Não tenho". O Diagnóstico 360° não muda.
+- Teste: `t201_entrada_cliente.py` (0 falhas).
+
 ## v0.201 — Entrada do cliente (01/11/2026)
 - Modelo de pesquisa **"Entrada do cliente (números e arquivos)"**: 13 perguntas em 4 partes, a visão do cliente e o checklist de arquivos (vendas, clientes, leads, anúncios, custos opcional) com planilha-modelo.
 - Período pedido conforme o mês (últimos 12 meses, ou ano passado + este ano).
