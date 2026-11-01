@@ -1,3 +1,9 @@
+## v0.195
+Sem mudança no banco. Tipos novos de bloco (texto livre em `estrategia_blocos.tipo`): `order_bump`, `downsell`.
+
+## v0.194
+Sem mudança no banco.
+
 ## v0.193
 Sem mudança no banco. `campanhas.extras.pesquisa` = { usa, pesquisa_id, captacao, obrigado, disparo, quando (cadastro | etapa | manual), etapa, canal (whatsapp | email | link), atualizado_em }. Ao salvar, a pesquisa recebe `aceita_link_aberto = true` (obrigado ou captação), `captacao.ativa = true` (captação) e `canal_envio` (disparo).
 

@@ -388,7 +388,25 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.193 pesquisa na campanha */
+<style id="v122">/* v0.195 mapa da estratégia: tela cheia, nome editável no bloco, alça de tamanho maior */
+.cv.cv-cheia{position:fixed;inset:0;z-index:30;height:100vh!important;min-height:0;padding:12px;background:var(--bg);grid-template-columns:200px minmax(0,1fr) 290px}
+.cv.cv-cheia .cv-pal{max-height:none}
+body.cv-cheia-on{overflow:hidden}
+.cv-ctl .cv-zp{min-width:44px;text-align:center;font-size:12px;color:var(--muted)}
+.cv-nm{cursor:text}
+.cv-nm-ed{font:inherit;font-size:13.5px;font-weight:700;width:100%;padding:3px 6px;border-radius:6px;border:1.5px solid var(--accent);background:var(--surface);color:var(--ink)}
+.cv-rs{width:20px!important;height:20px!important;opacity:.7!important}
+.cv-no:hover .cv-rs{opacity:1!important}
+.cv-rot{cursor:pointer}
+@media (max-width:1100px){.cv.cv-cheia{grid-template-columns:minmax(0,1fr);overflow:auto}}
+/* v0.194 campos de formulário: o nome do campo em destaque e a caixa de preencher bem marcada */
+label{color:var(--ink);font-weight:600;font-size:12.5px;gap:6px;letter-spacing:.005em}
+label:has(> input[type=checkbox]),label:has(> input[type=radio]),label.chk{font-weight:500}
+input,select,textarea{color:var(--ink);font-weight:400;font-size:14px;border:1px solid color-mix(in srgb,var(--ink) 28%,transparent);box-shadow:inset 0 1px 2px rgba(0,0,0,.05)}
+input:hover:not(:focus):not(:disabled),select:hover:not(:focus):not(:disabled),textarea:hover:not(:focus):not(:disabled){border-color:color-mix(in srgb,var(--ink) 45%,transparent)}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:.65;font-style:italic;font-weight:400}
+input:disabled,select:disabled,textarea:disabled,input[readonly],textarea[readonly]{background:var(--surface-2);color:var(--muted);box-shadow:none;border-style:dashed}
+/* v0.193 pesquisa na campanha */
 .cpq{display:flex;flex-direction:column;gap:14px}
 .cpq fieldset{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:0;display:flex;flex-direction:column;gap:8px}
 .cpq fieldset legend{font-weight:600;padding:0 4px}
@@ -1293,7 +1311,7 @@ const NAV = [
   { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['adm-plano', 'Planejamento da empresa'], ['adm-empresa', 'Cadastro da empresa']] },
   { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-estrategias', 'Estratégias (Canvas)'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários']], subs: [{ g: 'Growth\'s Content', mod: 'mkt', items: [['mkt-cont', 'Estratégia de conteúdo'], ['mkt-insta', 'Instagram']] }] },
   { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['crm-dms', 'DMs do Instagram'], ['mkt-origem', 'Leads por origem']] },
-  { g: 'RevOps', items: [['ho-dash', 'Dashboard'], ['ho-cg', 'Customer Growth'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
+  { g: 'Customer Success', items: [['ho-dash', 'Dashboard'], ['ho-cg', 'Customer Growth'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
   { g: 'Financeiro', items: [['fin-dash', 'Dashboard'], ['fin-receber', 'Contas a receber'], ['fin-pagar', 'Contas a pagar'], ['fin-custo', 'Custos e margens'], ['fin-lanc', 'Lançamentos contábeis']] },
   { g: 'Casa', casa: true, items: [['casa-dash', 'Dashboard'], ['casa-receber', 'Contas a receber'], ['casa-pagar', 'Contas a pagar'], ['casa-custo', 'Custos do mês'], ['casa-lanc', 'Lançamentos contábeis'], ['casa-bancos', 'Contas bancárias e cartões'], ['casa-planocontas', 'Plano de contas'], ['casa-fornecedores', 'Fornecedores'], ['casa-formaspag', 'Formas de pagamento'], ['casa-centros', 'Centros de custo']] },
   { g: 'Projetos', items: [['prj-lista', 'Projetos'], ['prj-minhas', 'Minhas atividades'], ['prj-atividades', 'Todas as atividades'], ['prj-modelos', 'Modelos de projeto'], ['prj-avisos', 'Avisos']] },
@@ -1612,7 +1630,7 @@ const ICO = {
   'prj-modelos': P('<rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>'),
   'prj-avisos': P('<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.300 21a1.900 1.900 0 0 0 3.400 0"/>'),
   'cad-equipe': P('<circle cx="9" cy="8" r="3.200"/><path d="M3 20v-1a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v1"/><path d="M16 4.500a3 3 0 0 1 0 6M18 14.500a5 5 0 0 1 3 4.500v1"/>'),
-  'RevOps': P('<path d="M3 12h4l3-8 4 16 3-8h4"/>'),
+  'Customer Success': P('<path d="M3 12h4l3-8 4 16 3-8h4"/>'),
   'adm-empresa': P('<path d="M4 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16"/><path d="M14 10h5a1 1 0 0 1 1 1v10M3 21h18M8 8h2M8 12h2M8 16h2"/>'),
   'cad-funcoes': P('<path d="M12 3l8 4v5c0 5-3.500 8-8 9-4.500-1-8-4-8-9V7z"/><path d="M9.500 12.500l1.800 1.800 3.400-3.600"/>'),
   'ho-ascensao': P('<path d="M4 20h4v-4h4v-4h4V8h4"/><path d="M16 4h4v4"/>'),
@@ -1641,10 +1659,10 @@ const ICO = {
 };
 /* ---------- Permissões por função (o banco é quem impõe; aqui só organiza a tela) ---------- */
 const MODULOS = [['adm', 'Administrativo', 'Painel gerencial, planejamento e cadastro da empresa'], ['mkt', 'Marketing', 'Campanhas, mídia paga, vídeos e conteúdo'], ['vendas', 'Vendas', 'Funil comercial, contratos e leads'],
-  ['revops', 'RevOps', 'Alunos, retenção e cohorts'], ['fin', 'Financeiro', 'Vendas e a receber, contas a pagar e lançamentos'], ['prj', 'Projetos', 'Projetos, atividades e modelos'],
+  ['revops', 'Customer Success', 'Alunos, retenção e cohorts'], ['fin', 'Financeiro', 'Vendas e a receber, contas a pagar e lançamentos'], ['prj', 'Projetos', 'Projetos, atividades e modelos'],
   ['gro', 'Growth', 'Growth model, análise de funil, pesquisas e ciclo'], ['cfg', 'Configurações', 'Integrações e importação de dados'], ['cad', 'Cadastros', 'Produtos, fornecedores, plataformas, equipe e planos de contas']];
 const NIVEIS = [['nenhum', 'Sem acesso'], ['ler', 'Só consultar'], ['editar', 'Consultar e editar']];
-const MOD_GRUPO = { 'Growth Starter': 'adm', Administrativo: 'adm', Marketing: 'mkt', Vendas: 'vendas', RevOps: 'revops', Financeiro: 'fin', Projetos: 'prj', Growth: 'gro', 'Configurações': 'cfg', Cadastros: 'cad' };
+const MOD_GRUPO = { 'Growth Starter': 'adm', Administrativo: 'adm', Marketing: 'mkt', Vendas: 'vendas', RevOps: 'revops', 'Customer Success': 'revops', Financeiro: 'fin', Projetos: 'prj', Growth: 'gro', 'Configurações': 'cfg', Cadastros: 'cad' };
 const SO_ADMIN = ['cad-funcoes', 'cfg-uso', 'cad-auditoria'];
 const TELAS_INT = ['cfg-pacotes', 'cfg-estruturas', 'cfg-pastas', 'cfg-custos'];
 const nivelMod = k => S.perm && S.perm.modulos ? (S.perm.modulos[k] || 'nenhum') : 'editar';
@@ -4978,7 +4996,7 @@ const ENT = {
     load: async () => ({ cc: await q(sb.from('centros_custo').select('id,nome').eq('workspace_id', S.ws)), mp: await q(sb.from('projeto_modelos').select('id,nome').eq('workspace_id', S.ws).eq('ativo', true).order('nome')) }),
     cols: [['Produto', r => esc(r.nome)], ['Tag', r => `<span class="pill info">${esc(r.tag)}</span>`], ['Tipo', r => esc(r.tipo)], ['Nível', r => r.nivel_escada ?? '—'], ['Recorrência', r => r.recorrente ? esc(r.periodicidade) : 'avulso'], ['Preço', r => brl(r.preco), 1], ['Taxa própria', r => r.taxa_percentual_override != null || r.taxa_fixa_override != null ? (r.taxa_percentual_override ?? '—') + '% + ' + brl0(r.taxa_fixa_override) : '—'], ['Situação', r => pillAtivo(r.ativo)]],
     campos: c => [{ k: 'nome', l: 'Nome', req: 1 }, { k: 'tag', l: 'Tag do cliente', ph: 'Automática', hint: 'Deixe vazia: o sistema cria a partir do nome (curso-exemplo). Identifica quem comprou este produto.' },
-      { k: 'categoria', l: 'Categoria', ph: 'Ex.: formação, mentoria, evento', hint: 'Livre. Serve para filtrar Retenção & Expansão por categoria de produto.' }, { k: 'tipo', l: 'Tipo', t: 'select', req: 1, def: 'curso', opts: [['digital', 'Produto digital'], ['saas', 'SaaS (software por assinatura)'], ['servico', 'Serviço'], ['curso', 'Curso'], ['assinatura', 'Assinatura / clube'], ['outro', 'Outro']] }, { k: 'preco', l: 'Preço (R$)', t: 'number', step: '0.01', req: 1 }, { k: 'nivel_escada', l: 'Nível na escada de valor', t: 'number', step: '1', hint: '1 = produto de entrada; 2, 3, 4... sobem na escada. Usado na ascensão do RevOps. Vazio = fora da escada.' },
+      { k: 'categoria', l: 'Categoria', ph: 'Ex.: formação, mentoria, evento', hint: 'Livre. Serve para filtrar Retenção & Expansão por categoria de produto.' }, { k: 'tipo', l: 'Tipo', t: 'select', req: 1, def: 'curso', opts: [['digital', 'Produto digital'], ['saas', 'SaaS (software por assinatura)'], ['servico', 'Serviço'], ['curso', 'Curso'], ['assinatura', 'Assinatura / clube'], ['outro', 'Outro']] }, { k: 'preco', l: 'Preço (R$)', t: 'number', step: '0.01', req: 1 }, { k: 'nivel_escada', l: 'Nível na escada de valor', t: 'number', step: '1', hint: '1 = produto de entrada; 2, 3, 4... sobem na escada. Usado na ascensão do Customer Success. Vazio = fora da escada.' },
       { k: 'recorrente', l: 'Cobrança recorrente', t: 'check' }, { k: 'periodicidade', l: 'Periodicidade', t: 'select', opts: ['mensal', 'trimestral', 'semestral', 'anual'].map(x => [x, x]), hint: 'Só para recorrente.' },
       { k: 'taxa_percentual_override', l: 'Taxa própria (%)', t: 'number', step: '0.001', hint: 'Vazio = usa a da plataforma.' }, { k: 'taxa_fixa_override', l: 'Taxa fixa própria (R$)', t: 'number', step: '0.01' },
       { k: 'centro_custo_id', l: 'Centro de custo', t: 'select', novo: 'centros', opts: sel(c.cc, 'id', 'nome') }, { k: 'modelo_projeto_id', l: 'Projeto automático (modelo)', t: 'select', opts: sel(c.mp || [], 'id', 'nome'), hint: 'Ao fechar o contrato ou a venda deste produto, o projeto é criado para o cliente já com as atividades do modelo.' }, { k: 'ativo', l: 'Ativo', t: 'check', def: true }],
@@ -10050,6 +10068,12 @@ const EST_BLOCOS = {
     blkM('comparecimento', 'Compareceram', 'diagnostico', 'manual', { fonte: 'Growths (funil comercial)' }), blkM('propostas', 'Propostas enviadas', 'diagnostico', 'manual', { fonte: 'Growths (funil comercial)' })] },
   recompra: { nome: 'Recompra e ascensão', curto: 'Recompra e ascensão', fase: 'retencao', fonte: 'Growths', metricas: [
     blkM('upgrades', 'Upgrades e recompras', 'principal', 'manual', { conta: 'upgrades', fonte: 'Growths (vendas)' }), blkM('receita_ret', 'Receita de retenção', 'diagnostico', 'manual', { un: 'brl', conta: 'receita', fonte: 'Growths (vendas)' })] },
+  order_bump: { nome: 'Order bump', curto: 'Order bump', fase: 'conversao', fonte: 'Plataforma de venda', metricas: [
+    blkM('aceites', 'Order bumps aceitos', 'principal', 'manual', { fonte: 'Plataforma de venda' }), blkM('receita_bump', 'Receita do order bump', 'diagnostico', 'manual', { un: 'brl', fonte: 'Plataforma de venda' }),
+    blkM('taxa_bump', 'Taxa de aceite (%)', 'diagnostico', 'manual', { un: 'pct', fonte: 'Plataforma de venda' })] },
+  downsell: { nome: 'Downsell', curto: 'Downsell', fase: 'conversao', fonte: 'Plataforma de venda', metricas: [
+    blkM('vendas_downsell', 'Vendas do downsell', 'principal', 'manual', { fonte: 'Plataforma de venda' }), blkM('receita_downsell', 'Receita do downsell', 'diagnostico', 'manual', { un: 'brl', fonte: 'Plataforma de venda' }),
+    blkM('ofertados', 'Receberam a oferta', 'diagnostico', 'manual', { fonte: 'Plataforma de venda' })] },
   assinatura: { nome: 'Assinatura / renovação', curto: 'Renovação', fase: 'retencao', fonte: 'Growths', metricas: [
     blkM('renovacoes', 'Renovações', 'principal', 'manual', { conta: 'renovados', fonte: 'Growths (contratos)' }), blkM('cancelamentos', 'Cancelamentos', 'diagnostico', 'manual', { fonte: 'Growths (contratos)' })] }
 };
@@ -10207,9 +10231,9 @@ const CV_GRUPOS = [
     ['conteudo', 'Tráfego orgânico', { canal: 'Orgânico' }], ['indicacao', 'Afiliados', { canal: 'Afiliados' }], ['indicacao', 'Indicação / parceria', {}]]],
   ['Páginas', [['captura', 'Landing page', {}], ['captura', 'Página de captura', {}], ['pagina', 'Página de vendas', { fase: 'conversao' }], ['pagina', 'Página de obrigado', { fase: 'aquecimento' }], ['vsl', 'VSL', {}], ['aula', 'Webinar', {}]]],
   ['Comunicação', [['api', 'WhatsApp', { canal: 'WhatsApp' }], ['email', 'E-mail', {}], ['comunicacao', 'Chatbot', {}], ['comunicacao', 'Automação', {}], ['comunicacao', 'Notificação', {}]]],
-  ['Conversão', [['pesquisa', 'Formulário', {}], ['checkout', 'Checkout', {}], ['pagina', 'Pagamento', { fase: 'conversao' }], ['comercial', 'Agendamento', {}], ['comercial', 'Atendimento comercial', {}]]],
+  ['Conversão', [['pesquisa', 'Formulário', {}], ['checkout', 'Checkout', {}], ['order_bump', 'Order bump', {}], ['downsell', 'Downsell', {}], ['pagina', 'Pagamento', { fase: 'conversao' }], ['comercial', 'Agendamento', {}], ['comercial', 'Atendimento comercial', {}]]],
   ['Pós-venda', [['passagem', 'Passagem para o CS', {}], ['posvenda', 'Onboarding', {}], ['posvenda', 'Área de membros', {}], ['posvenda', 'Consumo do produto', {}], ['posvenda', 'Ativação', {}], ['posvenda', 'Acompanhamento', {}],
-    ['recompra', 'Upsell', {}], ['recompra', 'Cross-sell', {}], ['assinatura', 'Renovação', {}], ['recompra', 'Recompra', {}]]],
+    ['recompra', 'Upsell', {}], ['downsell', 'Downsell', { fase: 'retencao' }], ['recompra', 'Cross-sell', {}], ['assinatura', 'Renovação', {}], ['recompra', 'Recompra', {}]]],
   ['Lógica', [['condicao', 'Condição', {}], ['decisao', 'Decisão', {}], ['divisao', 'Divisão de fluxo', {}], ['evento', 'Evento', {}], ['gatilho', 'Gatilho', {}]]],
   ['Personalizado', [['personalizado', 'Bloco personalizado', {}]]]
 ];
@@ -10249,7 +10273,7 @@ const cvLogoDe = (tipo, nome, canal) => { const s = ((nome || '') + ' ' + (canal
 const cvTipoArte = (tipo, nome) => { const s = (nome || '').toLowerCase();
   if (tipo === 'trafego') return 'anuncio'; if (tipo === 'conteudo') return 'post'; if (tipo === 'captura') return 'captura';
   if (tipo === 'pagina') return s.includes('obrigado') ? 'obrigado' : s.includes('pagamento') ? 'checkout' : 'vendas';
-  if (tipo === 'checkout') return 'checkout'; if (tipo === 'vsl') return 'vsl'; if (tipo === 'aula') return 'live';
+  if (tipo === 'checkout' || tipo === 'order_bump') return 'checkout'; if (tipo === 'downsell') return 'vendas'; if (tipo === 'vsl') return 'vsl'; if (tipo === 'aula') return 'live';
   if (tipo === 'api' || tipo === 'grupo') return 'whats'; if (tipo === 'email') return 'email'; if (tipo === 'pesquisa') return 'form';
   if (CV_LOGICA.includes(tipo)) return 'logica'; return 'icone'; };
 const CV_PAGINAS = ['captura', 'vendas', 'obrigado', 'checkout', 'vsl', 'live'];
@@ -10343,7 +10367,7 @@ function cvMapa(el, f, ctx) {
       ${rot || c.nota || c.condicao ? `<foreignObject x="${mx - 60}" y="${my - 12}" width="120" height="24"><div class="cv-rot">${esc(rot || (c.nota ? '📝' : '?'))}</div></foreignObject>` : ''}</g>`; };
   const pal = CV_GRUPOS.map(([g, its]) => `<details class="cv-g" ${g === 'Aquisição' || g === 'Páginas' ? 'open' : ''}><summary>${g}</summary>${its.map(([t, n, x], i) => `<div class="cv-pi" draggable="${edita}" data-pt="${t}" data-pn="${esc(n)}" data-px='${esc(JSON.stringify(x))}' title="${esc(cvTipoNome(t))}">${cvIcoPal(t, n, x)}<span>${esc(n)}</span></div>`).join('')}</details>`).join('');
   el.innerHTML = `<div class="cv">${edita ? `<aside class="cv-pal"><div class="cv-pt">Componentes</div><span class="muted" style="font-size:11.5px">Arraste para o mapa ou clique para adicionar.</span>${pal}</aside>` : ''}
-    <div class="cv-palco" id="cvPalco"><div class="cv-ctl"><button class="btn sm" data-z="1" title="Aproximar">+</button><button class="btn sm" data-z="-1" title="Afastar">−</button><button class="btn sm" data-z="0">Ajustar</button>
+    <div class="cv-palco" id="cvPalco"><div class="cv-ctl"><button class="btn sm" data-z="1" title="Aproximar">+</button><button class="btn sm" data-z="-1" title="Afastar">−</button><button class="btn sm" data-z="0">Ajustar</button><span class="cv-zp" id="cvZp"></span><button class="btn sm" id="cvCheia" title="Abrir o mapa na tela inteira (Esc fecha)">Tela cheia</button>
       ${edita && BL.length > 1 ? '<button class="btn sm" id="cvOrg" title="Arruma os blocos em colunas por fase">Organizar</button>' : ''}${edita && !CN.length && BL.length > 1 ? '<button class="btn sm" id="cvLiga">Ligar na ordem</button>' : ''}<span class="muted" id="cvSalvo"></span></div>
       ${BL.length ? `<span class="cv-legs">${EST_FASES.map(x => x[0]).filter(k => BL.some(b => b.fase === k)).map(k => `<button type="button" class="cv-leg${S.cvFase === k ? ' on' : ''}" data-fl="${k}" style="--fc:${cvFase(k)[1]}" title="Destacar a fase">${esc(cvFase(k)[0])} <b>${BL.filter(b => b.fase === k).length}</b></button>`).join('')}</span>` : ''}
       <div class="cv-mundo" id="cvMundo" style="transform:translate(${V.x}px,${V.y}px) scale(${V.z})"><div id="cvBandas"></div>
@@ -10353,7 +10377,7 @@ function cvMapa(el, f, ctx) {
       ${S.cvDesfaz && S.cvDesfaz.f === f.id && Date.now() < S.cvDesfaz.ate ? `<div class="cv-desf" id="cvDesf"><span>Bloco <b>${esc(S.cvDesfaz.b.nome)}</b> excluído</span><button type="button" class="btn sm" id="cvDesfBt">Desfazer</button></div>` : ''}</div>
     <aside class="cv-prop" id="cvProp"></aside></div>`;
   const palco = $('#cvPalco'), mundo = $('#cvMundo'), salvo = t => { const s = $('#cvSalvo'); if (s) { s.textContent = t; clearTimeout(cvMapa._t); cvMapa._t = setTimeout(() => { if (s.isConnected) s.textContent = ''; }, 1800); } };
-  const aplica = () => { mundo.style.transform = `translate(${V.x}px,${V.y}px) scale(${V.z})`; palco.style.backgroundSize = `${CV_GRADE * V.z}px ${CV_GRADE * V.z}px`; palco.style.backgroundPosition = `${V.x}px ${V.y}px`; };
+  const aplica = () => { const zp = $('#cvZp'); if (zp) zp.textContent = Math.round(V.z * 100) + '%'; mundo.style.transform = `translate(${V.x}px,${V.y}px) scale(${V.z})`; palco.style.backgroundSize = `${CV_GRADE * V.z}px ${CV_GRADE * V.z}px`; palco.style.backgroundPosition = `${V.x}px ${V.y}px`; };
   const mundoXY = e => { const r = palco.getBoundingClientRect(); return { x: (e.clientX - r.left - V.x) / V.z, y: (e.clientY - r.top - V.y) / V.z }; };
   const ajusta = () => { if (!BL.length) { V.x = 0; V.y = 0; V.z = 1; return aplica(); } const xs = BL.map(b => P[b.id].x), ys = BL.map(b => P[b.id].y), r = palco.getBoundingClientRect();
     const w = Math.max(...BL.map(b => P[b.id].x + CV_W * T[b.id])) - Math.min(...xs) + 120, h = Math.max(...BL.map(b => P[b.id].y + alt(b.id))) - Math.min(...ys) + 120; V.z = Math.max(.35, Math.min(1.2, Math.min(r.width / w, r.height / h)));
@@ -10372,7 +10396,10 @@ function cvMapa(el, f, ctx) {
   foco();
   palco.addEventListener('scroll', () => { if (palco.scrollLeft || palco.scrollTop) { palco.scrollLeft = 0; palco.scrollTop = 0; } });
   if (!S.cvView.ajustado) { S.cvView.ajustado = true; ajusta(); }
-  palco.querySelectorAll('[data-z]').forEach(b => b.onclick = () => { const d = Number(b.dataset.z); if (!d) return ajusta(); V.z = Math.max(.3, Math.min(2, V.z * (d > 0 ? 1.2 : 1 / 1.2))); aplica(); });
+  palco.querySelectorAll('[data-z]').forEach(b => b.onclick = () => { const d = Number(b.dataset.z); if (!d) return ajusta(); const r = palco.getBoundingClientRect(), px = r.width / 2, py = r.height / 2, z0 = V.z;
+    V.z = Math.max(.3, Math.min(2, V.z * (d > 0 ? 1.2 : 1 / 1.2))); V.x = px - (px - V.x) * V.z / z0; V.y = py - (py - V.y) * V.z / z0; aplica(); });  /* v0.195: aproxima pelo centro da tela */
+  cvTelaCheia(el, palco, () => ajusta());
+  { const zp = $('#cvZp'); if (zp) zp.textContent = Math.round(V.z * 100) + '%'; }
   palco.addEventListener('wheel', e => { e.preventDefault(); const r = palco.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top, z0 = V.z;
     V.z = Math.max(.3, Math.min(2, V.z * (e.deltaY < 0 ? 1.1 : 1 / 1.1))); V.x = px - (px - V.x) * V.z / z0; V.y = py - (py - V.y) * V.z / z0; aplica(); }, { passive: false });
   // mover o mapa (fundo), mover bloco (cabeçalho), ligar (pino)
@@ -10434,6 +10461,7 @@ function cvMapa(el, f, ctx) {
     if (!edita || b.tipo === x.dataset.wa) return; act(async () => { await cvTrocaTipo(f, ctx, b, x.dataset.wa); S.cvSel = { t: 'no', id: b.id }; render(); }, x.dataset.wa === 'grupo' ? 'Agora é grupo de WhatsApp' : 'Agora é disparo pela API'); }));
   mundo.querySelectorAll('[data-no]').forEach(n => n.addEventListener('click', e => { if (n.dataset.solto || e.target.closest('[data-pino]') || e.target.closest('[data-rs]') || e.target.closest('[data-arr]') || e.target.closest('[data-wa]')) return; sel = { t: 'no', id: n.dataset.no }; S.cvSel = sel; mundo.querySelectorAll('.cv-no').forEach(x => x.classList.toggle('on', x === n)); prop(); }));
   mundo.addEventListener('click', e => { const g = e.target.closest('[data-ar]'); if (!g) return; sel = { t: 'ar', id: g.dataset.ar }; S.cvSel = sel; prop(); });
+  if (edita) cvEdicaoRapida(mundo, BL, CN, L);
   // biblioteca: arrastar ou clicar
   el.querySelectorAll('[data-pt]').forEach(it => {
     it.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', JSON.stringify({ t: it.dataset.pt, n: it.dataset.pn, x: JSON.parse(it.dataset.px || '{}') })); });
@@ -14817,7 +14845,7 @@ async function vMinhas(m) {
   // v0.163: intervenções de CS abertas (Customer Growth) da mesma pessoa
   const cgI = await temColuna('cs_intervencoes', 'id') ? await q(sb.from('cs_intervencoes').select('*,pessoas(nome),alunos(produtos(nome))').eq('workspace_id', w).eq('status', 'aberta').order('prazo')).catch(() => []) : [];
   const ivs = cgI.filter(x => !S.minhaEq || x.responsavel_id === S.minhaEq);
-  if (ivs.length) { m.querySelector('.kpis').insertAdjacentHTML('afterend', `<div class="panel"><h2>Intervenções de CS <span class="pill info">CS</span></h2><span class="muted">Ações com alunos, de RevOps → Customer Growth.</span><div class="tw"><table><thead><tr><th>Aluno</th><th>Produto</th><th>O que fazer</th><th>Prazo</th><th></th></tr></thead><tbody>${ivs.map(x => `<tr><td>${esc((one(x.pessoas) || {}).nome || '')}</td><td>${esc((one((one(x.alunos) || {}).produtos) || {}).nome || '')}</td><td>${esc(x.descricao)}</td><td>${x.prazo ? `<span class="${x.prazo < h ? 'pill bad' : ''}">${dd(x.prazo)}</span>` : '—'}</td><td><button class="btn sm" data-ivm="${x.id}">Concluir</button></td></tr>`).join('')}</tbody></table></div></div>`);
+  if (ivs.length) { m.querySelector('.kpis').insertAdjacentHTML('afterend', `<div class="panel"><h2>Intervenções de CS <span class="pill info">CS</span></h2><span class="muted">Ações com alunos, de Customer Success → Customer Growth.</span><div class="tw"><table><thead><tr><th>Aluno</th><th>Produto</th><th>O que fazer</th><th>Prazo</th><th></th></tr></thead><tbody>${ivs.map(x => `<tr><td>${esc((one(x.pessoas) || {}).nome || '')}</td><td>${esc((one((one(x.alunos) || {}).produtos) || {}).nome || '')}</td><td>${esc(x.descricao)}</td><td>${x.prazo ? `<span class="${x.prazo < h ? 'pill bad' : ''}">${dd(x.prazo)}</span>` : '—'}</td><td><button class="btn sm" data-ivm="${x.id}">Concluir</button></td></tr>`).join('')}</tbody></table></div></div>`);
     m.querySelectorAll('[data-ivm]').forEach(b => b.onclick = () => modalIntervencao({}, ivs.find(x => x.id === b.dataset.ivm), () => render())); }
   m.querySelectorAll('[data-st]').forEach(b => b.onclick = () => act(async () => { await q(sb.from('projeto_atividades').update({ status: b.dataset.st }).eq('id', b.dataset.id)); render(); }));
   m.querySelectorAll('[data-abre]').forEach(b => b.onclick = () => { S.projSel = b.dataset.abre; S.view = 'prj-lista'; render(); });
@@ -15074,7 +15102,7 @@ async function vHeavyOps(m) {
   const etapasTot = Math.max(1, ...((R.etapas || []).map(e => e.n)));
   const destaque = (tit, p, sub) => `<div class="kpi"><span class="l">${tit}</span><span class="v" style="font-size:18px">${p ? esc(p) : '—'}</span><span class="s">${sub || ''}</span></div>`;
   const dsr = HO.dias;
-  m.innerHTML = `<div class="head"><div><h1>RevOps</h1><span class="muted">Operação de alunos: quem está na base, quanto fica, quanto vale e para onde sobe.</span></div><div class="acts"><label class="muted">Produtos nos últimos <select id="hoDias" style="width:auto;display:inline-block">${[30, 90, 180].map(d => `<option value="${d}">${d} dias</option>`).join('')}</select></label><button class="btn" id="hoMetas">Metas</button><button class="btn" id="hoAlunos">Ver alunos</button></div></div>
+  m.innerHTML = `<div class="head"><div><h1>Customer Success</h1><span class="muted">Operação de alunos: quem está na base, quanto fica, quanto vale e para onde sobe.</span></div><div class="acts"><label class="muted">Produtos nos últimos <select id="hoDias" style="width:auto;display:inline-block">${[30, 90, 180].map(d => `<option value="${d}">${d} dias</option>`).join('')}</select></label><button class="btn" id="hoMetas">Metas</button><button class="btn" id="hoAlunos">Ver alunos</button></div></div>
   ${/simula/i.test(ws.nome || '') ? '<div class="panel muted">Este workspace contém dados fictícios de simulação (pessoas, vendas e produtos inventados).</div>' : ''}
   ${banner}
   <div class="kpis">${kpiHO('Alunos ativos', num(tot.ativos), varAtivos == null ? '' : (varAtivos >= 0 ? '▲ ' : '▼ ') + Math.abs(varAtivos).toFixed(0) + '% em 30 dias')}${kpiHO('Churn mensal', pc1(churn), 'meta até ' + pc1(Number(M.churn_max)) + ' · ' + num(atual.perdidos || 0) + ' de ' + num(atual.base || 0) + ' saíram', E.churn)}${kpiHO('Retenção em 90 dias', pc1(ret90), 'meta mínima ' + pc1(Number(M.retencao_min)), E.ret)}${kpiHO('LTV médio', ltv == null ? '—' : brl(ltv), 'meta mínima ' + brl(Number(M.ltv_min)) + ' · ' + num((R.ltv || {}).clientes || 0) + ' clientes', E.ltv)}${kpiHO('Taxa de ascensão', pc1(asc), 'meta mínima ' + pc1(Number(M.ascensao_min)) + ' · ' + num((R.ascensao || {}).subiram || 0) + ' subiram', E.asc)}</div>
@@ -15093,7 +15121,7 @@ async function vHeavyOps(m) {
   $('#hoAlunos').onclick = () => { S.view = 'crm-alunos'; render(); };
   $('#hoMetas').onclick = () => {
     const campos = [{ k: 'churn_max', l: 'Churn mensal máximo (%)', t: 'number', step: '0.1', req: 1 }, { k: 'retencao_min', l: 'Retenção mínima em 90 dias (%)', t: 'number', step: '0.1', req: 1 }, { k: 'ltv_min', l: 'LTV médio mínimo (R$)', t: 'number', step: '1', req: 1 }, { k: 'ascensao_min', l: 'Taxa de ascensão mínima (%)', t: 'number', step: '0.1', req: 1 }, { k: 'tolerancia', l: 'Tolerância do amarelo (%)', t: 'number', step: '1', req: 1, hint: 'Até quanto pior que a meta ainda é amarelo. Depois disso, vermelho.' }];
-    modal('Metas do RevOps', `<div class="grid2">${campos.map(c => campoHtml(c, M[c.k])).join('')}</div>`, async (_d, f) => { await q(sb.from('heavyops_metas').upsert({ ...lerCampos(campos, f), workspace_id: S.ws }, { onConflict: 'workspace_id' })); toast('Metas salvas'); });
+    modal('Metas do Customer Success', `<div class="grid2">${campos.map(c => campoHtml(c, M[c.k])).join('')}</div>`, async (_d, f) => { await q(sb.from('heavyops_metas').upsert({ ...lerCampos(campos, f), workspace_id: S.ws }, { onConflict: 'workspace_id' })); toast('Metas salvas'); });
   };
 }
 
@@ -15231,7 +15259,7 @@ function corpoFunil(el, R, A) {
   const dp = D.maior_perda ? ` <b>Maior perda de pessoas:</b> ${esc(D.maior_perda.nome)}, ${num(D.maior_perda.perdidos)} de ${num(D.maior_perda.base)} não passaram.` : '';
   el.innerHTML = `<div class="panel"><span>${dg}${dp}</span><small class="muted">Regras fixas, só sugestão: o gargalo é o passo que mais piorou contra o período anterior de mesmo tamanho (${dd(R.anterior.ini)} a ${dd(R.anterior.fim)}). A largura das barras usa escala logarítmica para caber anúncios e pessoas no mesmo desenho.</small></div>
   <div class="panel"><h2>Funil</h2><div class="fsteps">${seq.map(linha).join('')}</div>${lat.length ? `<h2 style="margin-top:6px">Qualidade dos leads</h2><div class="fsteps">${lat.map(linha).join('')}</div>` : ''}</div>
-  ${temPos ? `<div class="panel"><h2>Pós-compra (RevOps)</h2><span class="muted">Continua o mesmo grupo de leads depois da venda: entrada como aluno e cada etapa da jornada do aluno. "Chegou" numa etapa = está nela, está numa etapa mais adiante ou já passou por ela. Clique para ver o que aconteceu com essas pessoas.</span><div class="fsteps">${pos.map(linha).join('')}</div>${latPos.length ? `<h2 style="margin-top:6px">Retenção e valor</h2><span class="muted">Parcela dos alunos.</span><div class="fsteps">${latPos.map(linha).join('')}</div>` : ''}</div>
+  ${temPos ? `<div class="panel"><h2>Pós-compra (Customer Success)</h2><span class="muted">Continua o mesmo grupo de leads depois da venda: entrada como aluno e cada etapa da jornada do aluno. "Chegou" numa etapa = está nela, está numa etapa mais adiante ou já passou por ela. Clique para ver o que aconteceu com essas pessoas.</span><div class="fsteps">${pos.map(linha).join('')}</div>${latPos.length ? `<h2 style="margin-top:6px">Retenção e valor</h2><span class="muted">Parcela dos alunos.</span><div class="fsteps">${latPos.map(linha).join('')}</div>` : ''}</div>
   <div class="panel"><h2>Retorno deste grupo de leads</h2><div class="kpis">${kpi('Alunos', num(PO.alunos), PO.clientes ? 'de ' + num(PO.clientes) + ' clientes' : '')}${kpi('Churn', fP(PO.churn), num(PO.saiu) + ' saíram')}${kpi('Retenção', fP(PO.retencao), num(PO.ativos) + ' ativos')}${kpi('LTV', fB(PO.ltv), 'receita por cliente')}${kpi('CAC', fB(PO.cac), PO.custo ? 'custo ' + brl(PO.custo) : 'sem custo de anúncio')}${kpi('ROAS', PO.roas == null ? '—' : fX(PO.roas), 'receita ÷ custo')}${kpi('ROI', PO.roi == null ? '—' : fP(PO.roi), '(receita − custo) ÷ custo')}${kpi('Ascensão', num(PO.ascensao), 'compraram nível maior')}</div><small class="muted">Receita = vendas aprovadas dessas pessoas até hoje. Custo = gasto dos anúncios no período. Churn = alunos que saíram ÷ alunos do grupo. LTV = receita ÷ clientes.</small></div>` : ''}
   <div id="afDet"></div>`;
   el.querySelectorAll('[data-st]').forEach(b => b.onclick = () => { A.sel = A.sel === b.dataset.st ? null : b.dataset.st; render(); });
@@ -16173,6 +16201,47 @@ function pubPesqAltura(box) {
   let ult = 0; const post = () => { const inn = box.querySelector('.pf-in'), h = inn ? Math.ceil(inn.getBoundingClientRect().height + 110) : 0;  /* o conteúdo, não a página (que tem altura mínima da tela e cresceria junto) */ if (h && h !== ult) { ult = h; try { parent.postMessage({ growthsPesquisa: h }, '*'); } catch (e) {} } };
   new MutationObserver(post).observe(box, { childList: true, subtree: true, attributes: true }); window.addEventListener('resize', post); setTimeout(post, 300); setTimeout(post, 1500);
 }
+/* ================= v0.195 — Mapa da estratégia: order bump, downsell, tela cheia e edição rápida =================
+   Pedido da Rebecka (31/10): faltavam order bump e downsell; era ruim aumentar a tela; era ruim mudar o nome da condição.
+   - Biblioteca: Order bump e Downsell em Conversão (e Downsell também em Pós-venda), com métricas próprias.
+   - Tela cheia (Esc fecha), zoom pelos botões a partir do centro e o percentual do zoom.
+   - Dois cliques no nome de um bloco (inclusive Condição, Decisão...) editam o nome ali mesmo; dois cliques numa ligação
+     editam o rótulo (Sim, Não, a condição) sem ir ao painel. */
+function cvTelaCheia(el, palco, ajusta) {
+  const cv = el.querySelector('.cv'), bt = el.querySelector('#cvCheia'); if (!cv || !bt) return;
+  const liga = on => { cv.classList.toggle('cv-cheia', on); document.body.classList.toggle('cv-cheia-on', on); bt.textContent = on ? 'Sair da tela cheia' : 'Tela cheia'; S.cvCheia = on; setTimeout(ajusta, 60); };
+  bt.onclick = () => liga(!cv.classList.contains('cv-cheia'));
+  if (S.cvCheia) { cv.classList.add('cv-cheia'); document.body.classList.add('cv-cheia-on'); bt.textContent = 'Sair da tela cheia'; }
+  if (!cvTelaCheia._esc) { cvTelaCheia._esc = true; document.addEventListener('keydown', e => { if (e.key !== 'Escape' || !S.cvCheia || $('#modalRoot .modal')) return; const c = document.querySelector('.cv.cv-cheia'); S.cvCheia = false; document.body.classList.remove('cv-cheia-on');
+    if (c) { c.classList.remove('cv-cheia'); const b2 = c.querySelector('#cvCheia'); if (b2) b2.textContent = 'Tela cheia'; } }); }
+  /* saiu do mapa (outra tela): tira a trava de rolagem */
+  const obs = new MutationObserver(() => { if (!document.body.contains(cv)) { document.body.classList.remove('cv-cheia-on'); obs.disconnect(); } }); obs.observe(document.body, { childList: true, subtree: true });
+}
+function cvEdicaoRapida(mundo, BL, CN, L) {
+  mundo.querySelectorAll('.cv-nm').forEach(nm => nm.addEventListener('dblclick', e => {
+    e.stopPropagation(); e.preventDefault(); const b = BL.find(y => y.id === nm.closest('[data-no]').dataset.no); if (!b) return;
+    const inp = document.createElement('input'); inp.className = 'cv-nm-ed'; inp.maxLength = 80; inp.value = b.nome; inp.setAttribute('aria-label', 'Nome do bloco');
+    nm.replaceWith(inp); inp.focus(); inp.select(); let feito = false;
+    const fim = salva => { if (feito) return; feito = true; const nome = inp.value.trim();
+      if (!salva || !nome || nome === b.nome) { inp.replaceWith(nm); return; }
+      if (BL.some(x => x.id !== b.id && x.nome.trim().toLowerCase() === nome.toLowerCase())) { toast('Já existe um bloco com esse nome.', true); inp.replaceWith(nm); return; }
+      act(async () => { await q(sb.from('estrategia_blocos').update({ nome }).eq('id', b.id));
+        for (const e2 of L.filter(x => x.bloco_id === b.id && x.nome.startsWith(b.nome + ' · '))) await q(sb.from('estrategia_etapas').update({ nome: nome + ' · ' + e2.nome.slice(b.nome.length + 3) }).eq('id', e2.id));
+        render(); }, 'Nome salvo'); };
+    ['pointerdown', 'mousedown', 'click'].forEach(t => inp.addEventListener(t, ev => ev.stopPropagation()));
+    inp.addEventListener('keydown', ev => { ev.stopPropagation(); if (ev.key === 'Enter') { ev.preventDefault(); fim(true); } if (ev.key === 'Escape') { ev.preventDefault(); fim(false); } });
+    inp.addEventListener('blur', () => fim(true)); }));
+  mundo.addEventListener('dblclick', e => {
+    const g = e.target.closest('[data-ar]'); if (!g) return; e.stopPropagation(); const c = CN.find(x => x.id === g.dataset.ar); if (!c) return;
+    const pad = c.tipo === 'sim' ? 'Sim' : c.tipo === 'nao' ? 'Não' : '';
+    const f = modal('Rótulo da ligação', `<label>Tipo<select name="tipo">${CV_CON.map(([k, l]) => `<option value="${k}"${c.tipo === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+      <label>Rótulo (aparece na seta)<input name="rotulo" maxlength="80" value="${esc(c.rotulo || '')}" placeholder="${esc(pad || 'Ex.: comprou, não abriu o e-mail')}"></label>
+      <label>Condição<input name="condicao" maxlength="500" value="${esc(c.condicao || '')}" placeholder="Ex.: assistiu 30 min da aula"></label>`,
+      async d => { await q(sb.from('estrategia_conexoes').update({ tipo: d.tipo, rotulo: (d.rotulo || '').trim() || null, condicao: (d.condicao || '').trim() || null, peso: d.tipo === 'divisao' ? c.peso : null }).eq('id', c.id)); toast('Ligação salva'); }, 'Salvar');
+    const r = f.querySelector('[name=rotulo]'); if (r) { r.focus(); r.select(); }
+  });
+}
+
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;
 const fonteLink = () => location.protocol === 'file:' ? '<div class="panel"><b>Atenção:</b> o arquivo está aberto do seu computador, então o link de resposta não funciona para outras pessoas. Hospede o arquivo (por exemplo no GitHub Pages) antes de enviar.</div>' : '';
 

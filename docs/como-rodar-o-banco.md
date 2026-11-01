@@ -1,3 +1,9 @@
+## v0.195
+Nada a rodar no banco (só tela). Os blocos novos usam `estrategia_blocos.tipo` = `order_bump` e `downsell` (o campo aceita qualquer texto).
+
+## v0.194
+Nada a rodar no banco (só tela).
+
 ## v0.193
 Nada a rodar no banco (só tela). A escolha da pesquisa fica em `campanhas.extras` (coluna que já existe).
 

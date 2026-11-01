@@ -1,5 +1,12 @@
 
 
+## Mapa da estratégia e Customer Success (v0.195)
+- `g195.js`: `cvTelaCheia` (classe `cv-cheia`, trava a rolagem da página, Esc fecha, lembra em `S.cvCheia`), `cvEdicaoRapida` (dois cliques no nome: campo no próprio bloco, checa nome repetido, renomeia métricas; dois cliques na seta: modal de rótulo).
+- Teste `t195_canvas_bump_downsell.py` (banco de mentira): menu Customer Success, biblioteca com Order bump e Downsell, métricas criadas, desenho, zoom com percentual, tela cheia e Esc, editar nome com Enter e cancelar com Esc, Condição renomeada, rótulo da seta. OK. t165 a t172 e t163 sem falhas.
+
+## Campos de formulário (v0.194)
+- `g194.css`: regras gerais de rótulo e campo no bloco de estilos mais recente (vencem as regras base de mesma força; as de componentes, como o formulário público, continuam valendo). Conferido no assistente da nova campanha e na nova conta a pagar, modo claro e escuro.
+
 ## Pesquisa na campanha (v0.193)
 - `g193.js`: bloco de pesquisa (passo 4 da nova campanha e modal Configurar), criação da pesquisa a partir do modelo sem abrir outro modal, painel "Pesquisa da campanha" com captação (link por canal), página de obrigado (código e copiar) e disparo (leads da campanha, na fila, responderam, sem envio; colocar na fila; abrir a fila).
 - Página pública: dentro de um iframe, avisa a altura do conteúdo (`postMessage` `growthsPesquisa`) medindo o conteúdo e não a página, para não crescer sem fim.

@@ -1,3 +1,10 @@
+## v0.195
+- Order bump e Downsell no mapa: métricas manuais, não entram em clientes novos nem na receita do funil (a venda principal já é contada no Checkout).
+- Nome de bloco é único na estratégia (também na edição pelo próprio bloco).
+
+## v0.194
+Sem regra nova (só aparência dos campos).
+
 ## v0.193
 - Pesquisa na campanha: escolhida a opção Sim, é preciso escolher a pesquisa e pelo menos um lugar (captação, página de obrigado, disparo). Disparo "ao entrar numa etapa" exige a etapa.
 - Página de obrigado e captação usam o link aberto: quem responde é reconhecido pelo e-mail.

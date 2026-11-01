@@ -32,6 +32,8 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.195 | 01/11/2026 | **Mapa da estratégia**: order bump, downsell, tela cheia e edição com dois cliques; menu **RevOps → Customer Success**. | Só tela |
+| 0.194 | 31/10/2026 | **Campos de formulário mais legíveis**: nome do campo em negrito, caixa com borda visível, exemplo em itálico. | Só tela |
 | 0.193 | 31/10/2026 | **Pesquisa na campanha**: passo 4 na nova campanha (usar pesquisa, qual, onde entra), código para a página de obrigado e leads da campanha na fila de envio. | Só tela |
 | 0.192 | 31/10/2026 | **Dashboards em seções**: Dashboard, Dashboard financeiro e Dashboard de Vendas com seções de moldura e título (visão geral, alertas, evolução e meta, de onde vem a receita, saúde financeira, funil e campanhas...). | Só tela |
 | 0.191 | 31/10/2026 | **Pagar e receber várias contas de uma vez**: seleção em Contas a pagar e Contas a receber, com barra de total e baixa em lote. | Só tela |
