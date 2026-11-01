@@ -1,3 +1,6 @@
+## v0.201
+- Sem tabela nova. As perguntas do modelo vão para `pesquisa_perguntas`; no grupo de documentos, `config.categorias[]` ganha `cols` e `ex` (colunas e exemplo da planilha-modelo) e `config.periodo` (de, até, texto).
+
 ## v0.200
 - `plano_anual_sugestoes`: novo `receita_ano_anterior_base` ('ano' ou '12m'); com '12m', `receita_ano_anterior` são as vendas aprovadas dos últimos 12 meses fechados.
 - Sem mudança de tabela: cada ano é uma linha de `plano_anual` (único por cliente e ano).

@@ -1,3 +1,6 @@
+## v0.201
+- index.html: aplicado sobre a v0.200 (`aplica201.py`, `g201.js`, `g201.css`): `ENT_COLS`, `entPeriodo`, `ENT_CATS`, `entModeloLink`, `PQ_ENTRADA`, `PQ_MODELOS.entrada_cliente`; `pfCampoG1` mostra "Baixar planilha-modelo" quando o grupo tem colunas. Teste novo `tests/tela/t201_entrada_cliente.py`.
+
 ## v0.200
 - index.html: aplicado sobre a v0.197 (`aplica200.py`, com `g198.js` e `g198.css`): `paAnos` (barra de anos), `#paAnos` na aba, "Começar com as premissas de", "Excluir a meta"; `S.ano` padrão = ano corrente. Função `plano_anual_sugestoes` com `receita_ano_anterior_base`. Teste novo `t200_plano_outro_ano.py`.
 

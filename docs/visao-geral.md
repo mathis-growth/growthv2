@@ -1,3 +1,6 @@
+## v0.201
+**Entrada do cliente.** Um formulário curto para o cliente que está chegando: a visão dele dos números (faturamento, ticket, clientes, investimento) e o envio das planilhas de vendas, clientes, leads e anúncios do período certo, com planilha-modelo para baixar. É o ponto de partida do histórico, do diagnóstico e do planejamento.
+
 ## v0.200
 **Planeje o ano que vem.** O ano do planejamento fica no topo da aba (do ano passado até dois à frente). O ano novo pode começar com as premissas do ano anterior, e a meta de um ano pode ser excluída.
 

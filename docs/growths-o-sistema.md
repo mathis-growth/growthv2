@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.200 (planejar outro ano).
+**Última atualização:** 01/11/2026, versão 0.201 (entrada do cliente).
+
+**v0.201 · Entrada do cliente.** Formulário curto para quem está chegando, com a visão dos números e as planilhas do último ano (com modelo para baixar).
 
 **v0.200 · Planeje o ano que vem.** O ano fica no topo do Planejamento anual, e o ano novo pode começar com as premissas do anterior.
 
@@ -413,7 +415,8 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - NPS, PMF e insights; o must-have aparece em três faixas (40% ou mais, 25% a 40%, menos de 25%) com o próximo passo, sem contar quem marcou "Não se aplica";
   - **qualificação por pontos:** cada resposta vale pontos e tags, e a nota de corte decide quem é qualificado na hora;
   - **formulário de captação** com a cara do cliente (fontes e cores), em passos, que coloca quem responde direto no funil de leads;
-  - a aba "Quem respondeu".
+  - a aba "Quem respondeu";
+  - **Entrada do cliente**: formulário curto para o cliente que está chegando (faturamento, ticket, clientes, investimento, custo e regime, do jeito dele) e o checklist de arquivos do período certo (vendas, clientes, leads, anúncios, custos), cada um com planilha-modelo para baixar.
 
 ---
 
@@ -522,6 +525,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - Dashboard não é relatório: por que cada bloco da tela precisa responder uma pergunta só.
 - A pesquisa na página de obrigado: o momento em que o lead mais quer falar com você.
 - Ambição × realista: por que a meta do ano precisa de duas contas, e o que fazer com a diferença.
+- "Me manda suas planilhas": o que pedir a um cliente novo para montar o histórico e o diagnóstico (e por que o relatório da plataforma basta).
 - Novembro é mês de planejar o ano que vem: o que levar do ano que termina e o que recalcular.
 - "Quero lucrar 200 mil": quanto precisa faturar depois do imposto e das comissões (a conta que quase ninguém faz).
 
@@ -529,6 +533,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.201):** Entrada do cliente: formulário curto com os números do cliente e o checklist de arquivos com planilha-modelo.
 - **01/11 (v0.200):** Planejar outro ano: ano no topo, começar com as premissas do ano anterior, excluir a meta.
 - **01/11 (v0.199):** Meta do ano em quatro passos, impostos pelo regime, comissões fora dos custos fixos e o lucro final por cenário.
 - **01/11 (v0.198):** Planejamento anual com meta do ano por método (ambição × realista), cenários e trimestres.

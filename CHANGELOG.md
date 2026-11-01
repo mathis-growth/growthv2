@@ -1,3 +1,9 @@
+## v0.201 — Entrada do cliente (01/11/2026)
+- Modelo de pesquisa **"Entrada do cliente (números e arquivos)"**: 13 perguntas em 4 partes, a visão do cliente e o checklist de arquivos (vendas, clientes, leads, anúncios, custos opcional) com planilha-modelo.
+- Período pedido conforme o mês (últimos 12 meses, ou ano passado + este ano).
+- Sem SQL novo.
+- Teste: `tests/tela/t201_entrada_cliente.py` (0 falhas).
+
 ## v0.200 — Planejar outro ano (01/11/2026)
 - **Ano do planejamento** no topo da aba Planejamento anual, do ano passado até dois à frente, com ✓ onde há meta; o ano padrão é o ano corrente.
 - A partir de outubro, convite para planejar o ano seguinte.

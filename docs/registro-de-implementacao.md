@@ -1,5 +1,9 @@
 
 
+## Entrada do cliente (v0.201)
+- `g201.js`: modelo com `get objetos()` (o período é calculado quando a pesquisa é criada), planilhas-modelo geradas no navegador (CSV com BOM, separador ;).
+- Teste `t201_entrada_cliente.py` (12 verificações, 0 falhas): modelo na lista; 13 perguntas em 4 passos; criado desativado no tipo diagnóstico; perguntas da visão do cliente; 5 grupos com envio; período em novembro e em março; 4 partes no formulário; 5 planilhas-modelo; colunas e exemplo de vendas; texto do export das plataformas.
+
 ## Planejar outro ano (v0.200)
 - `g198.js`: barra de anos no topo; vazio com cópia das premissas do último ano com plano; Excluir a meta; textos da receita com base nos últimos 12 meses.
 - Teste `t200_plano_outro_ano.py` (18 verificações, 0 falhas): anos 2025–2028, ✓ no ano com meta, convite em novembro, Excluir, 2027 vazio com cópia, metas mensais acompanham o ano, caminho/premissas/imposto/cenários copiados, receita dos 12 meses, 2027 gravado e 2026 intacto, trimestres de 2027 por começar, Excluir apaga só 2027. `t198_plano_anual.py` 0 falhas.

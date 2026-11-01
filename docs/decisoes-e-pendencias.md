@@ -1,5 +1,15 @@
 
 
+## v0.201 — Entrada do cliente (etapa 1 do plano de primeira carga)
+**Pedido da Rebecka (01/11)**: um "board inicial" para o cliente que está entrando responder a visão dele (ticket, faturamento…) e mandar as planilhas de clientes, leads e vendas, para gerar o diagnóstico e o planejamento. O Diagnóstico 360° ficou grande demais para isso. Plano aprovado em 5 etapas: 1 Entrada do cliente; 2 Importar histórico; 3 Histórico na ficha; 4 modo "só marketing" (redefinido por ela: sem financeiro, administrativo e custos; só marketing, vendas, atendimento e CS); 5 comparar os anos.
+Decisões da etapa 1:
+- Modelo novo **"Entrada do cliente (números e arquivos)"** na lista de modelos de Pesquisas, tipo diagnóstico: mesmo link individual, salvar e continuar, e o mesmo envio de arquivos do Diagnóstico 360°.
+- **Curto**: 13 perguntas em 4 partes (Sobre o negócio, Seus números do seu jeito, O que você espera, Seus arquivos). Números com "Não sei"; custo da operação, regime e meta de 12 meses opcionais.
+- **Checklist de arquivos**: Vendas, Clientes, Leads, Investimento em anúncios e Custos (opcional), cada um com **planilha-modelo** (CSV separado por ;, com as colunas que a importação vai ler e uma linha de exemplo). Vendas aceita o relatório que Hotmart, Kiwify ou Eduzz exportam.
+- **Período pedido pela data em que a pesquisa é criada**: de julho em diante, os últimos 12 meses completos; de fevereiro a junho, o ano passado inteiro e este ano até agora; em janeiro, o ano passado inteiro.
+- Os grupos usam as mesmas chaves da Central de Documentos (vendas, alunos, crm, marketing, financeiro); na tela da equipe aparecem com os nomes da Central.
+- **Fato**: o teste de tela `t177_diagnostico_reuniao.py` já falhava antes desta versão no passo do Diagnóstico Growth ("abre o Diagnóstico Growth com o nome do cliente"); não é desta mudança. Fica para revisar.
+
 ## v0.200 — Planejar outro ano (2027)
 **Pedido da Rebecka (01/11)**: ela queria fazer a meta de 2027, mas a tela só deixava 2026 (o seletor de ano ficava escondido lá embaixo, nas metas mês a mês, e o ano padrão era fixo em 2026); queria também poder ajustar o que salvou em 2026, que mostrou meta só no último trimestre.
 Decisões:
