@@ -1,3 +1,13 @@
+## v0.209
+- `mkt_custos_itens.grupo` (marketing | operacional).
+- `parceiros_comissao` (nome, papel coprodutor|afiliado|vendedor|outro, percentual, base bruto|liquido, produto_id, desde, ate).
+- `mkt_custos_mes` devolve também `fixos_op` e `variaveis_op`; `faltam` conta os variáveis dos dois grupos.
+- Função `dre_simplificado(ws, ate, meses)`: por mês, faturamento, reembolsos, taxa, impostos, comissões de parceiros e da equipe, mídia, custos de marketing e da operação, faltam e fechado.
+- `acesso_telas`: `adm-financeiro`. `pacotes_acesso`: "Financeiro simplificado".
+
+## v0.208
+- Função `vendas_periodo(ws, ini, fim)`: vendas, valor, reembolsos, valor reembolsado, clientes novos (com o histórico), leads e leads que viraram cliente, clientes ativos e inativos, e os mesmos números do período anterior.
+
 ## v0.207
 - Sem mudança no banco.
 

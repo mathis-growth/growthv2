@@ -1,3 +1,9 @@
+## v0.209
+**Financeiro simplificado.** Para quem não faz contas a pagar no Growths: o cliente lança os totais do mês (marketing e outros custos) e as % dos parceiros, e o Growths monta o DRE simplificado, com receita líquida, Resultado de marketing, Resultado da operação, médias e para onde vai cada R$ 100 vendidos.
+
+## v0.208
+**Dashboard de vendas no padrão.** Filtro de período como nos outros e, no topo, o que importa: valor das vendas, vendas, ticket, clientes novos, clientes ativos e conversão, contra o período anterior.
+
 ## v0.207
 **Entrada do cliente mais clara.** Arquivo anexado ganha ✓ verde no grupo, a pergunta "quais números você acompanha" virou lista para marcar, e o teste pelo link aberto não trava mais.
 

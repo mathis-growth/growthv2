@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.207 (entrada do cliente: ✓ verde e métricas que acompanha).
+**Última atualização:** 01/11/2026, versão 0.209 (Financeiro simplificado).
+
+**v0.209 · Financeiro simplificado.** DRE do mês sem contas a pagar: o cliente lança os totais e as % dos parceiros, e o Growths mostra receita líquida, Resultado de marketing e Resultado da operação.
 
 **v0.206 · Histórico de vendas.** As vendas de antes do Growths sobem pelo relatório da plataforma e viram o histórico de cada cliente e a base do planejamento, sem mexer no financeiro.
 
@@ -169,10 +171,12 @@ A campanha é uma página com abas: dashboard, estratégia e etapas, metas, capt
   - onde a campanha caiu (últimos 7 dias contra os 7 anteriores, etapa por etapa);
   - movimento por dia num gráfico só, com as métricas que você escolher;
   - vendas por produto e oferta;
+  - Dashboard de vendas com filtro de período e, no topo, valor das vendas, vendas, ticket, clientes novos, clientes ativos e conversão de lead em cliente, contra o período anterior;
   - vendas por plataforma (Hotmart, Kiwify, Eduzz…): bruto, taxas, reembolsos e o que a plataforma deve repassar;
   - quanto custou e o que trouxe cada vídeo ou criativo.
 - **Ofertas e esteira.** Oferta principal com order bumps, upsells, downsells e cross-sells. Cada item tem condição (sempre, se aceitou, se recusou), validações contra ciclos e taxa de aceite medida com o denominador certo (quem recebeu a oferta, não todos).
 - **Calculadora de campanha.** Preencha o que souber e o resto se ajusta: CPL e conversão dão o CAC, a margem-alvo dá o CAC máximo, e assim por diante. "Salvar metas na campanha" leva tudo para a campanha.
+- **Financeiro simplificado** (pacote para quem não faz contas a pagar no Growths). O cliente lança os totais do mês, de marketing e de outros custos da operação, e as comissões dos parceiros (coprodutor, afiliado, vendedor, com a %). O Growths monta o DRE simplificado mês a mês, de faturamento a Resultado da operação, com % do faturamento, médias, gráfico e "para onde vai cada R$ 100 vendidos". Sem caixa, sem o que foi pago e sem lançamento contábil.
 - **Custos de marketing e Resultado de marketing** (cliente sem financeiro, pacote Go-to-Market). Custos fixos (repetem todo mês) e variáveis (lançados no fim do mês), sem detalhar a equipe; no último dia do mês o cliente recebe a atividade para lançar e, se não lançar, a Mathisa é avisada; o mês só fecha com tudo lançado. Resultado de marketing = receita − mídia − custos de marketing, sempre com o aviso de que as outras despesas da empresa não entram, com ROAS de mídia, ROAS total, CAC de mídia e CAC completo.
 - **Planejamento anual.** Ano escolhido no topo (do ano passado até dois à frente; o ano novo pode começar com as premissas do anterior). Em seções: 1. Meta do ano (ambição, realista ou as duas, com cada premissa do sistema, digitada ou estimada; impostos pelo regime; do faturamento ao lucro; três cenários com o lucro no fim), 2. Por trimestre (ritmo, previsão e sugestão mês a mês), 3. Calendário de campanhas (linha do tempo com lançamentos e perpétuas, meta por campanha, orçamento planejado contra realizado) e as metas mês a mês.
 - **Projeto da campanha.** Toda campanha pode gerar o próprio projeto com as atividades dos blocos (ex.: tráfego pago → públicos, criativos, configurar, acompanhar), com responsável por função.
@@ -533,6 +537,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - A pesquisa na página de obrigado: o momento em que o lead mais quer falar com você.
 - Ambição × realista: por que a meta do ano precisa de duas contas, e o que fazer com a diferença.
 - Primeira compra e recompra: o que o histórico do último ano conta sobre o seu cliente.
+- "Para onde vai cada R$ 100 que você vende": taxas, comissões, mídia, marketing e o que sobra.
 - "Seu lucro de marketing não é o lucro da empresa": ROAS, CAC de mídia e CAC completo, e por que separar.
 - "Me manda suas planilhas": o que pedir a um cliente novo para montar o histórico e o diagnóstico (e por que o relatório da plataforma basta).
 - Novembro é mês de planejar o ano que vem: o que levar do ano que termina e o que recalcular.
@@ -542,6 +547,8 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.209):** Financeiro simplificado: DRE do mês sem contas a pagar, com custos por grupo e comissões de parceiros.
+- **01/11 (v0.208):** Dashboard de vendas no padrão dos outros: filtro de período e os números de vendas e clientes no topo.
 - **01/11 (v0.207):** Entrada do cliente com ✓ verde nos arquivos e a lista de números que o cliente acompanha.
 - **01/11 (v0.206):** Histórico de vendas: importar o relatório da plataforma, ficha com o histórico, planejamento com o histórico.
 - **01/11 (v0.205):** Pacote Go-to-Market (sem financeiro), Custos de marketing com rotina mensal, Resultado de marketing e vendas por plataforma.

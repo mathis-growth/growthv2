@@ -1,3 +1,9 @@
+## v0.209
+- index.html: aplicado sobre a v0.208 (`aplica209.py`): bloco do `g205.js` trocado (vMktCustos com `grupos` e `embutido`, e o v0.208 do Vendas por plataforma); `g209.js` (`vFinSimples`, `fsDre`, `fsParceiros`, `fsLinhas`); menu Administrativo com `adm-financeiro` (só sem financeiro). Migração `20261206100000_financeiro_simplificado.sql` / `RODAR_v0.209_financeiro_simplificado.sql`. Teste novo `t209_financeiro_simplificado.py`.
+
+## v0.208
+- index.html: aplicado sobre a v0.207 (`aplica208.py`, `g208.js`): `vdFiltros`, `vdKpis`; `vCrmDash` com o filtro e os dois blocos de números; `vendasPlataformas` usa `S.vd`; `GRADE_SECOES['crm-dash']` com o filtro no topo e `.vd-cad` em Cadastros e funil. Migração `20261205100000_vendas_periodo.sql` / `RODAR_v0.208_vendas_periodo.sql`. Teste novo `t208_dashboard_vendas.py`; `t205` usa `S.vd`.
+
 ## v0.207
 - index.html: **restaurado da v0.206** (f8194b1) + `?v=0197` do atendimento, e aplicado `aplica207.py` (`g201.js` com a pergunta das métricas; `pfLigaUpload` com `teste`, `avisa` e `pf-ok`; `pfDesenha` passa `aberto`; coluna Tipo nos pacotes). `t201_entrada_cliente.py` com 6 verificações a mais.
 

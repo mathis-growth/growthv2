@@ -18,7 +18,7 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 | **Versão da tela** | 0.177 · 30/10/2026 (`index.html` + `assets/atendimento.*`) |
 | **Atendimento (0.175)** | Código preparado; falta aplicar `supabase/migrations/20261030021541_central_atendimento.sql`, publicar a função `atendimento`, configurar canais e liberar as telas nos pacotes. [Guia](docs/atendimento.md). |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | conferido em 31/10/2026: tem tudo até a **v0.189**, inclusive as narrativas (v0.157, 39 modelos), o Growth's Content simplificado (v0.159), os subtemas (v0.160), o Customer Growth (v0.163), o Atendimento e o Diagnóstico 360° (v0.177) |
-| **Falta aplicar no banco** | `supabase/RODAR_v0.197_pesquisa_modelos.sql` (modelos de pesquisa fora da lista) e `supabase/RODAR_v0.198_plano_anual.sql` (meta do ano, com impostos e custos variáveis da v0.199) `supabase/RODAR_v0.205_go_to_market.sql` (pacote Go-to-Market e custos de marketing) e `supabase/RODAR_v0.206_historico_vendas.sql` (histórico de vendas) |
+| **Falta aplicar no banco** | `supabase/RODAR_v0.197_pesquisa_modelos.sql` (modelos de pesquisa fora da lista) e `supabase/RODAR_v0.198_plano_anual.sql` (meta do ano, com impostos e custos variáveis da v0.199) `supabase/RODAR_v0.205_go_to_market.sql` (pacote Go-to-Market e custos de marketing) `supabase/RODAR_v0.206_historico_vendas.sql` (histórico de vendas) `supabase/RODAR_v0.208_vendas_periodo.sql` (dashboard de vendas) e `supabase/RODAR_v0.209_financeiro_simplificado.sql` (Financeiro simplificado) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta; crédito na conta da API da Anthropic (a chave `ANTHROPIC_API_KEY` está cadastrada e funciona, mas as pesquisas de 25 e 26/10 voltaram com "credit balance is too low"); o app do Google já existe (segredos conferidos em 25/10/2026): [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
 
@@ -32,6 +32,8 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.209 | 01/11/2026 | **Financeiro simplificado**: DRE simplificado sem contas a pagar, custos por grupo, comissões de parceiros. | `RODAR_v0.209_financeiro_simplificado.sql`, **ainda não aplicado** |
+| 0.208 | 01/11/2026 | **Dashboard de vendas** no padrão: filtro de período e os números de vendas e clientes no topo. | `RODAR_v0.208_vendas_periodo.sql`, **ainda não aplicado** |
 | 0.207 | 01/11/2026 | Entrada do cliente: ✓ verde, métricas que acompanha, teste pelo link aberto. **index.html restaurado** (commits de atendimento tinham cortado o arquivo). | nada |
 | 0.206 | 01/11/2026 | **Histórico de vendas**: importar o relatório da plataforma com de-para, ficha com o histórico, planejamento com o histórico. | `RODAR_v0.206_historico_vendas.sql`, **ainda não aplicado** |
 | 0.205 | 01/11/2026 | **Go-to-Market**: pacote sem financeiro, Custos de marketing com rotina mensal, Resultado de marketing, vendas por plataforma. | `RODAR_v0.205_go_to_market.sql`, **ainda não aplicado** |

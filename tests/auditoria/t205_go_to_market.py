@@ -83,7 +83,7 @@ with sync_playwright() as pw:
     t = front.vai(pg, 'mkt-dash', "S.mg = { ini: '2026-10-01', fim: '2026-10-31', camp: '', funil: '', tab: 'visao', gran: 'campanha', cv: 'ret', sel: null };", 6000)
     chk(pg.locator('#mrPainel').count() == 1 and 'ROAS de mídia' in pg.inner_text('#mrPainel'), 'Dashboard de marketing: Resultado de marketing no período, com ROAS')
     pg.screenshot(path=SHOT + '2_mkt_dash.png')
-    t = front.vai(pg, 'crm-dash', "S.vpp = { ini: '2026-10-01', fim: '2026-10-31' };", 6000)
+    t = front.vai(pg, 'crm-dash', "S.vd = { ini: '2026-10-01', fim: '2026-10-31' };", 6000)
     vp = (pg.inner_text('#vpPlat') if pg.locator('#vpPlat').count() else '').replace('\xa0', ' ')
     bru = float(sql(f"select coalesce(sum(valor_bruto), 0) from vendas where workspace_id = '{WS}' and status = 'aprovada' and (data_venda at time zone 'America/Sao_Paulo')::date between '2026-10-01' and '2026-10-31'"))
     chk('Vendas por plataforma' in vp and 'A receber da plataforma' in vp and brl(bru) in vp if (brl := lambda v: 'R$ ' + f'{v:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')) else False, 'Dashboard de vendas: vendas por plataforma, com o total bruto de outubro')
