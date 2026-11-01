@@ -388,7 +388,16 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.160 */
+<style id="v122">/* v0.162 — seleção em lote em Contas a pagar e a receber */
+th.lote-c,td.lote-c{width:28px;padding-right:0;text-align:center}
+.lote-chk{width:16px;height:16px;margin:0;cursor:pointer;accent-color:var(--accent)}
+.lote-chk:disabled{cursor:not-allowed;opacity:.35}
+tr.lote-on>td{background:var(--accent-soft)}
+.lote-bar{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:15;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;
+  max-width:calc(100vw - 32px);padding:10px 12px 10px 18px;border-radius:12px;background:var(--surface);border:1px solid var(--line);box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.lote-bar[hidden]{display:none}
+.lote-lista{max-height:260px;overflow:auto;margin-bottom:10px}
+/* v0.160 */
 body #main .ct-apr .pill{font-size:11px}
 body #main .gcard [data-peca]{white-space:nowrap}
 body #main #ctSeg tr.ct-seg-t td{border-top:2px solid var(--line)}
@@ -4179,15 +4188,15 @@ async function vReceber(m) {
     <div class="tw"><table><thead><tr><th>Mês de vencimento</th><th class="n">Parcelas</th><th class="n">A receber</th></tr></thead><tbody>${RP.por_mes.length ? RP.por_mes.map(x => `<tr><td>${esc(new Date(x.mes + 'T12:00:00').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }))}</td><td class="n">${x.qtd}</td><td class="n">${brl(x.valor)}</td></tr>`).join('') + `<tr class="tot"><td>Total do período</td><td class="n">${RP.a_receber.qtd}</td><td class="n">${brl(RP.a_receber.valor)}</td></tr>` : '<tr><td colspan="3" class="empty">Nada vence neste período.</td></tr>'}</tbody></table></div></div>
   <div class="panel"><h2>Por cliente: a receber, MRR e ARR</h2><span class="muted">MRR e ARR são dos contratos recorrentes ativos hoje. "A receber" e "Recebido" seguem o período escolhido; "Atraso" é o total vencido até hoje.</span>
     <div class="tw"><table><thead><tr><th>Cliente</th><th class="n">A receber no período</th><th class="n">Dos contratos</th><th class="n">Recebido</th><th class="n">Atraso</th><th class="n">MRR</th><th class="n">ARR</th></tr></thead><tbody>${RP.por_cliente.length ? RP.por_cliente.map(c => `<tr><td>${esc(c.nome)}</td><td class="n">${brl(c.a_receber)}</td><td class="n">${brl(c.de_contratos)}</td><td class="n">${brl(c.recebido)}</td><td class="n">${c.atraso > 0 ? '<span class="pill bad">' + brl(c.atraso) + '</span>' : '—'}</td><td class="n">${c.mrr ? brl(c.mrr) : '—'}</td><td class="n">${c.arr ? brl(c.arr) : '—'}</td></tr>`).join('') : '<tr><td colspan="7" class="empty">Sem movimento neste período.</td></tr>'}</tbody></table></div></div>
-  <div class="panel"><h2>Parcelas e recebimentos</h2><div class="tw"><table><thead><tr><th>Vencimento</th><th>Origem</th><th>Cliente</th><th>Descrição</th><th class="n">Valor</th><th>Situação</th><th></th></tr></thead><tbody>${parcL.length ? parcL.map(p => {
+  <div class="panel"><h2>Parcelas e recebimentos</h2><div class="tw"><table><thead><tr><th class="lote-c">${loteTodos()}</th><th>Vencimento</th><th>Origem</th><th>Cliente</th><th>Descrição</th><th class="n">Valor</th><th>Situação</th><th></th></tr></thead><tbody>${parcL.length ? parcL.map(p => {
     const ct = one(p.contratos) || {}, vd = one(p.vendas) || {}, ehV = !!p.venda_id, ehA = !p.venda_id && !p.contrato_id;
-    const cli = ehV ? (one(vd.pessoas) || {}).nome : (one(ct.pessoas) || {}).nome, desc = ehV ? ((one(vd.produtos) || {}).nome || 'Venda') : (p.descricao || '');
+    const cli = ehV ? (one(vd.pessoas) || {}).nome : (one(ct.pessoas) || {}).nome, desc = ehV ? ((one(vd.produtos) || {}).nome || 'Venda') : (p.descricao || ''); p._rot = desc + (cli ? ' · ' + cli : '');
     let ac = '';
     if (p.status === 'previsto' && ehA) ac = `<button class="btn sm" data-bp="${p.id}" data-cb="${p.conta_bancaria_id || ''}">Dar baixa</button> <button class="btn sm bad" data-ca="${p.id}">Cancelar</button>`;
     else if (p.status === 'previsto') ac = ehV ? `<button class="btn sm" data-r="${p.id}">Receber</button>` : `<button class="btn sm" data-bp="${p.id}" data-cb="${p.conta_bancaria_id || ''}" data-v="${p.valor}">Dar baixa</button> <button class="btn sm" data-ds="${p.id}" data-v="${p.valor}" title="Desconto concedido: baixa o valor sem entrar dinheiro e lança como dedução da receita">Dar desconto</button> <button class="btn sm bad" data-cp="${p.id}" title="Cancela só esta parcela">Cancelar</button>`;
     else if (p.status === 'recebido') ac = `<button class="btn sm" data-dr="${p.id}" title="Se o recebimento foi lançado errado">Desfazer recebimento</button>`;
     else if (p.status === 'cancelado' && !ehV && !ehA && !(Number(p.desconto) > 0)) ac = `<button class="btn sm" data-rp="${p.id}" title="Volta a parcela para a receber">Reativar</button>`;
-    return `<tr><td>${dd(p.vencimento)}${p.status === 'previsto' && p.vencimento < hoje() ? ' <span class="pill bad">atraso</span>' : ''}</td><td>${ehA ? '<span class="pill neutral">Avulsa</span>' : ehV ? '<span class="pill info">Venda</span>' : '<span class="pill neutral">Contrato #' + esc(ct.numero) + '</span>'}</td><td>${esc(cli || '—')}</td><td>${esc(desc)}</td><td class="n">${brl(p.valor)}${Number(p.desconto) > 0 ? '<br><span class="muted" title="' + esc(p.desconto_motivo || '') + '">desconto ' + brl(p.desconto) + '</span>' : ''}</td><td>${Number(p.desconto) > 0 && p.status === 'cancelado' ? '<span class="pill warn">baixada por desconto</span>' : pillRec(p.status)}${p.data_recebimento ? '<br><span class="muted">' + dd(p.data_recebimento) + '</span>' : ''}</td><td style="white-space:nowrap">${btnRastro(p.venda_id, p.id)} ${ac}</td></tr>`; }).join('') : '<tr><td colspan="7" class="empty">Nada neste filtro e período.</td></tr>'}</tbody></table></div></div>`;
+    return `<tr><td class="lote-c">${loteCaixa(p, 'receber')}</td><td>${dd(p.vencimento)}${p.status === 'previsto' && p.vencimento < hoje() ? ' <span class="pill bad">atraso</span>' : ''}</td><td>${ehA ? '<span class="pill neutral">Avulsa</span>' : ehV ? '<span class="pill info">Venda</span>' : '<span class="pill neutral">Contrato #' + esc(ct.numero) + '</span>'}</td><td>${esc(cli || '—')}</td><td>${esc(desc)}</td><td class="n">${brl(p.valor)}${Number(p.desconto) > 0 ? '<br><span class="muted" title="' + esc(p.desconto_motivo || '') + '">desconto ' + brl(p.desconto) + '</span>' : ''}</td><td>${Number(p.desconto) > 0 && p.status === 'cancelado' ? '<span class="pill warn">baixada por desconto</span>' : pillRec(p.status)}${p.data_recebimento ? '<br><span class="muted">' + dd(p.data_recebimento) + '</span>' : ''}</td><td style="white-space:nowrap">${btnRastro(p.venda_id, p.id)} ${ac}</td></tr>`; }).join('') : '<tr><td colspan="8" class="empty">Nada neste filtro e período.</td></tr>'}</tbody></table></div></div>`;
   perLigar();
   $('#rfOr').onchange = e => { RF.origem = e.target.value; render(); };
   $('#rfRec').onchange = e => { RF.rec = e.target.value; render(); };
@@ -4213,6 +4222,7 @@ async function vReceber(m) {
     if (rp) return modal('Reativar parcela', '<p>Cria uma nova parcela igual a esta (mesmo valor e vencimento) e lança a receita prevista de novo. A cancelada continua no histórico. Só vale com o contrato assinado e ativo.</p>',
       async () => { await q(sb.rpc('reativar_parcela_contrato', { p_conta_receber: rp.dataset.rp })); toast('Parcela reativada'); }, 'Reativar parcela');
   };
+  loteLigar(m, 'receber', parcL);
   finVencimentos(m, 'receber');
 }
 
@@ -4315,12 +4325,12 @@ async function vPagar(m) {
     <div class="tw"><table><thead><tr><th>Mês de vencimento</th><th class="n">Contas</th><th class="n">A pagar</th></tr></thead><tbody>${PP.por_mes.length ? PP.por_mes.map(x => `<tr><td>${esc(new Date(x.mes + 'T12:00:00').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }))}</td><td class="n">${x.qtd}</td><td class="n">${brl(x.valor)}</td></tr>`).join('') + `<tr class="tot"><td>Total do período</td><td class="n">${PP.a_pagar.qtd}</td><td class="n">${brl(PP.a_pagar.valor)}</td></tr>` : '<tr><td colspan="3" class="empty">Nada vence neste período.</td></tr>'}</tbody></table></div></div>
   <div class="panel"><h2>Por fornecedor</h2><div class="tw"><table><thead><tr><th>Fornecedor</th><th class="n">A pagar no período</th><th class="n">Pago</th><th class="n">Atraso</th></tr></thead><tbody>${PP.por_fornecedor.length ? PP.por_fornecedor.map(f => `<tr><td>${esc(f.nome)}</td><td class="n">${brl(f.a_pagar)}</td><td class="n">${brl(f.pago)}</td><td class="n">${f.atraso > 0 ? '<span class="pill bad">' + brl(f.atraso) + '</span>' : '—'}</td></tr>`).join('') : '<tr><td colspan="4" class="empty">Sem movimento neste período.</td></tr>'}</tbody></table></div></div>
   <div class="filters">${perHtml()}<select id="pfSt"><option value="">Sem as canceladas</option>${['previsto', 'pago', 'cancelado'].map(x => `<option value="${x}"${PF.st === x ? ' selected' : ''}>só ${x === 'previsto' ? 'previstas' : x === 'pago' ? 'pagas' : 'canceladas'}</option>`).join('')}<option value="todas"${PF.st === 'todas' ? ' selected' : ''}>Todas, com as canceladas</option></select></div>
-  <div class="panel"><div class="tw"><table><thead><tr><th>Vencimento</th><th>Descrição</th><th>Fornecedor</th><th>Conta de despesa</th><th>Campanha</th><th class="n">Valor</th><th>Status</th><th></th></tr></thead><tbody>
-  ${listaP.length ? listaP.map(c => `<tr><td>${dd(c.vencimento)}</td><td>${esc(c.descricao)}${c.estimativa ? ' <span class="pill" title="Valor estimado: confirme o valor real quando a conta chegar">estimada</span>' : ''}${recDe(c) ? (recDe(c).tipo === 'parcelada' ? ' <span class="pill warn">parcelada</span>' : recDe(c).ativo ? ' <span class="pill info" title="Se repete todo mês até alguém parar">recorrente</span>' : ' <span class="pill neutral">recorrência parada</span>') : ''}<br><span class="muted">competência ${dd(c.competencia)}${fpNome(c.forma_pagamento_id) ? ' · ' + esc(fpNome(c.forma_pagamento_id).nome) : ''}</span></td><td>${esc((one(c.fornecedores) || {}).nome || '—')}</td>
+  <div class="panel"><div class="tw"><table><thead><tr><th class="lote-c">${loteTodos()}</th><th>Vencimento</th><th>Descrição</th><th>Fornecedor</th><th>Conta de despesa</th><th>Campanha</th><th class="n">Valor</th><th>Status</th><th></th></tr></thead><tbody>
+  ${listaP.length ? listaP.map(c => `<tr><td class="lote-c">${loteCaixa(c, 'pagar')}</td><td>${dd(c.vencimento)}</td><td>${esc(c.descricao)}${c.estimativa ? ' <span class="pill" title="Valor estimado: confirme o valor real quando a conta chegar">estimada</span>' : ''}${recDe(c) ? (recDe(c).tipo === 'parcelada' ? ' <span class="pill warn">parcelada</span>' : recDe(c).ativo ? ' <span class="pill info" title="Se repete todo mês até alguém parar">recorrente</span>' : ' <span class="pill neutral">recorrência parada</span>') : ''}<br><span class="muted">competência ${dd(c.competencia)}${fpNome(c.forma_pagamento_id) ? ' · ' + esc(fpNome(c.forma_pagamento_id).nome) : ''}</span></td><td>${esc((one(c.fornecedores) || {}).nome || '—')}</td>
     <td>${esc((one(c.plano_contas) || {}).codigo)} ${esc((one(c.plano_contas) || {}).nome)}</td><td>${esc((one(c.campanhas) || {}).nome || '—')}${one(c.campanha_canais) ? '<br><span class="muted">' + esc(one(c.campanha_canais).canal) + '</span>' : ''}</td>
     <td class="n">${brl(c.valor)}</td><td>${pillRec(c.status)}${c.data_pagamento ? '<br><span class="muted">' + dd(c.data_pagamento) + '</span>' : ''}</td>
-    <td style="white-space:nowrap">${btnRastro(c.id)} ${c.status === 'previsto' ? `${c.estimativa ? `<button class="btn sm pri" data-k="${c.id}">Confirmar valor</button>` : `<button class="btn sm" data-p="${c.id}">Pagar</button>`} <button class="btn sm bad" data-c="${c.id}">Cancelar</button>` : ''}${c.status === 'pago' ? ` <button class="btn sm" data-dp="${c.id}" title="Se o pagamento foi lançado errado">Desfazer pagamento</button>` : ''}${c.status === 'cancelado' && !c.substituida_por ? ` <button class="btn sm" data-ra="${c.id}" title="Volta a conta para a pagar">Reativar</button>` : ''}${recDe(c) && recDe(c).ativo && recDe(c).tipo !== 'parcelada' ? ` <button class="btn sm" data-stop="${c.recorrencia_id}" title="Para de gerar as próximas contas">Parar recorrência</button>` : ''}</td></tr>`).join('') : '<tr><td colspan="8" class="empty">Nenhuma conta a pagar. Use "Nova conta a pagar".</td></tr>'}
-  ${listaP.length ? `<tr class="tot"><td colspan="5">Total na lista (${listaP.filter(c => c.status !== 'cancelado').length})${listaP.some(c => c.status === 'cancelado') ? ' <span class="muted">· ' + listaP.filter(c => c.status === 'cancelado').length + ' cancelada(s) fora do total (' + brl(sum(listaP.filter(c => c.status === 'cancelado'), 'valor')) + ')</span>' : ''}</td><td class="n">${brl(sum(listaP.filter(c => c.status !== 'cancelado'), 'valor'))}</td><td colspan="2"></td></tr>` : ''}
+    <td style="white-space:nowrap">${btnRastro(c.id)} ${c.status === 'previsto' ? `${c.estimativa ? `<button class="btn sm pri" data-k="${c.id}">Confirmar valor</button>` : `<button class="btn sm" data-p="${c.id}">Pagar</button>`} <button class="btn sm bad" data-c="${c.id}">Cancelar</button>` : ''}${c.status === 'pago' ? ` <button class="btn sm" data-dp="${c.id}" title="Se o pagamento foi lançado errado">Desfazer pagamento</button>` : ''}${c.status === 'cancelado' && !c.substituida_por ? ` <button class="btn sm" data-ra="${c.id}" title="Volta a conta para a pagar">Reativar</button>` : ''}${recDe(c) && recDe(c).ativo && recDe(c).tipo !== 'parcelada' ? ` <button class="btn sm" data-stop="${c.recorrencia_id}" title="Para de gerar as próximas contas">Parar recorrência</button>` : ''}</td></tr>`).join('') : '<tr><td colspan="9" class="empty">Nenhuma conta a pagar. Use "Nova conta a pagar".</td></tr>'}
+  ${listaP.length ? `<tr class="tot"><td colspan="6">Total na lista (${listaP.filter(c => c.status !== 'cancelado').length})${listaP.some(c => c.status === 'cancelado') ? ' <span class="muted">· ' + listaP.filter(c => c.status === 'cancelado').length + ' cancelada(s) fora do total (' + brl(sum(listaP.filter(c => c.status === 'cancelado'), 'valor')) + ')</span>' : ''}</td><td class="n">${brl(sum(listaP.filter(c => c.status !== 'cancelado'), 'valor'))}</td><td colspan="2"></td></tr>` : ''}
   </tbody></table></div></div>`;
   perLigar();
   $('#pfSt').onchange = e => { PF.st = e.target.value; render(); };
@@ -4378,6 +4388,7 @@ async function vPagar(m) {
     if (c) modal('Cancelar conta a pagar', '<p>A despesa será revertida na contabilidade. O registro continua no histórico.</p>',
       async () => { await q(sb.rpc('cancelar_conta_pagar', { p_conta: c.dataset.c, p_data: null })); toast('Conta cancelada'); }, 'Cancelar conta');
   };
+  loteLigar(m, 'pagar', listaP, { fpl });
   finVencimentos(m, 'pagar');
 }
 
@@ -15821,6 +15832,80 @@ async function dgReuniao(m, p, perg) {
     if ($('#dgReabre')) $('#dgReabre').onclick = () => act(async () => { await q(sb.from('diagnosticos').update({ status: 'rascunho' }).eq('id', D.id)); D.status = 'rascunho'; desenha(); });
   };
   desenha();
+}
+
+/* ================= v0.162 — Contas a pagar e a receber: pagar ou receber várias de uma vez =================
+   Pedido da Rebecka (31/10): um quadradinho em cada conta para escolher as que quiser e dar baixa em todas juntas.
+   Sem mudança no banco: cada conta passa pela mesma função da baixa de uma por uma (registrar_pagamento / registrar_recebimento),
+   então os lançamentos, o banco e a DRE ficam iguais aos de hoje. Baixa parcial continua no botão da própria conta. */
+const LOTE = {
+  pagar: { nome: 'conta', plural: 'contas', verbo: 'Pagar', feito: 'paga', feitos: 'pagas', titulo: 'Pagar as contas selecionadas', data: 'Data do pagamento', banco: 'Pagou com' },
+  receber: { nome: 'conta', plural: 'contas', verbo: 'Receber', feito: 'recebida', feitos: 'recebidas', titulo: 'Receber as contas selecionadas', data: 'Data do recebimento', banco: 'Entrou na conta' }
+};
+/* quadradinho da linha: só conta em aberto; a estimada precisa do valor real antes */
+function loteCaixa(c, tipo) {
+  if (c.status !== 'previsto') return '';
+  if (tipo === 'pagar' && c.estimativa) return `<input type="checkbox" class="lote-chk" disabled title="Valor estimado: confirme o valor real antes de pagar" aria-label="Valor estimado, confirme antes de pagar">`;
+  return `<input type="checkbox" class="lote-chk" data-lote="${c.id}" aria-label="Selecionar ${esc(c.descricao || 'conta')}">`;
+}
+const loteTodos = () => `<input type="checkbox" class="lote-chk" data-lote-todos aria-label="Selecionar todas as contas em aberto da lista" title="Selecionar todas em aberto da lista">`;
+
+function loteLigar(m, tipo, lista, extra) {
+  const L = LOTE[tipo], todos = m.querySelector('[data-lote-todos]');
+  const caixas = () => [...m.querySelectorAll('[data-lote]')];
+  if (!todos) return;
+  if (!caixas().length) { todos.disabled = true; todos.title = 'Nenhuma conta em aberto nesta lista'; }
+  let bar = document.getElementById('loteBar'); if (bar) bar.remove();
+  bar = document.createElement('div'); bar.id = 'loteBar'; bar.className = 'lote-bar'; bar.hidden = true; bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', 'Contas selecionadas');
+  m.appendChild(bar);
+  const sel = () => caixas().filter(c => c.checked).map(c => lista.find(x => x.id === c.dataset.lote)).filter(Boolean);
+  const atualiza = () => {
+    const s = sel(), n = caixas().length;
+    todos.checked = n > 0 && s.length === n; todos.indeterminate = s.length > 0 && s.length < n;
+    caixas().forEach(c => c.closest('tr').classList.toggle('lote-on', c.checked));
+    bar.hidden = !s.length;
+    const pn = todos.closest('.panel'); if (pn) pn.style.paddingBottom = s.length ? '84px' : '';  /* a barra não cobre a última linha */
+    if (s.length) bar.innerHTML = `<span><b>${s.length} ${s.length === 1 ? L.nome : L.plural}</b> · ${brl(s.reduce((a, x) => a + Number(x.valor || 0), 0))}</span>
+      <button type="button" class="btn sm" data-lote-limpa>Limpar seleção</button><button type="button" class="btn sm pri" data-lote-ok>${L.verbo} ${s.length === 1 ? 'a selecionada' : 'as ' + s.length + ' selecionadas'}</button>`;
+  };
+  todos.onchange = () => { caixas().forEach(c => c.checked = todos.checked); atualiza(); };
+  caixas().forEach(c => c.onchange = atualiza);
+  bar.onclick = e => {
+    if (e.target.closest('[data-lote-limpa]')) { caixas().forEach(c => c.checked = false); return atualiza(); }
+    if (e.target.closest('[data-lote-ok]')) loteModal(tipo, sel(), extra || {});
+  };
+  atualiza();
+}
+
+async function loteModal(tipo, itens, extra) {
+  const L = LOTE[tipo]; if (!itens.length) return;
+  let bancos = await q(sb.from('contas_bancarias').select('*').eq('workspace_id', S.ws).eq('ativa', true)).catch(() => []);
+  if (tipo === 'receber') bancos = soContas(bancos);
+  const padrao = (bancos.find(b => b.padrao) || bancos[0] || {}).id || '';
+  const fp = id => ((extra.fpl || []).find(x => x.id === id) || {}).conta_bancaria_id;
+  /* conta de cada item quando a escolha é "a de cada uma": a que já está na conta, a da forma de pagamento ou a padrão */
+  const contaDe = x => (tipo === 'pagar' ? fp(x.forma_pagamento_id) : x.conta_bancaria_id) || x.conta_bancaria_id || padrao;
+  const total = itens.reduce((a, x) => a + Number(x.valor || 0), 0);
+  const linhas = itens.map(x => `<tr><td>${dd(x.vencimento)}</td><td>${esc(x._rot || x.descricao || '—')}</td><td class="n">${brl(x.valor)}</td></tr>`).join('');
+  modal(L.titulo, `<div class="tw lote-lista"><table><thead><tr><th>Vencimento</th><th>Descrição</th><th class="n">Valor</th></tr></thead><tbody>${linhas}
+      <tr class="tot"><td colspan="2">${itens.length} ${itens.length === 1 ? L.nome : L.plural}</td><td class="n">${brl(total)}</td></tr></tbody></table></div>
+    <div class="grid2"><label>${L.data}<input name="data" type="date" value="${hoje()}" required></label>
+    <label>${L.banco}<select name="banco"><option value="">A de cada conta (ou a padrão)</option>${opts(bancos, 'id', tipo === 'pagar' ? bancoLab : 'nome')}</select></label></div>
+    <p class="muted">Cada conta tem baixa pelo valor inteiro, igual ao botão ${L.verbo} da linha: entra no fluxo de caixa e vira lançamento contábil. Para ${tipo === 'pagar' ? 'pagar' : 'receber'} só uma parte, use o botão da própria conta.</p>`,
+  async d => {
+    if (!d.data) throw new Error('Informe a data.');
+    const ok = [], erro = [];
+    for (const x of itens) {
+      const banco = d.banco || contaDe(x) || null;
+      try {
+        if (tipo === 'pagar') await q(sb.rpc('registrar_pagamento', { p_conta: x.id, p_data: d.data, p_conta_bancaria: banco }));
+        else await q(sb.rpc('registrar_recebimento', { p_conta_receber: x.id, p_data: d.data, p_conta_bancaria: banco }));
+        ok.push(x);
+      } catch (e) { erro.push((x._rot || x.descricao || dd(x.vencimento)) + ': ' + (e.message || String(e))); }
+    }
+    if (!erro.length) toast(ok.length + ' ' + (ok.length === 1 ? L.nome + ' ' + L.feito : L.plural + ' ' + L.feitos) + ' · ' + brl(ok.reduce((a, x) => a + Number(x.valor || 0), 0)));
+    else toast((ok.length ? ok.length + ' ' + L.feitos + '; ' : '') + erro.length + ' não deu: ' + erro.join(' · '), true);
+  }, L.verbo + ' ' + itens.length + ' · ' + brl(total), true);
 }
 
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;

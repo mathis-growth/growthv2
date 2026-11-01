@@ -1,3 +1,6 @@
+## v0.191
+- index.html: aplicado sobre a v0.190 do repositório (mesmas substituições do `integra162.py`, com `g162.js` e `g162.css`; o rótulo da tela não muda). Coluna de seleção em `vPagar` e `vReceber` (`loteTodos`, `loteCaixa`), barra e modal (`loteLigar`, `loteModal`). Teste novo `t191_lote.py`.
+
 ## v0.190 — GET correto para grupos Evolution
 - `findChats` e `findGroupInfos` passam a usar GET; `findGroupInfos` recebe `groupJid` na URL.
 - Corrige recuperação por lote e apresenta resultado real no botão Buscar conversas e grupos.

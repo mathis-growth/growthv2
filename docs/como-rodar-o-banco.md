@@ -1,3 +1,6 @@
+## v0.191
+Nada a rodar no banco (só tela). Continuam pendentes os SQL da v0.157, v0.159 e v0.160.
+
 ## v0.179 — Instagram OAuth direto (pendente de publicação)
 1. Aplicar `supabase/migrations/20261031020000_instagram_oauth_direto.sql` após v0.178; conferir `conexoes.zernio_profile_id` e a existência de `privado.conexao_estados`.
 2. Publicar a nova Edge Function `instagram-oauth` **sem verificação automática de JWT** para permitir o callback GET. A função valida o JWT explicitamente no POST de início.

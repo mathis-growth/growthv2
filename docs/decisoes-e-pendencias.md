@@ -1,5 +1,16 @@
 
 
+## v0.191 — Pagar e receber várias contas de uma vez
+**Pedido da Rebecka (31/10)**: em Contas a pagar e Contas a receber, um quadradinho de seleção para escolher as contas que quiser e pagar (ou receber) todas de uma vez.
+Decisões técnicas:
+- Sem função nova no banco: cada conta selecionada passa pela mesma função da baixa de uma por uma (`registrar_pagamento` / `registrar_recebimento`). Lançamentos, movimentação no banco, DRE e fluxo de caixa ficam iguais aos da baixa individual. Assim a versão não depende de rodar SQL em produção.
+- A baixa em lote é sempre pelo valor inteiro. Baixa parcial continua no botão da própria conta.
+- Conta a pagar **estimada** aparece com o quadradinho desligado: o valor real precisa ser confirmado antes de pagar.
+- Conta bancária: uma para todas, ou "a de cada conta (ou a padrão)": na conta a pagar, a da forma de pagamento; na conta a receber, a que já está na parcela; sem nenhuma, a conta padrão. No contas a receber, cartão de crédito não aparece.
+- Se alguma conta não puder ser baixada, as outras seguem e o aviso diz qual falhou e por quê.
+- Também vale para Casa (contas a pagar e a receber da Casa usam as mesmas telas).
+- Pendência registrada: o plano da NSM no Growths está no documento "NSM no Growths: onde cadastrar e como configurar" (decididos em 31/10: NSM da empresa como principal, com ficha por produto opcional; must-have baixo só avisa; aprovam a equipe interna e o dono da conta do cliente). Faltam as decisões sobre "Receita bruta" como North Star padrão e o lugar da tela no menu.
+
 ## v0.161 — Pesquisa must-have da consultoria
 **Pedido da Rebecka (26/10)**: um formulário para saber se a consultoria de desenvolvimento de produto (pesquisa, construção do produto, narrativa, página de vendas e desenho da estratégia de venda, que a cliente não executou) é must-have, feito dentro do módulo de Pesquisas e com base no que já estava definido no Drive ("03 - Roteiro de Diagnóstico - Must-Have ao Aha e North Star").
 Decisões técnicas:

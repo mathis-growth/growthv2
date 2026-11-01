@@ -1,3 +1,8 @@
+## v0.191
+- Pagar ou receber em lote: só contas em aberto (previstas); a conta a pagar estimada precisa do valor confirmado antes. Cada conta é baixada pelo valor inteiro, na data escolhida, com o mesmo lançamento contábil da baixa individual.
+- Conta bancária do lote: a escolhida para todas, ou a de cada conta (forma de pagamento na conta a pagar; a da parcela na conta a receber) e, sem nenhuma, a conta padrão. Recebimento nunca entra em cartão de crédito.
+- Uma conta que falhar não impede as outras; o aviso lista as que não deram.
+
 ## v0.177 — Diagnóstico 360° (G1b, G2 e G3)
 - **Rascunho:** só no diagnóstico e só pelo link individual, válido e ainda não respondido. Depois de responder, o rascunho não volta mais.
 - **Arquivos do cliente:**

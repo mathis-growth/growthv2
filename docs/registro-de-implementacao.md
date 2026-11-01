@@ -1,5 +1,10 @@
 
 
+## Pagar e receber em lote (v0.191)
+- `g162.js`: `loteCaixa` (quadradinho só para conta em aberto; estimada desligada), `loteTodos` (selecionar todas da lista, com estado "pela metade"), `loteLigar` (barra fixa embaixo com quantidade, total, Limpar seleção e Pagar/Receber; linha marcada em destaque), `loteModal` (lista, total, data, conta bancária; baixa uma a uma e resume o resultado).
+- `vPagar` e `vReceber` ganham a primeira coluna de seleção; totais e linhas vazias ajustados à coluna nova.
+- Teste `t191_lote.py`: quadradinho por conta em aberto, estimada desligada, paga sem quadradinho, selecionar todas, seleção parcial, modal com total, contas pagas na data escolhida, a desmarcada continua a pagar, uma saída no banco por conta, duas parcelas recebidas, lista atualizada. 0 falhas. O teste desfaz os lançamentos que criou. t125 (receber e pagar): 0 falhas.
+
 ## Pesquisa must-have da consultoria (v0.161)
 - `g161.js`: modelo `must_servico` (25 perguntas, 6 passos, primeira de papel PMF com 4 opções, a última "Não se aplica"); `pqLeituraPmf` (percentual sem "Não se aplica", faixas 40% e 25%, pílula de cor e ação sugerida).
 - Teste `t161_must_have.py`: modelo na lista, 25 perguntas em 6 passos, pesquisa desativada e manual, 50% (3 de 6) sem o "Não se aplica" em verde, 16,7% em vermelho. 0 falhas. t129, t130 e t131 (pesquisas): 0 falhas.

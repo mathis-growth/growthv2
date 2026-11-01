@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 31/10/2026, versão 0.180 (ajuste de Integrações).
+**Última atualização:** 31/10/2026, versão 0.191 (pagar e receber em lote).
+
+**Financeiro v0.191 · Pagar e receber em lote.** Em Contas a pagar e a receber, um quadradinho em cada conta em aberto: marque as que quiser e dê baixa em todas de uma vez.
 
 Este documento conta o que o Growths faz, para quem e por quê, área por área, em linguagem simples. Ele não descreve tabelas nem código: descreve funcionalidades, decisões e a lógica por trás delas. Serve de base para criar conteúdo sobre o Growths, a Mathisa e o jeito Mathisa de fazer growth.
 
@@ -343,6 +345,7 @@ A primeira etapa está implementada e testada localmente na v0.175, aguardando p
 
 - **Contabilidade de verdade.** Cada venda, recebimento, conta e pagamento gera as partidas dobradas sozinho, pelas regras contábeis (que podem ser personalizadas). Nada se apaga: correção é estorno.
 - **Contas a receber.** Parcelas de contratos e vendas, provisionamento por mês e por cliente, MRR/ARR, receitas avulsas (com repetição) e desconto em parcela, que vira dedução da receita e não despesa. Também dá para cancelar, desfazer recebimento e reativar.
+- **Pagar e receber em lote.** Nas duas telas, cada conta em aberto tem um quadradinho: você marca as que quer (ou todas pelo cabeçalho), vê quantas são e o total numa barra embaixo e dá baixa em todas de uma vez, com a data e a conta bancária. Cada uma vira o mesmo lançamento da baixa individual. Conta com valor estimado só entra depois de confirmar o valor real.
 - **Contas a pagar.** Conta única, recorrente fixa, recorrente variável (valor estimado que se confirma) ou parcelada. Tem formas de pagamento, inclusive cartão de outra pessoa, e fornecedores com valor e vencimento padrão.
 - **Baixa parcial.** Pagar ou receber uma parte deixa o saldo em aberto, sem bagunçar a despesa ou a receita do mês. Desfazer junta de novo.
 - **Cartão de crédito como fatura**, não como saldo. O dinheiro só sai do banco ao pagar a fatura.
@@ -492,6 +495,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - Sua consultoria é must-have? A pergunta do desapontamento aplicada a um serviço.
 - "O que você teria feito no lugar?": descobrir o concorrente real de uma consultoria.
 - O backup antes da mudança: por que toda versão do Growths tem caminho de volta.
+- Fechar o mês em um clique: pagar dez contas de uma vez sem perder o lançamento de cada uma.
 
 ---
 
@@ -564,3 +568,6 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - modelo de pesquisa must-have para consultoria, com a leitura em três faixas nos resultados.
 - **29/10:**
   - Mapa de métricas com a North Star em destaque e as alavancas que movem a NSM agrupadas embaixo dela.
+- **31/10 (Financeiro):**
+  - pagar e receber várias contas de uma vez, com seleção, total e baixa em lote;
+  - plano da North Star no Growths (onde cadastrar e como configurar), a partir do documento de NSM da consultoria.

@@ -1,3 +1,6 @@
+## v0.191
+Sem mudança no banco: a baixa em lote chama `registrar_pagamento` e `registrar_recebimento`, uma vez por conta.
+
 ## v0.177 — Diagnóstico 360° (G1b, G2 e G3)
 - `metricas_definicoes.natureza`: `valor` (soma ou contagem) ou `taxa` (conta). Preenchida em todas as métricas do funil.
 - `pesquisa_envios.rascunho` (jsonb: `{passo, campos: {chave do campo: valor}, listas: {pergunta: linhas}}`) e `rascunho_em`.

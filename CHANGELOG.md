@@ -1,3 +1,10 @@
+## v0.191 — Pagar e receber várias contas de uma vez (31/10/2026)
+- **Contas a pagar** e **Contas a receber**: quadradinho em cada conta em aberto e no cabeçalho (seleciona todas da lista). Uma barra embaixo mostra quantas estão marcadas e o total, com **Limpar seleção** e **Pagar as selecionadas** / **Receber as selecionadas**.
+- A confirmação lista as contas e o total, pede a data e a conta bancária (uma para todas, ou a de cada conta) e dá baixa em todas pelo valor inteiro. Baixa parcial continua no botão da conta.
+- Conta estimada não entra no lote até o valor ser confirmado. Se alguma conta falhar, as outras seguem e o aviso diz qual.
+- Vale também para as telas da Casa.
+- Teste: `t191_lote.py` (0 falhas); t125 sem falhas. Sem mudança no banco.
+
 ## v0.190 — Correção de sincronização de nomes e fotos Evolution (31/10/2026)
 - Corrigidas rotas Evolution `GET /chat/findChats/{instance}` e `GET /group/findGroupInfos/{instance}?groupJid=...`, anteriormente chamadas via POST.
 - Recuperação em lotes de oito grupos do banco (inclusive quando a listagem da API retorna vazia); aceita `pictureUrl` fornecida nos metadados de grupo, com armazenamento privado.

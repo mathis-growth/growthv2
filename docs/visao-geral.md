@@ -1,3 +1,6 @@
+## v0.191
+**Pagar várias contas de uma vez.** Em Contas a pagar e Contas a receber, cada conta em aberto tem um quadradinho. Marque as que quiser, ou todas de uma vez pelo quadradinho do cabeçalho, e uma barra embaixo mostra quantas são e o total. Um clique abre a confirmação com a lista, a data e a conta bancária, e todas recebem baixa juntas, com os mesmos lançamentos da baixa de uma por uma.
+
 ## v0.161
 **Pesquisa must-have para a consultoria, pronta em Pesquisas.** Um modelo novo cria, com um clique, o questionário que mede se a consultoria de desenvolvimento de produto foi essencial para a cliente: quão desapontada ela ficaria sem ela, o que faria no lugar, quanto valeu cada entrega, o maior benefício, quando valeu a pena, o que travou a estratégia de venda e como ela indicaria. Nos resultados, o must-have aparece com a faixa do método (40% ou mais, 25% a 40%, menos de 25%) e o que fazer a seguir.
 
