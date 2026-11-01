@@ -129,7 +129,9 @@
     const ch=A.canais.find(c=>c.id===cv.canal_id)||{}, draft=A.drafts.get(draftKey(id))||'';
     $('#atdRoot').classList.add('selecionada');$('#atdRoot').classList.remove('ficha');
     $('#atdChat').innerHTML=`<header class="atd-top"><div><button class="btn sm atd-mobile" id="atdVoltar">← Conversas</button><strong>${esc(cv.nome)}</strong>${cv.grupo&&ch.provedor==='evolution'?` <button class="btn sm" id="atdArquivarGrupo">${cv.arquivada?'Desarquivar grupo':'Arquivar grupo'}</button>`:''}<div class="atd-identificacao">${faixaCanal(ch)}${cv.grupo?'<small>Grupo</small>':''}</div></div><div><select id="atdSituacao" aria-label="Situação da conversa" ${A.ctx.editar?'':'disabled'}>${['aberta','aguardando','resolvida'].map(s=>`<option value="${s}"${cv.status===s?' selected':''}>${s==='aberta'?'Aberta':s==='aguardando'?'Aguardando':'Resolvida'}</option>`).join('')}</select> <button class="btn sm atd-mobile" id="atdVerFicha">Ficha</button></div></header><div class="atd-msgs" id="atdMensagens"></div><form class="atd-compose" id="atdCompose"><div class="atd-dupla"><select id="atdModo" aria-label="Tipo de mensagem"><option value="enviar">Mensagem</option><option value="nota">Nota interna</option></select><button type="button" class="btn sm" id="atdHistorico">Importar histórico</button></div><textarea id="atdTexto" aria-label="Mensagem" maxlength="4000" placeholder="Escreva sua mensagem…" ${A.ctx.editar?'':'disabled'}>${esc(draft)}</textarea><div class="atd-arquivo" id="atdArquivoNome"></div><div class="atd-gravacao" id="atdGravacao" aria-live="polite"></div><footer><label class="btn sm">Anexar<input type="file" id="atdArquivo" class="atd-hidden" accept="image/jpeg,image/png,image/webp,video/mp4,audio/ogg,audio/mpeg,audio/mp4,audio/webm,audio/wav,application/pdf"></label><button type="button" class="btn sm" id="atdGravar" ${A.ctx.editar?'':'disabled'} aria-label="Gravar áudio pelo microfone">🎤 Gravar áudio</button><small class="muted">${A.ctx.nome?'Assinado por '+esc(A.ctx.nome):'Cadastre seu nome na equipe para enviar.'}</small><button class="btn pri" id="atdEnviar" ${A.ctx.editar?'':'disabled'}>Enviar</button></footer></form>`;
-    $('#atdModo').insertAdjacentHTML('afterend','<button type="button" class="btn sm" id="atdRapidas">⚡ Respostas rápidas</button>');
+    $('#atdModo').insertAdjacentHTML('afterend','<button type="button" class="btn sm" id="atdRapidas">⚡ Respostas rápidas</button> <button type="button" class="btn sm" id="atdAgendar">🕒 Agendar envio</button> <button type="button" class="btn sm" id="atdVerAgendados">Agendamentos</button>');
+    $('#atdAgendar').disabled=!A.ctx.editar;
+    $('#atdCompose').insertAdjacentHTML('beforebegin','<div id="atdAgendaLista" class="atd-agenda-lista" hidden></div>');
     $('#atdArquivarGrupo')?.addEventListener('click',()=>act(async()=>{
       await api('arquivar-grupo',{conversa_id:id,arquivar:!cv.arquivada},ws);
       toast(cv.arquivada?'Grupo desarquivado.':'Grupo arquivado no Growth V2.');
@@ -191,6 +193,36 @@
         A.drafts.set(draftKey(id),area.value);area.focus();
       },'Inserir no texto');
     }));
+    const agendaLista=$('#atdAgendaLista');
+    const verAgendados=async()=>{
+      const {agendamentos}=await api('agendamentos-list',{conversa_id:id},ws);
+      if(!active(token)||A.sel!==id)return;
+      agendaLista.hidden=false;
+      agendaLista.innerHTML='<div class="atd-agenda-head"><b>Mensagens agendadas</b><button type="button" class="btn sm" id="atdFecharAgenda">Fechar</button></div>'+
+        (agendamentos.length?agendamentos.map(j=>`<article class="atd-agenda-item"><small>${new Date(j.enviar_em).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',dateStyle:'short',timeStyle:'short'})} (Brasília) · ${esc(j.status)}</small><p>${esc(j.texto)}</p>${j.erro?`<small class="atd-erro">${esc(j.erro)}</small>`:''}${j.status==='agendado'?`<button type="button" class="btn sm bad" data-cancelar-agenda="${j.id}">Cancelar envio</button>`:''}</article>`).join(''):'<p class="muted">Nenhum envio agendado nesta conversa.</p>');
+      $('#atdFecharAgenda').onclick=()=>agendaLista.hidden=true;
+      agendaLista.onclick=e=>{const btn=e.target.closest('[data-cancelar-agenda]');if(btn)act(async()=>{
+        if(!confirm('Cancelar esta mensagem agendada?'))return;
+        await api('cancelar-agendamento',{agendamento_id:btn.dataset.cancelarAgenda},ws);
+        toast('Agendamento cancelado.');await verAgendados();
+      });};
+    };
+    $('#atdVerAgendados').onclick=()=>act(verAgendados);
+    $('#atdAgendar').onclick=()=>{
+      const texto=$('#atdTexto').value.trim(),modo=$('#atdModo').value;
+      if(modo!=='enviar'){toast('Agendamento disponível apenas para mensagens, não notas internas.',true);return;}
+      if(!texto){toast('Escreva a mensagem antes de agendar.',true);return;}
+      if($('#atdArquivo').files.length||recordedFile){toast('Agendamento de anexos estará disponível em uma próxima etapa. Remova o anexo.',true);return;}
+      const inicio=new Date(Date.now()+3600000).toLocaleString('sv-SE',{timeZone:'America/Sao_Paulo'}).replace(' ','T').slice(0,16);
+      modal('Agendar mensagem',`<p style="white-space:pre-wrap">${esc(texto)}</p><label>Data e horário (Brasília)<input type="datetime-local" name="quando" required value="${inicio}"></label><p class="muted">O envio é processado automaticamente em até aproximadamente 1 minuto após o horário escolhido. Em WhatsApp oficial, a Meta pode exigir template aprovado fora da janela de atendimento de 24 horas.</p>`,async d=>{
+        const data=String(d.quando||'');
+        if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(data))throw Error('Data inválida.');
+        const timestamp=new Date(data+':00-03:00');
+        if(!Number.isFinite(timestamp.getTime()))throw Error('Horário inválido.');
+        await api('agendar',{conversa_id:id,texto,enviar_em:timestamp.toISOString()},ws);
+        A.drafts.delete(draftKey(id));toast('Mensagem agendada para '+timestamp.toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'})+' (Brasília).');
+      },'Confirmar agendamento');
+    };
     $('#atdCompose').onsubmit=async e=>{
       e.preventDefault();const form=e.currentTarget,btn=form.querySelector('#atdEnviar');if(btn.disabled)return;
       const text=form.querySelector('#atdTexto').value.trim(),mode=form.querySelector('#atdModo').value,file=form.querySelector('#atdArquivo').files[0]||recordedFile;
