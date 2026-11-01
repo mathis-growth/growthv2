@@ -568,10 +568,50 @@
       await meta();
     }catch(e){if(S.ws===ws&&S.view==='atd-templates')$('#atdTemplates').textContent=e.message;}
   }
-  NAV.splice(NAV.findIndex(g=>g.g==='Vendas')+1,0,{g:'Atendimento',items:[['atd-conversas','Conversas'],['atd-canais','Canais e conexões'],['atd-templates','Templates']]});
+  async function vAutomacoes(m){
+    stop();++A.token;const ws=S.ws;
+    m.innerHTML='<div class="head"><div><h1>Automações</h1><span class="muted">Chatbots de resposta para Instagram e WhatsApp.</span></div><div class="acts"><button class="btn" id="atdAutoConversas">Conversas</button><button class="btn" id="atdAutoCanais">Canais</button></div></div><div id="atdAutomacoes" class="panel">Carregando automações…</div>';
+    $('#atdAutoConversas').onclick=()=>{S.view='atd-conversas';render();};
+    $('#atdAutoCanais').onclick=()=>{S.view='atd-canais';render();};
+    try{
+      const [ctx,flows,canais,execs]=await Promise.all([
+        api('contexto',{},ws),api('automacoes-list',{},ws),
+        q(sb.from('atd_canais').select('id,nome,provedor,canal,numero,status,ativo').eq('workspace_id',ws).eq('ativo',true).order('nome')),
+        api('automacoes-execucoes',{},ws).catch(()=>({execucoes:[]}))
+      ]);
+      if(S.ws!==ws||S.view!=='atd-automacoes')return;
+      const root=$('#atdAutomacoes'),rows=flows.automacoes||[],runs=execs.execucoes||[];let conversationNames=new Map();
+      const carregaNomes=async()=>{const ids=[...new Set(runs.map(r=>r.conversa_id).filter(Boolean))];if(!ids.length){conversationNames=new Map();return;}const found=await q(sb.from('atd_conversas').select('id,nome').eq('workspace_id',ws).in('id',ids));conversationNames=new Map(found.map(c=>[c.id,c.nome]));};
+      await carregaNomes();
+      const channelName=id=>{const c=canais.find(x=>x.id===id);return !id?'Todos os canais compatíveis':c?nomeCanal(c)+' · '+identidadeCanal(c):'Canal removido';};
+      const triggers=f=>f.gatilho_tipo==='qualquer_mensagem'?'Qualquer mensagem recebida':'Mensagem contém “'+esc(f.gatilho_valor)+'”';
+      const render=()=>{
+        root.innerHTML=`<div class="atd-auto-intro"><div><b>Respostas automáticas</b><p>Crie um fluxo com gatilho de mensagem recebida e resposta. O placeholder <code>{{nome}}</code> usa o nome da conversa.</p></div>${ctx.editar?'<button class="btn pri" id="atdAutoNova">＋ Nova automação</button>':''}</div><div class="atd-auto-list">${rows.map((f,i)=>`<article class="atd-auto-card"><header><div><span class="pill ${f.ativo?'good':'warn'}">${f.ativo?'Ativa':'Rascunho'}</span><h3>${esc(f.nome)}</h3></div><span class="atd-auto-canal">${esc(channelName(f.canal_id))}</span></header><div class="atd-auto-flow"><div><small>QUANDO</small><b>${triggers(f)}</b></div><span aria-hidden="true">→</span><div><small>RESPONDE</small><p>${esc(f.resposta)}</p></div></div>${ctx.editar?`<footer><button class="btn sm" data-auto-edit="${i}">Editar</button><button class="btn sm" data-auto-toggle="${i}">${f.ativo?'Pausar':'Ativar'}</button><button class="btn sm bad" data-auto-delete="${i}">Excluir</button></footer>`:''}</article>`).join('')||'<div class="atd-auto-empty"><b>Nenhuma automação criada</b><p>Crie um fluxo para responder automaticamente mensagens recebidas nos canais conectados.</p></div>'}</div><section class="atd-auto-runs"><h3>Execuções recentes</h3><p class="muted">Apenas as mensagens recebidas que correspondem ao gatilho aparecem aqui.</p>${runs.length?`<div class="atd-auto-run-list">${runs.map(r=>`<div><span class="pill ${r.status==='enviado'?'good':r.status==='processando'?'warn':'bad'}">${esc(r.status)}</span><b>${esc(rows.find(f=>f.id===r.automacao_id)?.nome||'Automação')}</b><span>${esc(conversationNames.get(r.conversa_id)||'Conversa')}</span><time>${fmt(r.executado_em)}</time>${r.erro?`<small class="atd-erro">${esc(r.erro)}</small>`:''}</div>`).join('')}</div>`:'<p>Nenhuma execução registrada ainda.</p>'}</section>`;
+        $('#atdAutoNova')?.addEventListener('click',()=>editor());
+        root.querySelectorAll('[data-auto-edit]').forEach(b=>b.onclick=()=>editor(rows[Number(b.dataset.autoEdit)]));
+        root.querySelectorAll('[data-auto-toggle]').forEach(b=>b.onclick=()=>act(async()=>{const f=rows[Number(b.dataset.autoToggle)];await api('automacoes-save',{...f,ativo:!f.ativo},ws);toast(f.ativo?'Automação pausada.':'Automação ativada.');await load();}));
+        root.querySelectorAll('[data-auto-delete]').forEach(b=>b.onclick=()=>act(async()=>{const f=rows[Number(b.dataset.autoDelete)];if(!confirm(`Excluir a automação “${f.nome}”? O histórico das execuções dela também será removido.`))return;await api('automacoes-delete',{id:f.id},ws);toast('Automação excluída.');await load();}));
+      };
+      const editor=f=>{
+        const canaisValidos=canais.filter(c=>(c.canal==='instagram'&&c.provedor==='zernio')||(c.canal==='whatsapp'&&['zernio','evolution'].includes(c.provedor)));
+        const options='<option value="">Todos os canais compatíveis</option>'+canaisValidos.map(c=>`<option value="${esc(c.id)}"${f?.canal_id===c.id?' selected':''}>${esc(nomeCanal(c)+' · '+identidadeCanal(c))}</option>`).join('');
+        const body=`<p>O fluxo responde a mensagens recebidas. Para Instagram e WhatsApp oficial, a Meta aplica a janela de atendimento e as políticas do canal.</p><label>Nome do fluxo<input name="nome" required maxlength="120" value="${esc(f?.nome||'')}" placeholder="Ex.: Boas-vindas"></label><label>Canal<select name="canal_id">${options}</select></label><label>Gatilho<select name="gatilho_tipo" id="atdAutoTrigger"><option value="palavra_chave"${!f||f.gatilho_tipo==='palavra_chave'?' selected':''}>Mensagem contém palavra-chave</option><option value="qualquer_mensagem"${f?.gatilho_tipo==='qualquer_mensagem'?' selected':''}>Qualquer mensagem recebida</option></select></label><label id="atdAutoKeywordLabel">Palavra ou trecho<input name="gatilho_valor" maxlength="100" value="${esc(f?.gatilho_valor||'')}" placeholder="preço"></label><label>Resposta automática<textarea name="resposta" required maxlength="4000" rows="5" placeholder="Olá, {{nome}}! Como posso ajudar?">${esc(f?.resposta||'')}</textarea></label><p class="muted">O fluxo fica como rascunho até você ativá-lo. Cada mensagem recebida só pode disparar o mesmo fluxo uma vez.</p>`;
+        const form=modal(f?'Editar automação':'Nova automação',body,async(d,form)=>{
+          await api('automacoes-save',{id:f?.id,nome:d.nome,canal_id:d.canal_id||null,gatilho_tipo:d.gatilho_tipo,gatilho_valor:d.gatilho_valor||'',resposta:d.resposta,ativo:f?.ativo===true},ws);
+          toast('Automação salva como '+(f?.ativo?'ativa':'rascunho')+'.');
+        },'Salvar automação',true);
+        const trigger=form.querySelector('#atdAutoTrigger'),keyword=form.querySelector('#atdAutoKeywordLabel');
+        const sync=()=>{keyword.hidden=trigger.value!=='palavra_chave';form.elements.gatilho_valor.required=trigger.value==='palavra_chave';};
+        trigger.onchange=sync;sync();
+      };
+      const load=async()=>{const [r,e]=await Promise.all([api('automacoes-list',{},ws),api('automacoes-execucoes',{},ws).catch(()=>({execucoes:[]}))]);if(S.ws!==ws||S.view!=='atd-automacoes')return;rows.splice(0,rows.length,...(r.automacoes||[]));runs.splice(0,runs.length,...(e.execucoes||[]));await carregaNomes();render();};
+      render();
+    }catch(e){if(S.ws===ws&&S.view==='atd-automacoes')$('#atdAutomacoes').innerHTML=`<div class="empty"><b>Automações ainda não disponíveis</b><p>${esc(e.message)}</p><p>Confira a migration e a publicação da Edge de Atendimento.</p></div>`;}
+  }
+  NAV.splice(NAV.findIndex(g=>g.g==='Vendas')+1,0,{g:'Atendimento',items:[['atd-conversas','Conversas'],['atd-canais','Canais e conexões'],['atd-templates','Templates'],['atd-automacoes','Automações']]});
   MOD_GRUPO.Atendimento='vendas';
-  ICO.Atendimento=ICO['crm-dms']||ICO.Vendas||'';ICO['atd-conversas']=ICO['crm-dms']||'';ICO['atd-canais']=ICO['cfg-integracoes'];ICO['atd-templates']=ICO['crm-dms']||'';
-  VIEWS['atd-conversas']=vAtendimento;VIEWS['atd-canais']=vCanais;VIEWS['atd-templates']=vTemplates;
+  ICO.Atendimento=ICO['crm-dms']||ICO.Vendas||'';ICO['atd-conversas']=ICO['crm-dms']||'';ICO['atd-canais']=ICO['cfg-integracoes'];ICO['atd-templates']=ICO['crm-dms']||'';ICO['atd-automacoes']=ICO['crm-dms']||'';
+  VIEWS['atd-conversas']=vAtendimento;VIEWS['atd-canais']=vCanais;VIEWS['atd-templates']=vTemplates;VIEWS['atd-automacoes']=vAutomacoes;
   // v0.183: intercepta cliques que ainda apontam para a Edge conexoes legada.
   // O cxLiga() original registra handlers na renderização de Integrações;
   // na fase de captura, esta ponte impede que Meta execute esses handlers.

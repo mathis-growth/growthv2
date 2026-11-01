@@ -12,6 +12,7 @@ Entrega v0.175, preparada em 30/10/2026 sobre a v0.174. Código e testes locais;
 - WhatsApp oficial e Instagram pela Zernio: contas do perfil já conectado ao workspace, sincronização paginada, envio de respostas, webhooks assinados e eventos de entrega/leitura.
 - Assinatura aplicada pelo servidor a partir de `equipe.nome`, ligada ao usuário autenticado. No WhatsApp: `*Nome:* mensagem`. Se faltar nome, o envio é recusado até corrigir o cadastro da equipe.
 - Anexos até 8 MB: imagens JPEG/PNG/WebP, MP4, áudio e PDF. Arquivos recebidos são copiados para Storage privado; falhas ficam visíveis como anexo pendente e podem ser recuperadas. Não há transcrição nem gravação de áudio no navegador nesta etapa.
+- Automações v0.197: gatilho por qualquer mensagem recebida ou palavra-chave e resposta automática para Instagram/Zernio, WhatsApp oficial/Zernio e WhatsApp Evolution. Execuções são idempotentes, aparecem no histórico e não respondem em grupos.
 
 ## Modelo de dados e permissões
 
@@ -28,6 +29,7 @@ Um identificador de requisição impede o reenvio do mesmo pedido. Se o provedor
 ## Publicação
 
 1. Aplicar `supabase/migrations/20261030021541_central_atendimento.sql` no projeto Supabase correto, sobre a base atual. O nome foi gerado pela CLI; migrações antigas do repositório têm nomes com datas futuras. Para banco existente, aplicar este arquivo explicitamente no SQL Editor; não executar um `db push` indiscriminado.
+1.1. Aplicar também `supabase/migrations/20261204100000_atendimento_automacoes.sql` para criar as tabelas privadas de automações e adicionar a aba ao catálogo de acessos.
 2. Publicar a Edge Function `atendimento` **sem verificação automática de JWT**, porque o mesmo endpoint recebe webhooks. O código verifica o JWT nos comandos do aplicativo, HMAC nos webhooks Zernio e segredo de header + instância nos webhooks Evolution. Com a CLI: `supabase functions deploy atendimento --no-verify-jwt --project-ref <projeto>`.
 3. Manter `ZERNIO_API_KEY` no servidor e cadastrar `ZERNIO_ATENDIMENTO_WEBHOOK_SECRET` com um segredo aleatório forte. As variáveis padrão do Supabase são fornecidas pelo runtime. Não colocar chaves no HTML, repositório ou campos genéricos de Integrações.
 4. Publicar `index.html` **e a pasta `assets/`**. O front continua sem build; agora depende também de `assets/atendimento.js` e `assets/atendimento.css`.
@@ -42,7 +44,7 @@ O endpoint da Evolution recebe os eventos `MESSAGES_UPSERT`, `MESSAGES_UPDATE` e
 
 O banco usa textos para `provedor` e `canal`, sem enum fechado. O registro `providers` em `supabase/functions/atendimento/providers.ts` define envio; normalizadores em `core.ts` traduzem os eventos para o contrato comum. Para Telegram ou TikTok: implementar/registrar adaptador e normalizador, habilitar descoberta de contas daquele canal, documentar suas capacidades e adicionar testes. O seletor e o histórico usam os registros do banco. Telegram/TikTok não aparecem como conectáveis antes dessa implementação.
 
-Templates, disparos, editor de automações, indicadores, respostas rápidas, iniciar conversa proativa, importação automática dos registros antigos de DMs e unificação automática de identidades entre canais não fazem parte desta primeira etapa. As DMs antigas permanecem disponíveis nas telas anteriores. WhatsApp oficial continua exigindo template aprovado quando a janela de resposta estiver fechada; a central informa a recusa do provedor.
+Fluxos condicionais e visuais com múltiplos blocos, disparos em massa e indicadores de automação ficam para próximas etapas. A versão inicial responde mensagens recebidas com um único bloco de resposta por automação; uma mensagem recebida só dispara cada automação uma vez. Respostas automáticas respeitam as janelas e políticas de cada provedor. As DMs antigas permanecem disponíveis nas telas anteriores. WhatsApp oficial continua exigindo template aprovado quando a janela de resposta estiver fechada.
 
 ## Validação e integração
 
