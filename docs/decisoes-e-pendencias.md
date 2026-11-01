@@ -1,5 +1,14 @@
 
 
+## v0.207 — Correções da Entrada do cliente e restauração do index.html
+**Fato (repositório)**: os commits 5605139 e 8f466f8 (atendimento: automações de chatbot, de outra sessão) gravaram um `index.html` cortado: o arquivo tinha o texto "Warning: truncated output" no meio do código e perdeu cerca de 377 KB (por exemplo, os Pacotes de acesso). A v0.207 parte da v0.206 inteira e reaplica a única mudança deles no index (`atendimento.css?v=0197` e `atendimento.js?v=0197`). Os outros arquivos deles (assets/atendimento.*, função atendimento, migração 20261204100000) não foram mexidos. Se o index cortado foi publicado, publique de novo esta versão.
+**Pedido da Rebecka (01/11)**, testando a Entrada do cliente:
+- "Não deixa continuar mesmo com os arquivos enviados": **fato** — a pesquisa em produção tem 0 envios e 0 arquivos, ou seja, o teste foi pelo link aberto/pré-visualização, que não envia arquivo; o aviso de erro só aparecia no rodapé. Agora: pelo link aberto ou pré-visualização, o arquivo fica marcado como **teste** (o grupo conta como respondido e dá para continuar), com o aviso no próprio grupo de que o cliente envia pelo link individual (Fila de envio). Erro de envio também aparece no grupo.
+- **✓ verde** no grupo quando há arquivo anexado ("✓ arquivo anexado" e borda verde); some se o arquivo for retirado.
+- **Pergunta nova**: "Quais números você acompanha hoje no seu negócio? (marque todos)" — lista com 19 opções (faturamento, ticket, investimento, leads, CPL, conversão, CAC, ROAS, comparecimento, checkout, abandono, reembolsos, churn, recompra, LTV, NPS, MRR, margem, nenhum) — e "Acompanha outro número? Qual?" (opcional). O formulário passa a 15 perguntas, ainda em 4 partes. Pesquisa já criada: criar de novo pelo modelo (a de produção não tem envios).
+- **Pacotes de acesso dos clientes**: a coluna Tipo mostra "Completo · sem financeiro" para o cliente num pacote sem Financeiro (Go-to-Market).
+**Em planejamento (aguardando o ok dela)**: Financeiro simplificado (DRE simplificado sem contas a pagar e a receber) e o Dashboard de vendas no padrão dos outros dashboards.
+
 ## v0.206 — Importar histórico de vendas e histórico na ficha (etapas 2 e 3)
 **Pedido da Rebecka (01/11)**: subir as vendas do último ano do cliente que entra (clientes, compras, plataforma, data, primeira compra) para ter o histórico, comparar e calcular o planejamento anual, sem o financeiro.
 Decisões:

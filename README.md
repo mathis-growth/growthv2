@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.207 | 01/11/2026 | Entrada do cliente: ✓ verde, métricas que acompanha, teste pelo link aberto. **index.html restaurado** (commits de atendimento tinham cortado o arquivo). | nada |
 | 0.206 | 01/11/2026 | **Histórico de vendas**: importar o relatório da plataforma com de-para, ficha com o histórico, planejamento com o histórico. | `RODAR_v0.206_historico_vendas.sql`, **ainda não aplicado** |
 | 0.205 | 01/11/2026 | **Go-to-Market**: pacote sem financeiro, Custos de marketing com rotina mensal, Resultado de marketing, vendas por plataforma. | `RODAR_v0.205_go_to_market.sql`, **ainda não aplicado** |
 | 0.204 | 01/11/2026 | Pesquisas: nome interno e título para quem responde. | nada |

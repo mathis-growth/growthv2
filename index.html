@@ -388,7 +388,7 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">.hv-st{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}.hv-st label{display:flex;flex-direction:column;gap:4px;font-size:13px}.hv-outra[hidden]{display:none!important}/* v0.205 Go-to-Market: resultado de marketing e custos */
+<style id="v122">.pf-doc.pf-ok{border-left:4px solid #17803d;padding-left:10px}.pf-doc.pf-ok > b::after{content:" ✓ arquivo anexado";color:#17803d;font-size:13px;margin-left:6px}.pf-arqs li span{color:#17803d}.pf-dmsg{display:block;margin:6px 0 0;font-size:13px;color:#17803d}.pf-dmsg.ruim{color:#b42318}.pf-dmsg:empty{display:none}.hv-st{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}.hv-st label{display:flex;flex-direction:column;gap:4px;font-size:13px}.hv-outra[hidden]{display:none!important}/* v0.205 Go-to-Market: resultado de marketing e custos */
 .mr-aviso{margin:8px 0 0;font-size:12.5px}
 .mc-sel td{background:var(--accent-soft)}
 .mc-val[hidden]{display:none!important}
@@ -11476,7 +11476,7 @@ async function vPacotes(m) {
       <td style="white-space:nowrap"><button class="btn sm" data-pe="${p.id}">Editar</button><button class="btn sm" data-pd="${p.id}">Duplicar</button><button class="btn sm" data-px="${p.id}">Excluir</button></td></tr>`).join('') : '<tr><td colspan="6" class="empty">Nenhum pacote ainda.</td></tr>'}</tbody></table></div></div>
     <div class="panel"><h2>Clientes</h2><span class="muted">Escolha o pacote de cada cliente. "Ajustar telas" liga ou desliga telas só para aquele cliente, sem mexer no pacote. Sem pacote = acesso a tudo.</span>
     <div class="tw"><table><thead><tr><th>Cliente</th><th>Tipo</th><th>Pacote</th><th>Ajustes</th><th></th></tr></thead><tbody>
-    ${C.length ? C.map(c => `<tr><td><b>${esc(c.nome)}</b></td><td><small>${c.modo_produto === 'starter' ? 'Growth Starter' : 'Completo'}</small></td>
+    ${C.length ? C.map(c => `<tr><td><b>${esc(c.nome)}</b></td><td><small>${c.modo_produto === 'starter' ? 'Growth Starter' : (() => { const pk = P.find(p => p.id === c.pacote_id); return pk && !(pk.telas || []).some(t => /^fin-/.test(t)) ? 'Completo · sem financeiro' : 'Completo'; })()}</small></td>
       <td><select data-cp="${c.id}" style="width:auto"><option value="">— sem pacote (acesso a tudo) —</option>${P.filter(p => p.ativo || p.id === c.pacote_id).map(p => `<option value="${p.id}"${p.id === c.pacote_id ? ' selected' : ''}>${esc(p.nome)}</option>`).join('')}</select></td>
       <td>${(c.liga || []).length || (c.desliga || []).length ? `<small>${(c.liga || []).length ? '<span class="pos">+' + (c.liga || []).length + ' ligada(s)</span> ' : ''}${(c.desliga || []).length ? '<span class="neg">−' + (c.desliga || []).length + ' desligada(s)</span>' : ''}</small>` : '<span class="muted">—</span>'}</td>
       <td><button class="btn sm" data-ca="${c.id}">Ajustar telas</button></td></tr>`).join('') : '<tr><td colspan="5" class="empty">Nenhum cliente.</td></tr>'}</tbody></table></div></div><div class="panel" id="pacContent"></div>`;
@@ -15700,6 +15700,8 @@ const PQ_ENTRADA = () => { const P = entPeriodo(); return [
   { s: 'Seus números, do seu jeito', t: 'Quanto investe em anúncios por mês, em média?', tp: 'moeda', cfg: { naosei: true } },
   { s: 'Seus números, do seu jeito', t: 'Quanto custa a operação por mês, aproximadamente (equipe, ferramentas, pró-labore)?', tp: 'moeda', o: false, cfg: { naosei: true } },
   { s: 'Seus números, do seu jeito', t: 'Regime tributário da empresa', tp: 'escolha', o: false, op: ['MEI', 'Simples Nacional', 'Lucro Presumido', 'Lucro Real', 'Não sei'] },
+  { s: 'Seus números, do seu jeito', t: 'Quais números você acompanha hoje no seu negócio? (marque todos)', tp: 'multipla', op: ['Faturamento', 'Ticket médio', 'Investimento em anúncios', 'Leads', 'Custo por lead (CPL)', 'Conversão de lead em venda', 'Custo de aquisição (CAC)', 'Retorno sobre anúncios (ROAS)', 'Comparecimento nas aulas ou lives', 'Conversão do checkout', 'Abandono de checkout', 'Reembolsos', 'Cancelamentos (churn)', 'Recompra', 'Valor do cliente no tempo (LTV)', 'NPS ou satisfação', 'Receita recorrente (MRR)', 'Margem ou lucro', 'Ainda não acompanho nenhum'] },
+  { s: 'Seus números, do seu jeito', t: 'Acompanha outro número que não está na lista? Qual?', tp: 'texto', o: false },
   { s: 'O que você espera', t: 'O que você espera deste trabalho?', tp: 'texto' },
   { s: 'O que você espera', t: 'Quanto quer faturar nos próximos 12 meses?', tp: 'moeda', o: false, cfg: { naosei: true } },
   { s: 'Seus arquivos', t: `Precisamos dos arquivos ${P.txt}. As vendas aparecem por plataforma, conforme o que você marcou em "Onde vende". Para cada grupo, envie o arquivo agora ou marque "Não tenho". Se ajudar, baixe a planilha-modelo e preencha.`, tp: 'documentos', cfg: { categorias: ENT_CATS(), upload: true, sem_depois: true, onde: 'onde', aviso: DG_AVISO, periodo: P } }]; };
@@ -15752,14 +15754,18 @@ async function dgArqFn(body) {
 function pfLigaUpload(f, token, op = {}) {
   const docs = [...f.querySelectorAll('.pf-doc[data-g]')]; if (!docs.length) return;
   const msg = f.querySelector('.pf-msg') || f.closest('.pf-in').querySelector('.pf-msg');
-  const linha = (box, a) => { const li = document.createElement('li'); li.dataset.id = a.id; li.innerHTML = `<span>✓ ${esc(a.nome)} <small>${dgTam(a.tamanho)}</small></span><button type="button" class="pf-b2 pf-arx" title="Tirar este arquivo" aria-label="Tirar ${esc(a.nome)}">×</button>`; box.querySelector('.pf-arqs').appendChild(li); marca(box); };
+  const linha = (box, a) => { const li = document.createElement('li'); li.dataset.id = a.id; li.innerHTML = `<span>✓ ${esc(a.nome)} <small>${dgTam(a.tamanho)}${a.teste ? ' · teste: não foi enviado' : ''}</small></span><button type="button" class="pf-b2 pf-arx" title="Tirar este arquivo" aria-label="Tirar ${esc(a.nome)}">×</button>`; box.querySelector('.pf-arqs').appendChild(li); marca(box); };
   const marca = box => { const sim = box.querySelector('.pf-upsim'), tem = box.querySelectorAll('.pf-arqs li').length > 0;
-    if (tem) { sim.checked = true; } else if (sim.checked) sim.checked = false; sim.dispatchEvent(new Event('change', { bubbles: true })); };
+    if (tem) { sim.checked = true; } else if (sim.checked) sim.checked = false; box.classList.toggle('pf-ok', tem); sim.dispatchEvent(new Event('change', { bubbles: true })); };
+  /* v0.207: o aviso aparece no próprio grupo (antes só no rodapé, longe do botão) */
+  const avisa = (box, t, ruim) => { let e = box.querySelector('.pf-dmsg'); if (!e) { e = document.createElement('small'); e.className = 'pf-dmsg'; box.querySelector('.pf-arqs').before(e); } e.textContent = t || ''; e.classList.toggle('ruim', !!ruim); };
+  const teste = op.previa || op.aberto;
   if (!op.previa) q(sb.rpc('pesquisa_arquivos_do_link', { p_token: token })).then(L => (L || []).forEach(a => { const box = docs.find(b => b.dataset.g === a.grupo); if (box) linha(box, a); })).catch(() => {});
   f.addEventListener('change', async ev => {
     const inp = ev.target.closest('[data-up]'); if (!inp) return;
     const box = inp.closest('.pf-doc'), lab = inp.closest('.pf-up'), fs = [...inp.files]; inp.value = '';
-    if (op.previa) { msg.textContent = 'Pré-visualização: o envio de arquivos só funciona pelo link.'; return; }
+    if (teste) { fs.forEach((a, i) => linha(box, { id: 'teste-' + Date.now() + i, nome: a.name, tamanho: a.size, teste: true }));
+      avisa(box, 'Teste: por este link o arquivo não é enviado. O cliente envia pelo link individual dele (Fila de envio).', true); return; }
     lab.classList.add('envia');
     for (const a of fs) {
       const ext = (a.name.match(/\.([A-Za-z0-9]{1,5})$/) || [])[1];
@@ -15771,13 +15777,14 @@ function pfLigaUpload(f, token, op = {}) {
         const up = await sb.storage.from('diagnostico').uploadToSignedUrl(r.caminho, r.envio, a, { contentType: a.type || 'application/octet-stream' });
         if (up.error) { dgArqFn({ acao: 'remover', token, id: r.id }).catch(() => {}); throw new Error('O envio de ' + a.name + ' falhou. Tente de novo.'); }
         await dgArqFn({ acao: 'confirmar', token, id: r.id });
-        linha(box, { id: r.id, nome: a.name, tamanho: a.size }); msg.textContent = a.name + ' enviado.';
-      } catch (er) { msg.textContent = er.message; }
+        linha(box, { id: r.id, nome: a.name, tamanho: a.size }); msg.textContent = a.name + ' enviado.'; avisa(box, '');
+      } catch (er) { msg.textContent = er.message; avisa(box, er.message, true); }
     }
     lab.classList.remove('envia');
   });
   f.addEventListener('click', async ev => {
-    const x = ev.target.closest('.pf-arx'); if (!x || op.previa) return;
+    const x = ev.target.closest('.pf-arx'); if (!x) return;
+    if (teste) { const bx = x.closest('.pf-doc'); x.closest('li').remove(); marca(bx); return; }
     const li = x.closest('li'), box = x.closest('.pf-doc'); x.disabled = true;
     try { await dgArqFn({ acao: 'remover', token, id: li.dataset.id }); li.remove(); marca(box); msg.textContent = 'Arquivo retirado.'; }
     catch (er) { msg.textContent = er.message; x.disabled = false; }
@@ -17300,7 +17307,7 @@ function pfDesenha(el, d, token, op = {}) {
       <p class="pf-msg" role="status" aria-live="polite"></p></form></div></div>`;
   const f = el.querySelector('form'), msg = el.querySelector('.pf-msg'); let at = 0;
   if ((d.perguntas || []).some(x => PQ_TP_G1[x.tipo] || x.condicao)) pfLigaG1(f, d);
-  if ((d.perguntas || []).some(x => x.tipo === 'documentos' && (x.config || {}).upload)) pfLigaUpload(f, token, op);
+  if ((d.perguntas || []).some(x => x.tipo === 'documentos' && (x.config || {}).upload)) pfLigaUpload(f, token, { ...op, aberto: !!d.aberto });
   const mostra = () => {
     f.querySelectorAll('[data-passo]').forEach(s => s.hidden = +s.dataset.passo !== at);
     f.querySelector('[data-pf="volta"]').hidden = at === 0; f.querySelector('[data-pf="segue"]').hidden = at === N - 1; f.querySelector('[data-pf="envia"]').hidden = at !== N - 1;

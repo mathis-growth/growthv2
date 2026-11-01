@@ -1,5 +1,8 @@
 
 
+## Correções da Entrada do cliente (v0.207)
+- Teste `t201_entrada_cliente.py` (35 verificações, 0 falhas): 15 perguntas em 4 passos; pergunta das métricas; ✓ verde e aviso de teste no link aberto; grupo com arquivo conta como respondido; tirar o arquivo tira o ✓. `t197` 0 falhas; `t177` com as 2 falhas antigas do Diagnóstico Growth.
+
 ## Histórico de vendas (v0.206)
 - Teste `t206_historico_vendas.py` (19 verificações, 0 falhas): painel; de-para automático de um relatório com cabeçalhos em português; status traduzidos; conferir não grava; resumo (7 vendas, R$ 7.494 aprovados; 1 não é venda, 1 repetida, 1 já no Growths, 1 com erro); carga registrada; nada na tabela de vendas; pessoa nova cliente desde a primeira compra; lead antigo vira cliente; só reembolso = lead; ficha; planejamento soma o histórico; desfazer; quem já existia fica. t198, t200 e t205 sem falhas.
 

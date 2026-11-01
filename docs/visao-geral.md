@@ -1,3 +1,6 @@
+## v0.207
+**Entrada do cliente mais clara.** Arquivo anexado ganha ✓ verde no grupo, a pergunta "quais números você acompanha" virou lista para marcar, e o teste pelo link aberto não trava mais.
+
 ## v0.206
 **O histórico do cliente que chega.** As vendas de antes do Growths sobem pelo relatório da plataforma, com de-para automático e conferência antes de gravar. Viram o histórico de cada cliente (primeira compra, recompra) e a base do planejamento anual, sem mexer no financeiro. Cada carga pode ser desfeita.
 

@@ -1,3 +1,6 @@
+## v0.207
+- index.html: **restaurado da v0.206** (f8194b1) + `?v=0197` do atendimento, e aplicado `aplica207.py` (`g201.js` com a pergunta das métricas; `pfLigaUpload` com `teste`, `avisa` e `pf-ok`; `pfDesenha` passa `aberto`; coluna Tipo nos pacotes). `t201_entrada_cliente.py` com 6 verificações a mais.
+
 ## v0.206
 - index.html: aplicado sobre a v0.205 (`aplica206.py`, `g206.js`): `HV_CAMPOS`, `hvCsv`, `hvLeArquivo`, `hvMapa`, `hvMonta`, `modalHistoricoVendas`, `hvPainel` (gancho em `cfg-importar`); ficha da pessoa com `vendas_historicas`. Migração `20261203100000_historico_vendas.sql` / `RODAR_v0.206_historico_vendas.sql`. Teste novo `t206_historico_vendas.py`.
 
