@@ -50,7 +50,7 @@ with sync_playwright() as p:
     # ---------------- Nova campanha em etapas ----------------
     front.vai(pg, 'mkt-camp', "S.tabMkt = 'campanhas'; S.campSel = null", 3500)
     pg.click('#novaCamp'); pg.wait_for_timeout(1500)
-    chk(pg.locator('#modalRoot .wz .wzp > div').count() == 3 and pg.locator('#modalRoot .wzp .at').inner_text().startswith('1.'), 'Nova campanha abre a etapa 1 de 3')
+    chk(pg.locator('#modalRoot .wz .wzp > div').count() == 4 and pg.locator('#modalRoot .wzp .at').inner_text().startswith('1.'), 'Nova campanha abre a etapa 1 de 4 (v0.193: o passo 4 é Pesquisa)')
     pg.click('#modalRoot .wzf .pri'); pg.wait_for_timeout(800)
     chk('nome' in pg.inner_text('#toast').lower() or pg.locator('#modalRoot .wzp .at').inner_text().startswith('1.'), 'sem nome não avança')
     pg.fill('#modalRoot [name=nome]', 'T121 Black Friday'); pg.select_option('#modalRoot [name=produto_id]', PROD)
@@ -71,6 +71,8 @@ with sync_playwright() as p:
     chk('Sobram' not in pg.inner_text('#wzTab') and 'mais de 100%' in pg.inner_text('#wzTab'), 'avisa quando os canais passam de 100% do orçamento')
     pg.fill('#wzTab input[data-p=google_ads]', '30'); pg.dispatch_event('#wzTab input[data-p=google_ads]', 'change'); pg.wait_for_timeout(300)
     chk('Sobram 10%' in pg.inner_text('#wzTab'), 'avisa o orçamento que sobrou sem canal')
+    pg.click('#modalRoot .wzf .pri'); pg.wait_for_timeout(2500)
+    chk(pg.locator('#modalRoot .wzp .at').inner_text().startswith('4.') and pg.locator('#modalRoot [name=cpq_usa][value=nao]').is_checked(), 'v0.193: passo 4, Pesquisa, começa em Não')
     pg.click('#modalRoot .wzf .pri'); pg.wait_for_timeout(4000)
     can = sql(f"select string_agg(canal || ':' || coalesce(orcamento::text, '-') || ':' || meta_leads || ':' || tipo || ':' || (utm_campaign <> ''), ',' order by canal) from campanha_canais where campanha_id = '{cid}'")
     chk(can == 'google_ads:7500.00:1800:pago:true,meta_ads:15000.00:1800:pago:true,organico:-:400:organico:true', 'etapa 3 grava os canais com orçamento, meta, tipo e utm: ' + can)

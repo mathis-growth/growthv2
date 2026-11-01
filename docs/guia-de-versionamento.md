@@ -1,3 +1,6 @@
+## v0.193
+- index.html: aplicado sobre a v0.192 (`aplica193.py`; novos `g193.js` e `g193.css`). `WZ_ETAPAS` com o passo 4; assistente da campanha (`tela`, `salvar`) com o passo de pesquisa; `cpqCampos`, `cpqLiga`, `cpqSalva`, `cpqDados`, `cpqModal`, `cpqDoModelo`, `cpqCodigo`, `cpqUtm`, `campPesquisaPainel` (chamado no fim de `tcResumo`); `pubPesqAltura` na página pública. Teste novo `t193_pesquisa_campanha.py`.
+
 ## v0.192
 - index.html: aplicado sobre a v0.191 (`aplica192.py`; novos `g192.js` e `g192.css`). `GRADE_SECOES` (plano por tela: itens do topo e seções com título, pergunta e quadros em 12 colunas), `gradeSecoes`, `GS_todos`, `GS_painel`; `gradeAplica` passa para `gradeSecoes` quando a tela tem plano de seções; `gradeLarg` desconta a moldura da seção. Teste novo `t192_secoes.py`; `t158_grade.py` ajustado à nova disposição.
 

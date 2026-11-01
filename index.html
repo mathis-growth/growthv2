@@ -388,7 +388,24 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.192 dashboards em seções */
+<style id="v122">/* v0.193 pesquisa na campanha */
+.cpq{display:flex;flex-direction:column;gap:14px}
+.cpq fieldset{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:0;display:flex;flex-direction:column;gap:8px}
+.cpq fieldset legend{font-weight:600;padding:0 4px}
+.cpq-sn{flex-direction:row!important;gap:22px!important}
+.cpq-det{display:flex;flex-direction:column;gap:14px}
+.cpq-det[hidden],.cpq-disp[hidden],.cpq-et[hidden]{display:none!important}
+.cpq-onde label.chk{align-items:flex-start;gap:8px}
+.cpq-onde label.chk input{margin-top:3px}
+.cpq-aviso{margin:0;padding:10px 12px;border-radius:10px;background:var(--warn-soft,rgba(245,158,66,.12));border:1px solid rgba(245,158,66,.35);font-size:13px}
+.cpq-blocos{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.cpq-b{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.cpq-b h3{margin:0;font-size:15px}
+.cpq-code{margin:0;max-height:180px;overflow:auto;white-space:pre-wrap;word-break:break-all;font-size:11.5px;padding:10px;border-radius:8px;background:var(--surface-2);border:1px solid var(--line)}
+.cpq-lk{word-break:break-all;font-size:12px}
+.wz .wzp{grid-template-columns:repeat(4,1fr)}
+@media (max-width:600px){.wz .wzp{grid-template-columns:repeat(2,1fr)}}
+/* v0.192 dashboards em seções */
 #main.secoes192{row-gap:28px}
 #main.secoes192 .secl{display:none!important}
 #main.secoes192>.dsec{grid-column:1/-1;display:flex;flex-direction:column;gap:16px;min-width:0;margin:0!important;
@@ -2426,6 +2443,7 @@ async function tcResumo(el, c, r) {
   $('#novoCanal').onclick = () => abrirForm('Novo canal na campanha', 'campanha_canais', cCanal(null), null, { extra: { campanha_id: c.id }, ok: 'Canal adicionado', antes: async v => { campExecValida(c, EXC, v); v.utm_campaign = (v.utm_campaign || '').trim(); if (!v.utm_campaign) { const base = slug(c.nome) + '_' + slug(v.canal), ja = (await q(sb.from('campanha_canais').select('utm_campaign').eq('workspace_id', S.ws).limit(5000))).map(x => x.utm_campaign); let t = base, n = 2; while (ja.includes(t)) t = base + '_' + n++; v.utm_campaign = t; } return v; } });
   el.querySelectorAll('[data-ek]').forEach(b => b.onclick = () => abrirForm('Editar canal da campanha', 'campanha_canais', cCanal(null), canais.find(x => x.id === b.dataset.ek), { antes: v => campExecValida(c, EXC, { ...v, canal: v.canal || (canais.find(x => x.id === b.dataset.ek) || {}).canal }) }));
   await campEstrategiasPainel(el, c);
+  await campPesquisaPainel(el, c, canais);
 }
 
 async function tcFunil(el, c) {
@@ -13347,7 +13365,7 @@ function campFormCompacto() {
 }
 
 /* ---------- Nova campanha em 3 etapas: cada etapa salva; dá para terminar depois ---------- */
-const WZ_ETAPAS = [[1, 'O básico'], [2, 'Orçamento e metas'], [3, 'Canais']];
+const WZ_ETAPAS = [[1, 'O básico'], [2, 'Orçamento e metas'], [3, 'Canais'], [4, 'Pesquisa']];
 async function abrirWizard(id = null, passo = 1) {
   const w = S.ws, root = $('#modalRoot');
   const [prods, funis, cad] = await Promise.all([
@@ -13364,7 +13382,7 @@ async function abrirWizard(id = null, passo = 1) {
   const opt = (l, v, cur) => l.map(([k, t]) => `<option value="${esc(k)}"${String(cur ?? '') === String(k) ? ' selected' : ''}>${esc(t)}</option>`).join('');
   const dias = () => { if (!c || !c.data_inicio) return 30; if (c.modelo === 'perpetuo' || !c.data_fim) return 30; return Math.max(1, Math.round((new Date(c.data_fim) - new Date(c.data_inicio)) / 864e5) + 1); };
   const pago = cod => String(cod).endsWith('_ads');
-  let sel = null, linhas = {};
+  let sel = null, linhas = {}, wzCpq = null;
   const tela = () => {
     const passos = WZ_ETAPAS.map(([n, t]) => `<div class="${n < passo ? 'ok' : n === passo ? 'at' : ''}"><i></i>${n}. ${t}${n < passo ? ' ✓' : ''}</div>`).join('');
     let corpo = '';
@@ -13387,16 +13405,18 @@ async function abrirWizard(id = null, passo = 1) {
         <label>${per ? 'Meta de leads por mês' : 'Meta de leads'}<input type="number" min="0" name="${per ? 'meta_leads_mes' : 'meta_leads'}" value="${(per ? c.meta_leads_mes : c.meta_leads) ?? ''}"></label>
         <label>CAC máximo aceito (R$)<input type="number" step="0.01" min="0" name="meta_cac" value="${c.meta_cac ?? ''}"></label></div>
       <div class="calc" id="wzCalc"></div>`;
-    } else {
+    } else if (passo === 3) {
       const tm = c.tipo_midia || 'hibrida', ok = cad.filter(x => tm === 'paga' ? pago(x.codigo) : tm === 'organica' ? !pago(x.codigo) : true);
       if (!sel) { sel = new Set(canais.map(x => x.canal)); canais.forEach(x => linhas[x.canal] = { pct: c.orcamento_total && x.orcamento != null ? Math.round(x.orcamento / c.orcamento_total * 1000) / 10 : '', leads: x.meta_leads ?? '' }); }
       corpo = `<p class="lead">Escolha os canais e divida o orçamento e a meta de leads. A meta por dia é sugerida pelo período (${dias()} dias${c.modelo === 'perpetuo' ? ', por mês' : ''}).</p>
       <div class="cn">${ok.map(x => `<span data-cn="${esc(x.codigo)}" class="${sel.has(x.codigo) ? 'on' : ''}" role="button" tabindex="0">${esc(x.nome)}</span>`).join('')}<span class="novo" id="wzNovoCanal" role="button" tabindex="0">＋ Novo canal</span></div>
       <div id="wzTab"></div>`;
     }
+    if (passo === 4) { if (!wzCpq) { corpo = '<p class="lead">Carregando as pesquisas…</p>'; cpqDados().then(d => { wzCpq = d; tela(); }).catch(e => toast(e.message || String(e), true)); }
+      else corpo = '<p class="lead">Se a campanha vai ter pesquisa, escolha qual e onde ela entra. Dá para mudar depois, na aba Planejamento e metas.</p>' + cpqCampos(cpqCfg(c), wzCpq.pesqs, wzCpq.etapas); }
     root.innerHTML = `<div class="ov"><div class="modal wz" role="dialog" aria-label="Nova campanha"><div class="wzh"><h2>${c && passo > 1 ? esc(c.nome) : 'Nova campanha'}</h2><div class="wzp">${passos}</div></div>
       <form><div class="wzb">${corpo}</div><div class="wzf">${passo > 1 ? '<button type="button" class="btn" data-w="volta">Voltar</button>' : '<button type="button" class="btn" data-w="x">Cancelar</button>'}<span class="sp"></span>
-      ${c ? '<span class="salvo">✓ Rascunho salvo</span>' : ''}${c ? '<button type="button" class="btn" data-w="depois">Terminar depois</button>' : ''}<button type="submit" class="btn pri">${passo < 3 ? 'Salvar e continuar' : 'Concluir e abrir a campanha'}</button></div></form></div></div>`;
+      ${c ? '<span class="salvo">✓ Rascunho salvo</span>' : ''}${c ? '<button type="button" class="btn" data-w="depois">Terminar depois</button>' : ''}<button type="submit" class="btn pri">${passo < 4 ? 'Salvar e continuar' : 'Concluir e abrir a campanha'}</button></div></form></div></div>`;
     const f = root.querySelector('form');
     root.querySelector('.ov').onmousedown = e => { if (e.target.classList.contains('ov')) fecha(); };
     root.querySelectorAll('[data-w]').forEach(b => b.onclick = () => act(async () => {
@@ -13404,7 +13424,8 @@ async function abrirWizard(id = null, passo = 1) {
       if (a === 'volta') { passo--; return tela(); }
       if (a === 'depois') { await salvar(f); abreCampanha(); }
     }));
-    f.onsubmit = e => { e.preventDefault(); act(async () => { const btn = f.querySelector('.pri'); btn.disabled = true; try { await salvar(f); } finally { btn.disabled = false; } if (passo < 3) { passo++; tela(); } else abreCampanha(); }); };
+    f.onsubmit = e => { e.preventDefault(); act(async () => { const btn = f.querySelector('.pri'); btn.disabled = true; try { await salvar(f); } finally { btn.disabled = false; } if (passo < 4) { passo++; tela(); } else abreCampanha(); }); };
+    if (passo === 4) cpqLiga(f);
     if (passo === 1) { ligarNovo(f); const fe = f.querySelector('[name=funil_id]');
       const prevEt = async () => { const box = $('#wzEt'), id_ = fe.value; if (!box) return; if (!id_ || id_ === '__nova_est__') { box.innerHTML = ''; return; }
         box.innerHTML = '<span class="muted">Carregando as etapas…</span>';
@@ -13471,7 +13492,7 @@ async function abrirWizard(id = null, passo = 1) {
       const ld = v.meta_leads ?? v.meta_leads_mes; if (v.orcamento_total && ld) v.meta_cpl = Math.round(v.orcamento_total / ld * 100) / 100;
       if (v.meta_vendas && v.meta_leads) v.meta_taxa_lead_venda = Math.round(v.meta_vendas / v.meta_leads * 10000) / 100;
       await q(sb.from('campanhas').update(v).eq('id', c.id)); c = { ...c, ...v };
-    } else {
+    } else if (passo === 3) {
       const orc = Number(c.orcamento_total || 0), meta = Number((c.modelo === 'perpetuo' ? c.meta_leads_mes : c.meta_leads) || 0);
       const ja = (await q(sb.from('campanha_canais').select('utm_campaign').eq('workspace_id', w).limit(5000))).map(x => x.utm_campaign);
       for (const k of sel) {
@@ -13483,7 +13504,7 @@ async function abrirWizard(id = null, passo = 1) {
           await q(sb.from('campanha_canais').insert({ ...v, workspace_id: w, campanha_id: c.id, canal: k, utm_campaign: t, tipo: pago(k) ? 'pago' : 'organico' })); }
       }
       canais = await q(sb.from('campanha_canais').select('*').eq('campanha_id', c.id));
-    }
+    } else if (f.querySelector('[data-cpq]')) await cpqSalva(f, c);
   };
   tela();
 }
@@ -15993,6 +16014,165 @@ function gradeSecoes(m, semTexto) {
   if (!semTexto) gradeTextos(m);
 }
 
+/* ================= v0.193 — Pesquisa na campanha =================
+   Pedido da Rebecka (31/10): ao criar a campanha, dizer se vai ter pesquisa, escolher qual (uma que já existe, um modelo pronto
+   ou uma nova) e onde ela entra: na captação, na página de obrigado (com o código HTML para colar) ou em disparo para os leads.
+   O disparo automático ainda não foi decidido: por enquanto o Growths gera os envios dos leads da campanha na fila da pesquisa
+   e você manda pelo botão. A escolha fica em campanhas.extras.pesquisa (sem mudança no banco). */
+const CPQ_QUANDO = { cadastro: 'Logo depois do cadastro', etapa: 'Quando o lead entra numa etapa do funil', manual: 'Eu escolho quem e quando' };
+const CPQ_CANAL = { whatsapp: 'WhatsApp', email: 'E-mail', link: 'Só o link' };
+const cpqCfg = c => ((c && c.extras) || {}).pesquisa || {};
+const cpqCopia = (t, ok) => navigator.clipboard.writeText(t).then(() => toast(ok), () => toast('Não consegui copiar. Selecione o texto e copie.', true));
+/* cria a pesquisa a partir de um modelo de PQ_MODELOS, sem abrir modal; devolve o id */
+async function cpqDoModelo(k, nomeCamp) {
+  const md = PQ_MODELOS[k]; if (!md) throw new Error('Modelo não encontrado.');
+  const nome = (md.nome + ' · ' + nomeCamp).slice(0, 200);
+  if (md.objetos) {
+    const pid = crypto.randomUUID(), ids = {}; md.objetos.forEach((x, i) => { ids[x.k || ('_' + i)] = crypto.randomUUID(); });
+    await q(sb.from('pesquisas').insert({ id: pid, workspace_id: S.ws, nome, tipo: md.tipo, publico: md.publico, gatilho: md.gatilho, descricao: md.descricao, ativa: false }));
+    await q(sb.from('pesquisa_perguntas').insert(md.objetos.map((x, i) => { const cfg = { ...(x.cfg || {}) }; if (cfg.modelo) cfg.modelo = ids[cfg.modelo];
+      return { id: ids[x.k || ('_' + i)], workspace_id: S.ws, pesquisa_id: pid, ordem: i + 1, texto: x.t, tipo: x.tp, opcoes: x.op || [], papel: 'livre', obrigatoria: x.o !== false, secao: x.s, config: cfg,
+        condicao: x.c ? { pergunta: ids[x.c.k], valores: x.c.v } : null }; })));
+    return pid;
+  }
+  const p = one(await q(sb.from('pesquisas').insert({ workspace_id: S.ws, nome, tipo: md.tipo, gatilho: md.gatilho, descricao: md.descricao, dispensa_qualificado: !!md.dispensa_qualificado, ativa: false, ...(md.extra || {}) }).select('id').single()));
+  await q(sb.from('pesquisa_perguntas').insert(md.perguntas.map((x, i) => ({ workspace_id: S.ws, pesquisa_id: p.id, ordem: i + 1, texto: x[0], tipo: x[1], opcoes: x[2], papel: x[3], obrigatoria: x[4] !== false, ...(x[5] ? { secao: x[5] } : {}), ...(x[6] ? { pontos: x[6] } : {}) }))));
+  return p.id;
+}
+/* campos do bloco "Pesquisa" (no passo 4 da nova campanha e no Configurar da campanha) */
+function cpqCampos(cfg, pesqs, etapas) {
+  const usa = !!cfg.usa, ex = new Set((pesqs || []).map(p => p.id));
+  const sel = cfg.pesquisa_id && ex.has(cfg.pesquisa_id) ? cfg.pesquisa_id : '';
+  const mods = Object.entries(PQ_MODELOS).filter(([, v]) => !v.objetos || S.pqCfg);
+  return `<div class="cpq" data-cpq>
+    <fieldset class="cpq-sn"><legend>Vai usar pesquisa nesta campanha?</legend>
+      <label class="chk"><input type="radio" name="cpq_usa" value="nao"${usa ? '' : ' checked'}> Não</label>
+      <label class="chk"><input type="radio" name="cpq_usa" value="sim"${usa ? ' checked' : ''}> Sim</label></fieldset>
+    <div class="cpq-det"${usa ? '' : ' hidden'}>
+      <label>Qual pesquisa<select name="cpq_pesq">
+        <option value="">Escolha…</option>
+        ${(pesqs || []).length ? `<optgroup label="Pesquisas que já existem">${pesqs.map(p => `<option value="${esc(p.id)}"${p.id === sel ? ' selected' : ''}>${esc(p.nome)}${p.ativa ? '' : ' (desativada)'}</option>`).join('')}</optgroup>` : ''}
+        <optgroup label="Criar a partir de um modelo pronto">${mods.map(([k, v]) => `<option value="m:${esc(k)}">${esc(v.nome)}</option>`).join('')}</optgroup>
+        <optgroup label="Criar do zero"><option value="nova">Nova pesquisa em branco</option></optgroup>
+      </select></label>
+      <fieldset class="cpq-onde"><legend>Onde ela entra (pode marcar mais de um)</legend>
+        <label class="chk"><input type="checkbox" name="cpq_captacao"${cfg.captacao ? ' checked' : ''}> <span><b>Na captação</b><br><span class="muted">O formulário do Growths é a página de inscrição: quem responde entra no Funil de leads desta campanha.</span></span></label>
+        <label class="chk"><input type="checkbox" name="cpq_obrigado"${cfg.obrigado ? ' checked' : ''}> <span><b>Na página de obrigado</b><br><span class="muted">O Growths gera o código HTML para colar na página; a pesquisa aparece dentro dela.</span></span></label>
+        <label class="chk"><input type="checkbox" name="cpq_disparo"${cfg.disparo ? ' checked' : ''}> <span><b>Disparo para os leads</b><br><span class="muted">Cada lead da campanha recebe o link próprio dele.</span></span></label>
+      </fieldset>
+      <div class="cpq-disp"${cfg.disparo ? '' : ' hidden'}><div class="grid2">
+        <label>Quando enviar<select name="cpq_quando">${Object.entries(CPQ_QUANDO).map(([k, v]) => `<option value="${k}"${(cfg.quando || 'cadastro') === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
+        <label>Por onde<select name="cpq_canal">${Object.entries(CPQ_CANAL).map(([k, v]) => `<option value="${k}"${(cfg.canal || 'whatsapp') === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
+        <label class="cpq-et"${(cfg.quando || 'cadastro') === 'etapa' ? '' : ' hidden'}>Etapa do funil<select name="cpq_etapa"><option value="">Escolha…</option>${(etapas || []).map(e => `<option${cfg.etapa === e ? ' selected' : ''}>${esc(e)}</option>`).join('')}</select></label></div>
+        <p class="cpq-aviso"><b>O envio automático ainda não está ligado.</b> Por enquanto, o Growths coloca os leads da campanha na fila da pesquisa e você manda pelo botão (WhatsApp com a mensagem pronta ou copiar o link). Quando vocês decidirem a ferramenta, o disparo passa a sair sozinho com estas mesmas escolhas.</p>
+      </div>
+    </div></div>`;
+}
+function cpqLiga(f) {
+  const box = f.querySelector('[data-cpq]'); if (!box) return;
+  const at = () => {
+    const sim = (f.querySelector('[name=cpq_usa]:checked') || {}).value === 'sim';
+    box.querySelector('.cpq-det').hidden = !sim;
+    box.querySelector('.cpq-disp').hidden = !f.querySelector('[name=cpq_disparo]').checked;
+    box.querySelector('.cpq-et').hidden = f.querySelector('[name=cpq_quando]').value !== 'etapa';
+  };
+  box.addEventListener('change', at); at();
+}
+/* lê o bloco, cria a pesquisa se for de modelo ou nova, ajusta a pesquisa e grava a escolha na campanha */
+async function cpqSalva(f, c) {
+  const v = n => { const i = f.querySelector(`[name=${n}]`); return i ? (i.type === 'checkbox' ? i.checked : i.value) : null; };
+  const usa = (f.querySelector('[name=cpq_usa]:checked') || {}).value === 'sim';
+  const antes = cpqCfg(c);
+  let cfg = { usa };
+  if (usa) {
+    let pid = v('cpq_pesq');
+    if (!pid) throw new Error('Escolha a pesquisa (uma que já existe, um modelo ou uma nova).');
+    const onde = ['captacao', 'obrigado', 'disparo'].filter(k => v('cpq_' + k));
+    if (!onde.length) throw new Error('Marque onde a pesquisa entra: na captação, na página de obrigado ou em disparo.');
+    if (v('cpq_disparo') && v('cpq_quando') === 'etapa' && !v('cpq_etapa')) throw new Error('Escolha a etapa do funil em que o lead recebe a pesquisa.');
+    if (pid.startsWith('m:')) pid = await cpqDoModelo(pid.slice(2), c.nome);
+    else if (pid === 'nova') pid = one(await q(sb.from('pesquisas').insert({ workspace_id: S.ws, nome: ('Pesquisa · ' + c.nome).slice(0, 200), tipo: 'lead', gatilho: 'manual', ativa: false }).select('id').single())).id;
+    cfg = { usa, pesquisa_id: pid, captacao: !!v('cpq_captacao'), obrigado: !!v('cpq_obrigado'), disparo: !!v('cpq_disparo'),
+      quando: v('cpq_disparo') ? v('cpq_quando') : null, etapa: v('cpq_disparo') && v('cpq_quando') === 'etapa' ? v('cpq_etapa') : null, canal: v('cpq_disparo') ? v('cpq_canal') : null };
+    /* a pesquisa precisa aceitar o link aberto (obrigado e captação) e, na captação, estar com o formulário ligado */
+    const p = one(await q(sb.from('pesquisas').select('id,aceita_link_aberto,captacao').eq('id', pid))) || {};
+    const up = {};
+    if ((cfg.obrigado || cfg.captacao) && !p.aceita_link_aberto) up.aceita_link_aberto = true;
+    if (cfg.captacao && !(p.captacao && p.captacao.ativa)) up.captacao = { ...(p.captacao || {}), ativa: true };
+    if (cfg.disparo && cfg.canal) up.canal_envio = cfg.canal;
+    if (Object.keys(up).length) await q(sb.from('pesquisas').update(up).eq('id', pid));
+  } else if (antes.pesquisa_id) cfg.pesquisa_id = antes.pesquisa_id;   /* guarda a escolha anterior, caso volte a usar */
+  const ex = { ...((one(await q(sb.from('campanhas').select('extras').eq('id', c.id))) || {}).extras || {}), pesquisa: { ...cfg, atualizado_em: new Date().toISOString() } };
+  await q(sb.from('campanhas').update({ extras: ex }).eq('id', c.id));
+  c.extras = ex; return cfg;
+}
+async function cpqDados() {
+  /* etapas do Funil de leads (quadro de leads) e das estratégias */
+  const [pesqs, ek, et] = await Promise.all([q(sb.from('pesquisas').select('id,nome,ativa').eq('workspace_id', S.ws).order('nome')).catch(() => []),
+    q(sb.from('etapas_kanban').select('nome,ordem').eq('workspace_id', S.ws).eq('quadro', 'leads').order('ordem')).catch(() => []),
+    q(sb.from('funil_etapas').select('nome,ordem').eq('workspace_id', S.ws).order('ordem')).catch(() => [])]);
+  return { pesqs, etapas: [...new Set(ek.concat(et).map(e => e.nome))] };
+}
+function cpqModal(c) {
+  cpqDados().then(({ pesqs, etapas }) => {
+    const f = modal('Pesquisa da campanha', cpqCampos(cpqCfg(c), pesqs, etapas), async (d, form) => { await cpqSalva(form, c); toast('Pesquisa da campanha salva'); }, 'Salvar', true);
+    cpqLiga(f);
+  }).catch(e => toast(e.message || String(e), true));
+}
+/* código para a página de obrigado: a pesquisa num iframe que se ajusta à altura do conteúdo */
+function cpqCodigo(link, id) {
+  return `<\!-- Pesquisa do Growths -->
+<iframe id="${id}" src="${link}" title="Pesquisa" style="width:100%;max-width:720px;min-height:640px;border:0;display:block;margin:0 auto" loading="lazy"></iframe>
+<script>window.addEventListener('message',function(e){var d=e.data||{};if(d.growthsPesquisa){var f=document.getElementById('${id}');if(f)f.style.height=(d.growthsPesquisa+24)+'px';}});<\/script>`;
+}
+const cpqUtm = (link, cn) => link + '&utm_source=' + encodeURIComponent(slug(cn.canal || 'campanha')) + '&utm_medium=' + encodeURIComponent(cn.tipo === 'pago' || (!cn.tipo && String(cn.canal || '').endsWith('_ads')) ? 'pago' : 'organico') + '&utm_campaign=' + encodeURIComponent(cn.utm_campaign || '');
+/* painel na aba Planejamento e metas da campanha */
+async function campPesquisaPainel(el, c, canais) {
+  const cfg = cpqCfg(c), box = document.createElement('div'); box.className = 'panel cpq-painel'; box.id = 'cpqPainel'; el.appendChild(box);
+  if (!cfg.usa || !cfg.pesquisa_id) {
+    box.innerHTML = `<div class="head"><h2>Pesquisa da campanha</h2><div class="acts"><button class="btn" data-cpq-cfg>Configurar pesquisa</button></div></div>
+      <p class="muted">Esta campanha não usa pesquisa. Configure para escolher uma pesquisa e onde ela entra: na captação, na página de obrigado ou em disparo para os leads.</p>`;
+    box.querySelector('[data-cpq-cfg]').onclick = () => cpqModal(c); return;
+  }
+  const [p, leads, env] = await Promise.all([
+    q(sb.from('pesquisas').select('id,nome,ativa,aceita_link_aberto,token_aberto,captacao,canal_envio').eq('id', cfg.pesquisa_id)).then(one).catch(() => null),
+    q(sb.from('pessoas').select('id').eq('workspace_id', S.ws).eq('campanha_id', c.id).limit(5000)).catch(() => []),
+    q(sb.from('pesquisa_envios').select('pessoa_id,status').eq('pesquisa_id', cfg.pesquisa_id).limit(10000)).catch(() => [])]);
+  if (!p) { box.innerHTML = `<div class="head"><h2>Pesquisa da campanha</h2><div class="acts"><button class="btn" data-cpq-cfg>Configurar pesquisa</button></div></div><p class="muted">A pesquisa escolhida não existe mais. Escolha outra.</p>`; box.querySelector('[data-cpq-cfg]').onclick = () => cpqModal(c); return; }
+  const link = p.token_aberto ? linkPesquisa(p.token_aberto) : '', onde = [cfg.captacao && 'na captação', cfg.obrigado && 'na página de obrigado', cfg.disparo && 'em disparo'].filter(Boolean);
+  const comEnvio = new Set(env.map(x => x.pessoa_id)), semEnvio = leads.filter(x => !comEnvio.has(x.id)), resp = env.filter(x => x.status === 'respondido').length;
+  const cn = (canais || []).filter(x => x.utm_campaign), iid = 'growths-pesquisa-' + String(p.id).slice(0, 8);
+  const blocoObrigado = cfg.obrigado ? `<div class="cpq-b"><h3>Página de obrigado</h3>${link ? `<p class="muted">Cole este código na página de obrigado (no editor da página, num bloco de HTML). A pesquisa aparece dentro da página e quem responde é ligado ao lead pelo e-mail.</p>
+      <pre class="cpq-code" id="cpqCode">${esc(cpqCodigo(link + '&utm_campaign=' + encodeURIComponent((cn[0] || {}).utm_campaign || slug(c.nome)) + '&utm_medium=obrigado', iid))}</pre>
+      <div class="acts"><button class="btn sm" data-cpq-copia="code">Copiar código</button><a class="btn sm" href="${esc(link)}" target="_blank" rel="noopener">Ver a pesquisa</a></div>` : '<p class="muted">A pesquisa ainda não tem o link aberto. Salve de novo em Configurar.</p>'}</div>` : '';
+  const blocoCapt = cfg.captacao ? `<div class="cpq-b"><h3>Captação</h3>${link && p.captacao && p.captacao.ativa ? `<p class="muted">Link de inscrição por canal, com a origem (UTM) de cada um: quem responde entra no Funil de leads nesta campanha.</p>
+      ${cn.length ? `<div class="tw"><table><tbody>${cn.map((x, i) => `<tr><td>${esc(x.canal)}</td><td><code class="cpq-lk" data-cpq-lk="${i}">${esc(cpqUtm(link, x))}</code></td><td><button class="btn sm" data-cpq-copia="lk${i}">Copiar</button></td></tr>`).join('')}</tbody></table></div>` : `<p class="muted">Cadastre os canais da campanha para ter um link por canal.</p><code class="cpq-lk">${esc(link)}</code>`}` : '<p class="muted">O formulário de captação desta pesquisa está desligado. Salve de novo em Configurar.</p>'}</div>` : '';
+  const blocoDisp = cfg.disparo ? `<div class="cpq-b"><h3>Disparo</h3><p>${esc(CPQ_QUANDO[cfg.quando] || '')}${cfg.etapa ? ' (' + esc(cfg.etapa) + ')' : ''} · por ${esc(CPQ_CANAL[cfg.canal] || '')}</p>
+      <div class="kpis">${kpi('Leads da campanha', num(leads.length))}${kpi('Na fila', num(env.length), 'já com link próprio')}${kpi('Responderam', num(resp))}${kpi('Sem envio', num(semEnvio.length), 'ainda fora da fila')}</div>
+      <p class="cpq-aviso"><b>O envio automático ainda não está ligado.</b> Coloque os leads na fila e mande pela Fila de envio da pesquisa (WhatsApp com a mensagem pronta ou copiar o link).</p>
+      <div class="acts"><button class="btn sm pri" data-cpq-gera${semEnvio.length && p.ativa ? '' : ' disabled'}>Colocar ${num(semEnvio.length)} lead(s) na fila</button><button class="btn sm" data-cpq-fila>Abrir a fila de envio</button></div></div>` : '';
+  box.innerHTML = `<div class="head"><div><h2>Pesquisa da campanha</h2><span class="muted"><b>${esc(p.nome)}</b> · entra ${onde.join(', ')}</span></div>
+      <div class="acts"><button class="btn sm" data-cpq-abre>Abrir a pesquisa</button><button class="btn sm" data-cpq-cfg>Configurar</button></div></div>
+    ${p.ativa ? '' : '<p class="cpq-aviso"><b>A pesquisa está desativada.</b> Revise as perguntas e ative em Pesquisas antes de publicar o código ou o link: desativada, a pesquisa não aceita respostas.</p>'}
+    <div class="cpq-blocos">${blocoCapt}${blocoObrigado}${blocoDisp}</div>`;
+  box.querySelector('[data-cpq-cfg]').onclick = () => cpqModal(c);
+  box.querySelector('[data-cpq-abre]').onclick = () => { S.view = 'gro-pesq'; S.pqSel = p.id; S.pqTab = cfg.captacao ? 'form' : 'perguntas'; render(); };
+  const fila = box.querySelector('[data-cpq-fila]'); if (fila) fila.onclick = () => { S.view = 'gro-pesq'; S.pqSel = p.id; S.pqTab = 'envios'; render(); };
+  box.querySelectorAll('[data-cpq-copia]').forEach(b => b.onclick = () => {
+    const k = b.dataset.cpqCopia; if (k === 'code') return cpqCopia(cpqCodigo(link + '&utm_campaign=' + encodeURIComponent((cn[0] || {}).utm_campaign || slug(c.nome)) + '&utm_medium=obrigado', iid), 'Código copiado. Cole na página de obrigado.');
+    cpqCopia(cpqUtm(link, cn[Number(k.slice(2))]), 'Link copiado'); });
+  const g = box.querySelector('[data-cpq-gera]'); if (g) g.onclick = () => act(async () => {
+    const ids = semEnvio.map(x => x.id); let n = 0;
+    for (let i = 0; i < ids.length; i += 500) { const r = await q(sb.rpc('pesquisa_enviar_para', { p_pesquisa: p.id, p_pessoas: ids.slice(i, i + 500) })); n += Number(r) || 0; }
+    toast(n + ' lead(s) colocados na fila da pesquisa'); render(); });
+}
+
+/* v0.193: dentro de um iframe (página de obrigado), a página pública avisa a altura do conteúdo para a página de fora */
+function pubPesqAltura(box) {
+  if (window.parent === window) return;
+  let ult = 0; const post = () => { const inn = box.querySelector('.pf-in'), h = inn ? Math.ceil(inn.getBoundingClientRect().height + 110) : 0;  /* o conteúdo, não a página (que tem altura mínima da tela e cresceria junto) */ if (h && h !== ult) { ult = h; try { parent.postMessage({ growthsPesquisa: h }, '*'); } catch (e) {} } };
+  new MutationObserver(post).observe(box, { childList: true, subtree: true, attributes: true }); window.addEventListener('resize', post); setTimeout(post, 300); setTimeout(post, 1500);
+}
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;
 const fonteLink = () => location.protocol === 'file:' ? '<div class="panel"><b>Atenção:</b> o arquivo está aberto do seu computador, então o link de resposta não funciona para outras pessoas. Hospede o arquivo (por exemplo no GitHub Pages) antes de enviar.</div>' : '';
 
@@ -16346,6 +16526,7 @@ async function vPesquisaPublica(token) {
   document.title = 'Formulário';
   const box = document.createElement('div'); box.id = 'pubPesq'; box.style.cssText = 'position:fixed;inset:0;z-index:999;overflow:auto;background:#F6F5F2';
   document.body.appendChild(box);
+  pubPesqAltura(box);
   let d = null;
   try { d = await q(sb.rpc('pesquisa_publica', { p_token: token })); } catch (e) { d = null; }
   const aviso = (t, x) => { box.innerHTML = `<div class="pf" style="${pfEstilo(pfVis(d && d.visual))}"><div class="pf-in"><section class="pf-card"><h2>${t}</h2><p>${x}</p></section></div></div>`; };

@@ -1,3 +1,6 @@
+## v0.193
+Sem mudança no banco. `campanhas.extras.pesquisa` = { usa, pesquisa_id, captacao, obrigado, disparo, quando (cadastro | etapa | manual), etapa, canal (whatsapp | email | link), atualizado_em }. Ao salvar, a pesquisa recebe `aceita_link_aberto = true` (obrigado ou captação), `captacao.ativa = true` (captação) e `canal_envio` (disparo).
+
 ## v0.192
 Sem mudança no banco.
 

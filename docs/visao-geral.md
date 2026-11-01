@@ -1,3 +1,6 @@
+## v0.193
+**Pesquisa dentro da campanha.** Ao criar uma campanha, um passo novo pergunta se ela vai ter pesquisa, qual (uma que já existe, um modelo pronto ou uma nova) e onde ela entra: na captação, na página de obrigado ou em disparo para os leads. Para a página de obrigado, o Growths entrega o código pronto para colar, e a pesquisa aparece dentro da página. No disparo, os leads da campanha vão para a fila com um clique; o envio automático vem quando a ferramenta for escolhida.
+
 ## v0.192
 **Dashboards divididos em seções.** O Dashboard, o Dashboard financeiro e o Dashboard de Vendas deixaram de ser uma sequência de quadros parecidos. Cada um tem seções com moldura e título que diz qual pergunta ela responde: como o negócio está, o que mudou, se a receita está no ritmo da meta, de onde vem a receita, a saúde financeira, o funil e as campanhas. Dá para ver de longe onde termina um assunto e começa outro.
 

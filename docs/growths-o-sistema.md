@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 31/10/2026, versão 0.192 (dashboards em seções).
+**Última atualização:** 31/10/2026, versão 0.193 (pesquisa na campanha).
+
+**Marketing v0.193 · Pesquisa na campanha.** A nova campanha pergunta se vai ter pesquisa, qual e onde entra (captação, página de obrigado com o código pronto, disparo para os leads).
 
 **Visual v0.192 · Dashboards em seções.** O Dashboard, o Dashboard financeiro e o Dashboard de Vendas são divididos em seções com moldura e título: cada uma responde uma pergunta (como está o negócio, o que mudou, de onde vem a receita...).
 
@@ -127,10 +129,11 @@ Essas escolhas valem para todas as telas e computadores.
 ### Campanhas e planejamento
 A campanha é uma página com abas: dashboard, estratégia e etapas, metas, captação, funil, análise e coortes, mídia paga, vídeos e eventos, leads e vendas, links e tracking, fechamento, e ofertas e preços.
 
-- **Nova campanha em 3 etapas:**
+- **Nova campanha em 4 etapas:**
   1. O básico.
   2. Orçamento e metas.
   3. Canais.
+  4. Pesquisa: se a campanha vai ter pesquisa, qual (uma que já existe, um modelo pronto ou nova) e onde entra: na captação, na página de obrigado (o Growths gera o código para colar) ou em disparo para os leads (por enquanto pela fila de envio; o envio automático ainda vai ser decidido).
   
   Produto, estratégia e canal se cadastram sem sair dali, e uma faixa de rascunho mostra o que falta.
 - **Estratégia em blocos.** O funil da campanha é montado com blocos prontos em 4 fases (Aquisição, Aquecimento, Conversão, Retenção): conteúdo do Instagram, tráfego pago, página de captura, indicação, grupo de WhatsApp, disparo, e-mail, pesquisa, aula/webinário, VSL, checkout, comercial, recompra e assinatura. Cada bloco traz as métricas certas, com uma principal e as de diagnóstico. Há modelos prontos: lançamento clássico, perpétuo, webinário, disparo, recompra, comercial e social selling.
@@ -501,6 +504,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - O backup antes da mudança: por que toda versão do Growths tem caminho de volta.
 - Fechar o mês em um clique: pagar dez contas de uma vez sem perder o lançamento de cada uma.
 - Dashboard não é relatório: por que cada bloco da tela precisa responder uma pergunta só.
+- A pesquisa na página de obrigado: o momento em que o lead mais quer falar com você.
 
 ---
 
@@ -576,4 +580,5 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - **31/10 (Financeiro):**
   - pagar e receber várias contas de uma vez, com seleção, total e baixa em lote;
   - plano da North Star no Growths (onde cadastrar e como configurar), a partir do documento de NSM da consultoria;
-  - Dashboard, Dashboard financeiro e Dashboard de Vendas divididos em seções com moldura e título.
+  - Dashboard, Dashboard financeiro e Dashboard de Vendas divididos em seções com moldura e título;
+  - pesquisa dentro da campanha: escolher qual e onde entra, código para a página de obrigado e leads na fila de envio.

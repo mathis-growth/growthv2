@@ -1,5 +1,10 @@
 
 
+## Pesquisa na campanha (v0.193)
+- `g193.js`: bloco de pesquisa (passo 4 da nova campanha e modal Configurar), criação da pesquisa a partir do modelo sem abrir outro modal, painel "Pesquisa da campanha" com captação (link por canal), página de obrigado (código e copiar) e disparo (leads da campanha, na fila, responderam, sem envio; colocar na fila; abrir a fila).
+- Página pública: dentro de um iframe, avisa a altura do conteúdo (`postMessage` `growthsPesquisa`) medindo o conteúdo e não a página, para não crescer sem fim.
+- Teste `t193_pesquisa_campanha.py`: 4 passos; Não esconde o resto; opções existentes, modelos e nova; sem pesquisa não conclui; aviso do disparo; escolha gravada; pesquisa do modelo com link aberto, canal e desativada; painel com aviso; código com iframe, origem e ajuste de altura; campanha sem pesquisa; etapa obrigatória; link de captação com UTM; 700 leads na fila; abrir a fila; o código colado numa página mostra a pesquisa e a altura acompanha (693 px). 0 falhas. Apaga o que criou.
+
 ## Dashboards em seções (v0.192)
 - `g192.js`: `GRADE_SECOES` para `adm-painel`, `fin-dash` e `crm-dash`; `gradeSecoes` cria `section.dsec` (cabeçalho `.dsec-h` com título e pergunta, corpo `.dsec-b` em 12 colunas), move os quadros para dentro na ordem do plano e esconde seção vazia; o que o plano não conhece fica no fim. Reaplicado a cada mudança da tela pelo observador da v0.158, sem mover o que já está no lugar.
 - `g192.css`: moldura da seção (fundo `--surface-2`, borda, faixa de 4 px na cor de destaque), cartões em uma linha dentro da seção, cartões principais em uma coluna no celular.

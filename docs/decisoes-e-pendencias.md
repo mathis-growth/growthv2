@@ -1,5 +1,16 @@
 
 
+## v0.193 — Pesquisa na campanha
+**Pedido da Rebecka (31/10)**: ao criar a campanha, dizer se vai usar pesquisa, escolher qual (um modelo pronto ou uma nova) e onde ela entra: na captação, na página de obrigado (com o código HTML para colar) ou em disparo. Para o disparo, "tenho que criar um processo para automatizar… não sei o que a gente pode fazer".
+Decisões:
+- Nova campanha ganhou o passo 4, **Pesquisa**: usar ou não; qual (pesquisas que já existem, criar de um modelo pronto ou nova em branco); onde entra (captação, página de obrigado, disparo); no disparo, quando (logo depois do cadastro, ao entrar numa etapa do funil, ou eu escolho) e por onde (WhatsApp, e-mail, só o link). O mesmo bloco fica em **Configurar** no painel "Pesquisa da campanha" (aba Planejamento e metas).
+- Pesquisa criada de modelo nasce **desativada**, com o nome do modelo e da campanha; o painel avisa até ela ser ativada.
+- Página de obrigado: o Growths gera o código (iframe com o link aberto, a campanha e utm_medium=obrigado). A página da pesquisa, dentro do iframe, avisa a altura do conteúdo e o iframe se ajusta. Quem responde é ligado ao lead pelo e-mail (regra do link aberto).
+- Captação: link de inscrição por canal da campanha, com utm_source, utm_medium (pago/orgânico) e o utm_campaign do canal.
+- **Disparo automático: ainda não decidido** (Rebecka, 31/10). Por enquanto o Growths coloca os leads da campanha na fila da pesquisa (botão "Colocar N leads na fila", usa `pesquisa_enviar_para`) e o envio é pelo botão da fila. A escolha de quando e por onde fica gravada para o disparo usar depois.
+- Opções levantadas para o disparo: (A) o Growths envia pelo WhatsApp do Atendimento com um agendador; (B) o Growths avisa e o n8n envia (e-mail ou a ferramenta atual); (C) semiautomático, como está agora.
+- Sem mudança no banco: a escolha fica em `campanhas.extras.pesquisa`.
+
 ## v0.192 — Dashboards em seções
 **Pedido da Rebecka (31/10)**: o Dashboard do Administrativo "parece um relatório de Word": evolução e meta, de onde vem a receita, clientes novos e existentes, produto e campanha não ficam delimitados, e não se vê onde termina uma informação e começa outra. Acontece em quase todos os dashboards.
 Decisões:

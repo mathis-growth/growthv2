@@ -1,3 +1,9 @@
+## v0.193 — Pesquisa na campanha (31/10/2026)
+- **Nova campanha → passo 4, Pesquisa**: vai usar pesquisa? Qual (existente, de um modelo pronto ou nova)? Onde entra: **na captação**, **na página de obrigado**, **em disparo** (quando e por onde).
+- Aba **Planejamento e metas** da campanha: painel **Pesquisa da campanha** com Configurar, Abrir a pesquisa, links de captação por canal (com UTM), **código para a página de obrigado** (iframe que ajusta a altura) e o disparo: leads da campanha, na fila, responderam, **Colocar N leads na fila** e Abrir a fila de envio.
+- O envio automático ainda não está ligado (a decidir); por enquanto os envios saem pela fila.
+- Teste: `t193_pesquisa_campanha.py` (0 falhas). Sem mudança no banco.
+
 ## v0.192 — Dashboards em seções (31/10/2026)
 - O Dashboard do Administrativo, o Dashboard financeiro e o Dashboard de Vendas são divididos em **seções com moldura** (fundo, borda, faixa de cor e título com a pergunta que a seção responde), a pedido da Rebecka: antes os quadros pareciam um relatório corrido.
 - **Dashboard (Administrativo):** Visão geral · Alertas · Evolução e meta · De onde vem a receita · Saúde financeira · Funil e campanhas · Tabelas completas.

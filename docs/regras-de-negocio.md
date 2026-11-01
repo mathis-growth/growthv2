@@ -1,3 +1,8 @@
+## v0.193
+- Pesquisa na campanha: escolhida a opção Sim, é preciso escolher a pesquisa e pelo menos um lugar (captação, página de obrigado, disparo). Disparo "ao entrar numa etapa" exige a etapa.
+- Página de obrigado e captação usam o link aberto: quem responde é reconhecido pelo e-mail.
+- Disparo: enquanto não houver automação, os leads da campanha entram na fila da pesquisa (cada um com o link próprio) e o envio é manual. Lead que já está na fila não entra de novo.
+
 ## v0.192
 Sem regra nova: só a disposição dos dashboards mudou.
 
