@@ -1,3 +1,10 @@
+## v0.207 — Entrada do cliente: ✓ verde, métricas que acompanha, teste pelo link aberto; index.html restaurado (01/11/2026)
+- **index.html restaurado da v0.206**: os commits de atendimento 5605139 e 8f466f8 tinham gravado um arquivo cortado. Mantida a mudança deles (`?v=0197`).
+- ✓ verde e aviso no próprio grupo de arquivos; pelo link aberto o arquivo fica como teste e não trava.
+- Pergunta "Quais números você acompanha hoje" (lista) e "outro número" (opcional).
+- Pacotes: Tipo "Completo · sem financeiro".
+- Teste: `t201_entrada_cliente.py` (0 falhas).
+
 ## v0.206 — Histórico de vendas (01/11/2026)
 - **Importar histórico de vendas** (Importar e validar dados): CSV ou Excel da plataforma, de-para automático e editável, status traduzidos, conferência antes de gravar, desfazer.
 - Vendas antigas em tabela própria: métricas e planejamento, sem financeiro nem automações.

@@ -15,7 +15,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.206 (histórico de vendas).
+**Última atualização:** 01/11/2026, versão 0.207 (entrada do cliente: ✓ verde e métricas que acompanha).
 
 **v0.206 · Histórico de vendas.** As vendas de antes do Growths sobem pelo relatório da plataforma e viram o histórico de cada cliente e a base do planejamento, sem mexer no financeiro.
 
@@ -423,7 +423,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - **formulário de captação** com a cara do cliente (fontes e cores), em passos, que coloca quem responde direto no funil de leads;
   - a aba "Quem respondeu";
   - **Histórico de vendas** (Importar e validar dados): o relatório que a plataforma exporta, com de-para automático, conferência antes de gravar e desfazer; vira o histórico de cada cliente (bloco "Antes do Growths" na ficha) e a base do planejamento anual, sem financeiro;
-  - **Entrada do cliente**: formulário curto para o cliente que está chegando (faturamento, ticket, clientes, investimento, custo e regime, do jeito dele) e o checklist de arquivos do período certo (vendas, clientes, leads, anúncios, custos), cada um com planilha-modelo para baixar; cada grupo é enviar o arquivo ou "Não tenho", sem deixar para depois. As vendas seguem as plataformas que o cliente marca (Hotmart, Kiwify, Eduzz, Hubla): um relatório para cada, do jeito que sai.
+  - **Entrada do cliente**: formulário curto para o cliente que está chegando (faturamento, ticket, clientes, investimento, custo e regime, do jeito dele) e o checklist de arquivos do período certo (vendas, clientes, leads, anúncios, custos), cada um com planilha-modelo para baixar; cada grupo é enviar o arquivo ou "Não tenho", sem deixar para depois, e ganha ✓ verde quando o arquivo chega. Inclui a lista "quais números você acompanha hoje", ponto de partida do diagnóstico. As vendas seguem as plataformas que o cliente marca (Hotmart, Kiwify, Eduzz, Hubla): um relatório para cada, do jeito que sai.
 
 ---
 
@@ -542,6 +542,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.207):** Entrada do cliente com ✓ verde nos arquivos e a lista de números que o cliente acompanha.
 - **01/11 (v0.206):** Histórico de vendas: importar o relatório da plataforma, ficha com o histórico, planejamento com o histórico.
 - **01/11 (v0.205):** Pacote Go-to-Market (sem financeiro), Custos de marketing com rotina mensal, Resultado de marketing e vendas por plataforma.
 - **01/11 (v0.204):** Pesquisas: nome só para a equipe e título para quem responde.

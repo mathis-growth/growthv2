@@ -27,7 +27,7 @@ with sync_playwright() as p:
     pg.evaluate("window.provisionaAuto = async () => {}; window.hoje = () => '2026-11-01'; S.ws = S.wsBase = 'w1'; S.view = 'gro-pesq'; S.pqSel = null; render();"); pg.wait_for_timeout(1300)
     chk(ev(pg, "!!document.querySelector('#pqModelo option[value=entrada_cliente]')"), 'o modelo "Entrada do cliente" aparece na lista de modelos')
     pg.select_option('#pqModelo', 'entrada_cliente'); pg.wait_for_timeout(500)
-    chk('13 perguntas em 4 passos' in pg.inner_text('#modalRoot'), 'curto: 13 perguntas em 4 passos', pg.inner_text('#modalRoot'))
+    chk('15 perguntas em 4 passos' in pg.inner_text('#modalRoot'), 'curto: 15 perguntas em 4 passos', pg.inner_text('#modalRoot'))
     pg.evaluate("document.querySelector('#modalRoot form').requestSubmit()"); pg.wait_for_timeout(1500)
     pq = ev(pg, "__D.pesquisas[__D.pesquisas.length - 1]"); pp = ev(pg, "__D.pesquisa_perguntas.filter(x => x.pesquisa_id === __D.pesquisas[__D.pesquisas.length - 1].id)")
     chk(pq['tipo'] == 'diagnostico' and pq['ativa'] is False and pq['nome'].startswith('Entrada do cliente'), 'cria a pesquisa, desativada, no tipo diagnóstico (mesmo link e envio de arquivos)', pq)
@@ -73,6 +73,8 @@ with sync_playwright() as p:
     csv = urllib.parse.unquote(links[0][2].split(',', 1)[1]) if links else ''
     chk(csv.startswith('﻿data_venda;produto;valor;status;plataforma;email_cliente') and 'Hotmart' in csv, 'a planilha-modelo de vendas vem com as colunas e uma linha de exemplo, separada por ;', csv[:120])
     chk('planilha-modelo' in ev(pg, "document.querySelector('#pubPesq .pf-doc[data-g=vendas] small').textContent"), 'vendas fora das plataformas usa a planilha-modelo')
+    met = [x for x in pp if x['texto'].startswith('Quais números você acompanha')]
+    chk(len(met) == 1 and met[0]['tipo'] == 'multipla' and 'Custo de aquisição (CAC)' in met[0]['opcoes'] and 'Ainda não acompanho nenhum' in met[0]['opcoes'], 'pergunta nova: quais números acompanha (lista para marcar)')
     chk(doc['config'].get('sem_depois') is True and 'Mando depois' not in doc['texto'], 'Entrada do cliente sem "Mando depois" (config e texto)')
     ops = ev(pg, "[...document.querySelectorAll('#pubPesq .pf-doc[data-g=vendas_hotmart] .pf-op span')].map(x => x.textContent)")
     chk(ops == ['Não tenho'], 'cada grupo: só "Enviar arquivo" ou "Não tenho"', ops)
@@ -80,6 +82,15 @@ with sync_playwright() as p:
     pg.evaluate("document.querySelectorAll('#pubPesq .pf-doc input[type=radio]').forEach(i => i.checked = false)")
     m = ev(pg, "(() => { const fs = document.querySelector('#pubPesq .pf-doc').closest('.pf-q'); const x = __D['rpc:pesquisa_publica'].perguntas.find(p => p.tipo === 'documentos'); return pfValidaG1(fs, x); })()")
     chk(m and 'Não tenho' in m and 'Mando depois' not in m, 'a cobrança fala em enviar o arquivo ou marcar "Não tenho": ' + str(m))
+    # v0.207: pelo link aberto (teste), o arquivo fica marcado como teste e o grupo ganha o ✓ verde
+    pg.evaluate("__D['rpc:pesquisa_publica'].aberto = true; document.querySelectorAll('#pubPesq').forEach(x => x.remove()); vPesquisaPublica('t'.repeat(40));"); pg.wait_for_timeout(1500)
+    pg.evaluate("document.querySelectorAll('#pubPesq [data-passo]').forEach(s => s.hidden = s.dataset.passo !== '3')")
+    pg.set_input_files('#pubPesq [data-up=alunos]', files=[{'name': 'clientes.csv', 'mimeType': 'text/csv', 'buffer': b'nome;email\nA;a@a.com\n'}]); pg.wait_for_timeout(500)
+    bx = '#pubPesq .pf-doc[data-g=alunos]'
+    chk(pg.evaluate(f"document.querySelector('{bx}').classList.contains('pf-ok')") and 'clientes.csv' in pg.inner_text(bx) and 'teste' in pg.inner_text(bx) and 'link individual' in pg.inner_text(bx), 'arquivo anexado: ✓ verde no grupo; pelo link de teste avisa que não foi enviado: ' + pg.inner_text(bx)[-160:].replace('\n', ' '))
+    chk(pg.evaluate(f"document.querySelector('{bx} .pf-upsim').checked"), 'o grupo com arquivo conta como respondido (deixa continuar)')
+    pg.evaluate(f"document.querySelector('{bx} .pf-arx').click()"); pg.wait_for_timeout(200)
+    chk(not pg.evaluate(f"document.querySelector('{bx}').classList.contains('pf-ok')"), 'tirar o arquivo tira o ✓')
     if FOTOS:
         pg.evaluate("document.querySelectorAll('#pubPesq [data-passo]').forEach(s => s.hidden = s.dataset.passo !== '3')"); pg.wait_for_timeout(200)
         pg.screenshot(path=FOTOS + '/t201_arquivos.png', full_page=True)

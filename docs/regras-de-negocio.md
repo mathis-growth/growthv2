@@ -1,3 +1,6 @@
+## v0.207
+- Arquivo pelo link aberto ou pré-visualização: não é enviado; o grupo conta como respondido só para o teste.
+
 ## v0.206
 - Venda do histórico: data, valor e status obrigatórios; precisa de e-mail, telefone ou nome. Data no futuro: erro.
 - Repetida: mesmo código na mesma plataforma; sem código, mesmo dia, valor e e-mail. Já no Growths: mesmo código em vendas, ou mesma pessoa, dia e valor.

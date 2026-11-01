@@ -1,3 +1,6 @@
+## v0.207
+- Sem mudança no banco.
+
 ## v0.206
 - `importacoes_historico` (lote: plataforma, arquivo, hash, linhas, vendas, pessoas_novas, ignoradas, valor_aprovado, período, pessoas_criadas[], desfeito_em).
 - `vendas_historicas` (lote_id, pessoa_id, produto, plataforma, data_venda, valor, status aprovada|reembolsada|cancelada|chargeback, id_externo; único por cliente + plataforma + código).
