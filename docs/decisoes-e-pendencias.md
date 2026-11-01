@@ -1,5 +1,19 @@
 
 
+## v0.213 — Growth's Brain, incremento 1
+**Pedido da Rebecka (01/11)**: documento "Growth's Brain" (planejar → executar → monitorar → detectar → investigar → simular → decidir → aprender). Etapa 1 = auditoria (`docs/growths-brain-auditoria.md`). Decisões dela depois da auditoria: começar pelo **faturamento**; as metas que já existem são **absorvidas aos poucos**; **objetivos dentro do Planejamento anual**; NSM "Receita bruta" **marcada como provisória**.
+Decisões de implementação:
+- **Registro central `metas`** ligado ao Planejamento anual. Por enquanto, só a métrica "faturamento" (empresa, ano e mês). Cada mudança cria uma versão nova e guarda a anterior.
+- **Absorção sem quebrar nada**: a meta do ano (`plano_anual`) e a do mês (`planejamento_mensal`) se espelham com `metas` por gatilho. As telas antigas continuam funcionando, e quem manda é `metas`.
+- **Faturamento** = vendas aprovadas (Growths + histórico importado), pela data da venda: o mesmo número do Dashboard de vendas e da meta do Planejamento anual. **Fato**: o "Receita" do Cockpit e do Dashboard geral é a receita da DRE (lançamentos, por competência), outro número. Por isso a meta se chama "faturamento". **Pendência**: a definição "receita" do dicionário diz "vendas OU DRE"; separar em duas.
+- **Meta de um período**: cada dia recebe a meta do mês dividida pelos dias do mês; um mês sem meta divide o que sobra da meta do ano. Assim o ano soma exatamente a meta do ano. Se a soma dos meses passa da meta do ano, o Cockpit e o Planejamento avisam.
+- **Projeção**: com 7 dias ou mais de período, o ritmo do período; antes disso, a média dos últimos 28 dias; sem venda nenhuma, não projeta. O método e a limitação aparecem em "Como calculamos". **Não há probabilidade** (o documento proíbe inventar; ela entra quando houver histórico de previsões, e a foto diária começa a guardar isso).
+- **Status por regra do cliente** (`metas_regras`): até 10% abaixo do esperado, "Dentro do esperado"; de 10% a 25%, "Atenção"; mais que 25%, "Em risco". Com menos de 3 dias de período, "Sem dados suficientes". Também "Atingida", "Não atingida", "Sem meta" e "Ainda não começou".
+- **Cockpit**: faixa "Meta de faturamento" no topo, no período padrão, com meta, esperado até hoje, realizado, desvio, projeção e status, mais a linha do ano. Botões: Como calculamos, Ver as vendas do período (abre o Dashboard de vendas no mesmo período) e Planejamento anual.
+- **Objetivos do ano**: nova seção "Objetivos e metas do ano" no Planejamento anual. Os 2 objetivos da tela antiga da Mathisa — Operação aparecem lá como "do planejamento antigo". A meta do ano pode ser ligada a um objetivo.
+- **NSM**: status (candidata, provisória, em validação, aprovada), versão e histórico. Toda NSM nova nasce provisória.
+Próximos incrementos (ordem do documento): leads e vendas no mesmo registro; metas de campanha e de CS absorvidas; registro de riscos alimentado pelos alertas que já existem; cenário ligado à meta; visão AARRR; calibração da projeção com as fotos.
+
 ## v0.212 — Período padrão em todos os dashboards e sem o Planejamento da empresa antigo
 **Pedidos da Rebecka (01/11)**: (1) "Pode ocultar esse menu" — o Planejamento da empresa antigo (objetivos); (2) todos os dashboards com o mesmo filtro de período no topo, com "30 dias, este mês, próximos 30 dias, 7 dias e o personalizado", inclusive Financeiro, Customer Success e Cockpit; o Cockpit traz o mês corrente e, mudando o período, muda todos os painéis dele.
 Decisões:

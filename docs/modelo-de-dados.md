@@ -1,3 +1,10 @@
+## v0.213
+- `metas`: id, workspace_id, metrica (faturamento), escopo (empresa | produto | campanha) + produto_id/campanha_id, granularidade (ano | trimestre | mes | personalizado), ini, fim, valor, valor_max, unidade, direcao (maior | menor | faixa | minimo | maximo), trajetoria (linear | sazonal | personalizada) + trajetoria_pesos, objetivo_id → plano_objetivos, plano_anual_id, origem (plano_anual | historico | manual | hibrido | migrada), premissa, versao, status (rascunho | aprovada | arquivada), aprovado_por/em. Uma meta aprovada por métrica, escopo e período.
+- `metas_historico` (versões anteriores), `metas_regras` (atencao_pct, risco_pct, min_dias por cliente), `metas_fotos` (meta, esperado, realizado, projeção, método e status por dia).
+- `growth_metricas`: nsm_status, nsm_versao, nsm_aprovada_em/por, nsm_nota; `nsm_historico`.
+- `plano_objetivos`: ano (objetivo do ano sem o plano antigo); plano_id passa a ser opcional.
+- Funções: `metas_avaliar`, `metas_painel`, `metas_consistencia`, `metas_no_intervalo`, `metas_realizado`, `metas_fotografar` (cron `growths-metas-foto`).
+
 ## v0.212
 - Sem mudança no banco.
 

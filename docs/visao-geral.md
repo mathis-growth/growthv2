@@ -1,3 +1,6 @@
+## v0.213
+**Growth's Brain, primeiro fluxo completo.** A meta de faturamento do Planejamento anual aparece no topo do Cockpit: quanto devia ter vendido até hoje, quanto vendeu, o desvio, a projeção até o fim do período e o status. O Planejamento anual ganhou os objetivos do ano, e a North Star tem status (provisória até ser validada).
+
 ## v0.212
 **Um filtro só em todos os dashboards.** Financeiro, Customer Success e Cockpit entram no mesmo filtro de período (começa no mês corrente). O Planejamento da empresa antigo saiu do menu.
 

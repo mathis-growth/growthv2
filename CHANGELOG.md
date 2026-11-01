@@ -1,3 +1,10 @@
+## v0.213 — Growth's Brain: meta de faturamento no Cockpit (01/11/2026)
+- Registro central de metas (começando pelo faturamento), ligado ao Planejamento anual, com versões.
+- Cockpit: meta do período, esperado até hoje, realizado, desvio, projeção e status, mais a linha do ano; "Como calculamos".
+- Planejamento anual: objetivos do ano e conferência da soma dos meses.
+- North Star com status (provisória, em validação, aprovada) e histórico.
+- Banco: `RODAR_v0.213_brain_metas.sql`. Teste: `t213_metas.py` (0 falhas).
+
 ## v0.212 — Período padrão em todos os dashboards (01/11/2026)
 - Financeiro, Customer Success e Cockpit com o mesmo filtro de período dos outros dashboards.
 - Atalhos: Últimos 30 dias, Este mês, Próximos 30 dias, Últimos 7 dias, (Mês passado, 90 dias, 12 meses, Este ano) e Personalizado. Começa no mês corrente.

@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.213 | 01/11/2026 | Growth's Brain: meta de faturamento no Cockpit (esperado, realizado, projeção, status), objetivos do ano, NSM provisória. | RODAR_v0.213_brain_metas.sql |
 | 0.212 | 01/11/2026 | Todos os dashboards com o mesmo filtro de período (começa no mês corrente); sem o Planejamento da empresa antigo. | nada |
 | 0.211 | 01/11/2026 | Dashboards com o mesmo filtro de período, que vale em todos. | nada |
 | 0.210 | 01/11/2026 | Financeiro simplificado também no completo; comissão de parceiro geral ou por produto. | `RODAR_v0.209_financeiro_simplificado.sql` (atualizado), **ainda não aplicado** |

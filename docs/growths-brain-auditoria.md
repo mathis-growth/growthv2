@@ -3,6 +3,8 @@
 **Data:** 01/11/2026 · **Base:** código do GitHub (v0.212), 165 migrations, banco de produção (só leitura).
 **Legenda:** **Fato** = conferido no código ou no banco · **Hipótese** = provável, não confirmado · **Recomendação** = proposta para você decidir.
 
+**Andamento:** decisões de 01/11: começar pelo faturamento, absorver as metas aos poucos, objetivos no Planejamento anual e NSM provisória. O incremento 1 foi entregue na **v0.213**: registro central de metas, avaliação no Cockpit, objetivos do ano e status da NSM. Ver `decisoes-e-pendencias.md`.
+
 ## Resumo em 5 pontos
 
 1. **Fato:** quase todos os blocos pedidos já existem em algum grau. NSM e árvore estão no Growth Model; metas, cenários, guardrails, alertas, qualidade de dados, dicionário de métricas e drill-down (a "árvore" dos cartões) também já existem. Não faz sentido criar motores do zero. O trabalho é **ligar e centralizar** o que já existe.

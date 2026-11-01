@@ -1,3 +1,6 @@
+## v0.213
+- Migration `20261207100000_brain_metas.sql` + `RODAR_v0.213_brain_metas.sql`. index.html montado sobre o HEAD do GitHub (v0.212 + `docs/growths-brain-auditoria.md`) com `aplica213.py` e `g213.js`: `ckMetasHtml`/`ckMetasLiga` (Cockpit), `paObjetivos` (Planejamento anual), `META_ST`, `NSM_ST`, `nsmPill`. Cockpit pede `metas_painel`; o Growth Model tem o status da NSM no mapa e no formulário. Teste novo `t213_metas.py`.
+
 ## v0.212
 - index.html: montado sobre o HEAD do GitHub (v0.211) com `aplica212.py` e `g211.js` atualizado: `PER_AT` na ordem nova, `prox30`, `mes` = mês inteiro, padrão `perAtalho('mes')`, `perRot`, `perFin`. `vCockpit`, `vHeavyOps` e `vFinDash` (e o detalhe da árvore e a faixa de qualidade do fin-dash) usam `perPadrao`/`perLiga`. Menu sem `adm-plano`; `VIEWS['adm-plano']` leva ao Planejamento anual. Testes que mudavam `S.per`/`S.pg` no fin-dash e Administrativo agora mudam `S.perD`; t164 usa o filtro novo.
 

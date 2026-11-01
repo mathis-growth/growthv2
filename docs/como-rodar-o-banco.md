@@ -1,3 +1,9 @@
+## v0.213 — Growth's Brain: metas num lugar só (faturamento)
+1. `supabase/RODAR_v0.213_brain_metas.sql`: cria o registro central `metas` (com histórico de versões), `metas_regras`, `metas_fotos`, as funções `metas_avaliar`, `metas_painel`, `metas_consistencia`, `metas_fotografar`, o status da NSM (`growth_metricas.nsm_status` + `nsm_historico`) e os objetivos do ano (`plano_objetivos.ano`). Agenda a foto diária (`growths-metas-foto`, 23:53).
+2. **Mexe em dados de produção (sem apagar nada):** copia para `metas` a meta do ano que já existe (`plano_anual`) e as metas de receita dos meses (`planejamento_mensal`, hoje vazio); marca como "provisória" as North Stars que existem; inclui "faturamento" no dicionário.
+3. Pode rodar de novo sem erro. Sem ele, o Cockpit e o Planejamento anual continuam como antes (a faixa de meta e os objetivos só aparecem depois).
+4. Pendentes em produção, nesta ordem: `RODAR_v0.197`, `RODAR_v0.208`, `RODAR_v0.209` (versão da v0.210), `RODAR_v0.213`.
+
 ## v0.212
 Nada para rodar no banco. Continuam pendentes em produção: `RODAR_v0.197`, `RODAR_v0.208`, `RODAR_v0.209` (versão da v0.210).
 

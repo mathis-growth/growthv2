@@ -1,5 +1,9 @@
 
 
+## Growth's Brain, incremento 1 (v0.213)
+- `t213_metas.py` (31 verificações, 0 falhas): espelho plano anual ↔ registro ↔ mês (com versões); ano soma a meta do ano; outubro encerrado; meio do mês (esperado linear, projeção pelo ritmo, status pela regra); dia 1 = sem dados suficientes; sem meta = sem número; regra por cliente; foto diária; acesso negado sem login; NSM provisória com versão; Cockpit (mês e mês passado, aviso da soma, Como calculamos, Ver as vendas com o mesmo faturamento); objetivos do ano (criar, ligar a meta); salvar o mês pela tabela antiga atualiza o registro; Growth Model com status; celular.
+- Regressão: ver a entrega.
+
 ## Período padrão em todos os dashboards (v0.212)
 - `t211_periodo_padrao.py` (31 verificações, 0 falhas): 7 dashboards com o mesmo filtro e a ordem nova; todos começam em 01 a 30/11; "Mês passado" escolhido no Marketing vale no Vendas, Administrativo, Mídia paga, Financeiro, Customer Success e Cockpit; Cockpit diz o período no topo; Customer Success conta 32 dias (01/10 até hoje); Financeiro com Próximos 30 dias; menu sem Planejamento da empresa e link antigo abre o Planejamento anual.
 - Regressão: t157, t158, t192, t205, t208, t209 e t127 sem falhas. t111, t116, t117, t118, t124, t153, t155 (auditoria) e t86, t164 (tela) têm as mesmas falhas da v0.211, de antes desta versão (base local e datas). t127: a parte do Planejamento da empresa antigo virou "o link leva ao Planejamento anual". Os cartões "A receber/A pagar no período" do Dashboard financeiro abrem a lista no período padrão.

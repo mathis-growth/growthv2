@@ -1,3 +1,10 @@
+## v0.213
+- Meta de faturamento: vem do Planejamento anual (meta do ano e de cada mês). Faturamento = vendas aprovadas pela data da venda, com o histórico importado.
+- Meta de um período = soma diária (meta do mês ÷ dias do mês; mês sem meta = sobra da meta do ano ÷ dias livres).
+- Status: realizado ÷ esperado até hoje; ≥ 90% dentro, 75–90% atenção, < 75% em risco (padrão, ajustável por cliente); < 3 dias = sem dados suficientes.
+- Projeção: ritmo do período (≥ 7 dias) ou média de 28 dias; sem base, sem projeção. Nunca chamada de probabilidade.
+- NSM nova nasce provisória; aprovar registra quem e quando.
+
 ## v0.212
 - Período padrão (S.perD): o mesmo em todos os dashboards (Administrativo, Marketing, Vendas, Mídia paga, Financeiro, Customer Success, Cockpit), enquanto a sessão está aberta. Padrão: o mês corrente inteiro.
 - Cockpit: conta até hoje. Customer Success: do início do período até hoje.

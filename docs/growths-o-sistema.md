@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.212 (período padrão em todos os dashboards).
+**Última atualização:** 01/11/2026, versão 0.213 (Growth's Brain: meta de faturamento no Cockpit).
+
+**v0.213 · A meta no centro.** A meta de faturamento do Planejamento anual aparece no topo do Cockpit com o esperado até hoje, o realizado, o desvio, a projeção e o status. O Planejamento anual tem os objetivos do ano, e a North Star tem status.
 
 **v0.212 · Um filtro só em todos os dashboards.** Financeiro, Customer Success e Cockpit entram no mesmo filtro de período, que começa no mês corrente. O Planejamento da empresa antigo saiu do menu.
 
@@ -102,6 +104,8 @@ A ideia central: o dono do negócio e a consultoria olham para os mesmos número
 ### Cockpit
 A tela inicial. Um painel pequeno por área (Geral, Marketing, Vendas, Financeiro, Projetos, Growth e Clientes), dois lado a lado, cada um com os números que mais importam no período: caixa, receita, margem e lucro; campanhas e leads; vendas, ticket e conversão; a receber, a pagar e MRR; projetos e atividades atrasadas; North Star e experimentos; alunos ativos, alertas e satisfação. Cada painel traz também um gráfico: receita e lucro por mês, leads e faturamento por dia, o que entra e o que sai, alunos por etapa. Clicar num painel abre o dashboard daquela área, com tudo em detalhe. Cada pessoa só vê os painéis das áreas a que tem acesso. Em cima, o mesmo filtro de período de todos os dashboards (começa no mês corrente); mudar o período muda todos os painéis.
 
+Logo abaixo, a **Meta de faturamento**: a meta do período (vinda do Planejamento anual), quanto deveria ter sido vendido até hoje, quanto foi vendido, o desvio, a projeção até o fim do período e o status (Dentro do esperado, Atenção, Em risco, Atingida…). Embaixo, o mesmo para o ano. "Como calculamos" mostra a conta, o método da projeção e a regra do status, sem prometer probabilidade. Se as metas dos meses não somam a meta do ano, o Cockpit avisa.
+
 ### Dashboard geral
 O detalhe do painel Geral do Cockpit. Mostra o negócio inteiro num período escolhido:
 
@@ -137,7 +141,7 @@ O Growths confere os números de hora em hora e avisa quando:
 Toda manhã chega o resumo de ontem. Os avisos vão para o sino do sistema, por e-mail e por WhatsApp.
 
 ### Planejamento da empresa
-Saiu do menu na v0.212. O planejamento do ano (meta, 3 cenários, trimestres) fica em Marketing › Campanhas e planejamento › Planejamento anual.
+Saiu do menu na v0.212. O planejamento do ano (meta, 3 cenários, trimestres) fica em Marketing › Campanhas e planejamento › Planejamento anual. Desde a v0.213, os objetivos do ano também ficam lá, na seção "Objetivos e metas do ano", ligados às metas que medem cada um.
 
 ### Cadastro da empresa
 Dados da empresa, CNPJ validado e responsáveis. Inclui também:
@@ -500,6 +504,8 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 - "Seu lucro tem três números diferentes?" A história da auditoria de consistência.
 - Por que "sem dado" é melhor do que zero.
+- Meta, previsão e probabilidade não são a mesma coisa (e por que o Growths ainda não mostra probabilidade).
+- "Esperado até hoje": o número que diz se você está atrasado antes do fim do mês.
 - Um período só para a empresa inteira: por que marketing, vendas e financeiro precisam olhar a mesma janela de tempo.
 - Fato, hipótese e recomendação: como ler um insight sem se enganar.
 - A árvore dos números: de onde vem cada número do seu dashboard.
@@ -553,6 +559,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.213):** Growth's Brain, primeiro fluxo: meta de faturamento no Cockpit, objetivos do ano, NSM com status.
 - **01/11 (v0.212):** Financeiro, Customer Success e Cockpit no mesmo filtro de período; sem o Planejamento da empresa antigo.
 - **01/11 (v0.211):** Dashboards com o mesmo filtro de período, que vale em todos.
 - **01/11 (v0.210):** Financeiro simplificado também no completo; comissão de parceiro geral ou por produto.
