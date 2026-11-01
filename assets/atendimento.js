@@ -359,8 +359,11 @@
         try{
           const r=await api('zernio-contas',{},ws);
           const novas=(r.contas||[]).filter(c=>c.canal==='instagram'&&!instagramAntes.has(c.id));
-          if(novas.length)toast('Instagram conectado. A conta está pronta em Atendimento.');
-          else toast('Janela encerrada. Nenhuma nova conta detectada; confira o status em Integrações.');
+          try{
+            const webhook=await api('zernio-webhooks',{},ws);
+            if(webhook.configurado)toast(novas.length?'Instagram conectado e recebimento automático ativado no Atendimento.':'Recebimento automático do Instagram ativado no Atendimento.');
+            else toast('Janela encerrada. Nenhum canal Instagram do Atendimento foi encontrado; confira Canais e conexões.');
+          }catch(e){toast('Instagram conectada, mas não consegui ativar o recebimento automático: '+e.message,true);}
           if(S.view==='cfg-integracoes'||S.view==='atd-canais')await render();
         }catch(e){toast('Atualize a tela para conferir a conexão do Instagram.',true);}
       },1000);

@@ -189,7 +189,7 @@ async function handle(req: Request, b: any) {
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
   const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','templates-list','rapidas-list','agendamentos-list'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
-  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete'];
+  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
   const ws = b.workspace_id;
   if (['zernio-disponiveis','zernio-conectar'].includes(b.action)) {
@@ -380,12 +380,20 @@ async function handle(req: Request, b: any) {
     return json({ ok:true, conta:account.nome });
   }
   if (b.action === 'zernio-contas') return json({ contas:await zernioCandidates(ws) });
+  if (b.action === 'zernio-webhooks') {
+    const channels=await q(db.from('atd_canais').select('*').eq('workspace_id',ws).eq('provedor','zernio').eq('ativo',true));
+    if(!channels.length)return json({ok:true,configurado:false});
+    await setupWebhook(channels[0],null);
+    return json({ok:true,configurado:true});
+  }
   if (b.action === 'zernio-vincular') {
     const a = (await zernioCandidates(ws)).find((a: any) => a.id === b.account_id);
     if (!a) throw new Error('Conta não vinculada ao perfil Zernio deste workspace.');
     const existing = await q(db.from('atd_canais').select('workspace_id').eq('provedor','zernio').eq('externo_id',a.id).maybeSingle());
     if(existing && existing.workspace_id!==ws) throw new Error('Esta conta já pertence a outro workspace.');
     const row = await q(db.from('atd_canais').upsert({workspace_id:ws,provedor:'zernio',canal:a.canal,nome:a.nome,externo_id:a.id,status:'conectado'}, {onConflict:'provedor,externo_id',ignoreDuplicates:true}).select());
+    const linked=await q(db.from('atd_canais').select('*').eq('workspace_id',ws).eq('provedor','zernio').eq('externo_id',a.id).single());
+    await setupWebhook(linked,null);
     return json({ ok:true, canais:row });
   }
   if (b.action === 'mensagens') {
@@ -504,9 +512,15 @@ async function setupWebhook(ch: any,cfg: any) {
   } else {
     const s = Deno.env.get('ZERNIO_ATENDIMENTO_WEBHOOK_SECRET'); if (!s) throw new Error('Configure ZERNIO_ATENDIMENTO_WEBHOOK_SECRET no servidor.');
     const current = await zernio(zp(),'/webhooks/settings');
-    const rows = current.webhooks || current.data || [];
-    if (Array.isArray(rows) && rows.some((w: any) => w.url === root && w.isActive)) return;
-    await zernio(zp(),'/webhooks/settings','POST',{name:'Growths Atendimento',url:root,secret:s,events:['message.received','message.sent','message.delivered','message.read','message.failed']});
+    const payload=current.data;
+    const rows: any[]=Array.isArray(current.webhooks)?current.webhooks:Array.isArray(payload?.webhooks)?payload.webhooks:Array.isArray(payload)?payload:[];
+    const existing=rows.find((w:any)=>w.url===root);
+    const events=['message.received','message.sent','message.delivered','message.read','message.failed'];
+    if(existing?._id||existing?.id){
+      await zernio(zp(),'/webhooks/settings','PUT',{webhookId:existing._id||existing.id,name:'Growths Atendimento',url:root,secret:s,events:[...new Set([...(Array.isArray(existing.events)?existing.events:[]),...events])],isActive:true});
+    }else{
+      await zernio(zp(),'/webhooks/settings','POST',{name:'Growths Atendimento',url:root,secret:s,events,isActive:true});
+    }
   }
 }
 // Metadados de grupo e foto: sempre por instância autenticada do workspace.
