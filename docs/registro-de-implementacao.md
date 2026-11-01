@@ -1,5 +1,8 @@
 
 
+## Financeiro simplificado no completo e comissão por produto (v0.210)
+- Teste `t209_financeiro_simplificado.py` (21 verificações, 0 falhas): Go-to-Market com a tela; custos com grupo; parceiro com 10% geral e 20% no Curso Base; gravado em duas linhas; comissão de outubro = 20% no produto e 10% no resto, sem somar; DRE; mudar a geral a partir de novembro fecha a antiga e não muda outubro; Growths completo com o Financeiro simplificado e o completo, e o aviso. `t205` 0 falhas.
+
 ## Financeiro simplificado (v0.209)
 - Teste `t209_financeiro_simplificado.py` (16 verificações, 0 falhas): pacote; ligar; custos com grupo; meses somam os grupos; parceiro; linhas do DRE; comissão de 10% confere no banco; resultado da operação de outubro confere; cartão soma os 3 meses; aviso; Resultado de marketing só com o grupo marketing; menu com e sem a tela. t205 e t208 sem falhas.
 

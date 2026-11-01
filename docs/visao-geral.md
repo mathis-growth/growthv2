@@ -1,3 +1,6 @@
+## v0.210
+**Financeiro simplificado para todos.** No Go-to-Market ele é o financeiro do cliente; no completo, uma visão rápida ao lado do financeiro completo. As comissões dos parceiros podem ser gerais ou com uma % diferente por produto.
+
 ## v0.209
 **Financeiro simplificado.** Para quem não faz contas a pagar no Growths: o cliente lança os totais do mês (marketing e outros custos) e as % dos parceiros, e o Growths monta o DRE simplificado, com receita líquida, Resultado de marketing, Resultado da operação, médias e para onde vai cada R$ 100 vendidos.
 

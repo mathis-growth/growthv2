@@ -15,7 +15,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.209 (Financeiro simplificado).
+**Última atualização:** 01/11/2026, versão 0.210 (Financeiro simplificado no completo e comissão por produto).
 
 **v0.209 · Financeiro simplificado.** DRE do mês sem contas a pagar: o cliente lança os totais e as % dos parceiros, e o Growths mostra receita líquida, Resultado de marketing e Resultado da operação.
 
@@ -176,7 +176,7 @@ A campanha é uma página com abas: dashboard, estratégia e etapas, metas, capt
   - quanto custou e o que trouxe cada vídeo ou criativo.
 - **Ofertas e esteira.** Oferta principal com order bumps, upsells, downsells e cross-sells. Cada item tem condição (sempre, se aceitou, se recusou), validações contra ciclos e taxa de aceite medida com o denominador certo (quem recebeu a oferta, não todos).
 - **Calculadora de campanha.** Preencha o que souber e o resto se ajusta: CPL e conversão dão o CAC, a margem-alvo dá o CAC máximo, e assim por diante. "Salvar metas na campanha" leva tudo para a campanha.
-- **Financeiro simplificado** (pacote para quem não faz contas a pagar no Growths). O cliente lança os totais do mês, de marketing e de outros custos da operação, e as comissões dos parceiros (coprodutor, afiliado, vendedor, com a %). O Growths monta o DRE simplificado mês a mês, de faturamento a Resultado da operação, com % do faturamento, médias, gráfico e "para onde vai cada R$ 100 vendidos". Sem caixa, sem o que foi pago e sem lançamento contábil.
+- **Financeiro simplificado** (no Go-to-Market é o único financeiro; no Growths completo, uma visão rápida ao lado do financeiro completo). O cliente lança os totais do mês, de marketing e de outros custos da operação, e os parceiros (coprodutor, afiliado, vendedor) com uma comissão geral e, se for diferente, uma % por produto. O Growths monta o DRE simplificado mês a mês, de faturamento a Resultado da operação, com % do faturamento, médias, gráfico e "para onde vai cada R$ 100 vendidos". Sem caixa, sem o que foi pago e sem lançamento contábil.
 - **Custos de marketing e Resultado de marketing** (cliente sem financeiro, pacote Go-to-Market). Custos fixos (repetem todo mês) e variáveis (lançados no fim do mês), sem detalhar a equipe; no último dia do mês o cliente recebe a atividade para lançar e, se não lançar, a Mathisa é avisada; o mês só fecha com tudo lançado. Resultado de marketing = receita − mídia − custos de marketing, sempre com o aviso de que as outras despesas da empresa não entram, com ROAS de mídia, ROAS total, CAC de mídia e CAC completo.
 - **Planejamento anual.** Ano escolhido no topo (do ano passado até dois à frente; o ano novo pode começar com as premissas do anterior). Em seções: 1. Meta do ano (ambição, realista ou as duas, com cada premissa do sistema, digitada ou estimada; impostos pelo regime; do faturamento ao lucro; três cenários com o lucro no fim), 2. Por trimestre (ritmo, previsão e sugestão mês a mês), 3. Calendário de campanhas (linha do tempo com lançamentos e perpétuas, meta por campanha, orçamento planejado contra realizado) e as metas mês a mês.
 - **Projeto da campanha.** Toda campanha pode gerar o próprio projeto com as atividades dos blocos (ex.: tráfego pago → públicos, criativos, configurar, acompanhar), com responsável por função.
@@ -547,6 +547,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.210):** Financeiro simplificado também no completo; comissão de parceiro geral ou por produto.
 - **01/11 (v0.209):** Financeiro simplificado: DRE do mês sem contas a pagar, com custos por grupo e comissões de parceiros.
 - **01/11 (v0.208):** Dashboard de vendas no padrão dos outros: filtro de período e os números de vendas e clientes no topo.
 - **01/11 (v0.207):** Entrada do cliente com ✓ verde nos arquivos e a lista de números que o cliente acompanha.

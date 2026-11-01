@@ -1,3 +1,6 @@
+## v0.210
+- Comissão do parceiro numa venda = % do produto da venda, se cadastrada; senão a geral; sobre o valor da venda ou o valor − taxa. Só parceiros ativos; só a % vigente no mês da venda.
+
 ## v0.209
 - Comissão de parceiro no mês = Σ vendas aprovadas do mês (do produto, ou todas) × % (sobre o valor, ou valor − taxa), para parceiros vigentes no mês.
 - Receita líquida = faturamento − taxa − impostos − comissões. Resultado de marketing = receita líquida − mídia − custos de marketing. Resultado da operação = Resultado de marketing − outros custos da operação.

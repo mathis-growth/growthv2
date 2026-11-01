@@ -1,5 +1,11 @@
 
 
+## v0.210 — Financeiro simplificado no completo e comissão geral ou por produto
+**Pedido da Rebecka (01/11)**:
+- O Financeiro simplificado também vale para o **Growths completo**; no **Go-to-Market** ele é o único financeiro. Decisão: a tela Administrativo › Financeiro simplificado aparece para todos (cliente sem pacote vê tudo; o Go-to-Market passa a incluir a tela) e o pacote separado "Financeiro simplificado" da v0.209 deixa de existir. No completo, a tela avisa que os custos são os lançados ali (não vêm das contas a pagar) e que o DRE completo fica em Financeiro. Os Custos de marketing (menu Marketing) continuam só para cliente sem financeiro.
+- **Comissão do parceiro**: geral (vale para todos os produtos, "cadastro geral") ou diferente por produto. Decisão: cada parceiro tem uma comissão geral opcional e uma lista de produtos com % diferente; na venda de um produto vale a % daquele produto, senão a geral (as duas nunca somam). Mudar uma % a partir de um mês fecha a anterior no mês de antes, sem mudar o passado. Parceiro inativo para de entrar no DRE; excluir apaga do DRE de todos os meses.
+- Ela também pensou num filtro para ver o resultado só das campanhas nos relatórios: fica como próxima ideia (DRE simplificado por campanha), a validar.
+
 ## v0.209 — Financeiro simplificado (DRE simplificado)
 **Pedido da Rebecka (01/11)**: para o cliente que não faz contas a pagar e a receber no Growths, um DRE simplificado: quanto vende, taxa da plataforma, comissões (coprodutor, vendedor com a %), mídia, custos de marketing (equipe, ferramentas) e outros custos da operação numa linha geral, com a margem, médias e gráficos. Nome: **Financeiro simplificado**. Sem caixa, sem o que foi pago ou não, sem lançamento contábil e sem custo por funcionário.
 Decisões:

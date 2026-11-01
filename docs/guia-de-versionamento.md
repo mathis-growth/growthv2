@@ -1,3 +1,6 @@
+## v0.210
+- index.html: aplicado sobre a v0.208 (`aplica210.py`, com `g205.js` e `g209.js` atualizados): `fsParceiros` com comissão geral e por produto; aviso no completo; menu sem a condição de "sem financeiro" para o Financeiro simplificado. Migração `20261206100000_financeiro_simplificado.sql` refeita (tabelas `parceiros` e `parceiro_comissoes` no lugar de `parceiros_comissao`). `t209` ampliado.
+
 ## v0.209
 - index.html: aplicado sobre a v0.208 (`aplica209.py`): bloco do `g205.js` trocado (vMktCustos com `grupos` e `embutido`, e o v0.208 do Vendas por plataforma); `g209.js` (`vFinSimples`, `fsDre`, `fsParceiros`, `fsLinhas`); menu Administrativo com `adm-financeiro` (só sem financeiro). Migração `20261206100000_financeiro_simplificado.sql` / `RODAR_v0.209_financeiro_simplificado.sql`. Teste novo `t209_financeiro_simplificado.py`.
 

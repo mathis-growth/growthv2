@@ -1,4 +1,4 @@
-"""v0.209: Financeiro simplificado (DRE simplificado). Banco fa (Escola Aurora), com 20261206100000_financeiro_simplificado.sql.
+"""v0.209/v0.210: Financeiro simplificado (DRE simplificado), no Go-to-Market e no Growths completo; parceiros com comissão geral e por produto. Banco fa (Escola Aurora), com 20261206100000_financeiro_simplificado.sql.
 Põe a Escola Aurora no pacote "Financeiro simplificado" durante o teste e desfaz no fim."""
 import sys, os, json, subprocess; sys.path.insert(0, '.')
 import front
@@ -16,12 +16,12 @@ def chk(c, msg):
 brl = lambda v: ('−' if v < 0 else '') + 'R$ ' + f'{abs(v):,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
 def limpa():
     sql(f"update workspaces set pacote_id = null where id = '{WS}'")
-    sql(f"delete from parceiros_comissao where workspace_id = '{WS}'"); sql(f"delete from mkt_custos_meses where workspace_id = '{WS}'")
+    sql(f"delete from parceiros where workspace_id = '{WS}'"); sql(f"delete from mkt_custos_meses where workspace_id = '{WS}'")
     sql(f"delete from mkt_custos_itens where workspace_id = '{WS}'"); sql(f"delete from mkt_custos_config where workspace_id = '{WS}'")
 limpa()
-pac = sql("select array_to_string(telas, ',') from pacotes_acesso where nome = 'Financeiro simplificado'").split(',')
-chk('adm-financeiro' in pac and 'mkt-custos' in pac and not any(t.startswith('fin-') for t in pac), 'pacote "Financeiro simplificado" = Go-to-Market + a tela do DRE, sem o financeiro completo')
-sql(f"update workspaces set pacote_id = (select id from pacotes_acesso where nome = 'Financeiro simplificado') where id = '{WS}'")
+pac = sql("select array_to_string(telas, ',') from pacotes_acesso where nome = 'Go-to-Market'").split(',')
+chk('adm-financeiro' in pac and 'mkt-custos' in pac and not any(t.startswith('fin-') for t in pac) and sql("select count(*) from pacotes_acesso where nome = 'Financeiro simplificado'") == '0', 'Go-to-Market tem o Financeiro simplificado como único financeiro (sem pacote à parte)')
+sql(f"update workspaces set pacote_id = (select id from pacotes_acesso where nome = 'Go-to-Market') where id = '{WS}'")
 O = lambda k: float(sql(k))
 fat = O(f"select coalesce(sum(valor_bruto), 0) from vendas where workspace_id = '{WS}' and status = 'aprovada' and (data_venda at time zone 'America/Sao_Paulo')::date between '2026-10-01' and '2026-10-31'")
 taxa = O(f"select coalesce(sum(taxa_plataforma), 0) from vendas where workspace_id = '{WS}' and status = 'aprovada' and (data_venda at time zone 'America/Sao_Paulo')::date between '2026-10-01' and '2026-10-31'")
@@ -45,18 +45,22 @@ with sync_playwright() as pw:
     chk('Outros custos da operação' in t and 'R$ 8.000,00' in t.replace('\xa0', ' '), 'a tabela de meses soma os dois grupos (8.000 em out/2026)')
     # parceiro
     pg.click('[data-fst="parc"]'); pg.wait_for_timeout(2500)
+    PB = '5a1c6077-dda8-42cf-9c96-ca913be007d2'  # Curso Base
     pg.click('#fsNovoP'); pg.wait_for_timeout(500)
-    pg.fill('#modalRoot [name=nome]', 'Maria Coprodutora'); pg.fill('#modalRoot [name=percentual]', '10'); pg.fill('#modalRoot [name=desde]', '2026-10')
-    pg.click('#modalRoot button.pri'); pg.wait_for_timeout(2500)
-    chk('Maria Coprodutora' in pg.inner_text('#main') and '10%' in pg.inner_text('#main'), 'comissão de parceiro cadastrada (coprodutora, 10%)')
+    pg.fill('#modalRoot [name=nome]', 'Maria Coprodutora'); pg.fill('#modalRoot [name=geral]', '10'); pg.fill('#modalRoot [name=desde]', '2026-10')
+    pg.click('#fsPPmais'); pg.select_option('#modalRoot .fs-pp [data-pp=prod]', PB); pg.fill('#modalRoot .fs-pp [data-pp=pct]', '20')
+    pg.click('#modalRoot .acts button.pri'); pg.wait_for_timeout(2500)
+    t = pg.inner_text('#main')
+    chk('Maria Coprodutora' in t and '10% em todos os produtos' in t and 'Curso Base: 20%' in t, 'parceiro com comissão geral (10%) e uma % diferente no Curso Base (20%)')
+    chk(sql(f"select string_agg(coalesce(produto_id::text, 'geral') || ':' || percentual, ',' order by produto_id nulls first) from parceiro_comissoes where workspace_id = '{WS}'") == f'geral:10.00,{PB}:20.00', 'gravado: uma linha geral e uma do produto')
     # DRE
     pg.click('[data-fst="dre"]'); pg.wait_for_timeout(3500)
-    cp = round(fat * 0.10, 2); liq = fat - taxa - imp - cp - ce; rmkt = liq - mid - 5000; rop = rmkt - 3000
+    cp = float(sql(f"select sum(round(valor_bruto * case when produto_id = '{PB}' then 0.20 else 0.10 end, 2)) from vendas where workspace_id = '{WS}' and status = 'aprovada' and (data_venda at time zone 'America/Sao_Paulo')::date between '2026-10-01' and '2026-10-31'")); liq = fat - taxa - imp - cp - ce; rmkt = liq - mid - 5000; rop = rmkt - 3000
     t = pg.inner_text('#main').replace('\xa0', ' ')
     col = pg.evaluate("(() => { const th = [...document.querySelectorAll('.fs-dre thead th')].map(x => x.textContent.trim()); const i = th.findIndex(x => x.startsWith('out/2026')); return Object.fromEntries([...document.querySelectorAll('.fs-dre tbody tr')].map(r => [r.cells[0].textContent.trim(), r.cells[i].textContent.trim()])); })()")
     chk(set(col.keys()) >= {'Faturamento (vendas aprovadas)', '− Taxa da plataforma', '− Comissões (parceiros e equipe)', '= Receita líquida', '− Mídia (anúncios)', '− Custos de marketing', '= Resultado de marketing', '− Outros custos da operação', '= Resultado da operação'}, 'linhas do DRE simplificado: ' + ', '.join(col.keys()))
     R = json.loads(sql("begin; select set_config('request.jwt.claims', '{\"sub\":\"00000000-0000-0000-0000-00000000a0a0\",\"role\":\"authenticated\"}', true); select dre_simplificado('%s', '2026-10-01', 1)::text; commit;" % WS).split('\n')[1])['meses'][0]
-    chk(abs(float(R['comissoes_parceiros']) - cp) < 0.05 and float(R['custos_mkt']) == 5000 and float(R['custos_op']) == 3000, 'outubro no banco: comissão do parceiro = 10%% do faturamento (%.2f), marketing 5.000, operação 3.000' % cp)
+    chk(abs(float(R['comissoes_parceiros']) - cp) < 0.05 and float(R['custos_mkt']) == 5000 and float(R['custos_op']) == 3000, 'outubro no banco: comissão = 20%% no Curso Base e 10%% no resto, sem somar as duas (%.2f), marketing 5.000, operação 3.000' % cp)
     rop_db = float(R['faturamento']) - float(R['taxa']) - float(R['impostos']) - float(R['comissoes_parceiros']) - float(R['comissoes_equipe']) - float(R['midia']) - float(R['custos_mkt']) - float(R['custos_op'])
     chk(abs(rop_db - rop) < 0.05, 'resultado da operação de outubro = faturamento − taxa − impostos − comissões − mídia − marketing − operação (%s)' % brl(rop))
     tela = pg.evaluate("[...document.querySelectorAll('#main .kpi')].find(k => k.textContent.startsWith('Resultado da operação')).querySelector('.v').textContent")
@@ -67,20 +71,23 @@ with sync_playwright() as pw:
     mr = json.loads(sql("begin; select set_config('request.jwt.claims', '{\"sub\":\"00000000-0000-0000-0000-00000000a0a0\",\"role\":\"authenticated\"}', true); select mkt_resultado('%s', '2026-10-01', '2026-10-31')::text; commit;" % WS).split('\n')[1])
     chk(float(mr['custos_mkt']) == 5000, 'Resultado de marketing (Custos de marketing) só conta o grupo marketing: 5.000')
     pg.screenshot(path=SHOT + '1_dre.png', full_page=True)
+    # mudar a % a partir de novembro não muda outubro
+    pg.click('[data-fst="parc"]'); pg.wait_for_timeout(2500); pg.click('[data-fpe]'); pg.wait_for_timeout(500)
+    pg.fill('#modalRoot [name=geral]', '15'); pg.fill('#modalRoot [name=desde]', '2026-11'); pg.click('#modalRoot .acts button.pri'); pg.wait_for_timeout(2500)
+    chk(sql(f"select string_agg(coalesce(produto_id::text, 'geral') || ':' || percentual || ':' || to_char(desde, 'MM') || '-' || coalesce(to_char(ate, 'MM'), '…'), ',' order by produto_id nulls first, desde) from parceiro_comissoes where workspace_id = '{WS}'") == f'geral:10.00:10-10,geral:15.00:11-…,{PB}:20.00:10-…', 'mudar a geral para 15% a partir de nov: a de 10% vale até out; a do produto continua')
+    R2 = json.loads(sql("begin; select set_config('request.jwt.claims', '{\"sub\":\"00000000-0000-0000-0000-00000000a0a0\",\"role\":\"authenticated\"}', true); select dre_simplificado('%s', '2026-10-01', 1)::text; commit;" % WS).split('\n')[1])['meses'][0]
+    chk(abs(float(R2['comissoes_parceiros']) - cp) < 0.05, 'outubro não muda')
     chk(not pg.errs, 'sem erro de JavaScript ' + str(pg.errs[:3]))
     b.close()
-# Go-to-Market sem a tela
-sql(f"update workspaces set pacote_id = (select id from pacotes_acesso where nome = 'Go-to-Market') where id = '{WS}'")
+# Growths completo (sem pacote): o Financeiro simplificado aparece junto do financeiro completo, com o aviso
+sql(f"update workspaces set pacote_id = null where id = '{WS}'")
 with sync_playwright() as pw:
     b = pw.chromium.launch(); ctx, pg = front.abre(b, hoje='2026-11-01')
-    pg.evaluate("S.abertos['Administrativo'] = true; desenhaNav();"); pg.wait_for_timeout(300)
-    chk('Financeiro simplificado' not in pg.inner_text('#nav') and 'Custos de marketing' in pg.evaluate("NAV.flatMap(g => g.items.map(i => i[1])).join('|')"), 'Go-to-Market (sem a tela): o menu não tem o Financeiro simplificado')
-    b.close()
-sql(f"update workspaces set pacote_id = (select id from pacotes_acesso where nome = 'Financeiro simplificado') where id = '{WS}'")
-with sync_playwright() as pw:
-    b = pw.chromium.launch(); ctx, pg = front.abre(b, hoje='2026-11-01')
-    pg.evaluate("S.abertos['Administrativo'] = true; desenhaNav();"); pg.wait_for_timeout(300)
-    chk('Financeiro simplificado' in pg.inner_text('#nav'), 'pacote Financeiro simplificado: o menu Administrativo tem o Financeiro simplificado')
+    pg.evaluate("S.abertos['Administrativo'] = true; S.abertos['Financeiro'] = true; desenhaNav();"); pg.wait_for_timeout(300)
+    nav = pg.inner_text('#nav')
+    chk('Financeiro simplificado' in nav and 'Contas a pagar' in nav, 'Growths completo: Financeiro simplificado no Administrativo e o Financeiro completo')
+    t = front.vai(pg, 'adm-financeiro', "S.fsTab = 'dre';", 4000)
+    chk('Este cliente tem o financeiro completo' in t, 'no completo, o DRE simplificado avisa que os custos são os lançados ali')
     b.close()
 limpa()
 print('\n%d falha(s)' % len(falhas)); sys.exit(1 if falhas else 0)

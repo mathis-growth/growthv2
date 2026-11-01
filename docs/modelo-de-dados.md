@@ -1,3 +1,7 @@
+## v0.210
+- `parceiros` (nome, papel coprodutor|afiliado|vendedor|outro, ativo) e `parceiro_comissoes` (parceiro_id, produto_id vazio = geral, percentual, base bruto|liquido, desde, ate). Sai `parceiros_comissao` (da v0.209, nunca aplicada em produção).
+- O pacote "Financeiro simplificado" sai; o Go-to-Market ganha a tela `adm-financeiro`.
+
 ## v0.209
 - `mkt_custos_itens.grupo` (marketing | operacional).
 - `parceiros_comissao` (nome, papel coprodutor|afiliado|vendedor|outro, percentual, base bruto|liquido, produto_id, desde, ate).

@@ -1,10 +1,10 @@
 -- RODAR no SQL Editor do Supabase (cópia de migrations/20261206100000_financeiro_simplificado.sql). Rode antes o RODAR_v0.205 e o RODAR_v0.206.
 -- v0.209 — Financeiro simplificado: DRE simplificado sem contas a pagar e a receber.
 -- 1. Custos com grupo: marketing (entra no CAC e no Resultado de marketing) ou operacional (outros custos da operação).
--- 2. Comissões de parceiros: coprodutor, afiliado, vendedor ou outro, com % sobre as vendas (de um produto ou de todos).
+-- 2. Parceiros (coprodutor, afiliado, vendedor) com uma comissão geral e, se for diferente, uma por produto.
 -- 3. dre_simplificado: mês a mês, faturamento − taxa − impostos − comissões = receita líquida − mídia − marketing =
 --    Resultado de marketing − outros custos = Resultado da operação.
--- 4. Tela "Financeiro simplificado" (adm-financeiro) e o pacote "Financeiro simplificado" (Go-to-Market + esta tela).
+-- 4. Tela "Financeiro simplificado" (adm-financeiro): no Go-to-Market é o único financeiro; no Growths completo aparece junto do financeiro completo.
 -- Depende de: RODAR_v0.205 (custos de marketing) e RODAR_v0.206 (v_vendas_todas). Pode rodar de novo sem erro.
 
 alter table public.mkt_custos_itens add column if not exists grupo text not null default 'marketing';
@@ -14,30 +14,44 @@ do $$ begin
   end if; end $$;
 comment on column public.mkt_custos_itens.grupo is 'v0.209: marketing (CAC e Resultado de marketing) ou operacional (outros custos, só no Financeiro simplificado).';
 
-create table if not exists public.parceiros_comissao (
+-- parceiros (coprodutor, afiliado, vendedor) e as comissões deles: uma geral (todos os produtos) e, se for diferente, uma por produto.
+-- Na venda de um produto vale a % daquele produto; se não tiver, a geral.
+drop table if exists public.parceiros_comissao; -- desenho anterior desta mesma versão, nunca aplicado em produção
+create table if not exists public.parceiros (
   id uuid primary key default gen_random_uuid(),
   workspace_id uuid not null references workspaces(id) on delete cascade,
   nome text not null check (length(trim(nome)) between 1 and 120),
   papel text not null default 'coprodutor' check (papel in ('coprodutor', 'afiliado', 'vendedor', 'outro')),
+  ativo boolean not null default true,
+  criado_em timestamptz not null default now()
+);
+create table if not exists public.parceiro_comissoes (
+  id uuid primary key default gen_random_uuid(),
+  workspace_id uuid not null references workspaces(id) on delete cascade,
+  parceiro_id uuid not null references parceiros(id) on delete cascade,
+  produto_id uuid references produtos(id) on delete cascade,
   percentual numeric(5,2) not null check (percentual > 0 and percentual <= 100),
   base text not null default 'bruto' check (base in ('bruto', 'liquido')),
-  produto_id uuid references produtos(id) on delete set null,
   desde date not null check (desde = date_trunc('month', desde)::date),
   ate date check (ate is null or (ate = date_trunc('month', ate)::date and ate >= desde)),
   criado_em timestamptz not null default now()
 );
-comment on table public.parceiros_comissao is 'v0.209: quem ganha % das vendas (coprodutor, afiliado, vendedor). Base bruto = valor da venda; líquido = valor − taxa da plataforma. Sem produto = todas as vendas.';
-alter table public.parceiros_comissao enable row level security;
-drop policy if exists parceiros_comissao_ver on public.parceiros_comissao;
-create policy parceiros_comissao_ver on public.parceiros_comissao for select to authenticated using (pertence_ao_workspace(workspace_id) or sou_equipe_interna());
-drop policy if exists parceiros_comissao_gravar on public.parceiros_comissao;
-create policy parceiros_comissao_gravar on public.parceiros_comissao for insert to authenticated with check (pode_editar(workspace_id, '{adm,vendas}'::text[]));
-drop policy if exists parceiros_comissao_alterar on public.parceiros_comissao;
-create policy parceiros_comissao_alterar on public.parceiros_comissao for update to authenticated using (pode_editar(workspace_id, '{adm,vendas}'::text[])) with check (pode_editar(workspace_id, '{adm,vendas}'::text[]));
-drop policy if exists parceiros_comissao_excluir on public.parceiros_comissao;
-create policy parceiros_comissao_excluir on public.parceiros_comissao for delete to authenticated using (pode_editar(workspace_id, '{adm,vendas}'::text[]));
-revoke all on public.parceiros_comissao from anon;
-grant select, insert, update, delete on public.parceiros_comissao to authenticated;
+comment on table public.parceiro_comissoes is 'v0.209: % do parceiro. produto_id vazio = geral (todos os produtos); com produto = vale para aquele produto no lugar da geral. Base bruto = valor da venda; líquido = valor − taxa da plataforma.';
+create index if not exists parceiro_comissoes_parc on public.parceiro_comissoes (parceiro_id);
+do $$ declare t text; begin
+  foreach t in array array['parceiros', 'parceiro_comissoes'] loop
+    execute format('alter table public.%I enable row level security', t);
+    execute format('drop policy if exists %I on public.%I', t || '_ver', t);
+    execute format('create policy %I on public.%I for select to authenticated using (pertence_ao_workspace(workspace_id) or sou_equipe_interna())', t || '_ver', t);
+    execute format('drop policy if exists %I on public.%I', t || '_gravar', t);
+    execute format('create policy %I on public.%I for insert to authenticated with check (pode_editar(workspace_id, ''{adm,vendas}''::text[]))', t || '_gravar', t);
+    execute format('drop policy if exists %I on public.%I', t || '_alterar', t);
+    execute format('create policy %I on public.%I for update to authenticated using (pode_editar(workspace_id, ''{adm,vendas}''::text[])) with check (pode_editar(workspace_id, ''{adm,vendas}''::text[]))', t || '_alterar', t);
+    execute format('drop policy if exists %I on public.%I', t || '_excluir', t);
+    execute format('create policy %I on public.%I for delete to authenticated using (pode_editar(workspace_id, ''{adm,vendas}''::text[]))', t || '_excluir', t);
+    execute format('revoke all on public.%I from anon', t);
+    execute format('grant select, insert, update, delete on public.%I to authenticated', t);
+  end loop; end $$;
 
 -- custos do mês por grupo (fixos e variáveis de marketing ficam onde estavam, para o Resultado de marketing não mudar)
 create or replace function public.mkt_custos_mes(p_ws uuid, p_mes date) returns jsonb
@@ -69,9 +83,10 @@ begin
     select coalesce(sum(taxa_plataforma), 0), coalesce(sum(impostos), 0), count(*) filter (where taxa_plataforma is null), count(*) into taxa, imp, ntaxa, nv
       from vendas where workspace_id = p_ws and status = 'aprovada' and (data_venda at time zone 'America/Sao_Paulo')::date between m and fim;
     select coalesce(sum(round(case when pc.base = 'liquido' then v.valor_bruto - coalesce(v.taxa_plataforma, 0) else v.valor_bruto end * pc.percentual / 100, 2)), 0) into com_p
-      from parceiros_comissao pc join vendas v on v.workspace_id = pc.workspace_id and v.status = 'aprovada' and (v.data_venda at time zone 'America/Sao_Paulo')::date between m and fim
-        and (pc.produto_id is null or v.produto_id = pc.produto_id)
-      where pc.workspace_id = p_ws and pc.desde <= m and (pc.ate is null or pc.ate >= m);
+      from vendas v join parceiros pa on pa.workspace_id = v.workspace_id and pa.ativo
+      join lateral (select c.* from parceiro_comissoes c where c.parceiro_id = pa.id and c.desde <= m and (c.ate is null or c.ate >= m)
+                    and (c.produto_id = v.produto_id or c.produto_id is null) order by (c.produto_id is null) limit 1) pc on true
+      where v.workspace_id = p_ws and v.status = 'aprovada' and (v.data_venda at time zone 'America/Sao_Paulo')::date between m and fim;
     select coalesce(sum(c.valor), 0) into com_e from comissoes c where c.workspace_id = p_ws and c.status <> 'cancelada' and c.competencia between m and fim;
     select coalesce(sum(custo), 0) into mid from metricas_anuncio_dia where workspace_id = p_ws and data between m and fim;
     dm := mkt_custos_mes(p_ws, m);
@@ -89,8 +104,7 @@ grant execute on function public.dre_simplificado(uuid, date, int) to authentica
 insert into acesso_telas (tela, modulo, nome, grupo, ordem)
 values ('adm-financeiro', 'adm', 'Financeiro simplificado', 'Administrativo', coalesce((select ordem from acesso_telas where tela = 'adm-empresa'), 0) + 1)
 on conflict (tela) do update set modulo = excluded.modulo, nome = excluded.nome, grupo = excluded.grupo;
-insert into pacotes_acesso (nome, descricao, telas, ativo)
-select 'Financeiro simplificado', 'O Go-to-Market mais o Financeiro simplificado: DRE do mês com taxas, comissões, mídia, custos de marketing e outros custos operacionais, sem contas a pagar e a receber, bancos e lançamentos.',
-  (select telas from pacotes_acesso where nome = 'Go-to-Market') || array['adm-financeiro'], true
-where not exists (select 1 from pacotes_acesso where nome = 'Financeiro simplificado') and exists (select 1 from pacotes_acesso where nome = 'Go-to-Market');
+-- no Go-to-Market o Financeiro simplificado é o único financeiro; no Growths completo (sem pacote) ele aparece junto do financeiro completo
+update pacotes_acesso set telas = telas || array['adm-financeiro'] where nome = 'Go-to-Market' and not ('adm-financeiro' = any (telas));
+delete from pacotes_acesso p where p.nome = 'Financeiro simplificado' and not exists (select 1 from workspaces w where w.pacote_id = p.id); -- desenho anterior desta versão
 notify pgrst, 'reload schema';

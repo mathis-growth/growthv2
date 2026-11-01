@@ -1,3 +1,9 @@
+## v0.210 — Financeiro simplificado no completo e comissão geral ou por produto (01/11/2026)
+- Financeiro simplificado no Growths completo e dentro do Go-to-Market (sai o pacote separado).
+- Parceiros com comissão geral e % diferente por produto (a do produto vale no lugar da geral); mudar a % não muda o passado.
+- Banco: `RODAR_v0.209_financeiro_simplificado.sql` **atualizado** (ainda não aplicado).
+- Teste: `t209_financeiro_simplificado.py` (0 falhas).
+
 ## v0.209 — Financeiro simplificado (01/11/2026)
 - Pacote **Financeiro simplificado** (Go-to-Market + DRE simplificado).
 - Custos do mês com grupo (marketing ou outros da operação) e **comissões de parceiros** (coprodutor, afiliado, vendedor, com %).

@@ -1,3 +1,12 @@
+## v0.210
+1. `supabase/RODAR_v0.209_financeiro_simplificado.sql` foi **atualizado** (parceiros e comissões por produto; Financeiro simplificado dentro do Go-to-Market, sem pacote à parte). Ainda não tinha sido aplicado em produção: rode a versão desta entrega. Pode rodar de novo sem erro.
+2. Ordem dos pendentes: `RODAR_v0.197`, `v0.198`, `v0.205`, `v0.206`, `v0.208`, `v0.209`.
+
+## v0.198 — Planejamento anual (meta do ano)
+1. `supabase/RODAR_v0.198_plano_anual.sql`: cria `plano_anual` (caminho, premissas com a origem, cenários, meta escolhida) e a função `plano_anual_sugestoes` (o que o Growths já sabe do cliente). Pode rodar de novo sem erro. **Ainda não aplicado em produção.**
+2. Sem ele, a tela Planejamento anual avisa e as metas mês a mês continuam funcionando.
+3. Ordem dos pendentes: `RODAR_v0.197_pesquisa_modelos.sql`, `RODAR_v0.198_plano_anual.sql`.
+
 ## v0.209 — Financeiro simplificado
 1. `supabase/RODAR_v0.209_financeiro_simplificado.sql`: grupo nos custos (marketing ou operacional), `parceiros_comissao`, `mkt_custos_mes` com os dois grupos, `dre_simplificado`, a tela `adm-financeiro` e o pacote **Financeiro simplificado**. **Depende do v0.205 e do v0.206.** Pode rodar de novo sem erro. **Ainda não aplicado em produção.**
 2. Ordem dos pendentes: `RODAR_v0.197`, `v0.198`, `v0.205`, `v0.206`, `v0.208`, `v0.209`.
