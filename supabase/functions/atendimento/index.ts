@@ -16,6 +16,15 @@ async function channel(id: string, ws?: string) {
 }
 async function receive(ch: any, normalized: any, historical = false) {
   if (!normalized) return;
+  // Na caixa Zernio, o ID interno da conversa pode mudar entre o histórico
+  // sincronizado e o webhook. Para Instagram, o participante é estável e há
+  // uma conversa por participante e conta; reaproveita a conversa já gravada.
+  if (ch.provedor === 'zernio' && ch.canal === 'instagram' && normalized.conversa?.endereco) {
+    const existing = await q(db.from('atd_conversas').select('externo_id')
+      .eq('canal_id', ch.id).eq('endereco', normalized.conversa.endereco)
+      .order('criado_em', { ascending:true }).limit(1).maybeSingle());
+    if (existing?.externo_id) normalized.conversa.id = existing.externo_id;
+  }
   normalized.mensagem.historica = historical;
   const cv = await q(db.rpc('atd_receber', { p_canal: ch.id, p_conversa: normalized.conversa, p_mensagem: normalized.mensagem }));
   if (normalized.media) {
@@ -110,13 +119,15 @@ async function webhook(req: Request, url: URL, raw: string) {
       const s = st[d.status || d.update?.status]; if (s) await updateDelivery(ch, d.keyId || d.key?.id, s, d.remoteJid || d.key?.remoteJid);
     }
   } else if (url.searchParams.get('provider') === 'zernio') {
-    if (!await hmacValido(raw, req.headers.get('x-zernio-signature') || '', Deno.env.get('ZERNIO_ATENDIMENTO_WEBHOOK_SECRET') || '')) return json({ ok: false }, 401);
+    if (!await hmacValido(raw, req.headers.get('x-zernio-signature') || req.headers.get('x-late-signature') || '', Deno.env.get('ZERNIO_ATENDIMENTO_WEBHOOK_SECRET') || '')) return json({ ok: false }, 401);
     if (p.event === 'webhook.test') return json({ ok: true });
-    const ch = await q(db.from('atd_canais').select('*').eq('provedor','zernio').eq('externo_id',p.account?.id || p.account?.accountId || '').maybeSingle());
+    const accountId = p.account?.id || p.account?.accountId || p.account?._id || p.account?.platformAccountId || '';
+    const ch = accountId ? await q(db.from('atd_canais').select('*').eq('provedor','zernio').eq('externo_id',accountId).maybeSingle()) : null;
     if (ch?.ativo) {
-      await receive(ch, zernioMensagem(p));
+      const normalized = zernioMensagem(p);
+      if (normalized) await receive(ch, normalized);
       const st: Record<string,string> = { 'message.delivered':'entregue','message.read':'lida','message.failed':'falhou' };
-      if (st[p.event]) await updateDelivery(ch, p.message?.platformMessageId || p.message?.id, st[p.event], p.conversation?.id);
+      if (st[p.event]) await updateDelivery(ch, p.message?.platformMessageId || p.message?.id, st[p.event], p.conversation?.id || p.conversation?.platformConversationId);
     }
   } else return json({ ok: false }, 400);
   return json({ ok: true });

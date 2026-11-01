@@ -43,12 +43,19 @@ export function evolutionMensagem(d: any) {
   };
 }
 export function zernioMensagem(p: any) {
-  if (!['message.received', 'message.sent'].includes(p.event) || !p.message?.id || !p.conversation?.id) return null;
-  const m = p.message, c = p.conversation;
-  return { conversa: { id: c.id, nome: c.participantName || (p.event === 'message.received' ? m.sender?.name : undefined), endereco: c.participantId || (p.event === 'message.received' ? m.sender?.id : undefined), grupo: false },
-    mensagem: { id: m.platformMessageId || m.id, direcao: p.event === 'message.sent' ? 'enviada' : 'recebida', texto: m.text || m.message || '',
-      participante: m.sender?.id, autor_nome: m.sender?.name, em: m.createdAt || m.sentAt || p.timestamp,
-      status: p.event === 'message.sent' ? 'enviada' : 'recebida',
+  if (!['message.received', 'message.sent'].includes(p.event)) return null;
+  const m = p.message || {}, c = p.conversation || {};
+  // Zernio usa o id interno da conversa em `id` e também expõe o ID
+  // específico da plataforma. Aceitamos ambos para não descartar DMs válidas.
+  const conversationId = c.id || c.platformConversationId;
+  const messageId = m.platformMessageId || m.id;
+  if (!conversationId || !messageId) return null;
+  const received = p.event === 'message.received';
+  const sender = m.sender || p.sender || {};
+  return { conversa: { id: conversationId, nome: c.participantName || c.participantUsername || (received ? sender.name : undefined), endereco: c.participantId || (received ? sender.id : undefined), grupo: false },
+    mensagem: { id: messageId, direcao: received ? 'recebida' : 'enviada', texto: m.text || m.message || m.content || '',
+      participante: sender.id, autor_nome: sender.name, em: m.createdAt || m.sentAt || p.timestamp,
+      status: received ? 'recebida' : 'enviada',
       anexos: (m.attachments || []).map((a: any) => ({
         nome: a.name || a.filename || a.type || 'Anexo',
         mime: a.mimeType || a.contentType || ({image:'image/jpeg',audio:'audio/ogg',video:'video/mp4'} as Record<string,string>)[a.type] || 'application/octet-stream',
