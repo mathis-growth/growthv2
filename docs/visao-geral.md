@@ -1,3 +1,6 @@
+## v0.208
+**Dashboard de vendas no padrão.** Filtro de período como nos outros e, no topo, o que importa: valor das vendas, vendas, ticket, clientes novos, clientes ativos e conversão, contra o período anterior.
+
 ## v0.207
 **Entrada do cliente mais clara.** Arquivo anexado ganha ✓ verde no grupo, a pergunta "quais números você acompanha" virou lista para marcar, e o teste pelo link aberto não trava mais.
 

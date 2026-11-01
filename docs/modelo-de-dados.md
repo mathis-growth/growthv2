@@ -1,3 +1,6 @@
+## v0.208
+- Função `vendas_periodo(ws, ini, fim)`: vendas, valor, reembolsos, valor reembolsado, clientes novos (com o histórico), leads e leads que viraram cliente, clientes ativos e inativos, e os mesmos números do período anterior.
+
 ## v0.207
 - Sem mudança no banco.
 

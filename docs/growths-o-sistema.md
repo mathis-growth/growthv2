@@ -15,7 +15,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.207 (entrada do cliente: ✓ verde e métricas que acompanha).
+**Última atualização:** 01/11/2026, versão 0.208 (dashboard de vendas no padrão).
 
 **v0.206 · Histórico de vendas.** As vendas de antes do Growths sobem pelo relatório da plataforma e viram o histórico de cada cliente e a base do planejamento, sem mexer no financeiro.
 
@@ -169,6 +169,7 @@ A campanha é uma página com abas: dashboard, estratégia e etapas, metas, capt
   - onde a campanha caiu (últimos 7 dias contra os 7 anteriores, etapa por etapa);
   - movimento por dia num gráfico só, com as métricas que você escolher;
   - vendas por produto e oferta;
+  - Dashboard de vendas com filtro de período e, no topo, valor das vendas, vendas, ticket, clientes novos, clientes ativos e conversão de lead em cliente, contra o período anterior;
   - vendas por plataforma (Hotmart, Kiwify, Eduzz…): bruto, taxas, reembolsos e o que a plataforma deve repassar;
   - quanto custou e o que trouxe cada vídeo ou criativo.
 - **Ofertas e esteira.** Oferta principal com order bumps, upsells, downsells e cross-sells. Cada item tem condição (sempre, se aceitou, se recusou), validações contra ciclos e taxa de aceite medida com o denominador certo (quem recebeu a oferta, não todos).
@@ -542,6 +543,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.208):** Dashboard de vendas no padrão dos outros: filtro de período e os números de vendas e clientes no topo.
 - **01/11 (v0.207):** Entrada do cliente com ✓ verde nos arquivos e a lista de números que o cliente acompanha.
 - **01/11 (v0.206):** Histórico de vendas: importar o relatório da plataforma, ficha com o histórico, planejamento com o histórico.
 - **01/11 (v0.205):** Pacote Go-to-Market (sem financeiro), Custos de marketing com rotina mensal, Resultado de marketing e vendas por plataforma.

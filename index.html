@@ -9697,15 +9697,14 @@ async function vCrmDash(m) {
   const pes = { length: D.total }, cliAt = D.ativos, qual = D.qualificados, pend = D.pendentes, ven = { length: D.vendas_aprovadas };
   m.innerHTML = `<div class="head"><h1>Dashboard de Vendas</h1><div class="acts">${ir('crm-leads', 'Funil comercial')}${ir('crm-vendas', 'Vendas')}${ir('crm-alunos', 'Alunos')}${ir('cad-clientes', 'Clientes')}</div></div>
   ${painelVenc(ctsAtivos, h, true)}
+  ${vdFiltros(S.vd = S.vd || { ini: diaMais(h, -29), fim: h })}
   ${MP ? painelMetasVendas(MP) : ''}
-  <div class="kpis">
-    ${kpi('Pessoas', num(pes.length), num(D.leads) + ' leads · ' + num(D.clientes) + ' clientes')}
-    ${kpi('Novos em 30 dias', num(D.novos_30), variacao)}
+  <div class="kpis" id="vdKpis">${kpi('Valor das vendas', '…', 'calculando')}</div>
+  <div class="kpis vd-cad">
+    ${kpi('Pessoas cadastradas', num(pes.length), num(D.leads) + ' leads · ' + num(D.clientes) + ' clientes')}
+    ${kpi('Cadastros novos em 30 dias', num(D.novos_30), variacao)}
     ${kpi('Qualificados', num(qual), fP(D.pct_qualificados) + ' do total')}
     ${kpi('A qualificar', num(pend), 'pesquisa ainda não respondida')}
-    ${kpi('Clientes ativos', num(cliAt), num(D.inativos) + ' inativos')}
-    ${kpi('Lead → cliente', fP(D.conv_lead_cliente), num(D.clientes) + ' de ' + num(D.total))}
-    ${kpi('Ticket médio', fB(D.ticket_medio), num(ven.length) + ' venda(s) aprovada(s)')}
   </div>
   <div class="cols">
     <div class="panel"><h2>Novos cadastros por dia, 30 dias</h2>${linhas(d30.map(d => dd(d).slice(0, 5)), null, porDia, num, true)}</div>
@@ -9717,6 +9716,7 @@ async function vCrmDash(m) {
   </div>
   ${jor.length ? `<div class="panel"><h2>Jornada nos funis</h2><div class="cols">${jor.map(j => `<div><h3>${esc(j.f.nome)}</h3><div class="funnel">${j.et.map(([n, v]) => barraRow(n, v, Math.max(1, ...j.et.map(x => x[1])))).join('')}</div></div>`).join('')}</div></div>` : ''}
   <div class="panel"><h2>Últimos cadastros</h2><div class="tw"><table><thead><tr><th>Quando</th><th>Nome</th><th>Canal</th><th>Situação</th></tr></thead><tbody>${D.ultimos.map(p => `<tr><td>${dtt(p.criado_em)}</td><td>${esc(p.nome)}<br><span class="muted">${esc(p.email || '')}</span></td><td>${esc(p.canal_origem || '—')}</td><td>${pillFunil(p.status_funil, p.status_cliente)} ${pillQual(p.qualificacao)}</td></tr>`).join('') || '<tr><td colspan="4" class="empty">Nenhum cadastro.</td></tr>'}</tbody></table></div></div>`;
+  await vdKpis(m).catch(e => console.warn('v0.208', e));
   await vendasPlataformas(m).catch(e => console.warn('v0.205', e));
 }
 
@@ -16802,18 +16802,16 @@ async function mktResultadoPainel(body, A) {
 }
 /* Vendas por plataforma (Dashboard de vendas): o que cada plataforma deve repassar */
 async function vendasPlataformas(m) {
-  const A = S.vpp = S.vpp || { ini: hoje().slice(0, 8) + '01', fim: hoje() };
+  const A = S.vd = S.vd || { ini: diaMais(hoje(), -29), fim: hoje() }; // v0.208: o mesmo período do filtro do dashboard
   const L = await q(sb.rpc('vendas_por_plataforma', { p_ws: S.ws, p_ini: A.ini, p_fim: A.fim })).catch(() => null); if (L == null) return;
   const tot = k => L.reduce((t, x) => t + Number(x[k] || 0), 0);
   const d = document.createElement('div'); d.className = 'panel'; d.id = 'vpPlat';
-  d.innerHTML = `<div class="head" style="margin:0 0 8px"><h2 style="margin:0">Vendas por plataforma</h2><div class="filters" style="margin:0"><label>De<input type="date" id="vppIni" value="${A.ini}"></label><label>Até<input type="date" id="vppFim" value="${A.fim}"></label></div></div>
+  d.innerHTML = `<div class="head" style="margin:0 0 8px"><h2 style="margin:0">Vendas por plataforma</h2><span class="muted">${dd(A.ini)} a ${dd(A.fim)}</span></div>
     ${L.length ? `<div class="tw"><table><thead><tr><th>Plataforma</th><th class="n">Vendas</th><th class="n">Bruto</th><th class="n">Taxa da plataforma</th><th class="n">Impostos</th><th class="n">Comissões</th><th class="n">Reembolsos</th><th class="n">A receber da plataforma</th></tr></thead><tbody>
       ${L.map(x => `<tr><td><b>${esc(x.plataforma)}</b></td><td class="n">${num(x.vendas)}</td><td class="n">${brl(x.bruto)}</td><td class="n">${brl(x.taxa)}</td><td class="n">${brl(x.impostos)}</td><td class="n">${brl(x.comissoes)}</td><td class="n">${num(x.reembolsos)} · ${brl(x.valor_reembolsado)}</td><td class="n"><b>${brl(x.a_receber)}</b></td></tr>`).join('')}
       <tr class="tot"><td>Total</td><td class="n">${num(tot('vendas'))}</td><td class="n">${brl(tot('bruto'))}</td><td class="n">${brl(tot('taxa'))}</td><td class="n">${brl(tot('impostos'))}</td><td class="n">${brl(tot('comissoes'))}</td><td class="n">${num(tot('reembolsos'))} · ${brl(tot('valor_reembolsado'))}</td><td class="n"><b>${brl(tot('a_receber'))}</b></td></tr></tbody></table></div>` : '<div class="empty">Sem vendas no período.</div>'}
     <p class="muted" style="margin:6px 0 0">Vendas aprovadas pela data da venda. "A receber da plataforma" é o líquido que a plataforma deve repassar${semFin() ? '; sem o financeiro no Growths, não dá para saber se já caiu na conta' : ''}. Comissões: as da equipe, calculadas no Growths.</p>`;
   m.appendChild(d);
-  const muda = () => { const a = $('#vppIni').value, b = $('#vppFim').value; if (a && b && a <= b) { A.ini = a; A.fim = b; d.remove(); vendasPlataformas(m); } };
-  $('#vppIni').onchange = muda; $('#vppFim').onchange = muda;
 }
 GRADE_SECOES['crm-dash'].secoes.splice(4, 0, { k: 'plataformas', t: 'Vendas por plataforma', p: 'Quanto cada plataforma vendeu, as taxas, os reembolsos e o que ela deve repassar.', itens: [['#vpPlat', 12]] });
 
@@ -17020,6 +17018,35 @@ async function hvPainel(m) {
 }
 const vImportar206 = VIEWS['cfg-importar'];
 if (vImportar206) VIEWS['cfg-importar'] = async m => { await vImportar206(m); await hvPainel(m).catch(e => console.warn('v0.206', e)); };
+
+/* ================= v0.208 — Dashboard de vendas no padrão dos outros =================
+   Pedido da Rebecka (01/11): filtro de período igual aos outros dashboards e, no topo, o que importa: clientes ativos, clientes
+   novos no período, valor e número das vendas, ticket médio e conversão de lead em cliente, comparados com o período anterior.
+   Os números de cadastros (pessoas, qualificados) descem para "Cadastros e funil". */
+const vdVar = (a, b) => b > 0 ? (a / b - 1) * 100 : null;
+const vdVarTxt = (a, b, R) => { const v = vdVar(a, b); return v == null ? `antes: ${typeof b === 'number' && b === 0 ? 'nada' : '—'} (${dd(R.ini_ant)} a ${dd(R.fim_ant)})` : `<span class="${v >= 0 ? 'pos' : 'neg'}">${v >= 0 ? '▲ +' : '▼ −'}${String(Math.abs(Math.round(v * 10) / 10)).replace('.', ',')}%</span> vs. ${dd(R.ini_ant)} a ${dd(R.fim_ant)}`; };
+function vdFiltros(A) {
+  return `<div class="filters vd-filtros"><label>De<input type="date" id="vdIni" value="${A.ini}"></label><label>Até<input type="date" id="vdFim" value="${A.fim}"></label>
+    <label>Atalho<select id="vdAt"><option value="">Período</option><option value="7">Últimos 7 dias</option><option value="30">Últimos 30 dias</option><option value="90">Últimos 90 dias</option><option value="365">Últimos 12 meses</option><option value="mes">Este mês</option><option value="mesant">Mês passado</option></select></label></div>`;
+}
+async function vdKpis(m) {
+  const A = S.vd, el = m.querySelector('#vdKpis'); if (!el) return;
+  const h = hoje(), muda = () => { const a = $('#vdIni').value, b = $('#vdFim').value; if (!a || !b || a > b) { toast('Informe um período válido.', true); return; } A.ini = a; A.fim = b; render(); };
+  $('#vdIni').onchange = muda; $('#vdFim').onchange = muda;
+  $('#vdAt').onchange = e => { const v = e.target.value; if (!v) return;
+    if (v === 'mes') { A.ini = h.slice(0, 8) + '01'; A.fim = h; } else if (v === 'mesant') { const p = mcMais(h.slice(0, 8) + '01', -1); A.ini = p; A.fim = mcUlt(p); } else { A.fim = h; A.ini = diaMais(h, -(Number(v) - 1)); } render(); };
+  let R; try { R = await q(sb.rpc('vendas_periodo', { p_ws: S.ws, p_ini: A.ini, p_fim: A.fim })); }
+  catch (e) { el.outerHTML = '<div class="panel" style="border-left:4px solid var(--warn)"><b>Falta atualizar o banco.</b> <span class="muted">Rode supabase/RODAR_v0.208_vendas_periodo.sql no Supabase para os números do período. Abaixo, os números de sempre.</span></div>'; m.querySelector('.vd-cad') && m.querySelector('.vd-cad').classList.remove('vd-cad'); return; }
+  const tk = R.vendas ? R.valor / R.vendas : null, tkA = R.vendas_ant ? R.valor_ant / R.vendas_ant : null;
+  el.innerHTML = [kpi('Valor das vendas', brl(R.valor), vdVarTxt(Number(R.valor), Number(R.valor_ant), R)),
+    kpi('Vendas', num(R.vendas), `${vdVarTxt(R.vendas, R.vendas_ant, R)}${R.reembolsos ? ` · ${num(R.reembolsos)} reembolso(s), ${brl(R.valor_reembolsado)}` : ''}`),
+    kpi('Ticket médio', fB(tk), tk != null && tkA != null ? vdVarTxt(tk, tkA, R) : 'valor ÷ vendas aprovadas'),
+    kpi('Clientes novos', num(R.clientes_novos), 'primeira compra no período · ' + vdVarTxt(R.clientes_novos, R.clientes_novos_ant, R)),
+    kpi('Clientes ativos', num(R.clientes_ativos), `hoje · ${num(R.clientes_inativos)} inativo(s)`),
+    kpi('Lead → cliente', fP(div(R.leads_clientes, R.leads)), `${num(R.leads_clientes)} dos ${num(R.leads)} lead(s) que entraram no período`)].join('');
+}
+GRADE_SECOES['crm-dash'].topo.push(['.vd-filtros', 12]);
+(GRADE_SECOES['crm-dash'].secoes.find(s => s.k === 'funil') || { itens: [] }).itens.unshift(['.vd-cad', 12]);
 
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;
 const fonteLink = () => location.protocol === 'file:' ? '<div class="panel"><b>Atenção:</b> o arquivo está aberto do seu computador, então o link de resposta não funciona para outras pessoas. Hospede o arquivo (por exemplo no GitHub Pages) antes de enviar.</div>' : '';

@@ -1,5 +1,8 @@
 
 
+## Dashboard de vendas no padrão (v0.208)
+- Teste `t208_dashboard_vendas.py` (10 verificações, 0 falhas): filtro; os seis números; valor, vendas e ticket conferem com o banco; clientes ativos e comparação; seções; filtro no topo; Vendas por plataforma no mesmo período; atalhos. `t205` e `t192` 0 falhas.
+
 ## Correções da Entrada do cliente (v0.207)
 - Teste `t201_entrada_cliente.py` (35 verificações, 0 falhas): 15 perguntas em 4 passos; pergunta das métricas; ✓ verde e aviso de teste no link aberto; grupo com arquivo conta como respondido; tirar o arquivo tira o ✓. `t197` 0 falhas; `t177` com as 2 falhas antigas do Diagnóstico Growth.
 

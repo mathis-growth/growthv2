@@ -1,5 +1,14 @@
 
 
+## v0.208 — Dashboard de vendas no padrão
+**Pedido da Rebecka (01/11)**: o Dashboard de vendas mostrava pessoas e leads no topo e não tinha o filtro de período dos outros; o que importa é clientes ativos, novos, valor das vendas, ticket e conversão. Os dashboards têm de ser padronizados.
+Decisões:
+- **Filtro de período** igual ao do Dashboard de marketing: de, até e atalhos (7, 30, 90 dias, 12 meses, este mês, mês passado). Padrão: últimos 30 dias.
+- **No topo (Visão geral)**: valor das vendas, vendas (com reembolsos), ticket médio, clientes novos (primeira compra no período, contando o histórico importado), clientes ativos (hoje) e lead → cliente (dos leads que entraram no período, quantos já viraram cliente). Valor, vendas, ticket e clientes novos comparados com o período anterior do mesmo tamanho.
+- Os números de cadastros (pessoas, cadastros novos em 30 dias, qualificados, a qualificar) descem para **Cadastros e funil**.
+- **Vendas por plataforma** usa o mesmo período (sem filtro próprio).
+- Próximo: revisar os outros dashboards com a mesma regra (filtro igual e os números principais no topo).
+
 ## v0.207 — Correções da Entrada do cliente e restauração do index.html
 **Fato (repositório)**: os commits 5605139 e 8f466f8 (atendimento: automações de chatbot, de outra sessão) gravaram um `index.html` cortado: o arquivo tinha o texto "Warning: truncated output" no meio do código e perdeu cerca de 377 KB (por exemplo, os Pacotes de acesso). A v0.207 parte da v0.206 inteira e reaplica a única mudança deles no index (`atendimento.css?v=0197` e `atendimento.js?v=0197`). Os outros arquivos deles (assets/atendimento.*, função atendimento, migração 20261204100000) não foram mexidos. Se o index cortado foi publicado, publique de novo esta versão.
 **Pedido da Rebecka (01/11)**, testando a Entrada do cliente:

@@ -1,3 +1,12 @@
+## v0.208 — Dashboard de vendas
+1. `supabase/RODAR_v0.208_vendas_periodo.sql`: função `vendas_periodo` (números do período e do período anterior). **Depende do RODAR_v0.206.** Sem ele, o dashboard avisa e mostra os números de sempre. **Ainda não aplicado em produção.**
+2. Ordem dos pendentes: `RODAR_v0.197`, `v0.198`, `v0.205`, `v0.206`, `v0.208`.
+
+## v0.198 — Planejamento anual (meta do ano)
+1. `supabase/RODAR_v0.198_plano_anual.sql`: cria `plano_anual` (caminho, premissas com a origem, cenários, meta escolhida) e a função `plano_anual_sugestoes` (o que o Growths já sabe do cliente). Pode rodar de novo sem erro. **Ainda não aplicado em produção.**
+2. Sem ele, a tela Planejamento anual avisa e as metas mês a mês continuam funcionando.
+3. Ordem dos pendentes: `RODAR_v0.197_pesquisa_modelos.sql`, `RODAR_v0.198_plano_anual.sql`.
+
 ## v0.207
 Nada para rodar no banco. Lembrete: o pacote Go-to-Market só aparece no cadastro do cliente depois de rodar `RODAR_v0.205_go_to_market.sql` (hoje, em produção, os pacotes são Disparo, Mentoria, Casa e Consultoria).
 
