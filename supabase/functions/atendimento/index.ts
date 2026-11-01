@@ -146,9 +146,9 @@ async function handle(req: Request, b: any) {
   const { data: { user }, error } = await userDb.auth.getUser();
   if (error || !user) return json({ erro: 'Faça login novamente.' },401);
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
-  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars'];
+  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','templates-list','rapidas-list'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
-  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados'];
+  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
   const ws = b.workspace_id;
   if (['zernio-disponiveis','zernio-conectar'].includes(b.action)) {
@@ -156,6 +156,63 @@ async function handle(req: Request, b: any) {
     if (!interna) return json({ erro:'Somente a equipe interna pode vincular contas da Zernio.' },403);
   }
   if (b.action === 'contexto') return json(ctx);
+  if (b.action === 'rapidas-list') {
+    return json({respostas:await q(db.from('atd_respostas_rapidas').select('id,atalho,titulo,texto')
+      .eq('workspace_id',ws).order('titulo'))});
+  }
+  if (b.action === 'rapidas-save') {
+    const atalho=String(b.atalho||'').trim().toLowerCase(),titulo=String(b.titulo||'').trim(),texto=String(b.texto||'').trim();
+    if(!/^[a-z0-9_-]{1,60}$/.test(atalho)||!titulo||titulo.length>120||!texto||texto.length>4000)
+      throw Error('Informe atalho (letras, números, - ou _), título e mensagem válidos.');
+    const row:any={workspace_id:ws,atalho,titulo,texto,atualizado_em:new Date().toISOString()};
+    if(b.id){
+      if(!/^[a-f0-9-]{36}$/i.test(String(b.id)))throw Error('Resposta inválida.');
+      await q(db.from('atd_respostas_rapidas').update(row).eq('workspace_id',ws).eq('id',b.id));
+    }else await q(db.from('atd_respostas_rapidas').insert(row));
+    return json({ok:true});
+  }
+  if (b.action === 'rapidas-delete') {
+    if(!/^[a-f0-9-]{36}$/i.test(String(b.id||'')))throw Error('Resposta inválida.');
+    await q(db.from('atd_respostas_rapidas').delete().eq('workspace_id',ws).eq('id',b.id));
+    return json({ok:true});
+  }
+  if (b.action?.startsWith('templates-')) {
+    const ch=await channel(String(b.canal_id||''),ws);
+    if(ch.canal!=='whatsapp'||ch.provedor!=='zernio'||!ch.ativo)
+      throw Error('Templates Meta exigem um WhatsApp oficial conectado pela Zernio.');
+    const accountId=ch.externo_id;
+    if(b.action==='templates-list') {
+      const result=await zernio(zp(),'/whatsapp/templates?accountId='+encodeURIComponent(accountId));
+      return json({templates:result.templates||result.data?.templates||[]});
+    }
+    if(b.action==='templates-create'||b.action==='templates-update') {
+      const nome=String(b.nome||'').trim(),language=String(b.idioma||'pt_BR').trim(),category=String(b.categoria||'');
+      const body=String(b.texto||'').trim(),examples=Array.isArray(b.exemplos)?b.exemplos.map((v:unknown)=>String(v||'').trim()):[];
+      if(!/^[a-z][a-z0-9_]{0,511}$/.test(nome)||!/^([a-z]{2})(_[A-Z]{2})?$/.test(language)
+        ||!['UTILITY','MARKETING'].includes(category)||!body||body.length>1024)
+        throw Error('Nome, categoria, idioma ou mensagem inválidos.');
+      const matches=[...body.matchAll(/\{\{(\d+)\}\}/g)].map(x=>Number(x[1]));
+      const count=Math.max(0,...matches);
+      if(count>10||matches.some(n=>n<1)||new Set(matches).size!==count||examples.length!==count||examples.some((x:string)=>!x||x.length>200))
+        throw Error('Preencha um exemplo para cada variável sequencial {{1}}, {{2}} etc.');
+      const components:any[]=[{type:'body',text:body}];
+      if(count)components[0].example={body_text:[examples]};
+      if(b.action==='templates-create') {
+        const result=await zernio(zp(),'/whatsapp/templates','POST',{accountId,name:nome,language,category,components});
+        return json({template:result.template,ok:true});
+      }
+      const templateId=String(b.template_id||'');
+      if(!/^\d{5,30}$/.test(templateId))throw Error('ID do template inválido.');
+      const result=await zernio(zp(),'/whatsapp/templates/id/'+encodeURIComponent(templateId),'PATCH',{accountId,components});
+      return json({template:result.template,ok:true});
+    }
+    if(b.action==='templates-delete') {
+      const id=String(b.template_id||'');
+      if(!/^\d{5,30}$/.test(id))throw Error('ID do template inválido.');
+      await zernio(zp(),'/whatsapp/templates/id/'+encodeURIComponent(id)+'?accountId='+encodeURIComponent(accountId),'DELETE');
+      return json({ok:true});
+    }
+  }
   if (b.action === 'config') { const cfg = await secret(ws); return json({ url: cfg?.evolution_url || '', configurada: !!cfg, versao:'2.3.7' }); }
   if (b.action === 'salvar-config') {
     const previous = await secret(ws), u = urlPublica(String(b.url));
