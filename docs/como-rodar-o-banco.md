@@ -1,3 +1,12 @@
+## v0.206 — Histórico de vendas
+1. `supabase/RODAR_v0.206_historico_vendas.sql`: tabelas `importacoes_historico` e `vendas_historicas`, a visão `v_vendas_todas`, as funções `importar_historico_vendas` e `desfazer_importacao_historico`, e refaz `plano_anual_sugestoes` para somar o histórico. **Depende do RODAR_v0.198.** Pode rodar de novo sem erro. **Ainda não aplicado em produção.**
+2. Ordem dos pendentes: `RODAR_v0.197`, `RODAR_v0.198`, `RODAR_v0.205`, `RODAR_v0.206`.
+
+## v0.198 — Planejamento anual (meta do ano)
+1. `supabase/RODAR_v0.198_plano_anual.sql`: cria `plano_anual` (caminho, premissas com a origem, cenários, meta escolhida) e a função `plano_anual_sugestoes` (o que o Growths já sabe do cliente). Pode rodar de novo sem erro. **Ainda não aplicado em produção.**
+2. Sem ele, a tela Planejamento anual avisa e as metas mês a mês continuam funcionando.
+3. Ordem dos pendentes: `RODAR_v0.197_pesquisa_modelos.sql`, `RODAR_v0.198_plano_anual.sql`.
+
 ## v0.205 — Pacote Go-to-Market e Custos de marketing
 1. `supabase/RODAR_v0.205_go_to_market.sql`: tela "Custos de marketing" no catálogo, o pacote **Go-to-Market**, as tabelas `mkt_custos_*`, as funções `mkt_resultado`, `vendas_por_plataforma`, `mkt_custos_fechar`, `mkt_custos_reabrir`, `mkt_custos_rodar` e a rotina diária `growths-custos-marketing` (pg_cron, 08:07 de Brasília). Pode rodar de novo sem erro. **Ainda não aplicado em produção.**
 2. Ordem dos pendentes: `RODAR_v0.197_pesquisa_modelos.sql`, `RODAR_v0.198_plano_anual.sql`, `RODAR_v0.205_go_to_market.sql`.

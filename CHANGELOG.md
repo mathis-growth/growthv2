@@ -1,3 +1,11 @@
+## v0.206 — Histórico de vendas (01/11/2026)
+- **Importar histórico de vendas** (Importar e validar dados): CSV ou Excel da plataforma, de-para automático e editável, status traduzidos, conferência antes de gravar, desfazer.
+- Vendas antigas em tabela própria: métricas e planejamento, sem financeiro nem automações.
+- **Ficha do cliente**: bloco "Antes do Growths" e as compras na linha do tempo.
+- Planejamento anual soma o histórico.
+- Banco: `RODAR_v0.206_historico_vendas.sql` (**ainda não aplicado**).
+- Teste: `t206_historico_vendas.py` (0 falhas).
+
 ## v0.205 — Pacote Go-to-Market e Custos de marketing (01/11/2026)
 - Pacote **Go-to-Market** (sem financeiro) em Pacotes de acesso dos clientes.
 - **Custos de marketing**: fixos e variáveis, meses, fechar e reabrir, rotina de fim de mês (atividade do cliente e aviso à Mathisa).

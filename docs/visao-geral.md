@@ -1,3 +1,6 @@
+## v0.206
+**O histórico do cliente que chega.** As vendas de antes do Growths sobem pelo relatório da plataforma, com de-para automático e conferência antes de gravar. Viram o histórico de cada cliente (primeira compra, recompra) e a base do planejamento anual, sem mexer no financeiro. Cada carga pode ser desfeita.
+
 ## v0.205
 **Go-to-Market: o Growths sem o financeiro.** Para o cliente que cuida do caixa por fora: marketing, vendas, atendimento e CS, com o Resultado de marketing (receita menos mídia e custos de marketing), ROAS, CAC de mídia e CAC completo, uma rotina de fim de mês para lançar os custos e as vendas por plataforma.
 

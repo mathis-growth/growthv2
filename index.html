@@ -388,7 +388,7 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .modal .acts .atalho{margin-left:auto;align-self:center;font-size:12px}
 
 </style>
-<style id="v122">/* v0.205 Go-to-Market: resultado de marketing e custos */
+<style id="v122">.hv-st{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}.hv-st label{display:flex;flex-direction:column;gap:4px;font-size:13px}.hv-outra[hidden]{display:none!important}/* v0.205 Go-to-Market: resultado de marketing e custos */
 .mr-aviso{margin:8px 0 0;font-size:12.5px}
 .mc-sel td{background:var(--accent-soft)}
 .mc-val[hidden]{display:none!important}
@@ -4723,6 +4723,7 @@ async function fichaPessoa(id) {
     q(sb.from('pessoa_toques').select('em,tipo,canal,descricao,campanha_id,campanhas(nome)').eq('pessoa_id', id).order('em')).catch(() => [])
   ]);
   const eqN = i => (eqs.find(x => x.id === i) || {}).nome;
+  const vh = await q(sb.from('vendas_historicas').select('data_venda,valor,status,produto,plataforma').eq('pessoa_id', id).order('data_venda')).catch(() => []); // v0.206: compras de antes do Growths
   // v0.173: o histórico único do cliente junta cadastro, marketing, comercial, financeiro e jornada (o que vem de venda, contrato ou plataforma)
   const vIds = ven.map(v => v.id).filter(Boolean), cIds = cts.map(c => c.id).filter(Boolean), aIds = alus.map(a => a.id);
   const [crV, crC, est, ahist, amar, resp, intv] = await Promise.all([
@@ -4753,6 +4754,7 @@ async function fichaPessoa(id) {
   crV.forEach(r => ev.push({ t: r.data_recebimento, c: 'fin', x: `Recebido ${brl(r.valor)} da venda` }));
   crC.forEach(r => ev.push({ t: r.data_recebimento, c: 'fin', x: `Recebido ${brl(r.valor)} do contrato ${ctN(r.contrato_id)}${r.parcela ? ' · parcela ' + r.parcela : ''}` }));
   est.forEach(e => ev.push({ t: e.data, c: 'fin', x: `Estorno (${e.tipo}) de ${brl(e.valor)}` }));
+  vh.forEach(h => ev.push({ t: h.data_venda, c: 'fin', x: `Compra antes do Growths (histórico importado): ${brl(h.valor)}${h.produto ? ' · ' + h.produto : ''} · ${h.plataforma} · ${h.status}` }));
   ph.forEach(h => ev.push({ t: h.periodo_inicio || p.criado_em, c: 'fin', x: `Pago antes do sistema: ${brl(h.valor)}${h.periodo_fim ? ' (até ' + dd(h.periodo_fim) + ')' : ''}` }));
   alus.forEach(a => { const nm = (one(a.produtos) || {}).nome || a.tag || ''; if (a.entrou_em) ev.push({ t: a.entrou_em, c: 'jor', x: `Matrícula em ${nm}` }); if (a.saiu_em) ev.push({ t: a.saiu_em, c: 'jor', x: `Saiu de ${nm}` }); });
   ahist.forEach(h => { if (h.tipo === 'etapa' || (one(h.etapas_kanban) || {}).nome) ev.push({ t: h.em, c: 'jor', x: `Jornada ${prodA(h.aluno_id)}: ${h.tipo === 'jornada' ? 'mudou de versão' : 'etapa ' + ((one(h.etapas_kanban) || {}).nome || '')}` }); });
@@ -4792,6 +4794,7 @@ async function fichaPessoa(id) {
     <div class="infog"><div><span class="muted" style="font-size:11px">Comercial responsável</span><br>${eqN(p.responsavel_comercial_id) ? '<b>' + esc(eqN(p.responsavel_comercial_id)) + '</b>' : '<span class="muted">sem responsável</span>'} <button type="button" class="btn sm" data-rc>Alterar</button></div>
       ${alus.map(a => `<div><span class="muted" style="font-size:11px">CS responsável · ${esc((one(a.produtos) || {}).nome || a.tag || 'aluno')}</span><br>${eqN(a.responsavel_cs_id) ? '<b>' + esc(eqN(a.responsavel_cs_id)) + '</b>' : '<span class="muted">sem responsável</span>'} <button type="button" class="btn sm" data-rcs="${a.id}">Alterar</button></div>`).join('')}</div>
     ${rh.length ? `<details style="margin-top:6px"><summary style="cursor:pointer">Histórico de responsáveis (${rh.length})</summary><div class="tl">${rh.map(h => `<div><span>${dtt(h.alterado_em)}</span>${h.tipo === 'cs' ? 'CS' : 'Comercial'}: ${esc(h.de_nome || '—')} → <b>${esc(h.para_nome || 'sem responsável')}</b>${h.alterado_por_email ? ' · por ' + esc(h.alterado_por_email) : ''}${h.motivo ? ' · ' + esc(h.motivo) : ''}</div>`).join('')}</div></details>` : '<span class="muted" style="font-size:12px">Nenhuma troca de responsável registrada ainda.</span>'}
+    ${vh.length ? (() => { const ap = vh.filter(h => h.status === 'aprovada'); return `${tit('Antes do Growths (histórico importado)')}<div class="infog">${campo('Primeira compra', ap.length ? dd(ap[0].data_venda) : '')}${campo('Última compra', ap.length ? dd(ap[ap.length - 1].data_venda) : '')}${campo('Compras aprovadas', String(ap.length))}${campo('Total aprovado', brl(sum(ap, 'valor')))}${campo('Plataformas', [...new Set(vh.map(h => h.plataforma))].join(', '))}${campo('Reembolsos e cancelamentos', String(vh.length - ap.length))}</div>`; })() : ''}
     <div id="fjEvo"></div>
     ${tit('Linha do tempo do cliente')}
     <div class="tlf"><button type="button" class="on" data-tlf="">Tudo <b>${evOk.length}</b></button>${TLC.filter(([k]) => evOk.some(e => e.c === k)).map(([k, l]) => `<button type="button" data-tlf="${k}">${l} <b>${evOk.filter(e => e.c === k).length}</b></button>`).join('')}</div>
@@ -16883,6 +16886,133 @@ VIEWS['adm-painel'] = async m => { await vAdmPainel205(m); m.classList.toggle('g
   d.innerHTML = `<h2>Resultado de marketing · este mês</h2><p class="muted" style="margin-top:0">Este cliente não usa o financeiro no Growths: por isso lucro, caixa, DRE e CAC total saem desta tela. O que vale é o Resultado de marketing.</p>${mrKpis(R)}`;
   const hd = m.querySelector('.head'); if (hd && hd.parentElement === m) hd.after(d); else m.prepend(d); };
 GRADE_SECOES['adm-painel'].topo.splice(1, 0, ['#mrPainel', 12]);
+
+/* ================= v0.206 — Importar histórico de vendas (primeira carga) e o histórico na ficha =================
+   Pedido da Rebecka (01/11): o cliente que entra manda as vendas do último ano (relatório da Hotmart, Kiwify, Eduzz, Hubla ou a
+   planilha-modelo); o Growths guarda esse histórico para as métricas e o planejamento anual, sem gerar financeiro nem automações.
+   O de-para é automático (nomes parecidos) e editável; os status do arquivo viram aprovada, reembolsada, cancelada, chargeback
+   ou "não é venda". Cada carga fica registrada e pode ser desfeita. */
+const HV_PLAT = ['Hotmart', 'Kiwify', 'Eduzz', 'Hubla', 'Planilha-modelo do Growths', 'Outra'];
+const HV_CAMPOS = [
+  { k: 'data', l: 'Data da venda', req: 1, al: ['data', 'data da venda', 'data de venda', 'data da compra', 'data de compra', 'data da transacao', 'data de aprovacao', 'data aprovacao', 'data do pedido', 'data de pagamento', 'pago em', 'criado em', 'order date', 'purchase date', 'approved date', 'date', 'data_venda'] },
+  { k: 'valor', l: 'Valor da venda (R$)', req: 1, al: ['valor', 'valor da venda', 'valor da compra', 'valor total', 'total', 'preco', 'preco total', 'valor pago', 'valor bruto', 'faturamento', 'valor do produto', 'valor (r$)', 'price', 'amount'] },
+  { k: 'status', l: 'Status', al: ['status', 'situacao', 'status da venda', 'status da transacao', 'status do pedido', 'status do pagamento', 'state'] },
+  { k: 'email', l: 'E-mail do cliente', al: ['email', 'e-mail', 'email do comprador', 'e-mail do comprador', 'email do cliente', 'e-mail do cliente', 'email_cliente', 'customer email', 'buyer email'] },
+  { k: 'nome', l: 'Nome do cliente', al: ['nome', 'nome do comprador', 'comprador', 'cliente', 'nome do cliente', 'nome completo', 'nome_cliente', 'customer', 'buyer name', 'name'] },
+  { k: 'telefone', l: 'Telefone', al: ['telefone', 'celular', 'whatsapp', 'telefone do comprador', 'telefone do cliente', 'fone', 'phone'] },
+  { k: 'produto', l: 'Produto', al: ['produto', 'nome do produto', 'oferta', 'nome da oferta', 'item', 'plano', 'product'] },
+  { k: 'id_externo', l: 'Código da venda na plataforma', al: ['transacao', 'codigo da transacao', 'id da transacao', 'id da venda', 'codigo da venda', 'pedido', 'id do pedido', 'numero do pedido', 'codigo', 'order id', 'transaction', 'id'] }];
+const HV_ST = [['aprovada', 'Aprovada'], ['reembolsada', 'Reembolsada'], ['cancelada', 'Cancelada'], ['chargeback', 'Chargeback'], ['', 'Não é venda (ignorar)']];
+const hvStatusAuto = v => { const n = pcNorm(v); if (!n) return 'aprovada';
+  if (/reembols|refund|devolv|estorn/.test(n)) return 'reembolsada'; if (/chargeback|contestad|disput/.test(n)) return 'chargeback';
+  if (/cancelad|cancel/.test(n)) return 'cancelada'; if (/aprovad|approved|^pag[oa]$|paid|complet|conclu|finaliz|^ok$|^ativ/.test(n)) return 'aprovada'; return ''; };
+/* CSV com aspas, separador automático (; , ou tab) */
+function hvCsv(txt) {
+  txt = txt.replace(/^﻿/, ''); const l1 = txt.split(/\r?\n/)[0] || '', sep = [';', '\t', ','].map(s => [s, l1.split(s).length]).sort((a, b) => b[1] - a[1])[0][0];
+  const R = []; let row = [], cel = '', q = false;
+  for (let i = 0; i < txt.length; i++) { const c = txt[i];
+    if (q) { if (c === '"') { if (txt[i + 1] === '"') { cel += '"'; i++; } else q = false; } else cel += c; continue; }
+    if (c === '"') q = true; else if (c === sep) { row.push(cel); cel = ''; } else if (c === '\n' || c === '\r') { if (c === '\r' && txt[i + 1] === '\n') i++; row.push(cel); R.push(row); row = []; cel = ''; } else cel += c; }
+  if (cel !== '' || row.length) { row.push(cel); R.push(row); }
+  return R.map(r => r.map(x => String(x).trim())).filter(r => r.some(x => x !== ''));
+}
+async function hvLeArquivo(file) {
+  let L;
+  if (/\.xlsx?$/i.test(file.name)) { const X = await pcXlsx(), wb = X.read(await file.arrayBuffer(), { type: 'array', cellDates: false }); L = X.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: false, defval: '' }).map(r => r.map(x => String(x == null ? '' : x).trim())).filter(r => r.some(x => x !== '')); }
+  else L = hvCsv(await file.text());
+  const hi = Math.max(0, L.findIndex(r => r.filter(x => x).length >= 3)); // a primeira linha com 3 ou mais colunas é o cabeçalho
+  return { cab: L[hi] || [], linhas: L.slice(hi + 1), hash: await hashTexto(L.map(r => r.join('|')).join('\n')) };
+}
+function hvMapa(cab) {
+  const H = cab.map(pcNorm), usados = new Set(), mapa = {};
+  HV_CAMPOS.forEach(c => { const nomes = [pcNorm(c.l), ...c.al.map(pcNorm)];
+    let i = H.findIndex((h, j) => !usados.has(j) && nomes.includes(h));
+    if (i < 0) i = H.findIndex((h, j) => !usados.has(j) && h.length > 2 && nomes.some(n => n.length > 3 && h.includes(n)));
+    if (i >= 0) { mapa[c.k] = i; usados.add(i); } });
+  return mapa;
+}
+function hvMonta(A) {
+  const col = k => A.mapa[k] != null && A.mapa[k] >= 0 ? A.mapa[k] : -1, out = []; let semSt = 0;
+  A.linhas.forEach(r => { const g = k => col(k) >= 0 ? r[col(k)] : '';
+    const st = col('status') >= 0 ? (A.stMap[g('status')] ?? hvStatusAuto(g('status'))) : 'aprovada'; if (!st) { semSt++; return; }
+    const d = impData(g('data')), v = impNum(g('valor'));
+    out.push({ data: d ? d.d : g('data'), valor: v == null ? g('valor') : v, status: st, email: g('email'), nome: g('nome'), telefone: g('telefone'), produto: g('produto'), id_externo: g('id_externo') }); });
+  return { linhas: out, ignoradasStatus: semSt };
+}
+async function modalHistoricoVendas() {
+  const A = { plat: '', arquivo: '', cab: [], linhas: [], mapa: {}, stMap: {}, hash: '', conf: null };
+  const f = modal('Importar histórico de vendas', `<p class="muted" style="margin-top:0">As vendas de antes do Growths (o último ano ou os últimos 6 meses). Elas entram nas métricas e no planejamento anual, com a primeira compra e a recompra de cada cliente, mas <b>não geram financeiro, comissão nem automação</b>. Cada carga pode ser desfeita.</p>
+    <div class="grid2"><label>De onde veio o arquivo<select name="plat"><option value="">— escolha —</option>${HV_PLAT.map(p => `<option>${p}</option>`).join('')}</select></label>
+      <label class="hv-outra" hidden>Nome da plataforma<input name="outra" maxlength="60"></label>
+      <label class="full">Arquivo (CSV ou Excel, do jeito que a plataforma exporta)<input type="file" name="arq" accept=".csv,.txt,.xlsx,.xls"></label></div>
+    <div id="hvDp"></div><div id="hvRes"></div>
+    <label class="chk" id="hvCk" hidden><input type="checkbox" name="confirmo"> Conferi o resumo acima e quero importar.</label>`, async d => {
+      if (!A.conf || !A.conf.ok) throw new Error('Clique em "Conferir" antes de importar.');
+      if (!d.confirmo) throw new Error('Marque a confirmação para importar.');
+      const M = hvMonta(A), r = await q(sb.rpc('importar_historico_vendas', { p_ws: S.ws, p_plataforma: hvPlat(), p_arquivo: A.arquivo, p_hash: A.hash, p_linhas: M.linhas, p_simular: false }));
+      if (!r.ok) throw new Error((r.erros || ['Nada foi importado.']).join(' | '));
+      toast(`Histórico importado: ${num(r.resumo.vendas)} venda(s), ${num(r.resumo.pessoas_novas)} pessoa(s) nova(s).`);
+    }, 'Importar', true);
+  const salvar = f.querySelector('.acts .pri'); salvar.disabled = true;
+  const hvPlat = () => f.plat.value === 'Outra' ? f.outra.value.trim() : f.plat.value;
+  const zera = () => { A.conf = null; $('#hvRes').innerHTML = ''; $('#hvCk').hidden = true; salvar.disabled = true; };
+  const desenhaDp = () => {
+    const ex = k => { const c = A.mapa[k]; return c != null && c >= 0 ? A.linhas.slice(0, 3).map(r => r[c]).filter(Boolean).map(x => esc(String(x).slice(0, 28))).join(' · ') : ''; };
+    const stCol = A.mapa.status, vals = stCol != null && stCol >= 0 ? [...new Set(A.linhas.map(r => r[stCol]))].slice(0, 40) : [];
+    vals.forEach(v => { if (!(v in A.stMap)) A.stMap[v] = hvStatusAuto(v); });
+    $('#hvDp').innerHTML = `<h3 style="margin:12px 0 4px">De-para das colunas · ${num(A.linhas.length)} linha(s)</h3><p class="muted" style="margin:0 0 6px">O Growths ligou as colunas pelo nome. Confira e troque o que estiver errado.</p>
+      <div class="tw"><table><thead><tr><th>No Growths</th><th>Coluna do arquivo</th><th>Exemplos</th></tr></thead><tbody>${HV_CAMPOS.map(c => { const sel = A.mapa[c.k];
+        return `<tr><td><b>${esc(c.l)}</b>${c.req ? ' <span class="pill bad">obrigatório</span>' : ''}</td><td><select data-hvm="${c.k}"><option value="-1">— não tem —</option>${A.cab.map((h, i) => `<option value="${i}"${sel === i ? ' selected' : ''}>${esc(h || 'coluna ' + (i + 1))}</option>`).join('')}</select></td><td class="muted">${ex(c.k)}</td></tr>`; }).join('')}</tbody></table></div>
+      ${stCol != null && stCol >= 0 ? `<h3 style="margin:12px 0 4px">Status do arquivo → status no Growths</h3><div class="hv-st">${vals.map(v => `<label>${esc(v || '(vazio)')} <span class="muted">· ${num(A.linhas.filter(r => r[stCol] === v).length)}</span><select data-hvs="${esc(v)}">${HV_ST.map(([k, l]) => `<option value="${k}"${A.stMap[v] === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>`).join('')}</div>` : '<p class="pa-falta" style="margin-top:8px">Sem coluna de status: todas as linhas entram como venda aprovada. Se o arquivo tem reembolsos ou boletos não pagos, ligue a coluna de status.</p>'}
+      <div class="acts" style="justify-content:flex-start;margin-top:10px"><button type="button" class="btn pri" id="hvConf">Conferir</button></div>`;
+    f.querySelectorAll('[data-hvm]').forEach(s => s.onchange = () => { A.mapa[s.dataset.hvm] = Number(s.value); zera(); desenhaDp(); });
+    f.querySelectorAll('[data-hvs]').forEach(s => s.onchange = () => { A.stMap[s.dataset.hvs] = s.value; zera(); });
+    $('#hvConf').onclick = conferir;
+  };
+  const conferir = async () => {
+    const res = $('#hvRes'); zera();
+    try {
+      if (!hvPlat()) throw new Error('Escolha de onde veio o arquivo.');
+      const falta = HV_CAMPOS.filter(c => c.req && !(A.mapa[c.k] >= 0)); if (falta.length) throw new Error('Ligue a coluna de: ' + falta.map(c => c.l).join(', ') + '.');
+      if (!['email', 'nome', 'telefone'].some(k => A.mapa[k] >= 0)) throw new Error('Ligue pelo menos o e-mail, o nome ou o telefone do cliente.');
+      const M = hvMonta(A); if (!M.linhas.length) throw new Error('Nenhuma linha é venda pelos status escolhidos.');
+      res.innerHTML = '<p class="muted">Conferindo…</p>';
+      const r = A.conf = await q(sb.rpc('importar_historico_vendas', { p_ws: S.ws, p_plataforma: hvPlat(), p_arquivo: A.arquivo, p_hash: A.hash, p_linhas: M.linhas, p_simular: true }));
+      const R = r.resumo || {}, ps = R.por_status || {}, meses = Object.keys(R.por_mes || {}).sort();
+      res.innerHTML = `<div class="panel" style="margin-top:10px;background:${r.ok ? 'var(--good-soft)' : 'var(--bad-soft)'}"><b>${r.ok ? 'Arquivo conferido. Nada foi gravado ainda.' : 'Nada para importar.'}</b>
+        <div class="kpis" style="margin-top:6px">${kpi('Vendas a importar', num(R.vendas), `${num(ps.aprovada || 0)} aprovada(s) · ${num(ps.reembolsada || 0)} reembolsada(s) · ${num((ps.cancelada || 0) + (ps.chargeback || 0))} cancelada(s)/chargeback`)}
+          ${kpi('Valor aprovado', brl(R.valor_aprovado || 0), R.periodo_ini ? dd(R.periodo_ini) + ' a ' + dd(R.periodo_fim) : '')}${kpi('Clientes', num((R.pessoas_novas || 0) + (R.pessoas_existentes || 0)), `${num(R.pessoas_novas || 0)} novo(s) · ${num(R.pessoas_existentes || 0)} já cadastrado(s)`)}
+          ${kpi('Fora da carga', num((R.repetidas || 0) + (R.ja_no_growths || 0) + (R.invalidas || 0) + M.ignoradasStatus), `${num(M.ignoradasStatus)} não são venda · ${num(R.repetidas || 0)} repetida(s) · ${num(R.ja_no_growths || 0)} já no Growths · ${num(R.invalidas || 0)} com erro`)}</div>
+        ${(r.erros || []).length ? `<details><summary>Linhas com erro (${num(R.invalidas || 0)})</summary><ul style="margin:6px 0 0 18px">${r.erros.map(x => `<li>${esc(x)}</li>`).join('')}</ul><p class="muted">A linha N conta a partir da primeira venda depois do cabeçalho, sem as que não são venda.</p></details>` : ''}
+        ${meses.length ? `<div class="tw" style="margin-top:6px"><table><thead><tr>${meses.map(m => `<th class="n">${mesFmt(m)}</th>`).join('')}</tr></thead><tbody><tr>${meses.map(m => `<td class="n">${GC.fmtK(R.por_mes[m])}</td>`).join('')}</tr></tbody></table></div>` : ''}</div>`;
+      if (r.ok) { $('#hvCk').hidden = false; salvar.disabled = false; }
+    } catch (e) { res.innerHTML = `<div class="panel" style="margin-top:10px;background:var(--bad-soft)">${esc(e.message || String(e))}</div>`; }
+  };
+  f.plat.onchange = () => { f.querySelector('.hv-outra').hidden = f.plat.value !== 'Outra'; zera(); };
+  f.outra.oninput = zera;
+  f.arq.onchange = async () => { zera(); const file = f.arq.files[0]; if (!file) return;
+    try { if (file.size > 15e6) throw new Error('Arquivo grande demais (máximo 15 MB).'); const L = await hvLeArquivo(file);
+      if (!L.linhas.length) throw new Error('Não achei linhas de venda no arquivo.');
+      Object.assign(A, { arquivo: file.name.slice(0, 200), cab: L.cab, linhas: L.linhas, hash: L.hash, mapa: hvMapa(L.cab), stMap: {} }); desenhaDp(); }
+    catch (e) { $('#hvDp').innerHTML = `<div class="panel" style="background:var(--bad-soft)">${esc(e.message || String(e))}</div>`; } };
+}
+/* painel na Central de importação: as cargas de histórico, com Desfazer */
+async function hvPainel(m) {
+  if (!(await temColuna('importacoes_historico', 'plataforma'))) { m.insertAdjacentHTML('afterbegin', '<div class="panel" style="border-left:4px solid var(--warn)"><b>Histórico de vendas:</b> <span class="muted">rode supabase/RODAR_v0.206_historico_vendas.sql no SQL Editor do Supabase.</span></div>'); return; }
+  const L = await q(sb.from('importacoes_historico').select('*').eq('workspace_id', S.ws).order('criado_em', { ascending: false }).limit(30)).catch(() => []);
+  const d = document.createElement('div'); d.className = 'panel'; d.id = 'hvPainel';
+  d.innerHTML = `<div class="head" style="margin:0 0 6px"><div><h2 style="margin:0">Histórico de vendas (antes do Growths)</h2><span class="muted">A primeira carga do cliente que está entrando: o relatório de vendas da plataforma ou a planilha-modelo. Conta nas métricas e no planejamento; não gera financeiro.</span></div><div class="acts"><button class="btn pri" id="hvNovo">Importar histórico de vendas</button></div></div>
+    ${L.length ? `<div class="tw"><table><thead><tr><th>Quando</th><th>Plataforma</th><th>Arquivo</th><th>Período</th><th class="n">Vendas</th><th class="n">Valor aprovado</th><th class="n">Pessoas novas</th><th>Situação</th><th></th></tr></thead><tbody>
+      ${L.map(x => `<tr><td>${dtt(x.criado_em)}</td><td>${esc(x.plataforma)}</td><td><small>${esc(x.arquivo || '')}</small></td><td>${x.periodo_ini ? dd(x.periodo_ini) + ' a ' + dd(x.periodo_fim) : '—'}</td><td class="n">${num(x.vendas)}</td><td class="n">${brl(x.valor_aprovado)}</td><td class="n">${num(x.pessoas_novas)}</td>
+        <td>${x.desfeito_em ? '<span class="pill neutral">desfeita</span>' : '<span class="pill good">importada</span>'}</td><td>${x.desfeito_em ? '' : `<button class="btn sm" data-hvx="${x.id}">Desfazer</button>`}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">Nenhuma carga de histórico ainda.</div>'}`;
+  const hd = m.querySelector(':scope > .head'); if (hd) hd.after(d); else m.prepend(d);
+  $('#hvNovo').onclick = () => modalHistoricoVendas();
+  d.querySelectorAll('[data-hvx]').forEach(b => b.onclick = () => { const x = L.find(y => y.id === b.dataset.hvx);
+    modal('Desfazer a carga', `<p>Apaga as ${num(x.vendas)} venda(s) do histórico desta carga (${esc(x.plataforma)}, ${esc(x.arquivo || '')}) e as ${num(x.pessoas_novas)} pessoa(s) que ela criou, se não ganharam outro uso depois (venda, contrato ou aluno no Growths).</p>`,
+      async () => { const r = await q(sb.rpc('desfazer_importacao_historico', { p_lote: x.id })); toast(`Carga desfeita: ${num(r.vendas)} venda(s) e ${num(r.pessoas)} pessoa(s) apagadas${r.pessoas_mantidas ? ', ' + num(r.pessoas_mantidas) + ' mantida(s)' : ''}.`); }, 'Desfazer'); });
+}
+const vImportar206 = VIEWS['cfg-importar'];
+if (vImportar206) VIEWS['cfg-importar'] = async m => { await vImportar206(m); await hvPainel(m).catch(e => console.warn('v0.206', e)); };
 
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;
 const fonteLink = () => location.protocol === 'file:' ? '<div class="panel"><b>Atenção:</b> o arquivo está aberto do seu computador, então o link de resposta não funciona para outras pessoas. Hospede o arquivo (por exemplo no GitHub Pages) antes de enviar.</div>' : '';

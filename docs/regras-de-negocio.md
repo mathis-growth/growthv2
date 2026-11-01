@@ -1,3 +1,9 @@
+## v0.206
+- Venda do histórico: data, valor e status obrigatórios; precisa de e-mail, telefone ou nome. Data no futuro: erro.
+- Repetida: mesmo código na mesma plataforma; sem código, mesmo dia, valor e e-mail. Já no Growths: mesmo código em vendas, ou mesma pessoa, dia e valor.
+- Pessoa criada pelo histórico: cliente inativo desde a primeira compra aprovada; lead se não teve compra aprovada.
+- Métricas e planejamento usam vendas do Growths + histórico (aprovadas, valor bruto).
+
 ## v0.205
 - Sem financeiro = pacote sem nenhuma tela `fin-*`.
 - Custos de marketing do mês = fixos vigentes + variáveis lançados. No período, cada mês entra proporcional aos dias dentro do período.

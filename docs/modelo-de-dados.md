@@ -1,3 +1,9 @@
+## v0.206
+- `importacoes_historico` (lote: plataforma, arquivo, hash, linhas, vendas, pessoas_novas, ignoradas, valor_aprovado, período, pessoas_criadas[], desfeito_em).
+- `vendas_historicas` (lote_id, pessoa_id, produto, plataforma, data_venda, valor, status aprovada|reembolsada|cancelada|chargeback, id_externo; único por cliente + plataforma + código).
+- Visão `v_vendas_todas` (vendas + histórico: workspace_id, pessoa_id, dia, valor, status, origem).
+- Funções `importar_historico_vendas(ws, plataforma, arquivo, hash, linhas, simular)`, `desfazer_importacao_historico(lote)`; `plano_anual_sugestoes` usa `v_vendas_todas` e devolve `historico_vendas`, `historico_de`, `historico_ate`.
+
 ## v0.205
 - `mkt_custos_config` (workspace_id, ativo, responsavel_id → equipe).
 - `mkt_custos_itens` (nome, tipo fixo|variavel, valor (fixo), desde, ate — sempre o 1º dia do mês).

@@ -1,5 +1,20 @@
 
 
+## v0.206 — Importar histórico de vendas e histórico na ficha (etapas 2 e 3)
+**Pedido da Rebecka (01/11)**: subir as vendas do último ano do cliente que entra (clientes, compras, plataforma, data, primeira compra) para ter o histórico, comparar e calcular o planejamento anual, sem o financeiro.
+Decisões:
+- **Onde**: Configurações › Importar e validar dados › "Histórico de vendas (antes do Growths)". A Central de importação que já existia (clientes, produtos, vendas…) continua para os dados do dia a dia; a importação de vendas de lá gera financeiro, por isso o histórico tem a sua.
+- **Tabela separada** (`vendas_historicas`): conta nas métricas e no planejamento; não gera lançamento, conta a receber, comissão, projeto, jornada nem automação.
+- **De-para**: o Growths liga as colunas pelos nomes (português e inglês) e você troca o que estiver errado; aceita CSV (com aspas, ; , ou tab) e Excel. Os status do arquivo viram aprovada, reembolsada, cancelada, chargeback ou "não é venda" (aguardando pagamento, expirado…), editáveis. Sem coluna de status, tudo entra como aprovada (com aviso).
+- **Conferir antes**: resumo sem gravar nada (vendas por status, valor aprovado, período, clientes novos e já cadastrados, e o que fica de fora: não é venda, repetida, já no Growths, com erro, com as linhas).
+- **Pessoas**: liga por e-mail, depois telefone. Quem não existe é criado (cliente inativo desde a primeira compra aprovada; lead se só reembolsou ou cancelou; origem = plataforma). Quem já existia e comprou antes vira cliente desde a primeira compra.
+- **Sem duplicar**: código da venda na plataforma; sem código, dia + valor + e-mail. Venda que já está no Growths (mesmo código, ou mesma pessoa, dia e valor) fica de fora. O mesmo arquivo não entra duas vezes.
+- **Desfazer**: apaga as vendas da carga e as pessoas que ela criou, se não ganharam venda, contrato ou aluno depois.
+- **Ficha do cliente**: bloco "Antes do Growths (histórico importado)" com primeira e última compra, compras aprovadas, total, plataformas e reembolsos; as compras entram na linha do tempo.
+- **Planejamento anual**: receita do ano anterior, clientes, ticket, recompra, sazonalidade e realizado somam o histórico.
+- **Hipótese**: os nomes das colunas dos relatórios de Hotmart, Kiwify, Eduzz e Hubla não foram confirmados em fonte oficial; o de-para reconhece nomes comuns e deixa ajustar. Com um arquivo real de cada, dá para afinar.
+- Fica para a etapa 5: comparar os anos (ano contra ano).
+
 ## v0.205 — Pacote Go-to-Market e Custos de marketing (etapa 4)
 **Pedido da Rebecka (01/11)**: cliente que não quer o financeiro no Growths. Ela escolhe os módulos no cadastro do cliente; o pacote se chama **Go-to-Market**; o número se chama **Resultado de marketing**; a atividade do fim do mês é do cliente e a equipe da Mathisa recebe alerta se não foi preenchido; antes de fechar o mês, sempre conferir. Ela pediu para fazer a etapa 4 antes das 2 e 3.
 Decisões:

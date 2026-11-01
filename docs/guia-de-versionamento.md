@@ -1,3 +1,6 @@
+## v0.206
+- index.html: aplicado sobre a v0.205 (`aplica206.py`, `g206.js`): `HV_CAMPOS`, `hvCsv`, `hvLeArquivo`, `hvMapa`, `hvMonta`, `modalHistoricoVendas`, `hvPainel` (gancho em `cfg-importar`); ficha da pessoa com `vendas_historicas`. Migração `20261203100000_historico_vendas.sql` / `RODAR_v0.206_historico_vendas.sql`. Teste novo `t206_historico_vendas.py`.
+
 ## v0.205
 - index.html: aplicado sobre a v0.204 (`aplica205.py`, `g205.js`, `g205.css`): `semFin`, `mrNums`, `mrKpis`, `mktResultadoPainel`, `vendasPlataformas`, `vMktCustos`; tela `mkt-custos` no menu (só sem financeiro); ganchos no Dashboard de marketing, de vendas (seção nova) e administrativo; aviso em `paLucroHtml`. Migração `20261202100000_go_to_market.sql` / `RODAR_v0.205_go_to_market.sql`. Teste novo `t205_go_to_market.py`.
 

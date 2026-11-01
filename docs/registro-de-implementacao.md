@@ -1,5 +1,8 @@
 
 
+## Histórico de vendas (v0.206)
+- Teste `t206_historico_vendas.py` (19 verificações, 0 falhas): painel; de-para automático de um relatório com cabeçalhos em português; status traduzidos; conferir não grava; resumo (7 vendas, R$ 7.494 aprovados; 1 não é venda, 1 repetida, 1 já no Growths, 1 com erro); carga registrada; nada na tabela de vendas; pessoa nova cliente desde a primeira compra; lead antigo vira cliente; só reembolso = lead; ficha; planejamento soma o histórico; desfazer; quem já existia fica. t198, t200 e t205 sem falhas.
+
 ## Pacote Go-to-Market e Custos de marketing (v0.205)
 - Teste `t205_go_to_market.py` (27 verificações, 0 falhas): pacote sem financeiro; menu; reconhece sem financeiro; ligar; itens fixo e variável; meses desde o primeiro custo; não fecha com variável faltando; rotina cria a atividade no último dia, não repete, avisa a agência no dia 3; lançar; fechar conclui a atividade; mês fechado trava; resultado de outubro confere com o banco (receita − mídia − 6.200); painéis de marketing, vendas (com a seção) e administrativo (sem lucro, saldo, CAC total, saúde financeira e DRE); cliente completo não muda. t198 0 falhas.
 

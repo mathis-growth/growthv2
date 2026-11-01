@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.205 (pacote Go-to-Market e custos de marketing).
+**Última atualização:** 01/11/2026, versão 0.206 (histórico de vendas).
+
+**v0.206 · Histórico de vendas.** As vendas de antes do Growths sobem pelo relatório da plataforma e viram o histórico de cada cliente e a base do planejamento, sem mexer no financeiro.
 
 **v0.205 · Go-to-Market.** Pacote para quem não quer o financeiro no Growths: o resultado vira Resultado de marketing (receita menos mídia e custos de marketing), com rotina de fim de mês.
 
@@ -420,6 +422,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - **qualificação por pontos:** cada resposta vale pontos e tags, e a nota de corte decide quem é qualificado na hora;
   - **formulário de captação** com a cara do cliente (fontes e cores), em passos, que coloca quem responde direto no funil de leads;
   - a aba "Quem respondeu";
+  - **Histórico de vendas** (Importar e validar dados): o relatório que a plataforma exporta, com de-para automático, conferência antes de gravar e desfazer; vira o histórico de cada cliente (bloco "Antes do Growths" na ficha) e a base do planejamento anual, sem financeiro;
   - **Entrada do cliente**: formulário curto para o cliente que está chegando (faturamento, ticket, clientes, investimento, custo e regime, do jeito dele) e o checklist de arquivos do período certo (vendas, clientes, leads, anúncios, custos), cada um com planilha-modelo para baixar; cada grupo é enviar o arquivo ou "Não tenho", sem deixar para depois. As vendas seguem as plataformas que o cliente marca (Hotmart, Kiwify, Eduzz, Hubla): um relatório para cada, do jeito que sai.
 
 ---
@@ -529,6 +532,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - Dashboard não é relatório: por que cada bloco da tela precisa responder uma pergunta só.
 - A pesquisa na página de obrigado: o momento em que o lead mais quer falar com você.
 - Ambição × realista: por que a meta do ano precisa de duas contas, e o que fazer com a diferença.
+- Primeira compra e recompra: o que o histórico do último ano conta sobre o seu cliente.
 - "Seu lucro de marketing não é o lucro da empresa": ROAS, CAC de mídia e CAC completo, e por que separar.
 - "Me manda suas planilhas": o que pedir a um cliente novo para montar o histórico e o diagnóstico (e por que o relatório da plataforma basta).
 - Novembro é mês de planejar o ano que vem: o que levar do ano que termina e o que recalcular.
@@ -538,6 +542,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.206):** Histórico de vendas: importar o relatório da plataforma, ficha com o histórico, planejamento com o histórico.
 - **01/11 (v0.205):** Pacote Go-to-Market (sem financeiro), Custos de marketing com rotina mensal, Resultado de marketing e vendas por plataforma.
 - **01/11 (v0.204):** Pesquisas: nome só para a equipe e título para quem responde.
 - **01/11 (v0.203):** Entrada do cliente: vendas por plataforma marcada.
