@@ -16499,7 +16499,7 @@ function paTrimestres(el, a, pa, C, sug, camps, Pm) {
   const tri = [0, 1, 2, 3].map(t => { const ms = [0, 1, 2].map(j => t * 3 + j), mt = ms.reduce((s, i) => s + (metaM(i) || 0), 0), rl = ms.reduce((s, i) => s + (i + 1 <= mesAt ? real[i] : 0), 0);
     const emCurso = mesAt >= ms[0] + 1 && mesAt <= ms[2] + 1, fechado = mesAt > ms[2] + 1;
     let esperado = null; if (emCurso) { const d0 = new Date(`${a}-${String(ms[0] + 1).padStart(2, '0')}-01T12:00:00`), d1 = new Date(a, ms[2] + 1, 0, 12), hj = new Date(h + 'T12:00:00'); esperado = mt * Math.min(1, (hj - d0) / (d1 - d0 + 864e5)); }
-    const ritmo = esperado != null && mt ? (rl >= esperado ? ['good', 'no ritmo'] : ['bad', 'atrás do ritmo']) : fechado && mt ? (rl >= mt ? ['good', 'meta batida'] : ['bad', 'meta não batida']) : null;
+    const ritmo = esperado != null && mt ? (rl >= esperado ? ['good', 'no ritmo'] : ['bad', 'atrás do ritmo']) : fechado && mt ? (!ms.some(i => atual(i) != null) ? ['neutral', 'já fechado'] : rl >= mt ? ['good', 'meta batida'] : ['bad', 'meta não batida']) : null;
     return { t, ms, mt, rl, emCurso, fechado, ritmo, lanc: ms.reduce((s, i) => s + CM.lanc[i], 0), perp: ms.reduce((s, i) => s + CM.perp[i], 0) }; });
   const vazios = MESES.filter((_, i) => atual(i) == null).length;
   const cardT = x => `<div class="pa-tri${x.emCurso ? ' on' : ''}"><span class="l">T${x.t + 1} · ${MESES[x.ms[0]]} a ${MESES[x.ms[2]]}${x.emCurso ? ' <span class="pill info">em curso</span>' : ''}</span>
