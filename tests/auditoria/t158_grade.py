@@ -13,8 +13,8 @@ PAINEL = "(t) => { const e = [...document.querySelectorAll('#main .panel')].find
 LETRA = """() => { let mn = 99, onde = ''; document.querySelectorAll('#main .panel svg[viewBox] text').forEach(t => { if (t.closest('.kpi') || !t.textContent.trim() || !t.getClientRects().length) return;
   const svg = t.ownerSVGElement, k = svg.getBoundingClientRect().width / svg.viewBox.baseVal.width, px = parseFloat(getComputedStyle(t).fontSize) * k;
   if (px < mn) { mn = px; onde = (svg.closest('.panel').querySelector('h2') || {}).textContent; } }); return [Math.round(mn * 10) / 10, onde]; }"""
-SET_P = "S.pg = { per: 'custom', de: '2026-09-01', ate: '2026-09-30' }"
-SET_F = "S.perD = { pre: 'pers', de: '2026-09-01', ate: '2026-09-30' }"
+SET_P = "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }"
+SET_F = "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }"
 with sync_playwright() as pw:
     b = pw.chromium.launch(); erros = []
     ctx, pg = front.abre(b, hoje='2026-10-15', vw=1440, vh=1000)

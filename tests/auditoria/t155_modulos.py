@@ -27,7 +27,7 @@ with sync_playwright() as pw:
     ctx, pg = front.abre(b, hoje='2026-10-15', vw=1440, vh=1000)
     r = pg.evaluate("() => semPerAnt('2026-10-01', '2026-10-15')")
     chk(r['pIni'] == '2026-09-01' and r['pFim'] == '2026-09-15', 'mês até hoje compara com os mesmos dias do mês anterior ' + str(r))
-    front.vai(pg, 'fin-dash', "S.per = { pre: 'pers', de: '2026-09-01', ate: '2026-09-30' }", 8000)
+    front.vai(pg, 'fin-dash', "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }", 8000)
     t = pg.inner_text('#main')
     chk('No período, o resultado foi ' + MIL(LS) in t and 'contra ago/26 (mês completo), quando foi ' + MIL(LA) in t, 'Financeiro: frase-recado com o resultado e a base')
     chk(DL in pg.evaluate(CTX, 'Resultado no período') and DR in pg.evaluate(CTX, 'Receitas no período'), 'Financeiro: cartões com contexto (resultado em reais, receita em %)')

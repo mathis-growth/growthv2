@@ -1384,7 +1384,7 @@ setTimeout(() => { if ($('#login').classList.contains('hide') && $('#app').class
 const NAV = [
   { g: 'Growth Starter', flat: true, starter: true, items: [['st-dash', 'Dashboard'], ['mkt-dash', 'Aquisição'], ['mkt-midia', 'Mídia'], ['crm-vendas', 'Vendas'], ['ho-retencao', 'Retenção & Expansão'], ['cad-produtos', 'Produtos'], ['crm-alunos', 'Clientes / Alunos'], ['fin-dash', 'Financeiro'], ['st-relatorios', 'Relatórios'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['gro-ciclo', 'Experimentos']] },
   { g: 'Cockpit', flat: true, livre: true, items: [['cockpit', 'Cockpit']] },
-  { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['adm-plano', 'Planejamento da empresa'], ['adm-empresa', 'Cadastro da empresa'], ['adm-financeiro', 'Financeiro simplificado']] },
+  { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['adm-empresa', 'Cadastro da empresa'], ['adm-financeiro', 'Financeiro simplificado']] },
   { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-estrategias', 'Estratégias (Canvas)'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários'], ['mkt-custos', 'Custos de marketing']], subs: [{ g: 'Growth\'s Content', mod: 'mkt', items: [['mkt-cont', 'Estratégia de conteúdo'], ['mkt-insta', 'Instagram']] }] },
   { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['crm-dms', 'DMs do Instagram'], ['mkt-origem', 'Leads por origem']] },
   { g: 'Customer Success', items: [['ho-dash', 'Dashboard'], ['ho-cg', 'Customer Growth'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
@@ -3687,7 +3687,7 @@ function ckBarras(itens, fmt) {
 }
 async function vCockpit(m) {
   await provisionaAuto();
-  const w = S.ws, C = S.ck = S.ck || { per: 'mes' }, h = hoje(), Pd = ckPeriodo(C.per), porMes = C.per === 'ano';
+  const w = S.ws, C = S.ck = S.ck || { per: 'mes' }, h = hoje(), D0 = perGlobal(), Pd = { ini: D0.ini, fim: D0.fim > h ? h : D0.fim, rot: perRot(D0) }, porMes = (new Date(Pd.fim) - new Date(Pd.ini)) / 864e5 > 62; // v0.212: período padrão
   const pode = (mod, tela) => nivelMod(mod) !== 'nenhum' && telaLiberada(tela);
   const AREAS = [
     { k: 'geral', t: 'Geral', mod: 'adm', tela: 'adm-painel', d: 'Como está a empresa' },
@@ -3777,13 +3777,13 @@ async function vCockpit(m) {
           M.sem_cs ? 'Sem CS responsável: <b>' + num(M.sem_cs) + '</b> matrículas ativas' : '');
     }
   };
-  m.innerHTML = `<div class="head"><div><h1>Cockpit</h1><span class="muted">Um resumo de cada área no ${esc(Pd.rot)}. Clique num painel para ver tudo em detalhe.</span></div>
-    <div class="acts"><div class="seg" role="group" aria-label="Período">${CK_PER.map(([k, l]) => `<button type="button" class="btn sm${C.per === k ? ' pri' : ''}" data-ckp="${k}" aria-pressed="${C.per === k}">${l}</button>`).join('')}</div></div></div>
+  m.innerHTML = `<div class="head"><div><h1>Cockpit</h1><span class="muted">Um resumo de cada área (${esc(Pd.rot)}). Clique num painel para ver tudo em detalhe.</span></div>
+</div>${perPadrao(D0)}
     ${AREAS.length ? `<div class="ck-grid">${AREAS.map(a => `<section class="ck-card ck-${a.k}" data-ckv="${a.tela}" role="link" tabindex="0" aria-label="Abrir ${esc(a.t)}">
       <header class="ck-h"><span class="ck-ic">${ICO[a.tela] || ''}</span><div><h2>${esc(a.t)}</h2><span class="ck-d">${esc(a.d)}</span></div><span class="ck-ir">Ver detalhes →</span></header>
       <div class="ck-b">${corpo[a.k]()}</div></section>`).join('')}</div>` : '<div class="panel empty">A sua função não inclui nenhuma das áreas do cockpit.</div>'}
     <div id="ckTip" class="ck-tip" role="tooltip" hidden></div>`;
-  m.querySelectorAll('[data-ckp]').forEach(b => b.onclick = () => { C.per = b.dataset.ckp; render(); });
+  perLiga(m, D0, () => render());
   const tip = $('#ckTip');
   m.querySelectorAll('[data-dica]').forEach(el => {
     el.addEventListener('mousemove', e => { tip.textContent = el.dataset.dica; tip.hidden = false;
@@ -3791,7 +3791,6 @@ async function vCockpit(m) {
     el.addEventListener('mouseleave', () => { tip.hidden = true; });
   });
   const abre = el => { const v = el.dataset.ckv; if (v === 'ho-cg') { S.cg = S.cg || { aba: 'evolucao', produto: '', ini: diaMais(hoje(), -89), fim: hoje() }; S.cg.aba = 'indicadores'; }
-    if (v === 'adm-painel') { S.pg = S.pg || { per: '30d', de: '', ate: '' }; Object.assign(S.pg, { per: C.per, de: '', ate: '' }); }
     S.view = v; abreMenu(v); render(); };
   m.querySelectorAll('[data-ckv]').forEach(el => { el.onclick = () => abre(el); el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abre(el); } }; });
 }
@@ -8643,7 +8642,7 @@ function arvMapa(vk, el) {
       'Pessoas no funil': ['crm.pessoas', { filtro: 'todos' }], 'Leads qualificados': ['crm.pessoas', { filtro: 'qualificados' }], 'Clientes ativos': ['crm.pessoas', { filtro: 'ativos' }],
       'Vendas aprovadas': ['ven.soma', { ...P, campo: 'qtd' }], 'Receita bruta das vendas': ['ven.soma', { ...P, campo: 'bruto' }], 'Receita líquida das vendas': ['ven.soma', { ...P, campo: 'liquido' }],
       'NRR': ['rec.nrr', { hoje: h }], 'Retenção bruta (GRR)': ['rec.grr', { hoje: h }], 'Penetração de mercado': ['crm.penetracao', {}] }; }
-  if (vk === 'fin-dash') { const PER = perGet(), P = { ini: PER.de || '2000-01-01', fim: PER.ate || '2100-12-31' };
+  if (vk === 'fin-dash') { const PER = perFin(), P = { ini: PER.de || '2000-01-01', fim: PER.ate || '2100-12-31' };
     return { 'Receitas no período': ['fin.razao', { ...P, grupo: 'receita' }], 'Despesas no período': ['fin.saidas', P], 'Resultado no período': ['fin.lucro', P], 'Caixa projetado em 30 dias': ['fin.caixa30', { hoje: h }] }; }
   if (vk === 'fin-custo' && S.co && S.co.mes) { const P = { ini: S.co.mes + '-01', fim: arvFimMes(S.co.mes) };
     const L = { mes: S.co.mes }, metaRot = ARV_CO && ARV_CO.mes === S.co.mes ? 'Para a meta de ' + String(ARV_CO.meta).replace('.', ',') + '% de lucro' : '(sem meta)';
@@ -9329,7 +9328,7 @@ const QUAL_VIEWS = ['fin-dash', 'adm-painel', 'mkt-dash', 'mkt-midia', 'crm-dash
 const QUAL_SEV = { alerta: ['bad', 'Alerta'], atencao: ['warn', 'Atenção'] };
 function qualPeriodo(v) {
   const h = hoje();
-  if (v === 'fin-dash' || v === 'casa-dash') { const P = perGet(); return [P.de || h.slice(0, 8) + '01', P.ate && P.ate < h ? P.ate : h]; }
+  if (v === 'fin-dash' || v === 'casa-dash') { const P = perFin(); return [P.de || h.slice(0, 8) + '01', P.ate && P.ate < h ? P.ate : h]; }
   return [diaMais(h, -29), h];
 }
 async function qualidadeFaixa(m, v) {
@@ -9645,17 +9644,17 @@ async function vFinDash(m) {
   await provisionaAuto();
   const w = S.ws, h = hoje();
   // Todos os números vêm calculados do banco (função fin_dashboard); a tela só formata.
-  const PER = perGet();
+  const PER = perFin(); // v0.212: período padrão
   const F = await q(sb.rpc('fin_dashboard_periodo', { p_ws: w, p_hoje: h, p_ini: PER.de || '2000-01-01', p_fim: PER.ate || '2100-12-31' }));
   const dias = F.projecao.map(x => x.d), proj = F.projecao.map(x => Number(x.saldo));
   const meses = F.resultado_por_mes.map(x => x.mes).filter(x => String(x).slice(0, 7) <= h.slice(0, 7)), resPorMes = Object.fromEntries(F.resultado_por_mes.map(x => [x.mes, Number(x.resultado)]));
   const despCont = F.maiores_despesas, CART = await finCartoesHtml();
   m.innerHTML = `<div class="head"><h1>Dashboard financeiro</h1><div class="acts"><button class="btn" data-fin="extrato">Extrato</button>${ir(rotaCtx('fin-custo'), 'Custos e margens')}${ir('fin-receber', 'Contas a receber')}${ir('fin-pagar', 'Contas a pagar')}${ir('fin-lanc', 'Lançamentos')}</div></div>
-  <div class="filters">${perHtml()}</div>
+  ${perPadrao(perGlobal())}
   <div class="kpis">
     ${kpiClic(kpi('Saldo em banco', brl(F.caixa), F.n_contas + ' conta(s) · clique para o extrato'), 'extrato', 'Ver o extrato da conta bancária')}
-    ${kpiClic(kpi('A receber no período', brl(F.a_receber.valor), F.a_receber.qtd + ' parcela(s) · ' + brl(F.a_receber.atraso) + ' em atraso (total)'), 'receber', 'Ver todas as contas a receber')}
-    ${kpiClic(kpi('A pagar no período', brl(F.a_pagar.valor), F.a_pagar.qtd + ' conta(s) · ' + brl(F.a_pagar.atraso) + ' em atraso (total)'), 'pagar', 'Ver todas as contas a pagar')}
+    ${kpiClic(kpi('A receber no período', brl(F.a_receber.valor), F.a_receber.qtd + ' parcela(s) · ' + brl(F.a_receber.atraso) + ' em atraso (total)'), 'receber', 'Ver todas as contas a receber', PER)}
+    ${kpiClic(kpi('A pagar no período', brl(F.a_pagar.valor), F.a_pagar.qtd + ' conta(s) · ' + brl(F.a_pagar.atraso) + ' em atraso (total)'), 'pagar', 'Ver todas as contas a pagar', PER)}
     ${kpi('Caixa projetado em 30 dias', brl(F.caixa_30d), 'saldo + a receber − a pagar')}
     ${kpi('Receitas no período', brl(F.receitas_mes), 'pela DRE, regime de competência')}
     ${kpi('Despesas no período', brl(F.despesas_mes), 'custos, deduções e despesas')}
@@ -9673,7 +9672,7 @@ async function vFinDash(m) {
     <div class="panel"><h2>Saldo por conta bancária</h2>${F.saldos.length ? `<div class="tw"><table><thead><tr><th>Conta</th><th class="n">Saldo atual</th></tr></thead><tbody>${F.saldos.map(s => `<tr class="clk86" data-sx="${esc(s.nome)}" title="Ver o extrato"><td>${esc(s.nome)}</td><td class="n">${brl(s.saldo)}</td></tr>`).join('')}<tr class="tot"><td>Total</td><td class="n">${brl(F.caixa)}</td></tr></tbody></table></div>` : '<div class="empty">Cadastre uma conta bancária.</div>'}</div>
     <div class="panel"><h2>Maiores despesas do mês</h2>${despCont.length ? `<div class="funnel">${despCont.map(c => `<div class="row"><span>${esc(c.conta)}</span><div class="bar"><i style="width:${pct(Number(c.valor), Number(despCont[0].valor))}%"></i></div><span class="mono">${brl(c.valor)}</span></div>`).join('')}</div>` : '<div class="empty">Sem despesas neste mês.</div>'}</div>
   </div>${CART}`;
-  perLigar();
+  perLiga(m, perGlobal(), () => render());
   finDashLigar(m);
   finContexto(m, PER, h).catch(e => console.warn('contexto v0.155', e));
   finCascata(m, PER);
@@ -15173,6 +15172,7 @@ async function vAscensao(m) {
 
 async function vHeavyOps(m) {
   const w = S.ws, HO = S.ho = S.ho || { dias: 30 };
+  const D0 = perGlobal(); HO.dias = Math.max(1, Math.round((new Date(hoje() + 'T12:00:00') - new Date((D0.ini < hoje() ? D0.ini : hoje()) + 'T12:00:00')) / 864e5) + 1); // v0.212: período padrão (o banco conta os dias para trás a partir de hoje)
   const R = await q(sb.rpc('heavyops_painel', { p_ws: w, p_dias: HO.dias }));
   const ws = S.workspaces.find(x => x.id === w) || {}, M = R.metas, serie = R.serie || [], tot = R.totais || {};
   const atual = serie[serie.length - 1] || {};
@@ -15193,7 +15193,7 @@ async function vHeavyOps(m) {
   const etapasTot = Math.max(1, ...((R.etapas || []).map(e => e.n)));
   const destaque = (tit, p, sub) => `<div class="kpi"><span class="l">${tit}</span><span class="v" style="font-size:18px">${p ? esc(p) : '—'}</span><span class="s">${sub || ''}</span></div>`;
   const dsr = HO.dias;
-  m.innerHTML = `<div class="head"><div><h1>Customer Success</h1><span class="muted">Operação de alunos: quem está na base, quanto fica, quanto vale e para onde sobe.</span></div><div class="acts"><label class="muted">Produtos nos últimos <select id="hoDias" style="width:auto;display:inline-block">${[30, 90, 180].map(d => `<option value="${d}">${d} dias</option>`).join('')}</select></label><button class="btn" id="hoMetas">Metas</button><button class="btn" id="hoAlunos">Ver alunos</button></div></div>
+  m.innerHTML = `<div class="head"><div><h1>Customer Success</h1><span class="muted">Operação de alunos: quem está na base, quanto fica, quanto vale e para onde sobe.</span></div><div class="acts"><button class="btn" id="hoMetas">Metas</button><button class="btn" id="hoAlunos">Ver alunos</button></div></div>${perPadrao(D0, `<span class="muted" style="align-self:end">Os produtos contam de ${dd(diaMais(hoje(), -(HO.dias - 1)))} até hoje (${num(HO.dias)} dia(s)).</span>`)}
   ${/simula/i.test(ws.nome || '') ? '<div class="panel muted">Este workspace contém dados fictícios de simulação (pessoas, vendas e produtos inventados).</div>' : ''}
   ${banner}
   <div class="kpis">${kpiHO('Alunos ativos', num(tot.ativos), varAtivos == null ? '' : (varAtivos >= 0 ? '▲ ' : '▼ ') + Math.abs(varAtivos).toFixed(0) + '% em 30 dias')}${kpiHO('Churn mensal', pc1(churn), 'meta até ' + pc1(Number(M.churn_max)) + ' · ' + num(atual.perdidos || 0) + ' de ' + num(atual.base || 0) + ' saíram', E.churn)}${kpiHO('Retenção em 90 dias', pc1(ret90), 'meta mínima ' + pc1(Number(M.retencao_min)), E.ret)}${kpiHO('LTV médio', ltv == null ? '—' : brl(ltv), 'meta mínima ' + brl(Number(M.ltv_min)) + ' · ' + num((R.ltv || {}).clientes || 0) + ' clientes', E.ltv)}${kpiHO('Taxa de ascensão', pc1(asc), 'meta mínima ' + pc1(Number(M.ascensao_min)) + ' · ' + num((R.ascensao || {}).subiram || 0) + ' subiram', E.asc)}</div>
@@ -15208,7 +15208,7 @@ async function vHeavyOps(m) {
   ${P.map(p => `<tr><td><b>${esc(p.produto)}</b> ${p.nivel ? `<span class="pill neutral">nível ${p.nivel}</span>` : ''}${maisV === p ? ' <span class="pill good">mais vendido</span>' : ''}${maisA === p ? ' <span class="pill info">mais ascensão</span>' : ''}</td><td class="n">${num(p.vendas)}</td><td>${setaHO(p.vendas, p.vendas_ant)}</td><td class="n">${brl(p.receita)}</td><td class="n">${num(p.compradores)}</td><td class="n">${p.nivel && p.nivel > 1 ? num(p.asc_recebidas) : '—'}</td><td class="n">${taxaP(p) == null ? '—' : pc1(taxaP(p))}</td></tr>`).join('') || '<tr><td colspan="7" class="empty">Nenhum produto ativo.</td></tr>'}</tbody></table></div></div>
   <div class="panel"><h2>LTV por produto de entrada</h2><span class="muted">Quanto vale, em média, o cliente que começou por cada produto.</span><div class="tw"><table><thead><tr><th>Primeiro produto</th><th class="n">Clientes</th><th class="n">LTV médio</th></tr></thead><tbody>${(R.ltv_entrada || []).slice().sort((a, b) => b.ltv - a.ltv).map(e => `<tr><td>${esc(e.produto)}</td><td class="n">${num(e.clientes)}</td><td class="n">${brl(e.ltv)}</td></tr>`).join('') || '<tr><td colspan="3" class="empty">Sem vendas.</td></tr>'}</tbody></table></div></div>
   <div class="panel muted" style="font-size:12.5px"><div><b>Como cada número é calculado.</b> Tudo vem de código fixo no banco, sem IA. <b>Churn mensal:</b> pessoas ativas há 30 dias que hoje não têm nenhuma matrícula ativa, dividido pelas ativas há 30 dias. <b>Retenção em 90 dias:</b> das pessoas que entraram há pelo menos 90 dias, as que seguiam ativas 90 dias depois de entrar. <b>LTV:</b> receita líquida das vendas aprovadas dividida pelos clientes que compraram. <b>Ascensão:</b> clientes que compraram um produto de nível maior do que já tinham, dividido pelos clientes que entraram abaixo do topo da escada (o nível de cada produto é definido no cadastro de produtos). <b>Cor:</b> verde dentro da meta; amarelo até ${num(Number(M.tolerancia))}% pior que a meta; vermelho além disso. As metas são editáveis no botão Metas.</div></div>`;
-  $('#hoDias').value = String(dsr); $('#hoDias').onchange = e => { HO.dias = Number(e.target.value); render(); };
+  perLiga(m, D0, () => render());
   $('#hoAlunos').onclick = () => { S.view = 'crm-alunos'; render(); };
   $('#hoMetas').onclick = () => {
     const campos = [{ k: 'churn_max', l: 'Churn mensal máximo (%)', t: 'number', step: '0.1', req: 1 }, { k: 'retencao_min', l: 'Retenção mínima em 90 dias (%)', t: 'number', step: '0.1', req: 1 }, { k: 'ltv_min', l: 'LTV médio mínimo (R$)', t: 'number', step: '1', req: 1 }, { k: 'ascensao_min', l: 'Taxa de ascensão mínima (%)', t: 'number', step: '0.1', req: 1 }, { k: 'tolerancia', l: 'Tolerância do amarelo (%)', t: 'number', step: '1', req: 1, hint: 'Até quanto pior que a meta ainda é amarelo. Depois disso, vermelho.' }];
@@ -17145,21 +17145,25 @@ VIEWS['adm-financeiro'] = vFinSimples;
 if (ICO['fin-dash']) ICO['adm-financeiro'] = ICO['fin-dash'];
 
 /* ================= v0.211 — Período padrão nos dashboards =================
-   Pedido da Rebecka (01/11): os dashboards têm de ser padronizados. Todos os dashboards de período usam o mesmo filtro (Período,
+   Pedido da Rebecka (01/11): os dashboards têm de ser padronizados (v0.212: todos, inclusive Financeiro, Customer Success e Cockpit). Todos os dashboards de período usam o mesmo filtro (Período,
    De, Até) com os mesmos atalhos, e o período escolhido vale para todos: trocou no de Marketing, o de Vendas e o Administrativo
    abrem no mesmo período. O Financeiro (vencimentos futuros) e o Customer Success (janela de dias) têm lógica própria. */
-const PER_AT = [['7', 'Últimos 7 dias'], ['30', 'Últimos 30 dias'], ['90', 'Últimos 90 dias'], ['365', 'Últimos 12 meses'], ['mes', 'Este mês'], ['mesant', 'Mês passado'], ['ano', 'Este ano']];
+// v0.212: a ordem que a Rebecka pediu (30 dias, este mês, próximos 30 dias, 7 dias) e depois os outros; vale em todos os dashboards
+const PER_AT = [['30', 'Últimos 30 dias'], ['mes', 'Este mês'], ['prox30', 'Próximos 30 dias'], ['7', 'Últimos 7 dias'], ['mesant', 'Mês passado'], ['90', 'Últimos 90 dias'], ['365', 'Últimos 12 meses'], ['ano', 'Este ano']];
 function perAtalho(k, h = hoje()) {
-  if (k === 'mes') return { ini: h.slice(0, 8) + '01', fim: h };
+  if (k === 'mes') return { ini: h.slice(0, 8) + '01', fim: mcUlt(h.slice(0, 8) + '01') }; // o mês inteiro (o que vence até o fim do mês também conta)
+  if (k === 'prox30') return { ini: h, fim: diaMais(h, 29) };
   if (k === 'mesant') { const p = mcMais(h.slice(0, 8) + '01', -1); return { ini: p, fim: mcUlt(p) }; }
   if (k === 'ano') return { ini: h.slice(0, 4) + '-01-01', fim: h };
   return { ini: diaMais(h, -(Number(k) - 1)), fim: h };
 }
-const perGlobal = () => S.perD = S.perD || perAtalho('30');
+const perGlobal = () => S.perD = S.perD || perAtalho('mes'); // v0.212: começa no mês corrente (como o Cockpit)
+const perRot = A => { const at = PER_AT.find(([k]) => { const p = perAtalho(k); return p.ini === A.ini && p.fim === A.fim; }); return at ? at[1].toLowerCase() : dd(A.ini) + ' a ' + dd(A.fim); };
+const perFin = () => { const D = perGlobal(); return { pre: 'pers', de: D.ini, ate: D.fim }; };
 function perPadrao(A, extra = '') {
   const at = (PER_AT.find(([k]) => { const p = perAtalho(k); return p.ini === A.ini && p.fim === A.fim; }) || [''])[0];
   return `<div class="filters per-padrao"><label>Período<select data-per-at>${PER_AT.map(([k, l]) => `<option value="${k}"${at === k ? ' selected' : ''}>${l}</option>`).join('')}<option value=""${at ? '' : ' selected'}>Personalizado</option></select></label>
-    <label>De<input type="date" data-per-de value="${A.ini}" max="${hoje()}"></label><label>Até<input type="date" data-per-ate value="${A.fim}"></label>${extra}</div>`;
+    <label>De<input type="date" data-per-de value="${A.ini}"></label><label>Até<input type="date" data-per-ate value="${A.fim}"></label>${extra}</div>`;
 }
 /* liga o filtro: muda o período global (e o do dashboard) e chama cb */
 function perLiga(root, A, cb) {
@@ -17169,13 +17173,9 @@ function perLiga(root, A, cb) {
   de.onchange = () => aplica(de.value, ate.value); ate.onchange = () => aplica(de.value, ate.value);
 }
 GRADE_SECOES['adm-painel'].topo = GRADE_SECOES['adm-painel'].topo.map(t => typeof t[0] === 'function' && /pgPer/.test(String(t[0])) ? [m => GS_todos(m).find(e => e.matches && (e.matches('.per-padrao') || (e.querySelector && e.querySelector('.per-padrao')))), t[1]] : t);
-/* "Planejamento da empresa" (objetivos) e o planejamento do ano (meta, cenários, trimestres) moram em telas diferentes: atalho no topo */
-const vPlano211 = VIEWS['adm-plano'];
-if (vPlano211) VIEWS['adm-plano'] = async m => { await vPlano211(m); if (m.querySelector('#plAnoAtalho')) return;
-  const d = document.createElement('div'); d.className = 'panel'; d.id = 'plAnoAtalho'; d.style.borderLeft = '4px solid var(--accent)';
-  d.innerHTML = `<div class="head" style="margin:0"><div><h2 style="margin:0">Meta do ano, cenários e trimestres</h2><span class="muted">O planejamento anual (a meta pela ambição ou pelo realista, os impostos, os 3 cenários com o lucro, a divisão por trimestre e mês) fica em Marketing › Campanhas e planejamento › Planejamento anual. Aqui ficam os objetivos e as metas da empresa.</span></div><div class="acts"><button class="btn pri" id="plAnoIr">Abrir o planejamento do ano</button></div></div>`;
-  const hd = m.querySelector(':scope > .head'); if (hd) hd.after(d); else m.prepend(d);
-  d.querySelector('#plAnoIr').onclick = () => { S.view = 'mkt-camp'; S.tabMkt = 'plan'; S.campSel = null; render(); }; };
+/* v0.212: a tela antiga "Planejamento da empresa" (objetivos) saiu do menu a pedido da Rebecka (01/11). Quem chegar nela por um link
+   antigo vai para o planejamento do ano (Marketing › Campanhas e planejamento › Planejamento anual). Os dados antigos ficam no banco. */
+VIEWS['adm-plano'] = m => { S.view = 'mkt-camp'; S.tabMkt = 'plan'; S.campSel = null; return VIEWS['mkt-camp'](m); };
 
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;
 const fonteLink = () => location.protocol === 'file:' ? '<div class="panel"><b>Atenção:</b> o arquivo está aberto do seu computador, então o link de resposta não funciona para outras pessoas. Hospede o arquivo (por exemplo no GitHub Pages) antes de enviar.</div>' : '';

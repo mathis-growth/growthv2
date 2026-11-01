@@ -1,3 +1,8 @@
+## v0.212
+- Período padrão (S.perD): o mesmo em todos os dashboards (Administrativo, Marketing, Vendas, Mídia paga, Financeiro, Customer Success, Cockpit), enquanto a sessão está aberta. Padrão: o mês corrente inteiro.
+- Cockpit: conta até hoje. Customer Success: do início do período até hoje.
+- Contas a receber e a pagar continuam com o filtro de vencimento próprio.
+
 ## v0.211
 - Período padrão (S.per): o mesmo nos dashboards Administrativo, Marketing, Vendas e Mídia paga, enquanto a sessão está aberta. Padrão: últimos 30 dias. Este mês e Este ano vão até hoje; Mês passado é o mês inteiro.
 

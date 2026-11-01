@@ -67,7 +67,7 @@ with sync_playwright() as p:
     chk('Versão 0.' in pg.inner_text('body'), 'rodapé mostra a versão')
 
     # ---------- 1-3: dashboard clicável ----------
-    go(pg, 'fin-dash', "S.per={pre:'pers',de:'2026-10-01',ate:'2026-10-31'}")
+    go(pg, 'fin-dash', "S.perD = { ini: '2026-10-01', fim: '2026-10-31' }")
     chk(pg.locator('.kpi.clic').count() == 3, 'três cartões clicáveis (saldo, a receber, a pagar)', pg.locator('.kpi.clic').count())
     t = tx(pg); chk('Cartões de crédito' in t and 'Cartão de Crédito' in t and '26,91' in t, 'painel de cartões com a fatura em aberto', t[-600:])
     pg.click('.kpi.clic[data-fin=extrato]'); pg.wait_for_timeout(600)

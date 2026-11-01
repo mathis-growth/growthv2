@@ -51,7 +51,7 @@ with sync_playwright() as pw:
     chk(r['b'] == '' and r['c'] == '', 'faltou campo ou modelo não aprovado: não sai frase')
     chk('aumentou V' in r['d'], 'palavra escolhida: aumentou')
     # ---------- Financeiro ----------
-    SET = "S.per = { pre: 'pers', de: '2026-09-01', ate: '2026-09-30' }"
+    SET = "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }"
     front.vai(pg, 'fin-dash', SET, 9000)
     ids = pg.evaluate("() => [...document.querySelectorAll('#main [data-nar]')].map(e => e.dataset.nar)")
     chk(set(ids) >= {'NAR-E07', 'NAR-D02', 'NAR-H01', 'NAR-A02'}, 'Financeiro: frases vindas da tabela ' + str(ids))

@@ -24,7 +24,7 @@ def confere(pg, tela, esperados):
 with sync_playwright() as p:
     b = p.chromium.launch()
     ctx, pg = front.abre(b, hoje='2026-10-15', vh=1000)
-    front.vai(pg, 'adm-painel', "S.pg = { per: 'custom', de: '2026-09-01', ate: '2026-09-30' }", 6000)
+    front.vai(pg, 'adm-painel', "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }", 6000)
     confere(pg, 'Dashboard', ['Lucro', 'Margem', 'ROI', 'Vendas aprovadas', 'Receita bruta das vendas', 'Receita líquida das vendas', 'Pessoas no funil', 'Clientes ativos'])
     # descer: Lucro → Despesas → 1ª conta → lançamentos; soma das contas = despesas
     pg.evaluate(ABRE, 'Lucro'); pg.wait_for_timeout(1800)
@@ -41,7 +41,7 @@ with sync_playwright() as p:
     pg.locator('#arvRoot [data-arvpes]').click(); pg.wait_for_timeout(2500)
     chk(pg.locator('#modalRoot .ov').count() == 1, 'registro da venda abre a venda e dela a ficha da pessoa, por cima da árvore')
     pg.evaluate("() => { document.querySelector('#modalRoot').innerHTML = ''; arvFecha(); }")
-    front.vai(pg, 'fin-dash', "S.per = { pre: 'pers', de: '2026-09-01', ate: '2026-09-30' }", 6000)
+    front.vai(pg, 'fin-dash', "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }", 6000)
     confere(pg, 'Dashboard financeiro', ['Receitas no período', 'Despesas no período', 'Resultado no período'])
     front.vai(pg, 'fin-custo', "S.co = { mes: '2026-09', ver: 'area' }", 6000)
     confere(pg, 'Custos e margens', ['Receita do mês', 'Lucro líquido'])
@@ -69,7 +69,7 @@ with sync_playwright() as p:
     chk('Investimento · detalhe da campanha' in pg.inner_text('#modalRoot'), 'da árvore para o painel completo da campanha (v0.115)')
     chk(not pg.errs, 'sem erro de JavaScript (escp) ' + str(pg.errs[:2]))
     ctx.close(); ctx, pg = front.abre(b, hoje='2026-10-15', vw=390, vh=800)
-    front.vai(pg, 'adm-painel', "S.pg = { per: 'custom', de: '2026-09-01', ate: '2026-09-30' }", 6000)
+    front.vai(pg, 'adm-painel', "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }", 6000)
     pg.evaluate(ABRE, 'Lucro'); pg.wait_for_timeout(1800)
     chk(pg.evaluate("() => document.querySelector('#arvRoot .arv').getBoundingClientRect().width <= innerWidth"), 'celular: painel ocupa a tela sem passar da borda')
     b.close()

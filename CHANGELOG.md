@@ -1,3 +1,9 @@
+## v0.212 — Período padrão em todos os dashboards (01/11/2026)
+- Financeiro, Customer Success e Cockpit com o mesmo filtro de período dos outros dashboards.
+- Atalhos: Últimos 30 dias, Este mês, Próximos 30 dias, Últimos 7 dias, (Mês passado, 90 dias, 12 meses, Este ano) e Personalizado. Começa no mês corrente.
+- Saiu do menu o Planejamento da empresa antigo (link antigo abre o Planejamento anual).
+- Teste: `t211_periodo_padrao.py` (0 falhas).
+
 ## v0.211 — Período padrão nos dashboards (01/11/2026)
 - Administrativo, Marketing, Vendas e Mídia paga com o mesmo filtro (Período, De, Até; atalhos iguais) e o mesmo período em todos.
 - Planejamento da empresa: atalho para o planejamento do ano (Marketing › Campanhas e planejamento › Planejamento anual).

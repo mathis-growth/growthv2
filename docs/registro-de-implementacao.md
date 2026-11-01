@@ -1,5 +1,9 @@
 
 
+## Período padrão em todos os dashboards (v0.212)
+- `t211_periodo_padrao.py` (31 verificações, 0 falhas): 7 dashboards com o mesmo filtro e a ordem nova; todos começam em 01 a 30/11; "Mês passado" escolhido no Marketing vale no Vendas, Administrativo, Mídia paga, Financeiro, Customer Success e Cockpit; Cockpit diz o período no topo; Customer Success conta 32 dias (01/10 até hoje); Financeiro com Próximos 30 dias; menu sem Planejamento da empresa e link antigo abre o Planejamento anual.
+- Regressão: t157, t158, t192, t205, t208, t209 e t127 sem falhas. t111, t116, t117, t118, t124, t153, t155 (auditoria) e t86, t164 (tela) têm as mesmas falhas da v0.211, de antes desta versão (base local e datas). t127: a parte do Planejamento da empresa antigo virou "o link leva ao Planejamento anual". Os cartões "A receber/A pagar no período" do Dashboard financeiro abrem a lista no período padrão.
+
 ## Período padrão nos dashboards (v0.211)
 - Teste `t211_periodo_padrao.py` (17 verificações, 0 falhas): os 4 dashboards com o mesmo filtro e atalhos; começam em 30 dias; o "Mês passado" do Marketing vale no Vendas, Administrativo e Mídia paga; data à mão vira Personalizado e vale no Administrativo; filtro no topo; atalho do Planejamento da empresa abre o Planejamento anual. t192, t205, t208, t158 sem falhas.
 
@@ -40,7 +44,7 @@
 
 ## Editar a meta em passos, impostos e lucro final (v0.199)
 - `g198.js`: `paImposto(R, cfg)` por regime (usa `CO_SIMPLES`, `coAliqSimples`, `CO_MEI_DAS`); `paContas` resolve a meta pela ambição por iteração (a alíquota do Simples muda com o faturamento); `paLucro` e a tabela "Do faturamento ao lucro" na seção 1 e no passo 4; cards com o lucro no fim.
-- Teste `t198_plano_anual.py` (37 verificações, 0 falhas): sugestões novas; custos fixos sem comissões; quatro passos; Salvar só no passo 4; margem fora das premissas; regime do cadastro; folha no Simples e ISS no Lucro Real; alíquota e anexo; resumo no passo 4; meta com Simples confere com a conta feita no teste; lucro na meta = lucro desejado; Lucro Real com IR separado; trimestres e metas mensais como antes. t124 e t127 sem falhas.
+- Teste `t198_plano_anual.py` (31 verificações, 0 falhas): sugestões novas; custos fixos sem comissões; quatro passos; Salvar só no passo 4; margem fora das premissas; regime do cadastro; folha no Simples e ISS no Lucro Real; alíquota e anexo; resumo no passo 4; meta com Simples confere com a conta feita no teste; lucro na meta = lucro desejado; Lucro Real com IR separado; trimestres e metas mensais como antes. t124 e t127 sem falhas.
 
 ## Planejamento anual, etapa 1 (v0.198)
 - `g198.js`: premissas e as contas na tela (deterministas, com a fórmula escrita ao lado); formulário com caminho, origem de cada premissa e a ajuda que calcula; trimestres com ritmo; sugestão mês a mês; gráfico acumulado com previsão.

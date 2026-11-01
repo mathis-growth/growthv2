@@ -77,7 +77,7 @@ with sync_playwright() as p:
     pg.on('pageerror', lambda e: errs.append(str(e)))
     pg.goto('file://' + HTML); pg.wait_for_timeout(1000)
     chk('Versão 0.' in pg.inner_text('body'), 'rodapé mostra a versão')
-    go(pg, 'fin-dash', "S.per={pre:'pers',de:'2026-10-01',ate:'2026-10-31'}")
+    go(pg, 'fin-dash', "S.perD = { ini: '2026-10-01', fim: '2026-10-31' }")
     t = tx(pg); chk('Qualidade do dado: 2 aviso(s)' in t, 'faixa de qualidade no dashboard financeiro', t[:300])
     c = calls(pg, 'qualidade_dados'); chk(c and c[-1]['p_ws'] == 'w1' and c[-1]['p_ini'] == '2026-10-01', 'avisos pedidos ao banco com o período do dashboard', c[-1:])
     chk(pg.evaluate("[...document.querySelectorAll('.kpi .l')].some(l => /A receber/.test(l.textContent) && l.querySelector('.dqw'))"), 'cartão A receber marcado com ⚠')

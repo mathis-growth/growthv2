@@ -1,3 +1,6 @@
+## v0.212
+Nada para rodar no banco. Continuam pendentes em produção: `RODAR_v0.197`, `RODAR_v0.208`, `RODAR_v0.209` (versão da v0.210).
+
 ## v0.211
 Nada para rodar no banco.
 

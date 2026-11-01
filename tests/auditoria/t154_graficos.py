@@ -17,7 +17,7 @@ with sync_playwright() as pw:
     ctx, pg = front.abre(b, hoje='2026-10-15', vw=1440, vh=1000, prefs={'growths_saldo_min_' + WS: '20000'})
     r = pg.evaluate("() => { const t = linhas(['a','b','c'], null, [-10, -20, null], v => String(v), true); const d = document.createElement('div'); d.innerHTML = t; const s = d.querySelector('svg'); return { pl: s.querySelectorAll('polyline').length, ys: [...s.querySelectorAll('circle')].map(c => Number(c.getAttribute('cy'))), vazio: linhas(['a'], null, [null], String, true) }; }")
     chk(all(12 <= y <= 194 for y in r['ys']) and r['pl'] == 1 and 'gc-vazio' in r['vazio'], 'gráfico de linhas antigo: valores negativos dentro da área, buraco sem dado e frase de vazio')
-    front.vai(pg, 'fin-dash', "S.per = { pre: 'pers', de: '2026-09-01', ate: '2026-09-30' }", 7000)
+    front.vai(pg, 'fin-dash', "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }", 7000)
     cx, rm = pg.evaluate(PAINEL, 'Caixa projetado'), pg.evaluate(PAINEL, 'Resultado por mês')
     chk(cx and cx['ys'] and all(0 <= y <= cx['h'] for y in cx['ys']) and rm and rm['ys'] and all(0 <= y <= rm['h'] for y in rm['ys']), 'Financeiro: "Caixa projetado" e "Resultado por mês" aparecem com valores negativos')
     cas = pg.evaluate("() => { const s = [...document.querySelectorAll('#main svg.gc')].find(s => /resultado/i.test(s.getAttribute('aria-label') || '')); return s ? { cores: [...s.querySelectorAll('rect')].map(r => r.getAttribute('fill')), txt: [...s.querySelectorAll('text.gc-v')].map(t => t.textContent) } : null; }")
@@ -25,7 +25,7 @@ with sync_playwright() as pw:
     sm = pg.evaluate("() => { const s = [...document.querySelectorAll('#main svg.gc')].find(s => /Caixa projetado/.test(s.getAttribute('aria-label') || '')); return s ? s.textContent : ''; }")
     chk('Saldo mínimo' in sm, 'saldo mínimo como linha de referência')
     pg.screenshot(path=SHOT + '1_financeiro.png', full_page=True); erros += pg.errs
-    front.vai(pg, 'adm-painel', "S.pg = { per: 'custom', de: '2026-09-01', ate: '2026-09-30' }", 7000)
+    front.vai(pg, 'adm-painel', "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }", 7000)
     dots = pg.evaluate("() => [...document.querySelectorAll('#pgEvo circle')].map(c => c.getAttribute('fill'))")
     chk(dots and 'var(--bad)' not in dots, 'pontos na cor da série (sem vermelho pelo sinal)')
     pg.screenshot(path=SHOT + '2_dashboard.png', full_page=True); erros += pg.errs

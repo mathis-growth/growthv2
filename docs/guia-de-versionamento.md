@@ -1,3 +1,6 @@
+## v0.212
+- index.html: montado sobre o HEAD do GitHub (v0.211) com `aplica212.py` e `g211.js` atualizado: `PER_AT` na ordem nova, `prox30`, `mes` = mês inteiro, padrão `perAtalho('mes')`, `perRot`, `perFin`. `vCockpit`, `vHeavyOps` e `vFinDash` (e o detalhe da árvore e a faixa de qualidade do fin-dash) usam `perPadrao`/`perLiga`. Menu sem `adm-plano`; `VIEWS['adm-plano']` leva ao Planejamento anual. Testes que mudavam `S.per`/`S.pg` no fin-dash e Administrativo agora mudam `S.perD`; t164 usa o filtro novo.
+
 ## v0.211
 - index.html: aplicado sobre o HEAD do GitHub (v0.210 + `?v=0198` do atendimento) com `aplica211.py` e `g211.js`: `PER_AT`, `perAtalho`, `perGlobal` (`S.per`), `perPadrao`, `perLiga`; `vPainel`, `vMktDash`, `vCrmDash`, `vTrafego` usam o filtro padrão; `GRADE_SECOES` acha o filtro pelo `.per-padrao`. A partir daqui, cada versão é montada sobre o `index.html` do GitHub. Atalho do Planejamento da empresa para o planejamento do ano (`adm-plano`). Teste novo `t211_periodo_padrao.py`; `t205`, `t208`, `t158` usam `S.per`.
 

@@ -23,7 +23,7 @@ falhas = []
 def chk(c, msg):
     print(('ok   ' if c else 'FALHA ') + msg)
     if not c: falhas.append(msg)
-SET = "S.pg = { per: 'custom', de: '2026-09-01', ate: '2026-09-30' }"
+SET = "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }"
 with sync_playwright() as pw:
     b = pw.chromium.launch()
     ctx, pg = front.abre(b, hoje='2026-10-15', vw=1440, vh=1000)

@@ -77,7 +77,7 @@ with sync_playwright() as p:
     chk(pg.evaluate("document.querySelector('.ck-cs .ck-hb-r').textContent") == 'Onboarding' and 'Mentoria · Plano' in pg.evaluate("document.querySelector('.ck-cs').innerText"), 'etapas em ordem, com o produto na frente')
     pg.hover('.ck-ven .ck-hit >> nth=2'); pg.wait_for_timeout(200)
     chk(pg.evaluate("!document.querySelector('#ckTip').hidden && document.querySelector('#ckTip').textContent.startsWith('03/10 · Faturamento')"), 'passar o mouse mostra o valor do dia', pg.evaluate("document.querySelector('#ckTip').textContent"))
-    pg.click('[data-ckp=ano]'); pg.wait_for_timeout(900)
+    pg.select_option('#main [data-per-at]', 'ano'); pg.wait_for_timeout(900)  # v0.212: o Cockpit usa o período padrão dos dashboards
     chk(pg.evaluate("__calls.filter(c => c[0] === 'rpc' && c[1] === 'painel_gerencial').pop()[2].p_ini") == pg.evaluate("hoje().slice(0, 4) + '-01-01'"), 'período Ano muda a consulta')
     chk(pg.evaluate("document.querySelectorAll('.ck-mkt .ck-hit').length") == 1 and pg.evaluate("document.querySelector('.ck-mkt .ck-gt').textContent") == 'Leads por mês', 'no Ano, os gráficos juntam por mês')
     pg.click('.ck-cs'); pg.wait_for_timeout(1200)

@@ -1,3 +1,6 @@
+## v0.212
+**Um filtro só em todos os dashboards.** Financeiro, Customer Success e Cockpit entram no mesmo filtro de período (começa no mês corrente). O Planejamento da empresa antigo saiu do menu.
+
 ## v0.211
 **Um período para todos os dashboards.** Administrativo, Marketing, Vendas e Mídia paga têm o mesmo filtro (com os mesmos atalhos) e o período escolhido vale em todos.
 

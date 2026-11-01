@@ -19,7 +19,7 @@ with sync_playwright() as pw:
     b = pw.chromium.launch()
     ctx, pg = front.abre(b, hoje='2026-11-01', vw=1440, vh=1000)
     front.vai(pg, 'crm-dash', "S.perD = { ini: '2026-10-01', fim: '2026-10-31' };", 6000)
-    chk(pg.locator('#main [data-per-de]').input_value() == '2026-10-01' and pg.locator('#main [data-per-at] option').count() == 8, 'filtro de período: de, até e atalhos')
+    chk(pg.locator('#main [data-per-de]').input_value() == '2026-10-01' and pg.locator('#main [data-per-at] option').count() == 9, 'filtro de período: de, até e atalhos')
     k = pg.inner_text('#vdKpis').replace('\xa0', ' ')
     val = float(sql(f"select coalesce(sum(valor_bruto), 0) from vendas where workspace_id = '{WS}' and status = 'aprovada' and (data_venda at time zone 'America/Sao_Paulo')::date between '2026-10-01' and '2026-10-31'"))
     nv = int(sql(f"select count(*) from vendas where workspace_id = '{WS}' and status = 'aprovada' and (data_venda at time zone 'America/Sao_Paulo')::date between '2026-10-01' and '2026-10-31'"))

@@ -25,7 +25,7 @@ def confere(pg, tela, esperados):
 with sync_playwright() as p:
     b = p.chromium.launch()
     ctx, pg = front.abre(b, hoje='2026-10-15', vh=1000)
-    front.vai(pg, 'adm-painel', "S.pg = { per: 'custom', de: '2026-09-01', ate: '2026-09-30' }", 6000)
+    front.vai(pg, 'adm-painel', "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }", 6000)
     confere(pg, 'Dashboard', ['NRR', 'Retenção bruta (GRR)', 'Penetração de mercado'])
     pg.evaluate(ABRE, 'Lucro'); pg.wait_for_timeout(1800)
     pg.locator('#arvRoot [data-arvrot="Receitas"]').click(); pg.wait_for_timeout(1800)

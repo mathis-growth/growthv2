@@ -6,12 +6,12 @@ KPI_JS = """() => { const o = {}; document.querySelectorAll('#main .kpi').forEac
   if (l) o[l.replace(/\\s*ⓘ\\s*$/, '').replace(/\\s+›$/, '').trim()] = [v, s]; }); return o; }"""
 SET = '2026-09-01', '2026-09-30'
 TELAS = [
-  ('Dashboard (Administrativo)', 'adm-painel', "S.pg = { per: 'custom', de: '2026-09-01', ate: '2026-09-30' }", '2026-10-15', None),
+  ('Dashboard (Administrativo)', 'adm-painel', "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }", '2026-10-15', None),
   ('Dashboard de marketing', 'mkt-dash', "S.mg = { ini: '2026-09-01', fim: '2026-09-30', camp: '', funil: '', tab: 'visao', gran: 'campanha', cv: 'ret', sel: null }", '2026-10-15', None),
   ('Dashboard de mídia', 'mkt-midia', "S.md = { ini: '2026-09-01', fim: '2026-09-30', canal: '', camp: '', rel: 'canal', gran: 'dia', todos: false }", '2026-10-15', None),
   ('Mídia paga', 'mkt-trafego', "S.tDe = '2026-09-01'; S.tAte = '2026-09-30'", '2026-10-15', None),
   ('Dashboard de vendas (hoje = 30/09)', 'crm-dash', "", '2026-09-30', None),
-  ('Dashboard financeiro', 'fin-dash', "S.per = { pre: 'pers', de: '2026-09-01', ate: '2026-09-30' }", '2026-10-15', None),
+  ('Dashboard financeiro', 'fin-dash', "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }", '2026-10-15', None),
   ('Custos e margens', 'fin-custo', "S.co = { mes: '2026-09', ver: 'area' }", '2026-10-15', None),
   ('Custos e margens (regime Simples III no navegador)', 'fin-custo', "S.co = { mes: '2026-09', ver: 'area' }", '2026-10-15', {'custoOp:WS': json.dumps({'regime': 'simples_III', 'varPct': 0})}),
   ('RevOps dashboard (hoje = 30/09)', 'ho-dash', "S.ho = { dias: 30 }", '2026-09-30', None),

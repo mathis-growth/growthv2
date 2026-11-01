@@ -18,7 +18,7 @@ with sync_playwright() as pw:
     chk(tok == ['rgb(37, 123, 100)', 'rgb(194, 62, 72)'], 'cores de status do sistema = camada semântica ' + str(tok))
     chk(pg.evaluate("() => [brl(-96993.27), brl(null), fX(1.2234), fP(-0.0123)]") == ['−R$ 96.993,27', '—', '1,2x', '−1,2%'], 'formatadores globais: menos verdadeiro, "—" para sem dado, ROAS com 1 casa')
     # Dashboard financeiro
-    front.vai(pg, 'fin-dash', "S.per = { pre: 'pers', de: '2026-09-01', ate: '2026-09-30' }", 6000)
+    front.vai(pg, 'fin-dash', "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }", 6000)
     sb, rs, dp = kp(pg, 'Saldo em banco'), kp(pg, 'Resultado no período'), kp(pg, 'Despesas no período')
     chk('sem-v-desf' in sb['c'] and 'sem-v-desf' in rs['c'] and 'sem-v' not in dp['c'] and 'kneg' not in sb['c'], 'Financeiro: saldo e resultado negativos em vermelho; despesas sem cor')
     pg.screenshot(path=SHOT + '1_financeiro.png'); erros += pg.errs
@@ -44,13 +44,13 @@ with sync_playwright() as pw:
     chk(nv and 'sem-v' not in nv['c'] and 'vneg' not in nv['c'], 'Vendas: "Novos em 30 dias" sem cor pelo sinal')
     erros += pg.errs
     # Dashboard: linha Resultado da DRE em vermelho; tabela de campanha sem vermelho por sinal
-    front.vai(pg, 'adm-painel', "S.pg = { per: 'custom', de: '2026-09-01', ate: '2026-09-30' }", 7000)
+    front.vai(pg, 'adm-painel', "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }", 7000)
     r = pg.evaluate("() => { const tr = [...document.querySelectorAll('#main tr.tot')].find(t => /^Resultado/.test(t.cells[0].textContent)); return tr ? [...tr.cells].slice(1).map(c => [c.textContent.trim(), c.className]) : []; }")
     chk(r and all(('sem-desf' in c) == x.startswith('−') for x, c in r if x not in ('R$ 0,00',)), 'DRE: resultado negativo em vermelho, positivo em verde ' + json.dumps(r[:3], ensure_ascii=False))
     erros += pg.errs
     # modo escuro: sem neon
     ctx.close(); ctx, pg = front.abre(b, hoje='2026-10-15', vw=1440, vh=1000, prefs={'growths_tema': 'dark'})
-    pg.evaluate("document.documentElement.removeAttribute('data-theme')"); front.vai(pg, 'fin-dash', "S.per = { pre: 'pers', de: '2026-09-01', ate: '2026-09-30' }", 6000)
+    pg.evaluate("document.documentElement.removeAttribute('data-theme')"); front.vai(pg, 'fin-dash', "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }", 6000)
     sh = pg.evaluate("() => getComputedStyle([...document.querySelectorAll('#main .kpi .v')].find(v => /−/.test(v.textContent))).textShadow")
     chk(sh == 'none', 'escuro: números sem brilho neon ' + sh)
     pg.screenshot(path=SHOT + '4_escuro.png'); erros += pg.errs

@@ -1,5 +1,15 @@
 
 
+## v0.212 — Período padrão em todos os dashboards e sem o Planejamento da empresa antigo
+**Pedidos da Rebecka (01/11)**: (1) "Pode ocultar esse menu" — o Planejamento da empresa antigo (objetivos); (2) todos os dashboards com o mesmo filtro de período no topo, com "30 dias, este mês, próximos 30 dias, 7 dias e o personalizado", inclusive Financeiro, Customer Success e Cockpit; o Cockpit traz o mês corrente e, mudando o período, muda todos os painéis dele.
+Decisões:
+- **Atalhos, nesta ordem**: Últimos 30 dias, Este mês, Próximos 30 dias, Últimos 7 dias; depois Mês passado, Últimos 90 dias, Últimos 12 meses, Este ano; e Personalizado.
+- **Começa no mês corrente** em todos (antes: últimos 30 dias). "Este mês" agora é o mês inteiro (01 a 30/11), para o Financeiro mostrar o que vence até o fim do mês. "Próximos 30 dias" = hoje + 29 dias.
+- **Cockpit**: os botões de período saíram; usa o filtro padrão. Os números contam até hoje (um período no futuro é cortado em hoje). Acima de ~2 meses os gráficos juntam por mês.
+- **Customer Success**: o banco (`heavyops_painel`) só sabe contar "N dias para trás a partir de hoje". Por isso os produtos contam do início do período escolhido até hoje — o texto ao lado do filtro mostra as datas certas. **Hipótese**: se for preciso um período fechado no passado (só outubro), a função do banco precisa ganhar início e fim.
+- **Financeiro (dashboard)**: usa o período padrão. O filtro de vencimentos (próximos 7 dias, já vencidas, tudo…) continua só em Contas a receber e Contas a pagar, que são listas de trabalho e não dashboards.
+- **Planejamento da empresa antigo**: saiu do menu. Um link antigo abre o Planejamento anual. Os dados antigos continuam no banco (nada foi apagado).
+
 ## v0.211 — Período padrão nos dashboards
 **Pedido da Rebecka (01/11)**: os dashboards têm de ser padronizados (o de Vendas não tinha o filtro igual aos outros). Levantamento (fato): Administrativo com uma lista só (7, 15, 30 dias, mês, 12 meses, ano, personalizado); Marketing com De, Até e atalho; Mídia paga com De e Até; Vendas com De, Até e atalho (v0.208); Financeiro com vencimentos futuros; Customer Success com "produtos nos últimos 30, 90 ou 180 dias"; Cockpit com botões.
 Decisões:

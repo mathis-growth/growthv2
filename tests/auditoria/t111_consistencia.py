@@ -15,11 +15,11 @@ try:
     with sync_playwright() as p:
         b = p.chromium.launch()
         ctx, pg = abre(b)
-        vai(pg, 'adm-painel', "S.pg = { per: 'custom', de: '2026-09-01', ate: '2026-09-30' }", 5000); k = pg.evaluate(KPI)
+        vai(pg, 'adm-painel', "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }", 5000); k = pg.evaluate(KPI)
         chk(k.get('Lucro', [''])[0] == LUCRO, 'Dashboard: lucro de setembro ' + str(k.get('Lucro')))
         chk(k.get('Vendas aprovadas', [''])[0] == '65', 'Dashboard: 65 vendas no período (antes 111, todo o histórico)')
         chk('Receita bruta das vendas' in k, 'Dashboard: rótulo "Receita bruta das vendas"')
-        vai(pg, 'fin-dash', "S.per = { pre: 'pers', de: '2026-09-01', ate: '2026-09-30' }", 5000); k = pg.evaluate(KPI)
+        vai(pg, 'fin-dash', "S.perD = { ini: '2026-09-01', fim: '2026-09-30' }", 5000); k = pg.evaluate(KPI)
         chk(k.get('Resultado no período', [''])[0] == LUCRO, 'Dashboard financeiro: resultado do período escolhido')
         chk(k.get('Receitas no período', [''])[0] == 'R$\xa075.955,00', 'Dashboard financeiro: receitas do período')
         vai(pg, 'fin-custo', "S.co = { mes: '2026-09', ver: 'area' }", 6000); k = pg.evaluate(KPI)

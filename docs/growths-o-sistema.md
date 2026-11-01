@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.211 (período padrão nos dashboards).
+**Última atualização:** 01/11/2026, versão 0.212 (período padrão em todos os dashboards).
+
+**v0.212 · Um filtro só em todos os dashboards.** Financeiro, Customer Success e Cockpit entram no mesmo filtro de período, que começa no mês corrente. O Planejamento da empresa antigo saiu do menu.
 
 **v0.211 · Um período para todos os dashboards.** O mesmo filtro (Período, De, Até) no Administrativo, Marketing, Vendas e Mídia paga, e o período escolhido vale em todos.
 
@@ -98,7 +100,7 @@ A ideia central: o dono do negócio e a consultoria olham para os mesmos número
 ## 2. Administrativo: a visão do negócio
 
 ### Cockpit
-A tela inicial. Um painel pequeno por área (Geral, Marketing, Vendas, Financeiro, Projetos, Growth e Clientes), dois lado a lado, cada um com os números que mais importam no período: caixa, receita, margem e lucro; campanhas e leads; vendas, ticket e conversão; a receber, a pagar e MRR; projetos e atividades atrasadas; North Star e experimentos; alunos ativos, alertas e satisfação. Cada painel traz também um gráfico: receita e lucro por mês, leads e faturamento por dia, o que entra e o que sai, alunos por etapa. Clicar num painel abre o dashboard daquela área, com tudo em detalhe. Cada pessoa só vê os painéis das áreas a que tem acesso.
+A tela inicial. Um painel pequeno por área (Geral, Marketing, Vendas, Financeiro, Projetos, Growth e Clientes), dois lado a lado, cada um com os números que mais importam no período: caixa, receita, margem e lucro; campanhas e leads; vendas, ticket e conversão; a receber, a pagar e MRR; projetos e atividades atrasadas; North Star e experimentos; alunos ativos, alertas e satisfação. Cada painel traz também um gráfico: receita e lucro por mês, leads e faturamento por dia, o que entra e o que sai, alunos por etapa. Clicar num painel abre o dashboard daquela área, com tudo em detalhe. Cada pessoa só vê os painéis das áreas a que tem acesso. Em cima, o mesmo filtro de período de todos os dashboards (começa no mês corrente); mudar o período muda todos os painéis.
 
 ### Dashboard geral
 O detalhe do painel Geral do Cockpit. Mostra o negócio inteiro num período escolhido:
@@ -135,7 +137,7 @@ O Growths confere os números de hora em hora e avisa quando:
 Toda manhã chega o resumo de ontem. Os avisos vão para o sino do sistema, por e-mail e por WhatsApp.
 
 ### Planejamento da empresa
-Objetivos e indicadores do ano, com meta (cenário bom), cenário ruim e cenário ótimo. Alguns indicadores são calculados sozinhos pela contabilidade, como margem de contribuição e margem de lucro líquida.
+Saiu do menu na v0.212. O planejamento do ano (meta, 3 cenários, trimestres) fica em Marketing › Campanhas e planejamento › Planejamento anual.
 
 ### Cadastro da empresa
 Dados da empresa, CNPJ validado e responsáveis. Inclui também:
@@ -464,6 +466,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 ## 11. Visual e experiência
 
 - **Claro como padrão e escuro como opção.** Uma ação principal por tela.
+- **Um filtro de período só.** Todos os dashboards têm em cima o mesmo filtro (Últimos 30 dias, Este mês, Próximos 30 dias, Últimos 7 dias… e Personalizado), que começa no mês corrente e vale em todos.
 - **Cor com significado (Data Storytelling).** Quatro cores só para leitura de dados: verde (favorável), vermelho (desfavorável), âmbar (atenção) e azul (informação e comparação). A cor nunca vem sozinha: sempre com seta ou símbolo (▲ ▼ ✓ ✕ ⚠) e uma palavra, porque verde e vermelho se confundem para quem tem daltonismo. Lucro, resultado, margem, ROI e saldo têm o zero como limite: negativo em vermelho, positivo em verde, âmbar quando passa de zero mas não chega na meta ou no cenário cadastrado. As outras métricas só ganham cor quando há meta, limite ou período anterior comparável, e cada uma tem a sua direção: CAC caindo é bom, margem caindo é ruim, investimento subindo é neutro. Variações abaixo de 5% ficam neutras.
 - **Números num padrão só.** Sinal de menos verdadeiro, reais abreviados em cartões e completos em tabelas, pontos percentuais para taxas, ROAS com uma casa (4,5x) e LTV:CAC como razão (3,2:1). "—" quer dizer sem dado; zero quer dizer zero.
 - **Gráficos limpos.** Verde e vermelho saem das linhas e barras comuns e ficam para o que é bom ou ruim. Meta, limite e saldo mínimo aparecem como linha tracejada com o valor escrito. Na cascata do resultado, receitas, deduções e despesas ficam neutras e só o resultado ganha cor.
@@ -497,6 +500,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 - "Seu lucro tem três números diferentes?" A história da auditoria de consistência.
 - Por que "sem dado" é melhor do que zero.
+- Um período só para a empresa inteira: por que marketing, vendas e financeiro precisam olhar a mesma janela de tempo.
 - Fato, hipótese e recomendação: como ler um insight sem se enganar.
 - A árvore dos números: de onde vem cada número do seu dashboard.
 - Contabilidade imutável: por que nada se apaga e tudo se estorna.
@@ -549,6 +553,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.212):** Financeiro, Customer Success e Cockpit no mesmo filtro de período; sem o Planejamento da empresa antigo.
 - **01/11 (v0.211):** Dashboards com o mesmo filtro de período, que vale em todos.
 - **01/11 (v0.210):** Financeiro simplificado também no completo; comissão de parceiro geral ou por produto.
 - **01/11 (v0.209):** Financeiro simplificado: DRE do mês sem contas a pagar, com custos por grupo e comissões de parceiros.

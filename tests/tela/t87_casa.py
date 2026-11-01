@@ -74,7 +74,7 @@ with sync_playwright() as p:
     chk('Versão 0.' in pg.inner_text('body'), 'rodapé mostra a versão')
     ops = pg.evaluate("[...document.querySelectorAll('#wsSel option')].map(o=>o.textContent)")
     chk('Casa' not in ops and 'Mathisa — Operação' in ops and 'Cliente Beta' in ops, 'Casa sai do seletor de workspace', ops)
-    pg.evaluate("S.ws='w1'; S.wsBase='w1'; S.view='fin-dash'; S.per={pre:'pers',de:'2026-10-01',ate:'2026-10-31'}; S.abertos.Casa=true; render()"); pg.wait_for_timeout(800)
+    pg.evaluate("S.ws='w1'; S.wsBase='w1'; S.view='fin-dash'; S.perD = { ini: '2026-10-01', fim: '2026-10-31' }; S.abertos.Casa=true; render()"); pg.wait_for_timeout(800)
     nav = tx(pg, '#nav'); chk('CASA' in nav.upper() and 'Contas bancárias e cartões' in nav, 'grupo Casa no menu da operação', nav[:500])
     pg.click('#nav button[data-v=casa-dash]'); pg.wait_for_timeout(900)
     chk(pg.evaluate("S.ws") == 'wc' and pg.evaluate("S.wsBase") == 'w1', 'na Casa, os dados vêm do livro da Casa', pg.evaluate("[S.ws,S.wsBase]"))

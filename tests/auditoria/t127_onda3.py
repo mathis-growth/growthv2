@@ -51,14 +51,9 @@ try:
         oid = sql(f"select id from ofertas where workspace_id = '{WS}' and nome = 'T127 Upsell'")
         chk(r[0] and r[1] == oid, 'importação de vendas reconhece a oferta pelo nome (sem diferenciar maiúsculas)')
         chk(r[2] and 'não encontrado' in r[2], 'oferta desconhecida vira aviso, não erro de banco')
-        # ---------------- Planejamento ----------------
-        front.vai(pg, 'adm-plano', "S.pl = { id: '', tab: 'obj' }", 8000)
-        pl = pg.locator('#plTempo')
-        chk(pl.count() == 1 and pl.locator('svg.gc').count() == 3, 'Planejamento: meta × realizado acumulado (receita, vendas, leads)')
-        rec = float(sql(f"select coalesce(sum(valor_bruto), 0) from vendas where workspace_id = '{WS}' and status = 'aprovada' and (data_venda at time zone 'America/Sao_Paulo')::date between '2026-08-01' and '2026-10-15'"))
-        pct = round(rec / 120000 * 100)
-        chk(('%d%% da meta até out/26' % pct) in pl.inner_text(), 'receita: %d%% da meta acumulada até outubro' % pct)
-        chk('Sem cenário, o sistema não projeta' in pl.inner_text(), 'sem cenário aprovado, não há projeção')
+        # ---------------- Planejamento da empresa: saiu do menu na v0.212 (link antigo abre o Planejamento anual) ----------------
+        front.vai(pg, 'adm-plano', '', 6000)
+        chk(pg.evaluate('S.view') == 'mkt-camp', 'Planejamento da empresa antigo leva ao Planejamento anual (v0.212)')
         # ---------------- Saldo mínimo (sem a coluna: fica no navegador) ----------------
         front.vai(pg, 'fin-dash', '', 7000)
         chk(pg.locator('#finSmin').count() == 1 and 'Informe o saldo' in pg.inner_text('#finSmin'), 'Financeiro: saldo mínimo, ainda sem valor')
