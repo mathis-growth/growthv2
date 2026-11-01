@@ -221,6 +221,7 @@
         if(!Number.isFinite(timestamp.getTime()))throw Error('Horário inválido.');
         await api('agendar',{conversa_id:id,texto,enviar_em:timestamp.toISOString()},ws);
         A.drafts.delete(draftKey(id));toast('Mensagem agendada para '+timestamp.toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'})+' (Brasília).');
+        await messages(id,token,false);
       },'Confirmar agendamento');
     };
     $('#atdCompose').onsubmit=async e=>{
@@ -240,7 +241,7 @@
     if(active(token)&&A.sel===id&&A.ctx.editar&&cv.nao_lidas) await api('atualizar',{conversa_id:id,lida:true},ws);
   }
   async function messages(id,token,scroll=true,before) {
-    const r=await api('mensagens',{conversa_id:id,before},A.ws);
+    const [r,agenda]=await Promise.all([api('mensagens',{conversa_id:id,before},A.ws),api('agendamentos-list',{conversa_id:id},A.ws)]);
     if(!active(token)||A.sel!==id) return;
     const box=$('#atdMensagens'); if(!box)return;
     const bottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
@@ -249,8 +250,10 @@
     if(reproduzindo && !before)return;
     A.loaded=[...A.loaded,...r.mensagens];
     const map=new Map(A.loaded.map(m=>[m.id,m]));A.loaded=[...map.values()].sort((a,b)=>a.em.localeCompare(b.em)||a.id.localeCompare(b.id));
-    box.innerHTML=`${r.mensagens.length===60?'<button class="btn sm" id="atdAntigas">Mensagens anteriores</button>':''}`+A.loaded.map(m=>`<article class="atd-balao ${m.direcao}">${m.autor_nome?`<span class="atd-autor">${esc(m.autor_nome)}</span>`:m.participante?`<span class="atd-autor">${esc(m.participante)}</span>`:''}${textoMensagem(m)}${listOf(m.anexos).map((a,i)=>`<div class="atd-midia">${mediaMarkup(m,a,i)}</div>`).join('')}<small>${fmt(m.em)} · ${state[m.status]||esc(m.status)}</small>${m.erro?`<span class="atd-erro">${esc(m.erro)}</span>`:''}</article>`).join('');
-    if(!A.loaded.length)box.innerHTML='<div class="atd-vazio">Nenhuma mensagem salva ainda.<br>Use “Importar histórico” para consultar o canal.</div>';
+    const agendaItems=(agenda.agendamentos||[]).filter(j=>j.status!=='enviado').map(j=>({kind:'agenda',id:j.id,em:j.enviar_em,item:j}));
+    const timeline=[...A.loaded.map(m=>({kind:'mensagem',em:m.em,id:m.id,item:m})),...agendaItems].sort((a,b)=>a.em.localeCompare(b.em)||a.id.localeCompare(b.id));
+    box.innerHTML=`${r.mensagens.length===60?'<button class="btn sm" id="atdAntigas">Mensagens anteriores</button>':''}`+timeline.map(x=>x.kind==='agenda'?`<article class="atd-agenda-chat atd-agenda-${esc(x.item.status)}"><header><b>◷ ${x.item.status==='agendado'?'AGENDADA · AINDA NÃO ENVIADA':x.item.status==='processando'?'ENVIO EM ANDAMENTO':x.item.status==='cancelado'?'AGENDAMENTO CANCELADO':x.item.status==='incerto'?'ENVIO SEM CONFIRMAÇÃO':'FALHA NO ENVIO'}</b><small>${new Date(x.item.enviar_em).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',dateStyle:'short',timeStyle:'short'})} · Brasília</small></header><p>${esc(x.item.texto)}</p>${x.item.erro?`<small class="atd-erro">${esc(x.item.erro)}</small>`:''}${x.item.status==='agendado'?`<button type="button" class="btn sm bad" data-cancelar-chat-agenda="${x.item.id}">Cancelar agendamento</button>`:''}</article>`:`<article class="atd-balao ${x.item.direcao}">${x.item.autor_nome?`<span class="atd-autor">${esc(x.item.autor_nome)}</span>`:x.item.participante?`<span class="atd-autor">${esc(x.item.participante)}</span>`:''}${textoMensagem(x.item)}${listOf(x.item.anexos).map((a,i)=>`<div class="atd-midia">${mediaMarkup(x.item,a,i)}</div>`).join('')}<small>${fmt(x.item.em)} · ${state[x.item.status]||esc(x.item.status)}</small>${x.item.erro?`<span class="atd-erro">${esc(x.item.erro)}</span>`:''}</article>`).join('');
+    if(!timeline.length)box.innerHTML='<div class="atd-vazio">Nenhuma mensagem salva ainda.<br>Use “Importar histórico” para consultar o canal.</div>';
     // Carrega somente anexos visíveis: URLs assinadas são curtas e não expõem o bucket.
     const mediaElements=[...box.querySelectorAll('[data-media-key]')];
     const loadMedia=async el=>{
@@ -285,6 +288,8 @@
     if(scroll||bottom)box.scrollTop=box.scrollHeight;
     box.querySelector('#atdAntigas')?.addEventListener('click',()=>act(()=>messages(id,token,false,{em:A.loaded[0]?.em,id:A.loaded[0]?.id})));
     box.onclick=e=>{
+      const cancel=e.target.closest('[data-cancelar-chat-agenda]');
+      if(cancel){act(async()=>{if(!confirm('Cancelar esta mensagem agendada?'))return;await api('cancelar-agendamento',{agendamento_id:cancel.dataset.cancelarChatAgenda},A.ws);toast('Agendamento cancelado.');await messages(id,token,false);});return;}
       const b=e.target.closest('[data-midia]');if(!b)return;
       if(b.dataset.pendente==='1'){act(async()=>{await api('recuperar-midia',{mensagem_id:b.dataset.midia});mediaSigned.delete(mediaKey(b.dataset.midia,Number(b.dataset.index)));await messages(id,token,false);});return;}
       if(b.matches('button.atd-media-image')){

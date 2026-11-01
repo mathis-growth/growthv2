@@ -75,3 +75,14 @@
 .atd-agenda-item{border-top:1px solid var(--line);padding:8px 0}
 .atd-agenda-item p{font-size:12px;white-space:pre-wrap;margin:5px 0 7px}
 .atd-agenda-item small{color:var(--muted)}
+.atd-agenda-chat{align-self:flex-start;width:min(88%,560px);margin:8px 0;padding:12px 14px;border:1px dashed #d49b24;border-left:4px solid #d49b24;border-radius:12px;background:#fff9e9;color:var(--text)}
+.atd-agenda-chat header{display:flex;flex-wrap:wrap;gap:5px 12px;align-items:center;justify-content:space-between}
+.atd-agenda-chat header b{font-size:11px;color:#825b0a;letter-spacing:.02em}
+.atd-agenda-chat header small{font-size:11px;color:var(--muted)}
+.atd-agenda-chat p{margin:9px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.atd-agenda-chat .atd-erro{display:block;margin:5px 0}
+.atd-agenda-processando{border-color:#5082c5;background:#edf5ff}
+.atd-agenda-processando header b{color:#245b9c}
+.atd-agenda-erro,.atd-agenda-incerto{border-color:#c24b4b;background:#fff0f0}
+.atd-agenda-erro header b,.atd-agenda-incerto header b{color:#9b2828}
+.atd-agenda-cancelado{border-color:#aaa;background:#f3f3f3;opacity:.78}
