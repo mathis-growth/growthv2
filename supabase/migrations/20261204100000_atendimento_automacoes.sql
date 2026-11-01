@@ -50,4 +50,3 @@ update public.pacotes_acesso
 set telas=telas||array['atd-automacoes']
 where (telas @> array['atd-conversas'] or telas @> array['atd-canais'] or telas @> array['atd-templates'])
   and not telas @> array['atd-automacoes'];
-

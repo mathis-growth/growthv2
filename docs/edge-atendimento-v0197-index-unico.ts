@@ -980,4 +980,3 @@ Deno.serve(async req => {
     return json({erro:e instanceof ProviderError ? e.message : (e as Error).message?.slice(0,220) || 'Não foi possível concluir.'},400);
   }
 });
-

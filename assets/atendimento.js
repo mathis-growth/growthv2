@@ -798,4 +798,3 @@
   };
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.view==='atd-conversas')refreshCurrent(A.token);});
 })();
-
