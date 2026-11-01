@@ -1,3 +1,6 @@
+## v0.195
+- index.html: aplicado sobre a v0.194 (`aplica195.py`; novos `g195.js` e `g195.css`). `EST_BLOCOS.order_bump` e `.downsell`, `CV_GRUPOS`, `cvTipoArte`; barra do mapa com `#cvZp` e `#cvCheia` (`cvTelaCheia`); zoom pelo centro; `cvEdicaoRapida` (nome do bloco e ligação). Menu: grupo `Customer Success`, `MOD_GRUPO` com as duas chaves, ícone. Teste novo `tests/tela/t195_canvas_bump_downsell.py`.
+
 ## v0.194
 - index.html: aplicado sobre a v0.193 (`g194.css`, só CSS): `label`, `input`, `select`, `textarea`, `::placeholder`, desativados.
 

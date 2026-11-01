@@ -1,3 +1,6 @@
+## v0.195
+Sem mudança no banco. Tipos novos de bloco (texto livre em `estrategia_blocos.tipo`): `order_bump`, `downsell`.
+
 ## v0.194
 Sem mudança no banco.
 

@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 31/10/2026, versão 0.194 (campos de formulário).
+**Última atualização:** 01/11/2026, versão 0.195 (mapa da estratégia e Customer Success).
+
+**v0.195 · Mapa da estratégia e Customer Success.** Order bump e downsell no mapa, tela cheia, nome do bloco e rótulo da seta editados com dois cliques. O menu RevOps passa a se chamar Customer Success.
 
 **Visual v0.194 · Campos legíveis.** Em todos os formulários, o nome do campo em negrito, a caixa com borda visível e o exemplo em itálico.
 
@@ -46,7 +48,7 @@ Num sistema só, cada cliente tem o seu espaço isolado (um "workspace"). Ali es
 - **financeiro com contabilidade de verdade**: partidas dobradas, DRE e fluxo de caixa;
 - **campanhas e mídia paga**;
 - **conteúdo**, com o módulo Growth's Content;
-- **RevOps**: retenção, recompra e expansão;
+- **Customer Success** (antes chamado RevOps): retenção, recompra e expansão;
 - **Growth Model**, cenários e experimentos;
 - **pesquisas e formulários de qualificação**;
 - **projetos e equipe**;
@@ -335,7 +337,9 @@ As respostas levam o nome do atendente cadastrado no Growths. Nos grupos, cada m
 
 A primeira etapa está implementada e testada localmente na v0.175, aguardando publicação do banco e da função e configuração dos canais. Templates, disparos, automações e outros canais serão etapas seguintes.
 
-## 6. RevOps: retenção e expansão
+## 6. Customer Success: retenção e expansão
+
+O menu se chamava RevOps até a v0.195.
 
 - **Retenção & Expansão**, com filtros de período da primeira compra, produto, canal, campanha, origem e segmento:
   - **Coortes:** segunda compra em 30, 60, 90, 180 e 365 dias, receita acumulada por cliente, curva D0 a D365 e matriz de coortes. Coorte que não completou o prazo aparece como "indisponível", com o parcial à mostra.
@@ -346,7 +350,7 @@ A primeira etapa está implementada e testada localmente na v0.175, aguardando p
 - **Jornada do produto.** Cada produto pode ter as próprias etapas (uma mentoria não anda como um curso online), com versões: ao publicar uma versão nova, decide-se se quem já está dentro continua na antiga ou é transferido. Dá para salvar uma jornada como modelo e começar outras a partir dele.
 - **Marcos.** O que o aluno precisa atingir em cada jornada, com prazo e prova. Alguns a equipe confirma; outros o sistema percebe sozinho (comprou, assistiu à aula, respondeu que teve resultado, chegou à etapa, entrou no grupo, ou um evento que a plataforma do curso manda), com ou sem confirmação da equipe.
 - **Customer Growth.** A tela de acompanhamento dos alunos: evolução por produto, check-ins que voltam a cada tantos dias, alertas para o CS (parado, marco atrasado, check-in sem resposta, nota baixa), intervenções com o efeito de cada uma, oportunidades de retenção e expansão e os indicadores de evolução. Na ficha de cada pessoa, a jornada dela em cada produto.
-- **Dashboard de RevOps.** Ativos, churn, retenção, LTV e ascensão, com semáforo contra metas.
+- **Dashboard de Customer Success.** Ativos, churn, retenção, LTV e ascensão, com semáforo contra metas.
 
 ---
 
@@ -585,3 +589,6 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - Dashboard, Dashboard financeiro e Dashboard de Vendas divididos em seções com moldura e título;
   - pesquisa dentro da campanha: escolher qual e onde entra, código para a página de obrigado e leads na fila de envio;
   - campos de formulário com o nome em negrito e a caixa bem marcada.
+- **01/11:**
+  - mapa da estratégia com order bump e downsell, tela cheia e edição com dois cliques;
+  - menu RevOps passa a se chamar Customer Success.

@@ -1,3 +1,9 @@
+## v0.195 — Mapa da estratégia (order bump, downsell, tela cheia, edição rápida) e menu Customer Success (01/11/2026)
+- Mapa (Canvas) da estratégia: blocos **Order bump** e **Downsell** com métricas próprias; **Tela cheia** (Esc fecha); zoom pelo centro com o percentual; alça de tamanho maior.
+- **Dois cliques** no nome de um bloco (ex.: Condição) editam ali mesmo; dois cliques numa seta editam o rótulo e a condição.
+- Menu **RevOps → Customer Success** (por dentro o módulo continua o mesmo; permissões não mudam).
+- Teste: `tests/tela/t195_canvas_bump_downsell.py` (OK); t165 a t172 sem falhas. Sem mudança no banco.
+
 ## v0.194 — Campos de formulário mais legíveis (31/10/2026)
 - Nome do campo em negrito e na cor principal; caixa de preencher com borda visível e texto digitado na cor principal; exemplo dentro do campo em itálico e mais claro; campo desativado com fundo diferente. Vale para todos os formulários (menos o formulário público da pesquisa).
 - Só CSS. Sem mudança no banco.

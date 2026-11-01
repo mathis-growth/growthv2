@@ -1,5 +1,13 @@
 
 
+## v0.195 — Mapa da estratégia: order bump, downsell, tela cheia, edição rápida; menu Customer Success
+**Pedido da Rebecka (31/10)**: no mapa (Canvas) da estratégia faltavam downsell e order bump, era ruim aumentar a tela e ruim mudar o nome da condição. E o menu RevOps passa a se chamar Customer Success.
+Decisões:
+- **Order bump** e **Downsell** viram blocos com métricas próprias (manuais, da plataforma de venda): order bump = aceitos (principal), receita e taxa de aceite; downsell = vendas do downsell (principal), receita e quantos receberam a oferta. Na biblioteca ficam em Conversão, logo depois do Checkout; o Downsell aparece também em Pós-venda. Desenho: order bump como checkout, downsell como página de oferta. Não somam em clientes novos nem na receita do funil, para não contar duas vezes a venda principal.
+- **Tela cheia** no mapa (botão na barra; Esc fecha), zoom dos botões + e − a partir do centro da tela e o percentual do zoom à vista. A alça de tamanho do bloco ficou maior.
+- **Dois cliques no nome de um bloco** (Condição, Decisão, qualquer um) editam o nome ali mesmo: Enter salva, Esc cancela; as métricas do bloco são renomeadas junto, como no painel. **Dois cliques numa seta** abrem tipo, rótulo e condição da ligação.
+- **Menu**: "RevOps" → **"Customer Success"** (título da tela, metas e textos que citavam RevOps). Por dentro o módulo continua `revops`, então permissões, pacotes de acesso e telas liberadas não mudam.
+
 ## v0.194 — Campos de formulário mais legíveis
 **Pedido da Rebecka (31/10)**: o nome do campo e o que está dentro dele estavam iguais (mesma cor e peso), e a caixa de preencher não tinha uma borda visível. Exemplo: "Nome" e o exemplo dentro do campo, na nova campanha.
 Decisões (vale para todos os formulários do sistema, menos o formulário público da pesquisa, que tem a identidade visual do cliente):

@@ -1,3 +1,6 @@
+## v0.195
+Nada a rodar no banco (só tela). Os blocos novos usam `estrategia_blocos.tipo` = `order_bump` e `downsell` (o campo aceita qualquer texto).
+
 ## v0.194
 Nada a rodar no banco (só tela).
 
