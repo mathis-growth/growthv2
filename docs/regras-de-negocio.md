@@ -1,3 +1,8 @@
+## v0.224
+- **Pré-diagnóstico.** Um grupo só conta como recebido com arquivo não arquivado. Se todos os arquivos do grupo informam o período e não cobrem todos os meses de referência, fica "recebido em parte".
+- **O cliente disse que não tem:** vira lacuna para a reunião, não pedido na mensagem.
+- **O período de referência** é o do diagnóstico; sem ele, os últimos 6 meses completos.
+
 ## v0.223
 - O diagnóstico é da empresa. Ligar a um formulário é opcional e não tem volta.
 - **Evidência:**

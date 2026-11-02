@@ -1,3 +1,13 @@
+## v0.224 — Pré-diagnóstico antes da reunião (02/11/2026)
+- Aba Investigação:
+  - checklist (o que o cliente disse × o que chegou × meses cobertos);
+  - o que os dados mostram;
+  - mensagem do que falta (editável e guardada);
+  - o que conversar na reunião;
+  - marcar como revisado.
+- Progresso com a etapa "Pré-diagnóstico revisado".
+- Banco: `RODAR_v0.224_diagnostico_pre.sql`. Teste: `t224_diag_pre.py` (0 falhas).
+
 ## v0.223 — Diagnóstico Inteligente D1: diagnóstico da empresa e Central de Evidências (02/11/2026)
 - Lista de diagnósticos da empresa; diagnóstico sem formulário, com responsável, período, versão, status e progresso.
 - Cinco abas: Evidências, Investigação, Dados, Arquitetura, Validação e entrega.

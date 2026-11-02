@@ -97,7 +97,7 @@ r = J(f"diagnostico_arquivo_hash('{AC}', '{H(CA)}')")
 chk(not r['duplicado'], 'conferir o conteúdo de um arquivo do cliente (sem repetido)')
 P = J(f"diagnostico_progresso('{D2}')")
 et = {e['k']: e['ok'] for e in P['etapas']}
-chk(P['total'] == 7 and et['evidencias'] and et['formulario'] and not et['classificacao'] and not et['validado'], 'progresso: evidências e formulário feitos; classificação e validação pendentes', P)
+chk(P['total'] == 8 and et['evidencias'] and et['formulario'] and not et['classificacao'] and not et['validado'], 'progresso: evidências e formulário feitos; classificação e validação pendentes', P)
 LS = J(f"diagnosticos_lista('{WS}')")
 chk(any(x['id'] == D and x['responsavel'] == 'Ana T223' and x['arquivos'] == 1 for x in LS), 'lista dos diagnósticos com responsável e número de evidências', [(x['titulo'], x['arquivos']) for x in LS])
 # ---------- tela ----------
@@ -146,7 +146,7 @@ with sync_playwright() as pw:
     chk('Arquitetura de crescimento' in pg.inner_text('#main'), 'aba Arquitetura mostra a North Star da empresa (ou a falta dela)')
     t = front.vai(pg, 'gro-diag', f"S.dgSel = '{D2}';", 4000)
     front.aba(pg, 'inv', 500)
-    chk('Abrir a reunião do diagnóstico' in pg.inner_text('#main'), 'diagnóstico com formulário leva para a reunião')
+    chk('Ir para a reunião do diagnóstico' in pg.inner_text('#main'), 'diagnóstico com formulário leva para a reunião')
     pg.click('#dgReu'); pg.wait_for_timeout(4000)
     chk('Reunião do diagnóstico' in pg.inner_text('#main'), 'a reunião de antes continua abrindo', pg.inner_text('#main')[:200])
     t = front.vai(pg, 'gro-diag', "S.dgSel = null; S.dgSemDiag = null;", 3500)

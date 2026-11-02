@@ -1,5 +1,26 @@
 
 
+## v0.224 — Pré-diagnóstico na Investigação (antes da reunião)
+**Pedido da Rebecka (02/11):** "o cliente sobe os arquivos e, na investigação, já valida o que tem, o que não tem, faz um diagnóstico para depois ir para a reunião".
+
+**Decisões:**
+- A aba **Investigação** virou o **pré-diagnóstico**, que fica antes da reunião e tem quatro partes.
+- **Checklist:** para cada grupo de arquivos que o formulário pediu, cruza três coisas: o que o cliente disse (tenho / em parte / mando depois / não tenho), o que chegou nas evidências (do cliente ou da equipe, pela classificação) e quantos meses do período de referência os arquivos cobrem. Sem formulário, valem os grupos padrão e os últimos 6 meses completos.
+  - **Situações:**
+    - recebido;
+    - recebido em parte (não cobre o período todo);
+    - disse que tem, não mandou;
+    - não tem (lacuna, não pedido);
+    - falta;
+    - opcional (complementares).
+  - Os grupos de plataforma que o cliente não viu no formulário ficam de fora.
+- **O que os dados mostram:** os pontos fracos da leitura das planilhas e os números que acompanha e não acompanha.
+- **Pedir ao cliente:** uma mensagem montada com o que falta. A equipe edita, e a versão editada fica guardada; "Montar de novo" refaz com o que falta agora.
+- **Para conversar na reunião:** o que ele prometeu e não mandou, o que não tem e os números que não acompanha.
+- **"Marcar pré-diagnóstico como revisado"** registra a revisão no histórico e no progresso (etapa nova). A partir daí, o próximo passo é a reunião.
+- O número na aba Investigação soma o que falta, o que foi prometido e o que chegou em parte.
+- **Hipótese em aberto:** mostrar ao cliente, no próprio link, uma versão simples do checklist ("recebemos 4 de 7"). Por enquanto, fica só para a equipe, até a decisão da Rebecka.
+
 ## v0.223 — Diagnóstico Inteligente, D1: o diagnóstico da empresa e a Central de Evidências
 **Pedido da Rebecka (02/11):** especificação "Growth's Brain: Diagnóstico Inteligente de Growth". A auditoria (Fase 1) está em `docs/growths-brain-diagnostico-auditoria.md`.
 **Decisões dela (02/11):**

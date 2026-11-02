@@ -1,5 +1,36 @@
 
 
+## Pré-diagnóstico (v0.224)
+`t224_diag_pre.py`: 27 verificações, 0 falhas.
+- **Banco:**
+  - grupo condicional fora;
+  - parcial por meses;
+  - recebido pela classificação da equipe;
+  - recebido sem período;
+  - prometido;
+  - não tem;
+  - arquivado não conta;
+  - opcional;
+  - resumo;
+  - números;
+  - progresso;
+  - sem formulário.
+- **Tela:**
+  - número na aba;
+  - checklist;
+  - mensagem;
+  - o que conversar;
+  - aviso de período;
+  - mensagem guardada;
+  - revisado com histórico e progresso;
+  - montar de novo;
+  - revisar de novo;
+  - ir para a reunião;
+  - sem formulário;
+  - celular;
+  - sem erros.
+- **Regressão:** t223 e t222 sem falhas.
+
 ## Diagnóstico D1: evidências (v0.223)
 `t223_diag_evidencias.py`: 49 verificações, 0 falhas.
 - **Banco:**

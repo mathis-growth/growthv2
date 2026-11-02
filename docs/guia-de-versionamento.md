@@ -1,3 +1,6 @@
+## v0.224
+- `aplica224.py` + `g224.js` (`dgPreHtml`, `dgPreLiga`, `dgPreMensagem`); a aba Investigação do `dgPagina` usa o pré-diagnóstico. Migração `20261217100000_diagnostico_d2_pre.sql` = `RODAR_v0.224_diagnostico_pre.sql`. Teste novo `t224_diag_pre.py`; `t223` ajustado (8 etapas).
+
 ## v0.223
 - index.html montado sobre o HEAD do GitHub (v0.222) com `aplica223.py` e `g223.js`: `vGrowthDiag` (lista), `dgModalDados`, `dgPagina` (abas `dg`), `dgSugereClasse`, `dgTipoReal`, `dgHash`. Ajustes em `gxViewDiag` (volta para o diagnóstico, marca planilhas lidas) e na reunião (título; status com o rótulo novo).
 - Migração `20261216100000_diagnostico_d1_evidencias.sql` = `RODAR_v0.223_diagnostico_evidencias.sql`.

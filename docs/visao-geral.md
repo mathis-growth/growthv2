@@ -1,3 +1,6 @@
+## v0.224
+**Pré-diagnóstico.** Assim que o cliente sobe os arquivos, a aba Investigação mostra o que chegou, o que ele prometeu e não mandou, o que não tem e quantos meses cada arquivo cobre. Também traz a mensagem pronta para pedir o que falta e a lista do que conversar. A equipe marca como revisado e vai para a reunião.
+
 ## v0.223
 **Diagnóstico Inteligente, primeira parte.** O Diagnóstico Growth virou a casa do diagnóstico da empresa: lista, progresso por etapas e cinco abas. A Central de Evidências recebe os arquivos do cliente e da equipe, confere tipo, tamanho e repetidos, classifica (sugere pelo nome sem passar por cima da escolha manual), guarda o período e nunca apaga o original. A reunião e a leitura de planilhas de antes continuam, agora dentro do diagnóstico.
 

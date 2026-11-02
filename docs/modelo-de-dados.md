@@ -1,3 +1,10 @@
+## v0.224
+- Funções:
+  - `diagnostico_checklist(diag, hoje)`: checklist, resumo e números;
+  - `diag_grupo_arquivo(grupo, classe, nome)`: o grupo do checklist de cada arquivo.
+- `diagnostico_progresso` ganha a etapa `pre`.
+- `diagnosticos.arquitetura.pre` guarda `mensagem`, `revisado_em` e `revisado_por`.
+
 ## v0.223
 - `diagnosticos`:
   - `resposta_id` agora opcional;
