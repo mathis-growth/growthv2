@@ -1,3 +1,6 @@
+## v0.238
+**Do diagnóstico para o Growths do cliente.** Na aba Dados do diagnóstico, cada planilha tem "Importar": o Growths mostra as colunas do arquivo ao lado dos campos dele, você confere e importa para o Growths do cliente.
+
 ## v0.237
 **Anexar arquivos no diagnóstico.** No formulário do diagnóstico, cada grupo de arquivos volta a ter o botão "Enviar arquivo"; os arquivos chegam em Evidências.
 

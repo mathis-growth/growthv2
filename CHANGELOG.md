@@ -1,3 +1,8 @@
+## v0.238 — Diagnóstico: Dados logo depois de "O que falta" e importar para o Growths do cliente (02/11/2026)
+- Abas na ordem do trabalho: 1 Formulário, 2 Evidências, 3 O que falta, **4 Dados**, 5 O que já se sabe, 6 Métricas, 7 Preparar a reunião, 8 Arquitetura, 9 Validação e entrega.
+- Aba Dados: "Importar para o Growths do cliente". Escolha o Growths (vem sugerido o que nasceu do contrato) e clique em **Importar** na planilha: o Growths abre o de-para (colunas do arquivo ao lado dos campos do Growths) no Growths do cliente; é conferir e importar. "Voltar para o diagnóstico" volta para a aba Dados.
+- Sem mudança no banco. Teste: `t238_diag_importar.py` (0 falhas).
+
 ## v0.237 — O cliente volta a anexar os arquivos no formulário do diagnóstico (02/11/2026)
 - Causa: o editor de perguntas apagava a configuração que não mostra. Ao salvar a pergunta de arquivos, sumiram o anexar, a ligação com "Onde vende?", o período e as planilhas-modelo; o cliente só via "Tenho / Não tenho".
 - Editor corrigido: troca só o que mostra e mantém o resto. Nova caixa "o cliente anexa os arquivos aqui no formulário".

@@ -1,3 +1,6 @@
+## v0.238
+Sem mudança no banco.
+
 ## v0.237
 Rodar `supabase/RODAR_v0.237_anexos_diagnostico_mathisa.sql`. Só muda a configuração da pergunta de arquivos do "Diagnóstico Mathisa (pré-diagnóstico)"; pode rodar de novo.
 

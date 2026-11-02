@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.237 (anexar arquivos no diagnóstico).
+**Última atualização:** 02/11/2026, versão 0.238 (importar do diagnóstico para o Growths do cliente).
+
+**v0.238 · Do diagnóstico para o Growths do cliente.** A aba Dados vem logo depois de "O que falta", e cada planilha do cliente pode ser importada para o Growths dele, conferindo o de-para.
 
 **v0.237 · Anexar arquivos.** No formulário do diagnóstico, o cliente volta a anexar cada arquivo no próprio formulário, e editar uma pergunta não apaga mais essa configuração.
 
@@ -468,6 +470,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - **Como começa:** "Começar diagnóstico" já vem com o formulário padrão escolhido.
   - **Aba 1, Formulário:** o formulário padrão já vem escolhido e o botão **Gerar o link do formulário** cria o link do cliente. Depois mostra a situação (escolhido, enviado, cliente preenchendo, respondido), a mensagem pronta com o link do cliente e os botões de WhatsApp, e-mail e copiar o link.
   - **Link sempre à mão e reabrir** (v0.236): o link do cliente fica visível também depois que ele responde (serve para mandar os arquivos que faltam). "Reabrir para o cliente continuar" deixa ele mudar as respostas pelo mesmo link; a última resposta enviada é a que vale.
+  - **Dados e importar** (v0.238): a aba Dados vem logo depois de "O que falta". Cada planilha tem "Importar": o Growths abre o de-para (colunas do arquivo ao lado dos campos do Growths) já no Growths do cliente, você confere e importa leads, clientes, produtos, campanhas ou vendas, sem duplicar quem já existe.
   - **O que entra sozinho:** a resposta e os arquivos do cliente.
   - **O modelo "Diagnóstico Mathisa (pré-diagnóstico)":** pede o perfil, os números do jeito do cliente, o que ele acompanha e quais são os principais, o que espera e os arquivos por plataforma de venda.
   - **O que já se sabe** (aba 4, v0.229): tudo sobre o cliente, com a origem — o que ele declarou no formulário, o que as planilhas mostram (vendas válidas, faturamento, média por mês, ticket, compradores, produtos, leads, investimento) e o que a equipe anotou na reunião.
@@ -585,6 +588,8 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 Ângulos que nascem do sistema, para usar como ponto de partida:
 
+- "A planilha do cliente vira base em 5 minutos": o de-para que coloca as colunas dele ao lado dos campos do sistema.
+
 - "Ele quer implementação, mas fatura R$ 25 mil": por que a qualificação compara o que o lead pede com o que o negócio comporta.
 
 - "O cliente assina e o sistema dele já está pronto": o onboarding que começa no contrato, não numa planilha de pendências.
@@ -662,6 +667,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.238):** diagnóstico: Dados depois de "O que falta" e importar para o Growths do cliente.
 - **02/11 (v0.237):** diagnóstico: o cliente volta a anexar os arquivos; o editor de perguntas não apaga mais a configuração.
 - **02/11 (v0.236):** diagnóstico: link do cliente sempre visível e reabrir o formulário.
 - **02/11 (v0.235):** endereço próprio para o formulário embutido em outras páginas.

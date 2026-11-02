@@ -1,3 +1,11 @@
+## v0.238 — Importar os dados do diagnóstico
+**Pedido da Rebecka (02/11):** "Dados tem que vir depois do que falta… eu passo os dados, valido as informações, e o que der para importar tem que ter um botãozinho de importar para já ir para o banco de dados… abre os dois, compara o que é o que, e a gente já importa".
+**Decisões:**
+- Dados passa a ser a aba 4, logo depois de "O que falta".
+- **Para onde vão os dados (decisão minha, a confirmar):** para o Growths do cliente, nunca para o da Mathisa. Vem sugerido o Growths criado pelo contrato; sem Growths de cliente, a aba avisa para criar pelo contrato.
+- O "Importar" usa o mesmo importador de "Importar e validar dados" (identifica o tipo, de-para com exemplos, não duplica por e-mail ou telefone), já aberto no arquivo, no Growths do cliente.
+**Pendente:** registrar no diagnóstico o que foi importado (hoje fica só no Growths do cliente).
+
 ## v0.237 — O cliente não tinha onde anexar os arquivos
 **Relato da Rebecka (02/11):** "o diagnóstico continua sem ter como colocar um arquivo… quando ele fala 'tenho', tem que ter um lugar onde ele anexa e esses arquivos chegam para mim".
 **Causa (fato):** em produção, a pergunta 17 do "Diagnóstico Mathisa" estava só com o aviso e grupos g1…g9: sem `upload`, sem `onde`, sem período e sem planilhas-modelo. É o que o editor de perguntas grava quando alguém salva a pergunta: ele montava a configuração do zero com o que mostra.

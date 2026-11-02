@@ -1,3 +1,7 @@
+## v0.238
+- `aplica238.py`: ordem das abas `dg`; `dgImpHtml` e `dgImpLiga` (baixa do bucket `diagnostico`, `impParseArquivo`, troca para o Growths escolhido, fila `IMPQ`, `impAvalia` e `impAbre`); faixa `dgImpVoltaHtml` em `vImportar`.
+- Teste novo `t238_diag_importar.py`.
+
 ## v0.237
 - `aplica237.py`: no editor de perguntas (G1), `cfg` parte de `row.config` quando o tipo não muda; apaga só as chaves que o editor controla; `categorias` preserva `k`, `se` e `cols` por nome; campo novo `cfg_upload`.
 - `RODAR_v0.237_anexos_diagnostico_mathisa.sql` (dados de produção, gerado do modelo `PQ_DIAG_MATHISA`).
