@@ -341,9 +341,9 @@ async function handle(req: Request, b: any) {
   const { data: { user }, error } = await userDb.auth.getUser();
   if (error || !user) return json({ erro: 'Faça login novamente.' },401);
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
-  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo'];
+  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
-  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete'];
+  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete','canal-salvar'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
   const ws = b.workspace_id;
   if (['zernio-disponiveis','zernio-conectar'].includes(b.action)) {
@@ -354,6 +354,30 @@ async function handle(req: Request, b: any) {
   if (b.action === 'contato-resumo') {
     if(!/^[0-9a-f-]{36}$/i.test(String(b.conversa_id||'')))throw new Error('Conversa inválida.');
     return json(await resumoContato(ws,b.conversa_id));
+  }
+  if(b.action==='channel-avatar'){
+    const ch=await channel(String(b.canal_id||''),ws);
+    if(!ch.avatar_path||!ch.avatar_path.startsWith(ws+'/channel-avatars/'+ch.id+'/'))return json({url:null});
+    const signed=await q(db.storage.from('atendimento').createSignedUrl(ch.avatar_path,300));
+    return json({url:signed.signedUrl});
+  }
+  if(b.action==='canal-salvar'){
+    const ch=await channel(String(b.canal_id||''),ws);
+    const nome=String(b.nome||'').trim();
+    if(!nome||nome.length>100)throw Error('Informe um nome de até 100 caracteres.');
+    const patch:any={nome};
+    if(b.foto){
+      const mime=String(b.foto.mime||'').toLowerCase();
+      if(!['image/jpeg','image/png','image/webp'].includes(mime))throw Error('Use uma foto JPG, PNG ou WebP.');
+      const bytes=base64Bytes(String(b.foto.base64||''));
+      if(!bytes.length||bytes.length>512*1024)throw Error('A foto deve ter até 512 KB.');
+      const ext=mime==='image/png'?'png':mime==='image/webp'?'webp':'jpg';
+      const path=ws+'/channel-avatars/'+ch.id+'/profile.'+ext;
+      await q(db.storage.from('atendimento').upload(path,bytes,{contentType:mime,upsert:true}));
+      patch.avatar_path=path;
+    }
+    await q(db.from('atd_canais').update(patch).eq('id',ch.id).eq('workspace_id',ws));
+    return json({ok:true});
   }
   if(b.action==='agendamentos-list'){
     const cv=await q(db.from('atd_conversas').select('id').eq('id',b.conversa_id).eq('workspace_id',ws).single());
@@ -474,6 +498,47 @@ async function handle(req: Request, b: any) {
     if(b.action==='templates-list') {
       const result=await zernio(zp(),'/whatsapp/templates?accountId='+encodeURIComponent(accountId));
       return json({templates:result.templates||result.data?.templates||[]});
+    }
+    if(b.action==='templates-send'){
+      if(!ctx.editar)throw Error('Sem permissão para enviar mensagens.');
+      const cv=await q(db.from('atd_conversas').select('*').eq('id',b.conversa_id).eq('workspace_id',ws).single());
+      if(cv.canal_id!==ch.id||cv.grupo)throw Error('Selecione uma conversa individual deste canal.');
+      if(!ch.ativo||ch.status!=='conectado')throw Error('O WhatsApp oficial não está conectado.');
+      if(!ctx.nome)throw Error('Cadastre seu nome na equipe antes de enviar.');
+      const nome=String(b.template_name||''),idioma=String(b.idioma||''),params=Array.isArray(b.parametros)?b.parametros.map((x:any)=>String(x||'').trim()):[];
+      if(!/^[a-z][a-z0-9_]{0,511}$/.test(nome)||!/^([a-z]{2})(_[A-Z]{2})?$/.test(idioma)||params.length>10||params.some((x:string)=>!x||x.length>1024))throw Error('Template ou variáveis inválidos.');
+      const listed=await zernio(zp(),'/whatsapp/templates?accountId='+encodeURIComponent(ch.externo_id));
+      const templates=listed.templates||listed.data?.templates||[];
+      const tpl=templates.find((t:any)=>t.name===nome&&t.language===idioma&&t.status==='APPROVED');
+      if(!tpl)throw Error('O template não está aprovado ou não corresponde a esta conta e idioma.');
+      const parts=(tpl.components||[]).map((c:any)=>({type:String(c.type||'').toLowerCase(),format:String(c.format||'').toUpperCase(),text:String(c.text||'')}));
+      const header=parts.find((c:any)=>c.type==='header'),body=parts.find((c:any)=>c.type==='body');
+      if(header&&header.format&&header.format!=='TEXT')throw Error('Este modal aceita templates com cabeçalho de texto. Templates com mídia no cabeçalho ainda não são compatíveis.');
+      if(parts.some((c:any)=>c.type==='buttons'&&JSON.stringify(c).includes('{{')))throw Error('Este template possui botão com variável dinâmica, ainda não compatível com o envio pelo modal.');
+      const textParts=[header,body].filter((c:any)=>c?.text);
+      const markerGroups=textParts.map((c:any)=>[...c.text.matchAll(/\{\{(\d+)\}\}/g)].map((x:any)=>Number(x[1])));
+      const counts=markerGroups.map((markers:number[])=>Math.max(0,...markers));
+      if(markerGroups.some((markers:number[],i:number)=>markers.some(n=>n<1)||new Set(markers).size!==counts[i])||params.length!==counts.reduce((a:number,n:number)=>a+n,0))throw Error('Preencha as variáveis numeradas do cabeçalho e do corpo do template.');
+      let cursor=0;const sendComponents=textParts.map((part:any,i:number)=>({type:part===header?'header':'body',parameters:Array.from({length:counts[i]},()=>({type:'text',text:params[cursor++]}))})).filter((_c:any,i:number)=>counts[i]>0);
+      const bodyIndex=textParts.indexOf(body),bodyOffset=bodyIndex>0?counts.slice(0,bodyIndex).reduce((a:number,n:number)=>a+n,0):0,bodyCount=bodyIndex>=0?counts[bodyIndex]:0;
+      let preview=body?.text||'';for(let i=1;i<=bodyCount;i++)preview=preview.replaceAll('{{'+i+'}}',params[bodyOffset+i-1]||'');
+      const rid=String(b.requisicao_id||'');
+      if(!/^[0-9a-f-]{36}$/i.test(rid))throw Error('Identificador de envio inválido.');
+      const [pending]=await q(db.from('atd_mensagens').upsert({workspace_id:ws,conversa_id:cv.id,requisicao_id:rid,direcao:'enviada',texto:assinatura(ctx.nome,preview,ch.canal),autor_id:user.id,autor_nome:ctx.nome,status:'enviando'}, {onConflict:'workspace_id,requisicao_id',ignoreDuplicates:true}).select());
+      if(!pending)return json({ok:true,repetida:true});
+      let attempted=false;
+      try{
+        attempted=true;
+        const result=await zernio(zp(),'/inbox/conversations/'+encodeURIComponent(cv.externo_id)+'/messages','POST',{accountId:ch.externo_id,template:{elements:[{name:nome,language:idioma,components:sendComponents}]}});
+        const external=String(result.data?.messageId||result.messageId||'');
+        if(!external)throw new Error('A Zernio não confirmou o identificador da mensagem.');
+        await q(db.rpc('atd_confirmar_envio',{p_mensagem:pending.id,p_externo:external}));
+        return json({ok:true});
+      }catch(e){
+        const known=!attempted||(e instanceof ProviderError&&e.status<500&&e.status!==408);
+        await q(db.from('atd_mensagens').update({status:known?'falhou':'incerto',erro:known?(e as Error).message:'Envio sem confirmação. Confira o histórico do provedor antes de tentar novamente.'}).eq('id',pending.id));
+        return json({erro:known?(e as Error).message:'Envio sem confirmação. Atualize o histórico antes de reenviar.'},502);
+      }
     }
     if(b.action==='templates-create'||b.action==='templates-update') {
       const nome=String(b.nome||'').trim(),language=String(b.idioma||'pt_BR').trim(),category=String(b.categoria||'');
@@ -719,6 +784,13 @@ async function handle(req: Request, b: any) {
   if (b.action === 'desativar') { await q(db.from('atd_canais').update({ativo:false,status:'desativado'}).eq('id',ch.id)); return json({ok:true}); }
   if (b.action === 'webhook') { await setupWebhook(ch, ch.provedor === 'evolution' ? await secret(ws) : null); return json({ok:true}); }
   if (b.action === 'sincronizar') return json(await syncConversations(ch,b.cursor));
+  if (b.action === 'status' && ch.provedor === 'zernio') {
+    const raw=await zernio(zp(),'/accounts/'+encodeURIComponent(ch.externo_id)+'/health');
+    const health=raw.data||raw,live=health.platformConnection?.status;
+    const status=live==='connected'?'conectado':live==='disconnected'?'desconectado':ch.status;
+    if(status!==ch.status)await q(db.from('atd_canais').update({status}).eq('id',ch.id).eq('workspace_id',ws));
+    return json({status,phone_status:health.platformConnection?.phoneStatus||null,webhook_recebimento:health.platformConnection?.inboundWebhookSubscribed??null,verificado_em:health.platformConnection?.checkedAt||new Date().toISOString()});
+  }
   if (ch.provedor !== 'evolution') throw new Error('Operação exclusiva da Evolution.');
   const cfg = await secret(ws), inst = encodeURIComponent(ch.externo_id);
   if (b.action === 'conectar') { const r = await evolution(cfg,'/instance/connect/'+inst); return json({qrcode:r.base64 || r.qrcode?.base64 || null,pairingCode:r.pairingCode || null}); }
