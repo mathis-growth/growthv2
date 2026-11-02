@@ -1,3 +1,6 @@
+## v0.231
+**Clientes nascem do contrato.** Marque nos produtos quais incluem o Growths. Ao ativar o contrato, o Growths da empresa é criado com os dados do contrato e o responsável recebe o acesso. Em Pacotes de acesso, dá para inativar (some e perde o acesso), reativar e excluir clientes.
+
 ## v0.230
 **Formulário para clientes.** Em Pesquisas, você diz se quem responde é um lead ou um cliente. Se for cliente, a resposta atualiza o cadastro dele e coloca o cliente na etapa escolhida da jornada (por exemplo, Diagnóstico), sem entrar no Funil de leads.
 

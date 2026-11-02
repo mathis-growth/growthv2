@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.230 (formulário para clientes).
+**Última atualização:** 02/11/2026, versão 0.231 (clientes pelo contrato; inativar e excluir).
+
+**v0.231 · Clientes pelo contrato.** O Growths do cliente é criado sozinho quando o contrato é ativado, com os dados da empresa. Clientes podem ser inativados (somem e perdem o acesso), reativados e excluídos.
 
 **v0.230 · Formulário para clientes.** Em Pesquisas, dá para dizer que quem responde é um cliente: a resposta atualiza o cadastro e a etapa dele na jornada, sem passar pelo Funil de leads.
 
@@ -528,6 +530,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - **Uso da plataforma.** Que telas se usam, por quanto tempo, onde as pessoas desistem de formulários e onde aparecem erros, sem gravar dados de clientes.
 - **Equipe, funções e permissões.** Por módulo e por ação (ver, criar só lead, criar, editar, excluir), por função e por pessoa.
 - **Pacotes de acesso dos clientes.** No "Novo cliente", uma árvore com setinhas para marcar tela por tela o que o cliente acessa, com atalhos de pacote.
+- **Clientes nascem do contrato** (v0.231). O produto diz se inclui o Growths do cliente. Ao ativar o contrato, o Growths da empresa é criado com nome, razão social, CNPJ, pacote e o responsável convidado como administrador. Em Pacotes de acesso, cada cliente mostra a situação e o contrato de origem, com **Inativar** (some da lista de todos e perde o acesso, sem apagar nada), **Reativar** e **Excluir** (só depois de inativar, digitando o nome).
 - **Integrações e conexões.** Meta (anúncios e Instagram), Google (Ads e YouTube), formulários, Instagram pelo Zernio e WhatsApp e e-mail para avisos.
 
 ---
@@ -566,6 +569,8 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 ## 13. Ideias de conteúdo a partir do Growths (sugestões)
 
 Ângulos que nascem do sistema, para usar como ponto de partida:
+
+- "O cliente assina e o sistema dele já está pronto": o onboarding que começa no contrato, não numa planilha de pendências.
 
 - "Você disse que fatura R$ 80 mil, sua planilha diz R$ 62 mil": por que o diagnóstico compara o que o cliente declara com o que os dados mostram.
 - "Sua planilha de vendas tem 12% das datas ilegíveis": o que a auditoria encontra nas planilhas que todo cliente manda.
@@ -640,6 +645,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.231):** o Growths do cliente nasce do contrato; inativar, reativar e excluir clientes.
 - **02/11 (v0.230):** formulário para clientes (atualiza o cliente e a etapa na jornada, sem Funil de leads).
 - **02/11 (v0.229):** o que já se sabe do cliente (origem e conflitos entre fontes); excluir pergunta direto na lista.
 - **02/11 (v0.228):** diagnóstico de clientes da Mathisa começa pelo cliente e pelo formulário.

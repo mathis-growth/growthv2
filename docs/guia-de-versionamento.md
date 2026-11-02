@@ -1,3 +1,8 @@
+## v0.231
+- `aplica231.py`: `wsLista` e `wsRecarrega` (seletor sem inativos); situação e ações em `vPacotes` (`cliSit`, `cliLiga`); campos do produto (`ENT.produtos`); caixa "Growths do cliente" no `modalContrato`; `ctGwAviso` depois de ativar.
+- Migração `20261223100000_clientes_workspace_contrato.sql` = `RODAR_v0.231_clientes_contrato.sql`.
+- Teste novo `t231_clientes_workspace.py`.
+
 ## v0.230
 - `aplica230.py`: bloco "Quem responde" em `pqForm` (`captacao.destino` e `captacao.etapa_cliente_id`); o modelo do diagnóstico nasce para clientes; a criação a partir do modelo leva a captação; aviso no diagnóstico.
 - Migração `20261222100000_pesquisa_destino_cliente.sql` = `RODAR_v0.230_formulario_cliente.sql`.

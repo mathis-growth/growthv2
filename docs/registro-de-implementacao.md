@@ -1,3 +1,17 @@
+## Clientes: Growths pelo contrato; inativar e excluir (v0.231)
+`t231_clientes_workspace.py`: 34 verificações, 0 falhas.
+- **Banco:**
+  - ativar contrato com produto marcado cria o workspace (nome, tipo, pacote, empresa, convite de Administrador, histórico);
+  - contrato sem produto marcado não cria; "Tentar de novo" não duplica;
+  - inativar: a equipe interna continua entrando, quem é só do cliente perde o acesso; reativar devolve;
+  - excluir exige inativar e o nome certo; o workspace da equipe interna é protegido.
+- **Tela:**
+  - Pacotes de acesso: situação, Inativar, Reativar, Excluir; o seletor esconde o inativo;
+  - produto com "inclui o Growths";
+  - contrato: a caixa aparece com o produto, sugere o responsável, barra CNPJ errado e cria o Growths ao ativar;
+  - sem erros de JavaScript.
+- **Regressão:** t230, t228 e t197 sem falhas.
+
 
 
 ## Formulário para clientes (v0.230)

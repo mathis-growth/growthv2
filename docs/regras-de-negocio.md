@@ -1,3 +1,9 @@
+## v0.231
+- **Growths do cliente:** criado só ao ativar um contrato da Mathisa que tenha um produto marcado "inclui o Growths". Um contrato cria no máximo um.
+- **Inativo:** some do seletor de todos; quem é só do cliente perde o acesso; a equipe interna continua entrando. Os dados ficam.
+- **Excluir:** só inativo, só a equipe interna, digitando o nome. Apaga tudo do workspace; o contrato fica.
+- O workspace da equipe interna não pode ser inativado nem excluído.
+
 ## v0.230
 - **Formulário para clientes:** nunca coloca ninguém no Funil de leads. Quando o cliente responde, move só as matrículas ativas para a etapa escolhida, dentro da mesma jornada, e registra no histórico.
 - **Formulário de lead:** continua como sempre.

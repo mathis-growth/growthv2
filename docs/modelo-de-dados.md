@@ -1,3 +1,11 @@
+## v0.231
+- `workspaces`: `inativo_em`, `inativo_por`, `inativo_motivo`, `contrato_origem_id`.
+- `produtos`: `cria_workspace`, `workspace_modo` (starter ou completo), `workspace_pacote_id`.
+- `contratos`: `empresa_nome`, `empresa_razao_social`, `empresa_cnpj`, `responsavel_nome`, `responsavel_email`, `pacote_id`, `cliente_workspace_id`, `cliente_workspace_erro`.
+- Tabela nova `workspaces_excluidos` (só a equipe interna lê).
+- Funções novas: `workspace_inativar`, `workspace_reativar`, `workspace_excluir`, `contrato_criar_workspace`, `contrato_criar_workspace_manual`; gatilho `contratos_cria_workspace_t`.
+- Alteradas: `pertence_ao_workspace` (inativo só para a equipe interna) e `clientes_acesso` (situação e contrato de origem).
+
 ## v0.230
 - `pesquisas.captacao` ganhou `destino` (lead ou cliente) e `etapa_cliente_id`.
 - Funções novas:

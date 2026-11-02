@@ -1,3 +1,21 @@
+## v0.231 — Clientes: o Growths nasce do contrato; inativar, reativar e excluir
+**Pedido da Rebecka (02/11):** "inativar e desativar clientes para não aparecer no workspace. E excluir. Acabei de criar um ali que ele não está aparecendo, porque ele não tem contrato… quando ele assinar o contrato, já automaticamente criar esse workspace ali com os dados do contrato da empresa".
+
+**Decisões dela (02/11):**
+- **Inativar:** some da lista de todos e bloqueia o acesso; os dados ficam e dá para reativar.
+- **Excluir:** só depois de inativar, digitando o nome; sem volta.
+- **Criar sozinho:** só para alguns produtos (cada produto diz se inclui o Growths).
+- **Dados do contrato:** nome da empresa; CNPJ e razão social; responsável e e-mail de acesso; pacote de acesso.
+
+**Como ficou:**
+- "Assinar" = **Ativar o contrato**. A assinatura eletrônica não está integrada; quando estiver, a criação acontece no mesmo ponto.
+- Só contratos da Mathisa (workspace de agência) criam Growths.
+- Se der erro na criação, o contrato é ativado mesmo assim e mostra o erro com o botão "Tentar de novo".
+- A equipe interna continua vendo o cliente inativo (em Pacotes de acesso), para poder reativar ou excluir. Ele não aparece no seletor de ninguém.
+- Excluir apaga o workspace e tudo o que está nele. O contrato e o cadastro na Mathisa ficam.
+
+**Sobre o cliente criado à mão (pelo "+ Novo cliente"):** ele não tem pessoa nem contrato na Mathisa, por isso não aparece no diagnóstico. Caminho: cadastrar o cliente na Mathisa e fazer o contrato. Se o contrato for criar um Growths novo, inative e exclua o criado à mão. **Pendente:** ligar um Growths que já existe a um contrato (não foi feito).
+
 
 
 ## v0.230 — Formulário para clientes (não entra no Funil de leads)

@@ -1,3 +1,12 @@
+## v0.231 — Clientes: o Growths nasce do contrato; inativar, reativar e excluir (02/11/2026)
+- Produto com "Este produto inclui o Growths do cliente" (só na Mathisa), com tipo de acesso e pacote padrão.
+- Contrato com a caixa "Growths do cliente": nome da empresa, razão social, CNPJ, pacote, responsável e e-mail de acesso.
+- Ao ativar o contrato, o Growths da empresa é criado sozinho, com Configurações → Empresa preenchida e o responsável convidado como Administrador.
+- Configurações → Pacotes de acesso → Clientes: situação (ativo ou inativo) e de qual contrato veio; Inativar, Reativar e Excluir.
+- Inativo some do seletor de workspaces de todos e as pessoas do cliente perdem o acesso; a equipe interna continua vendo, para reativar.
+- Excluir só depois de inativar, digitando o nome; sem volta. Fica registrado quem excluiu e quando.
+- Banco: `RODAR_v0.231_clientes_contrato.sql`. Teste: `t231_clientes_workspace.py` (0 falhas).
+
 ## v0.230 — Formulário para clientes (02/11/2026)
 - Pesquisas → Formulário e aparência → "Quem responde": lead ou cliente, e a etapa do cliente depois de responder.
 - O cliente não entra no Funil de leads; a matrícula vai para a etapa escolhida; fica no histórico.
