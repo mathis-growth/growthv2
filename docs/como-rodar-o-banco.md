@@ -1,3 +1,6 @@
+## v0.227
+Rodar `supabase/RODAR_v0.227_diagnostico_planilhas.sql` depois do `RODAR_v0.225`. Ordem pendente: 0.221 → 0.223 → 0.224 → 0.225 → 0.227 (e os antigos 0.197 e 0.209).
+
 ## v0.226
 Nada para rodar no banco. Ordem pendente: 0.221 → 0.223 → 0.224 → 0.225 (e os antigos 0.197, 0.209).
 

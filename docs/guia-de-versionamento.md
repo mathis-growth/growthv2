@@ -1,3 +1,8 @@
+## v0.227
+- `aplica227.py` + `g227.js` (`audAba`, `audJunta`, `audArquivo`, `dgAutoAudita`, `dgAuditoriaHtml`, `dgAuditoriaLiga`). A aba Dados ganhou "Auditoria das planilhas" e "Leitura consolidada".
+- Migração `20261219100000_diagnostico_d4_planilhas.sql` = `RODAR_v0.227_diagnostico_planilhas.sql`.
+- Teste novo `t227_auditoria_planilhas.py`. O `front.py` serve a biblioteca de planilhas localmente; `t223` ajustado.
+
 ## v0.226
 - `aplica226.py`:
   - `dgPreHtml` em partes (marcador `<!--s-->`);

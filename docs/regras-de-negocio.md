@@ -1,3 +1,10 @@
+## v0.227
+- **Planilha das evidências:** é conferida uma vez por sessão ao abrir o diagnóstico; o original não muda.
+- **Dados pessoais:** nunca vão para a auditoria guardada.
+- **"Precisa de ajuste":** falta a coluna de data ou de valor, ou mais de 5% das datas são ilegíveis.
+- **Sinais:** vale o melhor entre a leitura consolidada e as auditorias. Item não coberto fica como "confirmar".
+- **Escolha manual** de tipo ou coluna: prevalece sobre a sugestão em toda conferência.
+
 ## v0.226
 - Página longa vira abas na mesma página. As abas do diagnóstico são numeradas porque seguem a ordem do trabalho.
 

@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.226 (Diagnóstico em sete abas).
+**Última atualização:** 02/11/2026, versão 0.227 (auditoria automática das planilhas).
+
+**v0.227 · Auditoria das planilhas.** Cada planilha do cliente é conferida sozinha ao abrir o diagnóstico: colunas, datas, valores, repetidas, meses sem dado. O resultado confirma o de-para das métricas.
 
 **v0.226 · Diagnóstico em sete abas.** As abas seguem a ordem do trabalho: Evidências, O que falta, Métricas, Dados, Preparar a reunião, Arquitetura e Validação e entrega.
 
@@ -449,7 +451,11 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
     - **o que não dá para calcular com o que veio,** e o que faltaria.
 
     A equipe marca como revisado e segue para a reunião do diagnóstico, que tem os números que decidem, o roteiro e as anotações.
-  - **Dados:** a leitura das planilhas (abaixo), guardada no diagnóstico.
+  - **Dados:** a **auditoria das planilhas** (desde a v0.227) e a leitura consolidada.
+    - **A auditoria:** cada planilha é conferida sozinha quando o diagnóstico abre. Mostra o tipo (vendas, leads, anúncios), o que é cada coluna (dá para trocar), o tipo de dado, quanto está preenchido, as linhas repetidas, as datas que não dá para ler, as datas no futuro ou fora do período, os meses sem dado e os valores negativos ou zerados.
+    - **O que mais aparece:** as linhas por mês, os produtos, os canais e o status. E-mails, CPFs, telefones e nomes nunca aparecem: viram •••.
+    - **Para o de-para:** a auditoria diz se as métricas podem mesmo ser calculadas.
+    - **A leitura consolidada** continua abaixo dela.
   - **Arquitetura:** a North Star da empresa e o caminho para o mapa de métricas.
   - **Validação e entrega:** a mudança de status e o histórico, com decisões e comentários que não se apagam.
 - **Leitura de planilhas.** Sobe planilhas bagunçadas do cliente e o sistema identifica vendas, leads e investimento. Classifica cada venda (nova, renovação, upgrade, repetida) e mostra o que falta em 13 itens, com a mensagem pronta para pedir ao cliente e a planilha padronizada para baixar.
@@ -543,6 +549,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 Ângulos que nascem do sistema, para usar como ponto de partida:
 
+- "Sua planilha de vendas tem 12% das datas ilegíveis": o que a auditoria encontra nas planilhas que todo cliente manda.
 - "Você acompanha CAC, mas consegue me mostrar a conta?": o de-para entre a métrica que o cliente usa e o dado que ele tem.
 - "Seus dados já calculam o LTV e você não olha": métricas escondidas nas planilhas que todo infoprodutor já tem.
 - "A reunião começa antes da reunião": o pré-diagnóstico que mostra o que o cliente prometeu e não mandou.
@@ -614,6 +621,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.227):** auditoria automática das planilhas do diagnóstico.
 - **02/11 (v0.226):** diagnóstico em sete abas; de-para em três abas.
 - **02/11 (v0.225):** de-para das métricas; formulário do diagnóstico só conclui com os arquivos resolvidos; métricas principais.
 - **02/11 (v0.224):** pré-diagnóstico na Investigação, antes da reunião.

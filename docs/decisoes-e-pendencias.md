@@ -1,5 +1,48 @@
 
 
+## v0.227 — Auditoria automática das planilhas (D4)
+**Pedido:** a etapa D4 do Diagnóstico Inteligente. A especificação chama esta parte de prioritária ("auditoria inteligente de planilhas"). A Rebecka disse "sim" à próxima etapa em 02/11.
+
+**Decisões:**
+- **Conferência automática.** Ao abrir o diagnóstico, cada planilha das evidências que ainda não foi conferida é lida na própria tela, uma vez por sessão. O arquivo original não muda. O resultado fica guardado no arquivo (`pesquisa_arquivos.auditoria`).
+- **O que a conferência mostra, por aba:**
+  - o tipo (vendas, leads, investimento em anúncios ou "não usar");
+  - a linha do cabeçalho;
+  - cada coluna com o que ela é (sugerido; a equipe troca), o tipo de dado e quanto está preenchida;
+  - três exemplos.
+- **Alertas que ela gera:**
+  - linhas repetidas;
+  - datas que não dá para ler, datas no futuro ou fora do período do diagnóstico;
+  - meses sem nenhuma linha;
+  - valores que não são número, negativos ou zerados;
+  - coluna de data ou de valor que não foi encontrada;
+  - menos da metade das vendas com identificação do comprador;
+  - leads sem origem.
+- **Qualidade:** boa, com alertas, ou precisa de ajuste (data ou valor ausente, ou mais de 5% das datas ilegíveis).
+- **Cobertura:** linhas por mês, produtos, canais e status, com os mais frequentes.
+- **Dados pessoais:** e-mails, CPFs, telefones e nomes nunca ficam guardados nem aparecem nos exemplos; são trocados por •••. É a minimização de dados pedida na especificação.
+- **Sinais para o de-para:**
+  - identificação do comprador;
+  - produto;
+  - status;
+  - origem das vendas;
+  - recompra (compradores com mais de uma compra);
+  - origem dos leads;
+  - qualificação;
+  - investimento;
+  - topo do funil.
+
+  Quando há leitura consolidada, vale o melhor sinal de cada fonte. Item que a leitura não cobriu fica como "confirmar".
+- **O que a conferência preenche sozinha:**
+  - o período do arquivo, quando não foi informado;
+  - a classificação, quando não existe (marcada como sugerida).
+
+  Uma planilha de leads da equipe passa a contar como "CRM e leads" no checklist.
+- **Troca manual:** a equipe muda o tipo de uma aba ou o que é uma coluna, e o Growths confere de novo. A escolha manual fica guardada e não é desfeita ao conferir de novo.
+- **Arquivo que não abre:** fica com "Não consegui ler" e o motivo, e com o botão "Conferir agora".
+- **A leitura consolidada de antes continua** na mesma aba, para o Growth Model e para separar venda nova, renovação e upgrade.
+- **Correção:** marcar a planilha como lida ao guardar a leitura consolidada (v0.223) falhava em silêncio. Corrigido.
+
 ## v0.226 — O diagnóstico em sete abas, na ordem do trabalho
 **Pedido da Rebecka (02/11):** "muito grandes; dá para dividir em mais etapas para ficarem uma do lado da outra e não ficar tão extenso". Ela também perguntou onde fica o diagnóstico.
 

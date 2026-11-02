@@ -1,5 +1,23 @@
 
 
+## Auditoria das planilhas (v0.227)
+`t227_auditoria_planilhas.py`: 22 verificações, 0 falhas.
+- **Conferência ao abrir:** 3 de 4 planilhas (uma corrompida); tipos reconhecidos.
+- **Alertas da planilha de vendas:**
+  - repetida;
+  - data ilegível;
+  - data futura;
+  - valor negativo;
+  - fora do período;
+  - mês sem linha.
+- **Qualidade e cobertura:** precisa de ajuste; recompra; colunas; e-mails e nomes não guardados.
+- **Sinais** de vendas, leads e anúncios.
+- **Preenchidos sozinhos:** período e classificação sugeridos.
+- **Arquivo que não abre:** erro com o motivo.
+- **Checklist e de-para:** leads da equipe contam no checklist; de-para confirmado (LTV, recompra) e com ressalva (CTR sem visitas).
+- **Tela:** cartão, troca manual de coluna e de tipo, escolha manual mantida, celular, sem erros de JavaScript.
+- **Regressão:** t225, t224 e t223 sem falhas.
+
 ## Diagnóstico em sete abas (v0.226)
 - t225: 27 verificações. Cobre as 7 abas, as três abas de métricas com as contagens, o conteúdo que troca e a pauta na aba Preparar a reunião.
 - t224: 30 verificações. Cobre o checklist na aba O que falta, o pedido e a pauta em Preparar a reunião, e a aba antiga guardada que abre em O que falta.

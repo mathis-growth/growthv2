@@ -1,3 +1,6 @@
+## v0.227
+**Auditoria automática das planilhas.** Ao abrir o diagnóstico, cada planilha do cliente é conferida sozinha: o que é cada coluna, datas e valores com problema, linhas repetidas, meses sem dado, produtos e canais. E-mails e nomes não ficam guardados. O resultado confirma o de-para das métricas.
+
 ## v0.226
 **Diagnóstico em sete abas, na ordem do trabalho:** Evidências, O que falta, Métricas, Dados, Preparar a reunião, Arquitetura e Validação e entrega. As métricas têm três abas próprias. Fica em Growth → Diagnóstico Growth.
 

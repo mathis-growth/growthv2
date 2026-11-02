@@ -1,3 +1,12 @@
+## v0.227
+- `pesquisa_arquivos.auditoria` (jsonb, até 300 KB):
+  - `abas[]`: tipo, linhas, colunas, mapa, amostra mascarada, alertas, meses, produtos, canais, status, cobertura, sinais e qualidade;
+  - `sinais`, `tipo`, `periodo`, `qualidade`, `manual` (escolhas da equipe) e `auditado_em`.
+- Funções:
+  - `diagnostico_arquivo_auditoria(id, aud, erro)`;
+  - `diag_grupo_arquivo(grupo, classe, nome, tipo)`.
+- `diagnostico_checklist` e `diagnostico_depara` passaram a usar a auditoria.
+
 ## v0.226
 - Sem mudança no banco.
 

@@ -1,3 +1,15 @@
+## v0.227 — Auditoria automática das planilhas (02/11/2026)
+- Conferência ao abrir o diagnóstico:
+  - tipo de cada aba;
+  - colunas (o que é, tipo de dado, quanto está preenchida);
+  - alertas de qualidade;
+  - linhas por mês, produtos, canais e status.
+- Dados pessoais mascarados. Período e classificação sugeridos.
+- Os sinais da auditoria confirmam o de-para das métricas.
+- Troca manual de tipo e de coluna, guardada.
+- Correção: marcar a planilha como lida depois da leitura consolidada.
+- Banco: `RODAR_v0.227_diagnostico_planilhas.sql`. Teste: `t227_auditoria_planilhas.py` (0 falhas).
+
 ## v0.226 — Diagnóstico em sete abas (02/11/2026)
 - Abas: Evidências · O que falta · Métricas · Dados · Preparar a reunião · Arquitetura · Validação e entrega.
 - O de-para ganhou três abas: Usa hoje, Dá para calcular e não olha, Não dá com o que veio.
