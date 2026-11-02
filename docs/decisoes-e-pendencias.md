@@ -1,5 +1,28 @@
 
 
+## v0.229 — "O que já se sabe" e excluir pergunta na lista
+**Pedidos da Rebecka (02/11):**
+- Seguir para a próxima etapa ("O que já se sabe").
+- "Tem a opção de eu excluir uma pergunta, não só editar".
+
+**Decisões:**
+- **Aba "4. O que já se sabe":** tudo o que se sabe do cliente, com a origem de cada informação.
+  - **Do formulário:** o que ele declarou, por assunto (negócio, números, como os clientes chegam e compram, o que espera).
+  - **Das planilhas:** o que a auditoria calculou (vendas válidas, faturamento, média por mês, ticket médio, compradores, produtos, leads e origem, investimento), com o arquivo de origem.
+  - **Da reunião:** o que a equipe anotou no roteiro.
+- **"As fontes batem?":** compara o que o cliente declarou com o que as planilhas mostram.
+  - Compara faturamento médio por mês (nos mesmos meses, quando o cliente informou mês a mês), ticket médio e investimento em anúncios por mês.
+  - Diferença de até 20% = batem. Acima disso, **o Growths não escolhe uma fonte sozinho**: a equipe decide entre "Vale o do cliente", "Vale o da planilha", "Corrigir" (com o valor certo) ou "Levar para a reunião".
+  - O que vai para a reunião entra na pauta da aba "Preparar a reunião", com os dois valores.
+- **Revisão de cada informação:** Confirmar, Corrigir (com o valor certo e uma observação) ou Rejeitar; "Desfazer" volta atrás.
+  - Fica guardada a revisão (`diagnostico_saber_revisoes`), não a lista: a lista se monta das fontes e está sempre atualizada.
+  - Spec §7, simplificada: os estados são declarado, calculado e anotado, mais confirmado, corrigido, rejeitado e levar para a reunião.
+- **Auditoria das planilhas, versão 2:** soma por mês só das vendas aprovadas (sem as linhas repetidas e sem datas no futuro) e do investimento. As planilhas já conferidas são conferidas de novo sozinhas.
+- **A conferência em segundo plano não apaga o que está sendo digitado:** se a pessoa estiver num campo, a tela só atualiza quando ela sai dele.
+- **Pesquisas, excluir pergunta direto na lista:** o botão "Excluir" fica ao lado de "Editar". O primeiro toque avisa quantas respostas serão apagadas e quais perguntas dependiam dela; o segundo confirma. As perguntas que só apareciam conforme a excluída passam a aparecer sempre.
+- **Correção:** apagar um diagnóstico com arquivos da equipe dava erro. O registro do arquivo continua, sem diagnóstico.
+- O diagnóstico agora tem **nove abas**.
+
 ## v0.228 — O diagnóstico começa pelo cliente e pelo formulário (só da Mathisa)
 **Pedido da Rebecka (02/11):**
 - A primeira etapa é o formulário, não as evidências.

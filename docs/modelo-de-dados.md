@@ -1,3 +1,10 @@
+## v0.229
+- `diagnostico_saber_revisoes` (nova): `chave`, `estado` (confirmado, corrigido, rejeitado ou reunião), `valor`, `nota`, `autor` e `atualizado_em`.
+  - Cada diagnóstico tem uma linha por informação (chave única).
+  - A chave diz de onde vem a informação: `f:` pergunta do formulário, `p:` cálculo da planilha, `r:` roteiro da reunião, `c:` conflito.
+- `pesquisa_arquivos_dono_ck` aceita arquivo da equipe sem diagnóstico.
+- A auditoria de cada aba ganhou `soma_mes`, `n_ok` e `total_ok`; a versão passou a 2.
+
 ## v0.228
 - Colunas novas:
   - `diagnosticos.contrato_id` e `diagnosticos.aluno_id`;

@@ -1,5 +1,20 @@
 
 
+## O que já se sabe (v0.229)
+`t229_saber.py`: 17 verificações, 0 falhas.
+- **Auditoria v2:** vendas aprovadas, sem a repetida e sem o reembolso.
+- **Conflitos:** faturamento 80 mil × 62 mil (23%); ticket não bate; investimento bate.
+- **Revisão:**
+  - contagem na aba;
+  - origem declarada;
+  - "Vale o da planilha";
+  - "Levar para a reunião" (entra na pauta; o resolvido não);
+  - confirmar, corrigir e desfazer.
+- **O que aparece:** dados das planilhas com o arquivo de origem; da reunião.
+- **Excluir pergunta:** aviso de respostas e de dependentes; exclusão; dependente liberada.
+- **Sem erros de JavaScript.**
+- **Regressão:** t228, t227, t225, t224, t223 e t197 sem falhas. Uma falha intermitente no t223 (a tela atualizava enquanto se digitava o período) foi corrigida e passou em três rodadas seguidas.
+
 ## Processo do diagnóstico de clientes (v0.228)
 `t228_diag_processo.py`: 23 verificações, 0 falhas.
 - **Banco:** clientes esperando (contrato e jornada), um padrão por empresa.

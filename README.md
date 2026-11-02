@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.229 | 02/11/2026 | O que já se sabe (origem e conflitos entre fontes); excluir pergunta na lista. | RODAR_v0.229 |
 | 0.228 | 02/11/2026 | Diagnóstico de clientes da Mathisa: começa pelo cliente e pelo formulário. | RODAR_v0.228 |
 | 0.227 | 02/11/2026 | Auditoria automática das planilhas do diagnóstico. | RODAR_v0.227 |
 | 0.226 | 02/11/2026 | Diagnóstico em sete abas, na ordem do trabalho; de-para em três abas. | nada |

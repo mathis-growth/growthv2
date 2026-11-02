@@ -1,3 +1,8 @@
+## v0.229
+- **Conflito:** diferença maior que 20% entre o que o cliente declarou e o que as planilhas mostram. O sistema nunca escolhe a fonte; a equipe decide ou leva para a reunião.
+- **Médias das planilhas:** só meses fechados dentro do período do diagnóstico. Só vendas aprovadas e com valor positivo, sem linhas repetidas.
+- **Excluir pergunta:** apaga as respostas dela; as perguntas que dependiam dela passam a aparecer sempre.
+
 ## v0.228
 - O processo de diagnóstico é só da agência (Mathisa).
 - Um diagnóstico aberto por cliente.

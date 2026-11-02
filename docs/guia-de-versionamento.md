@@ -1,3 +1,12 @@
+## v0.229
+- `aplica229.py` + `g229.js`: `dgSaberDados`, `dgSaberHtml`, `dgSaberLiga`, `dgSaberConversa`. Ajustes:
+  - auditoria v2 (`soma_mes`, `n_ok`, `total_ok`);
+  - nova conferência das planilhas na versão antiga;
+  - a tela não atualiza enquanto há um campo em edição;
+  - botão Excluir na lista de perguntas.
+- Migração `20261221100000_diagnostico_saber.sql` = `RODAR_v0.229_diagnostico_saber.sql`.
+- Teste novo `t229_saber.py`. t223 e t225 ajustados para as 9 abas.
+
 ## v0.228
 - `aplica228.py` + `g228.js`:
   - funções novas: `ehAgencia`, `dgEsperaHtml`, `dgNovoCliente`, `dgFormDados`, `dgFormHtml`, `dgFormLiga`;

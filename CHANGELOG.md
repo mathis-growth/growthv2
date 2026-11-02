@@ -1,3 +1,13 @@
+## v0.229 — O que já se sabe; excluir pergunta na lista (02/11/2026)
+- Aba "O que já se sabe": formulário, planilhas e reunião, com a origem; conflitos entre o declarado e as planilhas, com a decisão da equipe; confirmar, corrigir e rejeitar.
+- Conflitos levados para a reunião entram na pauta.
+- Auditoria das planilhas v2: soma por mês das vendas aprovadas e do investimento.
+- Pesquisas: excluir pergunta direto na lista, com aviso.
+- Correções:
+  - apagar um diagnóstico com arquivos da equipe dava erro;
+  - a tela atualizava enquanto se digitava.
+- Banco: `RODAR_v0.229_diagnostico_saber.sql`. Teste: `t229_saber.py` (0 falhas).
+
 ## v0.228 — Diagnóstico de clientes: começa pelo cliente e pelo formulário (02/11/2026)
 - Só no workspace da Mathisa. As outras empresas continuam com a leitura de planilhas.
 - Clientes esperando diagnóstico (jornada ou contrato ativo).

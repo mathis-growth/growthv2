@@ -1,3 +1,6 @@
+## v0.229
+**O que já se sabe.** Tudo sobre o cliente num lugar só, com a origem de cada informação: o que ele declarou, o que as planilhas mostram e o que a equipe anotou. Quando o que ele disse não bate com as planilhas (por exemplo, faturamento), o Growths mostra os dois valores e você decide ou leva para a reunião. Em Pesquisas, dá para excluir uma pergunta direto na lista.
+
 ## v0.228
 **Diagnóstico de clientes (só da Mathisa).** Os clientes com contrato aparecem esperando diagnóstico. A primeira etapa é o formulário: escolher (há um padrão), enviar por WhatsApp ou e-mail ou copiar o link, e ver se o cliente já preencheu. A resposta e os arquivos entram sozinhos. O modelo novo "Diagnóstico Mathisa (pré-diagnóstico)" traz o que o pré-diagnóstico precisa.
 

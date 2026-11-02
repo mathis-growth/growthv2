@@ -115,7 +115,7 @@ with sync_playwright() as pw:
     NOVO = one(f"insert into diagnosticos (workspace_id, titulo, responsavel_id, periodo_ini, periodo_fim) values ('{WS}', 'T223 Novo pela tela', '{EQ}', '2026-01-01', '2026-11-02') returning id")
     front.vai(pg, 'gro-diag', f"S.dgSel = '{NOVO}'; (S.abas = S.abas || {{}}).dg = 'evid';", 4000)
     t = pg.inner_text('#main')
-    chk('T223 Novo pela tela' in t and 'Central de Evidências' in t and pg.locator('[data-abas="dg"] [data-aba-k]').count() == 8, 'diagnóstico com as oito abas (a primeira é o formulário)', t[:300])
+    chk('T223 Novo pela tela' in t and 'Central de Evidências' in t and pg.locator('[data-abas="dg"] [data-aba-k]').count() == 9, 'diagnóstico com as nove abas (a primeira é o formulário)', t[:300])
     pg.set_input_files('#dgArqIn', SP + 't223_vendas.csv'); pg.wait_for_timeout(3500)
     t = pg.inner_text('#main')
     chk('t223_vendas.csv' in t and 'Equipe' in t and 'sugerida' in t and pg.locator('tr[data-dga] [data-dgcls]').first.input_value() == 'vendas', 'arquivo enviado pela equipe aparece com a classificação sugerida pelo nome', t[:500])

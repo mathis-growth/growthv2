@@ -86,7 +86,7 @@ with sync_playwright() as pw:
     front.vai(pg, 'gro-diag', f"S.dgSel = '{D}'; (S.abas = S.abas || {{}}).dg = 'met'; S.abas.dgm = 'usa';", 5000)
     t = pg.inner_text('#main')
     ab = pg.inner_text('.dg-dp [data-abas="dgm"]').replace('\n', ' ')
-    chk('De-para das métricas' in t and pg.locator('[data-abas="dg"] [data-aba-k]').count() == 8 and 'Usa hoje 2' in ab and 'Dá para calcular e não olha' in ab and 'Não dá com o que veio' in ab, 'aba Métricas: o de-para em três abas com as contagens', ab)
+    chk('De-para das métricas' in t and pg.locator('[data-abas="dg"] [data-aba-k]').count() == 9 and 'Usa hoje 2' in ab and 'Dá para calcular e não olha' in ab and 'Não dá com o que veio' in ab, 'aba Métricas: o de-para em três abas com as contagens', ab)
     chk(pg.inner_text('[data-abas="dg"] [data-aba-k="met"]').strip().endswith('1'), 'a aba Métricas mostra quantas métricas usadas falta entender como calcula (1)')
     chk('Receita' in t and 'Taxa de recompra' not in t, 'na aba "Usa hoje" só aparece o que ele usa')
     front.aba(pg, 'op', 500); t = pg.inner_text('#main')
