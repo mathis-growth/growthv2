@@ -71,3 +71,22 @@ Depois desse fluxo validado, a mesma estrutura recebe leads, CAC, retenção e c
 2. **Metas espalhadas:** o registro central **absorve** as metas existentes (migra para um lugar só e as telas passam a ler de lá) ou **referencia** cada uma onde está (menos mudança agora, mais complexidade depois)? **Recomendação:** absorver aos poucos, uma métrica por vez.
 3. **Objetivos estratégicos:** trazer os objetivos da tela antiga para dentro do Planejamento anual?
 4. **NSM "Receita bruta":** deixar como está até o Diagnóstico propor uma NSM, ou marcar como "provisória" já agora?
+
+## Próximos passos, em ordem de prioridade (01/11/2026, depois da v0.221)
+
+Critério: primeiro o que deixa os números confiáveis, depois o que vira valor para o cliente, por fim o que depende de mais histórico.
+
+| # | O que | Por que agora | Esforço |
+|---|---|---|---|
+| 1 | **Rodar o RODAR_v0.221, preencher as metas das áreas e validar v0.212–v0.221** (Rebecka) | Sem metas preenchidas, o Cockpit mostra "sem meta" e os riscos não aparecem | da Rebecka |
+| 2 | **Corrigir o viés da projeção** com a curva típica do mês (em vez da linha reta) | **Fato**: no teste, a projeção de faturamento do dia 15 errou 70%, sempre para baixo; mês de lançamento concentra as vendas no fim | médio |
+| 3 | **Relatório do período** (metas, trajetória, riscos, composição e AARRR numa página para imprimir ou enviar ao cliente) | Transforma o Brain em entrega da Mathisa para o cliente | médio |
+| 4 | **Faixa provável também para leads, vendas, campanhas e produtos** | Estende o item 2 para todas as metas | pequeno |
+| 5 | **Ligar o Diagnóstico à NSM e à árvore** (publicação versionada e revisão de impacto no planejamento) | A NSM de todos ainda é "provisória: Receita bruta"; o Diagnóstico é quem deve propor a definitiva | grande |
+| 6 | **Árvore de métricas com o tipo de relação** (matemática, operacional, hipotética, empírica) | Pedido do documento (§4); hoje a árvore não diz o que é fórmula e o que é hipótese | médio |
+| 7 | **Metas das campanhas perpétuas e por fase e canal**; **histórico importado ligado aos produtos** | Hoje ficam de fora do registro e da meta por produto | médio |
+| 8 | **Cenários melhores**: médias por campanha e produto, retorno decrescente da verba, cenário aprovado alimentando o plano e virando experimento | Simulação mais realista | médio |
+| 9 | **Investigar a partir dos cartões dos dashboards**, comparar dois segmentos, coortes | Hoje só a partir do Cockpit | médio |
+| 10 | **Riscos que faltam**: dependência de um produto ou canal, riscos combinados entre áreas, risco por cliente no CS, aviso ao responsável quando aparece risco alto | Completa o §11 | médio |
+| 11 | **AARRR completo**: registrar indicações, tempo entre etapas, metas de ativação e recomendação | Completa o §18 | médio |
+| 12 | **Probabilidade de bater a meta** | Só com ao menos 6 meses de fotos (a partir de mai/2027); antes disso seria inventar | depende do tempo |
