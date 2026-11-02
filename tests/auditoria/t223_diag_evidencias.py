@@ -23,6 +23,7 @@ def chk(c, msg, extra=''):
 CL = "select set_config('request.jwt.claims', '{\"sub\":\"00000000-0000-0000-0000-00000000a0a0\"}', true), "
 J = lambda q: json.loads(sql(CL + q).split('|', 1)[1])
 F = lambda q: sql(CL + q).split('|', 1)[1]
+one = lambda q: sql(q).split('\n')[0]
 H = lambda t: hashlib.sha256(t).hexdigest()
 def limpa():
     sql(f"delete from pesquisa_arquivos where workspace_id = '{WS}' and (origem = 'equipe' or nome like 't223%')")
@@ -33,6 +34,7 @@ def limpa():
     sql(f"delete from equipe where workspace_id = '{WS}' and nome = 'Ana T223'")
     sql("delete from storage.objects where bucket_id = 'diagnostico' and name like '%/diag/%'")
 limpa()
+AG0 = sql(f"select agencia from workspaces where id = '{WS}'"); sql(f"update workspaces set agencia = true where id = '{WS}'")  # v0.228: o diagnóstico de clientes é só da agência
 EQ = sql(f"insert into equipe (workspace_id, nome, email) values ('{WS}', 'Ana T223', 'ana.t223@exemplo.com') returning id").split('\n')[0]
 D = sql(f"insert into diagnosticos (workspace_id, titulo, responsavel_id, periodo_ini, periodo_fim) values ('{WS}', 'T223 Diagnóstico', '{EQ}', '2026-01-01', '2026-10-31') returning id").split('\n')[0]
 chk(sql(f"select status || ':' || coalesce(resposta_id::text, 'sem') from diagnosticos where id = '{D}'") == 'rascunho:sem', 'diagnóstico nasce sem formulário (só a empresa), em coleta')
@@ -97,7 +99,7 @@ r = J(f"diagnostico_arquivo_hash('{AC}', '{H(CA)}')")
 chk(not r['duplicado'], 'conferir o conteúdo de um arquivo do cliente (sem repetido)')
 P = J(f"diagnostico_progresso('{D2}')")
 et = {e['k']: e['ok'] for e in P['etapas']}
-chk(P['total'] == 8 and et['evidencias'] and et['formulario'] and not et['classificacao'] and not et['validado'], 'progresso: evidências e formulário feitos; classificação e validação pendentes', P)
+chk(P['total'] == 9 and et['evidencias'] and et['formulario'] and not et['classificacao'] and not et['validado'], 'progresso: evidências e formulário feitos; classificação e validação pendentes', P)
 LS = J(f"diagnosticos_lista('{WS}')")
 chk(any(x['id'] == D and x['responsavel'] == 'Ana T223' and x['arquivos'] == 1 for x in LS), 'lista dos diagnósticos com responsável e número de evidências', [(x['titulo'], x['arquivos']) for x in LS])
 # ---------- tela ----------
@@ -110,11 +112,10 @@ with sync_playwright() as pw:
     t = front.vai(pg, 'gro-diag', "S.dgSel = null; S.dgSemDiag = null; S.gxDiag = null;", 4000)
     chk('T223 Diagnóstico' in t and 'Ana T223' in t and 'Novo diagnóstico' in t and 'Em revisão' in t, 'lista mostra os diagnósticos da empresa com status e responsável', t[:400])
     pg.screenshot(path=SHOT + '1_lista.png', full_page=True)
-    pg.click('#dgNovo'); pg.wait_for_timeout(1200)
-    pg.fill('.modal [name=titulo]', 'T223 Novo pela tela'); pg.select_option('.modal [name=responsavel_id]', label='Ana T223')
-    pg.click('.modal .acts .pri'); pg.wait_for_timeout(3500)
+    NOVO = one(f"insert into diagnosticos (workspace_id, titulo, responsavel_id, periodo_ini, periodo_fim) values ('{WS}', 'T223 Novo pela tela', '{EQ}', '2026-01-01', '2026-11-02') returning id")
+    front.vai(pg, 'gro-diag', f"S.dgSel = '{NOVO}'; (S.abas = S.abas || {{}}).dg = 'evid';", 4000)
     t = pg.inner_text('#main')
-    chk('T223 Novo pela tela' in t and 'Central de Evidências' in t and pg.locator('[data-abas="dg"] [data-aba-k]').count() == 7, 'novo diagnóstico abre na aba Evidências, com as sete abas', t[:300])
+    chk('T223 Novo pela tela' in t and 'Central de Evidências' in t and pg.locator('[data-abas="dg"] [data-aba-k]').count() == 8, 'diagnóstico com as oito abas (a primeira é o formulário)', t[:300])
     pg.set_input_files('#dgArqIn', SP + 't223_vendas.csv'); pg.wait_for_timeout(3500)
     t = pg.inner_text('#main')
     chk('t223_vendas.csv' in t and 'Equipe' in t and 'sugerida' in t and pg.locator('tr[data-dga] [data-dgcls]').first.input_value() == 'vendas', 'arquivo enviado pela equipe aparece com a classificação sugerida pelo nome', t[:500])
@@ -164,4 +165,5 @@ with sync_playwright() as pw:
     errs += pg.errs; ctx.close(); b.close()
 chk(not errs, 'sem erros de JavaScript', errs)
 limpa()
+sql(f"update workspaces set agencia = {'true' if AG0 == 't' else 'false'} where id = '{WS}'")
 print('\n%d falha(s)' % len(falhas)); sys.exit(1 if falhas else 0)

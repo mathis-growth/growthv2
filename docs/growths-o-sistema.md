@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.227 (auditoria automática das planilhas).
+**Última atualização:** 02/11/2026, versão 0.228 (diagnóstico de clientes: começa pelo formulário).
+
+**v0.228 · Diagnóstico de clientes.** Só na Mathisa. O cliente com contrato aparece esperando diagnóstico. O primeiro passo é mandar o formulário padrão por WhatsApp, por e-mail ou pelo link, e a resposta entra sozinha.
 
 **v0.227 · Auditoria das planilhas.** Cada planilha do cliente é conferida sozinha ao abrir o diagnóstico: colunas, datas, valores, repetidas, meses sem dado. O resultado confirma o de-para das métricas.
 
@@ -443,6 +445,14 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 8. Growth: modelo, cenários e experimentos
 
+- **Diagnóstico de clientes (só da Mathisa, desde a v0.228).**
+  - **Quem aparece esperando diagnóstico:** os clientes com contrato ativo, ou que estão na etapa "Diagnóstico" da jornada.
+  - **Como começa:** "Começar diagnóstico" já vem com o formulário padrão escolhido.
+  - **Aba 1, Formulário:** mostra a situação (escolhido, enviado, cliente preenchendo, respondido), a mensagem pronta com o link do cliente e os botões de WhatsApp, e-mail e copiar o link.
+  - **O que entra sozinho:** a resposta e os arquivos do cliente.
+  - **O modelo "Diagnóstico Mathisa (pré-diagnóstico)":** pede o perfil, os números do jeito do cliente, o que ele acompanha e quais são os principais, o que espera e os arquivos por plataforma de venda.
+  - **Nas outras empresas,** Diagnóstico Growth continua sendo a leitura de planilhas que monta o Growth Model.
+
 - **Diagnóstico Growth: o diagnóstico da empresa** (desde a v0.223). Uma lista de diagnósticos, cada um com responsável, período de referência, versão, status (em coleta, em análise, em revisão, validado, arquivado) e o progresso por etapas. Dentro, sete abas na ordem do trabalho (desde a v0.226). A Investigação de antes virou três delas: **O que falta** (o checklist), **Métricas** (o de-para, com três abas próprias) e **Preparar a reunião** (o pedido ao cliente e a pauta). Antes da divisão, eram cinco:
   - **Evidências:** tudo o que serve de prova, mandado pelo cliente (pelo link do formulário) ou pela equipe. O Growths confere o tipo real do arquivo, o tamanho e o conteúdo: o mesmo arquivo não entra duas vezes, e o mesmo nome com conteúdo novo vira versão 2. Cada arquivo tem classificação (14 tipos, sugerida pelo nome sem nunca trocar a escolha manual), período que representa, marca de dados pessoais e status de leitura. O original nunca é apagado: arquiva-se.
   - **Investigação: o pré-diagnóstico, antes da reunião** (v0.224). Um checklist cruza o que o cliente disse no formulário com o que chegou e com os meses que os arquivos cobrem. As situações são: recebido, recebido em parte, disse que tem e não mandou, não tem, falta. Embaixo vêm o que os dados mostram, a mensagem pronta para pedir o que falta (editável) e a lista do que conversar. Junto vem o **de-para das métricas** (v0.225):
@@ -621,6 +631,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.228):** diagnóstico de clientes da Mathisa começa pelo cliente e pelo formulário.
 - **02/11 (v0.227):** auditoria automática das planilhas do diagnóstico.
 - **02/11 (v0.226):** diagnóstico em sete abas; de-para em três abas.
 - **02/11 (v0.225):** de-para das métricas; formulário do diagnóstico só conclui com os arquivos resolvidos; métricas principais.

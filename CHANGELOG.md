@@ -1,3 +1,11 @@
+## v0.228 — Diagnóstico de clientes: começa pelo cliente e pelo formulário (02/11/2026)
+- Só no workspace da Mathisa. As outras empresas continuam com a leitura de planilhas.
+- Clientes esperando diagnóstico (jornada ou contrato ativo).
+- Começar diagnóstico com o formulário padrão.
+- Aba 1, Formulário: enviar por WhatsApp, por e-mail ou copiando o link; situação do envio; a resposta entra sozinha.
+- Modelo "Diagnóstico Mathisa (pré-diagnóstico)". Um formulário padrão por empresa.
+- Banco: `RODAR_v0.228_diagnostico_processo.sql`. Teste: `t228_diag_processo.py` (0 falhas).
+
 ## v0.227 — Auditoria automática das planilhas (02/11/2026)
 - Conferência ao abrir o diagnóstico:
   - tipo de cada aba;

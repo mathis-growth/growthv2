@@ -1,3 +1,6 @@
+## v0.228
+**Diagnóstico de clientes (só da Mathisa).** Os clientes com contrato aparecem esperando diagnóstico. A primeira etapa é o formulário: escolher (há um padrão), enviar por WhatsApp ou e-mail ou copiar o link, e ver se o cliente já preencheu. A resposta e os arquivos entram sozinhos. O modelo novo "Diagnóstico Mathisa (pré-diagnóstico)" traz o que o pré-diagnóstico precisa.
+
 ## v0.227
 **Auditoria automática das planilhas.** Ao abrir o diagnóstico, cada planilha do cliente é conferida sozinha: o que é cada coluna, datas e valores com problema, linhas repetidas, meses sem dado, produtos e canais. E-mails e nomes não ficam guardados. O resultado confirma o de-para das métricas.
 

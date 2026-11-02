@@ -1,3 +1,16 @@
+## v0.228
+- Colunas novas:
+  - `diagnosticos.contrato_id` e `diagnosticos.aluno_id`;
+  - `pesquisas.padrao_diagnostico` (um por empresa).
+- `diagnosticos_coerente` aceita o envio (formulário escolhido) antes da resposta, do mesmo cliente.
+- Gatilho `pesquisa_respostas_diag`: a resposta entra no diagnóstico do envio.
+- Funções novas:
+  - `diagnostico_formulario(diag, pesquisa)`;
+  - `diagnostico_formulario_enviado(diag, canal)`;
+  - `diagnostico_formulario_padrao(pesquisa)`;
+  - `diagnosticos_clientes(ws)`.
+- `diagnostico_progresso` passa a ter 9 etapas.
+
 ## v0.227
 - `pesquisa_arquivos.auditoria` (jsonb, até 300 KB):
   - `abas[]`: tipo, linhas, colunas, mapa, amostra mascarada, alertas, meses, produtos, canais, status, cobertura, sinais e qualidade;

@@ -1,3 +1,8 @@
+## v0.228
+Rodar `supabase/RODAR_v0.228_diagnostico_processo.sql` depois do `RODAR_v0.227`.
+Ordem pendente: 0.221 → 0.223 → 0.224 → 0.225 → 0.227 → 0.228 (e os antigos 0.197 e 0.209).
+Depois, em Pesquisas, crie o formulário a partir do modelo "Diagnóstico Mathisa (pré-diagnóstico)", ative e marque como padrão (na aba Formulário do diagnóstico).
+
 ## v0.227
 Rodar `supabase/RODAR_v0.227_diagnostico_planilhas.sql` depois do `RODAR_v0.225`. Ordem pendente: 0.221 → 0.223 → 0.224 → 0.225 → 0.227 (e os antigos 0.197 e 0.209).
 

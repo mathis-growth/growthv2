@@ -1,3 +1,11 @@
+## v0.228
+- `aplica228.py` + `g228.js`:
+  - funções novas: `ehAgencia`, `dgEsperaHtml`, `dgNovoCliente`, `dgFormDados`, `dgFormHtml`, `dgFormLiga`;
+  - `tpl228.js`: o modelo `diagnostico_mathisa`.
+- `vGrowthDiag` só abre o processo na agência; nas outras empresas, abre a leitura de planilhas.
+- Migração `20261220100000_diagnostico_processo_cliente.sql` = `RODAR_v0.228_diagnostico_processo.sql`.
+- Teste novo `t228_diag_processo.py`. Os testes t223, t224, t225 e t227 ligam a agência no workspace de teste e devolvem no fim.
+
 ## v0.227
 - `aplica227.py` + `g227.js` (`audAba`, `audJunta`, `audArquivo`, `dgAutoAudita`, `dgAuditoriaHtml`, `dgAuditoriaLiga`). A aba Dados ganhou "Auditoria das planilhas" e "Leitura consolidada".
 - Migração `20261219100000_diagnostico_d4_planilhas.sql` = `RODAR_v0.227_diagnostico_planilhas.sql`.

@@ -27,6 +27,7 @@ def limpa():
         sql(f"delete from pesquisa_resposta_itens where resposta_id in (select id from pesquisa_respostas where pesquisa_id in (select id from pesquisas where workspace_id = '{WS}' and nome = 'T224 diag'))")
     sql(f"delete from pesquisas where workspace_id = '{WS}' and nome = 'T224 diag'")
 limpa()
+AG0 = sql(f"select agencia from workspaces where id = '{WS}'"); sql(f"update workspaces set agencia = true where id = '{WS}'")  # v0.228: o diagnóstico de clientes é só da agência
 CATS = json.dumps({'categorias': [{'k': 'vendas_hotmart', 'l': 'Vendas da Hotmart', 'se': ['Hotmart']}, {'k': 'vendas', 'l': 'Vendas e pedidos'}, {'k': 'crm', 'l': 'CRM e leads'},
   {'k': 'alunos', 'l': 'Alunos e clientes'}, {'k': 'marketing', 'l': 'Marketing e aquisição'}, {'k': 'financeiro', 'l': 'Financeiro'}, {'k': 'produtos', 'l': 'Produtos e ofertas'},
   {'k': 'complementares', 'l': 'Arquivos complementares'}], 'upload': True})
@@ -58,7 +59,7 @@ chk(st['complementares']['status'] == 'opcional', 'complementares sem nada = opc
 chk(CK['resumo'] == {'recebidos': 2, 'parciais': 1, 'prometidos': 1, 'nao_tem': 1, 'faltam': 1}, 'resumo do checklist', CK['resumo'])
 chk([x['codigo'] for x in CK['numeros']['acompanha']] == ['faturamento'] and [x['codigo'] for x in CK['numeros']['nao_acompanha']] == ['cac'], 'números: acompanha faturamento, não acompanha CAC')
 P = J(f"diagnostico_progresso('{D}')"); et = {e['k']: e['ok'] for e in P['etapas']}
-chk(P['total'] == 8 and et['pre'] is False, 'progresso ganha a etapa do pré-diagnóstico (ainda pendente)')
+chk(P['total'] == 9 and et['pre'] is False, 'progresso ganha a etapa do pré-diagnóstico (ainda pendente)')
 D0 = one(f"insert into diagnosticos (workspace_id, titulo) values ('{WS}', 'T224 Sem formulário') returning id")
 C0 = J(f"diagnostico_checklist('{D0}', '2026-11-02')")
 chk(not C0['formulario'] and len(C0['itens']) == 7 and C0['ref_ini'] == '2026-05-01' and C0['ref_fim'] == '2026-10-31', 'sem formulário: grupos padrão e os últimos 6 meses completos', (C0['ref_ini'], C0['ref_fim'], len(C0['itens'])))
@@ -104,4 +105,5 @@ with sync_playwright() as pw:
     errs += pg.errs; ctx.close(); b.close()
 chk(not errs, 'sem erros de JavaScript', errs)
 limpa()
+sql(f"update workspaces set agencia = {'true' if AG0 == 't' else 'false'} where id = '{WS}'")
 print('\n%d falha(s)' % len(falhas)); sys.exit(1 if falhas else 0)

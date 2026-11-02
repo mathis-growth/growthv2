@@ -1,3 +1,11 @@
+## v0.228
+- O processo de diagnóstico é só da agência (Mathisa).
+- Um diagnóstico aberto por cliente.
+- Um formulário padrão por empresa.
+- O formulário só troca antes da resposta.
+- A resposta entra sozinha no diagnóstico do envio.
+- Clientes esperando = etapa da jornada com "Diagnóstico" no nome, ou contrato ativo, sem diagnóstico aberto.
+
 ## v0.227
 - **Planilha das evidências:** é conferida uma vez por sessão ao abrir o diagnóstico; o original não muda.
 - **Dados pessoais:** nunca vão para a auditoria guardada.

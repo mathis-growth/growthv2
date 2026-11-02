@@ -134,3 +134,9 @@ Ou seja, há pouco dado real a preservar, mas o que existe precisa continuar abr
 1. O diagnóstico é **da empresa (workspace)** e publica no Planejamento dela.
 2. A IA lê PDF, Word e texto com **limite diário**; o custo fica visível só para ela.
 3. Construir na ordem **D1 a D8**. A D1 foi entregue na v0.223.
+
+## 6. Mudança de rumo (02/11, v0.228)
+
+- **Dono:** o diagnóstico é de um **cliente da Mathisa** (feito no workspace da Mathisa, ligado ao contrato), e não mais "da empresa".
+- **Escopo:** a tela e o processo são **só da Mathisa** (workspace de agência).
+- **Começo:** o processo começa pelo **cliente** e pelo **formulário** padrão. Quando o cliente tiver o Growths dele, o que for aprovado no diagnóstico será publicado lá (D8).

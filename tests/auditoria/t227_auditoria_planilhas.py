@@ -23,6 +23,7 @@ def limpa():
     sql(f"delete from pesquisa_arquivos where workspace_id = '{WS}' and nome like 't227%'")
     sql(f"delete from diagnosticos where workspace_id = '{WS}' and titulo like 'T227%'")
 limpa()
+AG0 = sql(f"select agencia from workspaces where id = '{WS}'"); sql(f"update workspaces set agencia = true where id = '{WS}'")  # v0.228: o diagnóstico de clientes é só da agência
 D = one(f"insert into diagnosticos (workspace_id, titulo, periodo_ini, periodo_fim) values ('{WS}', 'T227 Planilhas', '2026-01-01', '2026-06-30') returning id")
 VENDAS = """Data;Produto;Valor;E-mail do comprador;Status;Origem
 05/01/2026;Curso A;497,00;ana@x.com;aprovado;instagram
@@ -103,4 +104,5 @@ with sync_playwright() as pw:
     errs += pg.errs; ctx.close(); b.close()
 chk(not errs, 'sem erros de JavaScript', errs)
 limpa()
+sql(f"update workspaces set agencia = {'true' if AG0 == 't' else 'false'} where id = '{WS}'")
 print('\n%d falha(s)' % len(falhas)); sys.exit(1 if falhas else 0)

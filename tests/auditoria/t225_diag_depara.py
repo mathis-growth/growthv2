@@ -27,6 +27,7 @@ def limpa():
         for t in ['pesquisa_respostas', 'pesquisa_envios', 'pesquisa_perguntas']: sql(f"delete from {t} where pesquisa_id in {sub}")
         sql(f"delete from pesquisas where workspace_id = '{WS}' and nome = '{nm}'")
 limpa()
+AG0 = sql(f"select agencia from workspaces where id = '{WS}'"); sql(f"update workspaces set agencia = true where id = '{WS}'")  # v0.228: o diagnóstico de clientes é só da agência
 CATS = json.dumps({'categorias': [{'k': 'vendas', 'l': 'Vendas e pedidos'}, {'k': 'crm', 'l': 'CRM e leads'}, {'k': 'alunos', 'l': 'Alunos e clientes'},
   {'k': 'marketing', 'l': 'Marketing e aquisição'}, {'k': 'financeiro', 'l': 'Financeiro'}], 'upload': True})
 PE = one(f"select id from pessoas where workspace_id = '{WS}' order by criado_em limit 1")
@@ -85,7 +86,7 @@ with sync_playwright() as pw:
     front.vai(pg, 'gro-diag', f"S.dgSel = '{D}'; (S.abas = S.abas || {{}}).dg = 'met'; S.abas.dgm = 'usa';", 5000)
     t = pg.inner_text('#main')
     ab = pg.inner_text('.dg-dp [data-abas="dgm"]').replace('\n', ' ')
-    chk('De-para das métricas' in t and pg.locator('[data-abas="dg"] [data-aba-k]').count() == 7 and 'Usa hoje 2' in ab and 'Dá para calcular e não olha' in ab and 'Não dá com o que veio' in ab, 'aba Métricas: o de-para em três abas com as contagens', ab)
+    chk('De-para das métricas' in t and pg.locator('[data-abas="dg"] [data-aba-k]').count() == 8 and 'Usa hoje 2' in ab and 'Dá para calcular e não olha' in ab and 'Não dá com o que veio' in ab, 'aba Métricas: o de-para em três abas com as contagens', ab)
     chk(pg.inner_text('[data-abas="dg"] [data-aba-k="met"]').strip().endswith('1'), 'a aba Métricas mostra quantas métricas usadas falta entender como calcula (1)')
     chk('Receita' in t and 'Taxa de recompra' not in t, 'na aba "Usa hoje" só aparece o que ele usa')
     front.aba(pg, 'op', 500); t = pg.inner_text('#main')
@@ -112,4 +113,5 @@ with sync_playwright() as pw:
     errs += pg2.errs; ctx.close(); b.close()
 chk(not errs, 'sem erros de JavaScript', errs)
 limpa()
+sql(f"update workspaces set agencia = {'true' if AG0 == 't' else 'false'} where id = '{WS}'")
 print('\n%d falha(s)' % len(falhas)); sys.exit(1 if falhas else 0)

@@ -1,5 +1,54 @@
 
 
+## v0.228 — O diagnóstico começa pelo cliente e pelo formulário (só da Mathisa)
+**Pedido da Rebecka (02/11):**
+- A primeira etapa é o formulário, não as evidências.
+- Não pode ficar confuso qual formulário mandar.
+- O diagnóstico registra qual formulário o cliente recebeu.
+- O cliente é cadastrado depois do contrato e cai na etapa Diagnóstico da jornada.
+- O envio é por e-mail, por WhatsApp ou copiando o link.
+
+**Respostas dela:**
+- **Formulário:** "precisamos montar um que seja suficiente para o pré-diagnóstico, inclusive para ele enviar os arquivos".
+- **Dono:** o diagnóstico é do cliente da Mathisa.
+- **Jornada:** depende do produto (Starter e Strategy são consultoria; na implementação, o diagnóstico é a primeira etapa). Na Mathisa, usar a mesma jornada do cliente.
+- **Escopo:** "a tela de diagnóstico e todo esse processo é só nosso".
+
+**Decisões:**
+- **Só a Mathisa:** a tela vira "Diagnóstico de clientes" e só aparece no workspace de agência (Mathisa — Operação). Nas outras empresas, Growth → Diagnóstico Growth continua sendo a leitura de planilhas que monta o Growth Model.
+- **O dono é o cliente,** e isto substitui a decisão de manhã ("da empresa"). O diagnóstico guarda o cliente, o contrato e a matrícula.
+- **Clientes esperando diagnóstico:** entram quem está numa etapa da jornada com "Diagnóstico" no nome e quem tem contrato ativo sem diagnóstico aberto. A jornada de cada produto é cadastrada pela Rebecka em Customer Success. Hoje não existe nenhuma jornada em produção.
+- **Começar diagnóstico:** escolhe o cliente (ou acha pelo e-mail), o formulário (o padrão já vem escolhido), o responsável e o período. Cliente com diagnóstico aberto abre o que já existe.
+- **Etapa 1, Formulário:**
+  - escolhido, enviado, cliente preenchendo e respondido, com data;
+  - mensagem pronta com o link individual;
+  - "Enviar por WhatsApp" e "Enviar por e-mail" abrem no aparelho com a mensagem; "Copiar o link";
+  - cada envio fica no histórico;
+  - dá para trocar o formulário até o cliente responder.
+  - Quando o cliente responde, a resposta entra sozinha. Os arquivos que ele manda pelo link entram nas evidências antes mesmo de ele concluir.
+- **Formulário padrão:** um por empresa ("Tornar este o padrão").
+- **Modelo novo, "Diagnóstico Mathisa (pré-diagnóstico)":**
+  - o perfil e os números do jeito do cliente (do modelo Entrada);
+  - o que acompanha, onde vê e quais são as principais (até 5);
+  - o que espera e em quanto tempo;
+  - os arquivos por plataforma de venda, com planilha-modelo.
+
+  Os arquivos não têm "Mando depois": cada grupo precisa de arquivo ou "Não tenho". O formulário salva sozinho.
+- **As abas passaram a ser oito:**
+  1. Formulário;
+  2. Evidências;
+  3. O que falta;
+  4. Métricas;
+  5. Dados;
+  6. Preparar a reunião;
+  7. Arquitetura;
+  8. Validação e entrega.
+- **O progresso** ganhou "Formulário enviado" e "Formulário respondido" (9 etapas).
+
+**Em aberto (pergunta feita, sem resposta direta):** se a validação do diagnóstico deve mover o cliente para a etapa seguinte da jornada. Por enquanto, não move.
+
+**Limites:** o envio automático por e-mail ou WhatsApp, sem abrir o aparelho, depende do Resend e da API do WhatsApp configurados para mensagens a clientes. Hoje eles só enviam avisos para a equipe.
+
 ## v0.227 — Auditoria automática das planilhas (D4)
 **Pedido:** a etapa D4 do Diagnóstico Inteligente. A especificação chama esta parte de prioritária ("auditoria inteligente de planilhas"). A Rebecka disse "sim" à próxima etapa em 02/11.
 
