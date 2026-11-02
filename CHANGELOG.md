@@ -1,3 +1,9 @@
+## v0.234 — Código para colocar o formulário na página (02/11/2026)
+- Pesquisas → Formulário e aparência → "Link para enviar": novo bloco **Código para colocar o formulário na sua página (embed)**, com o iframe que se ajusta à altura e o botão "Copiar o código". A origem (UTM) preenchida entra no código.
+- Quando o link não aparece, a tela diz também se falta marcar "Aceitar também o link aberto".
+- Correção: captação gravada sem algum dos campos (só o WhatsApp, por exemplo) deixava a aba Formulário e aparência em branco.
+- Sem mudança no banco. Teste: `t234_embed_formulario.py` (0 falhas).
+
 ## v0.233 — Qualificação do lead por produto: Starter, Strategy ou Full Brain (02/11/2026)
 - Pesquisas → Qualificação e pontos ganhou:
   - **bloco** por pergunta (ex.: Porte, Estrutura, Momento), com a soma de cada bloco;

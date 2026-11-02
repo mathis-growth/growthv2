@@ -1,3 +1,7 @@
+## Código (embed) do formulário (v0.234)
+`t234_embed_formulario.py`: 6 verificações, 0 falhas.
+- Captação só com WhatsApp abre a aba; aparece o código com o iframe e o ajuste de altura; a UTM entra no código; o botão copia; sem link aberto, a tela diz o que marcar; a página pública avisa a altura; sem erros de JavaScript.
+
 ## Qualificação do lead por produto (v0.233)
 `t233_qualificacao_produto.py`: 20 verificações, 0 falhas.
 - **Banco:**

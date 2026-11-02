@@ -1,3 +1,7 @@
+## v0.234
+- `aplica234.py`: em `pqForm`, bloco `.pf-emb` com `cpqCodigo` (o mesmo da campanha), atualizado pela UTM; aviso do link aberto; `C.campos` completa os campos que faltam.
+- Teste novo `t234_embed_formulario.py`.
+
 ## v0.233
 - `aplica233.py`: `pqPontua` com blocos, eliminatórias, grupos e conferência (blocos na ordem das regras); `pqQualif` com bloco por pergunta, "elimina" por resposta, editor de grupos e conferência; "Quem respondeu" com pontos por bloco e "eliminado".
 - Migração `20261227100000_qualificacao_blocos.sql` = `RODAR_v0.233_qualificacao_blocos.sql`; dados em `RODAR_v0.233b_formulario_qualificacao_mathisa.sql` (só para a produção).

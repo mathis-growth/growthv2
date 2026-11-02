@@ -18977,7 +18977,7 @@ async function pqForm(el, p, perg) {
   ]);
   const V = { ...PF_PADRAO, ...(p.visual || {}) };
   const C = JSON.parse(JSON.stringify(p.captacao || { ...PF_CAP_PADRAO(), ativa: false }));
-  C.campos = C.campos || PF_CAP_PADRAO().campos; C.consentimentos = C.consentimentos || [];
+  C.campos = { ...PF_CAP_PADRAO().campos, ...(C.campos || {}) }; C.consentimentos = C.consentimentos || []; // v0.234
   while (C.consentimentos.length < 3) C.consentimentos.push({ texto: '', obrig: false });
   const link = linkPesquisa(p.token_aberto);
   const pronto = p.ativa && p.aceita_link_aberto && p.captacao && p.captacao.ativa;
@@ -18989,8 +18989,12 @@ async function pqForm(el, p, perg) {
     <h2>Link para enviar</h2>
     ${pronto ? `<span class="muted">Mande este link para a pessoa responder. Quem responde entra no seu <b>Funil de leads</b> (ou é atualizado, se já existir) com as respostas, a origem e a qualificação.</span>
       <div class="pf-lk"><code id="pfLk">${esc(link)}</code><button class="btn sm" id="pfCp">Copiar</button><a class="btn sm" href="${esc(link)}" target="_blank" rel="noopener">Abrir</a><a class="btn sm" id="pfWa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(link)}">Enviar pelo WhatsApp</a></div>
-      <details><summary>Link com origem (UTM) para saber de onde veio cada lead</summary><div class="pf-utm"><label>Origem (utm_source)<input id="uS" placeholder="instagram"></label><label>Meio (utm_medium)<input id="uM" placeholder="bio"></label><label>Campanha (utm_campaign)<input id="uC" placeholder="qualificacao"></label></div><div class="pf-lk"><code id="pfLkU">${esc(link)}</code><button class="btn sm" id="pfCpU">Copiar</button></div></details>`
-      : `<span class="muted">${!p.ativa ? 'A pesquisa está <b>desativada</b>. ' : ''}${!(p.captacao && p.captacao.ativa) ? 'Ligue "Este formulário capta contatos" abaixo e salve. ' : ''}${p.ativa ? '' : 'Depois ative a pesquisa em Configurar. '}O link aparece aqui quando estiver tudo pronto.</span>`}
+      <details><summary>Link com origem (UTM) para saber de onde veio cada lead</summary><div class="pf-utm"><label>Origem (utm_source)<input id="uS" placeholder="instagram"></label><label>Meio (utm_medium)<input id="uM" placeholder="bio"></label><label>Campanha (utm_campaign)<input id="uC" placeholder="qualificacao"></label></div><div class="pf-lk"><code id="pfLkU">${esc(link)}</code><button class="btn sm" id="pfCpU">Copiar</button></div></details>
+      <details class="pf-emb" open><summary>Código para colocar o formulário na sua página (embed)</summary>
+        <p class="muted" style="margin:6px 0">Cole num bloco de HTML da página (WordPress, Elementor, Webflow, Hotmart Pages…). O formulário se ajusta à altura sozinho. A origem (UTM) preenchida acima entra no código.</p>
+        <pre class="cpq-code" id="pfEmb">${esc(cpqCodigo(link, 'growths-pesquisa-' + String(p.id).slice(0, 8)))}</pre>
+        <button class="btn sm" id="pfEmbCp" type="button">Copiar o código</button></details>`
+      : `<span class="muted">${!p.ativa ? 'A pesquisa está <b>desativada</b>. ' : ''}${!(p.captacao && p.captacao.ativa) ? 'Ligue "Este formulário capta contatos" abaixo e salve. ' : ''}${!p.aceita_link_aberto ? 'Em <b>Editar pesquisa</b>, marque "Aceitar também o link aberto". ' : ''}${p.ativa ? '' : 'Depois ative a pesquisa em Configurar. '}O link aparece aqui quando estiver tudo pronto.</span>`}
     ${fonteLink()}
   </div>
   <div class="pf-ed">
@@ -19066,7 +19070,8 @@ async function pqForm(el, p, perg) {
   el.querySelectorAll('[data-fp]').forEach(b => b.onclick = () => fichaPessoa(b.dataset.fp));
   const cp = (t, ok) => navigator.clipboard.writeText(t).then(() => toast(ok), () => toast('Não consegui copiar. Selecione e copie o link.', true));
   if ($('#pfCp')) $('#pfCp').onclick = () => cp(link, 'Link copiado');
-  if ($('#uS')) { const lu = () => { const u = new URLSearchParams(); [['utm_source', '#uS'], ['utm_medium', '#uM'], ['utm_campaign', '#uC']].forEach(([k, s]) => { const x = $(s).value.trim(); if (x) u.set(k, x); }); const s = u.toString(); $('#pfLkU').textContent = link + (s ? '&' + s : ''); }; ['#uS', '#uM', '#uC'].forEach(s => $(s).oninput = lu); $('#pfCpU').onclick = () => cp($('#pfLkU').textContent, 'Link com origem copiado'); }
+  if ($('#pfEmbCp')) $('#pfEmbCp').onclick = () => cp($('#pfEmb').textContent, 'Código copiado. Cole num bloco de HTML da sua página.'); // v0.234
+  if ($('#uS')) { const lu = () => { const u = new URLSearchParams(); [['utm_source', '#uS'], ['utm_medium', '#uM'], ['utm_campaign', '#uC']].forEach(([k, s]) => { const x = $(s).value.trim(); if (x) u.set(k, x); }); const s = u.toString(); $('#pfLkU').textContent = link + (s ? '&' + s : ''); if ($('#pfEmb')) $('#pfEmb').textContent = cpqCodigo($('#pfLkU').textContent, 'growths-pesquisa-' + String(p.id).slice(0, 8)); }; ['#uS', '#uM', '#uC'].forEach(s => $(s).oninput = lu); $('#pfCpU').onclick = () => cp($('#pfLkU').textContent, 'Link com origem copiado'); }
   $('#pfSalva').onclick = () => act(async () => {
     const vis = pfVis(V);
     if (V.logo_url && !vis.logo_url) throw new Error('O logo precisa ser um endereço https da imagem (sem espaços).');

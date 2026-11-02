@@ -1,3 +1,6 @@
+## v0.234
+- **Código para a página:** só aparece com o formulário ativo, com o link aberto e captando contatos, igual ao link.
+
 ## v0.233
 - **Qualificação por blocos:** cada pergunta pode pertencer a um bloco; a soma de cada bloco decide as regras.
 - **Resposta que elimina:** a pessoa fica não qualificada e só recebe a tag da resposta; não recebe tag de produto nem de temperatura.

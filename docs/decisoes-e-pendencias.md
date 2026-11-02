@@ -1,3 +1,9 @@
+## v0.234 — Código (embed) do formulário em Pesquisas
+**Relato da Rebecka (02/11):** "nas pesquisas tinha um HTML para embedar nas páginas, e agora não está gerando mais".
+**O que achei:** o código com iframe existia só na campanha (Pesquisa da campanha → página de obrigado, v0.193). Em Pesquisas havia só o link. E o "Lead: qualificação" da Mathisa está, em produção, sem o link aberto e sem a captação ligados, então nem o link aparecia. O RODAR_v0.233b liga os dois.
+**Feito:** o código para colocar na página agora fica também em Formulário e aparência, junto do link, com a UTM. A tela diz o que falta quando o link não aparece. Uma captação gravada sem algum campo deixava a aba em branco: corrigido.
+**Atenção:** o site onde o Growths está publicado precisa permitir ser aberto dentro de outra página (iframe). Testar na página real.
+
 ## v0.233 — Qualificação do lead por produto
 **Pedido da Rebecka (02/11):** "trazer a pontuação lá na qualificação, para entender qual produto essa pessoa é mais elegível e criar as tags: esse é o Starter, esse é o Strategy, esse é o Full Brain (implementação)".
 

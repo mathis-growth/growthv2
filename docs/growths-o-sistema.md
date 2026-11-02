@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.233 (qualificação do lead por produto).
+**Última atualização:** 02/11/2026, versão 0.234 (código do formulário para a página).
+
+**v0.234 · Formulário na sua página.** Em Pesquisas, o formulário de captação tem o código para colar na página, que se ajusta à altura sozinho.
 
 **v0.233 · Qualificação por produto.** O formulário de qualificação pontua o lead em blocos e diz qual produto ele comporta (Starter, Strategy ou Full Brain), quão quente ele está e quando o que ele pediu não bate com o que o negócio dele comporta.
 
@@ -507,6 +509,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - **Histórico de vendas** (Importar e validar dados): o relatório que a plataforma exporta, com de-para automático, conferência antes de gravar e desfazer; vira o histórico de cada cliente (bloco "Antes do Growths" na ficha) e a base do planejamento anual, sem financeiro;
   - **Quem responde** (v0.230): em Formulário e aparência, você escolhe se quem responde é um **lead** (entra no Funil de leads) ou um **cliente** (atualiza o cadastro e vai para a etapa escolhida da jornada do cliente, por exemplo Diagnóstico, sem entrar no Funil de leads). Vale para o link individual e para o link aberto, e fica no histórico do cliente.
   - **Qualificação por produto** (v0.233): na aba Qualificação e pontos, cada pergunta pode ter um bloco (Porte, Estrutura, Momento) e uma resposta pode eliminar o lead. Grupos de regras põem a tag do produto indicado (Starter, Strategy, Full Brain) e da temperatura (quente, morno, frio). Se o que o lead pediu não bate com o indicado, ele ganha a tag "revisar". "Quem respondeu" mostra os pontos de cada bloco.
+  - **Código para a página** (v0.234): em Formulário e aparência, junto do link, o código para colar num bloco de HTML (WordPress, Elementor, Webflow…). O formulário se ajusta à altura e leva a origem (UTM) escolhida.
   - **Entrada do cliente**: formulário curto para o cliente que está chegando (faturamento, ticket, clientes, investimento, custo e regime, do jeito dele) e o checklist de arquivos do período certo (vendas, clientes, leads, anúncios, custos), cada um com planilha-modelo para baixar; cada grupo é enviar o arquivo ou "Não tenho", sem deixar para depois, e ganha ✓ verde quando o arquivo chega. Inclui a lista "quais números você acompanha hoje", ponto de partida do diagnóstico. As vendas seguem as plataformas que o cliente marca (Hotmart, Kiwify, Eduzz, Hubla): um relatório para cada, do jeito que sai.
 
 ---
@@ -652,6 +655,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.234):** código para colocar o formulário na página.
 - **02/11 (v0.233):** qualificação do lead por produto (Starter, Strategy, Full Brain) e o formulário "Lead: qualificação".
 - **02/11 (v0.232):** correção: gerar o link do formulário no diagnóstico.
 - **02/11 (v0.231):** o Growths do cliente nasce do contrato; inativar, reativar e excluir clientes.

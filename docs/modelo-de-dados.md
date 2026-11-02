@@ -1,3 +1,6 @@
+## v0.234
+Sem mudança no banco.
+
 ## v0.233
 - `pesquisa_perguntas.pontos` aceita `bloco` e, em cada opção, `elim`.
 - `pesquisas.qualif` aceita `grupos` (`[{nome, regras: [{tag, se: {bloco|total: {min, max}}}]}]`) e `confere` (`{pediu, indicado, tag}`).

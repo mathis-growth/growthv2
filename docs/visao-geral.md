@@ -1,3 +1,6 @@
+## v0.234
+**Formulário na sua página.** Em Pesquisas → Formulário e aparência, além do link, há o código para colar num bloco de HTML da página. O formulário se ajusta à altura sozinho.
+
 ## v0.233
 **Qualificação do lead por produto.** O formulário de qualificação da Mathisa pontua o lead em Porte, Estrutura e Momento e põe as tags do produto indicado (Starter, Strategy ou Full Brain) e da temperatura (quente, morno, frio). Quem fatura até R$ 10 mil ou ainda não vende fica para nutrir.
 
