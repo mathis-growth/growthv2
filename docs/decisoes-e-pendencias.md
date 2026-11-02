@@ -45,7 +45,7 @@
   8. Validação e entrega.
 - **O progresso** ganhou "Formulário enviado" e "Formulário respondido" (9 etapas).
 
-**Em aberto (pergunta feita, sem resposta direta):** se a validação do diagnóstico deve mover o cliente para a etapa seguinte da jornada. Por enquanto, não move.
+**Decisão da Rebecka (02/11, 11h21):** validar o diagnóstico **não** move o cliente para a etapa seguinte da jornada. Ela quer validar o processo primeiro; a equipe move à mão. Reavaliar depois da validação.
 
 **Limites:** o envio automático por e-mail ou WhatsApp, sem abrir o aparelho, depende do Resend e da API do WhatsApp configurados para mensagens a clientes. Hoje eles só enviam avisos para a equipe.
 
