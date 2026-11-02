@@ -1,3 +1,6 @@
+## v0.217
+- Funções de leitura: `investigar(ws, metrica, ini, fim, filtros)` → total, total anterior, dimensões com fatias {k, r, v, v_ant}, nomes dos filtros; `investigar_registros(ws, metrica, ini, fim, filtros, limite)`; auxiliares `investigar_linhas` (uma linha por venda ou lead, com as dimensões) e `investigar_passa` (filtro).
+
 ## v0.216
 - Função `metas_trajetoria(ws, metrica, ini, fim, hoje, escopo, ref)` → `{avaliacao, pontos: [[dia, meta_acumulada, realizado_acumulado|null]]}`.
 - Gatilho `riscos_qualidade_sem_impacto` em `riscos`.

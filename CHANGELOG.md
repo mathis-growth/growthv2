@@ -1,3 +1,8 @@
+## v0.217 — Growth's Brain: investigação (01/11/2026)
+- "Investigar" no faturamento, em cada meta e nos riscos de meta: o número por dimensão, com o período anterior e o que mais mudou.
+- Filtro cruzado com caminho de volta; registros (vendas ou leads) com link para a pessoa.
+- Banco: `RODAR_v0.217_brain_investigar.sql` (só leitura). Teste: `t217_investigar.py` (0 falhas).
+
 ## v0.216 — Growth's Brain: trajetória das metas e saúde por área (01/11/2026)
 - Gráfico de trajetória (meta acumulada × realizado acumulado, projeção, hoje) no faturamento e no botão "Trajetória" de cada meta.
 - Cada painel do Cockpit mostra as metas da área com status e o risco principal.

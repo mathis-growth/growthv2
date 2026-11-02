@@ -1,3 +1,6 @@
+## v0.217
+- Migration `20261211100000_brain_investigar.sql` + `RODAR_v0.217_brain_investigar.sql`. index.html montado sobre o HEAD do GitHub (v0.216) com `aplica217.py` e `g217.js`: `invAbrir`, `invDesenha`, `INV_DIM`, `INV_MET`; botões "Investigar" na faixa de metas, nas linhas e no risco de meta. Teste novo `t217_investigar.py`.
+
 ## v0.216
 - Migration `20261210100000_brain_trajetoria.sql` + `RODAR_v0.216_brain_trajetoria.sql`. index.html montado sobre o HEAD do GitHub (v0.215) com `aplica216.py` e `g216.js`: `mtTrajSvg`, `mtTrajCarrega`, `mtTrajModal`, `CK_SAUDE`, `ckSaudeLiga`; faixa de metas com `#mtTraj` e botão "Trajetória" nas linhas. Teste novo `t216_trajetoria.py`.
 

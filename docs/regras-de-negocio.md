@@ -1,3 +1,6 @@
+## v0.217
+- Investigação: período anterior = mesmo número de dias imediatamente antes. Fatias de cada dimensão somam o total. Histórico importado = fatia própria. Filtros valem para todas as dimensões ao mesmo tempo.
+
 ## v0.216
 - Trajetória: meta acumulada dia a dia (mesma regra da meta do período), realizado acumulado até hoje, projeção do último realizado até o fim (mesmo método da faixa).
 - Saúde por área: lista as metas da área e o risco principal; não calcula média nem nota.

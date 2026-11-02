@@ -1,5 +1,16 @@
 
 
+## v0.217 — Investigação (Investigation Engine)
+**Pedido da Rebecka (01/11)**: continuar (próximo passo do documento: clicar num número e descer até a composição e os registros, com caminho de volta).
+Decisões:
+- **Onde**: "Investigar o faturamento" na faixa de metas; "Investigar" em cada linha (leads, vendas, campanhas, produtos); "Investigar" nos riscos que vêm de meta. Abre por cima do Cockpit, sem tela nova.
+- **O que mostra**: o total do período, o do período anterior do mesmo tamanho e a diferença; o número aberto por dimensão (faturamento e vendas: produto, campanha, canal, plataforma, cliente novo × recorrente; leads: campanha de origem, canal, qualificação, situação), com a marca do período anterior, a diferença de cada fatia e "o que mais mudou".
+- **Filtro cruzado**: clicar numa fatia filtra todas as outras dimensões por ela, e o caminho no topo mostra cada passo. Dá para voltar a qualquer passo ou usar "Voltar".
+- **Registros**: "Ver os registros" lista as vendas ou os leads por trás do número (até 300 na tela, os mais recentes), com link para a ficha da pessoa.
+- **Números fecham**: as fatias de cada dimensão somam o total, e o total é o mesmo das metas e do Dashboard de vendas. **Fato**: o histórico importado entra como fatia própria ("Histórico importado"), porque não tem campanha nem canal ligados.
+- **Leads por campanha** aqui usam a campanha de origem do cadastro (`pessoas.campanha_id`); a meta da campanha usa quem entrou na campanha. Os dois números podem ser diferentes, e a tela avisa.
+**Pendências**: investigar também a partir dos cartões dos dashboards (não só do Cockpit); comparar dois segmentos lado a lado; coortes dentro da investigação.
+
 ## v0.216 — Trajetória das metas e saúde por área
 **Pedido da Rebecka (01/11)**: seguir (a parte visual: gráfico de trajetória e saúde por área no Cockpit).
 Decisões:

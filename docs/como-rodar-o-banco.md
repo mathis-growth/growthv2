@@ -1,3 +1,7 @@
+## v0.217 — Growth's Brain: investigação
+1. `supabase/RODAR_v0.217_brain_investigar.sql`: funções de leitura `investigar`, `investigar_registros` (e as auxiliares `investigar_linhas`, `investigar_passa`). Não mexe em dados.
+2. Pendentes em produção: `RODAR_v0.197`, `RODAR_v0.209` (versão da v0.210), `RODAR_v0.216`, `RODAR_v0.217`.
+
 ## v0.216 — Growth's Brain: trajetória das metas
 1. `supabase/RODAR_v0.216_brain_trajetoria.sql`: função `metas_trajetoria` (só leitura) e correção do impacto dos riscos de qualidade (gatilho `riscos_qualidade_sem_impacto`).
 2. Conferido em 01/11: v0.213, v0.214 e v0.215 já estão em produção. Pendentes: `RODAR_v0.197`, `RODAR_v0.209` (versão da v0.210) e `RODAR_v0.216`.

@@ -1,5 +1,9 @@
 
 
+## Investigação (v0.217)
+- `t217_investigar.py` (18 verificações, 0 falhas): total e período anterior = vendas aprovadas; em cada dimensão as fatias somam o total; filtro por produto e filtro cruzado; registros somam a fatia; leads iguais às metas; sem login recusa; no Cockpit: investigar o faturamento, clicar no produto (caminho), ver registros com link, voltar duas vezes, investigar leads; celular.
+- Regressão: t216, t215, t214, t213, t211, t192 sem falhas.
+
 ## Trajetória e saúde por área (v0.216)
 - `t216_trajetoria.py` (12 verificações, 0 falhas): 31 pontos com a meta acumulada fechando em 18.000; realizado até hoje e vazio depois; mesmos números da faixa; sem login recusa; gráfico no Cockpit com meta, realizado, projeção e "hoje"; Trajetória dos leads; saúde do Marketing, do Geral e de Vendas (sem meta = diz isso); celular.
 - Regressão: t215, t214, t213, t211, t192, t158 sem falhas.

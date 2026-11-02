@@ -1,3 +1,6 @@
+## v0.217
+**Do número à venda.** Qualquer meta do Cockpit pode ser investigada: o número aberto por produto, campanha, canal, plataforma e cliente novo × recorrente, comparado com o período anterior. Um clique filtra tudo, e outro mostra as vendas ou os leads por trás.
+
 ## v0.216
 **Ver a meta no tempo.** O Cockpit mostra a trajetória do faturamento (meta acumulada × realizado e a projeção até o fim do mês), e cada painel de área mostra as suas metas e o risco principal.
 
