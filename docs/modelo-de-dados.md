@@ -1,3 +1,6 @@
+## v0.226
+- Sem mudança no banco.
+
 ## v0.225
 - `metricas_definicoes.requisitos` (jsonb): o que cada métrica precisa, em quatro tipos:
   - `g:` grupo de arquivo;

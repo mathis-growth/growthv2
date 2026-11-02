@@ -1,3 +1,6 @@
+## v0.226
+Nada para rodar no banco. Ordem pendente: 0.221 → 0.223 → 0.224 → 0.225 (e os antigos 0.197, 0.209).
+
 ## v0.225
 Rodar `supabase/RODAR_v0.225_diagnostico_depara.sql` depois do `RODAR_v0.224`. Muda só o catálogo de métricas (coluna `requisitos`) e cria funções.
 Ordem pendente: 0.221 → 0.223 → 0.224 → 0.225 (e os antigos 0.197, 0.209).

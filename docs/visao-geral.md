@@ -1,3 +1,6 @@
+## v0.226
+**Diagnóstico em sete abas, na ordem do trabalho:** Evidências, O que falta, Métricas, Dados, Preparar a reunião, Arquitetura e Validação e entrega. As métricas têm três abas próprias. Fica em Growth → Diagnóstico Growth.
+
 ## v0.225
 **De-para das métricas.** Na Investigação, cada métrica do catálogo aparece cruzada com o que o cliente usa e com os dados que ele mandou. Das que usa, mostra se já se sabe como ele calcula. Das que não usa, mostra se os dados permitem calcular. No link, o cliente só conclui com todos os arquivos resolvidos e marca quais números são os principais.
 

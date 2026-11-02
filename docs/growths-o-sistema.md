@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.225 (Diagnóstico Inteligente: de-para das métricas).
+**Última atualização:** 02/11/2026, versão 0.226 (Diagnóstico em sete abas).
+
+**v0.226 · Diagnóstico em sete abas.** As abas seguem a ordem do trabalho: Evidências, O que falta, Métricas, Dados, Preparar a reunião, Arquitetura e Validação e entrega.
 
 **v0.225 · De-para das métricas.** O que o cliente usa × o que os dados que ele mandou permitem calcular. No link, ele só conclui com todos os arquivos resolvidos e marca as métricas principais.
 
@@ -439,7 +441,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 8. Growth: modelo, cenários e experimentos
 
-- **Diagnóstico Growth: o diagnóstico da empresa** (desde a v0.223). Uma lista de diagnósticos, cada um com responsável, período de referência, versão, status (em coleta, em análise, em revisão, validado, arquivado) e o progresso por etapas. Dentro, cinco abas:
+- **Diagnóstico Growth: o diagnóstico da empresa** (desde a v0.223). Uma lista de diagnósticos, cada um com responsável, período de referência, versão, status (em coleta, em análise, em revisão, validado, arquivado) e o progresso por etapas. Dentro, sete abas na ordem do trabalho (desde a v0.226). A Investigação de antes virou três delas: **O que falta** (o checklist), **Métricas** (o de-para, com três abas próprias) e **Preparar a reunião** (o pedido ao cliente e a pauta). Antes da divisão, eram cinco:
   - **Evidências:** tudo o que serve de prova, mandado pelo cliente (pelo link do formulário) ou pela equipe. O Growths confere o tipo real do arquivo, o tamanho e o conteúdo: o mesmo arquivo não entra duas vezes, e o mesmo nome com conteúdo novo vira versão 2. Cada arquivo tem classificação (14 tipos, sugerida pelo nome sem nunca trocar a escolha manual), período que representa, marca de dados pessoais e status de leitura. O original nunca é apagado: arquiva-se.
   - **Investigação: o pré-diagnóstico, antes da reunião** (v0.224). Um checklist cruza o que o cliente disse no formulário com o que chegou e com os meses que os arquivos cobrem. As situações são: recebido, recebido em parte, disse que tem e não mandou, não tem, falta. Embaixo vêm o que os dados mostram, a mensagem pronta para pedir o que falta (editável) e a lista do que conversar. Junto vem o **de-para das métricas** (v0.225):
     - **o que o cliente usa hoje:** principal ou não, onde vê, se já se sabe como calcula e se os dados que ele mandou permitem conferir;
@@ -612,6 +614,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.226):** diagnóstico em sete abas; de-para em três abas.
 - **02/11 (v0.225):** de-para das métricas; formulário do diagnóstico só conclui com os arquivos resolvidos; métricas principais.
 - **02/11 (v0.224):** pré-diagnóstico na Investigação, antes da reunião.
 - **02/11 (v0.223):** Diagnóstico Inteligente D1: diagnóstico da empresa em cinco abas e Central de Evidências.

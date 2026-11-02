@@ -1,3 +1,6 @@
+## v0.226
+- Página longa vira abas na mesma página. As abas do diagnóstico são numeradas porque seguem a ordem do trabalho.
+
 ## v0.225
 - **Formulário de diagnóstico com arquivos:** só conclui com cada grupo enviado ou marcado "Não tenho". O rascunho fica salvo.
 - **Uso de cada métrica:**

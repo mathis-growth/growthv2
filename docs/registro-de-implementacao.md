@@ -1,5 +1,12 @@
 
 
+## Diagnóstico em sete abas (v0.226)
+- t225: 27 verificações. Cobre as 7 abas, as três abas de métricas com as contagens, o conteúdo que troca e a pauta na aba Preparar a reunião.
+- t224: 30 verificações. Cobre o checklist na aba O que falta, o pedido e a pauta em Preparar a reunião, e a aba antiga guardada que abre em O que falta.
+- t223: 50 verificações.
+- t222 continua sem falhas.
+- Todos com 0 falhas.
+
 ## De-para das métricas (v0.225)
 `t225_diag_depara.py`: 22 verificações, 0 falhas.
 - **Banco:**

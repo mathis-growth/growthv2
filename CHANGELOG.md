@@ -1,3 +1,8 @@
+## v0.226 — Diagnóstico em sete abas (02/11/2026)
+- Abas: Evidências · O que falta · Métricas · Dados · Preparar a reunião · Arquitetura · Validação e entrega.
+- O de-para ganhou três abas: Usa hoje, Dá para calcular e não olha, Não dá com o que veio.
+- Nada para rodar no banco.
+
 ## v0.225 — De-para das métricas; formulário só conclui com os arquivos resolvidos (02/11/2026)
 - **De-para na Investigação:** o que usa hoje (principal, onde vê, cálculo descrito, dá para conferir); dá para calcular e não olha; não dá com o que veio.
 - **Formulário do cliente:** sem "Mando depois"; lista do que falta; pergunta das métricas principais.

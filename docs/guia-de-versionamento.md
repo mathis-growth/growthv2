@@ -1,3 +1,10 @@
+## v0.226
+- `aplica226.py`:
+  - `dgPreHtml` em partes (marcador `<!--s-->`);
+  - abas `dg` (7) e `dgm` (3);
+  - pílula "Principal".
+- Testes t223, t224 e t225 ajustados para as abas novas.
+
 ## v0.225
 - `aplica225.py` + `g225.js` (`dgDeparaHtml`, `dgDeparaConversa`, `pfDocFalta`).
 - Ajustes:

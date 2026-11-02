@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.226 | 02/11/2026 | Diagnóstico em sete abas, na ordem do trabalho; de-para em três abas. | nada |
 | 0.225 | 02/11/2026 | De-para das métricas; formulário só conclui com os arquivos resolvidos; métricas principais. | RODAR_v0.225 |
 | 0.224 | 02/11/2026 | Pré-diagnóstico na Investigação, antes da reunião. | RODAR_v0.224 |
 | 0.223 | 02/11/2026 | Diagnóstico Inteligente D1: diagnóstico da empresa, cinco abas e Central de Evidências. | RODAR_v0.223 |

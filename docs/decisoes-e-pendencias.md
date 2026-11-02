@@ -1,5 +1,27 @@
 
 
+## v0.226 — O diagnóstico em sete abas, na ordem do trabalho
+**Pedido da Rebecka (02/11):** "muito grandes; dá para dividir em mais etapas para ficarem uma do lado da outra e não ficar tão extenso". Ela também perguntou onde fica o diagnóstico.
+
+**Onde fica:** em Growth → Diagnóstico Growth, como antes. A tela abre na lista, e cada diagnóstico abre nas abas dele.
+
+**Decisões:**
+- A Investigação virou três abas. O diagnóstico ficou com sete, numeradas porque seguem a ordem do trabalho:
+  1. Evidências;
+  2. O que falta (checklist);
+  3. Métricas (de-para);
+  4. Dados (leitura das planilhas);
+  5. Preparar a reunião (pedido ao cliente, pauta, revisado, ir para a reunião);
+  6. Arquitetura;
+  7. Validação e entrega.
+- **O de-para tem três abas próprias:** Usa hoje, Dá para calcular e não olha, Não dá com o que veio. Cada uma mostra a contagem.
+- **Números nas abas:**
+  - O que falta: itens pendentes;
+  - Métricas: métricas usadas sem o cálculo entendido;
+  - Dados: planilhas não lidas;
+  - Validação: decisões registradas.
+- O bloco "O que os dados mostram" saiu da Investigação, porque repetia a aba Dados. Quem tinha a aba "Investigação" guardada na sessão abre em "O que falta".
+
 ## v0.225 — De-para das métricas e formulário que só conclui com os arquivos resolvidos
 **Pedidos da Rebecka (02/11):**
 - "O cliente deve receber o checklist do que falta e só concluir quando estiver tudo ok, e pode salvar para continuar depois."
