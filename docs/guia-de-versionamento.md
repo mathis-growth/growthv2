@@ -1,3 +1,7 @@
+## v0.240
+- `aplica240.py`: `ctVozHtml`/`ctVozLiga` (Web Speech API, `pt-BR`, contínuo, resultados parciais; insere em `conteudos` com `status = 'ideia'` e tag `ideia por voz`); aba `MQ_EST` "Baú de ideias"; botão `#cVoz` no Kanban.
+- Teste novo `t240_bau_ideias_voz.py` (transcrição simulada).
+
 ## v0.239
 - `aplica239.py`: `dgRelGera` (baixa, `impParseArquivo`, `impDetecta`, `impAutoMapa`, procura a coluna nas outras tabelas, faltas por campo obrigatório ou com `info`, métricas do `diagnostico_depara`, perguntas), `dgRelHtml`, `dgRelBox` (Dados e Preparar a reunião), `dgRelLiga`, `dgRelImprime`; `dgRelMasc` esconde e-mail e telefone.
 - Teste novo `t239_diag_relatorio_dados.py`.

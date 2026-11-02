@@ -1,3 +1,6 @@
+## Baú de ideias com microfone (v0.240)
+`t240_bau_ideias_voz.py`: 9 verificações, 0 falhas. Nome da aba; aviso sem texto; microfone liga e mostra a fala; para ao tocar de novo; salva como ideia com título e descrição; aparece no baú esperando aprovação; sem transcrição, explica o ditado; sem erros de JavaScript.
+
 ## Diagnóstico dos dados (v0.239)
 `t239_diag_relatorio_dados.py`: 11 verificações, 0 falhas. Arquivo de leads reconhecido; colunas ligadas aos campos; "Não identifiquei" e "Talvez"; arquivo não reconhecido; e-mail e telefone escondidos; perguntas para a reunião; resumo; o mesmo relatório em Preparar a reunião; imprimir; sem erros de JavaScript. Regressão: t238 sem falhas.
 

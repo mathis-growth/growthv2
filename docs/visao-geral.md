@@ -1,3 +1,6 @@
+## v0.240
+**Baú de ideias com microfone.** No Growth's Content, fale a ideia e ela vira texto e entra no baú, esperando aprovação.
+
 ## v0.239
 **Diagnóstico dos dados.** Um botão lê as planilhas do cliente e mostra, para cada uma, o que o Growths identificou e o que não, o que dá para calcular e o que perguntar na reunião. Dá para imprimir ou salvar em PDF.
 

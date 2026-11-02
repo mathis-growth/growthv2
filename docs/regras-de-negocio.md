@@ -1,3 +1,6 @@
+## v0.240
+- **Ideia por voz:** entra sempre como ideia esperando aprovação. O áudio não é guardado; só o texto.
+
 ## v0.239
 - **Diagnóstico dos dados:** só lê; não importa nem grava nada. E-mails e telefones aparecem escondidos nos exemplos.
 

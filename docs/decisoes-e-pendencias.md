@@ -1,3 +1,9 @@
+## v0.240 — Baú de ideias com microfone
+**Pedido da Rebecka (02/11):** "no Content, o baú de ideias, e um lugar com um microfonezinho para eu falar a minha ideia e ele salvar como ideia, uma pauta que tem que ser aprovada".
+**Como ficou:** a transcrição é feita pelo próprio navegador (Chrome, Edge e Safari recentes), sem custo e sem mandar o áudio para o Growths; o áudio não é guardado, só o texto. A ideia entra como "ideia" (esperando aprovação) e segue o caminho de sempre: aprovar pede tema, formato e data.
+**Limite (fato):** em navegadores sem transcrição, o microfone não aparece; dá para ditar pelo teclado do celular. Precisa de internet e da permissão do microfone.
+**Próximo passo possível:** a ideia falada pelo ChatGPT do celular (botão que já existe) e a falada aqui caem no mesmo baú.
+
 ## v0.239 — Diagnóstico dos dados
 **Pedido da Rebecka (02/11):** "antes de importar para o cliente, pegar os campos e cruzar com as tabelas que a gente tem… um relatório mostrando quais informações tem no arquivo, o que você identificou e o que não identificou de acordo com a estrutura do banco, relacionado a métricas e dados… para a reunião, um 'gerar diagnóstico dos dados'".
 **Como ficou:** usa o mesmo reconhecimento do importador (tipo do arquivo e de-para das colunas) e o de-para das métricas (v0.225). Nada é gravado: o relatório é gerado na hora, fica na tela até sair do diagnóstico, e pode ser impresso ou salvo em PDF.

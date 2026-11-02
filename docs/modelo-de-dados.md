@@ -1,3 +1,6 @@
+## v0.240
+Sem mudança no banco. A ideia falada usa `conteudos` com a tag `ideia por voz`.
+
 ## v0.239
 Sem mudança no banco.
 

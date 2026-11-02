@@ -1,3 +1,10 @@
+## v0.240 — Growth's Content: Baú de ideias com microfone (02/11/2026)
+- A aba "Ideias" passa a se chamar **Baú de ideias**.
+- **Falar uma ideia:** toque no microfone, fale, e o texto aparece na hora (dá para corrigir). "Salvar no baú" grava como ideia esperando aprovação, com a tag "ideia por voz": o título é a primeira frase e a fala inteira vai na descrição.
+- Atalho "🎙 Falar uma ideia" no Kanban da Produção.
+- Navegador sem transcrição (alguns celulares): a tela explica como ditar pelo microfone do teclado.
+- Sem mudança no banco. Teste: `t240_bau_ideias_voz.py` (0 falhas).
+
 ## v0.239 — Diagnóstico dos dados para levar à reunião (02/11/2026)
 - Botão **Gerar o diagnóstico dos dados** na aba Dados e em Preparar a reunião.
 - Para cada planilha: o que é (leads, vendas, produtos…), cada coluna ao lado do campo do Growths que ela preenche, quanto está preenchida e exemplos (e-mail e telefone escondidos); colunas que o Growths **não identificou**; "Talvez" quando outra parte do Growths reconhece a coluna; o que não veio (e se é obrigatório).
