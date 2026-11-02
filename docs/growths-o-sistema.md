@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.222 (Cockpit em abas).
+**Última atualização:** 02/11/2026, versão 0.223 (Diagnóstico Inteligente: Central de Evidências).
+
+**v0.223 · Diagnóstico Inteligente, primeira parte.** O Diagnóstico Growth é o diagnóstico da empresa, com cinco abas. A Central de Evidências recebe os arquivos do cliente e da equipe, confere repetidos e classifica sem passar por cima da escolha manual.
 
 **v0.222 · Cockpit em abas.** Áreas, Metas do período e Riscos e oportunidades ficam em abas na mesma página, cada uma com o número do que pede atenção.
 
@@ -433,7 +435,13 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 8. Growth: modelo, cenários e experimentos
 
-- **Diagnóstico Growth.** Sobe planilhas bagunçadas do cliente e o sistema identifica vendas, leads e investimento. Classifica cada venda (nova, renovação, upgrade, repetida) e mostra o que falta em 13 itens, com a mensagem pronta para pedir ao cliente e a planilha padronizada para baixar.
+- **Diagnóstico Growth: o diagnóstico da empresa** (desde a v0.223). Uma lista de diagnósticos, cada um com responsável, período de referência, versão, status (em coleta, em análise, em revisão, validado, arquivado) e o progresso por etapas. Dentro, cinco abas:
+  - **Evidências:** tudo o que serve de prova, mandado pelo cliente (pelo link do formulário) ou pela equipe. O Growths confere o tipo real do arquivo, o tamanho e o conteúdo: o mesmo arquivo não entra duas vezes, e o mesmo nome com conteúdo novo vira versão 2. Cada arquivo tem classificação (14 tipos, sugerida pelo nome sem nunca trocar a escolha manual), período que representa, marca de dados pessoais e status de leitura. O original nunca é apagado: arquiva-se.
+  - **Investigação:** a reunião do diagnóstico, com os números que decidem, o roteiro e as anotações.
+  - **Dados:** a leitura das planilhas (abaixo), guardada no diagnóstico.
+  - **Arquitetura:** a North Star da empresa e o caminho para o mapa de métricas.
+  - **Validação e entrega:** a mudança de status e o histórico, com decisões e comentários que não se apagam.
+- **Leitura de planilhas.** Sobe planilhas bagunçadas do cliente e o sistema identifica vendas, leads e investimento. Classifica cada venda (nova, renovação, upgrade, repetida) e mostra o que falta em 13 itens, com a mensagem pronta para pedir ao cliente e a planilha padronizada para baixar.
 - **Growth Model em planilha:**
   - colunas Real + projeção (travado), Cenário (onde se mexe) e Efeito;
   - mexeu numa célula, o resto recalcula: o preço sobe, a receita sobe, o imposto acompanha, a margem e o lucro mudam;
@@ -524,6 +532,8 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 Ângulos que nascem do sistema, para usar como ponto de partida:
 
+- "O cliente mandou a mesma planilha três vezes": por que todo diagnóstico começa organizando as evidências.
+- Sugestão de IA que não passa por cima da sua escolha: classificar documentos com o humano no controle.
 - "Seu lucro tem três números diferentes?" A história da auditoria de consistência.
 - Por que "sem dado" é melhor do que zero.
 - Meta, previsão e probabilidade não são a mesma coisa (e por que o Growths ainda não mostra probabilidade).
@@ -590,6 +600,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.223):** Diagnóstico Inteligente D1: diagnóstico da empresa em cinco abas e Central de Evidências.
 - **02/11 (v0.222):** Cockpit em abas; padrão de abas para as páginas longas.
 - **01/11 (v0.221):** metas das áreas (Financeiro, CS e Growth) no Planejamento anual e no Cockpit.
 - **01/11 (v0.220):** acerto da projeção e faixa provável no Cockpit.

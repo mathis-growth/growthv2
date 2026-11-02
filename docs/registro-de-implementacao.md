@@ -1,5 +1,41 @@
 
 
+## Diagnóstico D1: evidências (v0.223)
+`t223_diag_evidencias.py`: 49 verificações, 0 falhas.
+- **Banco:**
+  - diagnóstico sem formulário;
+  - histórico;
+  - responsável da equipe;
+  - período;
+  - registro, confirmação (só com o arquivo no Storage), repetido, versão 2, extensão, tamanho e hash recusados;
+  - imagem só guardada;
+  - sugerida × manual;
+  - período e dados pessoais;
+  - arquivar e restaurar;
+  - erro de leitura;
+  - permissão de outra empresa;
+  - grants;
+  - status;
+  - arquivos do cliente pelo link (antes e depois de ligar);
+  - progresso;
+  - lista.
+- **Tela:**
+  - lista;
+  - novo diagnóstico;
+  - envio;
+  - repetido;
+  - extensão falsa;
+  - classificação;
+  - período;
+  - Dados → leitura → volta;
+  - validação e decisão;
+  - Arquitetura;
+  - reunião de antes;
+  - planilhas sem diagnóstico;
+  - celular;
+  - sem erros de JavaScript.
+- **Regressão:** t222, t221, t197 e t151 sem falhas.
+
 ## Abas no Cockpit (v0.222)
 - `t222_abas.py` (9 verificações, 0 falhas): três abas; abre em Áreas; números nas abas; Metas com o gráfico; Riscos; período mantém a aba; voltar ao Cockpit abre na última aba; celular.
 - Regressão (com os testes ajustados para as abas): t213 a t221, t211, t192, t158 sem falhas.

@@ -1,3 +1,15 @@
+## v0.223 — Diagnóstico Inteligente D1: diagnóstico da empresa e Central de Evidências (02/11/2026)
+- Lista de diagnósticos da empresa; diagnóstico sem formulário, com responsável, período, versão, status e progresso.
+- Cinco abas: Evidências, Investigação, Dados, Arquitetura, Validação e entrega.
+- Central de Evidências:
+  - envio pela equipe;
+  - conferência de tipo real, tamanho e conteúdo (repetidos e versões);
+  - classificação manual ou sugerida;
+  - período, dados pessoais e status de leitura;
+  - arquivar e restaurar.
+- Histórico de status, decisões e comentários.
+- Banco: `RODAR_v0.223_diagnostico_evidencias.sql`. Teste: `t223_diag_evidencias.py` (0 falhas).
+
 ## v0.222 — Cockpit em abas (02/11/2026)
 - Abas Áreas (padrão), Metas do período e Riscos e oportunidades, com o número do que pede atenção.
 - Padrão reutilizável de abas na mesma página.

@@ -1,3 +1,8 @@
+## v0.223
+- index.html montado sobre o HEAD do GitHub (v0.222) com `aplica223.py` e `g223.js`: `vGrowthDiag` (lista), `dgModalDados`, `dgPagina` (abas `dg`), `dgSugereClasse`, `dgTipoReal`, `dgHash`. Ajustes em `gxViewDiag` (volta para o diagnóstico, marca planilhas lidas) e na reunião (título; status com o rótulo novo).
+- Migração `20261216100000_diagnostico_d1_evidencias.sql` = `RODAR_v0.223_diagnostico_evidencias.sql`.
+- Testes: `t223_diag_evidencias.py` (novo). `front.py` ganhou um Storage de mentira (envio, download, link assinado) e a biblioteca de planilhas local.
+
 ## v0.222
 - index.html montado sobre o HEAD do GitHub (v0.221) com `aplica222.py` e `g222.js`: `abasHtml`, `abasLiga`, `ckMetasAlerta`; Cockpit em abas (`data-aba-de="ck"`). Testes ajustados para escolher a aba (`front.aba`, `S.abas`): t213 a t221. Teste novo `t222_abas.py`.
 

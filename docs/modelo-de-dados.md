@@ -1,3 +1,21 @@
+## v0.223
+- `diagnosticos`:
+  - `resposta_id` agora opcional;
+  - colunas novas: `titulo`, `responsavel_id` (equipe), `periodo_ini`, `periodo_fim`, `versao`, `criado_por`;
+  - `status` em `rascunho` (em coleta), `em_analise`, `em_revisao`, `validado`, `arquivado`.
+- `diagnostico_decisoes` (novo): o histórico do diagnóstico.
+  - `tipo` em `status`, `decisao`, `comentario`, mais `texto`, `autor` e `criado_em`.
+  - Só leitura e inclusão.
+- `pesquisa_arquivos` vira a Central de Evidências:
+  - `envio_id` e `pesquisa_id` opcionais;
+  - colunas novas: `diagnostico_id`, `origem` (cliente ou equipe), `enviado_por`, `hash`, `classe` (14 tipos), `classe_origem` (manual ou sugerida), `periodo_ini`, `periodo_fim`, `dados_pessoais`, `versao`, `processamento`, `processamento_erro`, `processado_em`, `arquivado_em`, `arquivado_por`.
+- Funções:
+  - `diagnostico_arquivo_registrar`, `_confirmar` (confere o arquivo no Storage), `_editar`, `_hash`, `_arquivar`, `_processamento`;
+  - `diagnostico_progresso`, `diagnosticos_lista`;
+  - internas: `diag_pode`, `diag_arquivo_pode`.
+- Gatilhos: os arquivos do link entram no diagnóstico; histórico de status.
+- Storage: a política `diagnostico_equipe_enviar` deixa a equipe enviar só para o caminho autorizado.
+
 ## v0.222
 - Sem mudança no banco.
 

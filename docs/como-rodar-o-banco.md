@@ -1,3 +1,7 @@
+## v0.223
+Rodar `supabase/RODAR_v0.223_diagnostico_evidencias.sql` no SQL Editor do Supabase (depois do `RODAR_v0.221`). Aditivo: nada é apagado. O diagnóstico que já existe ganha o título "Diagnóstico de <cliente>".
+Continua pendente: `RODAR_v0.221` (e os antigos `RODAR_v0.197`, `RODAR_v0.209`).
+
 ## v0.222
 Nada para rodar no banco. Pendente em produção: `RODAR_v0.221` (e os antigos `RODAR_v0.197`, `RODAR_v0.209`).
 

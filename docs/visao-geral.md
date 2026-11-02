@@ -1,3 +1,6 @@
+## v0.223
+**Diagnóstico Inteligente, primeira parte.** O Diagnóstico Growth virou a casa do diagnóstico da empresa: lista, progresso por etapas e cinco abas. A Central de Evidências recebe os arquivos do cliente e da equipe, confere tipo, tamanho e repetidos, classifica (sugere pelo nome sem passar por cima da escolha manual), guarda o período e nunca apaga o original. A reunião e a leitura de planilhas de antes continuam, agora dentro do diagnóstico.
+
 ## v0.222
 **Cockpit em abas.** Áreas, Metas do período e Riscos e oportunidades ficam em abas na mesma página, com o número do que pede atenção em cada uma. É o padrão para as páginas longas do Growths.
 

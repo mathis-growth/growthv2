@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.223 | 02/11/2026 | Diagnóstico Inteligente D1: diagnóstico da empresa, cinco abas e Central de Evidências. | RODAR_v0.223 |
 | 0.222 | 02/11/2026 | Cockpit em abas (Áreas, Metas do período, Riscos e oportunidades). | nada |
 | 0.221 | 01/11/2026 | Metas das áreas (margem, caixa, CS, North Star) no Planejamento anual e no Cockpit. | RODAR_v0.221_brain_metas_areas.sql |
 | 0.220 | 01/11/2026 | Acerto da projeção: erro e viés históricos e faixa provável no Cockpit. | RODAR_v0.220_brain_calibracao.sql |

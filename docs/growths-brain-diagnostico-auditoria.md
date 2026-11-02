@@ -128,3 +128,9 @@ Ou seja, há pouco dado real a preservar, mas o que existe precisa continuar abr
 - **Conteúdo malicioso:** dá para conferir o tipo real do arquivo (assinatura), o tamanho e a extensão. Não há antivírus no Supabase; os arquivos nunca são executados, só lidos como dado.
 - **Testes estatísticos** (§13) só quando a amostra permitir; abaixo disso, o Growths diz "amostra pequena" e não calcula.
 - O **relatório em PDF** sai pela impressão do navegador, como nas outras telas.
+
+## 5. Decisões da Rebecka (02/11)
+
+1. O diagnóstico é **da empresa (workspace)** e publica no Planejamento dela.
+2. A IA lê PDF, Word e texto com **limite diário**; o custo fica visível só para ela.
+3. Construir na ordem **D1 a D8**. A D1 foi entregue na v0.223.

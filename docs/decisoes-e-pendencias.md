@@ -1,5 +1,39 @@
 
 
+## v0.223 — Diagnóstico Inteligente, D1: o diagnóstico da empresa e a Central de Evidências
+**Pedido da Rebecka (02/11):** especificação "Growth's Brain: Diagnóstico Inteligente de Growth". A auditoria (Fase 1) está em `docs/growths-brain-diagnostico-auditoria.md`.
+**Decisões dela (02/11):**
+- O diagnóstico é **da empresa** (workspace) e publica no Planejamento dela.
+- A IA pode ler PDF, Word e texto, com limite diário; o custo fica visível só para ela (entra na D5).
+- Construir na ordem D1 a D8.
+
+**O que a D1 decide:**
+- **Tela única** em Growth → Diagnóstico Growth: a lista dos diagnósticos da empresa e, dentro de cada um, cinco abas:
+  - Evidências;
+  - Investigação;
+  - Dados;
+  - Arquitetura;
+  - Validação e entrega.
+- O diagnóstico **pode nascer sem formulário** e ganha título, responsável (da equipe), período de referência, versão e cinco status: em coleta, em análise, em revisão, validado, arquivado.
+- Ligar a um formulário respondido é opcional e **não tem volta**. Quando ligado, os arquivos que o cliente mandou por aquele link entram nas evidências, inclusive os que chegarem depois.
+- **Central de Evidências:** a equipe também sobe arquivos (antes, só o cliente pelo link).
+  - Antes do envio, o Growths confere o tipo real do arquivo pelos primeiros bytes (um .pdf que não é PDF é recusado), o tamanho (até 20 MB) e o conteúdo (hash SHA-256).
+  - O mesmo conteúdo não entra duas vezes. O mesmo nome com conteúdo novo vira versão 2.
+  - Classificação em 14 tipos. A **sugestão pelo nome** fica marcada como "sugerida" e **nunca troca** a escolhida à mão.
+  - Cada arquivo também guarda o período que representa e a marca de dados pessoais.
+  - A leitura tem status: aguardando, lido, erro com o motivo, só guardado (imagens e apresentações).
+  - **A equipe não apaga arquivo: arquiva.** O original continua guardado e dá para restaurar.
+- **Arquivos do cliente** que chegaram antes não têm a conferência de conteúdo. O botão "Conferir repetidos" baixa e confere.
+- **Progresso:** sete etapas que se conferem sozinhas (evidências recebidas e classificadas, formulário, números que decidem, planilhas lidas, North Star, validado). As próximas versões acrescentam etapas.
+- **Histórico:** toda mudança de status entra sozinha. Decisões e comentários são registrados à mão. Não se edita nem se apaga.
+- **O que já existia continua igual:** a reunião do diagnóstico (Pesquisas) abre pela aba Investigação. A leitura de planilhas abre pela aba Dados, guarda o resultado no diagnóstico e marca as planilhas como lidas. A leitura que monta o Growth Model da empresa fica no botão "Ler planilhas sem diagnóstico".
+
+**Próximo (D2):** o que já se sabe, com a origem de cada informação (formulário, reunião, planilha, documento), os conflitos entre fontes, as pendências por prioridade e as decisões ligadas a cada informação.
+
+**Pendências para a Rebecka:**
+1. Rodar o RODAR_v0.223 (depois do 0.221).
+2. Testar o passo a passo.
+
 ## v0.222 — Padrão de abas na mesma página (Cockpit primeiro)
 **Pedido da Rebecka (02/11)**: a página do Cockpit ficou longa; dividir em abas na mesma página, com as áreas na aba principal e, nas outras, as metas do período e os riscos e oportunidades. "Isso podia ser um padrão de todas as nossas páginas."
 Decisões:

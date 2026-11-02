@@ -1,3 +1,17 @@
+## v0.223
+- O diagnóstico é da empresa. Ligar a um formulário é opcional e não tem volta.
+- **Evidência:**
+  - o original nunca muda nem é apagado pela equipe (arquiva);
+  - o mesmo conteúdo não entra duas vezes;
+  - o mesmo nome com conteúdo novo vira nova versão;
+  - a classificação sugerida nunca troca a manual.
+- **Tipos aceitos:** planilha, CSV, texto, PDF, Word, PowerPoint e imagem, até 20 MB. O tipo real é conferido pelo conteúdo.
+- **Status do diagnóstico:**
+  - em coleta → em análise → em revisão → validado;
+  - reabrir tira a validação;
+  - toda mudança fica no histórico.
+- Validar exige ao menos uma evidência ou o formulário do cliente.
+
 ## v0.222
 - Páginas longas: abas na mesma página; a primeira aba é a visão principal; as abas mostram um número quando há algo que pede atenção; a aba escolhida fica guardada na sessão.
 
