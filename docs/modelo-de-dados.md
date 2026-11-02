@@ -1,3 +1,6 @@
+## v0.238
+Sem mudança no banco.
+
 ## v0.237
 Sem mudança de estrutura. Só dados: a configuração da pergunta de arquivos do Diagnóstico Mathisa.
 

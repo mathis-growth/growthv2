@@ -1,3 +1,6 @@
+## Importar do diagnóstico (v0.238)
+`t238_diag_importar.py`: 8 verificações, 0 falhas. Ordem das abas; aviso sem Growths de cliente; Importar abre o importador no Growths do cliente com o de-para aberto; os leads entram no Growths do cliente e não no da Mathisa; voltar leva à aba Dados; sem erros de JavaScript. Regressão: t228 e t236 sem falhas.
+
 ## Anexar arquivos no diagnóstico (v0.237)
 `t237_anexos_documentos.py`: 6 verificações, 0 falhas. O RODAR roda numa cópia com os mesmos ids e devolve anexar, "Onde vende", grupos por plataforma e planilhas-modelo; o editor mostra a caixa marcada e, ao salvar, mantém tudo; o formulário público mostra "Enviar arquivo" só nas plataformas marcadas; sem erros de JavaScript.
 

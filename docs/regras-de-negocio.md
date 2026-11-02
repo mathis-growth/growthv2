@@ -1,3 +1,6 @@
+## v0.238
+- **Importar do diagnóstico:** os dados vão para o Growths do cliente escolhido, nunca para o da Mathisa. Quem já existe (mesmo e-mail ou telefone) não é duplicado.
+
 ## v0.237
 - **Editar pergunta:** o editor só troca o que mostra. Configurações feitas pelos modelos (anexar, "Onde vende", período, planilha-modelo) ficam.
 
