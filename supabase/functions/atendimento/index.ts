@@ -298,6 +298,40 @@ async function zernioDisponiveis(ws: string) {
     vinculada:existing.some((x:any)=>x.workspace_id===ws && x.id_externo===a._id)
   }));
 }
+async function processarTransacionais() {
+  const jobs=await q(db.rpc('atd_tx_reservar',{p_limite:20}));
+  let enviados=0,erros=0,incertos=0;
+  for(const job of jobs){
+    let attempted=false;
+    try{
+      const [pessoa,ch]=await Promise.all([
+        q(db.from('pessoas').select('telefone').eq('id',job.pessoa_id).eq('workspace_id',job.workspace_id).single()),
+        channel(job.canal_id,job.workspace_id)
+      ]);
+      if(ch.provedor!=='zernio'||ch.canal!=='whatsapp'||!ch.ativo||ch.status!=='conectado')throw new Error('A conta WhatsApp oficial não está conectada.');
+      const participante=String(pessoa.telefone||'').replace(/\D/g,'');
+      if(participante.length<10||participante.length>15)throw new Error('O contato não tem um telefone válido para WhatsApp.');
+      const params=Array.isArray(job.parametros)?job.parametros.map((x:any)=>String(x||'')):[];
+      if(params.length>20||params.some((x:string)=>!x||x.length>1024))throw new Error('Faltam valores para preencher as variáveis do template.');
+      const listed=await zernio(zp(),'/whatsapp/templates?accountId='+encodeURIComponent(ch.externo_id));
+      const templates=listed.templates||listed.data?.templates||[];
+      if(!templates.some((t:any)=>t.name===job.template_name&&t.language===job.idioma&&t.status==='APPROVED'))throw new Error('O template deixou de estar aprovado nesta conta.');
+      attempted=true;
+      const result=await zernio(zp(),'/inbox/conversations','POST',{accountId:ch.externo_id,participantId:participante,templateName:job.template_name,templateLanguage:job.idioma,templateParams:params});
+      const external=String(result.data?.messageId||result.messageId||'');
+      if(!external)throw new Error('A Zernio não confirmou o identificador da mensagem.');
+      await q(db.from('atd_envios_transacionais').update({status:'enviado',externo_id:external,enviado_em:new Date().toISOString(),atualizado_em:new Date().toISOString(),erro:null}).eq('id',job.id).eq('status','processando'));
+      enviados++;
+    }catch(e){
+      const known=!attempted||(e instanceof ProviderError&&e.status<500&&e.status!==408);
+      const status=known?'erro':'incerto';
+      const erro=known?String((e as Error).message||'Falha no envio.').slice(0,220):'Envio sem confirmação. Confira a Zernio antes de reenviar.';
+      await q(db.from('atd_envios_transacionais').update({status,atualizado_em:new Date().toISOString(),erro}).eq('id',job.id).eq('status','processando'));
+      if(known)erros++;else incertos++;
+    }
+  }
+  return {reservados:jobs.length,enviados,erros,incertos};
+}
 async function processarAgendamentos(req:Request) {
   // O token fica no banco (RLS + sem GRANT de SELECT para clientes), não no navegador.
   // Evita exigir criação de novos Edge Function Secrets neste projeto.
@@ -337,6 +371,9 @@ async function processarAgendamentos(req:Request) {
       if(known)erros++;else incertos++;
     }
   }
+  let transacionais:any={reservados:0,enviados:0,erros:0,incertos:0};
+  try{transacionais=await processarTransacionais();}
+  catch(e){console.error('atd transacionais worker indisponível',String((e as Error).message||e).slice(0,180));}
   let fluxosRetomados=0,fluxosFalhos=0;
   const due=await q(db.from('atd_automacao_execucoes').select('id,workspace_id,automacao_id,conversa_id,estado')
     .eq('status','aguardando').lte('retomar_em',new Date().toISOString()).order('retomar_em').limit(20));
@@ -359,7 +396,7 @@ async function processarAgendamentos(req:Request) {
       fluxosFalhos++;
     }
   }
-  return json({ok:true,reservados:jobs.length,enviados,erros,incertos,fluxosRetomados,fluxosFalhos});
+  return json({ok:true,reservados:jobs.length,enviados,erros,incertos,transacionais,fluxosRetomados,fluxosFalhos});
 }
 async function handle(req: Request, b: any) {
   const userDb = createClient(URL_SB, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: req.headers.get('authorization') || '' } }, auth: { persistSession:false } });
