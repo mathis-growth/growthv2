@@ -1,3 +1,8 @@
+## v0.215
+- Risco de meta: status Atenção/Em risco → "abaixo do esperado"; projeção < 95% da meta → "risco de não atingir" (< 75% alta, < 90% média, senão baixa); projeção ≥ 110% → "oportunidade".
+- Alertas em aberto viram um risco por regra (CS: todos os em aberto; os outros: últimos 14 dias).
+- Condição sumiu → resolvido pelo sistema; voltou → reabre. Descartar exige nota e não volta com a mesma condição.
+
 ## v0.214
 - Metas de leads e vendas: as do mês vêm da tabela do Planejamento; as da campanha, da campanha (leads nos dias da captação; vendas e faturamento nos dias do carrinho; sem datas, a campanha toda).
 - Meta de produto: faturamento ou vendas numa janela, dividida por igual nos dias; conta só as vendas do Growths ligadas ao produto.

@@ -1,3 +1,8 @@
+## v0.215
+- `riscos`: chave única por cliente, tipo (abaixo_do_esperado | risco_de_nao_atingir | oportunidade | qualidade_dados | operacional), área (empresa | marketing | vendas | cs | financeiro | growth), métrica, meta_id, escopo/ref, ini/fim, severidade (alta | média | baixa), título, evidência, dados, impacto + unidade, fonte (metas | alertas | guardrails | qualidade), ação sugerida, status (aberto | em_tratamento | resolvido | descartado), responsável, nota, detectado/visto/atualizado/resolvido em, resolvido_por (sistema | usuário).
+- `riscos_eventos` (histórico de cada mudança), `riscos_rodadas` (última conferência por cliente).
+- Escrita só pelas funções (`riscos_detectar`, `riscos_acao`); leitura por RLS do cliente.
+
 ## v0.214
 - `metas.metrica`: faturamento, leads, vendas.
 - `metas_fotos`: escopo e ref; a chave vira índice único (workspace, métrica, escopo, ref, ini, fim, dia).

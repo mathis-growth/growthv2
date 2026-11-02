@@ -1,5 +1,20 @@
 
 
+## v0.215 — Growth's Brain, incremento 3: Risk Engine
+**Pedido da Rebecka (01/11)**: "faça o Risk Engine" (antes dos gráficos de trajetória e da saúde por área).
+Decisões:
+- **Um registro só (`riscos`)**, alimentado pelo que o Growths já detecta, sem detector novo por área:
+  - **metas** (mês e ano da empresa; campanhas e produtos em andamento): "abaixo do esperado" (status Atenção ou Em risco), "risco de não atingir" (projeção abaixo de 95% da meta) e "oportunidade" (projeção 10% acima);
+  - **alertas** em aberto (assistente e CS) **agrupados por regra**: **fato**, a produção tem 948 avisos de CS em aberto (484 "sem CS", 464 "parado"); viram 2 riscos, não 948;
+  - **guardrails** em aberto;
+  - **qualidade dos dados** (últimos 30 dias). Só roda quando alguém com login atualiza, porque a função de qualidade exige login; o cron diário pula essa parte.
+- **Severidade e impacto por regra escrita**, sem probabilidade. Meta: Em risco = alta, Atenção = média; projeção abaixo de 75% = alta, abaixo de 90% = média, abaixo de 95% = baixa. Impacto = o que falta em R$ ou em quantidade.
+- **Período com meta só em parte** (ex.: o ano com meta só em novembro) não gera risco, para não repetir o do mês.
+- **Ciclo de vida**: a conferência é idempotente (atualiza, não duplica). Quando a condição some, o sistema resolve; quando volta, reabre. Descartado por uma pessoa (com nota obrigatória) não volta enquanto a condição for a mesma. Toda mudança fica em `riscos_eventos`.
+- **Cockpit**: bloco "Riscos e oportunidades" com os 5 mais graves, "Ver todos" (por área, com filtro), "Tratar" (assumir, resolver, descartar, reabrir, nota, histórico) e "Abrir" (vai à tela de origem). Os painéis de cada área mostram quantos riscos têm.
+- A conferência roda ao abrir o Cockpit se a última tem mais de 3 horas, no botão "Atualizar agora" e todo dia às 08:17.
+**Pendências**: riscos de margem e de dependência de produto ou canal (§11 "Empresa") e riscos combinados entre áreas; risco por cliente no CS (§17); avisar o responsável quando um risco alto aparece.
+
 ## v0.214 — Growth's Brain, incremento 2
 **Pedido da Rebecka (01/11)**: seguir para o próximo passo (leads e vendas no registro de metas, metas por produto e por campanha).
 Decisões:

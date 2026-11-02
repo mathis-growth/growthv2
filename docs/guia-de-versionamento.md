@@ -1,3 +1,6 @@
+## v0.215
+- Migration `20261209100000_brain_riscos.sql` + `RODAR_v0.215_brain_riscos.sql`. index.html montado sobre o HEAD do GitHub (v0.214) com `aplica215.py` e `g215.js`: `ckRiscosHtml`, `ckRiscosLiga`, `riscoTratar`, `riscosTodos`, `riscoAbrir`. O Cockpit pede `riscos_painel`. Teste novo `t215_riscos.py`. No banco local de teste, `alertas_tipo_check` passou a aceitar 'cs' (como em produção).
+
 ## v0.214
 - Migration `20261208100000_brain_metas_2.sql` + `RODAR_v0.214_brain_metas_2.sql`. index.html montado sobre o HEAD do GitHub (v0.213) com `aplica214.py`, trocando o bloco de `g213.js` (agora v0.213/v0.214): `ckMetasOutras`, `metaFmt`, `META_NOME`, metas por produto e por campanha em `paObjetivos`. Teste novo `t214_metas_leads_campanhas.py`; `t213` ajustado (filtra faturamento e não apaga as metas de campanha).
 

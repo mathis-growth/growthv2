@@ -1,3 +1,6 @@
+## v0.215
+**Riscos num lugar só.** O Cockpit mostra os riscos e oportunidades do cliente (metas, alertas, guardrails e qualidade dos dados), com evidência, impacto, ação sugerida e quem está tratando. Quando a causa some, o risco se resolve sozinho.
+
 ## v0.214
 **Metas de leads, vendas, campanhas e produtos.** O Cockpit mostra, além do faturamento, as metas de leads e de vendas e as metas de cada campanha e produto, com esperado até hoje, realizado, projeção e status. Metas de produto são criadas no Planejamento anual.
 

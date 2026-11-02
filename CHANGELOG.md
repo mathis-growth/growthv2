@@ -1,3 +1,9 @@
+## v0.215 — Growth's Brain: Risk Engine (01/11/2026)
+- Registro único de riscos alimentado pelas metas, alertas (agrupados), guardrails e qualidade dos dados.
+- Cockpit: "Riscos e oportunidades" (os 5 mais graves, ver todos, tratar, abrir) e contagem de riscos em cada painel de área.
+- Ciclo de vida com histórico: resolve sozinho, reabre, descartar com nota.
+- Banco: `RODAR_v0.215_brain_riscos.sql`. Teste: `t215_riscos.py` (0 falhas).
+
 ## v0.214 — Growth's Brain: leads, vendas, campanhas e produtos nas metas (01/11/2026)
 - Metas de leads e vendas do mês e metas das campanhas no registro central (na janela da captação e do carrinho).
 - Metas por produto, criadas no Planejamento anual.

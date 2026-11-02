@@ -1,12 +1,16 @@
 
 
+## Risk Engine (v0.215)
+- `t215_riscos.py` (32 verificações, 0 falhas): riscos de meta (faturamento e leads), sem duplicar com o ano parcial; 3 alertas de aluno parado = 1 risco de CS; contas vencidas no financeiro; alerta resolvido fora; guardrail crítico; evidência sem probabilidade; idempotência; resolve sozinho, reabre, histórico; sem login não mexe; Cockpit (bloco, contagem por área, Atualizar agora com qualidade, Ver todos com filtro, assumir, descartar só com nota, descartado não volta, Abrir leva ao Customer Growth, celular).
+- Regressão: t213, t214, t211, t192, t158, t205, t209 sem falhas; t164 (tela) com a mesma falha de antes.
+
 ## Growth's Brain, incremento 2 (v0.214)
 - `t214_metas_leads_campanhas.py` (21 verificações, 0 falhas): leads e vendas do mês no registro (espelho só da coluna certa); leads e vendas de outubro iguais ao Dashboard de vendas; cobertura parcial; metas da campanha (janela da campanha e do carrinho, versão nova ao mudar, perpétua fora); recortes; foto das campanhas; Cockpit com as tabelas e o clique na campanha; Planejamento anual (listar, criar, editar e tirar meta de produto; abrir a campanha).
 - Regressão: t213, t211, t198, t200, t192, t205 sem falhas.
 
 ## Growth's Brain, incremento 1 (v0.213)
 - `t213_metas.py` (31 verificações, 0 falhas): espelho plano anual ↔ registro ↔ mês (com versões); ano soma a meta do ano; outubro encerrado; meio do mês (esperado linear, projeção pelo ritmo, status pela regra); dia 1 = sem dados suficientes; sem meta = sem número; regra por cliente; foto diária; acesso negado sem login; NSM provisória com versão; Cockpit (mês e mês passado, aviso da soma, Como calculamos, Ver as vendas com o mesmo faturamento); objetivos do ano (criar, ligar a meta); salvar o mês pela tabela antiga atualiza o registro; Growth Model com status; celular.
-- Regressão: ver a entrega.
+- Regressão: t213, t214, t211, t192, t158, t205, t209 sem falhas; t164 (tela) com a mesma falha de antes.
 
 ## Período padrão em todos os dashboards (v0.212)
 - `t211_periodo_padrao.py` (31 verificações, 0 falhas): 7 dashboards com o mesmo filtro e a ordem nova; todos começam em 01 a 30/11; "Mês passado" escolhido no Marketing vale no Vendas, Administrativo, Mídia paga, Financeiro, Customer Success e Cockpit; Cockpit diz o período no topo; Customer Success conta 32 dias (01/10 até hoje); Financeiro com Próximos 30 dias; menu sem Planejamento da empresa e link antigo abre o Planejamento anual.

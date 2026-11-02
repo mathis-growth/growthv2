@@ -1,3 +1,8 @@
+## v0.215 — Growth's Brain: Risk Engine
+1. `supabase/RODAR_v0.215_brain_riscos.sql`: tabelas `riscos`, `riscos_eventos` (histórico) e `riscos_rodadas`; funções `riscos_detectar`, `riscos_painel`, `riscos_acao`, `riscos_rodar`; cron `growths-riscos` (08:17).
+2. Não mexe em dados existentes. A primeira conferência acontece quando alguém abre o Cockpit (ou às 08:17).
+3. Pode rodar de novo sem erro. Pendentes em produção: `RODAR_v0.197`, `RODAR_v0.209` (versão da v0.210), `RODAR_v0.214`, `RODAR_v0.215`.
+
 ## v0.214 — Growth's Brain: leads, vendas, campanhas e produtos nas metas
 1. `supabase/RODAR_v0.214_brain_metas_2.sql`: leads e vendas no registro de metas; metas das campanhas no registro (espelho de mão única: a campanha continua sendo o lugar de editar); metas por produto; avaliação por séries diárias (`metas_serie`, `metas_realizado_dia`), `metas_recortes`; `metas_painel` devolve faturamento, leads, vendas e os recortes; foto diária com escopo.
 2. **Mexe em dados de produção (sem apagar nada):** copia para `metas` as metas de leads e vendas do planejamento mensal (hoje vazio) e as metas de leads, vendas e receita das campanhas que têm meta. Em `metas_fotos`, a chave primária vira um índice único com o escopo (as fotos antigas ficam).
