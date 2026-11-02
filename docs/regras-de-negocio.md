@@ -1,3 +1,6 @@
+## v0.222
+- Páginas longas: abas na mesma página; a primeira aba é a visão principal; as abas mostram um número quando há algo que pede atenção; a aba escolhida fica guardada na sessão.
+
 ## v0.221
 - Meta de nível: no mínimo → dentro se valor ≥ meta; atenção até meta − |meta| × tolerância; abaixo disso, em risco. No máximo: o inverso.
 - Margem: DRE quando há receita na DRE no período; senão, Financeiro simplificado. Caixa e CS: situação de hoje.

@@ -34,3 +34,7 @@ def abre(browser, hoje='2026-10-15', vw=1440, vh=900, prefs=None):
 def vai(pg, view, extra='', ms=3500):
     pg.evaluate("([v, x]) => { S.view = v; eval(x); render(); }", [view, extra]); pg.wait_for_timeout(ms)
     return pg.inner_text('#main')
+
+def aba(pg, k, ms=400):
+    """v0.222: troca a aba da página (padrão de abas na mesma página)."""
+    pg.click(f'#main [data-abas] [data-aba-k="{k}"]'); pg.wait_for_timeout(ms)

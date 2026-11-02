@@ -1,3 +1,8 @@
+## v0.222 — Cockpit em abas (02/11/2026)
+- Abas Áreas (padrão), Metas do período e Riscos e oportunidades, com o número do que pede atenção.
+- Padrão reutilizável de abas na mesma página.
+- Teste: `t222_abas.py` (0 falhas).
+
 ## v0.221 — Growth's Brain: metas das áreas (01/11/2026)
 - Metas de nível no registro: margem, caixa, churn, retenção em 90 dias, LTV, ascensão e North Star, com fonte e regra no mínimo/no máximo.
 - Planejamento anual › "Metas das áreas"; Cockpit › "Metas das áreas" e saúde de Financeiro, CS e Growth; risco quando passa do limite.

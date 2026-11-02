@@ -66,7 +66,7 @@ sql(f"update growth_metricas set nsm_status = 'provisoria' where workspace_id = 
 with sync_playwright() as pw:
     b = pw.chromium.launch()
     ctx, pg = front.abre(b, hoje='2026-11-01', vw=1440, vh=1000)
-    front.vai(pg, 'cockpit', '', 9000)
+    front.vai(pg, 'cockpit', "S.abas = { ck: 'metas' };", 9000)
     mt = pg.locator('#main .ck-metas')
     t = nb(mt.inner_text()) if mt.count() else ''
     chk(mt.count() == 1 and 'Metas do período' in t and 'Faturamento' in t and nb(brl(22000)) in t and 'Sem dados suficientes' in t, 'Cockpit (este mês): faixa de meta com a meta de novembro e "Sem dados suficientes" no dia 1', t[:400])
@@ -83,7 +83,7 @@ with sync_playwright() as pw:
     pg.click('#modalRoot [data-x]'); pg.wait_for_timeout(300)
     pg.click('#main [data-mt=vendas]'); pg.wait_for_timeout(7000)
     chk(pg.evaluate('S.view') == 'crm-dash' and nb(brl(fat_out)) in nb(pg.inner_text('#main')), 'Ver as vendas: abre o Dashboard de vendas no mesmo período, com o mesmo faturamento')
-    front.vai(pg, 'cockpit', '', 8000)
+    front.vai(pg, 'cockpit', "S.abas = { ck: 'areas' };", 8000)
     chk('provisória' in pg.inner_text('#main .ck-gro'), 'Cockpit: a North Star aparece como provisória')
     # Planejamento anual: objetivos do ano
     front.vai(pg, 'mkt-camp', "S.tabMkt = 'plan'; S.campSel = null; S.ano = 2026;", 9000)
@@ -105,7 +105,7 @@ with sync_playwright() as pw:
     chk(pg.locator('#modalRoot [name=nsm_status]').count() == 1, 'Growth Model: o formulário da North Star tem o status')
     pg.click('#modalRoot [data-x]')
     # celular
-    pg.set_viewport_size({'width': 390, 'height': 900}); front.vai(pg, 'cockpit', '', 8000)
+    pg.set_viewport_size({'width': 390, 'height': 900}); front.vai(pg, 'cockpit', "S.abas = { ck: 'metas' };", 8000)
     chk(pg.evaluate("document.documentElement.scrollWidth <= 392"), 'celular: a faixa de meta não passa da tela')
     pg.screenshot(path=SHOT + '4_celular.png', full_page=False)
     chk(not pg.errs, 'sem erro de JavaScript ' + str(pg.errs[:3]))

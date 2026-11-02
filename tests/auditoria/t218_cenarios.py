@@ -45,7 +45,7 @@ chk(len(Z['incertezas']) == 4 and 'não uma garantia' in ' '.join(Z['incertezas'
 with sync_playwright() as pw:
     b = pw.chromium.launch()
     ctx, pg = front.abre(b, hoje='2026-10-15', vw=1440, vh=1000)
-    front.vai(pg, 'cockpit', "S.perD = { ini: '2026-10-01', fim: '2026-10-31' };", 11000)
+    front.vai(pg, 'cockpit', "S.abas = { ck: 'metas' }; S.perD = { ini: '2026-10-01', fim: '2026-10-31' };", 11000)
     pg.click('#main [data-mt=sim]'); pg.wait_for_timeout(4000)
     t = nb(pg.inner_text('#modalRoot'))
     chk('Simular · Faturamento' in t and 'Alavancas' in t and 'Atual × cenário' in t and 'Premissas e incertezas' in t, 'Cockpit › Simular: alavancas, atual × cenário e premissas', t[:300])

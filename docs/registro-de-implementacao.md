@@ -1,5 +1,9 @@
 
 
+## Abas no Cockpit (v0.222)
+- `t222_abas.py` (9 verificações, 0 falhas): três abas; abre em Áreas; números nas abas; Metas com o gráfico; Riscos; período mantém a aba; voltar ao Cockpit abre na última aba; celular.
+- Regressão (com os testes ajustados para as abas): t213 a t221, t211, t192, t158 sem falhas.
+
 ## Metas das áreas (v0.221)
 - `t221_metas_areas.py` (18 verificações, 0 falhas): metas do CS absorvidas com a direção certa; espelho churn ↔ CS; saldo mínimo ↔ meta de caixa nos dois sentidos; meta da North Star; meta de margem pela função da tela; margem = DRE com a fonte e "em risco"; churn = cálculo do CS; caixa = saldo de hoje; North Star automática; as sete em `metas_niveis`; risco de margem no Financeiro; tela do Planejamento (sete linhas, salvar com versão); Cockpit (tabela, saúde do Financeiro e do CS).
 - Regressão: t220, t219, t218, t217, t216, t215, t214, t213, t209, t198 sem falhas.

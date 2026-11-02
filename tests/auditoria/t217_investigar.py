@@ -44,7 +44,7 @@ except Exception as e: chk('Sem acesso' in str(e), 'sem login, a investigação 
 with sync_playwright() as pw:
     b = pw.chromium.launch()
     ctx, pg = front.abre(b, hoje='2026-11-01', vw=1440, vh=1000)
-    front.vai(pg, 'cockpit', "S.perD = { ini: '2026-10-01', fim: '2026-10-31' };", 11000)
+    front.vai(pg, 'cockpit', "S.abas = { ck: 'metas' }; S.perD = { ini: '2026-10-01', fim: '2026-10-31' };", 11000)
     pg.click('#main [data-mt=inv]'); pg.wait_for_timeout(4000)
     t = nb(pg.inner_text('#modalRoot'))
     chk('Investigar · Faturamento' in t and brl(fat) in t and 'Produto' in t and 'Canal' in t and 'o que mais mudou' in t, 'Cockpit › Investigar o faturamento: total, período anterior e as dimensões', t[:400])

@@ -1,3 +1,6 @@
+## v0.222
+Nada para rodar no banco. Pendente em produção: `RODAR_v0.221` (e os antigos `RODAR_v0.197`, `RODAR_v0.209`).
+
 ## v0.221 — Growth's Brain: metas das áreas
 1. `supabase/RODAR_v0.221_brain_metas_areas.sql`: métricas de nível no registro (margem, caixa, churn, retenção 90 dias, LTV, ascensão, North Star), `metas_avaliar_nivel`, `metas_niveis`, `metas_nivel_salvar`, espelhos e o Risk Engine com metas de nível.
 2. **Mexe em dados de produção (sem apagar):** copia para o registro as metas do Customer Success (`heavyops_metas`), o saldo mínimo (`empresa.saldo_minimo`) e a meta da North Star (`growth_metricas.meta`), como metas de 2026.

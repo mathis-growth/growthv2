@@ -46,7 +46,7 @@ except Exception as e: chk('Sem acesso' in str(e), 'sem login, o acerto é recus
 with sync_playwright() as pw:
     b = pw.chromium.launch()
     ctx, pg = front.abre(b, hoje='2026-10-15', vw=1440, vh=1000)
-    front.vai(pg, 'cockpit', "S.perD = { ini: '2026-10-01', fim: '2026-10-31' };", 12000)
+    front.vai(pg, 'cockpit', "S.abas = { ck: 'metas' }; S.perD = { ini: '2026-10-01', fim: '2026-10-31' };", 12000)
     t = nb(pg.inner_text('#mtFaixa'))
     chk('Faixa provável até 31/10' in t and 'não probabilidade' in t, 'Cockpit: faixa provável abaixo da projeção, com o aviso de que não é probabilidade', t)
     pg.locator('#main .ck-metas').screenshot(path=SHOT + '1_faixa.png')

@@ -1,5 +1,14 @@
 
 
+## v0.222 — Padrão de abas na mesma página (Cockpit primeiro)
+**Pedido da Rebecka (02/11)**: a página do Cockpit ficou longa; dividir em abas na mesma página, com as áreas na aba principal e, nas outras, as metas do período e os riscos e oportunidades. "Isso podia ser um padrão de todas as nossas páginas."
+Decisões:
+- **Cockpit em três abas**: **Áreas** (padrão: Geral, Marketing, Vendas, Financeiro, Projetos, Growth, Clientes), **Metas do período** (faturamento, trajetória, faixa provável, leads e vendas, campanhas e produtos, metas das áreas) e **Riscos e oportunidades**.
+- **Número na aba**: quantas metas estão em atenção ou em risco; quantos riscos estão em aberto. Assim dá para ver de longe se vale abrir a aba.
+- O filtro de período fica em cima das abas e vale para as três. A aba escolhida fica guardada enquanto a sessão está aberta (trocar o período ou sair e voltar ao Cockpit mantém a aba).
+- **Padrão reutilizável**: `abasHtml(chave, abas, padrão)` e `abasLiga(m, chave, padrão)`. Qualquer página pode usar.
+**Próximo**: aplicar o mesmo padrão às páginas longas: Dashboard geral (Administrativo), Dashboard financeiro, Dashboard de vendas e Dashboard de marketing (as seções viram abas), o Planejamento anual (objetivos e metas / meta do ano e trimestres / calendário de campanhas) e o Customer Success. Combinar a ordem com a Rebecka.
+
 ## v0.221 — Metas das áreas (Financeiro, Customer Success e Growth)
 **Pedido da Rebecka (01/11)**: completar as metas das outras áreas. Decisão dela: a margem vem da DRE (lançamentos) para quem tem o Financeiro completo e do Financeiro simplificado para quem só tem o Go-to-Market, com a tela mostrando de onde veio o número.
 Decisões:

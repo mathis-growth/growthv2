@@ -1,3 +1,6 @@
+## v0.222
+**Cockpit em abas.** Áreas, Metas do período e Riscos e oportunidades ficam em abas na mesma página, com o número do que pede atenção em cada uma. É o padrão para as páginas longas do Growths.
+
 ## v0.221
 **Metas para todas as áreas.** Margem, caixa, churn, retenção, LTV, ascensão e North Star têm meta no Planejamento anual, aparecem no Cockpit com o valor de agora e a fonte, e viram risco quando passam do limite.
 

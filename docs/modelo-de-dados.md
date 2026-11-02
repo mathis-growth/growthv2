@@ -1,3 +1,6 @@
+## v0.222
+- Sem mudança no banco.
+
 ## v0.221
 - `metas.metrica`: + margem, caixa, churn, retencao90, ltv, ascensao, nsm (metas de nível, granularidade ano, direção mínimo/máximo/maior/menor).
 - Funções: `metas_nivel_cfg`, `metas_grava_nivel`, `metas_nivel_salvar` (tela), `metas_nivel_valor`, `metas_avaliar_nivel`, `metas_niveis`; `metas_painel` devolve `niveis`. Gatilhos de espelho: `metas_de_heavyops`, `metas_de_nsm`, `metas_de_saldo_minimo`, `metas_para_origens`. `riscos_detectar` ganhou o bloco de metas de nível.

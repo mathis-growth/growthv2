@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.221 (Growth's Brain: metas das áreas).
+**Última atualização:** 02/11/2026, versão 0.222 (Cockpit em abas).
+
+**v0.222 · Cockpit em abas.** Áreas, Metas do período e Riscos e oportunidades ficam em abas na mesma página, cada uma com o número do que pede atenção.
 
 **v0.221 · Metas para todas as áreas.** Margem, caixa, churn, retenção, LTV, ascensão e North Star ganham meta no Planejamento anual e aparecem no Cockpit, com a fonte de cada número.
 
@@ -118,7 +120,7 @@ A ideia central: o dono do negócio e a consultoria olham para os mesmos número
 ## 2. Administrativo: a visão do negócio
 
 ### Cockpit
-A tela inicial. Um painel pequeno por área (Geral, Marketing, Vendas, Financeiro, Projetos, Growth e Clientes), dois lado a lado, cada um com os números que mais importam no período: caixa, receita, margem e lucro; campanhas e leads; vendas, ticket e conversão; a receber, a pagar e MRR; projetos e atividades atrasadas; North Star e experimentos; alunos ativos, alertas e satisfação. Cada painel traz também um gráfico: receita e lucro por mês, leads e faturamento por dia, o que entra e o que sai, alunos por etapa. Clicar num painel abre o dashboard daquela área, com tudo em detalhe. Cada pessoa só vê os painéis das áreas a que tem acesso. Em cima, o mesmo filtro de período de todos os dashboards (começa no mês corrente); mudar o período muda todos os painéis.
+A tela inicial, em três abas na mesma página: **Áreas** (a primeira), **Metas do período** e **Riscos e oportunidades**; as duas últimas mostram no título quantas metas estão fora do esperado e quantos riscos estão em aberto, e o período escolhido vale para as três. Um painel pequeno por área (Geral, Marketing, Vendas, Financeiro, Projetos, Growth e Clientes), dois lado a lado, cada um com os números que mais importam no período: caixa, receita, margem e lucro; campanhas e leads; vendas, ticket e conversão; a receber, a pagar e MRR; projetos e atividades atrasadas; North Star e experimentos; alunos ativos, alertas e satisfação. Cada painel traz também um gráfico: receita e lucro por mês, leads e faturamento por dia, o que entra e o que sai, alunos por etapa. Clicar num painel abre o dashboard daquela área, com tudo em detalhe. Cada pessoa só vê os painéis das áreas a que tem acesso. Em cima, o mesmo filtro de período de todos os dashboards (começa no mês corrente); mudar o período muda todos os painéis.
 
 Logo abaixo, a **Meta de faturamento**: a meta do período (vinda do Planejamento anual), quanto deveria ter sido vendido até hoje, quanto foi vendido, o desvio, a projeção até o fim do período e o status (Dentro do esperado, Atenção, Em risco, Atingida…). Embaixo, o mesmo para o ano. "Como calculamos" mostra a conta, o método da projeção e a regra do status, sem prometer probabilidade. Se as metas dos meses não somam a meta do ano, o Cockpit avisa. Num mês em andamento, abaixo da projeção aparece a **faixa provável** (de quanto a quanto o mês deve fechar), calculada pelo erro que a projeção teve nos meses anteriores na mesma altura do mês; o botão "Acerto da projeção" mostra esse histórico para faturamento, leads e vendas (erro médio, viés e maior erro). É erro observado, não probabilidade. Logo abaixo, o **gráfico de trajetória**: a meta acumulada dia a dia, o realizado acumulado até hoje e a projeção até o fim do período, para ver quando o resultado começou a descolar da meta. Cada meta da tabela tem o mesmo gráfico no botão "Trajetória". O botão **Investigar** abre o número por produto, campanha, canal, plataforma e cliente novo × recorrente (nos leads: campanha, canal, qualificação e situação), comparando com o período anterior e mostrando o que mais mudou. Clicar numa fatia filtra todas as outras; o caminho no topo permite voltar a qualquer passo; "Ver os registros" lista as vendas ou os leads por trás do número, com link para a ficha da pessoa. As fatias sempre somam o total. O botão **Simular** testa o "e se": mais leads, investimento extra em mídia (convertido em leads pelo CPL dos últimos 90 dias), outra conversão ou outro ticket, só no que falta do período. Mostra o atual ao lado do cenário, se a meta passa a ser alcançada, quanto o resto do período precisaria render para bater, as premissas e as incertezas (não é garantia). Os cenários podem ser salvos, carregados, versionados, aprovados e arquivados, sem mexer nos dados reais. Logo depois vêm as metas de leads e de vendas da empresa e as metas de cada campanha e produto, cada uma na sua janela (a campanha conta leads nos dias da captação e vendas nos dias do carrinho aberto); clicar numa campanha abre a campanha.
 
@@ -588,6 +590,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.222):** Cockpit em abas; padrão de abas para as páginas longas.
 - **01/11 (v0.221):** metas das áreas (Financeiro, CS e Growth) no Planejamento anual e no Cockpit.
 - **01/11 (v0.220):** acerto da projeção e faixa provável no Cockpit.
 - **01/11 (v0.219):** funil AARRR no Cockpit.

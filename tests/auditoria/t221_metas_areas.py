@@ -63,9 +63,10 @@ with sync_playwright() as pw:
     pg2.fill('#paAreas [data-niv=margem]', '25'); pg2.click('#paNivSalva'); pg2.wait_for_timeout(7000)
     chk(sql(f"select valor::numeric(6,2) || ':' || versao from metas where workspace_id = '{WS}' and metrica = 'margem' and status = 'aprovada'") == '25.00:2', 'salvar a meta de margem pela tela (versão nova)')
     pg2.locator('#paAreas').screenshot(path=SHOT + '1_metas_das_areas.png')
-    front.vai(pg2, 'cockpit', "S.perD = { ini: '2026-10-01', fim: '2026-10-31' };", 11000)
+    front.vai(pg2, 'cockpit', "S.abas = { ck: 'metas' }; S.perD = { ini: '2026-10-01', fim: '2026-10-31' };", 11000)
     t = nb(pg2.inner_text('#main .ck-metas'))
     chk('Metas das áreas' in t and 'Margem' in t and 'no mínimo 25' in t, 'Cockpit: tabela "Metas das áreas" na faixa de metas', t[-500:])
+    front.aba(pg2, 'areas')
     sf = nb(pg2.inner_text('#main .ck-fin .ck-saude')) if pg2.locator('#main .ck-fin .ck-saude').count() else ''
     chk('Margem' in sf and 'meta no mínimo' in sf, 'saúde do Financeiro: a margem com status e a meta', sf)
     sc = nb(pg2.inner_text('#main .ck-cs .ck-saude')) if pg2.locator('#main .ck-cs .ck-saude').count() else ''

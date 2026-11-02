@@ -1,3 +1,6 @@
+## v0.222
+- index.html montado sobre o HEAD do GitHub (v0.221) com `aplica222.py` e `g222.js`: `abasHtml`, `abasLiga`, `ckMetasAlerta`; Cockpit em abas (`data-aba-de="ck"`). Testes ajustados para escolher a aba (`front.aba`, `S.abas`): t213 a t221. Teste novo `t222_abas.py`.
+
 ## v0.221
 - Migration `20261215100000_brain_metas_areas.sql` + `RODAR_v0.221_brain_metas_areas.sql`. index.html montado sobre o HEAD do GitHub (v0.220) com `aplica221.py` e `g221.js`: `paMetasAreas`, `ckMetasNiveis`, `nivelFmt`, `nivelRegra`; `CK_SAUDE` com as metas de nível; `#paAreas` no Planejamento anual. Teste novo `t221_metas_areas.py`. No banco local de teste, `empresa.saldo_minimo` (migration 20261025100000) aplicado como em produção.
 

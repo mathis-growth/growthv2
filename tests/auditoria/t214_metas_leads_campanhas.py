@@ -60,7 +60,7 @@ chk(sql(f"select count(*) from metas_fotos where workspace_id = '{WS}' and escop
 with sync_playwright() as pw:
     b = pw.chromium.launch()
     ctx, pg = front.abre(b, hoje='2026-11-01', vw=1440, vh=1000)
-    front.vai(pg, 'cockpit', "S.perD = { ini: '2026-09-01', fim: '2026-10-31' };", 9000)
+    front.vai(pg, 'cockpit', "S.abas = { ck: 'metas' }; S.perD = { ini: '2026-09-01', fim: '2026-10-31' };", 9000)
     t = nb(pg.inner_text('#main .ck-metas'))
     chk('Leads e vendas da empresa' in t and 'Campanhas e produtos com meta' in t and t.count('Lançamento Setembro') == 3, 'Cockpit: tabela de leads e vendas da empresa e as 3 metas da campanha', t[:500])
     chk('parcial' in t, 'Cockpit: leads com cobertura parcial marcados (setembro sem meta)')
@@ -77,7 +77,7 @@ with sync_playwright() as pw:
     chk(sql(f"select granularidade || ':' || valor::int || ':' || unidade from metas where produto_id = '{PROD}' and status = 'aprovada'") == 'mes:15000:brl' and 'Curso Base' in pg.inner_text('#paObj'), 'criar meta de produto (outubro inteiro vira granularidade "mês")')
     pg.locator('#paObj').screenshot(path=SHOT + '2_planejamento_metas.png')
     fat_cb = float(sql(f"select coalesce(sum(valor_bruto), 0) from vendas where produto_id = '{PROD}' and status = 'aprovada' and (data_venda at time zone 'America/Sao_Paulo')::date between '2026-10-01' and '2026-10-31'"))
-    front.vai(pg, 'cockpit', "S.perD = { ini: '2026-10-01', fim: '2026-10-31' };", 9000)
+    front.vai(pg, 'cockpit', "S.abas = { ck: 'metas' }; S.perD = { ini: '2026-10-01', fim: '2026-10-31' };", 9000)
     t = nb(pg.inner_text('#main .ck-metas'))
     chk('Curso Base' in t and brl(fat_cb) in t and brl(15000) in t, 'Cockpit (outubro): meta do Curso Base com o faturamento do produto', t[:600])
     front.vai(pg, 'mkt-camp', "S.tabMkt = 'plan'; S.campSel = null; S.ano = 2026;", 9000)

@@ -31,7 +31,7 @@ except Exception as e: chk('Sem acesso' in str(e), 'sem login, a trajetória é 
 with sync_playwright() as pw:
     b = pw.chromium.launch()
     ctx, pg = front.abre(b, hoje='2026-10-20', vw=1440, vh=1000)
-    front.vai(pg, 'cockpit', "S.perD = { ini: '2026-10-01', fim: '2026-10-31' };", 11000)
+    front.vai(pg, 'cockpit', "S.abas = { ck: 'metas' }; S.perD = { ini: '2026-10-01', fim: '2026-10-31' };", 11000)
     tj = pg.locator('#mtTraj')
     chk(tj.locator('svg.gc').count() == 1 and 'Meta acumulada' in tj.inner_text() and 'Projeção' in tj.inner_text() and tj.locator('polyline').count() == 3, 'Cockpit: gráfico de trajetória do faturamento (meta, realizado e projeção)', tj.inner_text()[:200] if tj.count() else '')
     chk('hoje' in tj.inner_text(), 'o gráfico marca o dia de hoje')
@@ -40,6 +40,7 @@ with sync_playwright() as pw:
     chk(pg.locator('#modalRoot svg.gc').count() == 1 and 'Trajetória · Leads' in pg.inner_text('#modalRoot'), '"Trajetória" na linha de leads abre o gráfico de leads', pg.inner_text('#modalRoot')[:200])
     pg.locator('#modalRoot .modal').screenshot(path=SHOT + '2_trajetoria_leads.png')
     pg.click('#modalRoot [data-x]'); pg.wait_for_timeout(300)
+    front.aba(pg, 'areas')
     sm = nb(pg.inner_text('#main .ck-mkt .ck-saude')) if pg.locator('#main .ck-mkt .ck-saude').count() else ''
     chk('Leads' in sm and 'esperados' in sm, 'saúde do Marketing: a meta de leads com status e realizado × esperado', sm)
     sg = nb(pg.inner_text('#main .ck-geral .ck-saude')) if pg.locator('#main .ck-geral .ck-saude').count() else ''
