@@ -130,11 +130,13 @@
     if(!active(token)||generation!==A.chatToken) return;
     if(contato)cv.pessoa_id=contato.id;
     const ch=A.canais.find(c=>c.id===cv.canal_id)||{}, draft=A.drafts.get(draftKey(id))||'';
+    const aguardaTemplate=ch.provedor==='zernio'&&String(cv.externo_id||'').startsWith('pending:');
+    const podeEnviar=A.ctx.editar&&!aguardaTemplate;
     const resumoContato=contato?`<div class="atd-contato-resumo"><span class="atd-resumo-tipo">${esc(contato.tipo)}</span>${contato.produto?`<span><b>Produto</b>${esc(contato.produto)}</span>`:''}${contato.campanha?`<span><b>Campanha / lançamento</b>${esc(contato.campanha)}</span>`:''}<span><b>Data de captura</b>${contato.capturado_em?new Date(contato.capturado_em).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'}):'—'}</span></div>`:'';
     $('#atdRoot').classList.add('selecionada');$('#atdRoot').classList.remove('ficha');
-    $('#atdChat').innerHTML=`<header class="atd-top"><div><button class="btn sm atd-mobile" id="atdVoltar">← Conversas</button><strong>${esc(cv.nome)}</strong>${cv.grupo&&ch.provedor==='evolution'?` <button class="btn sm" id="atdArquivarGrupo">${cv.arquivada?'Desarquivar grupo':'Arquivar grupo'}</button>`:''}<div class="atd-identificacao">${faixaCanal(ch)}${cv.grupo?'<small>Grupo</small>':''}</div>${resumoContato}</div><div><select id="atdSituacao" aria-label="Situação da conversa" ${A.ctx.editar?'':'disabled'}>${['aberta','aguardando','resolvida'].map(s=>`<option value="${s}"${cv.status===s?' selected':''}>${s==='aberta'?'Aberta':s==='aguardando'?'Aguardando':'Resolvida'}</option>`).join('')}</select> <button class="btn sm atd-mobile" id="atdVerFicha">Ficha</button></div></header><div class="atd-msgs" id="atdMensagens"></div><form class="atd-compose" id="atdCompose"><div class="atd-dupla"><select id="atdModo" aria-label="Tipo de mensagem"><option value="enviar">Mensagem</option><option value="nota">Nota interna</option></select><button type="button" class="btn sm" id="atdHistorico">Importar histórico</button></div><textarea id="atdTexto" aria-label="Mensagem" maxlength="4000" placeholder="Escreva sua mensagem…" ${A.ctx.editar?'':'disabled'}>${esc(draft)}</textarea><div class="atd-arquivo" id="atdArquivoNome"></div><div class="atd-gravacao" id="atdGravacao" aria-live="polite"></div><footer><label class="btn sm">Anexar<input type="file" id="atdArquivo" class="atd-hidden" accept="image/jpeg,image/png,image/webp,video/mp4,audio/ogg,audio/mpeg,audio/mp4,audio/webm,audio/wav,application/pdf"></label><button type="button" class="btn sm" id="atdGravar" ${A.ctx.editar?'':'disabled'} aria-label="Gravar áudio pelo microfone">🎤 Gravar áudio</button><small class="muted">${A.ctx.nome?'Assinado por '+esc(A.ctx.nome):'Cadastre seu nome na equipe para enviar.'}</small><button class="btn pri" id="atdEnviar" ${A.ctx.editar?'':'disabled'}>Enviar</button></footer></form>`;
+    $('#atdChat').innerHTML=`<header class="atd-top"><div><button class="btn sm atd-mobile" id="atdVoltar">← Conversas</button><strong>${esc(cv.nome)}</strong>${cv.grupo&&ch.provedor==='evolution'?` <button class="btn sm" id="atdArquivarGrupo">${cv.arquivada?'Desarquivar grupo':'Arquivar grupo'}</button>`:''}<div class="atd-identificacao">${faixaCanal(ch)}${cv.grupo?'<small>Grupo</small>':''}</div>${aguardaTemplate?'<p class="muted">Sessão criada · aguardando o primeiro envio por template aprovado.</p>':''}${resumoContato}</div><div><select id="atdSituacao" aria-label="Situação da conversa" ${A.ctx.editar?'':'disabled'}>${['aberta','aguardando','resolvida'].map(s=>`<option value="${s}"${cv.status===s?' selected':''}>${s==='aberta'?'Aberta':s==='aguardando'?'Aguardando':'Resolvida'}</option>`).join('')}</select> <button class="btn sm atd-mobile" id="atdVerFicha">Ficha</button></div></header><div class="atd-msgs" id="atdMensagens"></div><form class="atd-compose" id="atdCompose"><div class="atd-dupla"><select id="atdModo" aria-label="Tipo de mensagem"><option value="enviar">Mensagem</option><option value="nota">Nota interna</option></select><button type="button" class="btn sm" id="atdHistorico">Importar histórico</button></div><textarea id="atdTexto" aria-label="Mensagem" maxlength="4000" placeholder="Escreva sua mensagem…" ${A.ctx.editar&&!aguardaTemplate?'':'disabled'}>${esc(draft)}</textarea><div class="atd-arquivo" id="atdArquivoNome"></div><div class="atd-gravacao" id="atdGravacao" aria-live="polite"></div><footer><label class="btn sm">Anexar<input type="file" id="atdArquivo" class="atd-hidden" accept="image/jpeg,image/png,image/webp,video/mp4,audio/ogg,audio/mpeg,audio/mp4,audio/webm,audio/wav,application/pdf" ${podeEnviar?'':'disabled'}></label><button type="button" class="btn sm" id="atdGravar" ${podeEnviar?'':'disabled'} aria-label="Gravar áudio pelo microfone">🎤 Gravar áudio</button><small class="muted">${A.ctx.nome?'Assinado por '+esc(A.ctx.nome):'Cadastre seu nome na equipe para enviar.'}</small><button class="btn pri" id="atdEnviar" ${podeEnviar?'':'disabled'}>Enviar</button></footer></form>`;
     $('#atdModo').insertAdjacentHTML('afterend','<button type="button" class="btn sm" id="atdRapidas">⚡ Respostas rápidas</button>'+(ch.canal==='whatsapp'&&ch.provedor==='zernio'&&A.ctx.editar?' <button type="button" class="btn sm" id="atdEnviarTemplate">▤ Enviar template</button>':'')+' <button type="button" class="btn sm" id="atdAgendar">🕒 Agendar envio</button> <button type="button" class="btn sm" id="atdVerAgendados">Agendamentos</button>');
-    $('#atdAgendar').disabled=!A.ctx.editar;
+    $('#atdAgendar').disabled=!podeEnviar;
     $('#atdCompose').insertAdjacentHTML('beforebegin','<div id="atdAgendaLista" class="atd-agenda-lista" hidden></div>');
     $('#atdArquivarGrupo')?.addEventListener('click',()=>act(async()=>{
       await api('arquivar-grupo',{conversa_id:id,arquivar:!cv.arquivada},ws);
@@ -207,7 +209,7 @@
         const inputs=[...f.querySelectorAll('[data-template-param]')].map(x=>x.value.trim());
         if(inputs.some(x=>!x))throw Error('Preencha todas as variáveis do template.');
         await api('templates-send',{canal_id:ch.id,conversa_id:id,template_name:t.name,idioma:t.language,parametros:inputs,requisicao_id:crypto.randomUUID()},ws);
-        if(active(token)&&A.sel===id)await messages(id,token);
+        if(active(token)&&A.sel===id)await openChat(id,token);
         toast('Template enviado.');
       },'Enviar');
       const draw=()=>{
@@ -862,14 +864,34 @@
   window.atendimentoConversarPessoa=async pessoaId=>{
     const ws=S.ws;
     try{
-      const rows=await q(sb.from('atd_conversas').select('id,nome,canal_id,ultima_em,atd_canais(nome,canal,provedor,numero)')
-        .eq('workspace_id',ws).eq('pessoa_id',pessoaId).order('ultima_em',{ascending:false,nullsFirst:false}));
+      const [pessoa,rows,canais,ctx]=await Promise.all([
+        q(sb.from('pessoas').select('id,nome,telefone').eq('workspace_id',ws).eq('id',pessoaId).single()),
+        q(sb.from('atd_conversas').select('id,nome,canal_id,ultima_em,atd_canais(nome,canal,provedor,numero)')
+          .eq('workspace_id',ws).eq('pessoa_id',pessoaId).order('ultima_em',{ascending:false,nullsFirst:false})),
+        q(sb.from('atd_canais').select('id,nome,canal,provedor,numero,status,ativo')
+          .eq('workspace_id',ws).eq('ativo',true).order('nome')),
+        api('contexto',{},ws)
+      ]);
       if(S.ws!==ws)return;
-      if(!rows.length){toast('Este contato ainda não tem conversa vinculada a um canal. Abra uma conversa no Atendimento ou vincule o contato primeiro.',true);return;}
-      const canalLabel=r=>{const c=Array.isArray(r.atd_canais)?r.atd_canais[0]:r.atd_canais;return [c?.canal==='whatsapp'?'WhatsApp':c?.canal==='instagram'?'Instagram':c?.canal||'Canal',c?.nome||c?.numero||r.nome].filter(Boolean).join(' · ');};
-      modal('Escolher canal para conversar',`<label>Conversa<select name="conversa">${rows.map(r=>`<option value="${r.id}">${esc(canalLabel(r))}</option>`).join('')}</select></label><p class="muted">Mostrando os canais que já têm uma conversa salva para este contato.</p>`,async d=>{
-        if(!rows.some(r=>r.id===d.conversa))throw Error('Conversa indisponível. Atualize a tela.');
-        await window.atendimentoAbrirConversa(d.conversa);
+      const rotuloCanal=c=>[c.canal==='whatsapp'?'WhatsApp':c.canal==='instagram'?'Instagram':c.canal||'Canal',c.nome||c.numero].filter(Boolean).join(' · ');
+      const convCanal=r=>Array.isArray(r.atd_canais)?r.atd_canais[0]:r.atd_canais;
+      const opcoes=rows.map(r=>({valor:'conversa:'+r.id,label:'Continuar · '+rotuloCanal(convCanal(r)),conversa:r.id}));
+      const idsComConversa=new Set(rows.map(r=>r.canal_id));
+      const telefone=String(pessoa.telefone||'').replace(/\D/g,'');
+      const temTelefone=telefone.length>=10&&telefone.length<=13;
+      const iniciaveis=ctx.editar&&temTelefone?canais.filter(c=>c.status==='conectado'&&['evolution','zernio'].includes(c.provedor)&&c.canal==='whatsapp'&&!idsComConversa.has(c.id)):[];
+      if(temTelefone)iniciaveis.forEach(c=>opcoes.push({valor:'canal:'+c.id,label:'Nova conversa · '+rotuloCanal(c),canal:c.id,provedor:c.provedor}));
+      if(!opcoes.length){
+        const razao=!temTelefone?'Cadastre um telefone válido no contato para iniciar uma conversa.':'Nenhuma conversa existente ou canal WhatsApp conectado disponível.';
+        toast(razao,true);return;
+      }
+      const notaInstagram='No Instagram, a conversa precisa ser iniciada pelo contato. DMs já recebidas aparecem em “Continuar”.';
+      modal('Escolher canal para conversar',`<label>Canal / conversa<select name="destino">${opcoes.map((o,i)=>`<option value="${esc(o.valor)}"${i===0?' selected':''}>${esc(o.label)}</option>`).join('')}</select></label><p class="muted">${rows.length?'Conversas existentes ficam salvas no histórico do contato. ':''}WhatsApp oficial: a primeira mensagem será enviada por template aprovado. ${esc(notaInstagram)}</p>`,async d=>{
+        const escolha=opcoes.find(o=>o.valor===d.destino);
+        if(!escolha)throw Error('Canal indisponível. Atualize a tela.');
+        if(escolha.conversa){await window.atendimentoAbrirConversa(escolha.conversa);return;}
+        const criada=await api('criar-conversa-pessoa',{pessoa_id:pessoa.id,canal_id:escolha.canal},ws);
+        await window.atendimentoAbrirConversa(criada.conversa_id);
       },'Abrir conversa');
     }catch(e){toast(e.message||'Não foi possível carregar as conversas deste contato.',true);}
   };

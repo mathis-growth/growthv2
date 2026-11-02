@@ -3027,7 +3027,7 @@ async function vCrmLeads(m) {
   m.innerHTML = `<div class="head"><h1>Funil de leads</h1><div class="acts">${ir('crm-oport', 'Oportunidades de clientes')}${filtroRespHtml('rlF', eqs, RL, 'Comercial responsável')}<button class="btn" id="gEt">Gerenciar etapas</button><button class="btn pri" id="novo">Novo lead</button></div></div>
   <span class="muted">Arraste os cartões entre as etapas. Ao levar para Cliente, o sistema pede o motivo do ganho e abre o contrato. Clique no nome para abrir o cartão completo.</span>
   <div class="panel">${crmFiltroHtml(F, pes, X, camp, lista.length)}${quadro(etapas, lista, p => `<div class="card" draggable="true" data-id="${p.id}">${crmCardTopo(p, X)}
-    <div class="ca"><button class="btn sm" data-q="${p.id}">Qualificar</button><button class="btn sm" data-s="${p.id}">Vender</button><button class="btn sm" data-resp="${p.id}" title="Comercial responsável">${p.responsavel_comercial_id ? '👤 ' + esc((nomeEq(eqs, p.responsavel_comercial_id) || '?').split(' ')[0]) : '+ responsável'}</button></div>
+    <div class="ca"><button class="btn sm" data-atd-conversar="${esc(p.id)}">Conversa</button><button class="btn sm" data-q="${p.id}">Qualificar</button><button class="btn sm" data-s="${p.id}">Vender</button><button class="btn sm" data-resp="${p.id}" title="Comercial responsável">${p.responsavel_comercial_id ? '👤 ' + esc((nomeEq(eqs, p.responsavel_comercial_id) || '?').split(' ')[0]) : '+ responsável'}</button></div>
     ${opsAb ? `<div class="ca"><button class="btn sm${opDe(p.id) ? ' pri' : ''}" data-opn="${p.id}" title="${opDe(p.id) ? 'Abrir a oportunidade deste lead' : 'Abrir uma oportunidade de venda para este lead'}">💼 ${opDe(p.id) ? 'Oportunidade' + (opDe(p.id).valor_estimado != null ? ' ' + brl(opDe(p.id).valor_estimado) : '') : 'Abrir oportunidade'}</button></div>` : ''}
     <div class="ca">${(p.negocio_status || 'aberto') === 'aberto' ? `<button class="btn sm" data-gn="${p.id}">Ganhou</button><button class="btn sm bad" data-pd="${p.id}">Perdeu</button>` : `<button class="btn sm" data-ab="${p.id}">Reabrir</button>`}</div></div>`, 'pessoas')}</div>`;
   ligaArrastar(m);
@@ -3036,6 +3036,7 @@ async function vCrmLeads(m) {
   $('#gEt').onclick = () => gerirEtapas('leads');
   $('#rlF').onchange = e => { S.respL = e.target.value; render(); };
   m.onclick = e => {
+    const talk = e.target.closest('[data-atd-conversar]'); if (talk) return window.atendimentoConversarPessoa?.(talk.dataset.atdConversar);
     const rs = e.target.closest('[data-resp]'); if (rs) { const pp = pes.find(x => x.id === rs.dataset.resp); return modalResponsavel('pessoas', pp.id, pp.responsavel_comercial_id, eqs, 'Comercial responsável'); }
     const on = e.target.closest('[data-opn]'); if (on) { const pp = pes.find(x => x.id === on.dataset.opn), o = opDe(pp.id);
       if (o) { S.view = 'crm-oport'; S.opFoco = o.id; return render(); }

@@ -380,6 +380,35 @@ async function handle(req: Request, b: any) {
     if(!/^[0-9a-f-]{36}$/i.test(String(b.conversa_id||'')))throw new Error('Conversa inválida.');
     return json(await resumoContato(ws,b.conversa_id));
   }
+  if(b.action==='criar-conversa-pessoa'){
+    const pessoaId=String(b.pessoa_id||''),canalId=String(b.canal_id||'');
+    if(!/^[0-9a-f-]{36}$/i.test(pessoaId)||!/^[0-9a-f-]{36}$/i.test(canalId))throw Error('Contato ou canal inválido.');
+    const [pessoa,ch]=await Promise.all([
+      q(db.from('pessoas').select('id,nome,telefone').eq('workspace_id',ws).eq('id',pessoaId).single()),
+      channel(canalId,ws)
+    ]);
+    if(!ch.ativo||ch.status!=='conectado')throw Error('Este canal não está conectado.');
+    if(ch.canal!=='whatsapp'||!['evolution','zernio'].includes(ch.provedor))throw Error('Só é possível iniciar uma conversa por WhatsApp. No Instagram, o contato precisa enviar a primeira DM.');
+    const numero=telefoneNormalizado(pessoa.telefone);
+    if(!numero)throw Error('Cadastre o telefone do contato com DDI antes de iniciar a conversa.');
+    const jid=numero+'@s.whatsapp.net',externo=ch.provedor==='evolution'?jid:'pending:'+pessoa.id;
+    const matches=await q(db.from('atd_conversas').select('id,pessoa_id')
+      .eq('workspace_id',ws).eq('canal_id',ch.id)
+      .or(`pessoa_id.eq.${pessoa.id},endereco.eq.${numero},endereco.eq.${jid},externo_id.eq.${numero},externo_id.eq.${jid},externo_id.eq.pending:${pessoa.id}`)
+      .order('ultima_em',{ascending:false,nullsFirst:false}).limit(1));
+    if(matches.length){
+      if(!matches[0].pessoa_id)await q(db.from('atd_conversas').update({pessoa_id:pessoa.id}).eq('id',matches[0].id).eq('workspace_id',ws));
+      return json({conversa_id:matches[0].id,existente:true});
+    }
+    const row={workspace_id:ws,canal_id:ch.id,externo_id:externo,nome:pessoa.nome,endereco:ch.provedor==='evolution'?jid:numero,pessoa_id:pessoa.id,grupo:false,status:'aberta'};
+    const {data,error:insertError}=await db.from('atd_conversas').insert(row).select('id').single();
+    if(insertError){
+      const raced=await q(db.from('atd_conversas').select('id').eq('workspace_id',ws).eq('canal_id',ch.id).eq('externo_id',externo).maybeSingle());
+      if(raced)return json({conversa_id:raced.id,existente:true});
+      throw new Error(insertError.message);
+    }
+    return json({conversa_id:data.id,existente:false,aguarda_template:ch.provedor==='zernio'});
+  }
   if(b.action==='channel-avatar'){
     const ch=await channel(String(b.canal_id||''),ws);
     if(!ch.avatar_path||!ch.avatar_path.startsWith(ws+'/channel-avatars/'+ch.id+'/'))return json({url:null});
@@ -413,6 +442,8 @@ async function handle(req: Request, b: any) {
     const cv=await q(db.from('atd_conversas').select('id,canal_id').eq('id',b.conversa_id).eq('workspace_id',ws).single());
     const ch=await channel(cv.canal_id,ws);
     if(!ch.ativo||ch.status!=='conectado')throw Error('Conecte o canal antes de agendar.');
+    const agendada=await q(db.from('atd_conversas').select('externo_id').eq('id',cv.id).eq('workspace_id',ws).single());
+    if(ch.provedor==='zernio'&&String(agendada.externo_id).startsWith('pending:'))throw Error('Para iniciar no WhatsApp oficial, envie um template aprovado primeiro.');
     const texto=String(b.texto||'').trim(),quando=new Date(b.enviar_em);
     if(!texto||texto.length>4000||!Number.isFinite(quando.getTime()))throw Error('Informe a mensagem e um horário válido.');
     if(quando.getTime()<Date.now()+60000||quando.getTime()>Date.now()+365*86400000)
@@ -554,9 +585,21 @@ async function handle(req: Request, b: any) {
       let attempted=false;
       try{
         attempted=true;
-        const result=await zernio(zp(),'/inbox/conversations/'+encodeURIComponent(cv.externo_id)+'/messages','POST',{accountId:ch.externo_id,template:{elements:[{name:nome,language:idioma,components:sendComponents}]}});
+        const opening=String(cv.externo_id).startsWith('pending:');
+        if(opening&&ch.canal==='whatsapp'){
+          const participantId=String(cv.endereco||'').replace(/\D/g,'');
+          if(participantId.length<10||participantId.length>15)throw new Error('Telefone do contato inválido para o WhatsApp oficial.');
+        }
+        const result=opening
+          ?await zernio(zp(),'/inbox/conversations','POST',{accountId:ch.externo_id,participantId:String(cv.endereco||'').replace(/\D/g,''),templateName:nome,templateLanguage:idioma,templateParams:params})
+          :await zernio(zp(),'/inbox/conversations/'+encodeURIComponent(cv.externo_id)+'/messages','POST',{accountId:ch.externo_id,template:{elements:[{name:nome,language:idioma,components:sendComponents}]}});
         const external=String(result.data?.messageId||result.messageId||'');
         if(!external)throw new Error('A Zernio não confirmou o identificador da mensagem.');
+        if(opening){
+          const remoteConversation=String(result.data?.conversationId||result.conversationId||'');
+          if(!remoteConversation)throw new Error('A Zernio não confirmou a sessão da conversa.');
+          await q(db.from('atd_conversas').update({externo_id:remoteConversation}).eq('id',cv.id).eq('workspace_id',ws).eq('externo_id',cv.externo_id));
+        }
         await q(db.rpc('atd_confirmar_envio',{p_mensagem:pending.id,p_externo:external}));
         return json({ok:true});
       }catch(e){
@@ -724,6 +767,7 @@ async function handle(req: Request, b: any) {
     const cv = await q(db.from('atd_conversas').select('*').eq('id',b.conversa_id).eq('workspace_id',ws).single());
     const ch = await channel(cv.canal_id,ws);
     if (b.action === 'historico') return json(await backfill(ch,cv,b.cursor));
+    if(b.action==='enviar'&&ch.provedor==='zernio'&&String(cv.externo_id).startsWith('pending:'))throw Error('Para iniciar no WhatsApp oficial, envie um template aprovado primeiro.');
     if (b.action === 'vincular') {
       if (cv.grupo) throw new Error('Grupos mantêm participantes separados; não representam um único lead.');
       if (b.pessoa_id) await q(db.from('pessoas').select('id').eq('id',b.pessoa_id).eq('workspace_id',ws).single());
