@@ -1,5 +1,24 @@
 
 
+## v0.230 — Formulário para clientes (não entra no Funil de leads)
+**Pedido da Rebecka (02/11):** "tenho que ter um botão onde este formulário capta as informações e atualiza o CRM dos clientes; ele já é cliente, não entra no funil de leads, entra no funil de clientes na etapa de diagnóstico".
+
+**Decisões:**
+- **Novo bloco em Pesquisas → Formulário e aparência: "Quem responde este formulário".**
+  - **Um lead:** como sempre, entra no Funil de leads ou é atualizado.
+  - **Um cliente:** atualiza o cadastro dele e a etapa na jornada do cliente, e não entra no Funil de leads. Pede a **etapa do cliente depois que ele responder** (por exemplo, Diagnóstico); vazio = não muda a etapa.
+- **Vale para os dois links:** o individual de cada cliente e o aberto.
+  - **Link aberto, contato que não existe:** é criado fora do Funil de leads, com a marca "cliente sem cadastro".
+- **Quando um cliente responde:**
+  - as matrículas ativas dele vão para a etapa escolhida, só dentro da mesma jornada. O histórico do aluno registra a mudança;
+  - o histórico do cliente registra o formulário e a etapa;
+  - se não houver matrícula, só fica registrado ("sem matrícula: a etapa não mudou").
+- O formulário público não mostra a etapa.
+- O modelo **"Diagnóstico Mathisa (pré-diagnóstico)"** já nasce marcado "para clientes"; falta só escolher a etapa.
+- **Aviso no diagnóstico:** a aba Formulário avisa quando o formulário escolhido não está marcado "para clientes".
+
+**Depende de:** ter a jornada do cliente com a etapa "Diagnóstico" cadastrada em Customer Success. Hoje não há nenhuma em produção.
+
 ## v0.229 — "O que já se sabe" e excluir pergunta na lista
 **Pedidos da Rebecka (02/11):**
 - Seguir para a próxima etapa ("O que já se sabe").

@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.229 (o que já se sabe do cliente).
+**Última atualização:** 02/11/2026, versão 0.230 (formulário para clientes).
+
+**v0.230 · Formulário para clientes.** Em Pesquisas, dá para dizer que quem responde é um cliente: a resposta atualiza o cadastro e a etapa dele na jornada, sem passar pelo Funil de leads.
 
 **v0.229 · O que já se sabe.** Cada informação do cliente aparece com a origem. Quando o que ele declarou não bate com as planilhas, o Growths mostra os dois valores e a equipe decide.
 
@@ -497,6 +499,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - **formulário de captação** com a cara do cliente (fontes e cores), em passos, que coloca quem responde direto no funil de leads;
   - a aba "Quem respondeu";
   - **Histórico de vendas** (Importar e validar dados): o relatório que a plataforma exporta, com de-para automático, conferência antes de gravar e desfazer; vira o histórico de cada cliente (bloco "Antes do Growths" na ficha) e a base do planejamento anual, sem financeiro;
+  - **Quem responde** (v0.230): em Formulário e aparência, você escolhe se quem responde é um **lead** (entra no Funil de leads) ou um **cliente** (atualiza o cadastro e vai para a etapa escolhida da jornada do cliente, por exemplo Diagnóstico, sem entrar no Funil de leads). Vale para o link individual e para o link aberto, e fica no histórico do cliente.
   - **Entrada do cliente**: formulário curto para o cliente que está chegando (faturamento, ticket, clientes, investimento, custo e regime, do jeito dele) e o checklist de arquivos do período certo (vendas, clientes, leads, anúncios, custos), cada um com planilha-modelo para baixar; cada grupo é enviar o arquivo ou "Não tenho", sem deixar para depois, e ganha ✓ verde quando o arquivo chega. Inclui a lista "quais números você acompanha hoje", ponto de partida do diagnóstico. As vendas seguem as plataformas que o cliente marca (Hotmart, Kiwify, Eduzz, Hubla): um relatório para cada, do jeito que sai.
 
 ---
@@ -637,6 +640,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.230):** formulário para clientes (atualiza o cliente e a etapa na jornada, sem Funil de leads).
 - **02/11 (v0.229):** o que já se sabe do cliente (origem e conflitos entre fontes); excluir pergunta direto na lista.
 - **02/11 (v0.228):** diagnóstico de clientes da Mathisa começa pelo cliente e pelo formulário.
 - **02/11 (v0.227):** auditoria automática das planilhas do diagnóstico.

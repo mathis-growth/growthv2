@@ -1,3 +1,9 @@
+## v0.230 — Formulário para clientes (02/11/2026)
+- Pesquisas → Formulário e aparência → "Quem responde": lead ou cliente, e a etapa do cliente depois de responder.
+- O cliente não entra no Funil de leads; a matrícula vai para a etapa escolhida; fica no histórico.
+- O modelo do diagnóstico nasce "para clientes". O diagnóstico avisa quando o formulário não é para clientes.
+- Banco: `RODAR_v0.230_formulario_cliente.sql`. Teste: `t230_destino_cliente.py` (0 falhas).
+
 ## v0.229 — O que já se sabe; excluir pergunta na lista (02/11/2026)
 - Aba "O que já se sabe": formulário, planilhas e reunião, com a origem; conflitos entre o declarado e as planilhas, com a decisão da equipe; confirmar, corrigir e rejeitar.
 - Conflitos levados para a reunião entram na pauta.

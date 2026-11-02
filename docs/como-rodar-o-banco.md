@@ -1,3 +1,7 @@
+## v0.230
+Rodar `supabase/RODAR_v0.230_formulario_cliente.sql` depois do `RODAR_v0.229`. Os formulários que já existem continuam como "lead".
+Ordem pendente: 0.221 → 0.223 → 0.224 → 0.225 → 0.227 → 0.228 → 0.229 → 0.230 (e os antigos 0.197 e 0.209).
+
 ## v0.229
 Rodar `supabase/RODAR_v0.229_diagnostico_saber.sql` depois do `RODAR_v0.228`.
 Ordem pendente: 0.221 → 0.223 → 0.224 → 0.225 → 0.227 → 0.228 → 0.229 (e os antigos 0.197 e 0.209).

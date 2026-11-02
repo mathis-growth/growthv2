@@ -1,3 +1,10 @@
+## v0.230
+- `pesquisas.captacao` ganhou `destino` (lead ou cliente) e `etapa_cliente_id`.
+- Funções novas:
+  - `pesquisa_cliente_etapa(resposta)`;
+  - gatilho `pesquisa_respostas_cliente`.
+- `pesquisa_captar` e `pesquisa_publica` foram ajustadas com troca pontual.
+
 ## v0.229
 - `diagnostico_saber_revisoes` (nova): `chave`, `estado` (confirmado, corrigido, rejeitado ou reunião), `valor`, `nota`, `autor` e `atualizado_em`.
   - Cada diagnóstico tem uma linha por informação (chave única).

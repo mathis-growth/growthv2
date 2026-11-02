@@ -1,5 +1,22 @@
 
 
+## Formulário para clientes (v0.230)
+`t230_destino_cliente.py`: 12 verificações, 0 falhas.
+- **Banco:**
+  - formulário de lead não mexe na matrícula;
+  - formulário para clientes move a matrícula e registra no histórico;
+  - cliente sem matrícula: só registra;
+  - link aberto: contato novo fica fora do funil;
+  - o formulário público não mostra a etapa.
+- **Tela:**
+  - aviso no diagnóstico;
+  - "Quem responde": lead ou cliente;
+  - mostrar e esconder os campos;
+  - salvar;
+  - modelo para clientes;
+  - sem erros de JavaScript.
+- **Regressão:** t228, t229, t197 e t130 (captação) sem falhas.
+
 ## O que já se sabe (v0.229)
 `t229_saber.py`: 17 verificações, 0 falhas.
 - **Auditoria v2:** vendas aprovadas, sem a repetida e sem o reembolso.

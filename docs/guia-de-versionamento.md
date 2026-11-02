@@ -1,3 +1,8 @@
+## v0.230
+- `aplica230.py`: bloco "Quem responde" em `pqForm` (`captacao.destino` e `captacao.etapa_cliente_id`); o modelo do diagnóstico nasce para clientes; a criação a partir do modelo leva a captação; aviso no diagnóstico.
+- Migração `20261222100000_pesquisa_destino_cliente.sql` = `RODAR_v0.230_formulario_cliente.sql`.
+- Teste novo `t230_destino_cliente.py`.
+
 ## v0.229
 - `aplica229.py` + `g229.js`: `dgSaberDados`, `dgSaberHtml`, `dgSaberLiga`, `dgSaberConversa`. Ajustes:
   - auditoria v2 (`soma_mes`, `n_ok`, `total_ok`);

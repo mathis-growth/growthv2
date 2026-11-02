@@ -1,3 +1,7 @@
+## v0.230
+- **Formulário para clientes:** nunca coloca ninguém no Funil de leads. Quando o cliente responde, move só as matrículas ativas para a etapa escolhida, dentro da mesma jornada, e registra no histórico.
+- **Formulário de lead:** continua como sempre.
+
 ## v0.229
 - **Conflito:** diferença maior que 20% entre o que o cliente declarou e o que as planilhas mostram. O sistema nunca escolhe a fonte; a equipe decide ou leva para a reunião.
 - **Médias das planilhas:** só meses fechados dentro do período do diagnóstico. Só vendas aprovadas e com valor positivo, sem linhas repetidas.

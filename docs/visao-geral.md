@@ -1,3 +1,6 @@
+## v0.230
+**Formulário para clientes.** Em Pesquisas, você diz se quem responde é um lead ou um cliente. Se for cliente, a resposta atualiza o cadastro dele e coloca o cliente na etapa escolhida da jornada (por exemplo, Diagnóstico), sem entrar no Funil de leads.
+
 ## v0.229
 **O que já se sabe.** Tudo sobre o cliente num lugar só, com a origem de cada informação: o que ele declarou, o que as planilhas mostram e o que a equipe anotou. Quando o que ele disse não bate com as planilhas (por exemplo, faturamento), o Growths mostra os dois valores e você decide ou leva para a reunião. Em Pesquisas, dá para excluir uma pergunta direto na lista.
 
