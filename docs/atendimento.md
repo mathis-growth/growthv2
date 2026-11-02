@@ -50,7 +50,7 @@ O editor de Automações usa o padrão de canvas da Estratégia: blocos interlig
 
 Ao receber mensagem do WhatsApp, o Atendimento normaliza o número e associa a conversa automaticamente apenas quando encontra exatamente uma pessoa com aquele telefone no mesmo workspace. Se houver duplicidade, não escolhe um cadastro arbitrariamente. A faixa acima do chat resume tipo Lead/Aluno, produto, campanha/lançamento e data de captura. Produto considera matrícula e compra aprovada; campanha e data de captura vêm do CRM e do histórico de captação. Para números antigos, a associação automática também ocorre quando a conversa é aberta. Instagram não é associado por número porque o identificador do participante não é telefone.
 
-Pré-requisitos desta versão: aplicar `20261204110000_atendimento_canvas_automacoes.sql`, publicar `assets/atendimento.js` e `assets/atendimento.css` e implantar a Edge `atendimento`. Para enviar um arquivo único pelo Dashboard, usar `docs/edge-atendimento-v0198-index-unico.ts`; pelo CLI, implantar a pasta completa com `index.ts`, `core.ts` e `providers.ts`.
+Pré-requisitos desta versão: aplicar `20261204110000_atendimento_canvas_automacoes.sql`, publicar `assets/atendimento.js` e `assets/atendimento.css` e implantar a Edge `atendimento`. Para enviar um arquivo único pelo Dashboard, usar `docs/edge-atendimento-v0200-index-unico.ts`; pelo CLI, implantar a pasta completa com `index.ts`, `core.ts` e `providers.ts`.
 
 ## Validação e integração
 

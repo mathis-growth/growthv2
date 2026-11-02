@@ -112,8 +112,9 @@
         if(!url)continue;
         const el=[...$('#atdLista').querySelectorAll('[data-avatar-id]')].find(x=>x.dataset.avatarId===cv.id);
         if(!el)continue;
+        const fallback=el.textContent;
         const img=document.createElement('img');img.src=url;img.alt='';img.loading='lazy';
-        img.onerror=()=>{img.remove();};
+        img.onerror=()=>{if(!img.isConnected)return;img.remove();el.textContent=fallback;};
         el.replaceChildren(img);
       }
     }).catch(()=>{});

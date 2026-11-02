@@ -757,6 +757,17 @@ async function setupWebhook(ch: any,cfg: any) {
 // Metadados Evolution v2.3.x: GET /group/findGroupInfos/{instance}?groupJid=...
 // Todas as buscas usam a credencial do workspace e nunca expõem URLs externas.
 const isJid=(jid:string)=>/^[0-9]{5,22}@(g\.us|s\.whatsapp\.net|lid)$/.test(jid);
+const unwrapGroupMeta=(value:any):any=>{
+  let current=value;
+  for(let i=0;i<4;i++){
+    if(!current||typeof current!=='object'||Array.isArray(current))return {};
+    if(groupName(current)||groupPicture(current)||current.groupMetadata)return current;
+    const nested=current.data||current.group||current.groupInfo||current.groupMetadata;
+    if(!nested||nested===current)break;
+    current=nested;
+  }
+  return current&&typeof current==='object'?current:{};
+};
 const groupName=(g:any):string=>{
   const value=String(g?.subject||g?.groupMetadata?.subject||g?.name||g?.title||g?.groupName||'').trim().slice(0,180);
   return value.endsWith('@g.us')?'':value;
@@ -808,7 +819,7 @@ async function enrichGroup(ch:any,cv:any,original:any,cfg:any):
       // Corrigido v0.190: a rota é GET e groupJid pertence à query, não ao corpo POST.
       const response=await evolution(cfg,'/group/findGroupInfos/'+encodeURIComponent(ch.externo_id)
         +'?groupJid='+encodeURIComponent(jid)+'&getParticipants=false');
-      meta=response?.data?.subject?response.data:response;
+      meta=unwrapGroupMeta(response);
       name=groupName(meta);
       detailsOk=Boolean(name);
     }catch{/* Algumas versões da Evolution retornam 404 para grupos antigos. */}
@@ -841,11 +852,21 @@ async function syncConversations(ch:any,cursor?:string){
       groupRows=shape(await evolution(cfg,'/group/fetchAllGroups/'+inst+'?getParticipants=false'));
     }catch(e){warnings.push('Grupos: '+(e instanceof ProviderError?'HTTP '+e.status:'consulta indisponível'));}
     const byJid=new Map<string,any>();
-    for(const item of [...chatRows,...groupRows]){
+    for(const item of chatRows){
       const id=String(item?.remoteJid||item?.id||item?.jid||item?.groupJid||'');
       if(!isJid(id))continue;
       const previous=byJid.get(id);
       if(!previous||(id.endsWith('@g.us')&&groupName(item)&&!groupName(previous)))byJid.set(id,item);
+    }
+    // `fetchAllGroups` is the authoritative source for group subject and
+    // pictureUrl. `findChats` may return an older subject or no picture, so
+    // always merge canonical group metadata over the chat snapshot.
+    for(const item of groupRows){
+      const id=String(item?.remoteJid||item?.id||item?.jid||item?.groupJid||'');
+      if(!isJid(id)||!id.endsWith('@g.us'))continue;
+      const previous=byJid.get(id)||{};
+      const name=groupName(item)||groupName(previous),picture=groupPicture(item)||groupPicture(previous);
+      byJid.set(id,{...previous,...item,...(name?{subject:name}:{}),...(picture?{pictureUrl:picture}:{})});
     }
     for(const [id,item] of byJid){
       const group=id.endsWith('@g.us');
