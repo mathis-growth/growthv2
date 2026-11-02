@@ -1,3 +1,7 @@
+## Edge Atendimento v0.201 — identidade atômica no Instagram
+- A migration `20261225100000_atendimento_instagram_identidade_atomica.sql` localiza a conversa pelo participante dentro do lock do canal, evitando duplicatas em webhooks simultâneos.
+- A Edge `atendimento` deixa de buscar a conversa fora da transação. Arquivo único para o Dashboard: `docs/edge-atendimento-v0201-index-unico.ts`.
+
 ## v0.232
 - `aplica232.py`: em `dgFormHtml`, o padrão vem selecionado e o botão `#dgFGera`; em `dgFormLiga`, `usa()` gera o link (a troca na lista só regera quando já existe link).
 - Migração `20261224100000_diagnostico_formulario_ciclo.sql` = `RODAR_v0.232_corrige_link_formulario.sql`; `20261220100000` e `RODAR_v0.228` corrigidos.
@@ -62,7 +66,6 @@
 
 ## v0.222
 - index.html montado sobre o HEAD do GitHub (v0.221) com `aplica222.py` e `g222.js`: `abasHtml`, `abasLiga`, `ckMetasAlerta`; Cockpit em abas (`data-aba-de="ck"`). Testes ajustados para escolher a aba (`front.aba`, `S.abas`): t213 a t221. Teste novo `t222_abas.py`.
-
 ## v0.221
 - Migration `20261215100000_brain_metas_areas.sql` + `RODAR_v0.221_brain_metas_areas.sql`. index.html montado sobre o HEAD do GitHub (v0.220) com `aplica221.py` e `g221.js`: `paMetasAreas`, `ckMetasNiveis`, `nivelFmt`, `nivelRegra`; `CK_SAUDE` com as metas de nível; `#paAreas` no Planejamento anual. Teste novo `t221_metas_areas.py`. No banco local de teste, `empresa.saldo_minimo` (migration 20261025100000) aplicado como em produção.
 

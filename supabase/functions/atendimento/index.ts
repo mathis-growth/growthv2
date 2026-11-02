@@ -16,15 +16,10 @@ async function channel(id: string, ws?: string) {
 }
 async function receive(ch: any, normalized: any, historical = false) {
   if (!normalized) return null;
-  // Na caixa Zernio, o ID interno da conversa pode mudar entre o histórico
-  // sincronizado e o webhook. Para Instagram, o participante é estável e há
-  // uma conversa por participante e conta; reaproveita a conversa já gravada.
-  if (ch.provedor === 'zernio' && ch.canal === 'instagram' && normalized.conversa?.endereco) {
-    const existing = await q(db.from('atd_conversas').select('externo_id')
-      .eq('canal_id', ch.id).eq('endereco', normalized.conversa.endereco)
-      .order('criado_em', { ascending:true }).limit(1).maybeSingle());
-    if (existing?.externo_id) normalized.conversa.id = existing.externo_id;
-  }
+  // A RPC atd_receber serializa pelo canal e resolve a identidade do
+  // participante do Instagram dentro da mesma transação que grava a mensagem.
+  // Fazer a busca aqui fora permitia que dois webhooks simultâneos criassem
+  // duas conversas para o mesmo participante.
   normalized.mensagem.historica = historical;
   const cv = await q(db.rpc('atd_receber', { p_canal: ch.id, p_conversa: normalized.conversa, p_mensagem: normalized.mensagem }));
   if (!normalized.conversa?.grupo && ch.canal === 'whatsapp') {
