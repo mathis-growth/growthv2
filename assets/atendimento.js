@@ -209,6 +209,8 @@
         ['canal_origem','Canal de origem'],['utm_source','UTM · Fonte'],['utm_medium','UTM · Mídia'],
         ['utm_campaign','UTM · Campanha'],['utm_content','UTM · Conteúdo'],['utm_term','UTM · Termo'],['pagina_origem','Página de entrada']
       ].map(([chave,label])=>({chave,label,valor:chave==='capturado_em'&&contato?.[chave]?new Date(contato[chave]).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'}):contato?.[chave]}));
+      const primeiroNome=String(contato?.nome||'').trim().split(/\s+/)[0];
+      if(primeiroNome)camposContato.unshift({chave:'primeiro_nome',label:'Primeiro nome',valor:primeiroNome});
       for(const campo of camposPersonalizados)camposContato.push({chave:'extras.'+campo.chave,label:campo.rotulo,valor:contato?.extras?.[campo.chave]});
       const variaveisContato=camposContato.filter(c=>c.valor!==null&&c.valor!==undefined&&String(c.valor).trim()!=='');
       const supported=t=>(t.components||[]).every(c=>{
