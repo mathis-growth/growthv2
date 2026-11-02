@@ -55,7 +55,7 @@ async function resumoContato(ws:string,conversaId:string) {
   let pessoaId=cv.pessoa_id;
   if(!pessoaId){const ch=await channel(cv.canal_id,ws);if(ch.canal==='whatsapp')pessoaId=await identificarPessoaPorTelefone(ws,cv.id,cv.endereco||cv.externo_id);}
   if(!pessoaId)return {pessoa:null};
-  const pessoa=await q(db.from('pessoas').select('id,nome,telefone,email,status_funil,status_cliente,qualificacao,criado_em,convertido_em,campanha_id,utm_campaign').eq('id',pessoaId).eq('workspace_id',ws).single());
+  const pessoa=await q(db.from('pessoas').select('id,nome,telefone,email,status_funil,status_cliente,qualificacao,criado_em,convertido_em,campanha_id,utm_campaign,utm_source,utm_medium,utm_content,utm_term,pagina_origem,canal_origem,extras').eq('id',pessoaId).eq('workspace_id',ws).single());
   const [toques,participacoes,alunos,vendas]=await Promise.all([
     q(db.from('pessoa_toques').select('em,campanha_id').eq('workspace_id',ws).eq('pessoa_id',pessoaId).in('tipo',['entrada','captura']).order('em').limit(1)).catch(()=>[]),
     q(db.from('campanha_participacoes').select('campanha_id,entrou_em').eq('workspace_id',ws).eq('pessoa_id',pessoaId).order('entrou_em').limit(1)).catch(()=>[]),

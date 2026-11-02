@@ -89,7 +89,9 @@
 .atd-tpl-button-list li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line)}
 .atd-template-preview{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px;margin:10px 0}
 .atd-template-preview p{white-space:pre-wrap;margin:6px 0}
+.atd-template-variable{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,.72fr);gap:10px;align-items:end;margin:8px 0}
 @media(max-width:760px){.atd-template-filtros,.atd-template-fields,.atd-tpl-button-builder{grid-template-columns:1fr}.atd-template-fields .wide{grid-column:auto}}
+@media(max-width:760px){.atd-template-variable{grid-template-columns:1fr}}
 .atd-agenda-lista[hidden]{display:none}
 .atd-agenda-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .atd-agenda-item{border-top:1px solid var(--line);padding:8px 0}
