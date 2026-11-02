@@ -201,24 +201,46 @@
     }));
     $('#atdEnviarTemplate')?.addEventListener('click',()=>act(async()=>{
       const {templates=[]}=await api('templates-list',{canal_id:ch.id},ws);
-      const aprovados=templates.filter(t=>t.status==='APPROVED'&&t.name&&t.language&&!((t.components||[]).some(c=>String(c.type).toUpperCase()==='HEADER'&&c.format&&String(c.format).toUpperCase()!=='TEXT'))&&!((t.components||[]).some(c=>String(c.type).toUpperCase()==='BUTTONS'&&JSON.stringify(c).includes('{{')))&&!((t.components||[]).some(c=>/\{\{[^0-9]/.test(String(c.text||'')))));
+      const supported=t=>(t.components||[]).every(c=>{
+        const type=String(c.type||'').toUpperCase();
+        if(type==='HEADER')return ['TEXT','IMAGE','VIDEO','DOCUMENT'].includes(String(c.format||'TEXT').toUpperCase());
+        if(type==='BODY'||type==='FOOTER')return true;
+        if(type==='BUTTONS')return (c.buttons||[]).every(b=>['QUICK_REPLY','URL','PHONE_NUMBER','COPY_CODE','FLOW'].includes(String(b.type||'').toUpperCase()));
+        return false;
+      });
+      const aprovados=templates.filter(t=>t.status==='APPROVED'&&t.name&&t.language&&supported(t));
       if(!aprovados.length){toast('Não há templates aprovados para esta conta Zernio.',true);return;}
       const options=aprovados.map((t,i)=>`<option value="${i}">${esc(t.name)} · ${esc(t.language)}</option>`).join('');
-      const form=modal('Enviar template WhatsApp',`<p class="muted">O envio usa o número e o histórico desta conversa. A Meta só aceita modelos aprovados.</p><label>Template<select name="modelo">${options}</select></label><div id="atdTemplateVars"></div><p id="atdTemplatePreview" class="muted"></p>`,async(d,f)=>{
+      const templateParts=t=>{const parts=t.components||[];return {header:parts.find(c=>String(c.type).toUpperCase()==='HEADER'),body:parts.find(c=>String(c.type).toUpperCase()==='BODY'),footer:parts.find(c=>String(c.type).toUpperCase()==='FOOTER'),buttons:parts.find(c=>String(c.type).toUpperCase()==='BUTTONS')?.buttons||[]};};
+      const slotsFor=t=>{const p=templateParts(t),out=[];const add=(text,label)=>{const matches=[...String(text||'').matchAll(/\{\{(\d+)\}\}/g)],nums=[...new Set(matches.map(m=>Number(m[1])))].sort((a,b)=>a-b);nums.forEach(n=>out.push({label:`${label} · variável {{${n}}}`,marker:n,component:label}));};
+        if(String(p.header?.format||'TEXT').toUpperCase()==='TEXT')add(p.header?.text,'Cabeçalho');add(p.body?.text,'Corpo');p.buttons.forEach((b,i)=>{if(String(b.type).toUpperCase()==='URL')add(b.url,`Botão ${i+1} · link`);});return out;};
+      const nomeBotao=b=>({QUICK_REPLY:'Resposta rápida',URL:'Link',PHONE_NUMBER:'Telefone',COPY_CODE:'Copiar código',FLOW:'Abrir formulário'}[String(b.type||'').toUpperCase()]||b.type||'Botão');
+      const form=modal('Enviar template WhatsApp',`<p class="muted">Selecione um template aprovado e preencha os campos com os nomes indicados. Cabeçalho e rodapé são exibidos como no modelo aprovado; mídia pode ser trocada neste envio.</p><label>Template aprovado<select name="modelo">${options}</select></label><div id="atdTemplateDetails"></div><div id="atdTemplateVars"></div><div id="atdTemplateButtonVars"></div><div id="atdTemplatePreview" class="atd-template-preview"></div>`,async(d,f)=>{
         const t=aprovados[Number(d.modelo)];if(!t)throw Error('Selecione um template válido.');
-        const inputs=[...f.querySelectorAll('[data-template-param]')].map(x=>x.value.trim());
-        if(inputs.some(x=>!x))throw Error('Preencha todas as variáveis do template.');
-        await api('templates-send',{canal_id:ch.id,conversa_id:id,template_name:t.name,idioma:t.language,parametros:inputs,requisicao_id:crypto.randomUUID()},ws);
+        const inputs=[...f.querySelectorAll('[data-template-param]')].sort((a,b)=>Number(a.dataset.templateParam)-Number(b.dataset.templateParam)).map(x=>x.value.trim());
+        if(inputs.some(x=>!x))throw Error('Preencha todas as variáveis do cabeçalho, corpo e links.');
+        const buttonParams=[...f.querySelectorAll('[data-template-button-param]')].map(x=>({index:Number(x.dataset.index),subType:x.dataset.subtype,value:x.value.trim()}));
+        if(buttonParams.some(x=>!x.value))throw Error('Preencha os valores dos botões que pedem dados no envio.');
+        const mode=f.elements.headerMediaMode?.value||'link',mediaValue=String(f.elements.headerMediaValue?.value||'').trim();
+        const headerMedia=mediaValue?{type:String(templateParts(t).header.format).toLowerCase(),[mode]:mediaValue}:null;
+        await api('templates-send',{canal_id:ch.id,conversa_id:id,template_name:t.name,idioma:t.language,parametros:inputs,header_media:headerMedia,button_params:buttonParams,requisicao_id:crypto.randomUUID()},ws);
         if(active(token)&&A.sel===id)await openChat(id,token);
         toast('Template enviado.');
-      },'Enviar');
+      },'Enviar template',true);
       const draw=()=>{
-        const t=aprovados[Number(form.elements.modelo.value)],components=t.components||[],header=components.find(c=>String(c.type).toUpperCase()==='HEADER'),body=components.find(c=>String(c.type).toUpperCase()==='BODY')?.text||'';
-        const headerMarkers=[...(String(header?.format||'').toUpperCase()==='TEXT'?String(header.text||''):'').matchAll(/\{\{(\d+)\}\}/g)].map(x=>Number(x[1])),bodyMarkers=[...body.matchAll(/\{\{(\d+)\}\}/g)].map(x=>Number(x[1]));
-        const headerCount=Math.max(0,...headerMarkers),bodyCount=Math.max(0,...bodyMarkers),count=headerCount+bodyCount;
-        form.querySelector('#atdTemplateVars').innerHTML=Array.from({length:count},(_,i)=>`<label>Variável {{${i+1}}}<input data-template-param="${i}" required maxlength="1024"></label>`).join('');
-        form.querySelector('#atdTemplatePreview').textContent=body||'Este template não possui texto de corpo.';
-        form.querySelector('#atdTemplateVars').oninput=()=>{let preview=body;for(let i=1;i<=bodyCount;i++)preview=preview.replaceAll('{{'+i+'}}',form.querySelector(`[data-template-param="${headerCount+i-1}"]`)?.value||'{{'+i+'}}');form.querySelector('#atdTemplatePreview').textContent=preview;};
+        const t=aprovados[Number(form.elements.modelo.value)],parts=templateParts(t),slots=slotsFor(t),headerFormat=String(parts.header?.format||'TEXT').toUpperCase();
+        let fields='';slots.forEach((s,i)=>{fields+=`<label>${esc(s.label)}<input data-template-param="${i}" required maxlength="1024" placeholder="Informe o valor para o envio"></label>`;});
+        form.querySelector('#atdTemplateVars').innerHTML=fields||'<p class="muted">Este template não tem variáveis de texto.</p>';
+        const media=['IMAGE','VIDEO','DOCUMENT'].includes(headerFormat)?`<fieldset class="atd-tpl-section"><legend>${headerFormat==='IMAGE'?'Cabeçalho com imagem':headerFormat==='VIDEO'?'Cabeçalho com vídeo':'Cabeçalho com documento'}</legend><label>Tipo da referência<select name="headerMediaMode"><option value="link">URL HTTPS pública</option><option value="id">ID de mídia da Meta</option></select></label><label>${aguardaTemplate?'Substituir mídia de exemplo (opcional)':'URL ou ID da mídia deste envio'}<input name="headerMediaValue" ${aguardaTemplate?'':'required'} placeholder="${headerFormat==='IMAGE'?'https://site.com/imagem.jpg ou ID Meta':headerFormat==='VIDEO'?'https://site.com/video.mp4 ou ID Meta':'https://site.com/arquivo.pdf ou ID Meta'}"></label><small>${aguardaTemplate?'Deixe vazio para usar a mídia de exemplo aprovada.':'Para uma conversa existente, informe a mídia que será enviada neste cabeçalho.'}</small></fieldset>`:'';
+        form.querySelector('#atdTemplateDetails').innerHTML=`<dl class="atd-template-fields"><div><dt>Nome do template</dt><dd>${esc(t.name)}</dd></div><div><dt>Idioma</dt><dd>${esc(t.language)}</dd></div><div><dt>Cabeçalho aprovado</dt><dd>${parts.header?`${esc(headerFormat==='TEXT'?'Texto':headerFormat==='IMAGE'?'Imagem':headerFormat==='VIDEO'?'Vídeo':'Documento')}${headerFormat==='TEXT'?` · ${esc(parts.header.text||'')}`:''}`:'Sem cabeçalho'}</dd></div><div class="wide"><dt>Mensagem aprovada</dt><dd class="pre">${esc(parts.body?.text||'—')}</dd></div>${parts.footer?`<div><dt>Rodapé</dt><dd>${esc(parts.footer.text||'—')}</dd></div>`:''}${parts.buttons.length?`<div class="wide"><dt>Botões aprovados</dt><dd>${parts.buttons.map((b,i)=>`${i+1}. ${esc(nomeBotao(b))} · ${esc(b.text||'')}${b.url?` · ${esc(b.url)}`:''}${b.phone_number?` · ${esc(b.phone_number)}`:''}`).join('<br>')}</dd></div>`:''}</dl>${media}`;
+        const extraButtons=parts.buttons.map((b,index)=>{const type=String(b.type||'').toUpperCase(),subtype=type==='COPY_CODE'?'copy_code':type==='FLOW'?'flow':'';if(!subtype)return '';return `<label>Botão ${index+1} · ${esc(nomeBotao(b))}<input data-template-button-param="1" data-index="${index}" data-subtype="${subtype}" required placeholder="Informe ${subtype==='flow'?'o token do formulário':'o código do cupom'}"></label>`;}).join('');
+        form.querySelector('#atdTemplateButtonVars').innerHTML=extraButtons||'';
+        const updatePreview=()=>{
+          let text=parts.body?.text||'Este template não possui texto de corpo.',header=String(parts.header?.text||'');
+          [...form.querySelectorAll('[data-template-param]')].forEach((el,i)=>{const slot=slots[i];if(slot.component==='Corpo')text=text.replaceAll(`{{${slot.marker}}}`,el.value||`{{${slot.marker}}}`);if(slot.component==='Cabeçalho')header=header.replaceAll(`{{${slot.marker}}}`,el.value||`{{${slot.marker}}}`);});
+          form.querySelector('#atdTemplatePreview').innerHTML=`<b>Prévia da mensagem</b>${header?`<p><b>Cabeçalho:</b> ${esc(header)}</p>`:''}<p>${esc(text)}</p>${parts.footer?`<small>Rodapé: ${esc(parts.footer.text)}</small>`:''}`;
+        };
+        updatePreview();form.querySelector('#atdTemplateVars').oninput=updatePreview;
       };
       form.elements.modelo.onchange=draw;draw();
     }));
@@ -558,17 +580,31 @@
       let aba='meta',templates=[];
       const canalOptions=canais.map(c=>`<option value="${c.id}">${esc(c.nome)} · ${esc(c.numero||c.externo_id)}</option>`).join('');
       let canalId=canais[0]?.id||'';
+      const statusTemplate={APPROVED:'Aprovado',PENDING:'Em análise',REJECTED:'Rejeitado',PAUSED:'Pausado',DISABLED:'Desativado',IN_APPEAL:'Em recurso',PENDING_DELETION:'Exclusão pendente'};
+      const categoriaTemplate={UTILITY:'Utilidade',MARKETING:'Marketing',AUTHENTICATION:'Autenticação'};
+      const tipoBotao={QUICK_REPLY:'Resposta rápida',URL:'Link',PHONE_NUMBER:'Telefone',COPY_CODE:'Copiar código',FLOW:'Abrir formulário',OTP:'Código de acesso'};
+      const renderListaTemplates=()=>{
+        const busca=String($('#tplBusca')?.value||'').trim().toLocaleLowerCase('pt-BR'),filtro=$('#tplFiltroStatus')?.value||'';
+        const vistos=templates.map((t,i)=>({t,i})).filter(({t})=>(!filtro||t.status===filtro)&&(!busca||[t.name,t.language,t.category,t.status,...(t.components||[]).map(c=>c.text||'')].join(' ').toLocaleLowerCase('pt-BR').includes(busca)));
+        $('#tplContagem').textContent=`${vistos.length} de ${templates.length} template(s)`;
+        $('#tplLista').innerHTML=vistos.length?vistos.map(({t,i})=>{
+          const components=t.components||[],header=components.find(c=>String(c.type).toUpperCase()==='HEADER'),body=components.find(c=>String(c.type).toUpperCase()==='BODY'),footer=components.find(c=>String(c.type).toUpperCase()==='FOOTER'),btns=components.find(c=>String(c.type).toUpperCase()==='BUTTONS')?.buttons||[];
+          const tipo=String(header?.format||'').toUpperCase(),conteudoHeader=header?(tipo==='TEXT'?header.text||'':({IMAGE:'Imagem',VIDEO:'Vídeo',DOCUMENT:'Documento',LOCATION:'Localização'}[tipo]||tipo)):'';
+          return `<article class="panel atd-template-card"><div class="atd-template-card-head"><h4>${esc(t.name||'Sem nome')}</h4><span class="pill ${t.status==='APPROVED'?'good':t.status==='REJECTED'?'bad':'warn'}">${esc(statusTemplate[t.status]||t.status||'Status não informado')}</span></div><dl class="atd-template-fields"><div><dt>Nome do template</dt><dd>${esc(t.name||'—')}</dd></div><div><dt>Idioma</dt><dd>${esc(t.language||'—')}</dd></div><div><dt>Categoria</dt><dd>${esc(categoriaTemplate[t.category]||t.category||'—')}</dd></div><div><dt>ID Meta</dt><dd>${esc(t.id||'—')}</dd></div><div><dt>Cabeçalho</dt><dd>${header?`${esc(conteudoHeader)}${tipo==='TEXT'?`<br>${esc(header.text||'')}`:''}`:'Sem cabeçalho'}</dd></div><div class="wide"><dt>Mensagem</dt><dd class="pre">${esc(body?.text||'—')}</dd></div>${footer?`<div><dt>Rodapé</dt><dd>${esc(footer.text||'—')}</dd></div>`:''}${btns.length?`<div><dt>Botões</dt><dd>${btns.map(b=>`${esc(tipoBotao[String(b.type||'').toUpperCase()]||b.type||'Botão')}: ${esc(b.text||b.flow_cta||b.url||b.phone_number||b.example||'—')}`).join('<br>')}</dd></div>`:''}${t.reason&&t.reason!=='NONE'?`<div class="wide"><dt>Motivo do status</dt><dd>${esc(t.reason)}</dd></div>`:''}</dl>${ctx.admin?`<div class="acts"><button class="btn sm" data-tpl-edit="${i}">Editar e reenviar</button><button class="btn sm bad" data-tpl-delete="${i}">Excluir na Meta</button></div>`:''}</article>`;
+        }).join(''):'<p class="muted">Nenhum template corresponde aos filtros.</p>';
+      };
       const meta=async()=>{
         if(!canalId){$('#tplConteudo').innerHTML='<p>Conecte um WhatsApp oficial pela Zernio em Canais e conexões para gerenciar templates aprovados pela Meta. Instâncias Evolution não têm aprovação de templates.</p>';return;}
-        $('#tplConteudo').innerHTML=`<h3>Modelos oficiais do WhatsApp</h3><label>Conta WhatsApp<select id="tplCanal">${canalOptions}</select></label><p class="muted">A Meta analisa os modelos. Apenas os aprovados podem ser enviados pela API oficial.</p><button class="btn sm" id="tplAtualizar">Atualizar status na Meta</button><div id="tplLista">Consultando…</div>${ctx.admin?'<button class="btn pri" id="tplNovo">Enviar novo modelo para aprovação</button>':''}`;
+        $('#tplConteudo').innerHTML=`<h3>Templates do WhatsApp oficial</h3><label>Conta WhatsApp<select id="tplCanal">${canalOptions}</select></label><p class="muted">Os status e componentes vêm da Meta. Templates precisam estar aprovados para envio.</p><div class="atd-template-filtros"><label>Buscar por nome ou conteúdo<input id="tplBusca" type="search" placeholder="Ex.: confirmação, pedido, {{1}}"></label><label>Filtrar por status<select id="tplFiltroStatus"><option value="">Todos os status</option><option value="APPROVED">Aprovado</option><option value="PENDING">Em análise</option><option value="REJECTED">Rejeitado</option><option value="PAUSED">Pausado</option><option value="DISABLED">Desativado</option></select></label><button class="btn sm" id="tplAtualizar">Atualizar lista</button>${ctx.admin?'<button class="btn pri" id="tplNovo">Criar template</button>':''}</div><p class="muted" id="tplContagem"></p><div id="tplLista">Consultando…</div>`;
         $('#tplCanal').value=canalId;
         $('#tplCanal').onchange=e=>{canalId=e.target.value;act(meta);};
         $('#tplAtualizar').onclick=()=>act(meta);
+        $('#tplBusca').oninput=renderListaTemplates;$('#tplFiltroStatus').onchange=renderListaTemplates;
         try{
           const result=await api('templates-list',{canal_id:canalId},ws);
           if(S.ws!==ws||S.view!=='atd-templates'||aba!=='meta')return;
           templates=result.templates||[];
-          $('#tplLista').innerHTML=templates.length?templates.map((t,i)=>`<article class="panel" style="margin:12px 0"><b>${esc(t.name)}</b> · ${esc(t.language)} <span class="pill ${t.status==='APPROVED'?'good':'warn'}">${esc(t.status)}</span><p>${esc(t.category||'')}</p><p style="white-space:pre-wrap">${esc((t.components||[]).find(c=>String(c.type).toUpperCase()==='BODY')?.text||'')}</p>${t.reason&&t.reason!=='NONE'?`<small>${esc(t.reason)}</small>`:''}${ctx.admin?`<div class="acts"><button class="btn sm" data-tpl-edit="${i}">Editar e reenviar</button><button class="btn sm bad" data-tpl-delete="${i}">Excluir na Meta</button></div>`:''}</article>`).join(''):'<p>Nenhum template encontrado para esta conta.</p>';
+          renderListaTemplates();
         }catch(err){$('#tplLista').textContent=err.message;}
         $('#tplNovo')?.addEventListener('click',()=>editor());
         $('#tplLista').onclick=e=>{
@@ -581,15 +617,47 @@
         };
       };
       const editor=t=>{
-        const body=(t?.components||[]).find(c=>String(c.type).toUpperCase()==='BODY');
-        const sample=body?.example?.body_text?.[0]||[];
-        const content=`<p>Nome em minúsculas, sem espaços. Use {{1}}, {{2}} para variáveis e informe exemplos reais de formato, mas sem dados pessoais.</p><label>Nome<input name="nome" required pattern="[a-z][a-z0-9_]*" value="${esc(t?.name||'')}"></label><label>Categoria<select name="categoria"><option value="UTILITY">Utilidade</option><option value="MARKETING">Marketing</option></select></label><label>Idioma<input name="idioma" required value="${esc(t?.language||'pt_BR')}"></label><label>Mensagem<textarea name="texto" required maxlength="1024" rows="6">${esc(body?.text||'')}</textarea></label><label>Exemplos das variáveis (um por linha, na ordem)<textarea name="exemplos" rows="3" placeholder="Exemplo da variável 1&#10;Exemplo da variável 2">${esc(sample.join('\n'))}</textarea></label><p class="muted">Editar um template existente o submete novamente à análise da Meta.</p>`;
-        const form=modal(t?'Editar modelo Meta':'Novo modelo Meta',content,async d=>{
+        const components=t?.components||[],header=components.find(c=>String(c.type).toUpperCase()==='HEADER'),body=components.find(c=>String(c.type).toUpperCase()==='BODY'),footer=components.find(c=>String(c.type).toUpperCase()==='FOOTER'),buttons=components.find(c=>String(c.type).toUpperCase()==='BUTTONS')?.buttons||[];
+        const mediaExample=String(header?.example?.header_handle?.[0]||'');
+        const rawHeaderExamples=header?.example?.header_text||[],headerExampleText=Array.isArray(rawHeaderExamples?.[0])?rawHeaderExamples[0].join('\n'):Array.isArray(rawHeaderExamples)?rawHeaderExamples.join('\n'):'',rawBodyExamples=body?.example?.body_text||[],bodyExampleText=Array.isArray(rawBodyExamples?.[0])?rawBodyExamples[0].join('\n'):Array.isArray(rawBodyExamples)?rawBodyExamples.join('\n'):'';
+        const content=`<p class="muted">Preencha os campos com os nomes abaixo. A Meta analisa cada envio; imagem e vídeo precisam estar em uma URL HTTPS pública para análise.</p><label>Nome interno do template<input name="nome" required pattern="[a-z][a-z0-9_]*" value="${esc(t?.name||'')}" placeholder="confirmacao_cadastro"></label><label>Categoria<select name="categoria"><option value="UTILITY">Utilidade</option><option value="MARKETING">Marketing</option></select></label><label>Idioma<select name="idioma"><option value="pt_BR">Português (Brasil) · pt_BR</option><option value="pt_PT">Português (Portugal) · pt_PT</option><option value="en_US">Inglês (EUA) · en_US</option><option value="es_ES">Espanhol · es_ES</option></select></label><fieldset class="atd-tpl-section"><legend>Cabeçalho (opcional)</legend><label>Tipo de cabeçalho<select name="headerFormat"><option value="none">Sem cabeçalho</option><option value="text">Texto</option><option value="image">Imagem</option><option value="video">Vídeo</option><option value="document">Documento</option></select></label><div id="tplHeaderTextFields"><label>Texto do cabeçalho<input name="headerText" maxlength="60" value="${esc(header?.format?.toUpperCase()==='TEXT'?header.text||'':'')}" placeholder="Olá, {{1}}"></label><label>Exemplos das variáveis do cabeçalho (um por linha)<textarea name="headerExample" rows="2" placeholder="Ex.: Maria&#10;Ex.: Pedido 123">${esc(headerExampleText)}</textarea></label></div><div id="tplHeaderMediaFields"><label>URL pública da mídia de exemplo<input name="headerMediaExample" value="${esc(/^https:\/\//i.test(mediaExample)?mediaExample:'')}" placeholder="https://seusite.com/imagem.jpg"></label><small>Imagem: JPG/PNG · Vídeo: MP4 · Documento: PDF. A URL é usada como amostra na análise da Meta.</small></div></fieldset><label>Mensagem do corpo<textarea name="texto" required maxlength="1024" rows="5">${esc(body?.text||'')}</textarea></label><label>Exemplos das variáveis do corpo (um por linha, na ordem)<textarea name="exemplos" rows="3" placeholder="Exemplo da variável 1&#10;Exemplo da variável 2">${esc(bodyExampleText)}</textarea></label><label>Rodapé (opcional)<input name="footerText" maxlength="60" value="${esc(footer?.text||'')}" placeholder="Ex.: Equipe Growth"></label><fieldset class="atd-tpl-section"><legend>Botões (opcional)</legend><div class="atd-tpl-button-builder"><label>Tipo<select id="tplButtonType"><option value="quick_reply">Resposta rápida</option><option value="url">Link</option><option value="phone_number">Telefone</option><option value="copy_code">Copiar código</option><option value="flow">Abrir formulário</option></select></label><label id="tplButtonTextLabel">Texto do botão<input id="tplButtonText" maxlength="25" placeholder="Ex.: Falar com a equipe"></label><div id="tplButtonExtra"></div><button type="button" class="btn sm" id="tplButtonAdd">Adicionar botão</button></div><div id="tplButtonList"></div><small>Até 3 respostas rápidas ou até 2 botões de ação. Tipos de código e formulário seguem a configuração aprovada na Meta.</small></fieldset>${t?'<p class="muted">Editar um template existente o submete novamente à análise da Meta.</p>':''}`;
+        const buttonDraft=buttons.map(b=>({type:String(b.type||'').toLowerCase(),text:b.text||b.flow_cta||'',url:b.url||'',example:Array.isArray(b.example)?b.example[0]||'':b.example||'',phone_number:b.phone_number||'',flow_id:b.flow_id||'',flow_cta:b.flow_cta||'',flow_action:b.flow_action||'navigate',navigate_screen:b.navigate_screen||''}));
+        const form=modal(t?'Editar template':'Criar template',content,async(d,f)=>{
           const action=t?'templates-update':'templates-create';
-          await api(action,{canal_id:canalId,template_id:t?.id,nome:d.nome,categoria:d.categoria,idioma:d.idioma,texto:d.texto,exemplos:String(d.exemplos||'').split('\n').map(x=>x.trim()).filter(Boolean)},ws);
+          const parseExamples=s=>String(s||'').split('\n').map(x=>x.trim()).filter(Boolean),result=[];
+          const headerFormat=d.headerFormat;
+          if(headerFormat==='text')result.push({type:'header',format:'text',text:d.headerText,examples:parseExamples(d.headerExample)});
+          if(['image','video','document'].includes(headerFormat))result.push({type:'header',format:headerFormat,example_url:d.headerMediaExample});
+          result.push({type:'body',text:d.texto,examples:parseExamples(d.exemplos)});
+          if(String(d.footerText||'').trim())result.push({type:'footer',text:d.footerText});
+          if(buttonDraft.length)result.push({type:'buttons',buttons:buttonDraft});
+          await api(action,{canal_id:canalId,template_id:t?.id,nome:d.nome,categoria:d.categoria,idioma:d.idioma,componentes:result},ws);
           toast('Modelo enviado à Meta. Acompanhe o status nesta aba.');await meta();
-        },t?'Salvar e reenviar':'Enviar para aprovação');
+        },t?'Salvar e reenviar':'Enviar para aprovação',true);
         if(t)form.querySelector('[name=categoria]').value=t.category||'UTILITY';
+        if(t)form.querySelector('[name=idioma]').value=t.language||'pt_BR';
+        const headerFormat=form.elements.headerFormat;
+        headerFormat.value=header?String(header.format||'').toLowerCase():'none';
+        const headerFields=()=>{form.querySelector('#tplHeaderTextFields').hidden=headerFormat.value!=='text';form.querySelector('#tplHeaderMediaFields').hidden=!['image','video','document'].includes(headerFormat.value);};
+        headerFormat.onchange=headerFields;headerFields();
+        const tipo=form.querySelector('#tplButtonType'),extra=form.querySelector('#tplButtonExtra');
+        const extraFields=()=>{const code=tipo.value==='copy_code',flow=tipo.value==='flow';form.querySelector('#tplButtonTextLabel').hidden=code;if(code)form.querySelector('#tplButtonText').value='';extra.innerHTML=tipo.value==='url'?'<label>URL do botão<input id="tplButtonUrl" placeholder="https://site.com/pedido/{{1}}"></label><label>Exemplo do link dinâmico (se usar {{1}})<input id="tplButtonUrlExample" placeholder="pedido/123"></label>':tipo.value==='phone_number'?'<label>Telefone com código do país<input id="tplButtonPhone" placeholder="+5511999999999"></label>':code?'<label>Exemplo do cupom<input id="tplButtonExample" placeholder="PROMO10"></label>':flow?'<label>ID do formulário WhatsApp<input id="tplButtonFlowId" placeholder="ID fornecido pela Meta"></label><label>Texto do botão<input id="tplButtonFlowCta" maxlength="20" placeholder="Abrir formulário"></label><label>Tela inicial<input id="tplButtonFlowScreen" placeholder="WELCOME"></label>':'';};
+        tipo.onchange=extraFields;extraFields();
+        const renderButtons=()=>{form.querySelector('#tplButtonList').innerHTML=buttonDraft.length?`<ul class="atd-tpl-button-list">${buttonDraft.map((b,i)=>`<li><span><b>${esc(tipoBotao[b.type.toUpperCase()]||b.type)}</b>${b.text||b.flow_cta||b.example?` · ${esc(b.text||b.flow_cta||b.example)}`:''}${b.url?` · ${esc(b.url)}`:''}${b.phone_number?` · ${esc(b.phone_number)}`:''}</span><button type="button" class="btn sm bad" data-tpl-button-remove="${i}">Remover</button></li>`).join('')}</ul>`:'<p class="muted">Nenhum botão adicionado.</p>';};
+        form.querySelector('#tplButtonAdd').onclick=()=>{
+          const b={type:tipo.value,text:form.querySelector('#tplButtonText').value.trim()};
+          if(b.type==='url'){b.url=form.querySelector('#tplButtonUrl')?.value.trim()||'';b.example=form.querySelector('#tplButtonUrlExample')?.value.trim()||'';}
+          if(b.type==='phone_number')b.phone_number=form.querySelector('#tplButtonPhone')?.value.trim()||'';
+          if(b.type==='copy_code'){b.example=form.querySelector('#tplButtonExample')?.value.trim()||'';}
+          if(b.type==='flow'){b.flow_id=form.querySelector('#tplButtonFlowId')?.value.trim()||'';b.flow_cta=form.querySelector('#tplButtonFlowCta')?.value.trim()||'';b.flow_action='navigate';b.navigate_screen=form.querySelector('#tplButtonFlowScreen')?.value.trim()||'';b.text=b.flow_cta;}
+          if(buttonDraft.length>=3){toast('O limite é de 3 botões.',true);return;}
+          if(b.type!=='copy_code'&&!b.text){toast('Informe o texto do botão.',true);return;}
+          if(b.type==='copy_code'&&!b.example){toast('Informe o exemplo do cupom.',true);return;}
+          if(b.type==='flow'&&(!b.flow_id||!b.flow_cta||!b.navigate_screen)){toast('Preencha o ID, o texto e a tela inicial do formulário.',true);return;}
+          buttonDraft.push(b);form.querySelector('#tplButtonText').value='';renderButtons();
+        };
+        form.querySelector('#tplButtonList').onclick=e=>{const btn=e.target.closest('[data-tpl-button-remove]');if(btn){buttonDraft.splice(Number(btn.dataset.tplButtonRemove),1);renderButtons();}};
+        renderButtons();
       };
       const rapidaView=async()=>{
         const result=await api('rapidas-list',{},ws),rows=result.respostas||[];

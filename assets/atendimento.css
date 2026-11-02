@@ -70,6 +70,26 @@
 .atd-canal .atd-arquivados+small{display:block;margin-bottom:8px;color:var(--muted);font-size:11px}
 .atd-top #atdArquivarGrupo{margin-left:8px}
 .atd-agenda-lista{padding:12px 16px;border-top:1px solid var(--line);max-height:230px;overflow:auto;background:var(--surface)}
+.atd-template-filtros{display:grid;grid-template-columns:minmax(220px,1fr) minmax(180px,.7fr) auto auto;gap:10px;align-items:end;margin:14px 0}
+.atd-template-card{margin:12px 0}
+.atd-template-card-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.atd-template-card-head h4{margin:0;overflow-wrap:anywhere}
+.atd-template-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px;margin:14px 0}
+.atd-template-fields>div{min-width:0}
+.atd-template-fields .wide{grid-column:1/-1}
+.atd-template-fields dt{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.atd-template-fields dd{margin:3px 0 0;overflow-wrap:anywhere}
+.atd-template-fields .pre{white-space:pre-wrap}
+.atd-tpl-section{border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0}
+.atd-tpl-section legend{font-weight:700;padding:0 6px}
+.atd-tpl-section[hidden],#tplHeaderTextFields[hidden],#tplHeaderMediaFields[hidden]{display:none}
+.atd-tpl-section small{display:block;color:var(--muted);margin-top:6px}
+.atd-tpl-button-builder{display:grid;grid-template-columns:minmax(150px,.45fr) minmax(200px,1fr) minmax(200px,1fr) auto;gap:8px;align-items:end}
+.atd-tpl-button-list{list-style:none;padding:0;margin:10px 0}
+.atd-tpl-button-list li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line)}
+.atd-template-preview{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px;margin:10px 0}
+.atd-template-preview p{white-space:pre-wrap;margin:6px 0}
+@media(max-width:760px){.atd-template-filtros,.atd-template-fields,.atd-tpl-button-builder{grid-template-columns:1fr}.atd-template-fields .wide{grid-column:auto}}
 .atd-agenda-lista[hidden]{display:none}
 .atd-agenda-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .atd-agenda-item{border-top:1px solid var(--line);padding:8px 0}
