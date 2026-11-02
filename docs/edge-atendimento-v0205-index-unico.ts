@@ -1,5 +1,5 @@
 // Edge única para deploy manual da Central de Atendimento.
-// Gerada a partir de index.ts, core.ts e providers.ts; manter sincronizada com esses arquivos.
+// Arquivo autocontido, sem imports relativos.
 
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 
@@ -572,7 +572,7 @@ async function handle(req: Request, b: any) {
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
   const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
-  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete','canal-salvar'];
+  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete','templates-mapping-save','canal-salvar'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
   const ws = b.workspace_id;
   if (['zernio-disponiveis','zernio-conectar'].includes(b.action)) {
@@ -757,7 +757,22 @@ async function handle(req: Request, b: any) {
     const accountId=ch.externo_id;
     if(b.action==='templates-list') {
       const result=await zernio(zp(),'/whatsapp/templates?accountId='+encodeURIComponent(accountId));
-      return json({templates:result.templates||result.data?.templates||[]});
+      const templates=result.templates||result.data?.templates||[];
+      const mappings=await q(db.from('atd_template_mapeamentos').select('template_name,idioma,mapeamentos').eq('workspace_id',ws).eq('canal_id',ch.id)).catch(()=>[]);
+      return json({templates:templates.map((t:any)=>({...t,mapeamentos:mappings.find((m:any)=>m.template_name===t.name&&m.idioma===t.language)?.mapeamentos||{}}))});
+    }
+    if(b.action==='templates-mapping-save') {
+      const nome=String(b.template_name||'').trim(),idioma=String(b.idioma||'').trim(),raw=b.mapeamentos;
+      if(!/^[a-z][a-z0-9_]{0,511}$/.test(nome)||!/^([a-z]{2})(_[A-Z]{2})?$/.test(idioma)||!raw||typeof raw!=='object'||Array.isArray(raw))throw Error('Template ou mapeamentos inválidos.');
+      const keys=['primeiro_nome','nome','email','telefone','campanha','produto','utm_campaign','capturado_em','valor_venda','data_venda','pesquisa'];
+      const normalized:any={};
+      for(const event of ['cadastro','venda','pesquisa']){
+        const values=raw[event];
+        if(!Array.isArray(values)||values.length>20||values.some((v:any)=>typeof v!=='string'||(!keys.includes(v)&&!/^extra:[a-z0-9_-]{1,80}$/.test(v))))throw Error('Mapeamento de variáveis inválido.');
+        normalized[event]=values;
+      }
+      await q(db.from('atd_template_mapeamentos').upsert({workspace_id:ws,canal_id:ch.id,template_name:nome,idioma,mapeamentos:normalized,atualizado_em:new Date().toISOString()},{onConflict:'workspace_id,canal_id,template_name,idioma'}));
+      return json({ok:true});
     }
     if(b.action==='templates-send'){
       if(!ctx.editar)throw Error('Sem permissão para enviar mensagens.');
@@ -924,6 +939,7 @@ async function handle(req: Request, b: any) {
       const id=String(b.template_id||'');
       if(!/^\d{5,30}$/.test(id))throw Error('ID do template inválido.');
       await zernio(zp(),'/whatsapp/templates/id/'+encodeURIComponent(id)+'?accountId='+encodeURIComponent(accountId),'DELETE');
+      if(b.template_name&&b.idioma)await q(db.from('atd_template_mapeamentos').delete().eq('workspace_id',ws).eq('canal_id',ch.id).eq('template_name',String(b.template_name)).eq('idioma',String(b.idioma)));
       return json({ok:true});
     }
   }

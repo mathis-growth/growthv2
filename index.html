@@ -2419,39 +2419,38 @@ function txSlots(t) {
   (parts.find(c => String(c.type).toUpperCase() === 'BUTTONS')?.buttons || []).forEach((b,i) => { if (String(b.type).toUpperCase() === 'URL') add(b.url, `Botão ${i+1} · link`); });
   return out;
 }
+function txMapeamentoOk(t, event) {
+  const slots = txSlots(t), map = t.mapeamentos?.[event];
+  return !slots.length || (Array.isArray(map) && map.length === slots.length && map.every(Boolean));
+}
 function txMarkup(config, channels, event) {
   const opts = channels.map(c => `<option value="${esc(c.id)}"${c.id === config?.canal_id ? ' selected' : ''}>${esc(c.nome)}${c.numero ? ' · +' + esc(String(c.numero).replace(/\D/g,'')) : ''}</option>`).join('') + (config?.canal_id && !channels.some(c=>c.id===config.canal_id) ? `<option value="${esc(config.canal_id)}" selected>Conta previamente configurada · indisponível</option>` : '');
   return `<fieldset class="tx-config"><legend>Mensagem automática · ${event === 'cadastro' ? 'novo lead' : event === 'venda' ? 'venda aprovada' : 'resposta do formulário'}</legend>
-    <p class="muted">Opcional. Selecione uma conta oficial conectada e um template aprovado de texto. Os envios e resultados ficam registrados no histórico do lead/aluno.</p>
+    <p class="muted">Opcional. Selecione uma conta oficial conectada e um template aprovado. Os campos das variáveis são definidos uma vez em Atendimento → Templates → Mapear variáveis.</p>
     <div class="grid2"><label>Conta WhatsApp oficial<select data-tx-canal><option value="">Não enviar automaticamente</option>${opts}</select></label>
     <label>Template aprovado<select data-tx-template disabled><option value="">Selecione a conta primeiro</option></select></label></div>
-    <div data-tx-mapeamento></div><small data-tx-status class="muted">${channels.length ? 'Ao ativar, novos eventos desta origem enviarão o template.' : 'Nenhuma conta oficial conectada. Conecte o WhatsApp em Atendimento → Canais e conexões.'} Templates com cabeçalho de mídia ou botões Flow/Código não aparecem aqui.</small></fieldset>`;
+    <div data-tx-mapeamento></div><small data-tx-status class="muted">${channels.length ? 'Os envios e resultados ficam registrados no histórico do lead/aluno.' : 'Nenhuma conta oficial conectada. Conecte o WhatsApp em Atendimento → Canais e conexões.'} Templates com cabeçalho de mídia ou botões Flow/Código não aparecem aqui.</small></fieldset>`;
 }
 async function txLiga(form, config, channels, event) {
   const host = form.querySelector('[data-tx-mapeamento]'), account = form.querySelector('[data-tx-canal]'), template = form.querySelector('[data-tx-template]'), status = form.querySelector('[data-tx-status]');
-  const campos = (TX_MAPS[event] || TX_MAPS.cadastro).slice();
-  const custom = await q(sb.from('campos_personalizados').select('chave,rotulo').eq('workspace_id', S.ws).eq('entidade', 'pessoas').order('rotulo')).catch(() => []);
-  custom.forEach(c => campos.push(['extra:' + c.chave, c.rotulo]));
-  let templates = [], slots = [], prior = config || {}, loading = 0, txAlterado = false;
-  const drawMapping = () => {
-    host.innerHTML = slots.length ? `<div class="tx-map"><b>Valores das variáveis</b>${slots.map((s,i)=>`<label>${esc(s)}<select data-tx-param="${i}"><option value="">Escolha um campo…</option>${campos.map(([k,l])=>`<option value="${esc(k)}"${prior.parametros?.[i]===k?' selected':''}>${esc(l)}</option>`).join('')}</select></label>`).join('')}</div>` : templates.length ? '<p class="muted">Este template não tem variáveis de texto.</p>' : '';
-  };
+  let templates = [], prior = config || {}, loading = 0, txAlterado = false;
   const load = async (keep=true) => {
     const seq = ++loading, channelId = account.value;
-    templates = []; slots = []; template.disabled = true; template.innerHTML = '<option value="">Consultando templates aprovados…</option>'; host.innerHTML = '';
+    templates = []; template.disabled = true; template.innerHTML = '<option value="">Consultando templates aprovados…</option>'; host.innerHTML = '';
     if (!channelId) { template.innerHTML = '<option value="">Selecione a conta primeiro</option>'; status.textContent = 'Nenhum envio automático configurado.'; prior = {}; return; }
     try {
       templates = await txTemplates(channelId); if (seq !== loading || !form.isConnected) return;
-      template.innerHTML = '<option value="">Selecione um template…</option>' + templates.map((t,i)=>`<option value="${i}">${esc(t.name)} · ${esc(t.language)}</option>`).join('');
-      template.disabled = !templates.length;
-      if (!templates.length) { template.innerHTML = '<option value="">Nenhum template compatível aprovado</option>'; status.textContent = 'Cadastre um template de texto aprovado na aba Templates do Atendimento.'; return; }
-      const selected = keep ? templates.findIndex(t=>t.name===prior.template_name&&t.language===prior.idioma) : -1;
+      template.innerHTML = '<option value="">Selecione um template…</option>' + templates.map((t,i)=>`<option value="${i}"${txMapeamentoOk(t,event)?'':' disabled'}>${esc(t.name)} · ${esc(t.language)}${txMapeamentoOk(t,event)?'':' · mapeie as variáveis em Templates'}</option>`).join('');
+      template.disabled = !templates.some(t=>txMapeamentoOk(t,event));
+      if (!templates.length) { template.innerHTML = '<option value="">Nenhum template compatível aprovado</option>'; status.textContent = 'Cadastre um template aprovado na aba Templates do Atendimento.'; return; }
+      if (!templates.some(t=>txMapeamentoOk(t,event))) { template.innerHTML = '<option value="">Nenhum template com variáveis mapeadas</option>'; status.textContent = 'Abra Atendimento → Templates → Mapear variáveis para configurar os campos deste evento.'; return; }
+      const selected = keep ? templates.findIndex(t=>t.name===prior.template_name&&t.language===prior.idioma&&txMapeamentoOk(t,event)) : -1;
       template.value = selected >= 0 ? String(selected) : '';
       status.textContent = 'Os envios serão colocados em fila e registrados no histórico do contato.';
-      if (selected >= 0) drawTemplate(); else drawMapping();
+      if (selected >= 0) drawTemplate(); else host.innerHTML = '';
     } catch (e) { if (seq !== loading || !form.isConnected) return; template.innerHTML = '<option value="">Falha ao consultar templates</option>'; status.textContent = e.message || 'Falha ao consultar templates.'; }
   };
-  const drawTemplate = () => { const t = templates[Number(template.value)]; slots = t ? txSlots(t) : []; prior = t ? { ...prior, template_name:t.name, idioma:t.language } : prior; drawMapping(); };
+  const drawTemplate = () => { const t = templates[Number(template.value)]; prior = t ? { ...prior, template_name:t.name, idioma:t.language } : prior; host.innerHTML = t ? `<p class="muted">${txSlots(t).length ? 'Variáveis mapeadas por origem no cadastro deste template.' : 'Este template não tem variáveis de texto.'}</p>` : ''; };
   account.onchange = () => { txAlterado = true; prior = {}; load(false); };
   template.onchange = () => { txAlterado = true; drawTemplate(); };
   if (config?.canal_id && channels.some(c=>c.id===config.canal_id)) await load(true);
@@ -2461,10 +2460,8 @@ async function txLiga(form, config, channels, event) {
     if (config && !txAlterado && channelId === config.canal_id && !t) return config;
     if (channelId === config?.canal_id && !channels.some(c=>c.id===channelId) && !t) return config;
     if (!channelId || !channels.some(c=>c.id===channelId)) throw new Error('Selecione uma conta WhatsApp oficial conectada.');
-    if (!t) throw new Error('Selecione um template aprovado para esta conta.');
-    const params = slots.map((_s,i)=>form.querySelector(`[data-tx-param="${i}"]`)?.value || '');
-    if (params.some(x=>!x)) throw new Error('Escolha o campo que preencherá cada variável do template.');
-    return { canal_id:channelId, template_name:t.name, idioma:t.language, parametros:params };
+    if (!t || !txMapeamentoOk(t,event)) throw new Error('Configure o mapeamento das variáveis em Atendimento → Templates antes de selecionar este template.');
+    return { canal_id:channelId, template_name:t.name, idioma:t.language };
   };
 }
 function txSalvarExtras(extras, key, config) {
@@ -5208,7 +5205,7 @@ const ENT = {
     tabela: 'produtos', titulo: 'Produtos', um: 'produto',
     transacional: { key: 'mensagem_venda', event: 'venda' },
     load: async () => { const cw = S.interno && ehAgencia() && await temColuna('produtos', 'cria_workspace'); return { cc: await q(sb.from('centros_custo').select('id,nome').eq('workspace_id', S.ws)), mp: await q(sb.from('projeto_modelos').select('id,nome').eq('workspace_id', S.ws).eq('ativo', true).order('nome')), cw, pac: cw ? await q(sb.from('pacotes_acesso').select('id,nome').eq('ativo', true).order('nome')).catch(() => []) : [] }; },
-    cols: [['Produto', r => esc(r.nome) + (r.cria_workspace ? ' <span class="pill info">inclui o Growths</span>' : '')], ['Tag', r => `<span class="pill info">${esc(r.tag)}</span>`], ['Tipo', r => esc(r.tipo)], ['Nível', r => r.nivel_escada ?? '—'], ['Recorrência', r => r.recorrente ? esc(r.periodicidade) : 'avulso'], ['Preço', r => brl(r.preco), 1], ['Taxa própria', r => r.taxa_percentual_override != null || r.taxa_fixa_override != null ? (r.taxa_percentual_override ?? '—') + '% + ' + brl0(r.taxa_fixa_override) : '—'], ['Situação', r => pillAtivo(r.ativo)]],
+    cols: [['Produto', r => esc(r.nome) + (r.cria_workspace ? ' <span class="pill info">inclui o Growths</span>' : '')], ['Tag', r => `<span class="pill info">${esc(r.tag)}</span>`], ['Tipo', r => esc(r.tipo)], ['Nível', r => r.nivel_escada ?? '—'], ['Recorrência', r => r.recorrente ? esc(r.periodicidade) : 'avulso'], ['Preço', r => brl(r.preco), 1], ['Mensagem automática de venda', r => r.extras?.mensagem_venda ? `<span class="pill good">${esc(r.extras.mensagem_venda.template_name || 'Configurada')}</span>` : '<span class="muted">Configurar ao editar</span>'], ['Taxa própria', r => r.taxa_percentual_override != null || r.taxa_fixa_override != null ? (r.taxa_percentual_override ?? '—') + '% + ' + brl0(r.taxa_fixa_override) : '—'], ['Situação', r => pillAtivo(r.ativo)]],
     campos: c => [{ k: 'nome', l: 'Nome', req: 1 }, { k: 'tag', l: 'Tag do cliente', ph: 'Automática', hint: 'Deixe vazia: o sistema cria a partir do nome (curso-exemplo). Identifica quem comprou este produto.' },
       { k: 'categoria', l: 'Categoria', ph: 'Ex.: formação, mentoria, evento', hint: 'Livre. Serve para filtrar Retenção & Expansão por categoria de produto.' }, { k: 'tipo', l: 'Tipo', t: 'select', req: 1, def: 'curso', opts: [['digital', 'Produto digital'], ['saas', 'SaaS (software por assinatura)'], ['servico', 'Serviço'], ['curso', 'Curso'], ['assinatura', 'Assinatura / clube'], ['outro', 'Outro']] }, { k: 'preco', l: 'Preço (R$)', t: 'number', step: '0.01', req: 1 }, { k: 'nivel_escada', l: 'Nível na escada de valor', t: 'number', step: '1', hint: '1 = produto de entrada; 2, 3, 4... sobem na escada. Usado na ascensão do Customer Success. Vazio = fora da escada.' },
       { k: 'recorrente', l: 'Cobrança recorrente', t: 'check' }, { k: 'periodicidade', l: 'Periodicidade', t: 'select', opts: ['mensal', 'trimestral', 'semestral', 'anual'].map(x => [x, x]), hint: 'Só para recorrente.' },
@@ -5402,7 +5399,7 @@ async function renderCad(el, key) {
   const rows = await q(sb.from(E.tabela).select('*').eq('workspace_id', S.ws).order(E.ordem || 'nome').limit(2000));
   el.innerHTML = `<div class="head"><h2>${esc(E.titulo)}</h2><div class="acts">${E.acoes ? E.acoes(ctx) : ''}${E.semNovo ? '' : '<button class="btn pri" data-new>Novo</button>'}</div></div>${E.aviso ? E.aviso(ctx) : ''}
     <div class="tw"><table><thead><tr>${E.cols.map(c => `<th${c[2] ? ' class="n"' : ''}>${c[0]}</th>`).join('')}<th></th></tr></thead><tbody>
-    ${rows.length ? rows.map(r => `<tr>${E.cols.map(c => `<td${c[2] ? ' class="n"' : ''}>${c[1](r, ctx)}</td>`).join('')}<td><button class="btn sm" data-edit="${r.id}">Editar</button></td></tr>`).join('') : `<tr><td colspan="${E.cols.length + 1}" class="empty">Nada cadastrado ainda.</td></tr>`}</tbody></table></div>`;
+    ${rows.length ? rows.map(r => `<tr>${E.cols.map(c => `<td${c[2] ? ' class="n"' : ''}>${c[1](r, ctx)}</td>`).join('')}<td><button class="btn sm" data-edit="${r.id}">${E.transacional ? 'Editar / WhatsApp' : 'Editar'}</button></td></tr>`).join('') : `<tr><td colspan="${E.cols.length + 1}" class="empty">Nada cadastrado ainda.</td></tr>`}</tbody></table></div>`;
   const abrir = async row => {
     const canaisTx = E.transacional ? await txCanais() : [];
     let txConfig = () => null;
@@ -13648,10 +13645,11 @@ function campFormCompacto() {
 const WZ_ETAPAS = [[1, 'O básico'], [2, 'Orçamento e metas'], [3, 'Canais'], [4, 'Pesquisa']];
 async function abrirWizard(id = null, passo = 1) {
   const w = S.ws, root = $('#modalRoot');
-  const [prods, funis, cad] = await Promise.all([
+  const [prods, funis, cad, canaisTx] = await Promise.all([
     q(sb.from('produtos').select('id,nome,preco').eq('workspace_id', w).order('nome')),
     q(sb.from('funis').select('id,nome,tipo').eq('workspace_id', w).eq('ativo', true).order('nome')),
-    q(sb.from('canais').select('codigo,nome').eq('workspace_id', w).eq('ativo', true).order('nome'))]);
+    q(sb.from('canais').select('codigo,nome').eq('workspace_id', w).eq('ativo', true).order('nome')),
+    txCanais()]);
   const tmOk = await temColuna('campanhas', 'tipo_midia'), pjAuto = await temColuna('campanhas', 'projeto_auto');
   let c = id ? (await q(sb.from('campanhas').select('*').eq('id', id)))[0] : null;
   let canais = id ? await q(sb.from('campanha_canais').select('*').eq('campanha_id', id)) : [];
@@ -13662,7 +13660,7 @@ async function abrirWizard(id = null, passo = 1) {
   const opt = (l, v, cur) => l.map(([k, t]) => `<option value="${esc(k)}"${String(cur ?? '') === String(k) ? ' selected' : ''}>${esc(t)}</option>`).join('');
   const dias = () => { if (!c || !c.data_inicio) return 30; if (c.modelo === 'perpetuo' || !c.data_fim) return 30; return Math.max(1, Math.round((new Date(c.data_fim) - new Date(c.data_inicio)) / 864e5) + 1); };
   const pago = cod => String(cod).endsWith('_ads');
-  let sel = null, linhas = {}, wzCpq = null;
+  let sel = null, linhas = {}, wzCpq = null, txConfig = () => null;
   const tela = () => {
     const passos = WZ_ETAPAS.map(([n, t]) => `<div class="${n < passo ? 'ok' : n === passo ? 'at' : ''}"><i></i>${n}. ${t}${n < passo ? ' ✓' : ''}</div>`).join('');
     let corpo = '';
@@ -13693,7 +13691,7 @@ async function abrirWizard(id = null, passo = 1) {
       <div id="wzTab"></div>`;
     }
     if (passo === 4) { if (!wzCpq) { corpo = '<p class="lead">Carregando as pesquisas…</p>'; cpqDados().then(d => { wzCpq = d; tela(); }).catch(e => toast(e.message || String(e), true)); }
-      else corpo = '<p class="lead">Se a campanha vai ter pesquisa, escolha qual e onde ela entra. Dá para mudar depois, na aba Planejamento e metas.</p>' + cpqCampos(cpqCfg(c), wzCpq.pesqs, wzCpq.etapas); }
+      else corpo = '<p class="lead">Se a campanha vai ter pesquisa, escolha qual e onde ela entra. Dá para mudar depois, na aba Planejamento e metas.</p>' + cpqCampos(cpqCfg(c), wzCpq.pesqs, wzCpq.etapas) + txMarkup(c?.extras?.mensagem_cadastro, canaisTx, 'cadastro'); }
     root.innerHTML = `<div class="ov"><div class="modal wz" role="dialog" aria-label="Nova campanha"><div class="wzh"><h2>${c && passo > 1 ? esc(c.nome) : 'Nova campanha'}</h2><div class="wzp">${passos}</div></div>
       <form><div class="wzb">${corpo}</div><div class="wzf">${passo > 1 ? '<button type="button" class="btn" data-w="volta">Voltar</button>' : '<button type="button" class="btn" data-w="x">Cancelar</button>'}<span class="sp"></span>
       ${c ? '<span class="salvo">✓ Rascunho salvo</span>' : ''}${c ? '<button type="button" class="btn" data-w="depois">Terminar depois</button>' : ''}<button type="submit" class="btn pri">${passo < 4 ? 'Salvar e continuar' : 'Concluir e abrir a campanha'}</button></div></form></div></div>`;
@@ -13705,7 +13703,11 @@ async function abrirWizard(id = null, passo = 1) {
       if (a === 'depois') { await salvar(f); abreCampanha(); }
     }));
     f.onsubmit = e => { e.preventDefault(); act(async () => { const btn = f.querySelector('.pri'); btn.disabled = true; try { await salvar(f); } finally { btn.disabled = false; } if (passo < 4) { passo++; tela(); } else abreCampanha(); }); };
-    if (passo === 4) cpqLiga(f);
+    if (passo === 4) {
+      cpqLiga(f);
+      const submit = f.querySelector('.pri'); submit.disabled = true;
+      txLiga(f, c?.extras?.mensagem_cadastro, canaisTx, 'cadastro').then(get => { txConfig = get; }).catch(err => { txConfig = () => c?.extras?.mensagem_cadastro || null; toast(err.message || String(err), true); }).finally(() => { submit.disabled = false; });
+    }
     if (passo === 1) { ligarNovo(f); const fe = f.querySelector('[name=funil_id]');
       const prevEt = async () => { const box = $('#wzEt'), id_ = fe.value; if (!box) return; if (!id_ || id_ === '__nova_est__') { box.innerHTML = ''; return; }
         box.innerHTML = '<span class="muted">Carregando as etapas…</span>';
@@ -13784,7 +13786,11 @@ async function abrirWizard(id = null, passo = 1) {
           await q(sb.from('campanha_canais').insert({ ...v, workspace_id: w, campanha_id: c.id, canal: k, utm_campaign: t, tipo: pago(k) ? 'pago' : 'organico' })); }
       }
       canais = await q(sb.from('campanha_canais').select('*').eq('campanha_id', c.id));
-    } else if (f.querySelector('[data-cpq]')) await cpqSalva(f, c);
+    } else if (passo === 4) {
+      if (f.querySelector('[data-cpq]')) await cpqSalva(f, c);
+      const extras = txSalvarExtras(c.extras, 'mensagem_cadastro', txConfig());
+      await q(sb.from('campanhas').update({ extras }).eq('id', c.id)); c.extras = extras;
+    }
   };
   tela();
 }
@@ -22458,7 +22464,7 @@ function modalSubtemas(t, D) {
 }
 
 </script>
-<script src="assets/atendimento.js?v=0200"></script>
+<script src="assets/atendimento.js?v=0201"></script>
 <script>
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
 if (PQ_TOKEN) vPesquisaPublica(PQ_TOKEN);

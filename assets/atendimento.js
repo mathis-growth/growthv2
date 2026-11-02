@@ -596,6 +596,17 @@
       const statusTemplate={APPROVED:'Aprovado',PENDING:'Em análise',REJECTED:'Rejeitado',PAUSED:'Pausado',DISABLED:'Desativado',IN_APPEAL:'Em recurso',PENDING_DELETION:'Exclusão pendente'};
       const categoriaTemplate={UTILITY:'Utilidade',MARKETING:'Marketing',AUTHENTICATION:'Autenticação'};
       const tipoBotao={QUICK_REPLY:'Resposta rápida',URL:'Link',PHONE_NUMBER:'Telefone',COPY_CODE:'Copiar código',FLOW:'Abrir formulário',OTP:'Código de acesso'};
+      const mapearVariaveis=async t=>{
+        const custom=await q(sb.from('campos_personalizados').select('chave,rotulo').eq('workspace_id',ws).eq('entidade','pessoas').order('rotulo')).catch(()=>[]);
+        const customFields=custom.map(x=>['extra:'+x.chave,x.rotulo+' · personalizado']);
+        const slots=txSlots(t),events=[['cadastro','Cadastro de lead'],['venda','Venda aprovada'],['pesquisa','Resposta de pesquisa/diagnóstico']],saved=t.mapeamentos||{};
+        const body=slots.length?events.map(([key,title])=>`<fieldset class="atd-tpl-section"><legend>${title}</legend><p class="muted">Mapeie somente se este template for usado nesse tipo de envio.</p>${slots.map((slot,i)=>`<label>${esc(slot)}<select data-map-event="${key}" data-map-slot="${i}"><option value="">Não mapear neste evento</option>${[...(TX_MAPS[key]||[]),...customFields].map(([field,label])=>`<option value="${esc(field)}"${saved[key]?.[i]===field?' selected':''}>${esc(label)}</option>`).join('')}</select></label>`).join('')}</fieldset>`).join(''):'<p class="muted">Este template não tem variáveis de texto para mapear.</p>';
+        const form=modal('Mapear variáveis · '+t.name,`<p class="muted">Defina uma vez de qual campo do contato ou do evento vem cada variável. O mapeamento é separado por tipo de envio e usado em campanhas, produtos e formulários. Essa configuração não reenvia o template para aprovação.</p>${body}`,async(_d,f)=>{
+          const mapeamentos=Object.fromEntries(events.map(([key])=>[key,slots.map((_slot,i)=>f.querySelector(`[data-map-event="${key}"][data-map-slot="${i}"]`)?.value||'')]));
+          if(slots.length&&Object.values(mapeamentos).some(values=>values.some(Boolean)&&values.some(v=>!v)))throw Error('Complete o mapeamento de todas as variáveis no evento escolhido, ou deixe o evento inteiro sem mapear.');
+          await api('templates-mapping-save',{canal_id:canalId,template_name:t.name,idioma:t.language,mapeamentos},ws);toast('Mapeamento das variáveis salvo.');await meta();
+        },'Salvar mapeamento',true);
+      };
       const renderListaTemplates=()=>{
         const busca=String($('#tplBusca')?.value||'').trim().toLocaleLowerCase('pt-BR'),filtro=$('#tplFiltroStatus')?.value||'';
         const vistos=templates.map((t,i)=>({t,i})).filter(({t})=>(!filtro||t.status===filtro)&&(!busca||[t.name,t.language,t.category,t.status,...(t.components||[]).map(c=>c.text||'')].join(' ').toLocaleLowerCase('pt-BR').includes(busca)));
@@ -603,7 +614,8 @@
         $('#tplLista').innerHTML=vistos.length?vistos.map(({t,i})=>{
           const components=t.components||[],header=components.find(c=>String(c.type).toUpperCase()==='HEADER'),body=components.find(c=>String(c.type).toUpperCase()==='BODY'),footer=components.find(c=>String(c.type).toUpperCase()==='FOOTER'),btns=components.find(c=>String(c.type).toUpperCase()==='BUTTONS')?.buttons||[];
           const tipo=String(header?.format||'').toUpperCase(),conteudoHeader=header?(tipo==='TEXT'?header.text||'':({IMAGE:'Imagem',VIDEO:'Vídeo',DOCUMENT:'Documento',LOCATION:'Localização'}[tipo]||tipo)):'';
-          return `<article class="panel atd-template-card"><div class="atd-template-card-head"><h4>${esc(t.name||'Sem nome')}</h4><span class="pill ${t.status==='APPROVED'?'good':t.status==='REJECTED'?'bad':'warn'}">${esc(statusTemplate[t.status]||t.status||'Status não informado')}</span></div><dl class="atd-template-fields"><div><dt>Nome do template</dt><dd>${esc(t.name||'—')}</dd></div><div><dt>Idioma</dt><dd>${esc(t.language||'—')}</dd></div><div><dt>Categoria</dt><dd>${esc(categoriaTemplate[t.category]||t.category||'—')}</dd></div><div><dt>ID Meta</dt><dd>${esc(t.id||'—')}</dd></div><div><dt>Cabeçalho</dt><dd>${header?`${esc(conteudoHeader)}${tipo==='TEXT'?`<br>${esc(header.text||'')}`:''}`:'Sem cabeçalho'}</dd></div><div class="wide"><dt>Mensagem</dt><dd class="pre">${esc(body?.text||'—')}</dd></div>${footer?`<div><dt>Rodapé</dt><dd>${esc(footer.text||'—')}</dd></div>`:''}${btns.length?`<div><dt>Botões</dt><dd>${btns.map(b=>`${esc(tipoBotao[String(b.type||'').toUpperCase()]||b.type||'Botão')}: ${esc(b.text||b.flow_cta||b.url||b.phone_number||b.example||'—')}`).join('<br>')}</dd></div>`:''}${t.reason&&t.reason!=='NONE'?`<div class="wide"><dt>Motivo do status</dt><dd>${esc(t.reason)}</dd></div>`:''}</dl>${ctx.admin?`<div class="acts"><button class="btn sm" data-tpl-edit="${i}">Editar e reenviar</button><button class="btn sm bad" data-tpl-delete="${i}">Excluir na Meta</button></div>`:''}</article>`;
+          const slots=txSlots(t),maps=t.mapeamentos||{},statusMap=Object.entries({cadastro:'Cadastro',venda:'Venda',pesquisa:'Pesquisa/diagnóstico'}).map(([key,label])=>`${label}: ${!slots.length||Array.isArray(maps[key])&&maps[key].length===slots.length&&maps[key].every(Boolean)?'mapeado':'pendente'}`).join(' · ');
+          return `<article class="panel atd-template-card"><div class="atd-template-card-head"><h4>${esc(t.name||'Sem nome')}</h4><span class="pill ${t.status==='APPROVED'?'good':t.status==='REJECTED'?'bad':'warn'}">${esc(statusTemplate[t.status]||t.status||'Status não informado')}</span></div><dl class="atd-template-fields"><div><dt>Nome do template</dt><dd>${esc(t.name||'—')}</dd></div><div><dt>Idioma</dt><dd>${esc(t.language||'—')}</dd></div><div><dt>Categoria</dt><dd>${esc(categoriaTemplate[t.category]||t.category||'—')}</dd></div><div><dt>ID Meta</dt><dd>${esc(t.id||'—')}</dd></div><div><dt>Cabeçalho</dt><dd>${header?`${esc(conteudoHeader)}${tipo==='TEXT'?`<br>${esc(header.text||'')}`:''}`:'Sem cabeçalho'}</dd></div><div class="wide"><dt>Mensagem</dt><dd class="pre">${esc(body?.text||'—')}</dd></div><div class="wide"><dt>Campos para envio automático</dt><dd>${esc(statusMap)}</dd></div>${footer?`<div><dt>Rodapé</dt><dd>${esc(footer.text||'—')}</dd></div>`:''}${btns.length?`<div><dt>Botões</dt><dd>${btns.map(b=>`${esc(tipoBotao[String(b.type||'').toUpperCase()]||b.type||'Botão')}: ${esc(b.text||b.flow_cta||b.url||b.phone_number||b.example||'—')}`).join('<br>')}</dd></div>`:''}${t.reason&&t.reason!=='NONE'?`<div class="wide"><dt>Motivo do status</dt><dd>${esc(t.reason)}</dd></div>`:''}</dl>${ctx.admin?`<div class="acts"><button class="btn sm" data-tpl-map="${i}">Mapear variáveis</button><button class="btn sm" data-tpl-edit="${i}">Editar e reenviar</button><button class="btn sm bad" data-tpl-delete="${i}">Excluir na Meta</button></div>`:''}</article>`;
         }).join(''):'<p class="muted">Nenhum template corresponde aos filtros.</p>';
       };
       const meta=async()=>{
@@ -621,11 +633,12 @@
         }catch(err){$('#tplLista').textContent=err.message;}
         $('#tplNovo')?.addEventListener('click',()=>editor());
         $('#tplLista').onclick=e=>{
-          const edit=e.target.closest('[data-tpl-edit]'),del=e.target.closest('[data-tpl-delete]');
+          const map=e.target.closest('[data-tpl-map]'),edit=e.target.closest('[data-tpl-edit]'),del=e.target.closest('[data-tpl-delete]');
+          if(map){mapearVariaveis(templates[Number(map.dataset.tplMap)]);return;}
           if(edit){editor(templates[Number(edit.dataset.tplEdit)]);return;}
           if(del)act(async()=>{
             const t=templates[Number(del.dataset.tplDelete)];if(!t?.id||!confirm(`Excluir o modelo ${t.name} (${t.language}) da Meta? Essa ação pode impedir envios que o utilizem.`))return;
-            await api('templates-delete',{canal_id:canalId,template_id:t.id},ws);toast('Exclusão solicitada na Meta.');await meta();
+            await api('templates-delete',{canal_id:canalId,template_id:t.id,template_name:t.name,idioma:t.language},ws);toast('Exclusão solicitada na Meta.');await meta();
           });
         };
       };
