@@ -1,5 +1,16 @@
 
 
+## v0.220 — Acerto da projeção (histórico e calibração)
+**Pedido da Rebecka (01/11)**: próximo (medir o acerto da projeção).
+Decisões:
+- **Não esperar meses de fotos**: as fotos diárias começaram na v0.213. Para medir o acerto já, o Growths **refaz** a projeção que o Cockpit teria mostrado em cada mês fechado (até 12), nos dias 3, 7, 10, 15, 20 e 25, com o mesmo método, e compara com o total real do mês (`projecao_backtest`).
+- **Duas medidas**: erro médio (quanto errou, para mais ou para menos) e viés (se erra sempre para o mesmo lado: positivo = a projeção passou do real). Também o maior erro.
+- **Faixa provável no Cockpit**: num mês do calendário em andamento, abaixo da projeção do faturamento aparece "Faixa provável até dd/mm: R$ A a R$ B", usando o erro histórico do dia do mês mais próximo. Diz quando a meta fica abaixo mesmo no melhor caso ou é batida mesmo no pior. A faixa nunca começa abaixo do que já foi realizado.
+- **Honestidade**: com menos de 3 meses fechados com movimento, não há faixa e a tela diz o motivo. O texto sempre avisa que é erro observado no passado, não probabilidade.
+- **Fotos guardadas**: o acerto real (as projeções mostradas de verdade) aparece em "Acerto da projeção" assim que houver período encerrado com foto (`projecao_fotos`).
+- **Fato** (base de teste, 3 meses): no dia 15 a projeção do faturamento errou em média 70% e ficou sempre abaixo do real (as vendas se concentram no fim do mês, em lançamentos). Os leads erraram 11%. Isso mostra que, para faturamento de lançamento, o ritmo linear subestima. É uma pista para a próxima melhoria do método (trajetória sazonal dentro do mês).
+**Pendências**: método de projeção com a curva típica do mês (corrigir o viés); faixa também para leads, vendas, campanhas e produtos; probabilidade de bater a meta quando houver ao menos 6 meses de fotos.
+
 ## v0.219 — Funil AARRR
 **Pedido da Rebecka (01/11)**: continuar (próximo do documento: a visão AARRR).
 Decisões:

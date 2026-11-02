@@ -1,3 +1,6 @@
+## v0.220
+**Quanto confiar na projeção.** O Growths refaz a projeção nos meses passados e mede quanto ela errou. No Cockpit, a projeção do faturamento ganha uma faixa provável baseada nesse erro, e "Acerto da projeção" mostra o histórico de faturamento, leads e vendas.
+
 ## v0.219
 **O funil inteiro numa tela.** No painel Growth do Cockpit, o funil AARRR mostra aquisição, ativação, retenção, receita, recomendação e recompra com o período anterior, as metas, a North Star e o gargalo sugerido.
 

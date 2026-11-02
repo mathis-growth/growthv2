@@ -1,3 +1,7 @@
+## v0.220
+- Erro da projeção = (projeção − total real) ÷ total real. Erro médio = média do erro absoluto; viés = média com sinal.
+- Faixa provável = projeção × (1 ± erro médio do dia do mês mais próximo, para trás), nunca abaixo do realizado; precisa de 3 meses fechados com movimento.
+
 ## v0.219
 - AARRR: período atual até hoje × período anterior do mesmo tamanho. Cliente novo = 1ª compra aprovada no período (com o histórico importado). Recompra = cliente com compra no período e compra anterior. Saída = saíram ÷ (ativos + saíram).
 - Gargalo sugerido = taxa com maior piora (> 5%).

@@ -1,3 +1,6 @@
+## v0.220
+- Migration `20261214100000_brain_calibracao.sql` + `RODAR_v0.220_brain_calibracao.sql`. index.html montado sobre o HEAD do GitHub (v0.219) com `aplica220.py` e `g220.js`: `mtFaixaCarrega`, `acertoAbrir`; `#mtFaixa` na faixa de metas. Teste novo `t220_acerto.py`.
+
 ## v0.219
 - Migration `20261213100000_brain_aarrr.sql` + `RODAR_v0.219_brain_aarrr.sql`. index.html montado sobre o HEAD do GitHub (v0.218) com `aplica219.py` e `g219.js`: `aarrrAbrir`, `ckAarrrLiga`, `aarrrFmt`. Teste novo `t219_aarrr.py`.
 

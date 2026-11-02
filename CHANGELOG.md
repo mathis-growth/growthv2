@@ -1,3 +1,8 @@
+## v0.220 — Growth's Brain: acerto da projeção (01/11/2026)
+- Projeção refeita nos meses fechados (dias 3 a 25) e comparada com o total real: erro médio, viés e maior erro, para faturamento, leads e vendas.
+- Cockpit: faixa provável da projeção do faturamento (erro histórico, não probabilidade) e "Acerto da projeção".
+- Banco: `RODAR_v0.220_brain_calibracao.sql` (só leitura). Teste: `t220_acerto.py` (0 falhas).
+
 ## v0.219 — Growth's Brain: funil AARRR (01/11/2026)
 - "Abrir o funil AARRR" no painel Growth do Cockpit: seis etapas com o que o Growths já calcula, período anterior, metas, North Star, passagem lead → cliente e gargalo sugerido.
 - Banco: `RODAR_v0.219_brain_aarrr.sql` (só leitura). Teste: `t219_aarrr.py` (0 falhas).

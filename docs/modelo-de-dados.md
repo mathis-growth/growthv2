@@ -1,3 +1,6 @@
+## v0.220
+- Funções de leitura: `projecao_backtest(ws, metrica, hoje, meses)` → pontos {mes, dia, realizado_no_dia, projecao, final, erro_pct} e resumo por dia {meses, erro_medio_pct, vies_pct, maior_erro_pct}; `projecao_faixa(ws, metrica, ini, fim, hoje)` → {de, ate, erro_medio_pct, vies_pct, dia_ref, meses, texto} ou {motivo}; `projecao_fotos(ws, metrica, hoje)`.
+
 ## v0.219
 - Funções de leitura: `aarrr_numeros(ws, ini, fim)` (os números de um período) e `aarrr_painel(ws, ini, fim, hoje)` → etapas com métricas {codigo, nome, unidade, direção, taxa, v, v_ant, var, meta, sem_dado}, gargalo, passagem, nsm.
 

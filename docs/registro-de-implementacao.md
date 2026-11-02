@@ -1,5 +1,9 @@
 
 
+## Acerto da projeção (v0.220)
+- `t220_acerto.py` (12 verificações, 0 falhas): projeção refeita no dia 15 de outubro igual ao método do Cockpit; erro do mês; resumo (meses, erro médio, viés); dias de referência; faixa provável com texto; faixa não abaixo do realizado; mês encerrado sem faixa; fotos guardadas; sem login recusa; no Cockpit: faixa e "Acerto da projeção".
+- Regressão: t219, t218, t217, t216, t215, t213 sem falhas.
+
 ## Funil AARRR (v0.219)
 - `t219_aarrr.py` (14 verificações, 0 falhas): seis etapas; leads e faturamento iguais às metas; clientes novos e passagem; metas nas etapas; sem dado sem inventar; gargalo; North Star na etapa; sem login recusa; no Cockpit: botão, funil sem sair do Cockpit, Investigar, celular.
 - Regressão: t218, t217, t216, t215, t213, t211 sem falhas.
