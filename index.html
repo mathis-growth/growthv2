@@ -19887,9 +19887,10 @@ function tabKanban(el, D, C) {
   const cmp = sc ? (a, b) => Number(b.validado) - Number(a.validado) || ordemScore(a, b) : (a, b) => (notaCt(b, D) ?? -1) - (notaCt(a, D) ?? -1) || prio(a) - prio(b) || String(a.criado_em).localeCompare(String(b.criado_em));
   el.innerHTML = `${mqComeco(D)}<div class="acts"><button class="btn pri" id="cNovo">Nova ideia</button><button class="btn" id="cColar">Colar ideias</button><button class="btn" id="cVoz" title="Fale a ideia e ela vai para o Baú de ideias">🎙 Falar uma ideia</button><button class="btn" id="cIA" title="Fale a ideia no ChatGPT do celular e ela entra aqui">Ideias pelo ChatGPT</button></div>
   ${mqFiltrosHtml(D, C)}<div class="filters" style="margin-top:-8px"><label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="cfA" style="width:auto"${C.arq ? ' checked' : ''}> Mostrar arquivados</label></div>
-  ${kbPainel(L, D)}
+  ${kbPainel(L, D).split('<!--kbcal-->')[0]}
   ${!D.temas.length && D.linhas.length ? '<div class="panel">Cadastre as frentes de cada território na aba <b>Linha editorial</b>. Depois as ideias ganham território, frente e etiquetas.</div>' : ''}
   <div class="board" style="grid-auto-columns:minmax(250px,1fr)">${etapas.map(([k, nome, sub]) => { const X = L.filter(c => c.status === k).sort(cmp); return `<div class="colk" data-col="${k}"><h3><span>${nome} <small class="muted">${esc(sc && k === 'pauta' ? 'validar para produzir' : (ehSimples(D) ? (CT_SUB_SIMPLES[k] ?? sub) : sub))}</small></span><span class="mono">${X.length}</span></h3>${X.map(c => mqCard(c, D)).join('') || '<small class="muted">Vazio</small>'}</div>`; }).join('')}</div>`;
+  { const bd = el.querySelector('.board'); if (bd) bd.insertAdjacentHTML('afterend', kbPainel(L, D).split('<!--kbcal-->')[1] || ''); } // v0.241: calendário depois do Kanban
   mqLigaComeco(el, C); mqLigaFiltros(el, C); kbLiga(el, C);
   const pre = {}; if (C.tema) pre.tema_id = C.tema; if (C.fmt) pre.formato_id = C.fmt; if (C.dest && C.dest !== '-') pre.destino = C.dest;
   $('#cNovo').onclick = () => modalConteudo(null, D, pre);
@@ -21466,7 +21467,7 @@ function kbPainel(L, D) {
   const cal = `<div class="kb-cal"><div class="kb-cab"><h3>Próximas semanas</h3><div class="kb-leg" aria-label="Legenda">${ETAPAS_C.map(([k, n]) => `<span><i class="kb-${KB_COR[k]}"></i>${esc(n)}</span>`).join('')}</div></div>
     <div class="kb-w kb-wh" aria-hidden="true"><span></span>${DIAS_C.map(([, ab]) => `<span>${ab}</span>`).join('')}</div>${sems.map(linha).join('')}
     <small class="muted">Uma semana fica completa quando os prontos, agendados e publicados com data nela chegam à meta semanal. Clique na semana para abrir o planejamento dela.</small></div>`;
-  return `<section class="panel kb-painel" aria-label="Painel da produção"><div class="kb-ets">${etapas}</div><div class="kb-grid">${semana}${cal}</div></section>`;
+  return `<section class="panel kb-painel" aria-label="Contagem por etapa"><div class="kb-ets">${etapas}</div></section><!--kbcal--><section class="panel kb-painel kb-cal-sec" aria-label="Esta semana e próximas semanas"><div class="kb-grid">${semana}${cal}</div></section>`;
 }
 function kbLiga(el, C) {
   el.querySelectorAll('[data-kbcol]').forEach(b => b.onclick = () => { const col = el.querySelector(`.colk[data-col="${b.dataset.kbcol}"]`); if (col) { col.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); col.classList.add('over'); setTimeout(() => col.classList.remove('over'), 900); } });

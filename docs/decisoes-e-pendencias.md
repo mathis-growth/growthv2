@@ -1,3 +1,7 @@
+## v0.241 — Kanban antes do calendário
+**Pedido da Rebecka (02/11):** "só uma aba escrito Baú de ideias, fica ok… quero mudar o Kanban de lugar: embaixo da contabilização, antes do calendário, para ficar mais fácil visualizar o que está acontecendo".
+**Feito:** contagem por etapa → Kanban → Esta semana e calendário. O Baú de ideias não mudou.
+
 ## v0.240 — Baú de ideias com microfone
 **Pedido da Rebecka (02/11):** "no Content, o baú de ideias, e um lugar com um microfonezinho para eu falar a minha ideia e ele salvar como ideia, uma pauta que tem que ser aprovada".
 **Como ficou:** a transcrição é feita pelo próprio navegador (Chrome, Edge e Safari recentes), sem custo e sem mandar o áudio para o Growths; o áudio não é guardado, só o texto. A ideia entra como "ideia" (esperando aprovação) e segue o caminho de sempre: aprovar pede tema, formato e data.

@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.241 | 02/11/2026 | Growth's Content: Kanban logo abaixo da contagem por etapa, antes do calendário. | — |
 | 0.240 | 02/11/2026 | Growth's Content: Baú de ideias com microfone (fala → ideia esperando aprovação). | — |
 | 0.239 | 02/11/2026 | Diagnóstico dos dados: o que cada planilha traz, o que o Growths identificou e não identificou, métricas e perguntas para a reunião. | — |
 | 0.238 | 02/11/2026 | Diagnóstico: Dados depois de "O que falta"; importar cada planilha para o Growths do cliente com o de-para. | — |

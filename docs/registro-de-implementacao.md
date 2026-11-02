@@ -1,3 +1,6 @@
+## Produção na ordem de leitura (v0.241)
+`t241_producao_ordem.py`: 5 verificações, 0 falhas. Ordem contagem → Kanban → calendário; aba Baú de ideias; clique na etapa e na semana funcionando; sem erros de JavaScript. Regressão: t240 sem falhas.
+
 ## Baú de ideias com microfone (v0.240)
 `t240_bau_ideias_voz.py`: 9 verificações, 0 falhas. Nome da aba; aviso sem texto; microfone liga e mostra a fala; para ao tocar de novo; salva como ideia com título e descrição; aparece no baú esperando aprovação; sem transcrição, explica o ditado; sem erros de JavaScript.
 

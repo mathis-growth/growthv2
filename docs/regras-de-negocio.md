@@ -1,3 +1,6 @@
+## v0.241
+Sem regra nova (só a ordem da tela).
+
 ## v0.240
 - **Ideia por voz:** entra sempre como ideia esperando aprovação. O áudio não é guardado; só o texto.
 

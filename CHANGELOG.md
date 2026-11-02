@@ -1,3 +1,8 @@
+## v0.241 — Growth's Content: Produção na ordem de leitura (02/11/2026)
+- Aba Produção: primeiro a contagem por etapa, logo abaixo o **Kanban**, e depois "Esta semana" e o calendário das próximas semanas (antes o calendário ficava entre a contagem e o Kanban).
+- A aba "Baú de ideias" continua como está.
+- Sem mudança no banco. Teste: `t241_producao_ordem.py` (0 falhas).
+
 ## v0.240 — Growth's Content: Baú de ideias com microfone (02/11/2026)
 - A aba "Ideias" passa a se chamar **Baú de ideias**.
 - **Falar uma ideia:** toque no microfone, fale, e o texto aparece na hora (dá para corrigir). "Salvar no baú" grava como ideia esperando aprovação, com a tag "ideia por voz": o título é a primeira frase e a fala inteira vai na descrição.

@@ -1,3 +1,6 @@
+## v0.241
+**Produção mais fácil de ler.** No Growth's Content, o Kanban fica logo abaixo da contagem por etapa, antes do calendário.
+
 ## v0.240
 **Baú de ideias com microfone.** No Growth's Content, fale a ideia e ela vira texto e entra no baú, esperando aprovação.
 

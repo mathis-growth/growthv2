@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.240 (Baú de ideias com microfone).
+**Última atualização:** 02/11/2026, versão 0.241 (Kanban antes do calendário na Produção).
+
+**v0.241 · Produção na ordem de leitura.** No Growth's Content, a Produção mostra a contagem por etapa, o Kanban e, depois, a semana e o calendário.
 
 **v0.240 · Baú de ideias com microfone.** No Growth's Content, toque no microfone, fale a ideia e ela entra no Baú de ideias, esperando aprovação.
 
@@ -676,6 +678,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.241):** Growth's Content: Kanban logo abaixo da contagem, antes do calendário.
 - **02/11 (v0.240):** Growth's Content: Baú de ideias com microfone.
 - **02/11 (v0.239):** diagnóstico dos dados para levar à reunião.
 - **02/11 (v0.238):** diagnóstico: Dados depois de "O que falta" e importar para o Growths do cliente.

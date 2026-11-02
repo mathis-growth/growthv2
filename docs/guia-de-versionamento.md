@@ -1,3 +1,7 @@
+## v0.241
+- `aplica241.py`: `kbPainel` devolve a contagem e o calendário separados (`<!--kbcal-->`); `tabKanban` põe a contagem antes do `.board` e o calendário (`.kb-cal-sec`) depois.
+- Teste novo `t241_producao_ordem.py`.
+
 ## v0.240
 - `aplica240.py`: `ctVozHtml`/`ctVozLiga` (Web Speech API, `pt-BR`, contínuo, resultados parciais; insere em `conteudos` com `status = 'ideia'` e tag `ideia por voz`); aba `MQ_EST` "Baú de ideias"; botão `#cVoz` no Kanban.
 - Teste novo `t240_bau_ideias_voz.py` (transcrição simulada).
