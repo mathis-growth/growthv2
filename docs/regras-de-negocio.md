@@ -1,3 +1,7 @@
+## v0.218
+- Cenário = realizado + (projeção − realizado) × fator. Fator: leads (1 + % + leads da mídia ÷ leads que faltam) × conversão nova ÷ conversão de 90 dias (vendas e faturamento) × ticket novo ÷ ticket de 90 dias (só faturamento).
+- "O que seria preciso" = (meta − realizado) ÷ (projeção − realizado).
+
 ## v0.217
 - Investigação: período anterior = mesmo número de dias imediatamente antes. Fatias de cada dimensão somam o total. Histórico importado = fatia própria. Filtros valem para todas as dimensões ao mesmo tempo.
 

@@ -1,3 +1,7 @@
+## v0.218 — Growth's Brain: cenários ligados à meta
+1. `supabase/RODAR_v0.218_brain_cenarios.sql`: tabela `metas_cenarios` e função `metas_simular` (só leitura). Não mexe em dados existentes.
+2. Pendentes em produção: `RODAR_v0.197`, `RODAR_v0.209` (versão da v0.210), `RODAR_v0.216`, `RODAR_v0.217`, `RODAR_v0.218`, nesta ordem.
+
 ## v0.217 — Growth's Brain: investigação
 1. `supabase/RODAR_v0.217_brain_investigar.sql`: funções de leitura `investigar`, `investigar_registros` (e as auxiliares `investigar_linhas`, `investigar_passa`). Não mexe em dados.
 2. Pendentes em produção: `RODAR_v0.197`, `RODAR_v0.209` (versão da v0.210), `RODAR_v0.216`, `RODAR_v0.217`.

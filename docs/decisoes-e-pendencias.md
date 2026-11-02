@@ -1,5 +1,17 @@
 
 
+## v0.218 — Cenários ligados à meta (Scenario Engine)
+**Pedido da Rebecka (01/11)**: seguir com os cenários.
+Decisões:
+- **Onde**: "Simular" no faturamento da faixa de metas, em cada linha de meta (leads, vendas, campanha, produto) e nos riscos que vêm de meta. Abre por cima do Cockpit.
+- **Alavancas**: leads a mais (%), investimento extra em mídia (R$, convertido em leads pelo CPL dos últimos 90 dias), conversão lead → venda (%) e ticket médio (R$). Valem só para o que falta do período. A meta de leads só aceita as alavancas de leads; a de vendas também a conversão; a de faturamento todas.
+- **Conta**: parte da mesma projeção do Cockpit (cenário sem alavanca = projeção de hoje) e multiplica o que falta pela relação faturamento = leads × conversão × ticket. As médias de 90 dias são da empresa toda.
+- **Mostra**: atual × cenário (leads, vendas e faturamento que faltam; projeção até o fim), se o cenário bate a meta e quanto falta, quanto o resto do período precisaria render a mais para bater, as premissas (janela, médias, CPL) e as incertezas (não é garantia; mais verba costuma subir o CPL e baixar a conversão).
+- **Salvar, comparar e versionar**: cenários salvos (nome, hipótese, alavancas, resultado do dia) ficam na lista daquela meta. "Carregar" refaz a conta com os números de hoje; salvar de novo cria a versão seguinte, ligada à anterior. Dá para aprovar e arquivar.
+- **Tabela nova (`metas_cenarios`) e não `gm_cenarios`**: `gm_cenarios` são os cenários do modelo de 12 meses do Growth Model (planilha, ICE, unit economics). Gravar o "e se" de uma meta ali quebraria aquelas telas. Os dois não copiam números um do outro.
+- **Nada muda nos dados reais.**
+**Pendências**: médias por campanha e por produto (hoje são da empresa); cenário aprovado alimentar o Planejamento anual e virar experimento no Growth; efeito do investimento com retorno decrescente (hoje é linear).
+
 ## v0.217 — Investigação (Investigation Engine)
 **Pedido da Rebecka (01/11)**: continuar (próximo passo do documento: clicar num número e descer até a composição e os registros, com caminho de volta).
 Decisões:

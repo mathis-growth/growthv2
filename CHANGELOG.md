@@ -1,3 +1,8 @@
+## v0.218 — Growth's Brain: cenários ligados à meta (01/11/2026)
+- "Simular" em cada meta e nos riscos de meta: alavancas de leads, mídia, conversão e ticket; atual × cenário; se bate a meta; premissas e incertezas.
+- Cenários salvos com versão, aprovação e arquivamento. Nada muda nos dados reais.
+- Banco: `RODAR_v0.218_brain_cenarios.sql`. Teste: `t218_cenarios.py` (0 falhas).
+
 ## v0.217 — Growth's Brain: investigação (01/11/2026)
 - "Investigar" no faturamento, em cada meta e nos riscos de meta: o número por dimensão, com o período anterior e o que mais mudou.
 - Filtro cruzado com caminho de volta; registros (vendas ou leads) com link para a pessoa.

@@ -1,5 +1,9 @@
 
 
+## Cenários ligados à meta (v0.218)
+- `t218_cenarios.py` (17 verificações, 0 falhas): sem alavanca = projeção do Cockpit; +10% de leads; ticket +20%; mídia vira leads pelo CPL; dados intactos; meta de leads ignora conversão e ticket com aviso; fator que bate a meta; período encerrado; incertezas; na tela: simular, veredito, salvar, carregar, nova versão ligada, aprovar, simular leads só com alavancas de leads.
+- Regressão: t217, t216, t215, t214, t213, t211 sem falhas.
+
 ## Investigação (v0.217)
 - `t217_investigar.py` (18 verificações, 0 falhas): total e período anterior = vendas aprovadas; em cada dimensão as fatias somam o total; filtro por produto e filtro cruzado; registros somam a fatia; leads iguais às metas; sem login recusa; no Cockpit: investigar o faturamento, clicar no produto (caminho), ver registros com link, voltar duas vezes, investigar leads; celular.
 - Regressão: t216, t215, t214, t213, t211, t192 sem falhas.

@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.218 | 01/11/2026 | Simular cada meta: alavancas, atual × cenário, premissas; cenários salvos com versão. | RODAR_v0.218_brain_cenarios.sql |
 | 0.217 | 01/11/2026 | Investigar: do número do Cockpit até as vendas ou os leads, com filtro cruzado e caminho de volta. | RODAR_v0.217_brain_investigar.sql |
 | 0.216 | 01/11/2026 | Trajetória das metas no Cockpit e saúde por área. | RODAR_v0.216_brain_trajetoria.sql |
 | 0.215 | 01/11/2026 | Risk Engine: riscos e oportunidades no Cockpit, com evidência, impacto, ação e tratamento. | RODAR_v0.215_brain_riscos.sql |

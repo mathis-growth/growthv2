@@ -1,3 +1,6 @@
+## v0.218
+**E se?** Cada meta do Cockpit pode ser simulada: mais leads, mais verba, outra conversão ou outro ticket. O Growths mostra se a meta passa a ser alcançada, o que seria preciso, as premissas e as incertezas, e guarda os cenários com versão.
+
 ## v0.217
 **Do número à venda.** Qualquer meta do Cockpit pode ser investigada: o número aberto por produto, campanha, canal, plataforma e cliente novo × recorrente, comparado com o período anterior. Um clique filtra tudo, e outro mostra as vendas ou os leads por trás.
 

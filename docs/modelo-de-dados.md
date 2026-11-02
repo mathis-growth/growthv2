@@ -1,3 +1,7 @@
+## v0.218
+- `metas_cenarios`: workspace, métrica, escopo/ref, ini/fim, nome, hipótese, alavancas (leads_pct, invest_extra, conv_nova, ticket_novo), resultado, status (rascunho | aprovado | arquivado), versão, substitui_id, criado por/em.
+- Função `metas_simular(ws, metrica, ini, fim, hoje, escopo, ref, alavancas)` → avaliação, atual, cenário, precisa_fator, premissas, avisos, incertezas.
+
 ## v0.217
 - Funções de leitura: `investigar(ws, metrica, ini, fim, filtros)` → total, total anterior, dimensões com fatias {k, r, v, v_ant}, nomes dos filtros; `investigar_registros(ws, metrica, ini, fim, filtros, limite)`; auxiliares `investigar_linhas` (uma linha por venda ou lead, com as dimensões) e `investigar_passa` (filtro).
 

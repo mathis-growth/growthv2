@@ -1,3 +1,6 @@
+## v0.218
+- Migration `20261212100000_brain_cenarios.sql` + `RODAR_v0.218_brain_cenarios.sql`. index.html montado sobre o HEAD do GitHub (v0.217) com `aplica218.py` e `g218.js`: `simAbrir`, `simCalc`, `simDesenha`; botões "Simular" na faixa de metas, nas linhas e no risco de meta. Teste novo `t218_cenarios.py`.
+
 ## v0.217
 - Migration `20261211100000_brain_investigar.sql` + `RODAR_v0.217_brain_investigar.sql`. index.html montado sobre o HEAD do GitHub (v0.216) com `aplica217.py` e `g217.js`: `invAbrir`, `invDesenha`, `INV_DIM`, `INV_MET`; botões "Investigar" na faixa de metas, nas linhas e no risco de meta. Teste novo `t217_investigar.py`.
 

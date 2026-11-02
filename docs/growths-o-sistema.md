@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.217 (Growth's Brain: investigação).
+**Última atualização:** 01/11/2026, versão 0.218 (Growth's Brain: cenários ligados à meta).
+
+**v0.218 · E se?** "Simular" testa mais leads, mais verba, outra conversão ou outro ticket numa meta e mostra se ela passa a ser alcançada, com as premissas e as incertezas. Os cenários ficam salvos com versão.
 
 **v0.217 · Do número à venda.** "Investigar" abre qualquer meta do Cockpit por produto, campanha, canal, plataforma e cliente novo × recorrente, comparando com o período anterior. Um clique filtra tudo; outro mostra as vendas ou os leads por trás do número.
 
@@ -112,7 +114,7 @@ A ideia central: o dono do negócio e a consultoria olham para os mesmos número
 ### Cockpit
 A tela inicial. Um painel pequeno por área (Geral, Marketing, Vendas, Financeiro, Projetos, Growth e Clientes), dois lado a lado, cada um com os números que mais importam no período: caixa, receita, margem e lucro; campanhas e leads; vendas, ticket e conversão; a receber, a pagar e MRR; projetos e atividades atrasadas; North Star e experimentos; alunos ativos, alertas e satisfação. Cada painel traz também um gráfico: receita e lucro por mês, leads e faturamento por dia, o que entra e o que sai, alunos por etapa. Clicar num painel abre o dashboard daquela área, com tudo em detalhe. Cada pessoa só vê os painéis das áreas a que tem acesso. Em cima, o mesmo filtro de período de todos os dashboards (começa no mês corrente); mudar o período muda todos os painéis.
 
-Logo abaixo, a **Meta de faturamento**: a meta do período (vinda do Planejamento anual), quanto deveria ter sido vendido até hoje, quanto foi vendido, o desvio, a projeção até o fim do período e o status (Dentro do esperado, Atenção, Em risco, Atingida…). Embaixo, o mesmo para o ano. "Como calculamos" mostra a conta, o método da projeção e a regra do status, sem prometer probabilidade. Se as metas dos meses não somam a meta do ano, o Cockpit avisa. Logo abaixo, o **gráfico de trajetória**: a meta acumulada dia a dia, o realizado acumulado até hoje e a projeção até o fim do período, para ver quando o resultado começou a descolar da meta. Cada meta da tabela tem o mesmo gráfico no botão "Trajetória". O botão **Investigar** abre o número por produto, campanha, canal, plataforma e cliente novo × recorrente (nos leads: campanha, canal, qualificação e situação), comparando com o período anterior e mostrando o que mais mudou. Clicar numa fatia filtra todas as outras; o caminho no topo permite voltar a qualquer passo; "Ver os registros" lista as vendas ou os leads por trás do número, com link para a ficha da pessoa. As fatias sempre somam o total. Logo depois vêm as metas de leads e de vendas da empresa e as metas de cada campanha e produto, cada uma na sua janela (a campanha conta leads nos dias da captação e vendas nos dias do carrinho aberto); clicar numa campanha abre a campanha.
+Logo abaixo, a **Meta de faturamento**: a meta do período (vinda do Planejamento anual), quanto deveria ter sido vendido até hoje, quanto foi vendido, o desvio, a projeção até o fim do período e o status (Dentro do esperado, Atenção, Em risco, Atingida…). Embaixo, o mesmo para o ano. "Como calculamos" mostra a conta, o método da projeção e a regra do status, sem prometer probabilidade. Se as metas dos meses não somam a meta do ano, o Cockpit avisa. Logo abaixo, o **gráfico de trajetória**: a meta acumulada dia a dia, o realizado acumulado até hoje e a projeção até o fim do período, para ver quando o resultado começou a descolar da meta. Cada meta da tabela tem o mesmo gráfico no botão "Trajetória". O botão **Investigar** abre o número por produto, campanha, canal, plataforma e cliente novo × recorrente (nos leads: campanha, canal, qualificação e situação), comparando com o período anterior e mostrando o que mais mudou. Clicar numa fatia filtra todas as outras; o caminho no topo permite voltar a qualquer passo; "Ver os registros" lista as vendas ou os leads por trás do número, com link para a ficha da pessoa. As fatias sempre somam o total. O botão **Simular** testa o "e se": mais leads, investimento extra em mídia (convertido em leads pelo CPL dos últimos 90 dias), outra conversão ou outro ticket, só no que falta do período. Mostra o atual ao lado do cenário, se a meta passa a ser alcançada, quanto o resto do período precisaria render para bater, as premissas e as incertezas (não é garantia). Os cenários podem ser salvos, carregados, versionados, aprovados e arquivados, sem mexer nos dados reais. Logo depois vêm as metas de leads e de vendas da empresa e as metas de cada campanha e produto, cada uma na sua janela (a campanha conta leads nos dias da captação e vendas nos dias do carrinho aberto); clicar numa campanha abre a campanha.
 
 Abaixo das metas fica **Riscos e oportunidades**: os riscos mais graves do cliente num lugar só. Eles vêm das metas (abaixo do esperado, risco de não atingir, chance de superar), dos alertas do Growths (agrupados: centenas de avisos de aluno parado viram um risco só), dos guardrails e da qualidade dos dados. Cada risco traz a evidência, o impacto estimado e uma ação sugerida. Alguém pode assumir, resolver ou descartar (com nota), e tudo fica no histórico. Quando a causa some, o risco se resolve sozinho; se voltar, reabre. Cada painel de área mostra quantos riscos tem, as metas daquela área com o status e o risco principal, sem média nem nota única.
 
@@ -520,6 +522,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - 948 alertas ou 2 riscos? Como transformar aviso em decisão.
 - O dia em que a curva descolou: ler a trajetória da meta.
 - "Faturamento caiu 71%": como descer do número até a campanha que explica a queda em três cliques.
+- Mais verba ou mais ticket? Simular antes de decidir (e por que dobrar a verba não dobra as vendas).
 - Risco, oportunidade e problema de dado: três coisas diferentes no mesmo painel.
 - Um período só para a empresa inteira: por que marketing, vendas e financeiro precisam olhar a mesma janela de tempo.
 - Fato, hipótese e recomendação: como ler um insight sem se enganar.
@@ -574,6 +577,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.218):** cenários ligados à meta: simular, comparar e salvar com versão.
 - **01/11 (v0.217):** investigação: do número do Cockpit até as vendas e os leads.
 - **01/11 (v0.216):** trajetória das metas e saúde por área no Cockpit.
 - **01/11 (v0.215):** Risk Engine: riscos e oportunidades no Cockpit, com tratamento e histórico.
