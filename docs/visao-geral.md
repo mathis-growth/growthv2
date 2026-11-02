@@ -1,3 +1,6 @@
+## v0.232
+**Correção no diagnóstico.** Na aba Formulário, o padrão já vem escolhido e o botão "Gerar o link do formulário" cria o link para mandar ao cliente (antes dava erro).
+
 ## v0.231
 **Clientes nascem do contrato.** Marque nos produtos quais incluem o Growths. Ao ativar o contrato, o Growths da empresa é criado com os dados do contrato e o responsável recebe o acesso. Em Pacotes de acesso, dá para inativar (some e perde o acesso), reativar e excluir clientes.
 

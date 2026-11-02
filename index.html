@@ -18362,8 +18362,8 @@ function dgFormHtml(full, FM, editavel) {
       ${passo(resp || !!(E && E.rascunho_em), 'Cliente preenchendo', E && E.rascunho_em && !resp ? 'salvo em ' + dtt(E.rascunho_em) : '')}${passo(resp, 'Respondido', resp && E && E.respondido_em ? dtt(E.respondido_em) : '')}</ol>
     ${resp ? `<p>O cliente respondeu. As respostas e os arquivos já estão no diagnóstico: siga para <b>Evidências</b> e <b>O que falta</b>.</p>
         <div class="acts" style="justify-content:flex-start"><button type="button" class="btn" id="dgFReu">Abrir a reunião do diagnóstico</button></div>`
-      : `${editavel ? `<div class="dg-fsel"><label>Formulário<select id="dgFPesq">${E ? '' : '<option value="">Escolha o formulário</option>'}${F.map(f => `<option value="${f.id}"${E && E.pesquisa_id === f.id ? ' selected' : ''}${f.ativa ? '' : ' disabled'}>${esc(f.nome)}${f.padrao_diagnostico ? ' (padrão)' : ''}${f.ativa ? '' : ' (desativado)'}</option>`).join('')}</select></label>
-        <button type="button" class="btn sm" id="dgFPadrao">Tornar este o padrão</button><button type="button" class="btn sm" id="dgFAbre">Ver as perguntas em Pesquisas</button></div>
+      : `${editavel ? `<div class="dg-fsel"><label>Formulário<select id="dgFPesq">${E ? '' : '<option value="">Escolha o formulário</option>'}${F.map(f => `<option value="${f.id}"${(E ? E.pesquisa_id === f.id : f.ativa && f.padrao_diagnostico) ? ' selected' : ''}${f.ativa ? '' : ' disabled'}>${esc(f.nome)}${f.padrao_diagnostico ? ' (padrão)' : ''}${f.ativa ? '' : ' (desativado)'}</option>`).join('')}</select></label>
+        ${E ? '' : '<button type="button" class="btn pri" id="dgFGera">Gerar o link do formulário</button>'}<button type="button" class="btn sm" id="dgFPadrao">Tornar este o padrão</button><button type="button" class="btn sm" id="dgFAbre">Ver as perguntas em Pesquisas</button></div>
         ${pq && ((pq.captacao || {}).destino !== 'cliente') ? '<p class="dg-av warn">Este formulário ainda não está marcado como <b>para clientes</b>: quem responder não muda de etapa na jornada. Em Pesquisas → Formulário e aparência, escolha "Um cliente" e a etapa.</p>' : ''}
         ${!F.some(f => f.ativa) ? '<p class="dg-av warn">Nenhum formulário de diagnóstico ativo. Em Pesquisas, crie um a partir do modelo "Diagnóstico Mathisa (pré-diagnóstico)".</p>' : ''}` : ''}
       ${E ? `<label for="dgFMsg" style="margin-top:10px">Mensagem para o cliente<textarea id="dgFMsg" rows="6" style="width:100%">${esc(dgMsgForm(P.nome, link))}</textarea></label>
@@ -18378,7 +18378,9 @@ function dgFormLiga(m, full, FM, D) {
   const { P, E } = FM, link = E ? linkPesquisa(E.token) : '', msg = () => (m.querySelector('#dgFMsg') || {}).value || dgMsgForm(P && P.nome, link);
   const marca = canal => q(sb.rpc('diagnostico_formulario_enviado', { p_diag: full.id, p_canal: canal })).then(() => render()).catch(e => toast(e.message, true));
   const sel = m.querySelector('#dgFPesq');
-  if (sel) sel.onchange = () => { if (!sel.value) return; act(async () => { await q(sb.rpc('diagnostico_formulario', { p_diag: full.id, p_pesquisa: sel.value })); render(); }, 'Formulário escolhido'); };
+  const usa = () => act(async () => { if (!sel || !sel.value) throw new Error('Escolha o formulário.'); await q(sb.rpc('diagnostico_formulario', { p_diag: full.id, p_pesquisa: sel.value })); render(); }, 'Link do formulário gerado: envie por WhatsApp, e-mail ou copie o link'); // v0.232
+  if (sel) sel.onchange = () => { if (sel.value && E) usa(); };
+  const ge = m.querySelector('#dgFGera'); if (ge) ge.onclick = usa;
   const pd = m.querySelector('#dgFPadrao'); if (pd) pd.onclick = () => act(async () => { if (!sel || !sel.value) throw new Error('Escolha o formulário.'); await q(sb.rpc('diagnostico_formulario_padrao', { p_pesquisa: sel.value })); render(); }, 'Formulário padrão do diagnóstico definido');
   const ab = m.querySelector('#dgFAbre'); if (ab) ab.onclick = () => { if (!sel || !sel.value) { S.view = 'gro-pesq'; render(); return; } S.view = 'gro-pesq'; S.pqSel = sel.value; S.pqTab = 'perguntas'; render(); };
   const wa = m.querySelector('#dgFWa'); if (wa) wa.onclick = () => { window.open(waLink(P.telefone, msg()), '_blank', 'noopener'); marca('whatsapp'); };

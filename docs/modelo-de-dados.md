@@ -1,3 +1,6 @@
+## v0.232
+- `diagnostico_formulario` corrigida: insere o envio com `on conflict do nothing` (vale com a trava `pesquisa_envios_ciclo_uq`) e pega o envio de menor ciclo.
+
 ## v0.231
 - `workspaces`: `inativo_em`, `inativo_por`, `inativo_motivo`, `contrato_origem_id`.
 - `produtos`: `cria_workspace`, `workspace_modo` (starter ou completo), `workspace_pacote_id`.

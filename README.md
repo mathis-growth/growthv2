@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.232 | 02/11/2026 | Correção: gerar o link do formulário no diagnóstico (botão "Gerar o link do formulário"). | RODAR_v0.232 |
 | 0.231 | 02/11/2026 | Clientes: o Growths nasce do contrato; inativar, reativar e excluir. | RODAR_v0.231 |
 | 0.230 | 02/11/2026 | Formulário para clientes: atualiza o cliente e a etapa na jornada, sem Funil de leads. | RODAR_v0.230 |
 | 0.229 | 02/11/2026 | O que já se sabe (origem e conflitos entre fontes); excluir pergunta na lista. | RODAR_v0.229 |

@@ -1,3 +1,8 @@
+## v0.232 — Correção: gerar o link do formulário no diagnóstico (02/11/2026)
+- Escolher o formulário no diagnóstico dava erro no banco e o link não era gerado. Causa: a função usava a trava antiga de envios; desde os check-ins a trava inclui o ciclo.
+- Aba Formulário: o formulário padrão já vem escolhido e o botão **Gerar o link do formulário** cria o link. Depois aparecem a mensagem, o WhatsApp, o e-mail e "Copiar o link".
+- Banco: `RODAR_v0.232_corrige_link_formulario.sql`. Teste: `t232_diag_gerar_link.py` (0 falhas).
+
 ## v0.231 — Clientes: o Growths nasce do contrato; inativar, reativar e excluir (02/11/2026)
 - Produto com "Este produto inclui o Growths do cliente" (só na Mathisa), com tipo de acesso e pacote padrão.
 - Contrato com a caixa "Growths do cliente": nome da empresa, razão social, CNPJ, pacote, responsável e e-mail de acesso.

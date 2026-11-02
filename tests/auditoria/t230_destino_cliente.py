@@ -40,7 +40,7 @@ CAP = json.dumps({'ativa': False, 'destino': 'cliente', 'etapa_cliente_id': EB})
 PC = one(f"insert into pesquisas (workspace_id, nome, tipo, publico, ativa, captacao) values ('{WS}', 'T230 Clientes', 'diagnostico', 'cliente', true, '{CAP}') returning id")
 PL = one(f"insert into pesquisas (workspace_id, nome, tipo, publico, ativa, captacao) values ('{WS}', 'T230 Lead', 'diagnostico', 'cliente', true, '{{\"ativa\":false,\"destino\":\"lead\"}}') returning id")
 def responde(pq, pe):
-    ev = one(f"insert into pesquisa_envios (workspace_id, pesquisa_id, pessoa_id) values ('{WS}', '{pq}', '{pe}') on conflict (pesquisa_id, pessoa_id) do update set status = pesquisa_envios.status returning id")
+    ev = one(f"insert into pesquisa_envios (workspace_id, pesquisa_id, pessoa_id) values ('{WS}', '{pq}', '{pe}') on conflict (pesquisa_id, pessoa_id, ciclo) do update set status = pesquisa_envios.status returning id")
     return one(f"insert into pesquisa_respostas (workspace_id, pesquisa_id, envio_id, pessoa_id) values ('{WS}', '{pq}', '{ev}', '{pe}') returning id")
 responde(PL, P1)
 chk(sql(f"select etapa_kanban_id from alunos where id = '{AL}'") == EA, 'formulário de lead: a matrícula do cliente não muda de etapa')

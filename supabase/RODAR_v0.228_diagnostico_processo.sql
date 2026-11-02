@@ -82,8 +82,8 @@ begin
   if not found or v_p.tipo <> 'diagnostico' then raise exception 'Escolha um formulário de diagnóstico.'; end if;
   if not v_p.ativa then raise exception 'Este formulário está desativado. Ative em Pesquisas antes de enviar.'; end if;
   insert into pesquisa_envios (workspace_id, pesquisa_id, pessoa_id, origem) values (v_ws, v_p.id, d.pessoa_id, 'manual')
-    on conflict (pesquisa_id, pessoa_id) do nothing;
-  select * into v_e from pesquisa_envios where pesquisa_id = v_p.id and pessoa_id = d.pessoa_id;
+    on conflict do nothing; -- v0.232: vale com a trava (pesquisa, pessoa, ciclo) dos check-ins
+  select * into v_e from pesquisa_envios where pesquisa_id = v_p.id and pessoa_id = d.pessoa_id order by ciclo, gerado_em limit 1;
   update diagnosticos set envio_id = v_e.id where id = p_diag;
   insert into diagnostico_decisoes (workspace_id, diagnostico_id, tipo, texto) values (v_ws, p_diag, 'status', 'Formulário escolhido: ' || v_p.nome);
   return jsonb_build_object('envio_id', v_e.id, 'token', v_e.token, 'status', v_e.status);

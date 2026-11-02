@@ -1,3 +1,11 @@
+## v0.232 — Correção: o link do formulário do diagnóstico não era gerado
+**Relato da Rebecka (02/11):** "abro o diagnóstico e escolho o formulário, tenho ali 'tornar este o padrão', mas não consigo iniciar para gerar o link e mandar para o cliente".
+
+**O que acontecia:** escolher o formulário chamava `diagnostico_formulario`, que dava erro no banco ("there is no unique or exclusion constraint matching the ON CONFLICT specification"). A função foi escrita para a trava antiga de envios (pesquisa, pessoa); em produção, desde os check-ins (v0.163), a trava é (pesquisa, pessoa, ciclo). O banco de teste local não tinha essa migração, por isso os testes não pegaram.
+**Correção:** a função passa a funcionar com qualquer trava; o banco de teste foi atualizado para ficar igual à produção. Confirmado em produção numa simulação desfeita (sem gravar nada), no diagnóstico "Diagnóstico de Marco".
+**Tela:** o formulário padrão já vem escolhido e há um botão claro, "Gerar o link do formulário". Antes o link era gerado só ao trocar a opção da lista, o que não era evidente.
+**Atenção:** o Marco não tem e-mail nem WhatsApp no cadastro. Dá para copiar o link, ou completar o cadastro para enviar direto.
+
 ## v0.231 — Clientes: o Growths nasce do contrato; inativar, reativar e excluir
 **Pedido da Rebecka (02/11):** "inativar e desativar clientes para não aparecer no workspace. E excluir. Acabei de criar um ali que ele não está aparecendo, porque ele não tem contrato… quando ele assinar o contrato, já automaticamente criar esse workspace ali com os dados do contrato da empresa".
 

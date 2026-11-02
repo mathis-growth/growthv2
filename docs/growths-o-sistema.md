@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.231 (clientes pelo contrato; inativar e excluir).
+**Última atualização:** 02/11/2026, versão 0.232 (correção do link do formulário do diagnóstico).
+
+**v0.232 · Gerar o link do formulário.** No diagnóstico, o formulário padrão já vem escolhido e um botão gera o link para mandar ao cliente.
 
 **v0.231 · Clientes pelo contrato.** O Growths do cliente é criado sozinho quando o contrato é ativado, com os dados da empresa. Clientes podem ser inativados (somem e perdem o acesso), reativados e excluídos.
 
@@ -454,7 +456,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - **Diagnóstico de clientes (só da Mathisa, desde a v0.228).**
   - **Quem aparece esperando diagnóstico:** os clientes com contrato ativo, ou que estão na etapa "Diagnóstico" da jornada.
   - **Como começa:** "Começar diagnóstico" já vem com o formulário padrão escolhido.
-  - **Aba 1, Formulário:** mostra a situação (escolhido, enviado, cliente preenchendo, respondido), a mensagem pronta com o link do cliente e os botões de WhatsApp, e-mail e copiar o link.
+  - **Aba 1, Formulário:** o formulário padrão já vem escolhido e o botão **Gerar o link do formulário** cria o link do cliente. Depois mostra a situação (escolhido, enviado, cliente preenchendo, respondido), a mensagem pronta com o link do cliente e os botões de WhatsApp, e-mail e copiar o link.
   - **O que entra sozinho:** a resposta e os arquivos do cliente.
   - **O modelo "Diagnóstico Mathisa (pré-diagnóstico)":** pede o perfil, os números do jeito do cliente, o que ele acompanha e quais são os principais, o que espera e os arquivos por plataforma de venda.
   - **O que já se sabe** (aba 4, v0.229): tudo sobre o cliente, com a origem — o que ele declarou no formulário, o que as planilhas mostram (vendas válidas, faturamento, média por mês, ticket, compradores, produtos, leads, investimento) e o que a equipe anotou na reunião.
@@ -645,6 +647,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.232):** correção: gerar o link do formulário no diagnóstico.
 - **02/11 (v0.231):** o Growths do cliente nasce do contrato; inativar, reativar e excluir clientes.
 - **02/11 (v0.230):** formulário para clientes (atualiza o cliente e a etapa na jornada, sem Funil de leads).
 - **02/11 (v0.229):** o que já se sabe do cliente (origem e conflitos entre fontes); excluir pergunta direto na lista.

@@ -1,3 +1,10 @@
+## Correção: link do formulário do diagnóstico (v0.232)
+`t232_diag_gerar_link.py`: 8 verificações, 0 falhas.
+- **Banco:** o banco de teste tem a trava dos check-ins, igual à produção; gerar o link funciona e não duplica.
+- **Tela:** o padrão vem escolhido; o botão gera o link; cliente sem contato pode copiar o link; sem erros de JavaScript.
+- **Produção:** simulação desfeita no diagnóstico do Marco: antes dava o erro da trava; com a função nova gerou o envio. Nada foi gravado.
+- **Regressão:** t228, t229, t230 e t231 sem falhas, já com a trava dos check-ins.
+
 ## Clientes: Growths pelo contrato; inativar e excluir (v0.231)
 `t231_clientes_workspace.py`: 34 verificações, 0 falhas.
 - **Banco:**

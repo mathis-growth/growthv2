@@ -1,3 +1,9 @@
+## v0.232
+- `aplica232.py`: em `dgFormHtml`, o padrão vem selecionado e o botão `#dgFGera`; em `dgFormLiga`, `usa()` gera o link (a troca na lista só regera quando já existe link).
+- Migração `20261224100000_diagnostico_formulario_ciclo.sql` = `RODAR_v0.232_corrige_link_formulario.sql`; `20261220100000` e `RODAR_v0.228` corrigidos.
+- Banco local: aplicada `20261120100000_checkin_recorrente.sql`, que faltava (trava com ciclo, como em produção). `t230` ajustado para a trava nova.
+- Teste novo `t232_diag_gerar_link.py`.
+
 ## v0.231
 - `aplica231.py`: `wsLista` e `wsRecarrega` (seletor sem inativos); situação e ações em `vPacotes` (`cliSit`, `cliLiga`); campos do produto (`ENT.produtos`); caixa "Growths do cliente" no `modalContrato`; `ctGwAviso` depois de ativar.
 - Migração `20261223100000_clientes_workspace_contrato.sql` = `RODAR_v0.231_clientes_contrato.sql`.

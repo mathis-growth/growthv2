@@ -1,3 +1,7 @@
+## v0.232
+Rodar `supabase/RODAR_v0.232_corrige_link_formulario.sql`. Só troca a função `diagnostico_formulario`; pode rodar logo, antes da 0.231 se quiser: é o que destrava o link do formulário.
+O `RODAR_v0.228` também foi corrigido (para instalações novas).
+
 ## v0.231
 Rodar `supabase/RODAR_v0.231_clientes_contrato.sql` depois do `RODAR_v0.230`. Nenhum produto vem marcado "inclui o Growths": marque em Produtos os que incluem. Nenhum cliente é inativado.
 Ordem pendente: 0.221 → 0.223 → 0.224 → 0.225 → 0.227 → 0.228 → 0.229 → 0.230 → 0.231 (e os antigos 0.197 e 0.209).

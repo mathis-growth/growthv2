@@ -1,3 +1,6 @@
+## v0.232
+- **Link do formulário do diagnóstico:** um por cliente e formulário; gerar de novo devolve o mesmo link.
+
 ## v0.231
 - **Growths do cliente:** criado só ao ativar um contrato da Mathisa que tenha um produto marcado "inclui o Growths". Um contrato cria no máximo um.
 - **Inativo:** some do seletor de todos; quem é só do cliente perde o acesso; a equipe interna continua entrando. Os dados ficam.
