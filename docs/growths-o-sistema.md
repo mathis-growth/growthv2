@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.235 (endereço próprio para o formulário embutido).
+**Última atualização:** 02/11/2026, versão 0.236 (link do cliente sempre à mão no diagnóstico).
+
+**v0.236 · Reabrir o formulário.** No diagnóstico, o link do cliente fica sempre visível para mandar de novo, e dá para reabrir o formulário para ele continuar de onde parou.
 
 **v0.235 · Formulário embutido protegido.** O formulário colado na sua página abre por um endereço próprio. O resto do Growths continua sem poder ser aberto dentro de outros sites.
 
@@ -463,6 +465,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - **Quem aparece esperando diagnóstico:** os clientes com contrato ativo, ou que estão na etapa "Diagnóstico" da jornada.
   - **Como começa:** "Começar diagnóstico" já vem com o formulário padrão escolhido.
   - **Aba 1, Formulário:** o formulário padrão já vem escolhido e o botão **Gerar o link do formulário** cria o link do cliente. Depois mostra a situação (escolhido, enviado, cliente preenchendo, respondido), a mensagem pronta com o link do cliente e os botões de WhatsApp, e-mail e copiar o link.
+  - **Link sempre à mão e reabrir** (v0.236): o link do cliente fica visível também depois que ele responde (serve para mandar os arquivos que faltam). "Reabrir para o cliente continuar" deixa ele mudar as respostas pelo mesmo link; a última resposta enviada é a que vale.
   - **O que entra sozinho:** a resposta e os arquivos do cliente.
   - **O modelo "Diagnóstico Mathisa (pré-diagnóstico)":** pede o perfil, os números do jeito do cliente, o que ele acompanha e quais são os principais, o que espera e os arquivos por plataforma de venda.
   - **O que já se sabe** (aba 4, v0.229): tudo sobre o cliente, com a origem — o que ele declarou no formulário, o que as planilhas mostram (vendas válidas, faturamento, média por mês, ticket, compradores, produtos, leads, investimento) e o que a equipe anotou na reunião.
@@ -657,6 +660,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.236):** diagnóstico: link do cliente sempre visível e reabrir o formulário.
 - **02/11 (v0.235):** endereço próprio para o formulário embutido em outras páginas.
 - **02/11 (v0.234):** código para colocar o formulário na página.
 - **02/11 (v0.233):** qualificação do lead por produto (Starter, Strategy, Full Brain) e o formulário "Lead: qualificação".

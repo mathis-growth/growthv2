@@ -1,3 +1,11 @@
+## v0.236 — Link do cliente no diagnóstico e reabrir o formulário
+**Pedido da Rebecka (02/11):** "esse link tem que aparecer lá no diagnóstico… se o cliente perder, conseguir enviar de novo e ele conseguir continuar".
+**O que estava acontecendo:** o formulário do Marco foi enviado às 14h15 (resposta de teste: "Mathisa", "teste"). Depois de respondido, a aba Formulário escondia o link.
+**Decisões:**
+- O link fica sempre na aba, com WhatsApp, e-mail e copiar. É sempre o mesmo link.
+- Respondido, o mesmo link ainda serve para mandar os arquivos que faltam.
+- "Reabrir para o cliente continuar" volta o link a aceitar respostas, com o rascunho guardado, e garante pelo menos 30 dias de prazo. A resposta anterior continua valendo até chegar a nova; a nova substitui e fica registrado "O cliente enviou o formulário de novo".
+
 ## v0.235 — Embed: o site bloqueava o formulário dentro de outra página
 **Achado ao investigar o relato dos consentimentos:** o `_headers` do Cloudflare Pages manda `X-Frame-Options: DENY` para o site todo. Isso protege o login contra páginas que imitam o Growths, mas impede qualquer embed: o código da v0.234 e o da página de obrigado (v0.193) mostrariam um quadro vazio.
 **Decisão:** liberar só o endereço `/formulario` (mesmo Growths, via `_redirects`), sem o `X-Frame-Options` e com `frame-ancestors *`. O código de embed aponta para ele. Sem `?pesquisa=`, `/formulario` volta para `/`, para o login não ficar exposto dentro de outra página.

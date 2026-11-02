@@ -1,3 +1,6 @@
+## v0.236
+- **Formulário do diagnóstico:** um link por cliente, sempre o mesmo. Reaberto, o cliente continua de onde parou; a última resposta enviada é a que vale.
+
 ## v0.235
 - **Embed:** só o endereço `/formulario` pode ser aberto dentro de outra página, e só com uma pesquisa. O resto do Growths continua bloqueado para iframe.
 

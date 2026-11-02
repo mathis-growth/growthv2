@@ -1,3 +1,7 @@
+## v0.236
+- Função nova `diagnostico_formulario_reabrir(diag)`.
+- `pesquisa_respostas_diag`: a resposta mais nova do mesmo link passa a ser a do diagnóstico.
+
 ## v0.235
 Sem mudança no banco.
 

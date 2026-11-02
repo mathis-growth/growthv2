@@ -1,3 +1,8 @@
+## v0.236
+- `aplica236.py`: `dgFormHtml` com `envioHtml(nota)` usado antes e depois da resposta; link visível (`#dgFLk`); botão `#dgFReabre` com modal; aviso de reaberto.
+- Migração `20261228100000_diagnostico_reabrir_formulario.sql` = `RODAR_v0.236_diagnostico_reabrir.sql`.
+- Teste novo `t236_diag_reabrir.py`.
+
 ## v0.235
 - `aplica235.py`: `embedUrl` (troca o caminho por `/formulario` em http/https) usado por `cpqCodigo`; `/formulario` sem `?pesquisa=` volta para `/`.
 - `_headers`: bloco `/formulario` com `! X-Frame-Options`, `frame-ancestors *` e `no-cache`. `_redirects` novo: `/formulario /index.html 200`.

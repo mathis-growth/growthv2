@@ -1,3 +1,6 @@
+## v0.236
+**Link do cliente sempre à mão.** No diagnóstico, o link do formulário fica visível para mandar de novo. Dá para reabrir o formulário para o cliente continuar de onde parou.
+
 ## v0.235
 **Formulário dentro da sua página, de verdade.** O código de embed agora usa um endereço próprio do formulário, o único que pode aparecer dentro de outro site. O resto do Growths continua protegido.
 

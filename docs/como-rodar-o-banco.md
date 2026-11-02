@@ -1,3 +1,6 @@
+## v0.236
+Rodar `supabase/RODAR_v0.236_diagnostico_reabrir.sql`. Cria `diagnostico_formulario_reabrir` e troca o gatilho que liga a resposta ao diagnóstico (a mais nova passa a valer).
+
 ## v0.235
 Sem mudança no banco. Mudou a configuração do site (`_headers` e `_redirects`): o Cloudflare Pages aplica ao publicar.
 

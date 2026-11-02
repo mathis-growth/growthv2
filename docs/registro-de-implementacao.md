@@ -1,3 +1,6 @@
+## Reabrir o formulário do diagnóstico (v0.236)
+`t236_diag_reabrir.py`: 9 verificações, 0 falhas. Link visível antes e depois da resposta; reabrir volta a aceitar respostas, com 30 dias e o rascunho; a resposta anterior continua até a nova; a nova passa a valer e fica registrada; sem erros de JavaScript. Regressão: t228 e t232 sem falhas.
+
 ## Endereço do formulário embutido (v0.235)
 `t235_embed_endereco.py`: 6 verificações, 0 falhas. `_headers` e `_redirects` certos; o código aponta para `/formulario?pesquisa=…`; o link normal não muda; `/formulario` sem pesquisa volta para o Growths; com pesquisa fica no formulário. Regressão: t234 sem falhas.
 

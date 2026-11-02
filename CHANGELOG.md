@@ -1,3 +1,10 @@
+## v0.236 — Diagnóstico: o link do cliente fica sempre à mão; reabrir o formulário (02/11/2026)
+- Aba Formulário: o link do cliente aparece escrito e com os botões (WhatsApp, e-mail, copiar) também depois que ele responde, para mandar de novo se ele perder.
+- Depois de respondido, pelo mesmo link o cliente ainda manda os arquivos que faltam.
+- Novo botão **Reabrir para o cliente continuar**: o link volta a aceitar respostas, com o que ele já tinha preenchido, e vale por pelo menos mais 30 dias. A resposta anterior continua no diagnóstico até chegar a nova.
+- Quando o cliente envia de novo, a resposta nova passa a valer (antes só a primeira contava).
+- Banco: `RODAR_v0.236_diagnostico_reabrir.sql`. Teste: `t236_diag_reabrir.py` (0 falhas).
+
 ## v0.235 — O formulário embutido passa a abrir dentro da sua página (02/11/2026)
 - O site do Growths bloqueia ser aberto dentro de outra página (`X-Frame-Options: DENY`), então o código da v0.234 (e o da página de obrigado da campanha) mostraria um quadro vazio.
 - Novo endereço `/formulario`, o único liberado para embed (`_headers` e `_redirects` do Cloudflare Pages). O código de embed passa a apontar para ele; o resto do Growths continua protegido.
