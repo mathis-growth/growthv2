@@ -1,3 +1,7 @@
+## v0.221
+- `metas.metrica`: + margem, caixa, churn, retencao90, ltv, ascensao, nsm (metas de nível, granularidade ano, direção mínimo/máximo/maior/menor).
+- Funções: `metas_nivel_cfg`, `metas_grava_nivel`, `metas_nivel_salvar` (tela), `metas_nivel_valor`, `metas_avaliar_nivel`, `metas_niveis`; `metas_painel` devolve `niveis`. Gatilhos de espelho: `metas_de_heavyops`, `metas_de_nsm`, `metas_de_saldo_minimo`, `metas_para_origens`. `riscos_detectar` ganhou o bloco de metas de nível.
+
 ## v0.220
 - Funções de leitura: `projecao_backtest(ws, metrica, hoje, meses)` → pontos {mes, dia, realizado_no_dia, projecao, final, erro_pct} e resumo por dia {meses, erro_medio_pct, vies_pct, maior_erro_pct}; `projecao_faixa(ws, metrica, ini, fim, hoje)` → {de, ate, erro_medio_pct, vies_pct, dia_ref, meses, texto} ou {motivo}; `projecao_fotos(ws, metrica, hoje)`.
 

@@ -1,3 +1,10 @@
+## v0.221 — Growth's Brain: metas das áreas (01/11/2026)
+- Metas de nível no registro: margem, caixa, churn, retenção em 90 dias, LTV, ascensão e North Star, com fonte e regra no mínimo/no máximo.
+- Planejamento anual › "Metas das áreas"; Cockpit › "Metas das áreas" e saúde de Financeiro, CS e Growth; risco quando passa do limite.
+- Metas do CS, saldo mínimo e meta da North Star absorvidos (espelho nos dois sentidos).
+- Correção: "Ver todos" dos riscos sem filtro preso.
+- Banco: `RODAR_v0.221_brain_metas_areas.sql`. Teste: `t221_metas_areas.py` (0 falhas).
+
 ## v0.220 — Growth's Brain: acerto da projeção (01/11/2026)
 - Projeção refeita nos meses fechados (dias 3 a 25) e comparada com o total real: erro médio, viés e maior erro, para faturamento, leads e vendas.
 - Cockpit: faixa provável da projeção do faturamento (erro histórico, não probabilidade) e "Acerto da projeção".

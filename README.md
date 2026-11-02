@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.221 | 01/11/2026 | Metas das áreas (margem, caixa, CS, North Star) no Planejamento anual e no Cockpit. | RODAR_v0.221_brain_metas_areas.sql |
 | 0.220 | 01/11/2026 | Acerto da projeção: erro e viés históricos e faixa provável no Cockpit. | RODAR_v0.220_brain_calibracao.sql |
 | 0.219 | 01/11/2026 | Funil AARRR no Cockpit (etapas, metas, North Star, gargalo). | RODAR_v0.219_brain_aarrr.sql |
 | 0.218 | 01/11/2026 | Simular cada meta: alavancas, atual × cenário, premissas; cenários salvos com versão. | RODAR_v0.218_brain_cenarios.sql |

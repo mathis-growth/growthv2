@@ -1,5 +1,16 @@
 
 
+## v0.221 — Metas das áreas (Financeiro, Customer Success e Growth)
+**Pedido da Rebecka (01/11)**: completar as metas das outras áreas. Decisão dela: a margem vem da DRE (lançamentos) para quem tem o Financeiro completo e do Financeiro simplificado para quem só tem o Go-to-Market, com a tela mostrando de onde veio o número.
+Decisões:
+- **Métricas de nível** (não se somam no tempo, por isso não têm "esperado até hoje" nem projeção): margem (no mínimo), saldo de caixa (no mínimo), churn mensal (no máximo), retenção em 90 dias, LTV e ascensão (no mínimo), North Star (para cima ou para baixo, conforme o Growth Model).
+- **Valor e fonte**: margem = lucro ÷ receita da DRE; sem receita na DRE, resultado da operação ÷ faturamento do Financeiro simplificado. Caixa = saldo em banco hoje. CS = o mesmo cálculo da tela de Customer Success (situação de hoje, janela de 30 dias). North Star = valor automático do Growth Model (ou o preenchido à mão). A tela sempre escreve a fonte.
+- **Status**: dentro / atenção (até a tolerância além do limite) / em risco / sem dados. Tolerância do CS = a das metas do CS (15%); as outras usam a regra do Cockpit (10%).
+- **Absorção sem duplicar**: as metas do CS, o saldo mínimo do Financeiro e a meta da North Star viram metas do ano no registro. Mudar de um lado muda o outro (espelho com trava). **Fato**: em produção, as metas do CS de um cliente estão nos valores padrão (churn 6%, retenção 85%, LTV R$ 600, ascensão 15%). Elas entram como estão; confira se são as desejadas.
+- **Telas**: Planejamento anual › "Metas das áreas" (as sete métricas, regra, meta do ano, valor agora, status, fonte, um botão para salvar); Cockpit › tabela "Metas das áreas" na faixa de metas; a saúde dos painéis de Financeiro, CS e Growth passa a mostrar essas metas; o Risk Engine aponta meta de nível fora do limite (mês até hoje).
+- **Correção**: "Ver todos" dos riscos abre sempre sem filtro (o filtro de antes escondia riscos).
+**Pendências**: metas de nível por mês (hoje são do ano); retenção e NPS do Customer Growth como métricas próprias; caixa projetado (não só o de hoje).
+
 ## v0.220 — Acerto da projeção (histórico e calibração)
 **Pedido da Rebecka (01/11)**: próximo (medir o acerto da projeção).
 Decisões:

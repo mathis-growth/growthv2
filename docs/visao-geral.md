@@ -1,3 +1,6 @@
+## v0.221
+**Metas para todas as áreas.** Margem, caixa, churn, retenção, LTV, ascensão e North Star têm meta no Planejamento anual, aparecem no Cockpit com o valor de agora e a fonte, e viram risco quando passam do limite.
+
 ## v0.220
 **Quanto confiar na projeção.** O Growths refaz a projeção nos meses passados e mede quanto ela errou. No Cockpit, a projeção do faturamento ganha uma faixa provável baseada nesse erro, e "Acerto da projeção" mostra o histórico de faturamento, leads e vendas.
 

@@ -1,3 +1,7 @@
+## v0.221
+- Meta de nível: no mínimo → dentro se valor ≥ meta; atenção até meta − |meta| × tolerância; abaixo disso, em risco. No máximo: o inverso.
+- Margem: DRE quando há receita na DRE no período; senão, Financeiro simplificado. Caixa e CS: situação de hoje.
+
 ## v0.220
 - Erro da projeção = (projeção − total real) ÷ total real. Erro médio = média do erro absoluto; viés = média com sinal.
 - Faixa provável = projeção × (1 ± erro médio do dia do mês mais próximo, para trás), nunca abaixo do realizado; precisa de 3 meses fechados com movimento.

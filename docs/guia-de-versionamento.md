@@ -1,3 +1,6 @@
+## v0.221
+- Migration `20261215100000_brain_metas_areas.sql` + `RODAR_v0.221_brain_metas_areas.sql`. index.html montado sobre o HEAD do GitHub (v0.220) com `aplica221.py` e `g221.js`: `paMetasAreas`, `ckMetasNiveis`, `nivelFmt`, `nivelRegra`; `CK_SAUDE` com as metas de nível; `#paAreas` no Planejamento anual. Teste novo `t221_metas_areas.py`. No banco local de teste, `empresa.saldo_minimo` (migration 20261025100000) aplicado como em produção.
+
 ## v0.220
 - Migration `20261214100000_brain_calibracao.sql` + `RODAR_v0.220_brain_calibracao.sql`. index.html montado sobre o HEAD do GitHub (v0.219) com `aplica220.py` e `g220.js`: `mtFaixaCarrega`, `acertoAbrir`; `#mtFaixa` na faixa de metas. Teste novo `t220_acerto.py`.
 

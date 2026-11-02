@@ -1,5 +1,9 @@
 
 
+## Metas das áreas (v0.221)
+- `t221_metas_areas.py` (18 verificações, 0 falhas): metas do CS absorvidas com a direção certa; espelho churn ↔ CS; saldo mínimo ↔ meta de caixa nos dois sentidos; meta da North Star; meta de margem pela função da tela; margem = DRE com a fonte e "em risco"; churn = cálculo do CS; caixa = saldo de hoje; North Star automática; as sete em `metas_niveis`; risco de margem no Financeiro; tela do Planejamento (sete linhas, salvar com versão); Cockpit (tabela, saúde do Financeiro e do CS).
+- Regressão: t220, t219, t218, t217, t216, t215, t214, t213, t209, t198 sem falhas.
+
 ## Acerto da projeção (v0.220)
 - `t220_acerto.py` (12 verificações, 0 falhas): projeção refeita no dia 15 de outubro igual ao método do Cockpit; erro do mês; resumo (meses, erro médio, viés); dias de referência; faixa provável com texto; faixa não abaixo do realizado; mês encerrado sem faixa; fotos guardadas; sem login recusa; no Cockpit: faixa e "Acerto da projeção".
 - Regressão: t219, t218, t217, t216, t215, t213 sem falhas.

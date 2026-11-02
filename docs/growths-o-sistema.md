@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.220 (Growth's Brain: acerto da projeção).
+**Última atualização:** 01/11/2026, versão 0.221 (Growth's Brain: metas das áreas).
+
+**v0.221 · Metas para todas as áreas.** Margem, caixa, churn, retenção, LTV, ascensão e North Star ganham meta no Planejamento anual e aparecem no Cockpit, com a fonte de cada número.
 
 **v0.220 · Quanto confiar na projeção.** O Growths refaz a projeção nos meses passados, mede quanto ela errou e mostra no Cockpit a faixa provável do faturamento do mês.
 
@@ -159,7 +161,7 @@ O Growths confere os números de hora em hora e avisa quando:
 Toda manhã chega o resumo de ontem. Os avisos vão para o sino do sistema, por e-mail e por WhatsApp.
 
 ### Planejamento da empresa
-Saiu do menu na v0.212. O planejamento do ano (meta, 3 cenários, trimestres) fica em Marketing › Campanhas e planejamento › Planejamento anual. Desde a v0.213, os objetivos do ano também ficam lá, na seção "Objetivos e metas do ano", ligados às metas que medem cada um. Na mesma seção ficam as metas por produto (criadas ali) e as metas das campanhas (editadas na própria campanha).
+Saiu do menu na v0.212. O planejamento do ano (meta, 3 cenários, trimestres) fica em Marketing › Campanhas e planejamento › Planejamento anual. Desde a v0.213, os objetivos do ano também ficam lá, na seção "Objetivos e metas do ano", ligados às metas que medem cada um. Na mesma seção ficam as metas por produto (criadas ali) e as metas das campanhas (editadas na própria campanha). Logo abaixo, **Metas das áreas**: margem (no mínimo), saldo de caixa (no mínimo), churn (no máximo), retenção em 90 dias, LTV, ascensão e a North Star, com o valor de agora, o status e de onde vem o número (a margem vem da DRE ou, sem lançamentos, do Financeiro simplificado). As metas do Customer Success, o saldo mínimo do Financeiro e a meta da North Star são as mesmas das telas deles: mudar num lugar muda no outro.
 
 ### Cadastro da empresa
 Dados da empresa, CNPJ validado e responsáveis. Inclui também:
@@ -531,6 +533,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - Mais verba ou mais ticket? Simular antes de decidir (e por que dobrar a verba não dobra as vendas).
 - O funil pirata não é uma linha reta: AARRR para quem vende curso e mentoria.
 - Sua previsão erra para baixo? Por que o ritmo do dia 15 engana em mês de lançamento.
+- Meta que soma e meta que não soma: faturamento × margem, churn e caixa.
 - Risco, oportunidade e problema de dado: três coisas diferentes no mesmo painel.
 - Um período só para a empresa inteira: por que marketing, vendas e financeiro precisam olhar a mesma janela de tempo.
 - Fato, hipótese e recomendação: como ler um insight sem se enganar.
@@ -585,6 +588,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.221):** metas das áreas (Financeiro, CS e Growth) no Planejamento anual e no Cockpit.
 - **01/11 (v0.220):** acerto da projeção e faixa provável no Cockpit.
 - **01/11 (v0.219):** funil AARRR no Cockpit.
 - **01/11 (v0.218):** cenários ligados à meta: simular, comparar e salvar com versão.
