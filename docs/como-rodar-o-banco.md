@@ -1,3 +1,7 @@
+## v0.233
+1. `supabase/RODAR_v0.233_qualificacao_blocos.sql`: troca a função que pontua (as regras antigas funcionam igual) e cria `pesquisa_respostas.qualif_det`.
+2. `supabase/RODAR_v0.233b_formulario_qualificacao_mathisa.sql`: monta o formulário "Lead: qualificação" da Mathisa. Troca as perguntas, por isso só roda se o formulário ainda não tiver respostas (hoje não tem).
+
 ## v0.232
 Rodar `supabase/RODAR_v0.232_corrige_link_formulario.sql`. Só troca a função `diagnostico_formulario`; pode rodar logo, antes da 0.231 se quiser: é o que destrava o link do formulário.
 O `RODAR_v0.228` também foi corrigido (para instalações novas).

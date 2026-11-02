@@ -1,3 +1,9 @@
+## v0.233
+- `pesquisa_perguntas.pontos` aceita `bloco` e, em cada opção, `elim`.
+- `pesquisas.qualif` aceita `grupos` (`[{nome, regras: [{tag, se: {bloco|total: {min, max}}}]}]`) e `confere` (`{pediu, indicado, tag}`).
+- Coluna nova `pesquisa_respostas.qualif_det` (total, blocos, eliminado, regras que bateram).
+- `pesquisa_qualificar` reescrita; as regras antigas dão o mesmo resultado.
+
 ## v0.232
 - `diagnostico_formulario` corrigida: insere o envio com `on conflict do nothing` (vale com a trava `pesquisa_envios_ciclo_uq`) e pega o envio de menor ciclo.
 

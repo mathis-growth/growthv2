@@ -1,3 +1,21 @@
+## v0.233 — Qualificação do lead por produto
+**Pedido da Rebecka (02/11):** "trazer a pontuação lá na qualificação, para entender qual produto essa pessoa é mais elegível e criar as tags: esse é o Starter, esse é o Strategy, esse é o Full Brain (implementação)".
+
+**Decisões dela (02/11):**
+- O formulário é o **"Lead: qualificação"** da Mathisa, não o "Captação: diagnóstico inicial de crescimento". As perguntas desse outro entram no Lead (achei a cópia na Escola Aurora; o da Mathisa tinha sido excluído).
+- Sai a pergunta "Você possui uma estratégia de crescimento estruturada?"; fica "Como você vende hoje?".
+- **Faturamento até R$ 10 mil fica de fora**, assim como "Ainda não vendo": não qualificado, tag "qualif: nutrir".
+- Aviso de investimento mínimo de R$ 3.500 e mensagem final com contato pelo WhatsApp em até 1 dia útil.
+
+**A regra (pode ser ajustada na tela, em Qualificação e pontos):**
+- **Pontos de 0 a 100:** Porte até 50 (faturamento, ticket, produtos, anúncios); Estrutura até 30 (tempo vendendo, como vende, como acompanha, equipe); Momento até 20 (quando começar).
+- **Produto:** Full Brain = Porte ≥ 32 e Estrutura ≥ 15; Strategy = Porte ≥ 18; Starter = o resto.
+- **Temperatura:** quente = Momento ≥ 15 e total ≥ 50; morno = total ≥ 30; frio = o resto.
+- **Pedido × indicado:** "Que tipo de ajuda você procura" põe "pediu: …". Se não bater com o produto, entra "qualif: revisar", para conversar na reunião.
+
+**Hipótese a validar:** os pesos e os cortes são ponto de partida. Revisar depois dos primeiros leads, com o simulador.
+**Não mexi:** o formulário continua com o gatilho "ao cadastrar" (manda o link para todo lead novo do CRM). Para um formulário que fica na página, o normal seria "manual"; fica para ela decidir.
+
 ## v0.232 — Correção: o link do formulário do diagnóstico não era gerado
 **Relato da Rebecka (02/11):** "abro o diagnóstico e escolho o formulário, tenho ali 'tornar este o padrão', mas não consigo iniciar para gerar o link e mandar para o cliente".
 

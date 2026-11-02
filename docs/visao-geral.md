@@ -1,3 +1,6 @@
+## v0.233
+**Qualificação do lead por produto.** O formulário de qualificação da Mathisa pontua o lead em Porte, Estrutura e Momento e põe as tags do produto indicado (Starter, Strategy ou Full Brain) e da temperatura (quente, morno, frio). Quem fatura até R$ 10 mil ou ainda não vende fica para nutrir.
+
 ## v0.232
 **Correção no diagnóstico.** Na aba Formulário, o padrão já vem escolhido e o botão "Gerar o link do formulário" cria o link para mandar ao cliente (antes dava erro).
 

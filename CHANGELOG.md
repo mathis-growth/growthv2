@@ -1,3 +1,13 @@
+## v0.233 — Qualificação do lead por produto: Starter, Strategy ou Full Brain (02/11/2026)
+- Pesquisas → Qualificação e pontos ganhou:
+  - **bloco** por pergunta (ex.: Porte, Estrutura, Momento), com a soma de cada bloco;
+  - resposta que **elimina** (não qualificado, só com a tag dela);
+  - **grupos de regras** por bloco (ex.: Produto e Temperatura): em cada grupo vale a primeira regra que bater;
+  - **conferência** do que o lead pediu com o que a regra indicou (tag "qualif: revisar").
+- Simulador e "Quem respondeu" mostram os pontos por bloco, as tags e quem foi eliminado.
+- Formulário "Lead: qualificação" da Mathisa: 13 perguntas, pontos, regras, aviso de investimento mínimo, consentimentos e mensagem final com contato em até 1 dia útil.
+- Banco: `RODAR_v0.233_qualificacao_blocos.sql` e depois `RODAR_v0.233b_formulario_qualificacao_mathisa.sql`. Teste: `t233_qualificacao_produto.py` (0 falhas).
+
 ## v0.232 — Correção: gerar o link do formulário no diagnóstico (02/11/2026)
 - Escolher o formulário no diagnóstico dava erro no banco e o link não era gerado. Causa: a função usava a trava antiga de envios; desde os check-ins a trava inclui o ciclo.
 - Aba Formulário: o formulário padrão já vem escolhido e o botão **Gerar o link do formulário** cria o link. Depois aparecem a mensagem, o WhatsApp, o e-mail e "Copiar o link".

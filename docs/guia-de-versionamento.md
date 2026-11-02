@@ -1,3 +1,8 @@
+## v0.233
+- `aplica233.py`: `pqPontua` com blocos, eliminatórias, grupos e conferência (blocos na ordem das regras); `pqQualif` com bloco por pergunta, "elimina" por resposta, editor de grupos e conferência; "Quem respondeu" com pontos por bloco e "eliminado".
+- Migração `20261227100000_qualificacao_blocos.sql` = `RODAR_v0.233_qualificacao_blocos.sql`; dados em `RODAR_v0.233b_formulario_qualificacao_mathisa.sql` (só para a produção).
+- Teste novo `t233_qualificacao_produto.py`.
+
 ## Edge Atendimento v0.201 — identidade atômica no Instagram
 - A migration `20261225100000_atendimento_instagram_identidade_atomica.sql` localiza a conversa pelo participante dentro do lock do canal, evitando duplicatas em webhooks simultâneos.
 - A Edge `atendimento` deixa de buscar a conversa fora da transação. Arquivo único para o Dashboard: `docs/edge-atendimento-v0201-index-unico.ts`.

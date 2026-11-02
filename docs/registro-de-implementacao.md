@@ -1,3 +1,14 @@
+## Qualificação do lead por produto (v0.233)
+`t233_qualificacao_produto.py`: 20 verificações, 0 falhas.
+- **Banco:**
+  - o RODAR do formulário monta as 13 perguntas, a regra, o aviso e a mensagem;
+  - lead A (Porte 41, Estrutura 17, Momento 20 = 78): Full Brain, quente;
+  - lead B (Porte 9): Starter, frio; pediu implementação → revisar;
+  - faturamento até R$ 10 mil e "ainda não vendo": não qualificado, "qualif: nutrir", sem tag de produto;
+  - a conta fica na resposta; recalcular troca a tag do grupo.
+- **Tela:** bloco por pergunta; "elimina"; grupos e conferência; simulador por tag; salvar mantém tudo; "Quem respondeu" com os blocos e "eliminado"; sem erros de JavaScript.
+- **Regressão:** t230 e t232 sem falhas.
+
 ## Correção: link do formulário do diagnóstico (v0.232)
 `t232_diag_gerar_link.py`: 8 verificações, 0 falhas.
 - **Banco:** o banco de teste tem a trava dos check-ins, igual à produção; gerar o link funciona e não duplica.

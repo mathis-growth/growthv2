@@ -1,3 +1,9 @@
+## v0.233
+- **Qualificação por blocos:** cada pergunta pode pertencer a um bloco; a soma de cada bloco decide as regras.
+- **Resposta que elimina:** a pessoa fica não qualificada e só recebe a tag da resposta; não recebe tag de produto nem de temperatura.
+- **Grupos de regras:** em cada grupo, vale a primeira regra que bater, de cima para baixo; a pessoa fica só com a tag dessa regra.
+- **Pedido × indicado:** quando o que o lead pediu não bate com o produto indicado, entra a tag de revisar. A decisão final é da reunião.
+
 ## v0.232
 - **Link do formulário do diagnóstico:** um por cliente e formulário; gerar de novo devolve o mesmo link.
 
