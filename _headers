@@ -15,3 +15,9 @@
 # Não servir JavaScript antigo que ainda chama /conexoes/iniciar para Meta.
 /assets/atendimento.js
   Cache-Control: no-cache, must-revalidate
+
+# v0.235: o formulário público pode ser colocado dentro de outra página (embed). Só este endereço; o resto continua bloqueado.
+/formulario
+  ! X-Frame-Options
+  Content-Security-Policy: frame-ancestors *
+  Cache-Control: no-cache

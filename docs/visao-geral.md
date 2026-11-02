@@ -1,3 +1,6 @@
+## v0.235
+**Formulário dentro da sua página, de verdade.** O código de embed agora usa um endereço próprio do formulário, o único que pode aparecer dentro de outro site. O resto do Growths continua protegido.
+
 ## v0.234
 **Formulário na sua página.** Em Pesquisas → Formulário e aparência, além do link, há o código para colar num bloco de HTML da página. O formulário se ajusta à altura sozinho.
 

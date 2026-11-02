@@ -1,3 +1,6 @@
+## v0.235
+Sem mudança no banco. Mudou a configuração do site (`_headers` e `_redirects`): o Cloudflare Pages aplica ao publicar.
+
 ## v0.234
 Sem mudança no banco.
 

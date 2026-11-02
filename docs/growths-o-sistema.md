@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.234 (código do formulário para a página).
+**Última atualização:** 02/11/2026, versão 0.235 (endereço próprio para o formulário embutido).
+
+**v0.235 · Formulário embutido protegido.** O formulário colado na sua página abre por um endereço próprio. O resto do Growths continua sem poder ser aberto dentro de outros sites.
 
 **v0.234 · Formulário na sua página.** Em Pesquisas, o formulário de captação tem o código para colar na página, que se ajusta à altura sozinho.
 
@@ -655,6 +657,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.235):** endereço próprio para o formulário embutido em outras páginas.
 - **02/11 (v0.234):** código para colocar o formulário na página.
 - **02/11 (v0.233):** qualificação do lead por produto (Starter, Strategy, Full Brain) e o formulário "Lead: qualificação".
 - **02/11 (v0.232):** correção: gerar o link do formulário no diagnóstico.

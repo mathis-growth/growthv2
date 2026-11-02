@@ -16404,7 +16404,7 @@ function cpqModal(c) {
 /* código para a página de obrigado: a pesquisa num iframe que se ajusta à altura do conteúdo */
 function cpqCodigo(link, id) {
   return `<\!-- Pesquisa do Growths -->
-<iframe id="${id}" src="${link}" title="Pesquisa" style="width:100%;max-width:720px;min-height:640px;border:0;display:block;margin:0 auto" loading="lazy"></iframe>
+<iframe id="${id}" src="${embedUrl(link)}" title="Pesquisa" style="width:100%;max-width:720px;min-height:640px;border:0;display:block;margin:0 auto" loading="lazy"></iframe>
 <script>window.addEventListener('message',function(e){var d=e.data||{};if(d.growthsPesquisa){var f=document.getElementById('${id}');if(f)f.style.height=(d.growthsPesquisa+24)+'px';}});<\/script>`;
 }
 const cpqUtm = (link, cn) => link + '&utm_source=' + encodeURIComponent(slug(cn.canal || 'campanha')) + '&utm_medium=' + encodeURIComponent(cn.tipo === 'pago' || (!cn.tipo && String(cn.canal || '').endsWith('_ads')) ? 'pago' : 'organico') + '&utm_campaign=' + encodeURIComponent(cn.utm_campaign || '');
@@ -18586,6 +18586,8 @@ async function ctGwAviso(id, antes) {
     toast('Contrato ativo e o Growths ' + (w ? 'de ' + w.nome + ' ' : '') + 'foi criado.' + (r.responsavel_email ? ' O responsável entra com ' + r.responsavel_email + '.' : ' Falta o e-mail do responsável: cadastre em Equipe e acessos do cliente.'));
   }
 }
+const embedUrl = l => /^https?:$/.test(location.protocol) ? String(l).replace(location.origin + location.pathname, location.origin + '/formulario') : l; // v0.235
+if (/^\/formulario/.test(location.pathname) && !new URLSearchParams(location.search).get('pesquisa')) location.replace('/');
 const linkPesquisa = t => location.origin + location.pathname + '?pesquisa=' + t;
 const fonteLink = () => location.protocol === 'file:' ? '<div class="panel"><b>Atenção:</b> o arquivo está aberto do seu computador, então o link de resposta não funciona para outras pessoas. Hospede o arquivo (por exemplo no GitHub Pages) antes de enviar.</div>' : '';
 

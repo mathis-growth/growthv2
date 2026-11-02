@@ -1,3 +1,6 @@
+## Endereço do formulário embutido (v0.235)
+`t235_embed_endereco.py`: 6 verificações, 0 falhas. `_headers` e `_redirects` certos; o código aponta para `/formulario?pesquisa=…`; o link normal não muda; `/formulario` sem pesquisa volta para o Growths; com pesquisa fica no formulário. Regressão: t234 sem falhas.
+
 ## Código (embed) do formulário (v0.234)
 `t234_embed_formulario.py`: 6 verificações, 0 falhas.
 - Captação só com WhatsApp abre a aba; aparece o código com o iframe e o ajuste de altura; a UTM entra no código; o botão copia; sem link aberto, a tela diz o que marcar; a página pública avisa a altura; sem erros de JavaScript.

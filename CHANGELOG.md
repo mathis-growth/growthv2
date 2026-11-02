@@ -1,3 +1,9 @@
+## v0.235 — O formulário embutido passa a abrir dentro da sua página (02/11/2026)
+- O site do Growths bloqueia ser aberto dentro de outra página (`X-Frame-Options: DENY`), então o código da v0.234 (e o da página de obrigado da campanha) mostraria um quadro vazio.
+- Novo endereço `/formulario`, o único liberado para embed (`_headers` e `_redirects` do Cloudflare Pages). O código de embed passa a apontar para ele; o resto do Growths continua protegido.
+- `/formulario` sem pesquisa volta para o Growths normal.
+- Sem mudança no banco. Teste: `t235_embed_endereco.py` (0 falhas).
+
 ## v0.234 — Código para colocar o formulário na página (02/11/2026)
 - Pesquisas → Formulário e aparência → "Link para enviar": novo bloco **Código para colocar o formulário na sua página (embed)**, com o iframe que se ajusta à altura e o botão "Copiar o código". A origem (UTM) preenchida entra no código.
 - Quando o link não aparece, a tela diz também se falta marcar "Aceitar também o link aberto".

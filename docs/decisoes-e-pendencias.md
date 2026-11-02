@@ -1,3 +1,11 @@
+## v0.235 — Embed: o site bloqueava o formulário dentro de outra página
+**Achado ao investigar o relato dos consentimentos:** o `_headers` do Cloudflare Pages manda `X-Frame-Options: DENY` para o site todo. Isso protege o login contra páginas que imitam o Growths, mas impede qualquer embed: o código da v0.234 e o da página de obrigado (v0.193) mostrariam um quadro vazio.
+**Decisão:** liberar só o endereço `/formulario` (mesmo Growths, via `_redirects`), sem o `X-Frame-Options` e com `frame-ancestors *`. O código de embed aponta para ele. Sem `?pesquisa=`, `/formulario` volta para `/`, para o login não ficar exposto dentro de outra página.
+**A validar na publicação:** que o Cloudflare aplica o `! X-Frame-Options` em `/formulario` (testado só com servidor local).
+
+**Relato da Rebecka (02/11):** "essa informação [o consentimento do investimento mínimo] é apenas no final; deu esse erro mas depois passou para a próxima página".
+**O que conferi:** no código atual, os consentimentos ficam só no último passo (Alinhamento) e a mensagem é "Marque para continuar: …". A mensagem da imagem ("Marque: …") não existe em nenhuma versão do Growths no repositório. Refiz o caminho com o formulário igual ao de produção e o aviso não aparece antes do final. A resposta dela das 16h11 foi gravada certa (Strategy, quente, 71 pontos). **Pendente:** saber em qual endereço ela abriu o formulário, para achar a versão que mostrou "Marque:".
+
 ## v0.234 — Código (embed) do formulário em Pesquisas
 **Relato da Rebecka (02/11):** "nas pesquisas tinha um HTML para embedar nas páginas, e agora não está gerando mais".
 **O que achei:** o código com iframe existia só na campanha (Pesquisa da campanha → página de obrigado, v0.193). Em Pesquisas havia só o link. E o "Lead: qualificação" da Mathisa está, em produção, sem o link aberto e sem a captação ligados, então nem o link aparecia. O RODAR_v0.233b liga os dois.

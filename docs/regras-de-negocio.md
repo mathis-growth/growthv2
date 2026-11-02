@@ -1,3 +1,6 @@
+## v0.235
+- **Embed:** só o endereço `/formulario` pode ser aberto dentro de outra página, e só com uma pesquisa. O resto do Growths continua bloqueado para iframe.
+
 ## v0.234
 - **Código para a página:** só aparece com o formulário ativo, com o link aberto e captando contatos, igual ao link.
 

@@ -1,3 +1,8 @@
+## v0.235
+- `aplica235.py`: `embedUrl` (troca o caminho por `/formulario` em http/https) usado por `cpqCodigo`; `/formulario` sem `?pesquisa=` volta para `/`.
+- `_headers`: bloco `/formulario` com `! X-Frame-Options`, `frame-ancestors *` e `no-cache`. `_redirects` novo: `/formulario /index.html 200`.
+- Teste novo `t235_embed_endereco.py` (servidor http local que imita o `_redirects`).
+
 ## v0.234
 - `aplica234.py`: em `pqForm`, bloco `.pf-emb` com `cpqCodigo` (o mesmo da campanha), atualizado pela UTM; aviso do link aberto; `C.campos` completa os campos que faltam.
 - Teste novo `t234_embed_formulario.py`.

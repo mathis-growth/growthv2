@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.235 | 02/11/2026 | Formulário embutido: endereço /formulario liberado para abrir dentro de outra página. | — |
 | 0.234 | 02/11/2026 | Código (embed) para colocar o formulário na página, em Formulário e aparência. | — |
 | 0.233 | 02/11/2026 | Qualificação do lead por produto (Starter, Strategy, Full Brain): blocos, eliminatórias, regras e o formulário "Lead: qualificação". | RODAR_v0.233 e 0.233b |
 | 0.232 | 02/11/2026 | Correção: gerar o link do formulário no diagnóstico (botão "Gerar o link do formulário"). | RODAR_v0.232 |
