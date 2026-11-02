@@ -1,3 +1,9 @@
+## v0.242 — Kanban do Content: no computador é só arrastar (02/11/2026)
+- No computador, o cartão não tem mais o "Mover para": arraste para a coluna. "Arquivar" virou um botão no cartão.
+- No celular, o "Mover para" continua (arrastar com o dedo não funciona bem).
+- Primeiro passo do plano combinado: depois vêm o questionário da Máquina com microfone e anexos, a pasta "Máquina de conteúdo" no Drive e o "Gerar roteiro" com IA.
+- Sem mudança no banco. Teste: `t242_kanban_arrastar.py` (0 falhas).
+
 ## v0.241 — Growth's Content: Produção na ordem de leitura (02/11/2026)
 - Aba Produção: primeiro a contagem por etapa, logo abaixo o **Kanban**, e depois "Esta semana" e o calendário das próximas semanas (antes o calendário ficava entre a contagem e o Kanban).
 - A aba "Baú de ideias" continua como está.

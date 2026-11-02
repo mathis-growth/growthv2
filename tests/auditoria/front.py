@@ -46,8 +46,8 @@ def rota(route):
         route.fulfill(status=200, headers={'access-control-allow-origin': '*', 'content-type': 'application/json'}, body=json.dumps(json.loads(SESS)['user']))
     else:
         route.fulfill(status=200, headers={'access-control-allow-origin': '*', 'content-type': 'application/json'}, body='{}')
-def abre(browser, hoje='2026-10-15', vw=1440, vh=900, prefs=None):
-    ctx = browser.new_context(viewport={'width': vw, 'height': vh})
+def abre(browser, hoje='2026-10-15', vw=1440, vh=900, prefs=None, celular=False):
+    ctx = browser.new_context(viewport={'width': vw, 'height': vh}, **({'is_mobile': True, 'has_touch': True} if celular else {}))
     ctx.route('http://audit.local/**', rota)
     XL = '/tmp/claude-0/-home-claude/6d4aa2ee-cf0f-5c9b-bd48-3047ac34b6ff/scratchpad/npmx/node_modules/xlsx/dist/xlsx.full.min.js'
     if __import__('os').path.exists(XL): ctx.route('https://cdnjs.cloudflare.com/ajax/libs/xlsx/**', lambda r: r.fulfill(status=200, headers={'content-type': 'application/javascript'}, body=open(XL, 'rb').read()))

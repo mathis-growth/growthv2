@@ -1,3 +1,6 @@
+## v0.242
+**Kanban mais simples.** No computador, os conteúdos mudam de etapa arrastando; no celular, pelo "Mover para".
+
 ## v0.241
 **Produção mais fácil de ler.** No Growth's Content, o Kanban fica logo abaixo da contagem por etapa, antes do calendário.
 

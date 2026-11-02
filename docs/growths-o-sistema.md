@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.241 (Kanban antes do calendário na Produção).
+**Última atualização:** 02/11/2026, versão 0.242 (Kanban do Content só de arrastar no computador).
+
+**v0.242 · Arrastar.** No Kanban do Growth's Content, no computador é só arrastar o cartão; no celular continua o "Mover para".
 
 **v0.241 · Produção na ordem de leitura.** No Growth's Content, a Produção mostra a contagem por etapa, o Kanban e, depois, a semana e o calendário.
 
@@ -678,6 +680,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.242):** Kanban do Content: no computador só arrastar.
 - **02/11 (v0.241):** Growth's Content: Kanban logo abaixo da contagem, antes do calendário.
 - **02/11 (v0.240):** Growth's Content: Baú de ideias com microfone.
 - **02/11 (v0.239):** diagnóstico dos dados para levar à reunião.

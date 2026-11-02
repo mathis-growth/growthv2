@@ -1,3 +1,8 @@
+## v0.242
+- `aplica242.py`: botão `data-arq` no `mqCard`; classe `mq-board`; CSS `(hover:hover) and (pointer:fine)` esconde o `select.mv` no computador.
+- `front.py`: `abre(..., celular=True)` para testar como celular.
+- Teste novo `t242_kanban_arrastar.py`.
+
 ## v0.241
 - `aplica241.py`: `kbPainel` devolve a contagem e o calendário separados (`<!--kbcal-->`); `tabKanban` põe a contagem antes do `.board` e o calendário (`.kb-cal-sec`) depois.
 - Teste novo `t241_producao_ordem.py`.

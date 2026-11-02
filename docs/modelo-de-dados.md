@@ -1,3 +1,6 @@
+## v0.242
+Sem mudança no banco.
+
 ## v0.241
 Sem mudança no banco.
 

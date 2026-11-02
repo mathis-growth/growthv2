@@ -1,3 +1,6 @@
+## Kanban do Content: arrastar (v0.242)
+`t242_kanban_arrastar.py`: 5 verificações, 0 falhas. Computador sem "Mover para" e com Arquivar; arrastar leva para a etapa (ou abre o cartão pedindo o que falta); Arquivar arquiva; celular com "Mover para"; sem erros de JavaScript.
+
 ## Produção na ordem de leitura (v0.241)
 `t241_producao_ordem.py`: 5 verificações, 0 falhas. Ordem contagem → Kanban → calendário; aba Baú de ideias; clique na etapa e na semana funcionando; sem erros de JavaScript. Regressão: t240 sem falhas.
 

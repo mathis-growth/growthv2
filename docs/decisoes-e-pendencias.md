@@ -1,3 +1,13 @@
+## v0.242 — Plano da Máquina de conteúdo (decisões de 02/11)
+**Decisões da Rebecka:**
+- Ordem: 1) arrastar no Kanban; 2) questionário da Máquina com microfone e anexos; 3) botão "Iniciar a montar a minha máquina de conteúdo", que cria no Drive a pasta **Máquina de conteúdo** com **Referências, Identidade visual, Persona e Tom de voz**; 4) **Gerar roteiro** na pauta aprovada, escolhendo o tipo de roteiro.
+- IA: usar a que estiver conectada em Configurações (Claude ou GPT), com um limite de uso que ela escolhe.
+- Os arquivos ficam com uma cópia no Growths para a IA consultar (não lê o Drive a cada vez).
+- "Skill do cliente": um documento consolidado (dossiê, persona, tom de voz, referências) guardado no sistema, que a IA usa sem procurar. Já existe o passo "Dossiê e aprovação: dossiê, PDF e a skill do cliente" (em breve) na configuração guiada.
+- O botão vale para todos os clientes do Growth's Content; cada um cria no Drive dele (a Mathisa no da Mathisa).
+- "Mover para": tirar no computador, manter no celular. **Feito na v0.242.**
+**Pendente de entendimento:** melhorar o celular ("não quero ter que descer para ver as coisas; a tela vai abrindo ali mesmo, uma por cima da outra").
+
 ## v0.241 — Kanban antes do calendário
 **Pedido da Rebecka (02/11):** "só uma aba escrito Baú de ideias, fica ok… quero mudar o Kanban de lugar: embaixo da contabilização, antes do calendário, para ficar mais fácil visualizar o que está acontecendo".
 **Feito:** contagem por etapa → Kanban → Esta semana e calendário. O Baú de ideias não mudou.

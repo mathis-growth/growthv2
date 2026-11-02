@@ -1,3 +1,6 @@
+## v0.242
+- Mover um conteúdo continua passando pelas mesmas regras de cada etapa; se faltar algo, o cartão abre pedindo.
+
 ## v0.241
 Sem regra nova (só a ordem da tela).
 
