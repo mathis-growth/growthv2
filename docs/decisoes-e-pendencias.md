@@ -1,5 +1,13 @@
 
 
+## v0.216 — Trajetória das metas e saúde por área
+**Pedido da Rebecka (01/11)**: seguir (a parte visual: gráfico de trajetória e saúde por área no Cockpit).
+Decisões:
+- **Gráfico de trajetória**: meta acumulada (tracejada), realizado acumulado e projeção (pontilhada) até o fim do período, com o dia de hoje marcado. Os números vêm de `metas_trajetoria`, que usa as mesmas funções da faixa de metas (o último ponto bate com o "esperado até hoje" e o "realizado"). Fica no faturamento da faixa de metas; leads, vendas, campanhas e produtos abrem o mesmo gráfico no botão "Trajetória". Até 400 dias; períodos longos usam no máximo 120 pontos.
+- **Saúde por área**: cada painel do Cockpit ganhou uma linha com as metas daquela área (faturamento no Geral; leads e campanhas no Marketing; vendas e produtos em Vendas), com status e realizado × esperado, e o risco principal da área. **Sem média nem nota única**: o documento proíbe consolidar sem metodologia. Área sem meta diz "Sem meta definida para esta área no período".
+- **Correções**: (1) o risco de qualidade dos dados mostrava "56,2 aviso(s)", mas esse número é um percentual da regra, não uma contagem; agora fica sem número de impacto. (2) A linha do ano diz "(só os meses com meta)" quando o ano tem meta só em parte.
+**Pendências**: metas de Financeiro (margem, caixa), CS (retenção, churn) e Growth (NSM com meta no registro) para a saúde dessas áreas; trajetória por mês nos períodos longos.
+
 ## v0.215 — Growth's Brain, incremento 3: Risk Engine
 **Pedido da Rebecka (01/11)**: "faça o Risk Engine" (antes dos gráficos de trajetória e da saúde por área).
 Decisões:

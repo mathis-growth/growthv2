@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.215 (Growth's Brain: Risk Engine).
+**Última atualização:** 01/11/2026, versão 0.216 (Growth's Brain: trajetória das metas e saúde por área).
+
+**v0.216 · A meta no tempo.** O gráfico de trajetória mostra a meta acumulada, o realizado e a projeção até o fim do período, e cada painel do Cockpit mostra as metas da sua área e o risco principal.
 
 **v0.215 · Riscos num lugar só.** O Cockpit lista os riscos e oportunidades do cliente, vindos das metas, dos alertas, dos guardrails e da qualidade dos dados, com evidência, impacto estimado, ação sugerida e quem está tratando.
 
@@ -108,9 +110,9 @@ A ideia central: o dono do negócio e a consultoria olham para os mesmos número
 ### Cockpit
 A tela inicial. Um painel pequeno por área (Geral, Marketing, Vendas, Financeiro, Projetos, Growth e Clientes), dois lado a lado, cada um com os números que mais importam no período: caixa, receita, margem e lucro; campanhas e leads; vendas, ticket e conversão; a receber, a pagar e MRR; projetos e atividades atrasadas; North Star e experimentos; alunos ativos, alertas e satisfação. Cada painel traz também um gráfico: receita e lucro por mês, leads e faturamento por dia, o que entra e o que sai, alunos por etapa. Clicar num painel abre o dashboard daquela área, com tudo em detalhe. Cada pessoa só vê os painéis das áreas a que tem acesso. Em cima, o mesmo filtro de período de todos os dashboards (começa no mês corrente); mudar o período muda todos os painéis.
 
-Logo abaixo, a **Meta de faturamento**: a meta do período (vinda do Planejamento anual), quanto deveria ter sido vendido até hoje, quanto foi vendido, o desvio, a projeção até o fim do período e o status (Dentro do esperado, Atenção, Em risco, Atingida…). Embaixo, o mesmo para o ano. "Como calculamos" mostra a conta, o método da projeção e a regra do status, sem prometer probabilidade. Se as metas dos meses não somam a meta do ano, o Cockpit avisa. Logo depois vêm as metas de leads e de vendas da empresa e as metas de cada campanha e produto, cada uma na sua janela (a campanha conta leads nos dias da captação e vendas nos dias do carrinho aberto); clicar numa campanha abre a campanha.
+Logo abaixo, a **Meta de faturamento**: a meta do período (vinda do Planejamento anual), quanto deveria ter sido vendido até hoje, quanto foi vendido, o desvio, a projeção até o fim do período e o status (Dentro do esperado, Atenção, Em risco, Atingida…). Embaixo, o mesmo para o ano. "Como calculamos" mostra a conta, o método da projeção e a regra do status, sem prometer probabilidade. Se as metas dos meses não somam a meta do ano, o Cockpit avisa. Logo abaixo, o **gráfico de trajetória**: a meta acumulada dia a dia, o realizado acumulado até hoje e a projeção até o fim do período, para ver quando o resultado começou a descolar da meta. Cada meta da tabela tem o mesmo gráfico no botão "Trajetória". Logo depois vêm as metas de leads e de vendas da empresa e as metas de cada campanha e produto, cada uma na sua janela (a campanha conta leads nos dias da captação e vendas nos dias do carrinho aberto); clicar numa campanha abre a campanha.
 
-Abaixo das metas fica **Riscos e oportunidades**: os riscos mais graves do cliente num lugar só. Eles vêm das metas (abaixo do esperado, risco de não atingir, chance de superar), dos alertas do Growths (agrupados: centenas de avisos de aluno parado viram um risco só), dos guardrails e da qualidade dos dados. Cada risco traz a evidência, o impacto estimado e uma ação sugerida. Alguém pode assumir, resolver ou descartar (com nota), e tudo fica no histórico. Quando a causa some, o risco se resolve sozinho; se voltar, reabre. Cada painel de área mostra quantos riscos tem.
+Abaixo das metas fica **Riscos e oportunidades**: os riscos mais graves do cliente num lugar só. Eles vêm das metas (abaixo do esperado, risco de não atingir, chance de superar), dos alertas do Growths (agrupados: centenas de avisos de aluno parado viram um risco só), dos guardrails e da qualidade dos dados. Cada risco traz a evidência, o impacto estimado e uma ação sugerida. Alguém pode assumir, resolver ou descartar (com nota), e tudo fica no histórico. Quando a causa some, o risco se resolve sozinho; se voltar, reabre. Cada painel de área mostra quantos riscos tem, as metas daquela área com o status e o risco principal, sem média nem nota única.
 
 ### Dashboard geral
 O detalhe do painel Geral do Cockpit. Mostra o negócio inteiro num período escolhido:
@@ -514,6 +516,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - "Esperado até hoje": o número que diz se você está atrasado antes do fim do mês.
 - Meta de lançamento não é linear: por que o Growths mede leads na captação e vendas no carrinho.
 - 948 alertas ou 2 riscos? Como transformar aviso em decisão.
+- O dia em que a curva descolou: ler a trajetória da meta.
 - Risco, oportunidade e problema de dado: três coisas diferentes no mesmo painel.
 - Um período só para a empresa inteira: por que marketing, vendas e financeiro precisam olhar a mesma janela de tempo.
 - Fato, hipótese e recomendação: como ler um insight sem se enganar.
@@ -568,6 +571,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.216):** trajetória das metas e saúde por área no Cockpit.
 - **01/11 (v0.215):** Risk Engine: riscos e oportunidades no Cockpit, com tratamento e histórico.
 - **01/11 (v0.214):** metas de leads, vendas, campanhas e produtos no registro central e no Cockpit.
 - **01/11 (v0.213):** Growth's Brain, primeiro fluxo: meta de faturamento no Cockpit, objetivos do ano, NSM com status.

@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.216 | 01/11/2026 | Trajetória das metas no Cockpit e saúde por área. | RODAR_v0.216_brain_trajetoria.sql |
 | 0.215 | 01/11/2026 | Risk Engine: riscos e oportunidades no Cockpit, com evidência, impacto, ação e tratamento. | RODAR_v0.215_brain_riscos.sql |
 | 0.214 | 01/11/2026 | Metas de leads, vendas, campanhas e produtos no registro central e no Cockpit. | RODAR_v0.214_brain_metas_2.sql |
 | 0.213 | 01/11/2026 | Growth's Brain: meta de faturamento no Cockpit (esperado, realizado, projeção, status), objetivos do ano, NSM provisória. | RODAR_v0.213_brain_metas.sql |

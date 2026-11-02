@@ -1,3 +1,7 @@
+## v0.216
+- Trajetória: meta acumulada dia a dia (mesma regra da meta do período), realizado acumulado até hoje, projeção do último realizado até o fim (mesmo método da faixa).
+- Saúde por área: lista as metas da área e o risco principal; não calcula média nem nota.
+
 ## v0.215
 - Risco de meta: status Atenção/Em risco → "abaixo do esperado"; projeção < 95% da meta → "risco de não atingir" (< 75% alta, < 90% média, senão baixa); projeção ≥ 110% → "oportunidade".
 - Alertas em aberto viram um risco por regra (CS: todos os em aberto; os outros: últimos 14 dias).

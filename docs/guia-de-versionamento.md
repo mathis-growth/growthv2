@@ -1,3 +1,6 @@
+## v0.216
+- Migration `20261210100000_brain_trajetoria.sql` + `RODAR_v0.216_brain_trajetoria.sql`. index.html montado sobre o HEAD do GitHub (v0.215) com `aplica216.py` e `g216.js`: `mtTrajSvg`, `mtTrajCarrega`, `mtTrajModal`, `CK_SAUDE`, `ckSaudeLiga`; faixa de metas com `#mtTraj` e botão "Trajetória" nas linhas. Teste novo `t216_trajetoria.py`.
+
 ## v0.215
 - Migration `20261209100000_brain_riscos.sql` + `RODAR_v0.215_brain_riscos.sql`. index.html montado sobre o HEAD do GitHub (v0.214) com `aplica215.py` e `g215.js`: `ckRiscosHtml`, `ckRiscosLiga`, `riscoTratar`, `riscosTodos`, `riscoAbrir`. O Cockpit pede `riscos_painel`. Teste novo `t215_riscos.py`. No banco local de teste, `alertas_tipo_check` passou a aceitar 'cs' (como em produção).
 

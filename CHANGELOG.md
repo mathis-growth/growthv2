@@ -1,3 +1,9 @@
+## v0.216 — Growth's Brain: trajetória das metas e saúde por área (01/11/2026)
+- Gráfico de trajetória (meta acumulada × realizado acumulado, projeção, hoje) no faturamento e no botão "Trajetória" de cada meta.
+- Cada painel do Cockpit mostra as metas da área com status e o risco principal.
+- Correção: risco de qualidade dos dados sem número de impacto (era um percentual); linha do ano avisa quando só parte do ano tem meta.
+- Banco: `RODAR_v0.216_brain_trajetoria.sql`. Teste: `t216_trajetoria.py` (0 falhas).
+
 ## v0.215 — Growth's Brain: Risk Engine (01/11/2026)
 - Registro único de riscos alimentado pelas metas, alertas (agrupados), guardrails e qualidade dos dados.
 - Cockpit: "Riscos e oportunidades" (os 5 mais graves, ver todos, tratar, abrir) e contagem de riscos em cada painel de área.

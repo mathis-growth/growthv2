@@ -1,3 +1,7 @@
+## v0.216
+- Função `metas_trajetoria(ws, metrica, ini, fim, hoje, escopo, ref)` → `{avaliacao, pontos: [[dia, meta_acumulada, realizado_acumulado|null]]}`.
+- Gatilho `riscos_qualidade_sem_impacto` em `riscos`.
+
 ## v0.215
 - `riscos`: chave única por cliente, tipo (abaixo_do_esperado | risco_de_nao_atingir | oportunidade | qualidade_dados | operacional), área (empresa | marketing | vendas | cs | financeiro | growth), métrica, meta_id, escopo/ref, ini/fim, severidade (alta | média | baixa), título, evidência, dados, impacto + unidade, fonte (metas | alertas | guardrails | qualidade), ação sugerida, status (aberto | em_tratamento | resolvido | descartado), responsável, nota, detectado/visto/atualizado/resolvido em, resolvido_por (sistema | usuário).
 - `riscos_eventos` (histórico de cada mudança), `riscos_rodadas` (última conferência por cliente).

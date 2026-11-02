@@ -1,5 +1,9 @@
 
 
+## Trajetória e saúde por área (v0.216)
+- `t216_trajetoria.py` (12 verificações, 0 falhas): 31 pontos com a meta acumulada fechando em 18.000; realizado até hoje e vazio depois; mesmos números da faixa; sem login recusa; gráfico no Cockpit com meta, realizado, projeção e "hoje"; Trajetória dos leads; saúde do Marketing, do Geral e de Vendas (sem meta = diz isso); celular.
+- Regressão: t215, t214, t213, t211, t192, t158 sem falhas.
+
 ## Risk Engine (v0.215)
 - `t215_riscos.py` (32 verificações, 0 falhas): riscos de meta (faturamento e leads), sem duplicar com o ano parcial; 3 alertas de aluno parado = 1 risco de CS; contas vencidas no financeiro; alerta resolvido fora; guardrail crítico; evidência sem probabilidade; idempotência; resolve sozinho, reabre, histórico; sem login não mexe; Cockpit (bloco, contagem por área, Atualizar agora com qualidade, Ver todos com filtro, assumir, descartar só com nota, descartado não volta, Abrir leva ao Customer Growth, celular).
 - Regressão: t213, t214, t211, t192, t158, t205, t209 sem falhas; t164 (tela) com a mesma falha de antes.

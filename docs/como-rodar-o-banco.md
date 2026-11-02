@@ -1,3 +1,7 @@
+## v0.216 — Growth's Brain: trajetória das metas
+1. `supabase/RODAR_v0.216_brain_trajetoria.sql`: função `metas_trajetoria` (só leitura) e correção do impacto dos riscos de qualidade (gatilho `riscos_qualidade_sem_impacto`).
+2. Conferido em 01/11: v0.213, v0.214 e v0.215 já estão em produção. Pendentes: `RODAR_v0.197`, `RODAR_v0.209` (versão da v0.210) e `RODAR_v0.216`.
+
 ## v0.215 — Growth's Brain: Risk Engine
 1. `supabase/RODAR_v0.215_brain_riscos.sql`: tabelas `riscos`, `riscos_eventos` (histórico) e `riscos_rodadas`; funções `riscos_detectar`, `riscos_painel`, `riscos_acao`, `riscos_rodar`; cron `growths-riscos` (08:17).
 2. Não mexe em dados existentes. A primeira conferência acontece quando alguém abre o Cockpit (ou às 08:17).

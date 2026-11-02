@@ -1,3 +1,6 @@
+## v0.216
+**Ver a meta no tempo.** O Cockpit mostra a trajetória do faturamento (meta acumulada × realizado e a projeção até o fim do mês), e cada painel de área mostra as suas metas e o risco principal.
+
 ## v0.215
 **Riscos num lugar só.** O Cockpit mostra os riscos e oportunidades do cliente (metas, alertas, guardrails e qualidade dos dados), com evidência, impacto, ação sugerida e quem está tratando. Quando a causa some, o risco se resolve sozinho.
 
