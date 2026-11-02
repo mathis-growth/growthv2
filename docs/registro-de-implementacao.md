@@ -1,7 +1,7 @@
 
 
 ## Processo do diagnóstico de clientes (v0.228)
-`t228_diag_processo.py`: 21 verificações, 0 falhas.
+`t228_diag_processo.py`: 23 verificações, 0 falhas.
 - **Banco:** clientes esperando (contrato e jornada), um padrão por empresa.
 - **Tela, até o envio:** lista de espera; começar com o padrão escolhido; diagnóstico com cliente, contrato e formulário; aba Formulário; mensagem com o link; botões; copiar marca como enviado e vai para o histórico.
 - **Tela, até a resposta:** trocar o formulário; arquivo do link entra; progresso "cliente preenchendo"; resposta entra sozinha; não troca depois de respondido; passo final com a reunião.
