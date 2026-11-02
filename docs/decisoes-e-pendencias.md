@@ -1,3 +1,9 @@
+## v0.237 — O cliente não tinha onde anexar os arquivos
+**Relato da Rebecka (02/11):** "o diagnóstico continua sem ter como colocar um arquivo… quando ele fala 'tenho', tem que ter um lugar onde ele anexa e esses arquivos chegam para mim".
+**Causa (fato):** em produção, a pergunta 17 do "Diagnóstico Mathisa" estava só com o aviso e grupos g1…g9: sem `upload`, sem `onde`, sem período e sem planilhas-modelo. É o que o editor de perguntas grava quando alguém salva a pergunta: ele montava a configuração do zero com o que mostra.
+**Correção:** o editor parte da configuração que já existe e troca só o que mostra; os grupos mantêm chave, plataforma e planilha-modelo quando o nome não muda; nova caixa "o cliente anexa os arquivos". O RODAR devolve a configuração do modelo, ligada ao "Onde vende?" do formulário.
+**Marco:** o formulário dele já está respondido. Pelo mesmo link ele consegue mandar só os arquivos; para mudar respostas, use "Reabrir para o cliente continuar". Os arquivos chegam em Evidências no diagnóstico.
+
 ## v0.236 — Link do cliente no diagnóstico e reabrir o formulário
 **Pedido da Rebecka (02/11):** "esse link tem que aparecer lá no diagnóstico… se o cliente perder, conseguir enviar de novo e ele conseguir continuar".
 **O que estava acontecendo:** o formulário do Marco foi enviado às 14h15 (resposta de teste: "Mathisa", "teste"). Depois de respondido, a aba Formulário escondia o link.

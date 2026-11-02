@@ -1,3 +1,6 @@
+## v0.237
+- **Editar pergunta:** o editor só troca o que mostra. Configurações feitas pelos modelos (anexar, "Onde vende", período, planilha-modelo) ficam.
+
 ## v0.236
 - **Formulário do diagnóstico:** um link por cliente, sempre o mesmo. Reaberto, o cliente continua de onde parou; a última resposta enviada é a que vale.
 

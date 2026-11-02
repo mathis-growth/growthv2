@@ -1,3 +1,6 @@
+## v0.237
+**Anexar arquivos no diagnóstico.** No formulário do diagnóstico, cada grupo de arquivos volta a ter o botão "Enviar arquivo"; os arquivos chegam em Evidências.
+
 ## v0.236
 **Link do cliente sempre à mão.** No diagnóstico, o link do formulário fica visível para mandar de novo. Dá para reabrir o formulário para o cliente continuar de onde parou.
 

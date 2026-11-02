@@ -1,3 +1,9 @@
+## v0.237 — O cliente volta a anexar os arquivos no formulário do diagnóstico (02/11/2026)
+- Causa: o editor de perguntas apagava a configuração que não mostra. Ao salvar a pergunta de arquivos, sumiram o anexar, a ligação com "Onde vende?", o período e as planilhas-modelo; o cliente só via "Tenho / Não tenho".
+- Editor corrigido: troca só o que mostra e mantém o resto. Nova caixa "o cliente anexa os arquivos aqui no formulário".
+- `RODAR_v0.237_anexos_diagnostico_mathisa.sql` devolve a configuração à pergunta de arquivos do "Diagnóstico Mathisa (pré-diagnóstico)".
+- Teste: `t237_anexos_documentos.py` (0 falhas).
+
 ## v0.236 — Diagnóstico: o link do cliente fica sempre à mão; reabrir o formulário (02/11/2026)
 - Aba Formulário: o link do cliente aparece escrito e com os botões (WhatsApp, e-mail, copiar) também depois que ele responde, para mandar de novo se ele perder.
 - Depois de respondido, pelo mesmo link o cliente ainda manda os arquivos que faltam.

@@ -1,3 +1,6 @@
+## v0.237
+Rodar `supabase/RODAR_v0.237_anexos_diagnostico_mathisa.sql`. Só muda a configuração da pergunta de arquivos do "Diagnóstico Mathisa (pré-diagnóstico)"; pode rodar de novo.
+
 ## v0.236
 Rodar `supabase/RODAR_v0.236_diagnostico_reabrir.sql`. Cria `diagnostico_formulario_reabrir` e troca o gatilho que liga a resposta ao diagnóstico (a mais nova passa a valer).
 

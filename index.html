@@ -18695,13 +18695,17 @@ function modalPergunta(p, row, n, perg = []) {
     { k: 'cfg_min', l: 'Métricas: mínimo de "usamos para decidir"', t: 'number', step: '1' }, { k: 'cfg_max', l: 'Métricas: máximo de "usamos para decidir"', t: 'number', step: '1' },
     { k: 'cfg_colunas', l: 'Lista: colunas, uma por linha', t: 'textarea', hint: 'Rótulo | tipo (texto, numero, moeda, escolha) | opções separadas por ; (só para escolha)' },
     { k: 'cfg_categorias', l: 'Documentos: grupos, um por linha (vazio = os 7 grupos padrão)', t: 'textarea', hint: 'Nome do grupo | o que pedir' },
+    { k: 'cfg_upload', l: 'Documentos: o cliente anexa os arquivos aqui no formulário (botão "Enviar arquivo"); os arquivos chegam no diagnóstico', t: 'check', def: p.tipo === 'diagnostico' },
     { k: 'cfg_aviso', l: 'Documentos: aviso no fim', t: 'textarea' });
   const cf = (row && row.config) || {}, cdx = (row && row.condicao) || {};
   const rowG1 = row ? { ...row, opcoes_txt: (row.opcoes || []).join('\n'), cond_pergunta: cdx.pergunta || '', cond_valores: (cdx.valores || []).join('\n'), cfg_naosei: !!cf.naosei, cfg_meses: cf.meses || 6,
     cfg_etapas: (cf.etapas || []).join(', '), cfg_modelo: cf.modelo || '', cfg_min: cf.min_decide || '', cfg_max: cf.max_decide || '', cfg_aviso: cf.aviso || '',
-    cfg_colunas: (cf.colunas || []).map(c => [c.l, c.t, (c.op || []).join(';')].filter(Boolean).join(' | ')).join('\n'), cfg_categorias: (cf.categorias || []).map(c => c.l + (c.d ? ' | ' + c.d : '')).join('\n') } : null;
+    cfg_colunas: (cf.colunas || []).map(c => [c.l, c.t, (c.op || []).join(';')].filter(Boolean).join(' | ')).join('\n'), cfg_categorias: (cf.categorias || []).map(c => c.l + (c.d ? ' | ' + c.d : '')).join('\n'), cfg_upload: row.tipo === 'documentos' ? !!cf.upload : p.tipo === 'diagnostico' } : null;
   const f = abrirForm(row ? 'Editar pergunta' : 'Nova pergunta', 'pesquisa_perguntas', campos, row ? (g1 ? rowG1 : { ...row, opcoes_txt: (row.opcoes || []).join('\n') }) : null, { extra: { pesquisa_id: p.id }, largo: g1, antes: v => {
-    if (g1) { const t = v.tipo, num = x => x === '' || x == null ? null : Number(x), cfg = {}, tx = k => String(v[k] || '');
+    if (g1) { const t = v.tipo, num = x => x === '' || x == null ? null : Number(x), tx = k => String(v[k] || '');
+      // parte do que não aparece no editor (anexar, "Onde vende", período, planilha-modelo, códigos das métricas) e troca só o que o editor mostra
+      const cfg = row && row.tipo === t ? JSON.parse(JSON.stringify(row.config || {})) : {}, antCats = cfg.categorias || [];
+      ['naosei', 'meses', 'etapas', 'modelo', 'min_decide', 'max_decide', 'colunas', 'categorias', 'aviso', 'upload'].forEach(k => delete cfg[k]);
       if (['numero', 'moeda'].includes(t) && v.cfg_naosei) cfg.naosei = true;
       if (t === 'meses') cfg.meses = Math.max(1, Math.min(24, num(v.cfg_meses) || 6));
       if (t === 'metricas') { const et = tx('cfg_etapas').split(',').map(x => x.trim()).filter(Boolean); if (et.some(x => !AARRR.some(a => a[0] === x))) throw new Error('Etapa desconhecida: use aquisicao, ativacao, retencao, receita, recomendacao ou recompra.');
@@ -18709,11 +18713,14 @@ function modalPergunta(p, row, n, perg = []) {
       if (t === 'lista') { cfg.colunas = tx('cfg_colunas').split(/\r?\n/).map(l => l.trim()).filter(Boolean).map((l, i) => { const [rot, tp, ops] = l.split('|').map(z => (z || '').trim()); const tt = ['texto', 'numero', 'moeda', 'escolha'].includes(tp) ? tp : 'texto';
           return { k: 'c' + (i + 1), l: rot, t: tt, ...(tt === 'escolha' ? { op: (ops || '').split(';').map(z => z.trim()).filter(Boolean) } : {}) }; });
         if (!cfg.colunas.length) throw new Error('Informe pelo menos uma coluna da lista.'); }
-      if (t === 'documentos') { const cs = tx('cfg_categorias').split(/\r?\n/).map(l => l.trim()).filter(Boolean); cfg.categorias = cs.length ? cs.map((l, i) => { const [rot, d] = l.split('|').map(z => (z || '').trim()); return { k: 'g' + (i + 1), l: rot, d: d || '' }; }) : DOC_CATS; if (tx('cfg_aviso').trim()) cfg.aviso = tx('cfg_aviso').trim(); }
+      if (t === 'documentos') { const cs = tx('cfg_categorias').split(/\r?\n/).map(l => l.trim()).filter(Boolean), usados = new Set();
+        cfg.categorias = cs.length ? cs.map((l, i) => { const [rot, ...dd] = l.split('|').map(z => (z || '').trim()), d = dd.join(' | '), o = antCats.find(c => c.l === rot);
+          let k = o ? o.k : 'g' + (i + 1); while (usados.has(k)) k += '_'; usados.add(k); return o ? { ...o, k, l: rot, d: d || '' } : { k, l: rot, d: d || '' }; }) : DOC_CATS;
+        if (tx('cfg_aviso').trim()) cfg.aviso = tx('cfg_aviso').trim(); if (v.cfg_upload) cfg.upload = true; }
       v.config = cfg; const cv = tx('cond_valores').split(/\r?\n/).map(x => x.trim()).filter(Boolean);
       if (v.cond_pergunta && !cv.length) throw new Error('Diga com que respostas a pergunta aparece (uma por linha).');
       v.condicao = v.cond_pergunta ? { pergunta: v.cond_pergunta, valores: cv } : null;
-      ['cond_pergunta', 'cond_valores', 'cfg_naosei', 'cfg_meses', 'cfg_etapas', 'cfg_modelo', 'cfg_min', 'cfg_max', 'cfg_colunas', 'cfg_categorias', 'cfg_aviso'].forEach(k => delete v[k]); }
+      ['cond_pergunta', 'cond_valores', 'cfg_naosei', 'cfg_meses', 'cfg_etapas', 'cfg_modelo', 'cfg_min', 'cfg_max', 'cfg_colunas', 'cfg_categorias', 'cfg_aviso', 'cfg_upload'].forEach(k => delete v[k]); }
     v.opcoes = (v.opcoes_txt || '').split(/\r?\n/).map(x => x.trim()).filter(Boolean); delete v.opcoes_txt;
     if (['escolha', 'multipla'].includes(v.tipo) && v.opcoes.length < 2) throw new Error('Informe pelo menos 2 opções.');
     if (!['escolha', 'multipla'].includes(v.tipo)) v.opcoes = []; v.ordem = v.ordem == null ? n : v.ordem; return v;

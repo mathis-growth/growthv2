@@ -1,3 +1,6 @@
+## v0.237
+Sem mudança de estrutura. Só dados: a configuração da pergunta de arquivos do Diagnóstico Mathisa.
+
 ## v0.236
 - Função nova `diagnostico_formulario_reabrir(diag)`.
 - `pesquisa_respostas_diag`: a resposta mais nova do mesmo link passa a ser a do diagnóstico.

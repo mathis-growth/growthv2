@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.236 (link do cliente sempre à mão no diagnóstico).
+**Última atualização:** 02/11/2026, versão 0.237 (anexar arquivos no diagnóstico).
+
+**v0.237 · Anexar arquivos.** No formulário do diagnóstico, o cliente volta a anexar cada arquivo no próprio formulário, e editar uma pergunta não apaga mais essa configuração.
 
 **v0.236 · Reabrir o formulário.** No diagnóstico, o link do cliente fica sempre visível para mandar de novo, e dá para reabrir o formulário para ele continuar de onde parou.
 
@@ -660,6 +662,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.237):** diagnóstico: o cliente volta a anexar os arquivos; o editor de perguntas não apaga mais a configuração.
 - **02/11 (v0.236):** diagnóstico: link do cliente sempre visível e reabrir o formulário.
 - **02/11 (v0.235):** endereço próprio para o formulário embutido em outras páginas.
 - **02/11 (v0.234):** código para colocar o formulário na página.

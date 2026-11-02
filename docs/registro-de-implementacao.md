@@ -1,3 +1,6 @@
+## Anexar arquivos no diagnóstico (v0.237)
+`t237_anexos_documentos.py`: 6 verificações, 0 falhas. O RODAR roda numa cópia com os mesmos ids e devolve anexar, "Onde vende", grupos por plataforma e planilhas-modelo; o editor mostra a caixa marcada e, ao salvar, mantém tudo; o formulário público mostra "Enviar arquivo" só nas plataformas marcadas; sem erros de JavaScript.
+
 ## Reabrir o formulário do diagnóstico (v0.236)
 `t236_diag_reabrir.py`: 9 verificações, 0 falhas. Link visível antes e depois da resposta; reabrir volta a aceitar respostas, com 30 dias e o rascunho; a resposta anterior continua até a nova; a nova passa a valer e fica registrada; sem erros de JavaScript. Regressão: t228 e t232 sem falhas.
 
