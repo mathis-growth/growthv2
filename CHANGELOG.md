@@ -1,3 +1,10 @@
+## v0.239 — Diagnóstico dos dados para levar à reunião (02/11/2026)
+- Botão **Gerar o diagnóstico dos dados** na aba Dados e em Preparar a reunião.
+- Para cada planilha: o que é (leads, vendas, produtos…), cada coluna ao lado do campo do Growths que ela preenche, quanto está preenchida e exemplos (e-mail e telefone escondidos); colunas que o Growths **não identificou**; "Talvez" quando outra parte do Growths reconhece a coluna; o que não veio (e se é obrigatório).
+- Métricas: o que dá para calcular com o que veio, o que o cliente usa sem ter mandado o dado e o que mais falta.
+- Lista **Para perguntar na reunião**. **Imprimir ou salvar em PDF**.
+- Sem mudança no banco. Teste: `t239_diag_relatorio_dados.py` (0 falhas).
+
 ## v0.238 — Diagnóstico: Dados logo depois de "O que falta" e importar para o Growths do cliente (02/11/2026)
 - Abas na ordem do trabalho: 1 Formulário, 2 Evidências, 3 O que falta, **4 Dados**, 5 O que já se sabe, 6 Métricas, 7 Preparar a reunião, 8 Arquitetura, 9 Validação e entrega.
 - Aba Dados: "Importar para o Growths do cliente". Escolha o Growths (vem sugerido o que nasceu do contrato) e clique em **Importar** na planilha: o Growths abre o de-para (colunas do arquivo ao lado dos campos do Growths) no Growths do cliente; é conferir e importar. "Voltar para o diagnóstico" volta para a aba Dados.

@@ -1,3 +1,6 @@
+## v0.239
+- **Diagnóstico dos dados:** só lê; não importa nem grava nada. E-mails e telefones aparecem escondidos nos exemplos.
+
 ## v0.238
 - **Importar do diagnóstico:** os dados vão para o Growths do cliente escolhido, nunca para o da Mathisa. Quem já existe (mesmo e-mail ou telefone) não é duplicado.
 

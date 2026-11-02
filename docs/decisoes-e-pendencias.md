@@ -1,3 +1,9 @@
+## v0.239 — Diagnóstico dos dados
+**Pedido da Rebecka (02/11):** "antes de importar para o cliente, pegar os campos e cruzar com as tabelas que a gente tem… um relatório mostrando quais informações tem no arquivo, o que você identificou e o que não identificou de acordo com a estrutura do banco, relacionado a métricas e dados… para a reunião, um 'gerar diagnóstico dos dados'".
+**Como ficou:** usa o mesmo reconhecimento do importador (tipo do arquivo e de-para das colunas) e o de-para das métricas (v0.225). Nada é gravado: o relatório é gerado na hora, fica na tela até sair do diagnóstico, e pode ser impresso ou salvo em PDF.
+**Limites (fato):** lê a primeira aba de cada Excel; PDF e Word ainda não; as métricas dependem de "Ler as planilhas".
+**Pendente:** guardar o relatório no diagnóstico (histórico de versões), se ela quiser.
+
 ## v0.238 — Importar os dados do diagnóstico
 **Pedido da Rebecka (02/11):** "Dados tem que vir depois do que falta… eu passo os dados, valido as informações, e o que der para importar tem que ter um botãozinho de importar para já ir para o banco de dados… abre os dois, compara o que é o que, e a gente já importa".
 **Decisões:**

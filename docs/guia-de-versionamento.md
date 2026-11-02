@@ -1,3 +1,7 @@
+## v0.239
+- `aplica239.py`: `dgRelGera` (baixa, `impParseArquivo`, `impDetecta`, `impAutoMapa`, procura a coluna nas outras tabelas, faltas por campo obrigatório ou com `info`, métricas do `diagnostico_depara`, perguntas), `dgRelHtml`, `dgRelBox` (Dados e Preparar a reunião), `dgRelLiga`, `dgRelImprime`; `dgRelMasc` esconde e-mail e telefone.
+- Teste novo `t239_diag_relatorio_dados.py`.
+
 ## v0.238
 - `aplica238.py`: ordem das abas `dg`; `dgImpHtml` e `dgImpLiga` (baixa do bucket `diagnostico`, `impParseArquivo`, troca para o Growths escolhido, fila `IMPQ`, `impAvalia` e `impAbre`); faixa `dgImpVoltaHtml` em `vImportar`.
 - Teste novo `t238_diag_importar.py`.

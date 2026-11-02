@@ -1,3 +1,6 @@
+## Diagnóstico dos dados (v0.239)
+`t239_diag_relatorio_dados.py`: 11 verificações, 0 falhas. Arquivo de leads reconhecido; colunas ligadas aos campos; "Não identifiquei" e "Talvez"; arquivo não reconhecido; e-mail e telefone escondidos; perguntas para a reunião; resumo; o mesmo relatório em Preparar a reunião; imprimir; sem erros de JavaScript. Regressão: t238 sem falhas.
+
 ## Importar do diagnóstico (v0.238)
 `t238_diag_importar.py`: 8 verificações, 0 falhas. Ordem das abas; aviso sem Growths de cliente; Importar abre o importador no Growths do cliente com o de-para aberto; os leads entram no Growths do cliente e não no da Mathisa; voltar leva à aba Dados; sem erros de JavaScript. Regressão: t228 e t236 sem falhas.
 

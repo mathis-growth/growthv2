@@ -1,3 +1,6 @@
+## v0.239
+**Diagnóstico dos dados.** Um botão lê as planilhas do cliente e mostra, para cada uma, o que o Growths identificou e o que não, o que dá para calcular e o que perguntar na reunião. Dá para imprimir ou salvar em PDF.
+
 ## v0.238
 **Do diagnóstico para o Growths do cliente.** Na aba Dados do diagnóstico, cada planilha tem "Importar": o Growths mostra as colunas do arquivo ao lado dos campos dele, você confere e importa para o Growths do cliente.
 

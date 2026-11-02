@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.239 | 02/11/2026 | Diagnóstico dos dados: o que cada planilha traz, o que o Growths identificou e não identificou, métricas e perguntas para a reunião. | — |
 | 0.238 | 02/11/2026 | Diagnóstico: Dados depois de "O que falta"; importar cada planilha para o Growths do cliente com o de-para. | — |
 | 0.237 | 02/11/2026 | Diagnóstico: o cliente volta a anexar os arquivos; o editor de perguntas não apaga mais a configuração. | RODAR_v0.237 (dados) |
 | 0.236 | 02/11/2026 | Diagnóstico: link do cliente sempre visível; reabrir o formulário para ele continuar. | RODAR_v0.236 |
