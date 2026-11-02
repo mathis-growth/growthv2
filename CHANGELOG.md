@@ -1,3 +1,7 @@
+## v0.219 — Growth's Brain: funil AARRR (01/11/2026)
+- "Abrir o funil AARRR" no painel Growth do Cockpit: seis etapas com o que o Growths já calcula, período anterior, metas, North Star, passagem lead → cliente e gargalo sugerido.
+- Banco: `RODAR_v0.219_brain_aarrr.sql` (só leitura). Teste: `t219_aarrr.py` (0 falhas).
+
 ## v0.218 — Growth's Brain: cenários ligados à meta (01/11/2026)
 - "Simular" em cada meta e nos riscos de meta: alavancas de leads, mídia, conversão e ticket; atual × cenário; se bate a meta; premissas e incertezas.
 - Cenários salvos com versão, aprovação e arquivamento. Nada muda nos dados reais.

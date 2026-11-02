@@ -1,3 +1,6 @@
+## v0.219
+**O funil inteiro numa tela.** No painel Growth do Cockpit, o funil AARRR mostra aquisição, ativação, retenção, receita, recomendação e recompra com o período anterior, as metas, a North Star e o gargalo sugerido.
+
 ## v0.218
 **E se?** Cada meta do Cockpit pode ser simulada: mais leads, mais verba, outra conversão ou outro ticket. O Growths mostra se a meta passa a ser alcançada, o que seria preciso, as premissas e as incertezas, e guarda os cenários com versão.
 

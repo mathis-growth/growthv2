@@ -1,3 +1,6 @@
+## v0.219
+- Funções de leitura: `aarrr_numeros(ws, ini, fim)` (os números de um período) e `aarrr_painel(ws, ini, fim, hoje)` → etapas com métricas {codigo, nome, unidade, direção, taxa, v, v_ant, var, meta, sem_dado}, gargalo, passagem, nsm.
+
 ## v0.218
 - `metas_cenarios`: workspace, métrica, escopo/ref, ini/fim, nome, hipótese, alavancas (leads_pct, invest_extra, conv_nova, ticket_novo), resultado, status (rascunho | aprovado | arquivado), versão, substitui_id, criado por/em.
 - Função `metas_simular(ws, metrica, ini, fim, hoje, escopo, ref, alavancas)` → avaliação, atual, cenário, precisa_fator, premissas, avisos, incertezas.

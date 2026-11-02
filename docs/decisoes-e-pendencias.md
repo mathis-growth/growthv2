@@ -1,5 +1,23 @@
 
 
+## v0.219 — Funil AARRR
+**Pedido da Rebecka (01/11)**: continuar (próximo do documento: a visão AARRR).
+Decisões:
+- **Onde**: botão "Abrir o funil AARRR" no painel Growth do Cockpit. Abre por cima, no período escolhido, comparando com o período anterior do mesmo tamanho.
+- **Etapas iguais às do Diagnóstico** (Aquisição, Ativação, Retenção, Receita, Recomendação, Recompra e ascensão), cada uma com a sua pergunta e só com números que o Growths já calcula:
+  - aquisição: leads, investimento em mídia, CPL;
+  - ativação: clientes novos (1ª compra), lead → cliente novo, marcos obrigatórios atingidos;
+  - retenção: alunos ativos, saíram, saída;
+  - receita: faturamento, vendas, ticket;
+  - recomendação: NPS e respostas;
+  - recompra: clientes que compraram de novo e a parte do faturamento que veio deles.
+- **Sem dado é sem dado**: indicação ainda não é medida; marcos, alunos ativos e NPS precisam do Customer Growth. A tela diz isso em vez de mostrar zero.
+- **Não linear**: só leads → cliente novo aparece como passagem; as outras etapas são lidas cada uma por si.
+- **Metas** do registro aparecem nas etapas (leads, faturamento, vendas), com o status do Cockpit. "Investigar" abre a investigação daquele número.
+- **Gargalo sugerido**: a taxa que mais piorou (mais de 5%) contra o período anterior, sempre como pista e não como diagnóstico. **Fato**: no teste, os leads caíram 83%, mas o gargalo apontado foi o ticket (−7%), porque a regra olha taxas e não volumes. Volume em queda já aparece no risco da meta.
+- **North Star**: aparece na etapa que ela mede (pela métrica automática), com o status (provisória).
+**Pendências**: registrar indicações; tempo entre etapas (lead → 1ª compra, compra → 1º marco); coortes por etapa; metas próprias de ativação, retenção e recomendação no registro.
+
 ## v0.218 — Cenários ligados à meta (Scenario Engine)
 **Pedido da Rebecka (01/11)**: seguir com os cenários.
 Decisões:

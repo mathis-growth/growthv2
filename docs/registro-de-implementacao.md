@@ -1,5 +1,9 @@
 
 
+## Funil AARRR (v0.219)
+- `t219_aarrr.py` (14 verificações, 0 falhas): seis etapas; leads e faturamento iguais às metas; clientes novos e passagem; metas nas etapas; sem dado sem inventar; gargalo; North Star na etapa; sem login recusa; no Cockpit: botão, funil sem sair do Cockpit, Investigar, celular.
+- Regressão: t218, t217, t216, t215, t213, t211 sem falhas.
+
 ## Cenários ligados à meta (v0.218)
 - `t218_cenarios.py` (17 verificações, 0 falhas): sem alavanca = projeção do Cockpit; +10% de leads; ticket +20%; mídia vira leads pelo CPL; dados intactos; meta de leads ignora conversão e ticket com aviso; fator que bate a meta; período encerrado; incertezas; na tela: simular, veredito, salvar, carregar, nova versão ligada, aprovar, simular leads só com alavancas de leads.
 - Regressão: t217, t216, t215, t214, t213, t211 sem falhas.

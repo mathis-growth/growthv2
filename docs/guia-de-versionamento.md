@@ -1,3 +1,6 @@
+## v0.219
+- Migration `20261213100000_brain_aarrr.sql` + `RODAR_v0.219_brain_aarrr.sql`. index.html montado sobre o HEAD do GitHub (v0.218) com `aplica219.py` e `g219.js`: `aarrrAbrir`, `ckAarrrLiga`, `aarrrFmt`. Teste novo `t219_aarrr.py`.
+
 ## v0.218
 - Migration `20261212100000_brain_cenarios.sql` + `RODAR_v0.218_brain_cenarios.sql`. index.html montado sobre o HEAD do GitHub (v0.217) com `aplica218.py` e `g218.js`: `simAbrir`, `simCalc`, `simDesenha`; botões "Simular" na faixa de metas, nas linhas e no risco de meta. Teste novo `t218_cenarios.py`.
 

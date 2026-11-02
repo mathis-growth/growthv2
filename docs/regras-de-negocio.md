@@ -1,3 +1,7 @@
+## v0.219
+- AARRR: período atual até hoje × período anterior do mesmo tamanho. Cliente novo = 1ª compra aprovada no período (com o histórico importado). Recompra = cliente com compra no período e compra anterior. Saída = saíram ÷ (ativos + saíram).
+- Gargalo sugerido = taxa com maior piora (> 5%).
+
 ## v0.218
 - Cenário = realizado + (projeção − realizado) × fator. Fator: leads (1 + % + leads da mídia ÷ leads que faltam) × conversão nova ÷ conversão de 90 dias (vendas e faturamento) × ticket novo ÷ ticket de 90 dias (só faturamento).
 - "O que seria preciso" = (meta − realizado) ÷ (projeção − realizado).

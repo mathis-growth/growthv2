@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 01/11/2026, versão 0.218 (Growth's Brain: cenários ligados à meta).
+**Última atualização:** 01/11/2026, versão 0.219 (Growth's Brain: funil AARRR).
+
+**v0.219 · O funil inteiro.** No painel Growth do Cockpit, o funil AARRR mostra as seis etapas com o período anterior, as metas, a North Star e o gargalo sugerido.
 
 **v0.218 · E se?** "Simular" testa mais leads, mais verba, outra conversão ou outro ticket numa meta e mostra se ela passa a ser alcançada, com as premissas e as incertezas. Os cenários ficam salvos com versão.
 
@@ -117,6 +119,8 @@ A tela inicial. Um painel pequeno por área (Geral, Marketing, Vendas, Financeir
 Logo abaixo, a **Meta de faturamento**: a meta do período (vinda do Planejamento anual), quanto deveria ter sido vendido até hoje, quanto foi vendido, o desvio, a projeção até o fim do período e o status (Dentro do esperado, Atenção, Em risco, Atingida…). Embaixo, o mesmo para o ano. "Como calculamos" mostra a conta, o método da projeção e a regra do status, sem prometer probabilidade. Se as metas dos meses não somam a meta do ano, o Cockpit avisa. Logo abaixo, o **gráfico de trajetória**: a meta acumulada dia a dia, o realizado acumulado até hoje e a projeção até o fim do período, para ver quando o resultado começou a descolar da meta. Cada meta da tabela tem o mesmo gráfico no botão "Trajetória". O botão **Investigar** abre o número por produto, campanha, canal, plataforma e cliente novo × recorrente (nos leads: campanha, canal, qualificação e situação), comparando com o período anterior e mostrando o que mais mudou. Clicar numa fatia filtra todas as outras; o caminho no topo permite voltar a qualquer passo; "Ver os registros" lista as vendas ou os leads por trás do número, com link para a ficha da pessoa. As fatias sempre somam o total. O botão **Simular** testa o "e se": mais leads, investimento extra em mídia (convertido em leads pelo CPL dos últimos 90 dias), outra conversão ou outro ticket, só no que falta do período. Mostra o atual ao lado do cenário, se a meta passa a ser alcançada, quanto o resto do período precisaria render para bater, as premissas e as incertezas (não é garantia). Os cenários podem ser salvos, carregados, versionados, aprovados e arquivados, sem mexer nos dados reais. Logo depois vêm as metas de leads e de vendas da empresa e as metas de cada campanha e produto, cada uma na sua janela (a campanha conta leads nos dias da captação e vendas nos dias do carrinho aberto); clicar numa campanha abre a campanha.
 
 Abaixo das metas fica **Riscos e oportunidades**: os riscos mais graves do cliente num lugar só. Eles vêm das metas (abaixo do esperado, risco de não atingir, chance de superar), dos alertas do Growths (agrupados: centenas de avisos de aluno parado viram um risco só), dos guardrails e da qualidade dos dados. Cada risco traz a evidência, o impacto estimado e uma ação sugerida. Alguém pode assumir, resolver ou descartar (com nota), e tudo fica no histórico. Quando a causa some, o risco se resolve sozinho; se voltar, reabre. Cada painel de área mostra quantos riscos tem, as metas daquela área com o status e o risco principal, sem média nem nota única.
+
+No painel Growth, **Abrir o funil AARRR** mostra as etapas do Diagnóstico (aquisição, ativação, retenção, receita, recomendação, recompra e ascensão), cada uma respondendo a uma pergunta, com o número do período, o anterior, a meta quando existe e o botão Investigar. A passagem de lead para cliente novo aparece em destaque, a North Star aparece na etapa que ela mede e o "gargalo sugerido" aponta a taxa que mais piorou. O que o Growths ainda não mede (como indicações) aparece como "sem dado", nunca como zero.
 
 ### Dashboard geral
 O detalhe do painel Geral do Cockpit. Mostra o negócio inteiro num período escolhido:
@@ -523,6 +527,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 - O dia em que a curva descolou: ler a trajetória da meta.
 - "Faturamento caiu 71%": como descer do número até a campanha que explica a queda em três cliques.
 - Mais verba ou mais ticket? Simular antes de decidir (e por que dobrar a verba não dobra as vendas).
+- O funil pirata não é uma linha reta: AARRR para quem vende curso e mentoria.
 - Risco, oportunidade e problema de dado: três coisas diferentes no mesmo painel.
 - Um período só para a empresa inteira: por que marketing, vendas e financeiro precisam olhar a mesma janela de tempo.
 - Fato, hipótese e recomendação: como ler um insight sem se enganar.
@@ -577,6 +582,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **01/11 (v0.219):** funil AARRR no Cockpit.
 - **01/11 (v0.218):** cenários ligados à meta: simular, comparar e salvar com versão.
 - **01/11 (v0.217):** investigação: do número do Cockpit até as vendas e os leads.
 - **01/11 (v0.216):** trajetória das metas e saúde por área no Cockpit.
