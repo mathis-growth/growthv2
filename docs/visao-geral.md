@@ -1,3 +1,6 @@
+## v0.225
+**De-para das métricas.** Na Investigação, cada métrica do catálogo aparece cruzada com o que o cliente usa e com os dados que ele mandou. Das que usa, mostra se já se sabe como ele calcula. Das que não usa, mostra se os dados permitem calcular. No link, o cliente só conclui com todos os arquivos resolvidos e marca quais números são os principais.
+
 ## v0.224
 **Pré-diagnóstico.** Assim que o cliente sobe os arquivos, a aba Investigação mostra o que chegou, o que ele prometeu e não mandou, o que não tem e quantos meses cada arquivo cobre. Também traz a mensagem pronta para pedir o que falta e a lista do que conversar. A equipe marca como revisado e vai para a reunião.
 

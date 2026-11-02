@@ -1,5 +1,36 @@
 
 
+## v0.225 — De-para das métricas e formulário que só conclui com os arquivos resolvidos
+**Pedidos da Rebecka (02/11):**
+- "O cliente deve receber o checklist do que falta e só concluir quando estiver tudo ok, e pode salvar para continuar depois."
+- "Não vou mostrar isso no link para o cliente: vou analisar e apresentar na reunião."
+- "Ver todas as métricas que a pessoa usa, o que olha, o que não olha, quais dados tem ou não tem, e fazer o de-para."
+- "No diagnóstico, ela tem que responder quais são as métricas principais."
+- "Das que usa, entender como calcula; das que não usa, se os dados da planilha permitem calcular novas métricas."
+
+**Decisões:**
+- **Formulário do cliente (link do diagnóstico):**
+  - sai o "Mando depois";
+  - cada grupo de arquivos precisa de arquivo enviado ou "Não tenho" para concluir;
+  - embaixo dos grupos, a lista "Ainda falta: …" se atualiza sozinha e vira "Tudo certo, já pode concluir";
+  - o que o cliente preenche fica salvo, e ele volta pelo mesmo link.
+- **O pré-diagnóstico continua só para a equipe.** O cliente não vê a análise.
+- **Métricas principais:**
+  - no formulário curto, cada número que o cliente acompanha ganha "É um dos principais: uso para tomar decisões" (até 5);
+  - no modelo "Entrada do cliente" entra a pergunta "Desses, quais são os principais…".
+  - Formulários já criados a partir do modelo "Entrada do cliente" não ganham a pergunta sozinhos; os que usam a pergunta de métricas (formulário curto) já mostram o campo.
+- **De-para das métricas,** na aba Investigação: as 53 métricas do catálogo em três blocos.
+  - **O que usa hoje:** principal ou acompanha, onde vê, se o cálculo já foi descrito na reunião (senão, "perguntar na reunião") e se os dados que mandou permitem conferir.
+  - **Dá para calcular e hoje não olha:** dá, ou dá com ressalvas (com o porquê).
+  - **Não dá para calcular com o que veio:** o que falta, ou se a fonte nem vem em arquivo (área de membros, NPS, redes).
+  - Antes da leitura das planilhas, "dá para calcular" considera o tipo de arquivo e pede para confirmar as colunas. Depois da leitura, usa o que a leitura achou (identificação do comprador, origem, status, recorrência).
+- O que cada métrica precisa ficou no catálogo (`metricas_definicoes.requisitos`), para valer igual no Diagnóstico, no Planejamento e nos Cockpits.
+- **"Para conversar na reunião"** ganhou três tipos de item: "Como vocês calculam X?" (primeiro as principais), "Usa X, mas não mandou o dado" e a lista do que dá para calcular e hoje não olha.
+
+**Pendências:**
+- Rebecka: rodar os RODAR na ordem.
+- Recriar ou editar o formulário de entrada, se quiser a pergunta das principais nos formulários antigos.
+
 ## v0.224 — Pré-diagnóstico na Investigação (antes da reunião)
 **Pedido da Rebecka (02/11):** "o cliente sobe os arquivos e, na investigação, já valida o que tem, o que não tem, faz um diagnóstico para depois ir para a reunião".
 

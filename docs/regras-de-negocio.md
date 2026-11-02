@@ -1,3 +1,18 @@
+## v0.225
+- **Formulário de diagnóstico com arquivos:** só conclui com cada grupo enviado ou marcado "Não tenho". O rascunho fica salvo.
+- **Uso de cada métrica:**
+  - principal: marcada pelo cliente ou na reunião;
+  - acompanha;
+  - não acompanha;
+  - não sabe;
+  - não perguntado.
+- **Dados:**
+  - dá para calcular;
+  - dá, com ressalvas (colunas a confirmar, período incompleto, item em parte);
+  - não dá (falta arquivo ou coluna);
+  - fonte fora dos arquivos.
+- **Oportunidade** = não usa e dá para calcular. **Lacuna** = não usa e não dá.
+
 ## v0.224
 - **Pré-diagnóstico.** Um grupo só conta como recebido com arquivo não arquivado. Se todos os arquivos do grupo informam o período e não cobrem todos os meses de referência, fica "recebido em parte".
 - **O cliente disse que não tem:** vira lacuna para a reunião, não pedido na mensagem.

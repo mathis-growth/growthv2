@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.224 (Diagnóstico Inteligente: pré-diagnóstico antes da reunião).
+**Última atualização:** 02/11/2026, versão 0.225 (Diagnóstico Inteligente: de-para das métricas).
+
+**v0.225 · De-para das métricas.** O que o cliente usa × o que os dados que ele mandou permitem calcular. No link, ele só conclui com todos os arquivos resolvidos e marca as métricas principais.
 
 **v0.224 · Pré-diagnóstico.** Assim que o cliente sobe os arquivos, o Growths confere o que chegou, o que ele prometeu e o que falta, monta o pedido e a pauta da reunião.
 
@@ -439,7 +441,12 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 - **Diagnóstico Growth: o diagnóstico da empresa** (desde a v0.223). Uma lista de diagnósticos, cada um com responsável, período de referência, versão, status (em coleta, em análise, em revisão, validado, arquivado) e o progresso por etapas. Dentro, cinco abas:
   - **Evidências:** tudo o que serve de prova, mandado pelo cliente (pelo link do formulário) ou pela equipe. O Growths confere o tipo real do arquivo, o tamanho e o conteúdo: o mesmo arquivo não entra duas vezes, e o mesmo nome com conteúdo novo vira versão 2. Cada arquivo tem classificação (14 tipos, sugerida pelo nome sem nunca trocar a escolha manual), período que representa, marca de dados pessoais e status de leitura. O original nunca é apagado: arquiva-se.
-  - **Investigação: o pré-diagnóstico, antes da reunião** (v0.224). Um checklist cruza o que o cliente disse no formulário com o que chegou e com os meses que os arquivos cobrem. As situações são: recebido, recebido em parte, disse que tem e não mandou, não tem, falta. Embaixo vêm o que os dados mostram, a mensagem pronta para pedir o que falta (editável) e a lista do que conversar. A equipe marca como revisado e segue para a reunião do diagnóstico, que tem os números que decidem, o roteiro e as anotações.
+  - **Investigação: o pré-diagnóstico, antes da reunião** (v0.224). Um checklist cruza o que o cliente disse no formulário com o que chegou e com os meses que os arquivos cobrem. As situações são: recebido, recebido em parte, disse que tem e não mandou, não tem, falta. Embaixo vêm o que os dados mostram, a mensagem pronta para pedir o que falta (editável) e a lista do que conversar. Junto vem o **de-para das métricas** (v0.225):
+    - **o que o cliente usa hoje:** principal ou não, onde vê, se já se sabe como calcula e se os dados que ele mandou permitem conferir;
+    - **o que dá para calcular e ele não olha;**
+    - **o que não dá para calcular com o que veio,** e o que faltaria.
+
+    A equipe marca como revisado e segue para a reunião do diagnóstico, que tem os números que decidem, o roteiro e as anotações.
   - **Dados:** a leitura das planilhas (abaixo), guardada no diagnóstico.
   - **Arquitetura:** a North Star da empresa e o caminho para o mapa de métricas.
   - **Validação e entrega:** a mudança de status e o histórico, com decisões e comentários que não se apagam.
@@ -534,6 +541,8 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 Ângulos que nascem do sistema, para usar como ponto de partida:
 
+- "Você acompanha CAC, mas consegue me mostrar a conta?": o de-para entre a métrica que o cliente usa e o dado que ele tem.
+- "Seus dados já calculam o LTV e você não olha": métricas escondidas nas planilhas que todo infoprodutor já tem.
 - "A reunião começa antes da reunião": o pré-diagnóstico que mostra o que o cliente prometeu e não mandou.
 - "O cliente mandou a mesma planilha três vezes": por que todo diagnóstico começa organizando as evidências.
 - Sugestão de IA que não passa por cima da sua escolha: classificar documentos com o humano no controle.
@@ -603,6 +612,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.225):** de-para das métricas; formulário do diagnóstico só conclui com os arquivos resolvidos; métricas principais.
 - **02/11 (v0.224):** pré-diagnóstico na Investigação, antes da reunião.
 - **02/11 (v0.223):** Diagnóstico Inteligente D1: diagnóstico da empresa em cinco abas e Central de Evidências.
 - **02/11 (v0.222):** Cockpit em abas; padrão de abas para as páginas longas.

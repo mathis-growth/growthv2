@@ -1,3 +1,9 @@
+## v0.225 — De-para das métricas; formulário só conclui com os arquivos resolvidos (02/11/2026)
+- **De-para na Investigação:** o que usa hoje (principal, onde vê, cálculo descrito, dá para conferir); dá para calcular e não olha; não dá com o que veio.
+- **Formulário do cliente:** sem "Mando depois"; lista do que falta; pergunta das métricas principais.
+- **Pauta da reunião:** como calcula, o que usa sem o dado, as oportunidades.
+- Banco: `RODAR_v0.225_diagnostico_depara.sql`. Teste: `t225_diag_depara.py` (0 falhas).
+
 ## v0.224 — Pré-diagnóstico antes da reunião (02/11/2026)
 - Aba Investigação:
   - checklist (o que o cliente disse × o que chegou × meses cobertos);

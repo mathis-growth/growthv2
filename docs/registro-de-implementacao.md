@@ -1,5 +1,32 @@
 
 
+## De-para das métricas (v0.225)
+`t225_diag_depara.py`: 22 verificações, 0 falhas.
+- **Banco:**
+  - principal e onde vê;
+  - ressalva sem leitura;
+  - cálculo descrito;
+  - usa sem o dado;
+  - lacuna;
+  - oportunidade;
+  - leitura antiga pelo título;
+  - fonte externa;
+  - resumo;
+  - formulário Entrada (múltipla e principais);
+  - sem formulário.
+- **Tela:**
+  - de-para;
+  - tabela do que usa;
+  - blocos;
+  - para conversar.
+- **Formulário do cliente:**
+  - sem "Mando depois";
+  - lista do que falta;
+  - campo "principal";
+  - "tudo certo".
+- **Sem erros de JavaScript.**
+- **Regressão:** t224, t223, t197, t151 e t130 sem falhas.
+
 ## Pré-diagnóstico (v0.224)
 `t224_diag_pre.py`: 27 verificações, 0 falhas.
 - **Banco:**

@@ -1,3 +1,13 @@
+## v0.225
+- `metricas_definicoes.requisitos` (jsonb): o que cada métrica precisa, em quatro tipos:
+  - `g:` grupo de arquivo;
+  - `l:` item da leitura das planilhas;
+  - `c:` coluna a confirmar;
+  - `x:` fonte fora dos arquivos.
+- Funções novas:
+  - `diagnostico_depara(diag, hoje)`;
+  - `diag_metrica_rotulo(texto)`: os rótulos do formulário Entrada → código do catálogo.
+
 ## v0.224
 - Funções:
   - `diagnostico_checklist(diag, hoje)`: checklist, resumo e números;

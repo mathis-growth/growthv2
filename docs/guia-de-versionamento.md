@@ -1,3 +1,12 @@
+## v0.225
+- `aplica225.py` + `g225.js` (`dgDeparaHtml`, `dgDeparaConversa`, `pfDocFalta`).
+- Ajustes:
+  - a leitura guarda o `id` de cada item;
+  - o formulário de diagnóstico fica sem "Mando depois" e ganha a lista do que falta;
+  - o modo simples de métricas ganha o "principal";
+  - o modelo Entrada ganha a pergunta das principais.
+- Migração `20261218100000_diagnostico_depara_metricas.sql` = `RODAR_v0.225_diagnostico_depara.sql`. Teste novo: `t225_diag_depara.py`.
+
 ## v0.224
 - `aplica224.py` + `g224.js` (`dgPreHtml`, `dgPreLiga`, `dgPreMensagem`); a aba Investigação do `dgPagina` usa o pré-diagnóstico. Migração `20261217100000_diagnostico_d2_pre.sql` = `RODAR_v0.224_diagnostico_pre.sql`. Teste novo `t224_diag_pre.py`; `t223` ajustado (8 etapas).
 
