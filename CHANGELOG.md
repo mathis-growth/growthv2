@@ -1,3 +1,10 @@
+## v0.243 — Celular: sanfona, Kanban por etapa e janelas em tela cheia (02/11/2026)
+- **Blocos em sanfona:** no celular, cada bloco com título vira sanfona. Toca no título e ele abre ali mesmo; abrir um fecha o outro. O Growths lembra qual estava aberto naquela tela.
+- **Kanban uma etapa por vez:** as etapas viram abas no topo (com a quantidade), em qualquer Kanban (Content, Funil de leads…).
+- **Janelas em tela cheia:** formulários e cartões abrem ocupando a tela toda, com "← Voltar" no topo.
+- No computador nada muda.
+- Sem mudança no banco. Teste: `t243_celular.py` (0 falhas).
+
 ## v0.242 — Kanban do Content: no computador é só arrastar (02/11/2026)
 - No computador, o cartão não tem mais o "Mover para": arraste para a coluna. "Arquivar" virou um botão no cartão.
 - No celular, o "Mover para" continua (arrastar com o dedo não funciona bem).

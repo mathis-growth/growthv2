@@ -1,3 +1,6 @@
+## v0.243
+**Growths no celular.** Os blocos abrem e fecham no lugar, o Kanban mostra uma etapa por vez com abas e as janelas ocupam a tela toda com "← Voltar".
+
 ## v0.242
 **Kanban mais simples.** No computador, os conteúdos mudam de etapa arrastando; no celular, pelo "Mover para".
 

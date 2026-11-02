@@ -1,3 +1,6 @@
+## v0.243
+Sem regra nova (só a forma de mostrar no celular).
+
 ## v0.242
 - Mover um conteúdo continua passando pelas mesmas regras de cada etapa; se faltar algo, o cartão abre pedindo.
 

@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.242 (Kanban do Content só de arrastar no computador).
+**Última atualização:** 02/11/2026, versão 0.243 (celular: sanfona, Kanban por etapa e janelas em tela cheia).
+
+**v0.243 · Growths no celular.** No celular, os blocos abrem no lugar (abrir um fecha o outro), o Kanban mostra uma etapa por vez com abas no topo e as janelas abrem em tela cheia com "← Voltar".
 
 **v0.242 · Arrastar.** No Kanban do Growth's Content, no computador é só arrastar o cartão; no celular continua o "Mover para".
 
@@ -564,6 +566,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 11. Visual e experiência
 
+- **No celular** (v0.243): os blocos com título viram sanfona (toca no título e ele abre ali mesmo; abrir um fecha o outro), todo Kanban mostra uma etapa por vez com as etapas como abas no topo, e formulários e cartões abrem em tela cheia com "← Voltar".
 - **Claro como padrão e escuro como opção.** Uma ação principal por tela.
 - **Um filtro de período só.** Todos os dashboards têm em cima o mesmo filtro (Últimos 30 dias, Este mês, Próximos 30 dias, Últimos 7 dias… e Personalizado), que começa no mês corrente e vale em todos.
 - **Cor com significado (Data Storytelling).** Quatro cores só para leitura de dados: verde (favorável), vermelho (desfavorável), âmbar (atenção) e azul (informação e comparação). A cor nunca vem sozinha: sempre com seta ou símbolo (▲ ▼ ✓ ✕ ⚠) e uma palavra, porque verde e vermelho se confundem para quem tem daltonismo. Lucro, resultado, margem, ROI e saldo têm o zero como limite: negativo em vermelho, positivo em verde, âmbar quando passa de zero mas não chega na meta ou no cenário cadastrado. As outras métricas só ganham cor quando há meta, limite ou período anterior comparável, e cada uma tem a sua direção: CAC caindo é bom, margem caindo é ruim, investimento subindo é neutro. Variações abaixo de 5% ficam neutras.
@@ -680,6 +683,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.243):** celular: sanfona, Kanban por etapa e janelas em tela cheia.
 - **02/11 (v0.242):** Kanban do Content: no computador só arrastar.
 - **02/11 (v0.241):** Growth's Content: Kanban logo abaixo da contagem, antes do calendário.
 - **02/11 (v0.240):** Growth's Content: Baú de ideias com microfone.

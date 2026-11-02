@@ -1,3 +1,8 @@
+## v0.243 — Celular
+**Pedido da Rebecka (02/11):** "não quero ter que descer lá para baixo para ver as coisas; a telinha tem que ir abrindo ali mesmo, uma por cima da outra". Ela aprovou a proposta: sanfona, Kanban por etapa em abas, janelas em tela cheia com Voltar.
+**Como ficou:** vale para todas as telas, sem mexer em cada uma: abaixo de 760 px de largura, os blocos com título viram sanfona (só quando há dois ou mais lado a lado), todo Kanban ganha as abas de etapa e toda janela abre em tela cheia.
+**A observar:** telas com um bloco só não mudam; blocos sem título continuam sempre abertos.
+
 ## v0.242 — Plano da Máquina de conteúdo (decisões de 02/11)
 **Decisões da Rebecka:**
 - Ordem: 1) arrastar no Kanban; 2) questionário da Máquina com microfone e anexos; 3) botão "Iniciar a montar a minha máquina de conteúdo", que cria no Drive a pasta **Máquina de conteúdo** com **Referências, Identidade visual, Persona e Tom de voz**; 4) **Gerar roteiro** na pauta aprovada, escolhendo o tipo de roteiro.

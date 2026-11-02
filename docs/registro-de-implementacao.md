@@ -1,3 +1,6 @@
+## Celular (v0.243)
+`t243_celular.py`: 11 verificações, 0 falhas. Kanban uma coluna por vez com abas; trocar de aba; nada passa da largura; janela em tela cheia com Voltar; Voltar fecha; sanfona (primeiro aberto, inclusive blocos que carregam depois); abrir um fecha o outro; Funil de leads em abas; computador sem mudança; sem erros de JavaScript. Regressão: t241 e t242 sem falhas.
+
 ## Kanban do Content: arrastar (v0.242)
 `t242_kanban_arrastar.py`: 5 verificações, 0 falhas. Computador sem "Mover para" e com Arquivar; arrastar leva para a etapa (ou abre o cartão pedindo o que falta); Arquivar arquiva; celular com "Mover para"; sem erros de JavaScript.
 

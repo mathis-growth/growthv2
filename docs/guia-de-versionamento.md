@@ -1,3 +1,7 @@
+## v0.243
+- `aplica243.py`: `mobSanfona`, `mobKanban`, `mobAjusta` ligados por um `MutationObserver` no `#main` (só com `max-width: 760px`); `modal` ganhou `.mdl-volta`; CSS do celular no `<style id="v122">`.
+- Teste novo `t243_celular.py`.
+
 ## v0.242
 - `aplica242.py`: botão `data-arq` no `mqCard`; classe `mq-board`; CSS `(hover:hover) and (pointer:fine)` esconde o `select.mv` no computador.
 - `front.py`: `abre(..., celular=True)` para testar como celular.
