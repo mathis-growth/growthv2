@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Growths</title>
-<link rel="stylesheet" href="assets/atendimento.css?v=0200">
+<link rel="stylesheet" href="assets/atendimento.css?v=0201">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -5774,6 +5774,7 @@ const CATALOGO = [
   ['Google Ads', 'anuncios', 'Custo, cliques e impressões por anúncio'], ['Meta Ads', 'anuncios', 'Custo, cliques e impressões por criativo'],
   ['Vturb', 'video', 'Retenção e conversão da VSL'], ['Panda Video', 'video', 'Visualizações e retenção'], ['YouTube', 'video', 'Lives e vídeos'], ['Vimeo', 'video', 'Visualizações e retenção'], ['Zoom', 'video', 'Presença no webinário'],
   ['Hotmart', 'vendas', 'Vendas, reembolsos e chargebacks'], ['Kiwify', 'vendas', 'Vendas, reembolsos e chargebacks'], ['Eduzz', 'vendas', 'Vendas, reembolsos e chargebacks'], ['Stripe', 'vendas', 'Vendas e assinaturas'],
+  ['Hubla', 'vendas', 'Webhook v2: compra aprovada, carrinho abandonado, cartão recusado e reembolso'], ['Guru (Digital Manager)', 'vendas', 'Webhook de pedidos: aprovada, abandonada, cancelada/rejeitada e reembolsada'],
   ['WhatsApp (grupos e API)', 'mensageria', 'Entrada e saída de grupo e de lista de transmissão'], ['WhatsApp API oficial', 'anuncios', 'Conversas e anúncios que levam ao WhatsApp, com custo e origem'], ['TikTok Ads', 'anuncios', 'Custo, cliques e impressões por criativo'], ['LinkedIn Ads', 'anuncios', 'Custo, cliques e impressões por anúncio'], ['GPT Ads (ChatGPT)', 'anuncios', 'Custo, cliques e impressões dos anúncios no ChatGPT'], ['E-mail (envio de avisos)', 'mensageria', 'Avisar a equipe quando uma atividade for liberada'], ['Instagram', 'social', 'Publicar a partir de uma pasta do Drive e trazer métricas da conta e por conteúdo'], ['LinkedIn', 'social', 'Publicar e trazer métricas'], ['TikTok', 'social', 'Publicar e trazer métricas'], ['Google Drive (mídias)', 'social', 'Pasta de onde o Growths pega a mídia e a copy'], ['Pesquisa diária de pautas (IA)', 'ia', 'Pesquisar todo dia e colocar as ideias no Kanban'], ['Webhook genérico', 'outro', 'Receber eventos de qualquer ferramenta']
 ];
 const ST_INTEG = { conectado: ['good', 'Conectado'], configurando: ['warn', 'Configurando'], erro: ['bad', 'Com erro'], desconectado: ['neutral', 'Desconectado'] };
@@ -22885,7 +22886,7 @@ function modalSubtemas(t, D) {
 }
 
 </script>
-<script src="assets/atendimento.js?v=0202"></script>
+<script src="assets/atendimento.js?v=0203"></script>
 <script>
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
 if (PQ_TOKEN) vPesquisaPublica(PQ_TOKEN);

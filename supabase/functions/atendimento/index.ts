@@ -563,14 +563,46 @@ async function processarAgendamentos(req:Request) {
       fluxosFalhos++;
     }
   }
-  return json({ok:true,reservados:jobs.length,enviados,erros,incertos,transacionais,fluxosRetomados,fluxosFalhos});
+  let grupos:any={reservados:0,enviados:0,erros:0,incertos:0};
+  try{grupos=await processarDisparosGrupos();}
+  catch(e){console.error('atd disparo grupos worker indisponível',String((e as Error).message||e).slice(0,180));}
+  return json({ok:true,reservados:jobs.length,enviados,erros,incertos,transacionais,fluxosRetomados,fluxosFalhos,grupos});
+}
+async function processarDisparosGrupos(){
+  const jobs=await q(db.rpc('atd_grupo_disparo_reservar',{p_limite:1}));let enviados=0,erros=0,incertos=0;
+  for(const job of jobs){let attempted=false,messageId:string|null=null;
+    try{
+      const [campaign,cv,ch]=await Promise.all([
+        q(db.from('atd_disparos_grupos').select('*').eq('id',job.campanha_id).eq('workspace_id',job.workspace_id).single()),
+        q(db.from('atd_conversas').select('*').eq('id',job.conversa_id).eq('workspace_id',job.workspace_id).single()),
+        channel(job.canal_id,job.workspace_id)
+      ]);
+      if(!['agendado','em_andamento'].includes(campaign.status))throw Error('Campanha pausada ou cancelada; os envios aguardam revisão.');
+      if(!cv.grupo||cv.canal_id!==ch.id||ch.provedor!=='evolution'||ch.canal!=='whatsapp')throw Error('O grupo não corresponde a uma instância Evolution deste workspace.');
+      if(!ch.ativo||ch.status!=='conectado')throw Error('Este chip está desconectado; campanha pausada para segurança.');
+      const signed=campaign.autor_nome?(campaign.texto?'*'+campaign.autor_nome.replace(/[\r\n*_`~]/g,'').trim()+':* '+campaign.texto:'*'+campaign.autor_nome.replace(/[\r\n*_`~]/g,'').trim()+':*'):String(campaign.texto||'');
+      const pending=await q(db.from('atd_mensagens').upsert({workspace_id:job.workspace_id,conversa_id:cv.id,requisicao_id:job.id,direcao:'enviada',texto:signed,autor_id:campaign.autor_id,autor_nome:campaign.autor_nome,status:'enviando',anexos:campaign.midia_path?[{path:campaign.midia_path,nome:campaign.midia_nome,mime:campaign.midia_mime}]:[]},{onConflict:'workspace_id,requisicao_id',ignoreDuplicates:true}).select().single());
+      messageId=pending?.id||null;if(!messageId)throw Error('O envio já existe; confira o histórico da conversa.');
+      const attachment=campaign.midia_path?{url:(await q(db.storage.from('atendimento').createSignedUrl(campaign.midia_path,300))).signedUrl,nome:campaign.midia_nome,mime:campaign.midia_mime}:undefined;
+      const cfg=await secret(job.workspace_id),adapter=providers.evolution;attempted=true;
+      const external=await adapter.send(cfg,ch,cv,signed,attachment);
+      await q(db.rpc('atd_confirmar_envio',{p_mensagem:messageId,p_externo:external}));
+      await q(db.from('atd_disparos_grupos_itens').update({status:'enviado',externo_id:external,enviado_em:new Date().toISOString(),atualizado_em:new Date().toISOString()}).eq('id',job.id).eq('status','processando'));enviados++;
+    }catch(e){const known=!attempted||(e instanceof ProviderError&&e.status<500&&e.status!==408),status=known?'erro':'incerto',detail=known?String((e as Error).message||'Falha no envio.').slice(0,220):'Envio sem confirmação. Confira a conversa na Evolution antes de reenviar.';
+      await q(db.from('atd_disparos_grupos_itens').update({status,erro:detail,atualizado_em:new Date().toISOString()}).eq('id',job.id).eq('status','processando'));
+      if(messageId)await q(db.from('atd_mensagens').update({status:known?'falhou':'incerto',erro:detail}).eq('id',messageId).eq('status','enviando'));
+      await q(db.from('atd_disparos_grupos').update({status:known?'em_andamento':'pausado',atualizado_em:new Date().toISOString()}).eq('id',job.campanha_id).eq('status','em_andamento'));
+      if(known)erros++;else incertos++;
+    }
+  }
+  return {reservados:jobs.length,enviados,erros,incertos};
 }
 async function handle(req: Request, b: any) {
   const userDb = createClient(URL_SB, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: req.headers.get('authorization') || '' } }, auth: { persistSession:false } });
   const { data: { user }, error } = await userDb.auth.getUser();
   if (error || !user) return json({ erro: 'Faça login novamente.' },401);
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
-  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo'];
+  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo','disparos-grupos-list'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
   const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete','templates-mapping-save','canal-salvar'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
@@ -580,6 +612,39 @@ async function handle(req: Request, b: any) {
     if (!interna) return json({ erro:'Somente a equipe interna pode vincular contas da Zernio.' },403);
   }
   if (b.action === 'contexto') return json(ctx);
+  if(b.action==='disparos-grupos-list'){
+    const rows=await q(db.from('atd_disparos_grupos').select('id,nome,status,iniciar_em,intervalo_segundos,total,criado_em').eq('workspace_id',ws).order('criado_em',{ascending:false}).limit(50));
+    const items=rows.length?await q(db.from('atd_disparos_grupos_itens').select('campanha_id,status,erro').eq('workspace_id',ws).in('campanha_id',rows.map((x:any)=>x.id))):[];
+    for(const row of rows){const own=items.filter((i:any)=>i.campanha_id===row.id);row.enviados=own.filter((i:any)=>i.status==='enviado').length;row.falhas=own.filter((i:any)=>['erro','incerto'].includes(i.status)).length;row.erro=own.find((i:any)=>i.erro)?.erro||null;}
+    return json({campanhas:rows});
+  }
+  if(b.action==='disparos-grupos-create'){
+    if(!ctx.editar)throw Error('Sem permissão para criar disparos.');if(!ctx.nome)throw Error('Cadastre seu nome na equipe antes de agendar.');
+    const nome=String(b.nome||'').trim().slice(0,100),texto=String(b.texto||'').trim(),iniciar=new Date(b.iniciar_em),intervalo=Number(b.intervalo_segundos),canalIds=Array.isArray(b.canal_ids)?[...new Set(b.canal_ids.map(String))]:[],grupos=Array.isArray(b.grupos)?b.grupos:[];
+    if(!nome||(!texto&&!b.midia)||texto.length>4000||!Number.isFinite(iniciar.getTime())||iniciar.getTime()<Date.now()+60000||iniciar.getTime()>Date.now()+90*86400000)throw Error('Confira o nome, a mensagem e o horário (1 minuto a 90 dias).');
+    if(!Number.isInteger(intervalo)||intervalo<60||intervalo>86400)throw Error('O intervalo deve ficar entre 60 segundos e 24 horas, conforme a frequência atual do worker.');
+    if(!canalIds.length||canalIds.length>20||!grupos.length||grupos.length>500)throw Error('Selecione chips e grupos válidos (até 500 grupos).');
+    const channels=await q(db.from('atd_canais').select('*').eq('workspace_id',ws).eq('provedor','evolution').eq('canal','whatsapp').eq('ativo',true).in('id',canalIds));
+    if(channels.length!==canalIds.length||channels.some((c:any)=>c.status!=='conectado'))throw Error('Selecione apenas chips Evolution conectados deste workspace.');
+    const groupIds=[...new Set(grupos.map((g:any)=>String(g.conversa_id||'')))];if(groupIds.length!==grupos.length)throw Error('Há grupos duplicados na seleção.');
+    const groupRows=await q(db.from('atd_conversas').select('id,canal_id,grupo').eq('workspace_id',ws).eq('grupo',true).in('id',groupIds));
+    if(groupRows.length!==groupIds.length||groupRows.some((g:any)=>!canalIds.includes(g.canal_id)||String(grupos.find((x:any)=>x.conversa_id===g.id)?.canal_id)!==g.canal_id))throw Error('Um ou mais grupos não correspondem aos chips selecionados.');
+    let media:any=null;
+    if(b.midia){const mime=String(b.midia.mime||'').toLowerCase().split(';')[0];if(!['image/jpeg','image/png','image/webp','video/mp4'].includes(mime))throw Error('Use imagem JPG, PNG ou WebP, ou vídeo MP4.');const bytes=base64Bytes(String(b.midia.base64||''));if(!bytes.length||bytes.length>MAX_MEDIA)throw Error('A mídia deve ter até 8 MB.');media={bytes,mime,nome:String(b.midia.nome||'midia').replace(/[\\/\r\n]/g,'_').slice(0,150)};}
+    const campaign=await q(db.from('atd_disparos_grupos').insert({workspace_id:ws,nome,texto,iniciar_em:iniciar.toISOString(),intervalo_segundos:intervalo,status:'agendado',total:groupRows.length,autor_id:user.id,autor_nome:ctx.nome}).select('id').single());
+    try{
+    if(media){const ext=media.mime==='video/mp4'?'mp4':media.mime==='image/png'?'png':media.mime==='image/webp'?'webp':'jpg',path=ws+'/disparos-grupos/'+campaign.id+'/midia.'+ext;await q(db.storage.from('atendimento').upload(path,media.bytes,{contentType:media.mime,upsert:true}));await q(db.from('atd_disparos_grupos').update({midia_path:path,midia_nome:media.nome,midia_mime:media.mime}).eq('id',campaign.id).eq('workspace_id',ws));}
+    const items=groupRows.map((g:any,index:number)=>({workspace_id:ws,campanha_id:campaign.id,conversa_id:g.id,canal_id:g.canal_id,posicao:index,enviar_em:new Date(iniciar.getTime()+index*intervalo*1000).toISOString(),status:'agendado'}));
+    await q(db.from('atd_disparos_grupos_itens').insert(items));
+    }catch(e){await q(db.from('atd_disparos_grupos').delete().eq('id',campaign.id).eq('workspace_id',ws));throw e;}
+    return json({ok:true,id:campaign.id,total:groupRows.length});
+  }
+  if(b.action==='disparos-grupos-cancel'){
+    const id=String(b.campanha_id||'');if(!/^[0-9a-f-]{36}$/i.test(id))throw Error('Campanha inválida.');
+    const rows=await q(db.from('atd_disparos_grupos').update({status:'cancelado',atualizado_em:new Date().toISOString()}).eq('workspace_id',ws).eq('id',id).in('status',['agendado','em_andamento','pausado']).select('id'));
+    if(!rows.length)throw Error('Esta campanha já foi concluída ou cancelada.');
+    await q(db.from('atd_disparos_grupos_itens').update({status:'cancelado',atualizado_em:new Date().toISOString()}).eq('workspace_id',ws).eq('campanha_id',id).eq('status','agendado'));return json({ok:true});
+  }
   if (b.action === 'contato-resumo') {
     if(!/^[0-9a-f-]{36}$/i.test(String(b.conversa_id||'')))throw new Error('Conversa inválida.');
     return json(await resumoContato(ws,b.conversa_id));
