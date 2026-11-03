@@ -1,3 +1,7 @@
+## v0.244
+- **Lead novo:** avisa toda a equipe ativa com a opção ligada; até 5 por vez, um aviso por lead; acima, um aviso com o total. Os canais seguem o cadastro de cada pessoa.
+- **Trocar o código do link:** o link antigo para de funcionar na hora (inclusive o colado nas páginas).
+
 ## v0.243
 Sem regra nova (só a forma de mostrar no celular).
 

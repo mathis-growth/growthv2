@@ -1,3 +1,10 @@
+## v0.244 — Aviso de lead novo e "Gerar novo link" (02/11/2026)
+- **Lead novo:** toda a equipe ativa recebe o aviso, nos canais de cada um (app, e-mail, WhatsApp). Até 5 leads de uma vez, um aviso por lead; mais que isso (importação), um aviso só com o total. Em Equipe, nova opção "Avisar quando entrar um lead novo".
+- **Faixa verde no topo do Growths** com o lead novo ("Abrir" abre o cartão; "×" dispensa). O Growths confere os avisos a cada minuto.
+- **WhatsApp pelo número da empresa:** a função de avisos passa a enviar pela conta WhatsApp conectada no Atendimento (Zernio), com o modelo aprovado `aviso_growths`. Precisa publicar a função e aprovar o modelo.
+- **Pesquisas → Gerar novo link:** "Atualizar o endereço" (mesmo código, endereço oficial do Growths) ou "Trocar o código" (o link antigo para de funcionar).
+- Banco: `RODAR_v0.244_lead_novo_e_novo_link.sql`. Função: `supabase/functions/avisos`. Teste: `t244_lead_novo_link.py` (0 falhas) e `logica_test.ts` da função (4 de 4).
+
 ## v0.243 — Celular: sanfona, Kanban por etapa e janelas em tela cheia (02/11/2026)
 - **Blocos em sanfona:** no celular, cada bloco com título vira sanfona. Toca no título e ele abre ali mesmo; abrir um fecha o outro. O Growths lembra qual estava aberto naquela tela.
 - **Kanban uma etapa por vez:** as etapas viram abas no topo (com a quantidade), em qualquer Kanban (Content, Funil de leads…).

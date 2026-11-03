@@ -1,7 +1,7 @@
 // sem dependências de fora: roda com  deno test logica_test.ts
 const assert = (c: unknown, m = 'falhou') => { if (!c) throw new Error(m); };
 const assertEquals = (a: unknown, b: unknown) => { const x = JSON.stringify(a), y = JSON.stringify(b); if (x !== y) throw new Error(`esperava ${y}, veio ${x}`); };
-import { foneWhatsApp, montaEmail, montaWhatsApp, paramWhats } from './logica.ts';
+import { foneWhatsApp, montaEmail, montaWhatsApp, montaZernio, paramWhats } from './logica.ts';
 
 Deno.test('telefone no formato do WhatsApp', () => {
   assertEquals(foneWhatsApp('(31) 98888-7777'), '5531988887777');
@@ -24,4 +24,9 @@ Deno.test('WhatsApp: variáveis sem quebra de linha e dentro do limite', () => {
   assertEquals(w.template.name, 'aviso_growths');
   assertEquals(w.template.components[0].parameters.map(p => p.text), ['Alerta', 'linha 1 · linha 2']);
   assert(paramWhats('x'.repeat(2000), 900).length === 900);
+});
+
+Deno.test('v0.244: WhatsApp pela Zernio com o modelo e as 2 variáveis', () => {
+  const z = montaZernio({ titulo: 'Novo lead: Ana', mensagem: 'Chegou por instagram.\nAbra o CRM.' }, '5531988887777', 'conta1', 'aviso_growths', 'pt_BR');
+  assertEquals(z, { accountId: 'conta1', participantId: '5531988887777', templateName: 'aviso_growths', templateLanguage: 'pt_BR', templateParams: ['Novo lead: Ana', 'Chegou por instagram. · Abra o CRM.'] });
 });

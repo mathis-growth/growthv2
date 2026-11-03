@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.243 (celular: sanfona, Kanban por etapa e janelas em tela cheia).
+**Última atualização:** 02/11/2026, versão 0.244 (aviso de lead novo e novo link das pesquisas).
+
+**v0.244 · Lead novo à vista.** Lead novo aparece numa faixa verde no topo do Growths e o aviso vai para a equipe, também por WhatsApp. Nas pesquisas, dá para gerar um novo link.
 
 **v0.243 · Growths no celular.** No celular, os blocos abrem no lugar (abrir um fecha o outro), o Kanban mostra uma etapa por vez com abas no topo e as janelas abrem em tela cheia com "← Voltar".
 
@@ -531,6 +533,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - **Quem responde** (v0.230): em Formulário e aparência, você escolhe se quem responde é um **lead** (entra no Funil de leads) ou um **cliente** (atualiza o cadastro e vai para a etapa escolhida da jornada do cliente, por exemplo Diagnóstico, sem entrar no Funil de leads). Vale para o link individual e para o link aberto, e fica no histórico do cliente.
   - **Qualificação por produto** (v0.233): na aba Qualificação e pontos, cada pergunta pode ter um bloco (Porte, Estrutura, Momento) e uma resposta pode eliminar o lead. Grupos de regras põem a tag do produto indicado (Starter, Strategy, Full Brain) e da temperatura (quente, morno, frio). Se o que o lead pediu não bate com o indicado, ele ganha a tag "revisar". "Quem respondeu" mostra os pontos de cada bloco.
   - **Código para a página** (v0.234): em Formulário e aparência, junto do link, o código para colar num bloco de HTML (WordPress, Elementor, Webflow…). O formulário se ajusta à altura e leva a origem (UTM) escolhida.
+  - **Gerar novo link** (v0.244): atualiza o endereço do link (mesmo código) ou troca o código, quando o link antigo não deve mais funcionar.
   - **Entrada do cliente**: formulário curto para o cliente que está chegando (faturamento, ticket, clientes, investimento, custo e regime, do jeito dele) e o checklist de arquivos do período certo (vendas, clientes, leads, anúncios, custos), cada um com planilha-modelo para baixar; cada grupo é enviar o arquivo ou "Não tenho", sem deixar para depois, e ganha ✓ verde quando o arquivo chega. Inclui a lista "quais números você acompanha hoje", ponto de partida do diagnóstico. As vendas seguem as plataformas que o cliente marca (Hotmart, Kiwify, Eduzz, Hubla): um relatório para cada, do jeito que sai.
 
 ---
@@ -599,6 +602,8 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 ## 13. Ideias de conteúdo a partir do Growths (sugestões)
 
 Ângulos que nascem do sistema, para usar como ponto de partida:
+
+- "O lead esfria em 5 minutos": por que o aviso de lead novo chega no WhatsApp da equipe na hora.
 
 - "A melhor ideia de conteúdo aparece no carro": por que o baú de ideias tem microfone.
 
@@ -683,6 +688,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.244):** aviso de lead novo (faixa verde e WhatsApp) e "Gerar novo link" nas pesquisas.
 - **02/11 (v0.243):** celular: sanfona, Kanban por etapa e janelas em tela cheia.
 - **02/11 (v0.242):** Kanban do Content: no computador só arrastar.
 - **02/11 (v0.241):** Growth's Content: Kanban logo abaixo da contagem, antes do calendário.

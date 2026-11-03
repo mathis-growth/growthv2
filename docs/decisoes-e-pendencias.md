@@ -1,3 +1,10 @@
+## v0.244 — Aviso de lead novo e "Gerar novo link"
+**Pedido da Rebecka (02/11):** "gerar novo link nas pesquisas para pegar o link novo do Growths… o alerta quando entrar um lead novo, um aviso em verdinho no topo do Growths e uma mensagem no WhatsApp… acho que o Rogério já configurou".
+**Decisões dela:** as duas opções de link; o aviso vai para todos da equipe, de todos os leads; o WhatsApp sai pelo número da empresa.
+**O que encontrei (fato):** os avisos por WhatsApp e e-mail do Growths falhavam por falta de configuração (WHATSAPP_TOKEN/WHATSAPP_PHONE_ID e Resend). O Rogério conectou no Atendimento o WhatsApp da empresa pela Zernio ("Mathisa Anúncios online e Automação") e o dele pela Evolution; as mensagens automáticas dele são para os leads, não para a equipe.
+**Como ficou:** a função de avisos usa a API oficial da Meta se estiver configurada; senão, a conta WhatsApp da empresa na Zernio, com o modelo aprovado `aviso_growths`. Sem o modelo aprovado, o aviso fica como "falhou" com o motivo em Avisos.
+**Pendentes:** publicar a função `avisos` (mudança em produção: precisa do ok dela) e aprovar o modelo na Meta; preencher o WhatsApp dela em Equipe e ligar "Avisar por WhatsApp" (hoje está desligado e sem telefone). Combinar com o Rogério, porque usa a conta do Atendimento.
+
 ## v0.243 — Celular
 **Pedido da Rebecka (02/11):** "não quero ter que descer lá para baixo para ver as coisas; a telinha tem que ir abrindo ali mesmo, uma por cima da outra". Ela aprovou a proposta: sanfona, Kanban por etapa em abas, janelas em tela cheia com Voltar.
 **Como ficou:** vale para todas as telas, sem mexer em cada uma: abaixo de 760 px de largura, os blocos com título viram sanfona (só quando há dois ou mais lado a lado), todo Kanban ganha as abas de etapa e toda janela abre em tela cheia.
