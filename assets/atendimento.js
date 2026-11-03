@@ -816,6 +816,8 @@
     root.innerHTML='Carregando…';try{await refresh();root.querySelector('#dgAtualizar').onclick=()=>act(refresh);}catch(e){root.innerHTML=`<div class="empty"><b>Não foi possível abrir Disparo grupos</b><p>${esc(e.message)}</p><p>Confira a migration e a Edge de Atendimento.</p></div>`;}
   }
   NAV.splice(NAV.findIndex(g=>g.g==='Vendas')+1,0,{g:'Atendimento',items:[['atd-conversas','Conversas'],['atd-grupos-disparo','Disparos'],['atd-canais','Canais e conexões'],['atd-templates','Templates'],['atd-automacoes','Automações']]});
+  // Deixa as telas do Atendimento visíveis já na entrada, sem exigir abrir o grupo manualmente.
+  S.abertos.Atendimento = true;
   MOD_GRUPO.Atendimento='vendas';
   ICO.Atendimento=ICO['crm-dms']||ICO.Vendas||'';ICO['atd-conversas']=ICO['crm-dms']||'';ICO['atd-grupos-disparo']=ICO['crm-dms']||'';ICO['atd-canais']=ICO['cfg-integracoes'];ICO['atd-templates']=ICO['crm-dms']||'';ICO['atd-automacoes']=ICO['crm-dms']||'';
   VIEWS['atd-grupos-disparo']=vDisparoGrupos;VIEWS['atd-conversas']=vAtendimento;VIEWS['atd-canais']=vCanais;VIEWS['atd-templates']=vTemplates;VIEWS['atd-automacoes']=vAutomacoes;
