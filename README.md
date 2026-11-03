@@ -32,6 +32,11 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.243 | 02/11/2026 | Celular: blocos em sanfona, Kanban uma etapa por vez, janelas em tela cheia com Voltar. | — |
+| 0.242 | 02/11/2026 | Kanban do Content: no computador só arrastar; "Mover para" só no celular. | — |
+| 0.241 | 02/11/2026 | Growth's Content: Kanban logo abaixo da contagem por etapa, antes do calendário. | — |
+| 0.240 | 02/11/2026 | Growth's Content: Baú de ideias com microfone (fala → ideia esperando aprovação). | — |
+| 0.239 | 02/11/2026 | Diagnóstico dos dados: o que cada planilha traz, o que o Growths identificou e não identificou, métricas e perguntas para a reunião. | — |
 | 0.238 | 02/11/2026 | Diagnóstico: Dados depois de "O que falta"; importar cada planilha para o Growths do cliente com o de-para. | — |
 | 0.237 | 02/11/2026 | Diagnóstico: o cliente volta a anexar os arquivos; o editor de perguntas não apaga mais a configuração. | RODAR_v0.237 (dados) |
 | 0.236 | 02/11/2026 | Diagnóstico: link do cliente sempre visível; reabrir o formulário para ele continuar. | RODAR_v0.236 |

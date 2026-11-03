@@ -1,3 +1,34 @@
+## v0.243 — Celular
+**Pedido da Rebecka (02/11):** "não quero ter que descer lá para baixo para ver as coisas; a telinha tem que ir abrindo ali mesmo, uma por cima da outra". Ela aprovou a proposta: sanfona, Kanban por etapa em abas, janelas em tela cheia com Voltar.
+**Como ficou:** vale para todas as telas, sem mexer em cada uma: abaixo de 760 px de largura, os blocos com título viram sanfona (só quando há dois ou mais lado a lado), todo Kanban ganha as abas de etapa e toda janela abre em tela cheia.
+**A observar:** telas com um bloco só não mudam; blocos sem título continuam sempre abertos.
+
+## v0.242 — Plano da Máquina de conteúdo (decisões de 02/11)
+**Decisões da Rebecka:**
+- Ordem: 1) arrastar no Kanban; 2) questionário da Máquina com microfone e anexos; 3) botão "Iniciar a montar a minha máquina de conteúdo", que cria no Drive a pasta **Máquina de conteúdo** com **Referências, Identidade visual, Persona e Tom de voz**; 4) **Gerar roteiro** na pauta aprovada, escolhendo o tipo de roteiro.
+- IA: usar a que estiver conectada em Configurações (Claude ou GPT), com um limite de uso que ela escolhe.
+- Os arquivos ficam com uma cópia no Growths para a IA consultar (não lê o Drive a cada vez).
+- "Skill do cliente": um documento consolidado (dossiê, persona, tom de voz, referências) guardado no sistema, que a IA usa sem procurar. Já existe o passo "Dossiê e aprovação: dossiê, PDF e a skill do cliente" (em breve) na configuração guiada.
+- O botão vale para todos os clientes do Growth's Content; cada um cria no Drive dele (a Mathisa no da Mathisa).
+- "Mover para": tirar no computador, manter no celular. **Feito na v0.242.**
+**Pendente de entendimento:** melhorar o celular ("não quero ter que descer para ver as coisas; a tela vai abrindo ali mesmo, uma por cima da outra").
+
+## v0.241 — Kanban antes do calendário
+**Pedido da Rebecka (02/11):** "só uma aba escrito Baú de ideias, fica ok… quero mudar o Kanban de lugar: embaixo da contabilização, antes do calendário, para ficar mais fácil visualizar o que está acontecendo".
+**Feito:** contagem por etapa → Kanban → Esta semana e calendário. O Baú de ideias não mudou.
+
+## v0.240 — Baú de ideias com microfone
+**Pedido da Rebecka (02/11):** "no Content, o baú de ideias, e um lugar com um microfonezinho para eu falar a minha ideia e ele salvar como ideia, uma pauta que tem que ser aprovada".
+**Como ficou:** a transcrição é feita pelo próprio navegador (Chrome, Edge e Safari recentes), sem custo e sem mandar o áudio para o Growths; o áudio não é guardado, só o texto. A ideia entra como "ideia" (esperando aprovação) e segue o caminho de sempre: aprovar pede tema, formato e data.
+**Limite (fato):** em navegadores sem transcrição, o microfone não aparece; dá para ditar pelo teclado do celular. Precisa de internet e da permissão do microfone.
+**Próximo passo possível:** a ideia falada pelo ChatGPT do celular (botão que já existe) e a falada aqui caem no mesmo baú.
+
+## v0.239 — Diagnóstico dos dados
+**Pedido da Rebecka (02/11):** "antes de importar para o cliente, pegar os campos e cruzar com as tabelas que a gente tem… um relatório mostrando quais informações tem no arquivo, o que você identificou e o que não identificou de acordo com a estrutura do banco, relacionado a métricas e dados… para a reunião, um 'gerar diagnóstico dos dados'".
+**Como ficou:** usa o mesmo reconhecimento do importador (tipo do arquivo e de-para das colunas) e o de-para das métricas (v0.225). Nada é gravado: o relatório é gerado na hora, fica na tela até sair do diagnóstico, e pode ser impresso ou salvo em PDF.
+**Limites (fato):** lê a primeira aba de cada Excel; PDF e Word ainda não; as métricas dependem de "Ler as planilhas".
+**Pendente:** guardar o relatório no diagnóstico (histórico de versões), se ela quiser.
+
 ## v0.238 — Importar os dados do diagnóstico
 **Pedido da Rebecka (02/11):** "Dados tem que vir depois do que falta… eu passo os dados, valido as informações, e o que der para importar tem que ter um botãozinho de importar para já ir para o banco de dados… abre os dois, compara o que é o que, e a gente já importa".
 **Decisões:**

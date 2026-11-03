@@ -1,3 +1,18 @@
+## v0.243
+Sem mudança no banco.
+
+## v0.242
+Sem mudança no banco.
+
+## v0.241
+Sem mudança no banco.
+
+## v0.240
+Sem mudança no banco.
+
+## v0.239
+Sem mudança no banco.
+
 ## v0.238
 Sem mudança no banco.
 

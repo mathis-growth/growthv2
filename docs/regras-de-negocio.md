@@ -1,3 +1,18 @@
+## v0.243
+Sem regra nova (só a forma de mostrar no celular).
+
+## v0.242
+- Mover um conteúdo continua passando pelas mesmas regras de cada etapa; se faltar algo, o cartão abre pedindo.
+
+## v0.241
+Sem regra nova (só a ordem da tela).
+
+## v0.240
+- **Ideia por voz:** entra sempre como ideia esperando aprovação. O áudio não é guardado; só o texto.
+
+## v0.239
+- **Diagnóstico dos dados:** só lê; não importa nem grava nada. E-mails e telefones aparecem escondidos nos exemplos.
+
 ## v0.238
 - **Importar do diagnóstico:** os dados vão para o Growths do cliente escolhido, nunca para o da Mathisa. Quem já existe (mesmo e-mail ou telefone) não é duplicado.
 

@@ -1,3 +1,35 @@
+## v0.243 — Celular: sanfona, Kanban por etapa e janelas em tela cheia (02/11/2026)
+- **Blocos em sanfona:** no celular, cada bloco com título vira sanfona. Toca no título e ele abre ali mesmo; abrir um fecha o outro. O Growths lembra qual estava aberto naquela tela.
+- **Kanban uma etapa por vez:** as etapas viram abas no topo (com a quantidade), em qualquer Kanban (Content, Funil de leads…).
+- **Janelas em tela cheia:** formulários e cartões abrem ocupando a tela toda, com "← Voltar" no topo.
+- No computador nada muda.
+- Sem mudança no banco. Teste: `t243_celular.py` (0 falhas).
+
+## v0.242 — Kanban do Content: no computador é só arrastar (02/11/2026)
+- No computador, o cartão não tem mais o "Mover para": arraste para a coluna. "Arquivar" virou um botão no cartão.
+- No celular, o "Mover para" continua (arrastar com o dedo não funciona bem).
+- Primeiro passo do plano combinado: depois vêm o questionário da Máquina com microfone e anexos, a pasta "Máquina de conteúdo" no Drive e o "Gerar roteiro" com IA.
+- Sem mudança no banco. Teste: `t242_kanban_arrastar.py` (0 falhas).
+
+## v0.241 — Growth's Content: Produção na ordem de leitura (02/11/2026)
+- Aba Produção: primeiro a contagem por etapa, logo abaixo o **Kanban**, e depois "Esta semana" e o calendário das próximas semanas (antes o calendário ficava entre a contagem e o Kanban).
+- A aba "Baú de ideias" continua como está.
+- Sem mudança no banco. Teste: `t241_producao_ordem.py` (0 falhas).
+
+## v0.240 — Growth's Content: Baú de ideias com microfone (02/11/2026)
+- A aba "Ideias" passa a se chamar **Baú de ideias**.
+- **Falar uma ideia:** toque no microfone, fale, e o texto aparece na hora (dá para corrigir). "Salvar no baú" grava como ideia esperando aprovação, com a tag "ideia por voz": o título é a primeira frase e a fala inteira vai na descrição.
+- Atalho "🎙 Falar uma ideia" no Kanban da Produção.
+- Navegador sem transcrição (alguns celulares): a tela explica como ditar pelo microfone do teclado.
+- Sem mudança no banco. Teste: `t240_bau_ideias_voz.py` (0 falhas).
+
+## v0.239 — Diagnóstico dos dados para levar à reunião (02/11/2026)
+- Botão **Gerar o diagnóstico dos dados** na aba Dados e em Preparar a reunião.
+- Para cada planilha: o que é (leads, vendas, produtos…), cada coluna ao lado do campo do Growths que ela preenche, quanto está preenchida e exemplos (e-mail e telefone escondidos); colunas que o Growths **não identificou**; "Talvez" quando outra parte do Growths reconhece a coluna; o que não veio (e se é obrigatório).
+- Métricas: o que dá para calcular com o que veio, o que o cliente usa sem ter mandado o dado e o que mais falta.
+- Lista **Para perguntar na reunião**. **Imprimir ou salvar em PDF**.
+- Sem mudança no banco. Teste: `t239_diag_relatorio_dados.py` (0 falhas).
+
 ## v0.238 — Diagnóstico: Dados logo depois de "O que falta" e importar para o Growths do cliente (02/11/2026)
 - Abas na ordem do trabalho: 1 Formulário, 2 Evidências, 3 O que falta, **4 Dados**, 5 O que já se sabe, 6 Métricas, 7 Preparar a reunião, 8 Arquitetura, 9 Validação e entrega.
 - Aba Dados: "Importar para o Growths do cliente". Escolha o Growths (vem sugerido o que nasceu do contrato) e clique em **Importar** na planilha: o Growths abre o de-para (colunas do arquivo ao lado dos campos do Growths) no Growths do cliente; é conferir e importar. "Voltar para o diagnóstico" volta para a aba Dados.

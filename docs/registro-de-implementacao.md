@@ -1,3 +1,18 @@
+## Celular (v0.243)
+`t243_celular.py`: 11 verificações, 0 falhas. Kanban uma coluna por vez com abas; trocar de aba; nada passa da largura; janela em tela cheia com Voltar; Voltar fecha; sanfona (primeiro aberto, inclusive blocos que carregam depois); abrir um fecha o outro; Funil de leads em abas; computador sem mudança; sem erros de JavaScript. Regressão: t241 e t242 sem falhas.
+
+## Kanban do Content: arrastar (v0.242)
+`t242_kanban_arrastar.py`: 5 verificações, 0 falhas. Computador sem "Mover para" e com Arquivar; arrastar leva para a etapa (ou abre o cartão pedindo o que falta); Arquivar arquiva; celular com "Mover para"; sem erros de JavaScript.
+
+## Produção na ordem de leitura (v0.241)
+`t241_producao_ordem.py`: 5 verificações, 0 falhas. Ordem contagem → Kanban → calendário; aba Baú de ideias; clique na etapa e na semana funcionando; sem erros de JavaScript. Regressão: t240 sem falhas.
+
+## Baú de ideias com microfone (v0.240)
+`t240_bau_ideias_voz.py`: 9 verificações, 0 falhas. Nome da aba; aviso sem texto; microfone liga e mostra a fala; para ao tocar de novo; salva como ideia com título e descrição; aparece no baú esperando aprovação; sem transcrição, explica o ditado; sem erros de JavaScript.
+
+## Diagnóstico dos dados (v0.239)
+`t239_diag_relatorio_dados.py`: 11 verificações, 0 falhas. Arquivo de leads reconhecido; colunas ligadas aos campos; "Não identifiquei" e "Talvez"; arquivo não reconhecido; e-mail e telefone escondidos; perguntas para a reunião; resumo; o mesmo relatório em Preparar a reunião; imprimir; sem erros de JavaScript. Regressão: t238 sem falhas.
+
 ## Importar do diagnóstico (v0.238)
 `t238_diag_importar.py`: 8 verificações, 0 falhas. Ordem das abas; aviso sem Growths de cliente; Importar abre o importador no Growths do cliente com o de-para aberto; os leads entram no Growths do cliente e não no da Mathisa; voltar leva à aba Dados; sem erros de JavaScript. Regressão: t228 e t236 sem falhas.
 

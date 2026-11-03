@@ -15,7 +15,17 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 02/11/2026, versão 0.238 (importar do diagnóstico para o Growths do cliente).
+**Última atualização:** 02/11/2026, versão 0.243 (celular: sanfona, Kanban por etapa e janelas em tela cheia).
+
+**v0.243 · Growths no celular.** No celular, os blocos abrem no lugar (abrir um fecha o outro), o Kanban mostra uma etapa por vez com abas no topo e as janelas abrem em tela cheia com "← Voltar".
+
+**v0.242 · Arrastar.** No Kanban do Growth's Content, no computador é só arrastar o cartão; no celular continua o "Mover para".
+
+**v0.241 · Produção na ordem de leitura.** No Growth's Content, a Produção mostra a contagem por etapa, o Kanban e, depois, a semana e o calendário.
+
+**v0.240 · Baú de ideias com microfone.** No Growth's Content, toque no microfone, fale a ideia e ela entra no Baú de ideias, esperando aprovação.
+
+**v0.239 · Diagnóstico dos dados.** Antes de importar, o Growths lê cada planilha do cliente e mostra o que identificou, o que não identificou, o que dá para calcular e o que perguntar na reunião, num relatório para imprimir.
 
 **v0.238 · Do diagnóstico para o Growths do cliente.** A aba Dados vem logo depois de "O que falta", e cada planilha do cliente pode ser importada para o Growths dele, conferindo o de-para.
 
@@ -274,7 +284,7 @@ O Growth's Content agora segue a ordem do trabalho, sem a configuração em 9 pa
 - **Base do cliente:** a pasta no Drive, o dossiê pronto (PDF na pasta) e a ficha do cliente. Quem ainda não tem dossiê abre a configuração guiada (call de briefing, materiais, pesquisa e dossiê) por um botão ali mesmo. A ficha reúne narrativa, para quem fala, tom de voz, produtos e esteira, diferencial, pilares, o que nunca dizer. Ela é aprovada uma vez e tem versões: mudar a aprovada cria uma nova, que precisa de aprovação.
 - **Linha editorial:** as linhas (territórios), os temas (frentes), os subtemas opcionais e os formatos. Todo conteúdo nasce com essa segmentação, e uma tabela mostra quantos conteúdos há em cada linha, tema, subtema e formato, de ideia a publicado.
 - **Identidade visual:** cores com o papel de cada uma, fontes, pasta com logos e fotos, referências, o que nunca fazer e os formatos usados, com uma prévia.
-- **Ideias:** aprovar ou descartar. Aprovar pede o tema, o subtema, o formato e a data de publicação, e a ideia entra no calendário.
+- **Baú de ideias:** aprovar ou descartar. Aprovar pede o tema, o subtema, o formato e a data de publicação, e a ideia entra no calendário. Com o **microfone** (v0.240), você fala a ideia, o texto aparece na hora e ela entra no baú esperando aprovação; também dá para falar pelo Kanban da Produção.
 - **Produção:** o Kanban com o painel da semana, o calendário das próximas semanas e as colunas por etapa. Cada cartão diz se o roteiro ou a peça falta aprovar; o botão Roteiro e peça abre a aprovação: o roteiro é aprovado antes de qualquer arte ou vídeo, a arte ou o vídeo tem versões e pedidos de ajuste, e a aprovada vai para a data.
 - **Mais ferramentas:** as outras abas de antes (dashboard, semana, priorização, máquina, fechamento, persona, produtos, estruturas, canais).
 
@@ -471,6 +481,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
   - **Aba 1, Formulário:** o formulário padrão já vem escolhido e o botão **Gerar o link do formulário** cria o link do cliente. Depois mostra a situação (escolhido, enviado, cliente preenchendo, respondido), a mensagem pronta com o link do cliente e os botões de WhatsApp, e-mail e copiar o link.
   - **Link sempre à mão e reabrir** (v0.236): o link do cliente fica visível também depois que ele responde (serve para mandar os arquivos que faltam). "Reabrir para o cliente continuar" deixa ele mudar as respostas pelo mesmo link; a última resposta enviada é a que vale.
   - **Dados e importar** (v0.238): a aba Dados vem logo depois de "O que falta". Cada planilha tem "Importar": o Growths abre o de-para (colunas do arquivo ao lado dos campos do Growths) já no Growths do cliente, você confere e importa leads, clientes, produtos, campanhas ou vendas, sem duplicar quem já existe.
+  - **Diagnóstico dos dados** (v0.239): um botão na aba Dados e em Preparar a reunião lê cada planilha e mostra, coluna por coluna, o que ela é no Growths (ou "Não identifiquei"), quanto está preenchida, o que não veio, as métricas que dá para calcular e as perguntas para a reunião. Imprime ou salva em PDF, com e-mails e telefones escondidos.
   - **O que entra sozinho:** a resposta e os arquivos do cliente.
   - **O modelo "Diagnóstico Mathisa (pré-diagnóstico)":** pede o perfil, os números do jeito do cliente, o que ele acompanha e quais são os principais, o que espera e os arquivos por plataforma de venda.
   - **O que já se sabe** (aba 4, v0.229): tudo sobre o cliente, com a origem — o que ele declarou no formulário, o que as planilhas mostram (vendas válidas, faturamento, média por mês, ticket, compradores, produtos, leads, investimento) e o que a equipe anotou na reunião.
@@ -555,6 +566,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 11. Visual e experiência
 
+- **No celular** (v0.243): os blocos com título viram sanfona (toca no título e ele abre ali mesmo; abrir um fecha o outro), todo Kanban mostra uma etapa por vez com as etapas como abas no topo, e formulários e cartões abrem em tela cheia com "← Voltar".
 - **Claro como padrão e escuro como opção.** Uma ação principal por tela.
 - **Um filtro de período só.** Todos os dashboards têm em cima o mesmo filtro (Últimos 30 dias, Este mês, Próximos 30 dias, Últimos 7 dias… e Personalizado), que começa no mês corrente e vale em todos.
 - **Cor com significado (Data Storytelling).** Quatro cores só para leitura de dados: verde (favorável), vermelho (desfavorável), âmbar (atenção) e azul (informação e comparação). A cor nunca vem sozinha: sempre com seta ou símbolo (▲ ▼ ✓ ✕ ⚠) e uma palavra, porque verde e vermelho se confundem para quem tem daltonismo. Lucro, resultado, margem, ROI e saldo têm o zero como limite: negativo em vermelho, positivo em verde, âmbar quando passa de zero mas não chega na meta ou no cenário cadastrado. As outras métricas só ganham cor quando há meta, limite ou período anterior comparável, e cada uma tem a sua direção: CAC caindo é bom, margem caindo é ruim, investimento subindo é neutro. Variações abaixo de 5% ficam neutras.
@@ -587,6 +599,10 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 ## 13. Ideias de conteúdo a partir do Growths (sugestões)
 
 Ângulos que nascem do sistema, para usar como ponto de partida:
+
+- "A melhor ideia de conteúdo aparece no carro": por que o baú de ideias tem microfone.
+
+- "Metade das colunas da sua planilha não serve para nada": o que o diagnóstico dos dados mostra antes da primeira reunião.
 
 - "A planilha do cliente vira base em 5 minutos": o de-para que coloca as colunas dele ao lado dos campos do sistema.
 
@@ -667,6 +683,11 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **02/11 (v0.243):** celular: sanfona, Kanban por etapa e janelas em tela cheia.
+- **02/11 (v0.242):** Kanban do Content: no computador só arrastar.
+- **02/11 (v0.241):** Growth's Content: Kanban logo abaixo da contagem, antes do calendário.
+- **02/11 (v0.240):** Growth's Content: Baú de ideias com microfone.
+- **02/11 (v0.239):** diagnóstico dos dados para levar à reunião.
 - **02/11 (v0.238):** diagnóstico: Dados depois de "O que falta" e importar para o Growths do cliente.
 - **02/11 (v0.237):** diagnóstico: o cliente volta a anexar os arquivos; o editor de perguntas não apaga mais a configuração.
 - **02/11 (v0.236):** diagnóstico: link do cliente sempre visível e reabrir o formulário.

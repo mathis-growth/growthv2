@@ -1,3 +1,24 @@
+## v0.243
+- `aplica243.py`: `mobSanfona`, `mobKanban`, `mobAjusta` ligados por um `MutationObserver` no `#main` (só com `max-width: 760px`); `modal` ganhou `.mdl-volta`; CSS do celular no `<style id="v122">`.
+- Teste novo `t243_celular.py`.
+
+## v0.242
+- `aplica242.py`: botão `data-arq` no `mqCard`; classe `mq-board`; CSS `(hover:hover) and (pointer:fine)` esconde o `select.mv` no computador.
+- `front.py`: `abre(..., celular=True)` para testar como celular.
+- Teste novo `t242_kanban_arrastar.py`.
+
+## v0.241
+- `aplica241.py`: `kbPainel` devolve a contagem e o calendário separados (`<!--kbcal-->`); `tabKanban` põe a contagem antes do `.board` e o calendário (`.kb-cal-sec`) depois.
+- Teste novo `t241_producao_ordem.py`.
+
+## v0.240
+- `aplica240.py`: `ctVozHtml`/`ctVozLiga` (Web Speech API, `pt-BR`, contínuo, resultados parciais; insere em `conteudos` com `status = 'ideia'` e tag `ideia por voz`); aba `MQ_EST` "Baú de ideias"; botão `#cVoz` no Kanban.
+- Teste novo `t240_bau_ideias_voz.py` (transcrição simulada).
+
+## v0.239
+- `aplica239.py`: `dgRelGera` (baixa, `impParseArquivo`, `impDetecta`, `impAutoMapa`, procura a coluna nas outras tabelas, faltas por campo obrigatório ou com `info`, métricas do `diagnostico_depara`, perguntas), `dgRelHtml`, `dgRelBox` (Dados e Preparar a reunião), `dgRelLiga`, `dgRelImprime`; `dgRelMasc` esconde e-mail e telefone.
+- Teste novo `t239_diag_relatorio_dados.py`.
+
 ## v0.238
 - `aplica238.py`: ordem das abas `dg`; `dgImpHtml` e `dgImpLiga` (baixa do bucket `diagnostico`, `impParseArquivo`, troca para o Growths escolhido, fila `IMPQ`, `impAvalia` e `impAbre`); faixa `dgImpVoltaHtml` em `vImportar`.
 - Teste novo `t238_diag_importar.py`.

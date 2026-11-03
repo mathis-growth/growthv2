@@ -1,3 +1,18 @@
+## v0.243
+**Growths no celular.** Os blocos abrem e fecham no lugar, o Kanban mostra uma etapa por vez com abas e as janelas ocupam a tela toda com "← Voltar".
+
+## v0.242
+**Kanban mais simples.** No computador, os conteúdos mudam de etapa arrastando; no celular, pelo "Mover para".
+
+## v0.241
+**Produção mais fácil de ler.** No Growth's Content, o Kanban fica logo abaixo da contagem por etapa, antes do calendário.
+
+## v0.240
+**Baú de ideias com microfone.** No Growth's Content, fale a ideia e ela vira texto e entra no baú, esperando aprovação.
+
+## v0.239
+**Diagnóstico dos dados.** Um botão lê as planilhas do cliente e mostra, para cada uma, o que o Growths identificou e o que não, o que dá para calcular e o que perguntar na reunião. Dá para imprimir ou salvar em PDF.
+
 ## v0.238
 **Do diagnóstico para o Growths do cliente.** Na aba Dados do diagnóstico, cada planilha tem "Importar": o Growths mostra as colunas do arquivo ao lado dos campos dele, você confere e importa para o Growths do cliente.
 
