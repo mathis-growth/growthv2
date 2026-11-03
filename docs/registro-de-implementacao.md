@@ -1,3 +1,6 @@
+## Lead novo e novo link (v0.244)
+`t244_lead_novo_link.py`: 12 verificações, 0 falhas. Aviso no app e WhatsApp na fila; toda a equipe recebe; quem desligou não recebe; lote de 6 vira um aviso; faixa verde; "e mais"; dispensar; lead posterior; Abrir marca lido; atualizar endereço; trocar código; sem erros de JavaScript. Função `avisos`: `logica_test.ts` 4 de 4. Regressão: t243 sem falhas.
+
 ## Celular (v0.243)
 `t243_celular.py`: 11 verificações, 0 falhas. Kanban uma coluna por vez com abas; trocar de aba; nada passa da largura; janela em tela cheia com Voltar; Voltar fecha; sanfona (primeiro aberto, inclusive blocos que carregam depois); abrir um fecha o outro; Funil de leads em abas; computador sem mudança; sem erros de JavaScript. Regressão: t241 e t242 sem falhas.
 

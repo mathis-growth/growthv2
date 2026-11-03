@@ -1,3 +1,9 @@
+## v0.244
+- `aplica244.py`: `linkOficial`, `pqNovoLinkLiga` (Perguntas e Formulário e aparência), `leadFaixa` chamado por `atualizaSino` (e `setInterval` de 60 s), campo `avisar_lead_novo` na Equipe.
+- Migração `20261231100000_lead_novo_aviso_e_novo_link.sql` = `RODAR_v0.244_lead_novo_e_novo_link.sql`.
+- Função `avisos`: caminho Zernio (`montaZernio` em `logica.ts`, teste em `logica_test.ts`).
+- Teste novo `t244_lead_novo_link.py`.
+
 ## v0.243
 - `aplica243.py`: `mobSanfona`, `mobKanban`, `mobAjusta` ligados por um `MutationObserver` no `#main` (só com `max-width: 760px`); `modal` ganhou `.mdl-volta`; CSS do celular no `<style id="v122">`.
 - Teste novo `t243_celular.py`.

@@ -1,3 +1,9 @@
+## v0.244
+- `equipe.avisar_lead_novo` (padrão sim).
+- Gatilho por comando `pessoas_lead_novo_t` (`lead_novo_avisar`), usando `equipe_avisa`.
+- Função `pesquisa_trocar_link(pesquisa)`.
+- `sistema_config.avisos_zernio_modelo` (opcional; padrão `aviso_growths`).
+
 ## v0.243
 Sem mudança no banco.
 

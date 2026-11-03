@@ -1,3 +1,9 @@
+## v0.244
+1. Rodar `supabase/RODAR_v0.244_lead_novo_e_novo_link.sql`.
+2. Publicar a função `avisos` (`supabase functions deploy avisos --no-verify-jwt`). Ela usa o segredo `ZERNIO_API_KEY` que o Atendimento já tem.
+3. No WhatsApp da empresa (Atendimento → modelos), criar o modelo **aviso_growths**, categoria Utilidade, idioma Português (BR), com o texto: `Aviso do Growths: {{1}}. {{2}}`. Esperar a Meta aprovar.
+4. Em Equipe, preencher o WhatsApp e ligar "Avisar por WhatsApp" de quem deve receber.
+
 ## v0.243
 Sem mudança no banco.
 

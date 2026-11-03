@@ -35,3 +35,8 @@ export function montaWhatsApp(n: { titulo: string; mensagem: string }, fone: str
   return { messaging_product: 'whatsapp', to: fone, type: 'template',
     template: { name: modelo, language: { code: idioma }, components: [{ type: 'body', parameters: [{ type: 'text', text: paramWhats(n.titulo, 200) }, { type: 'text', text: paramWhats(n.mensagem, 900) }] }] } };
 }
+
+// v0.244: WhatsApp pelo número da empresa conectado no Atendimento (Zernio), com o modelo aprovado (2 variáveis: título e detalhe).
+export function montaZernio(n: { titulo: string; mensagem: string }, fone: string, conta: string, modelo: string, idioma: string) {
+  return { accountId: conta, participantId: fone, templateName: modelo, templateLanguage: idioma, templateParams: [paramWhats(n.titulo, 200), paramWhats(n.mensagem, 900)] };
+}

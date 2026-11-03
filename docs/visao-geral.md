@@ -1,3 +1,6 @@
+## v0.244
+**Lead novo à vista.** Quando entra um lead, aparece uma faixa verde no topo do Growths e o aviso vai para a equipe, inclusive por WhatsApp (depois de aprovado o modelo). Nas pesquisas, "Gerar novo link" atualiza o endereço ou troca o código.
+
 ## v0.243
 **Growths no celular.** Os blocos abrem e fecham no lugar, o Kanban mostra uma etapa por vez com abas e as janelas ocupam a tela toda com "← Voltar".
 
