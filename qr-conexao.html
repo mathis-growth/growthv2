@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <title>Conectar WhatsApp · Growth</title>
+  <style>
+    :root{color-scheme:dark;--bg:#100b11;--card:#19121a;--line:#342631;--ink:#f7eef2;--muted:#b4a5ad;--accent:#e5365f;--ok:#37c879;--warn:#ffc857}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(900px 460px at 50% -10%,#542037,var(--bg));color:var(--ink);font:15px/1.5 Inter,"Segoe UI",sans-serif;padding:20px}
+    main{width:min(100%,480px);text-align:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px;box-shadow:0 18px 60px #0008}h1{font-size:23px;margin:0 0 8px}p{color:var(--muted);margin:8px 0}.qr{display:grid;place-items:center;background:#fff;border-radius:12px;padding:14px;margin:22px auto;min-height:270px;width:min(100%,310px)}.qr img{display:block;width:100%;height:auto;image-rendering:pixelated}.wait{color:var(--muted);padding:40px 12px}.status{font-weight:700;color:var(--warn)}.status.ok{color:var(--ok)}.error{color:#ff8c98}.step{font-size:13px}.foot{font-size:12px;border-top:1px solid var(--line);padding-top:14px;margin-top:18px}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Conectar WhatsApp</h1>
+    <p id="channel">Validando link temporário…</p>
+    <div class="qr" id="qr"><div class="wait">Solicitando QR Code seguro…</div></div>
+    <p class="step" id="instruction">Abra o WhatsApp no celular → Aparelhos conectados → Conectar aparelho.</p>
+    <p class="status" id="status" aria-live="polite">Aguardando QR Code…</p>
+    <p class="foot">Este link concede acesso somente ao QR Code desta conexão e expira em 10 minutos. Não o encaminhe a pessoas não autorizadas.</p>
+  </main>
+  <script>
+    (()=>{
+      'use strict';
+      const SUPABASE_URL='https://yngyghlyonybvfvjcmxl.supabase.co';
+      const SUPABASE_KEY='sb_publishable_I50_7INl88K4nX4rjE7qRQ_Xs_m7Ati';
+      const token=location.hash.slice(1);
+      history.replaceState(null,'',location.pathname+location.search);
+      const qr=document.querySelector('#qr'),status=document.querySelector('#status'),channel=document.querySelector('#channel');
+      let stopped=false,busy=false,shown='';
+      const finish=(message,kind='error')=>{stopped=true;status.className=kind==='ok'?'status ok':'status error';status.textContent=message;};
+      async function update(){
+        if(stopped||busy)return;busy=true;
+        try{
+          const response=await fetch(SUPABASE_URL+'/functions/v1/atendimento',{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY},body:JSON.stringify({action:'qr-share-view',token})});
+          const data=await response.json().catch(()=>({}));
+          if(!response.ok)throw new Error(data.erro||'Este link expirou ou não está mais ativo.');
+          channel.textContent=data.nome||'Instância Evolution';
+          if(data.status==='conectado'){qr.innerHTML='<div class="wait" style="color:#167c43;font-weight:700">WhatsApp conectado com sucesso.</div>';finish('Conexão confirmada. Esta página pode ser fechada.','ok');return;}
+          if(data.qrcode&&data.qrcode!==shown){shown=data.qrcode;const image=document.createElement('img');image.alt='QR Code temporário para conectar o WhatsApp';image.src=data.qrcode;qr.replaceChildren(image);}
+          status.className='status';status.textContent=data.qrcode?'Aguardando leitura pelo celular…':'Atualizando QR Code…';
+        }catch(error){finish(error.message||'Não foi possível carregar o QR Code.');}
+        finally{busy=false;}
+      }
+      if(!/^[A-Za-z0-9_-]{43}$/.test(token)){finish('Link inválido. Solicite um novo link ao administrador.');}
+      else{update();setInterval(update,5000);}
+    })();
+  </script>
+</body>
+</html>

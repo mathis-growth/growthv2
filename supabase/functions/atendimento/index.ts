@@ -597,6 +597,35 @@ async function processarDisparosGrupos(){
   }
   return {reservados:jobs.length,enviados,erros,incertos};
 }
+async function qrSharePublico(b:any){
+  const token=String(b.token||'');
+  if(!/^[A-Za-z0-9_-]{43}$/.test(token))return json({erro:'Este link de conexão é inválido.'},404);
+  const bytes=Uint8Array.from(atob(token.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
+  const digest=new Uint8Array(await crypto.subtle.digest('SHA-256',bytes));
+  const hash=[...digest].map(x=>x.toString(16).padStart(2,'0')).join('');
+  const share=await q(db.from('atd_qr_compartilhamentos').select('id,workspace_id,canal_id,expira_em,usado_em,revogado_em').eq('token_hash',hash).maybeSingle());
+  if(!share||share.revogado_em||share.usado_em||new Date(share.expira_em).getTime()<=Date.now())return json({erro:'O link expirou ou já foi utilizado. Peça um novo link ao administrador.'},410);
+  const ch=await q(db.from('atd_canais').select('id,workspace_id,nome,provedor,canal,externo_id,ativo,status').eq('id',share.canal_id).eq('workspace_id',share.workspace_id).maybeSingle());
+  if(!ch||!ch.ativo||ch.provedor!=='evolution'||ch.canal!=='whatsapp')return json({erro:'Esta conexão não está mais disponível.'},410);
+  const cfg=await secret(ch.workspace_id);if(!cfg)return json({erro:'A conexão Evolution não está configurada.'},409);
+  const inst=encodeURIComponent(ch.externo_id);
+  try{
+    const state=await evolution(cfg,'/instance/connectionState/'+inst),current=state.instance?.state||state.state;
+    if(current==='open'){
+      await q(db.from('atd_canais').update({status:'conectado'}).eq('id',ch.id).eq('workspace_id',ch.workspace_id));
+      await q(db.from('atd_qr_compartilhamentos').update({usado_em:new Date().toISOString()}).eq('id',share.id).is('usado_em',null));
+      return json({status:'conectado',nome:ch.nome});
+    }
+    const result=await evolution(cfg,'/instance/connect/'+inst);
+    let qr=String(result.base64||result.qrcode?.base64||'');
+    if(qr&&!qr.startsWith('data:image/'))qr='data:image/png;base64,'+qr;
+    if(qr&&!/^data:image\/(?:png|jpeg);base64,[A-Za-z0-9+/=]+$/.test(qr))qr='';
+    return json({status:current==='connecting'?'aguardando_leitura':'aguardando_leitura',nome:ch.nome,qrcode:qr,expira_em:share.expira_em});
+  }catch(e){
+    if(e instanceof ProviderError&&e.status<500)return json({erro:'Não foi possível gerar o QR Code. Gere outro link ou confira o servidor Evolution.'},502);
+    throw e;
+  }
+}
 async function handle(req: Request, b: any) {
   const userDb = createClient(URL_SB, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: req.headers.get('authorization') || '' } }, auth: { persistSession:false } });
   const { data: { user }, error } = await userDb.auth.getUser();
@@ -604,9 +633,19 @@ async function handle(req: Request, b: any) {
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
   const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo','disparos-grupos-list'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
-  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete','templates-mapping-save','canal-salvar'];
+  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete','templates-mapping-save','canal-salvar','qr-share-create'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
   const ws = b.workspace_id;
+  if(b.action==='qr-share-create'){
+    const ch=await channel(String(b.canal_id||''),ws);
+    if(ch.provedor!=='evolution'||ch.canal!=='whatsapp'||!ch.ativo)throw Error('Selecione uma conexão ativa da Evolution.');
+    const random=crypto.getRandomValues(new Uint8Array(32)),binary=String.fromCharCode(...random),token=btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    const digest=new Uint8Array(await crypto.subtle.digest('SHA-256',random)),hash=[...digest].map(x=>x.toString(16).padStart(2,'0')).join('');
+    const expires=new Date(Date.now()+10*60*1000).toISOString();
+    await q(db.from('atd_qr_compartilhamentos').update({revogado_em:new Date().toISOString()}).eq('workspace_id',ws).eq('canal_id',ch.id).is('usado_em',null).is('revogado_em',null));
+    await q(db.from('atd_qr_compartilhamentos').insert({workspace_id:ws,canal_id:ch.id,token_hash:hash,expira_em:expires,criado_por:user.id}));
+    return json({token,expira_em:expires});
+  }
   if (['zernio-disponiveis','zernio-conectar'].includes(b.action)) {
     const interna = await q(userDb.rpc('sou_equipe_interna'));
     if (!interna) return json({ erro:'Somente a equipe interna pode vincular contas da Zernio.' },403);
@@ -1458,6 +1497,7 @@ Deno.serve(async req => {
     const url = new URL(req.url);
     if(url.searchParams.has('provider'))return await webhook(req,url,raw);
     const b=JSON.parse(raw);
+    if(b.action==='qr-share-view')return await qrSharePublico(b);
     if(b.action==='processar-agendamentos')return await processarAgendamentos(req);
     return await handle(req,b);
   } catch(e) {

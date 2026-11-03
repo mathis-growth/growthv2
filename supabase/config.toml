@@ -1,0 +1,4 @@
+[functions.atendimento]
+# A Edge valida a sessão para as ações internas e usa tokens de uso curto para
+# compartilhar QR Code; webhooks dos provedores também chegam sem JWT de usuário.
+verify_jwt = false
