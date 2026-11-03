@@ -1,3 +1,6 @@
+## v0.245
+**Formulário respondido à vista.** Quando alguém responde um formulário (lead, cliente ou diagnóstico), a equipe recebe o aviso na faixa verde, em Meus avisos e por WhatsApp, com a pontuação da qualificação quando houver.
+
 ## v0.244
 **Lead novo à vista.** Quando entra um lead, aparece uma faixa verde no topo do Growths e o aviso vai para a equipe, inclusive por WhatsApp (depois de aprovado o modelo). Nas pesquisas, "Gerar novo link" atualiza o endereço ou troca o código.
 

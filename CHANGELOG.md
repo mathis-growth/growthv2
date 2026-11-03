@@ -1,3 +1,9 @@
+## v0.245 — Aviso de formulário respondido (02/11/2026)
+- **Formulário respondido:** toda resposta de formulário (lead, cliente, aluno, diagnóstico) avisa a equipe ativa, nos canais de cada um (app, e-mail, WhatsApp). Título "<nome> respondeu o formulário"; a mensagem traz o nome do formulário e, na qualificação, a pontuação e as faixas.
+- **Lead novo pelo formulário:** chegam os dois avisos (lead novo e respondeu o formulário).
+- **Faixa verde no topo** também para respostas. Em Equipe, nova opção "Avisar quando alguém responder um formulário".
+- Banco: `RODAR_v0.245_resposta_formulario_aviso.sql`. Teste: `t245_resposta_aviso.py` (0 falhas); regressão t244 sem falhas.
+
 ## v0.244 — Aviso de lead novo e "Gerar novo link" (02/11/2026)
 - **Lead novo:** toda a equipe ativa recebe o aviso, nos canais de cada um (app, e-mail, WhatsApp). Até 5 leads de uma vez, um aviso por lead; mais que isso (importação), um aviso só com o total. Em Equipe, nova opção "Avisar quando entrar um lead novo".
 - **Faixa verde no topo do Growths** com o lead novo ("Abrir" abre o cartão; "×" dispensa). O Growths confere os avisos a cada minuto.

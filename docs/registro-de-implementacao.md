@@ -1,3 +1,6 @@
+## Formulário respondido (v0.245)
+`t245_resposta_aviso.py`: 9 verificações, 0 falhas. Lead pelo link aberto gera os dois avisos; WhatsApp na fila; quem desligou não recebe; mensagem com pontuação e faixas; diagnóstico aponta para o diagnóstico; sem cadastro usa o e-mail; faixa verde; opção em Equipe; sem erros de JavaScript. Regressão: t244 sem falhas.
+
 ## Lead novo e novo link (v0.244)
 `t244_lead_novo_link.py`: 12 verificações, 0 falhas. Aviso no app e WhatsApp na fila; toda a equipe recebe; quem desligou não recebe; lote de 6 vira um aviso; faixa verde; "e mais"; dispensar; lead posterior; Abrir marca lido; atualizar endereço; trocar código; sem erros de JavaScript. Função `avisos`: `logica_test.ts` 4 de 4. Regressão: t243 sem falhas.
 

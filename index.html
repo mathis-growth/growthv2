@@ -13257,8 +13257,8 @@ Object.assign(ENT, {
       ['Avisos', r => [r.avisar_app && 'app', r.avisar_email && 'e-mail', r.avisar_whatsapp && 'WhatsApp'].filter(Boolean).join(', ') || '—'], ['Situação', r => pillAtivo(r.ativo)]],
     campos: () => [{ k: 'nome', l: 'Nome', req: 1 }, { k: 'funcao', l: 'Função', ph: 'Designer', hint: 'É por ela que o modelo de projeto escolhe o responsável de cada atividade. Use o mesmo nome no modelo.' },
       { k: 'email', l: 'E-mail', t: 'email', hint: 'Se for o mesmo e-mail do login, os avisos aparecem no sino do app.' }, { k: 'telefone', l: 'WhatsApp', ph: '35 99999-9999', hint: 'Com DDD. O 55 é incluído sozinho.' },
-      { k: 'avisar_app', l: 'Avisar no app (sino)', t: 'check', def: true }, { k: 'avisar_email', l: 'Avisar por e-mail', t: 'check', def: true }, { k: 'avisar_whatsapp', l: 'Avisar por WhatsApp', t: 'check' }, { k: 'avisar_lead_novo', l: 'Avisar quando entrar um lead novo', t: 'check', def: true }, { k: 'ativo', l: 'Ativo', t: 'check', def: true }],
-    antes: async v => { v.telefone = fone55(v.telefone); if (v.email) v.email = v.email.toLowerCase(); if (!(await temColuna('equipe', 'avisar_lead_novo'))) delete v.avisar_lead_novo; return v; }
+      { k: 'avisar_app', l: 'Avisar no app (sino)', t: 'check', def: true }, { k: 'avisar_email', l: 'Avisar por e-mail', t: 'check', def: true }, { k: 'avisar_whatsapp', l: 'Avisar por WhatsApp', t: 'check' }, { k: 'avisar_lead_novo', l: 'Avisar quando entrar um lead novo', t: 'check', def: true }, { k: 'avisar_resposta', l: 'Avisar quando alguém responder um formulário', t: 'check', def: true }, { k: 'ativo', l: 'Ativo', t: 'check', def: true }],
+    antes: async v => { v.telefone = fone55(v.telefone); if (v.email) v.email = v.email.toLowerCase(); if (!(await temColuna('equipe', 'avisar_lead_novo'))) delete v.avisar_lead_novo; if (!(await temColuna('equipe', 'avisar_resposta'))) delete v.avisar_resposta; return v; }
   }
 });
 
@@ -13477,11 +13477,12 @@ async function vEquipe(m) {
       { k: 'email', l: 'E-mail', t: 'email', hint: 'O mesmo e-mail que a pessoa usa para entrar. Também recebe os avisos no sino do app.' }, { k: 'telefone', l: 'WhatsApp', ph: '35 99999-9999', hint: 'Com DDD. O 55 é incluído sozinho.' },
       { k: 'vinculo', l: 'Vínculo', t: 'select', req: 1, opts: [['equipe', 'Equipe'], ['vendedor', 'Vendedor'], ['coprodutor', 'Coprodutor'], ['estrategista', 'Estrategista'], ['parceiro', 'Parceiro']], def: 'equipe', hint: 'Vendedor, coprodutor, estrategista e parceiro podem receber comissão (Vendas → Comissões).' },
       { k: 'equipe_comercial', l: 'Faz parte da equipe comercial', t: 'check' },
-      { k: 'avisar_app', l: 'Avisar no app (sino)', t: 'check', def: true }, { k: 'avisar_email', l: 'Avisar por e-mail', t: 'check', def: true }, { k: 'avisar_whatsapp', l: 'Avisar por WhatsApp', t: 'check' }, { k: 'avisar_lead_novo', l: 'Avisar quando entrar um lead novo', t: 'check', def: true }, { k: 'ativo', l: 'Ativo', t: 'check', def: true }]
+      { k: 'avisar_app', l: 'Avisar no app (sino)', t: 'check', def: true }, { k: 'avisar_email', l: 'Avisar por e-mail', t: 'check', def: true }, { k: 'avisar_whatsapp', l: 'Avisar por WhatsApp', t: 'check' }, { k: 'avisar_lead_novo', l: 'Avisar quando entrar um lead novo', t: 'check', def: true }, { k: 'avisar_resposta', l: 'Avisar quando alguém responder um formulário', t: 'check', def: true }, { k: 'ativo', l: 'Ativo', t: 'check', def: true }]
       .concat(adm ? [{ secao: 'Acesso ao sistema' }, { k: 'acesso_ativo', l: 'Pode entrar no sistema', t: 'check' }, { k: 'funcao_id', l: 'Função de acesso', t: 'select', opts: sel(fs, 'id', 'nome'), hint: fs.length ? 'Define o que a pessoa vê e altera. Crie funções em Funções e permissões.' : 'Crie uma função antes em Funções e permissões.' }] : []);
     modal(row ? 'Editar pessoa' : 'Nova pessoa', `<div class="grid2">${campos.map(c => campoHtml(c, row && c.k ? row[c.k] : undefined)).join('')}</div>`, async (_d, f) => {
       const v = lerCampos(campos, f); v.telefone = fone55(v.telefone); if (v.email) v.email = v.email.toLowerCase();
       if (!(await temColuna('equipe', 'avisar_lead_novo'))) delete v.avisar_lead_novo; // v0.244
+      if (!(await temColuna('equipe', 'avisar_resposta'))) delete v.avisar_resposta; // v0.245
       if (adm && v.acesso_ativo && !v.funcao_id) throw new Error('Escolha a função de acesso para liberar a entrada no sistema.');
       if (adm && v.acesso_ativo && !v.email) throw new Error('Informe o e-mail da pessoa para liberar o acesso.');
       let id = row && row.id;
@@ -19117,7 +19118,7 @@ function pqNovoLinkLiga(el, p) {
       }, 'Gerar novo link');
   });
 }
-const ehAvisoLead = x => /^Novo lead: /.test(x.titulo || '') || / leads novos$/.test(x.titulo || '');
+const ehAvisoLead = x => /^Novo lead: /.test(x.titulo || '') || / leads novos$/.test(x.titulo || '') || / respondeu o formulário$/.test(x.titulo || ''); // v0.245: resposta de formulário também
 function leadFaixa() {
   let el = document.getElementById('leadFaixa');
   const L = (S.sino || []).filter(x => !x.lida_em && ehAvisoLead(x));
