@@ -6413,7 +6413,7 @@ async function vIntegracoes(m) {
   const scriptWordPress = ldWordPressScript(chaveCliente);
   m.innerHTML = `<div class="head"><h1>Integrações</h1></div>
   ${cxHtml(CXD)}
-  <div class="panel"><div class="head" style="margin:0 0 8px"><div><h2 style="margin:0">Entrada de Leads</h2><span class="muted">Scripts e webhooks para formulários de captura.</span></div></div><div class="adgrid"><article class="ad" style="padding:14px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b style="font-size:16px">WordPress · Elementor</b><span class="pill neutral">Script pronto</span></div><span class="muted">Preserva UTMs e identificadores de anúncios, afiliados e vídeo no redirecionamento após o envio, inclusive em formulários de popup. Identificador deste cliente: <code>${esc(chaveCliente)}</code>.</span><div><button type="button" class="btn pri sm" id="wpScriptOpen">Ver e copiar script</button></div></article></div></div>
+  <div class="panel"><div class="head" style="margin:0 0 8px"><div><h2 style="margin:0">Entrada de Leads</h2><span class="muted">Scripts e webhooks para formulários e plataformas externas.</span></div></div><div class="adgrid"><article class="ad" style="padding:14px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b style="font-size:16px">WordPress · Elementor</b><span class="pill neutral">Script pronto</span></div><span class="muted">Preserva UTMs e identificadores de anúncios, afiliados e vídeo no redirecionamento após o envio, inclusive em formulários de popup. Identificador deste cliente: <code>${esc(chaveCliente)}</code>.</span><div><button type="button" class="btn pri sm" id="wpScriptOpen">Ver e copiar script</button></div></article><article class="ad" style="padding:14px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b style="font-size:16px">Webhook POST · ManyChat e outros</b><span class="pill neutral">JSON / formulário</span></div><span class="muted">Receba leads enviados por outra plataforma ou formulário via requisição POST. A Edge identifica contato, campanha e URL mesmo em payloads aninhados.</span><div><button type="button" class="btn pri sm" id="ldWebhookOpen">Configurar webhook</button></div></article></div></div>
   <div class="panel"><span>Abaixo, as outras ferramentas que alimentam o Growths. <b>Meta e Google já conectam sozinhos (acima);</b> para as demais, o status serve como controle e os dados entram por lançamento, planilha ou webhook. Nunca cole senha, token ou chave de API nestes campos. Segredos ficam guardados no servidor, fora do navegador.</span></div>
   ${Object.entries(CAT_INTEG).map(([cat, nome]) => { const L = CATALOGO.filter(c => c[1] === cat); return L.length ? `<div class="panel"><h2>${nome}</h2><div class="adgrid">${L.map(([p, , desc]) => { const r = R[p], st = ST_INTEG[r ? r.status : 'desconectado']; return `<div class="ad" style="padding:12px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(p)}</b><span class="pill ${st[0]}">${st[1]}</span></div><span class="muted">${esc(desc)}</span>${r && r.conta_externa ? `<small class="muted">Conta: ${esc(r.conta_externa)}</small>` : ''}${r && r.ultima_sincronizacao ? `<small class="muted">Última sincronização: ${dtt(r.ultima_sincronizacao)}</small>` : ''}<div><button class="btn sm" data-i="${esc(p)}">${r ? 'Editar' : 'Configurar'}</button></div></div>`; }).join('')}</div></div>` : ''; }).join('')}`;
   m.onclick = e => {
@@ -6428,6 +6428,7 @@ async function vIntegracoes(m) {
     const f = modal('Script WordPress · Elementor', `<p>Instale em <b>Elementor → Código personalizado</b>, com carregamento no rodapé do site. O código funciona com formulários embutidos e popups do Elementor.</p><p class="muted">O identificador <code>CLIENTE</code> já foi preenchido com o nome deste workspace: <b>${esc(nomeCliente)}</b> → <code>${esc(chaveCliente)}</code>. O script captura <code>utm_growth</code> e a URL completa de entrada, acrescentando ambos aos links da página e ao destino da ação <b>Redirect</b> do Elementor. O webhook grava a URL completa no histórico do lead para auditoria.</p><label>Script para copiar<textarea id="wpScriptText" rows="22" readonly spellcheck="false" class="mono">${esc(scriptWordPress)}</textarea></label><button type="button" class="btn pri" id="wpScriptCopy">Copiar script</button>`, null, null, true);
     f.querySelector('#wpScriptCopy').onclick = () => iaCopia(scriptWordPress, 'Script do WordPress copiado.');
   };
+  m.querySelector('#ldWebhookOpen').onclick = () => modalWebhookPost();
   cxLiga(m, CXD);
 }
 
@@ -9442,6 +9443,31 @@ const ldHtmlForm = (url) => `<form action="${url}" method="post">
   <button type="submit">Quero participar</button>
 </form>
 <script>document.querySelectorAll('input[name=pagina]').forEach(function (i) { i.value = location.href; });<\/script>`;
+async function modalWebhookPost() {
+  const chaves = await ldChaves(), bancoOk = chaves !== null;
+  modal('Webhook POST · ManyChat e terceiros', `<p>Use este endpoint para enviar um lead diretamente ao Growth por uma requisição <b>POST</b>. Funciona com ManyChat, Make, Zapier e formulários de terceiros que aceitem webhook.</p>
+    ${bancoOk ? '' : '<div class="panel" style="border-left:4px solid var(--warn)"><b>Atualização de banco pendente.</b> <span class="muted">A tabela de chaves de API de leads não está disponível neste workspace.</span></div>'}
+    <p class="muted">A chave tem escopo somente de entrada de leads. Ela aparece dentro da URL e pode ser revogada na configuração de recebimento de leads da campanha. Envie um registro por POST ou uma lista no campo <code>leads</code>.</p>
+    <label>Nome da integração<input id="ldPostNome" maxlength="80" value="Webhook externo · ManyChat" placeholder="Ex.: ManyChat — campanha X"></label>
+    <button type="button" class="btn pri" id="ldPostGerar"${bancoOk ? '' : ' disabled'}>Gerar endpoint e chave</button>
+    <div id="ldPostResultado"></div>`, null, null, true);
+  const root = $('#modalRoot');
+  root.querySelector('#ldPostGerar').onclick = () => act(async () => {
+    const nome = root.querySelector('#ldPostNome').value.trim();
+    if (!nome) throw new Error('Informe um nome para identificar esta integração.');
+    const chave = await q(sb.rpc('chave_api_criar_escopo', { p_ws: S.ws, p_nome: nome, p_escopo: 'leads' }));
+    const endpoint = ldEndereco(chave, '');
+    const exemplo = {
+      contact: { name: '[nome do contato]', email: '[e-mail]', phone: '[telefone com DDI]' },
+      tracking: { campaign_code: '[UUID utm_growth da campanha]' },
+      page_url: 'https://seudominio.com/pagina?utm_growth=[UUID utm_growth da campanha]'
+    };
+    root.querySelector('#ldPostResultado').innerHTML = `<div class="panel" style="border-left:4px solid var(--good);margin-top:10px"><b>Endpoint pronto.</b> Copie agora: a chave secreta não poderá ser consultada novamente. Substitua os valores entre colchetes pelos campos dinâmicos do ManyChat. Envie pelo menos e-mail ou telefone válido.<label style="margin-top:8px">URL do webhook<input id="ldPostUrl" readonly class="mono" value="${esc(endpoint)}"></label><button type="button" class="btn sm" id="ldPostCopyUrl">Copiar URL</button><label style="margin-top:8px">Payload JSON de exemplo<textarea id="ldPostJson" rows="8" readonly class="mono">${esc(JSON.stringify(exemplo, null, 2))}</textarea></label><button type="button" class="btn sm" id="ldPostCopyJson">Copiar JSON</button><p class="muted" style="margin-bottom:0">Método: <code>POST</code> · Cabeçalho: <code>Content-Type: application/json</code>. O endpoint reconhece nome, e-mail e telefone em objetos aninhados. A campanha pode vir como <code>utm_growth</code>, dentro de uma URL ou como UUID no payload; o Growth valida se ela pertence a este workspace. A URL da página enviada em <code>page_url</code> fica registrada na auditoria do lead.</p></div>`;
+    root.querySelector('#ldPostCopyUrl').onclick = () => iaCopia(endpoint, 'URL do webhook copiada.');
+    root.querySelector('#ldPostCopyJson').onclick = () => iaCopia(JSON.stringify(exemplo, null, 2), 'Payload de exemplo copiado.');
+    root.querySelector('#ldPostGerar').disabled = true;
+  });
+}
 async function ldChaves() {
   return q(sb.from('chaves_api').select('id,nome,prefixo,criado_em,ultimo_uso,usos,revogada_em').eq('workspace_id', S.ws).eq('escopo', 'leads').order('criado_em', { ascending: false })).catch(() => null);
 }
