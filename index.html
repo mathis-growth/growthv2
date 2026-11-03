@@ -6413,7 +6413,7 @@ async function vIntegracoes(m) {
   const scriptWordPress = ldWordPressScript(chaveCliente);
   m.innerHTML = `<div class="head"><h1>Integrações</h1></div>
   ${cxHtml(CXD)}
-  <div class="panel"><div class="head" style="margin:0 0 8px"><div><h2 style="margin:0">Entrada de Leads</h2><span class="muted">Scripts e webhooks para formulários de captura.</span></div></div><div class="adgrid"><article class="ad" style="padding:14px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b style="font-size:16px">WordPress · Elementor</b><span class="pill neutral">Script pronto</span></div><span class="muted">Preserva UTMs e identificadores de anúncios no redirecionamento após o envio, inclusive em formulários de popup. Identificador deste cliente: <code>${esc(chaveCliente)}</code>.</span><div><button type="button" class="btn pri sm" id="wpScriptOpen">Ver e copiar script</button></div></article></div></div>
+  <div class="panel"><div class="head" style="margin:0 0 8px"><div><h2 style="margin:0">Entrada de Leads</h2><span class="muted">Scripts e webhooks para formulários de captura.</span></div></div><div class="adgrid"><article class="ad" style="padding:14px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b style="font-size:16px">WordPress · Elementor</b><span class="pill neutral">Script pronto</span></div><span class="muted">Preserva UTMs e identificadores de anúncios, afiliados e vídeo no redirecionamento após o envio, inclusive em formulários de popup. Identificador deste cliente: <code>${esc(chaveCliente)}</code>.</span><div><button type="button" class="btn pri sm" id="wpScriptOpen">Ver e copiar script</button></div></article></div></div>
   <div class="panel"><span>Abaixo, as outras ferramentas que alimentam o Growths. <b>Meta e Google já conectam sozinhos (acima);</b> para as demais, o status serve como controle e os dados entram por lançamento, planilha ou webhook. Nunca cole senha, token ou chave de API nestes campos. Segredos ficam guardados no servidor, fora do navegador.</span></div>
   ${Object.entries(CAT_INTEG).map(([cat, nome]) => { const L = CATALOGO.filter(c => c[1] === cat); return L.length ? `<div class="panel"><h2>${nome}</h2><div class="adgrid">${L.map(([p, , desc]) => { const r = R[p], st = ST_INTEG[r ? r.status : 'desconectado']; return `<div class="ad" style="padding:12px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(p)}</b><span class="pill ${st[0]}">${st[1]}</span></div><span class="muted">${esc(desc)}</span>${r && r.conta_externa ? `<small class="muted">Conta: ${esc(r.conta_externa)}</small>` : ''}${r && r.ultima_sincronizacao ? `<small class="muted">Última sincronização: ${dtt(r.ultima_sincronizacao)}</small>` : ''}<div><button class="btn sm" data-i="${esc(p)}">${r ? 'Editar' : 'Configurar'}</button></div></div>`; }).join('')}</div></div>` : ''; }).join('')}`;
   m.onclick = e => {
@@ -9283,13 +9283,28 @@ function ldWordPressScript(clienteNome) {
   const utmCliente = "utm_" + cliente;
   const visitorKey = cliente + "_visitor_id";
   const trackingParams = new Set([
-    "fbclid", "gclid", "gbraid", "wbraid", "msclkid", "ttclid",
-    "xcod", "sck", "src", "vk_source", "vk_ad_id"
+    // Meta / Google / Microsoft / TikTok / LinkedIn / Pinterest / X / Snap / Reddit / Quora
+    "fbclid", "fb_action_ids", "fb_action_types", "fb_source", "fb_ref",
+    "gclid", "gbraid", "wbraid", "dclid", "gad_source", "gad_campaignid", "gclsrc",
+    "campaign_id", "campaignid", "ad_id", "adid", "adset_id", "adsetid",
+    "adgroup_id", "adgroupid", "creative", "keyword", "matchtype", "network", "device",
+    "placement", "site_source_name", "msclkid", "ttclid", "tt_campaign_id", "tt_ad_id", "tt_adgroup_id",
+    "li_fat_id", "epik", "twclid", "sccid", "rdt_cid", "qclid",
+    // Google Analytics / campanhas de e-mail e automação
+    "_gl", "mc_cid", "mc_eid", "mkt_tok", "_kx", "vero_id", "oly_anon_id", "oly_enc_id",
+    // VTurb, vídeo, afiliados e plataformas de venda
+    "vtid", "vts", "vsl_id", "player_id", "xcod", "sck", "src", "sid", "sid2", "sid3",
+    "subid", "subid2", "subid3", "aff", "affid", "aff_id", "affiliate_id",
+    "aff_sub", "aff_sub2", "aff_sub3", "click_id", "clickid", "clickref", "irclickid",
+    "cjevent", "awc", "sscid", "ranmid", "raneaid", "ransiteid", "ref", "ref_id",
+    "tblci", "ob_click_id", "vmcid", "vk_source", "vk_ad_id"
   ]);
 
   function isTrackingParam(name) {
     const key = name.toLowerCase();
-    return key.startsWith("utm_") || trackingParams.has(key);
+    return key.startsWith("utm_") || trackingParams.has(key) ||
+      /^(?:sub|subid|sid)\d+$/.test(key) || /^aff_sub\d*$/.test(key) ||
+      /^hsa_(?:acc|cam|grp|ad|src|tgt|kw|mt|net|ver)$/.test(key);
   }
 
   function getVisitorId() {
