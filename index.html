@@ -6408,8 +6408,12 @@ async function vIntegracoes(m) {
   cxRetorno();
   const [reg, CXD] = await Promise.all([q(sb.from('integracoes').select('*').eq('workspace_id', S.ws)), cxDados()]);
   const R = Object.fromEntries(reg.map(r => [r.provedor, r]));
+  const nomeCliente = (S.workspaces || []).find(w => w.id === S.ws)?.nome || 'cliente';
+  const chaveCliente = nomeCliente.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/[^a-z0-9_]+/g, '_').replace(/^_+|_+$/g, '') || 'cliente';
+  const scriptWordPress = ldWordPressScript(chaveCliente);
   m.innerHTML = `<div class="head"><h1>Integrações</h1></div>
   ${cxHtml(CXD)}
+  <div class="panel"><div class="head" style="margin:0 0 8px"><div><h2 style="margin:0">Entrada de Leads</h2><span class="muted">Scripts e webhooks para formulários de captura.</span></div></div><div class="adgrid"><article class="ad" style="padding:14px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b style="font-size:16px">WordPress · Elementor</b><span class="pill neutral">Script pronto</span></div><span class="muted">Preserva UTMs e identificadores de anúncios no redirecionamento após o envio, inclusive em formulários de popup. Identificador deste cliente: <code>${esc(chaveCliente)}</code>.</span><div><button type="button" class="btn pri sm" id="wpScriptOpen">Ver e copiar script</button></div></article></div></div>
   <div class="panel"><span>Abaixo, as outras ferramentas que alimentam o Growths. <b>Meta e Google já conectam sozinhos (acima);</b> para as demais, o status serve como controle e os dados entram por lançamento, planilha ou webhook. Nunca cole senha, token ou chave de API nestes campos. Segredos ficam guardados no servidor, fora do navegador.</span></div>
   ${Object.entries(CAT_INTEG).map(([cat, nome]) => { const L = CATALOGO.filter(c => c[1] === cat); return L.length ? `<div class="panel"><h2>${nome}</h2><div class="adgrid">${L.map(([p, , desc]) => { const r = R[p], st = ST_INTEG[r ? r.status : 'desconectado']; return `<div class="ad" style="padding:12px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(p)}</b><span class="pill ${st[0]}">${st[1]}</span></div><span class="muted">${esc(desc)}</span>${r && r.conta_externa ? `<small class="muted">Conta: ${esc(r.conta_externa)}</small>` : ''}${r && r.ultima_sincronizacao ? `<small class="muted">Última sincronização: ${dtt(r.ultima_sincronizacao)}</small>` : ''}<div><button class="btn sm" data-i="${esc(p)}">${r ? 'Editar' : 'Configurar'}</button></div></div>`; }).join('')}</div></div>` : ''; }).join('')}`;
   m.onclick = e => {
@@ -6419,6 +6423,10 @@ async function vIntegracoes(m) {
       <label>ID da conta ou do projeto<input name="conta" value="${esc(r.conta_externa || '')}" placeholder="Ex.: ID da conta de anúncios"><span style="font-weight:400">Só o identificador público. Nada de senha ou token.</span></label>
       <label>Observação<textarea name="obs" rows="3">${esc(r.observacao || '')}</textarea></label>`,
       async d => { await q(sb.from('integracoes').upsert({ workspace_id: S.ws, provedor: p, categoria: cat, status: d.status, conta_externa: nul(d.conta), observacao: nul(d.obs) }, { onConflict: 'workspace_id,provedor' })); toast('Integração salva'); });
+  };
+  m.querySelector('#wpScriptOpen').onclick = () => {
+    const f = modal('Script WordPress · Elementor', `<p>Instale em <b>Elementor → Código personalizado</b>, com carregamento no rodapé do site. O código funciona com formulários embutidos e popups do Elementor.</p><p class="muted">O identificador <code>CLIENTE</code> já foi preenchido com o nome deste workspace: <b>${esc(nomeCliente)}</b> → <code>${esc(chaveCliente)}</code>. O formulário precisa ter a ação <b>Redirect</b> configurada para que as UTMs sejam anexadas ao destino.</p><label>Script para copiar<textarea id="wpScriptText" rows="22" readonly spellcheck="false" class="mono">${esc(scriptWordPress)}</textarea></label><button type="button" class="btn pri" id="wpScriptCopy">Copiar script</button>`, null, null, true);
+    f.querySelector('#wpScriptCopy').onclick = () => iaCopia(scriptWordPress, 'Script do WordPress copiado.');
   };
   cxLiga(m, CXD);
 }
@@ -9258,6 +9266,87 @@ function mlTaxaDiag(e, todos) {
    "Religar leads" liga à campanha os leads que chegaram antes de o canal com aquele utm_campaign existir. */
 const LD_URL = SB_URL + '/functions/v1/leads';
 const ldEndereco = (k, utm, extra) => LD_URL + '?chave=' + (k || 'SUA_CHAVE') + (utm ? '&utm_campaign=' + encodeURIComponent(utm) : '') + (extra || '');
+function ldWordPressScript(clienteNome) {
+  const cliente = JSON.stringify(clienteNome);
+  return `<script>
+(function () {
+  "use strict";
+
+  const CLIENTE = ${cliente};
+  const cliente = CLIENTE.toLowerCase().trim();
+
+  if (!/^[a-z0-9_]+$/.test(cliente)) {
+    console.error("CLIENTE inválido.");
+    return;
+  }
+
+  const utmCliente = "utm_" + cliente;
+  const visitorKey = cliente + "_visitor_id";
+  const trackingParams = new Set([
+    "fbclid", "gclid", "gbraid", "wbraid", "msclkid", "ttclid",
+    "xcod", "sck", "src", "vk_source", "vk_ad_id"
+  ]);
+
+  function isTrackingParam(name) {
+    const key = name.toLowerCase();
+    return key.startsWith("utm_") || trackingParams.has(key);
+  }
+
+  function getVisitorId() {
+    const incoming = new URLSearchParams(location.search).get(utmCliente);
+    try {
+      if (incoming) {
+        localStorage.setItem(visitorKey, incoming);
+        return incoming;
+      }
+      let id = localStorage.getItem(visitorKey);
+      if (!id) {
+        id = crypto.randomUUID();
+        localStorage.setItem(visitorKey, id);
+      }
+      return id;
+    } catch (_) {
+      return incoming || crypto.randomUUID();
+    }
+  }
+
+  const visitorId = getVisitorId();
+
+  function buildRedirectUrl(destination) {
+    const url = new URL(destination, location.href);
+    const currentParams = new URLSearchParams(location.search);
+    currentParams.forEach(function (value, key) {
+      if (isTrackingParam(key) && value) url.searchParams.set(key, value);
+    });
+    url.searchParams.set(utmCliente, visitorId);
+    return url.toString();
+  }
+
+  if (!window.jQuery) {
+    console.warn("jQuery não encontrada; redirecionamento não ajustado.");
+    return;
+  }
+
+  window.jQuery(document).on("submit_success", function (event, response) {
+    const form = event.target;
+    if (!(form instanceof HTMLFormElement) || !form.classList.contains("elementor-form")) return;
+    const destination = response?.data?.redirect_url || response?.redirect_url;
+    if (!destination) {
+      console.warn("Configure a ação Redirect no formulário Elementor.");
+      return;
+    }
+    try {
+      const finalUrl = buildRedirectUrl(destination);
+      if (response?.data?.redirect_url) response.data.redirect_url = finalUrl;
+      else response.redirect_url = finalUrl;
+      console.log("Redirecionamento com rastreamento:", finalUrl);
+    } catch (error) {
+      console.error("Não foi possível ajustar o redirecionamento:", error);
+    }
+  });
+})();
+<\/script>`;
+}
 const ldHtmlForm = (url) => `<form action="${url}" method="post">
   <input name="nome" placeholder="Seu nome" required>
   <input name="email" type="email" placeholder="Seu melhor e-mail">
