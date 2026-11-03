@@ -4,7 +4,7 @@
 //   Também aceita a chave no cabeçalho  x-growths-chave: gw_...  ou  Authorization: Bearer gw_...
 // Aceita: JSON, formulário HTML (application/x-www-form-urlencoded ou multipart), webhook da Respondi,
 //   Meta Lead Ads (field_data, vindo do Zapier/Make, ou o webhook nativo da página — ver META_ACCESS_TOKEN abaixo).
-// Os campos são achados pelo nome: nome/name, email/e-mail, telefone/celular/whatsapp/phone, utm_*.
+// Contato usa nomes conhecidos; UTMs e URLs também são varridos recursivamente no payload, independentemente do campo.
 //   Tudo o que não é contato nem UTM vira "respostas" do formulário (ficam no cadastro da pessoa).
 // Parâmetros no endereço valem como padrão: ?utm_campaign=lanc-set-meta&utm_source=meta faz todos os leads daquele
 //   formulário caírem na campanha certa mesmo quando o formulário não manda UTM (útil para Meta e Respondi).

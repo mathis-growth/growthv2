@@ -2701,7 +2701,7 @@ async function tcLeads(el, c, r) {
   $('#lCrm').onclick = () => { S.campTab = 'crm'; render(); };
 }
 
-async function tcLinks(el, c) { S.linkCamp = c.id; await tabLinks(el); const sc = $('#lkC'); if (sc) sc.style.display = 'none'; }
+async function tcLinks(el, c) { await tabLinksOrganicos(el, c); }
 
 /* ---------- Campanha: fechamento (planejado x realizado), debriefing e melhorias por sprint ---------- */
 const MELH_ST = { a_fazer: ['neutral', 'A fazer'], em_andamento: ['info', 'Em andamento'], feito: ['good', 'Feito'], descartado: ['neutral', 'Descartado'] };
@@ -6425,7 +6425,7 @@ async function vIntegracoes(m) {
       async d => { await q(sb.from('integracoes').upsert({ workspace_id: S.ws, provedor: p, categoria: cat, status: d.status, conta_externa: nul(d.conta), observacao: nul(d.obs) }, { onConflict: 'workspace_id,provedor' })); toast('Integração salva'); });
   };
   m.querySelector('#wpScriptOpen').onclick = () => {
-    const f = modal('Script WordPress · Elementor', `<p>Instale em <b>Elementor → Código personalizado</b>, com carregamento no rodapé do site. O código funciona com formulários embutidos e popups do Elementor.</p><p class="muted">O identificador <code>CLIENTE</code> já foi preenchido com o nome deste workspace: <b>${esc(nomeCliente)}</b> → <code>${esc(chaveCliente)}</code>. O formulário precisa ter a ação <b>Redirect</b> configurada para que as UTMs sejam anexadas ao destino.</p><label>Script para copiar<textarea id="wpScriptText" rows="22" readonly spellcheck="false" class="mono">${esc(scriptWordPress)}</textarea></label><button type="button" class="btn pri" id="wpScriptCopy">Copiar script</button>`, null, null, true);
+    const f = modal('Script WordPress · Elementor', `<p>Instale em <b>Elementor → Código personalizado</b>, com carregamento no rodapé do site. O código funciona com formulários embutidos e popups do Elementor.</p><p class="muted">O identificador <code>CLIENTE</code> já foi preenchido com o nome deste workspace: <b>${esc(nomeCliente)}</b> → <code>${esc(chaveCliente)}</code>. O script captura <code>utm_growth</code> e a URL completa de entrada, acrescentando ambos aos links da página e ao destino da ação <b>Redirect</b> do Elementor. O webhook grava a URL completa no histórico do lead para auditoria.</p><label>Script para copiar<textarea id="wpScriptText" rows="22" readonly spellcheck="false" class="mono">${esc(scriptWordPress)}</textarea></label><button type="button" class="btn pri" id="wpScriptCopy">Copiar script</button>`, null, null, true);
     f.querySelector('#wpScriptCopy').onclick = () => iaCopia(scriptWordPress, 'Script do WordPress copiado.');
   };
   cxLiga(m, CXD);
@@ -9293,7 +9293,7 @@ function ldWordPressScript(clienteNome) {
     // Google Analytics / campanhas de e-mail e automação
     "_gl", "mc_cid", "mc_eid", "mkt_tok", "_kx", "vero_id", "oly_anon_id", "oly_enc_id",
     // VTurb, vídeo, afiliados e plataformas de venda
-    "vtid", "vts", "vsl_id", "player_id", "xcod", "sck", "src", "sid", "sid2", "sid3",
+    "utm_growth", "vtid", "vts", "vsl_id", "player_id", "xcod", "sck", "src", "sid", "sid2", "sid3",
     "subid", "subid2", "subid3", "aff", "affid", "aff_id", "affiliate_id",
     "aff_sub", "aff_sub2", "aff_sub3", "click_id", "clickid", "clickref", "irclickid",
     "cjevent", "awc", "sscid", "ranmid", "raneaid", "ransiteid", "ref", "ref_id",
@@ -9305,6 +9305,78 @@ function ldWordPressScript(clienteNome) {
     return key.startsWith("utm_") || trackingParams.has(key) ||
       /^(?:sub|subid|sid)\d+$/.test(key) || /^aff_sub\d*$/.test(key) ||
       /^hsa_(?:acc|cam|grp|ad|src|tgt|kw|mt|net|ver)$/.test(key);
+  }
+
+  const growthStorageKey = cliente + "_utm_growth";
+  const entryUrlStorageKey = cliente + "_growth_entry_url";
+  function readGrowthCode() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(growthStorageKey) || "null");
+      return saved && saved.value && Date.now() - saved.saved_at <= 30 * 24 * 60 * 60 * 1000 ? saved.value : null;
+    } catch (_) { return null; }
+  }
+  function saveTrackingParams() {
+    const saved = {};
+    new URLSearchParams(location.search).forEach(function (value, key) {
+      if (isTrackingParam(key) && value) saved[key] = value;
+    });
+    const incomingGrowth = new URLSearchParams(location.search).get("utm_growth");
+    if (incomingGrowth) {
+      try { localStorage.setItem(growthStorageKey, JSON.stringify({ value: incomingGrowth, saved_at: Date.now() })); }
+      catch (_) { /* armazenamento pode estar bloqueado */ }
+    } else if (!saved.utm_growth) {
+      const storedGrowth = readGrowthCode();
+      if (storedGrowth) saved.utm_growth = storedGrowth;
+    }
+    return saved;
+  }
+  function getEntryUrl() {
+    const query = new URLSearchParams(location.search);
+    const incoming = query.get("growth_pagina");
+    const currentGrowth = query.get("utm_growth");
+    let stored = null;
+    try { stored = JSON.parse(localStorage.getItem(entryUrlStorageKey) || "null"); } catch (_) { /* armazenamento bloqueado ou inválido */ }
+    const storedIsFresh = stored && stored.value && Date.now() - stored.saved_at <= 30 * 24 * 60 * 60 * 1000 && (!currentGrowth || !stored.campaign || stored.campaign === currentGrowth);
+    const value = incoming || (storedIsFresh ? stored.value : location.href);
+    if (value) {
+      const savedAt = storedIsFresh && stored.value === value ? stored.saved_at : Date.now();
+      try { localStorage.setItem(entryUrlStorageKey, JSON.stringify({ value: value, saved_at: savedAt, campaign: currentGrowth || stored?.campaign || null })); }
+      catch (_) { /* armazenamento pode estar bloqueado */ }
+    }
+    return value;
+  }
+  // Guarda o código da campanha e a URL original por 30 dias para propagá-los nas próximas URLs.
+  saveTrackingParams();
+  const entryUrl = getEntryUrl();
+  function decorateLinks(root) {
+    const growth = readGrowthCode() || new URLSearchParams(location.search).get("utm_growth");
+    if (!growth || !root || !root.querySelectorAll) return;
+    try {
+      const current = new URL(location.href);
+      current.searchParams.set("utm_growth", growth);
+      if (entryUrl) current.searchParams.set("growth_pagina", entryUrl);
+      if (current.toString() !== location.href) history.replaceState(history.state, "", current.toString());
+    } catch (_) { /* a página pode estar dentro de um contexto que bloqueia a alteração do histórico */ }
+    const links = [];
+    if (root.matches && root.matches("a[href]")) links.push(root);
+    links.push.apply(links, root.querySelectorAll("a[href]"));
+    links.forEach(function (link) {
+      try {
+        const target = new URL(link.href, location.href);
+        if (target.protocol !== "http:" && target.protocol !== "https:") return;
+        target.searchParams.set("utm_growth", growth);
+        target.searchParams.set("growth_pagina", entryUrl);
+        link.href = target.toString();
+      } catch (_) { /* ignora hrefs que não sejam URLs */ }
+    });
+  }
+  decorateLinks(document);
+  if (window.MutationObserver && document.documentElement) {
+    new MutationObserver(function (changes) {
+      changes.forEach(function (change) {
+        change.addedNodes.forEach(function (node) { if (node.nodeType === 1) decorateLinks(node); });
+      });
+    }).observe(document.documentElement, { childList: true, subtree: true });
   }
 
   function getVisitorId() {
@@ -9329,20 +9401,18 @@ function ldWordPressScript(clienteNome) {
 
   function buildRedirectUrl(destination) {
     const url = new URL(destination, location.href);
-    const currentParams = new URLSearchParams(location.search);
-    currentParams.forEach(function (value, key) {
-      if (isTrackingParam(key) && value) url.searchParams.set(key, value);
+    const saved = saveTrackingParams();
+    Object.keys(saved).forEach(function (key) {
+      if (isTrackingParam(key) && saved[key]) url.searchParams.set(key, saved[key]);
     });
+    if (entryUrl) url.searchParams.set("growth_pagina", entryUrl);
     url.searchParams.set(utmCliente, visitorId);
     return url.toString();
   }
 
   if (!window.jQuery) {
-    console.warn("jQuery não encontrada; redirecionamento não ajustado.");
-    return;
-  }
-
-  window.jQuery(document).on("submit_success", function (event, response) {
+    console.warn("jQuery não encontrada; os links já recebem os parâmetros, mas o redirecionamento automático não foi ajustado.");
+  } else window.jQuery(document).on("submit_success", function (event, response) {
     const form = event.target;
     if (!(form instanceof HTMLFormElement) || !form.classList.contains("elementor-form")) return;
     const destination = response?.data?.redirect_url || response?.redirect_url;
@@ -15396,6 +15466,31 @@ async function tabLinks(el) {
     try { await navigator.clipboard.writeText(inp.value); } catch (e) { inp.select(); try { document.execCommand('copy'); } catch (e2) { /* o link fica selecionado para copiar à mão */ } }
     toast('Link copiado');
   });
+}
+
+/* ---------- Links orgânicos da campanha (não criam anúncios de mídia paga) ---------- */
+function montaUrlOrganica(urlDestino, campanhaId) {
+  try { const u = new URL(urlDestino); u.searchParams.set('utm_growth', campanhaId); return u.toString(); }
+  catch (_) { return ''; }
+}
+async function tabLinksOrganicos(el, campanha) {
+  const w = S.ws, campId = campanha.id;
+  const links = await q(sb.from('campanha_links_organicos').select('*').eq('workspace_id', w).eq('campanha_id', campId).order('criado_em', { ascending: false }));
+  const gerar = row => {
+    const f = modal(row ? 'Editar link orgânico' : 'Novo link orgânico', `<p class="muted">O Growth acrescenta somente <code>utm_growth=${esc(campId)}</code>. Esse código vincula o lead a esta campanha. UTMs e outros parâmetros já existentes na URL são mantidos.</p><label>Nome do link<input name="nome" required maxlength="160" value="${esc(row?.nome || '')}" placeholder="Ex.: Bio do Instagram"></label><label>URL de destino<input name="url_destino" type="url" required value="${esc(row?.url_destino || '')}" placeholder="https://seudominio.com/pagina"></label><label>URL com código da campanha<textarea id="lkPrev" rows="3" readonly class="mono"></textarea></label><small class="muted">Como todos os links usam o código da campanha, o Growth identifica a campanha, mas não diferencia qual link orgânico originou o lead.</small>`, async d => {
+      const v = { nome: d.nome.trim(), url_destino: d.url_destino.trim() };
+      if (row?.id) await q(sb.from('campanha_links_organicos').update(v).eq('id', row.id));
+      else await q(sb.from('campanha_links_organicos').insert({ ...v, workspace_id: w, campanha_id: campId }));
+      toast('Link orgânico salvo.'); await tabLinksOrganicos(el, campanha);
+    }, 'Salvar link', true);
+    const preview = () => { f.querySelector('#lkPrev').value = montaUrlOrganica(f.elements.url_destino.value.trim(), campId) || 'Informe uma URL iniciada em http:// ou https://'; };
+    f.elements.url_destino.oninput = preview; preview();
+    if (row?.id) botaoExcluir(f, 'campanha_links_organicos', row.id, 'Link orgânico excluído');
+  };
+  el.innerHTML = `<div class="head"><div><h2>Links orgânicos</h2><span class="muted">Use em bio, posts, mensagens, QR Codes e páginas orgânicas. A campanha é identificada por <code>utm_growth</code>.</span></div><button class="btn pri" id="lkNovo">Novo link</button></div><div class="panel"><p><b>Código desta campanha:</b> <code class="mono">${esc(campId)}</code></p><p class="muted">O parâmetro <code>utm_growth</code> leva esse código à página. Os leads recebidos pelo webhook ficam vinculados à campanha. Este painel não cria anúncios nem altera os links de mídia paga existentes.</p><div class="tw"><table><thead><tr><th>Link orgânico</th><th>Destino</th><th>URL com utm_growth</th><th></th></tr></thead><tbody>${links.map(l => { const url = montaUrlOrganica(l.url_destino, campId); return `<tr><td><b>${esc(l.nome)}</b><br><small class="muted">Criado ${dtt(l.criado_em)}</small></td><td><small>${esc(l.url_destino)}</small></td><td style="min-width:240px"><input readonly value="${esc(url)}" data-url="${l.id}" class="mono"><button class="btn sm" data-cp="${l.id}">Copiar</button></td><td><button class="btn sm" data-ed="${l.id}">Editar</button></td></tr>`; }).join('') || '<tr><td colspan="4" class="empty">Nenhum link orgânico cadastrado para esta campanha.</td></tr>'}</tbody></table></div></div>`;
+  $('#lkNovo').onclick = () => gerar(null);
+  el.querySelectorAll('[data-ed]').forEach(b => b.onclick = () => gerar(links.find(l => l.id === b.dataset.ed)));
+  el.querySelectorAll('[data-cp]').forEach(b => b.onclick = async () => { const input = el.querySelector(`[data-url="${b.dataset.cp}"]`); try { await navigator.clipboard.writeText(input.value); } catch (_) { input.select(); document.execCommand('copy'); } toast('Link orgânico copiado.'); });
 }
 
 /* ---------- RevOps: operação de alunos ---------- */
