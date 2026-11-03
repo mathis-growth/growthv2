@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.245 | 02/11/2026 | Aviso de formulário respondido (faixa verde, Meus avisos, WhatsApp), com a pontuação da qualificação. | RODAR_v0.245 |
 | 0.244 | 02/11/2026 | Aviso de lead novo (faixa verde, Meus avisos, WhatsApp da empresa) e "Gerar novo link" nas pesquisas. | RODAR_v0.244 + função avisos |
 | 0.243 | 02/11/2026 | Celular: blocos em sanfona, Kanban uma etapa por vez, janelas em tela cheia com Voltar. | — |
 | 0.242 | 02/11/2026 | Kanban do Content: no computador só arrastar; "Mover para" só no celular. | — |

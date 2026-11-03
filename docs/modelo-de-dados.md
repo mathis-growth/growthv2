@@ -1,3 +1,7 @@
+## v0.245
+- `equipe.avisar_resposta` (padrão sim).
+- Gatilho adiado `pesquisa_respostas_aviso_t` (`resposta_formulario_avisar`): roda no fim da gravação da resposta, depois da pontuação, e usa `equipe_avisa`.
+
 ## v0.244
 - `equipe.avisar_lead_novo` (padrão sim).
 - Gatilho por comando `pessoas_lead_novo_t` (`lead_novo_avisar`), usando `equipe_avisa`.

@@ -1,3 +1,7 @@
+## v0.245
+1. Rodar `supabase/RODAR_v0.245_resposta_formulario_aviso.sql` (depois do RODAR_v0.244).
+2. O WhatsApp usa a mesma função `avisos` e o mesmo modelo `aviso_growths` da v0.244: nada novo para publicar além do que já estava pendente.
+
 ## v0.244
 1. Rodar `supabase/RODAR_v0.244_lead_novo_e_novo_link.sql`.
 2. Publicar a função `avisos` (`supabase functions deploy avisos --no-verify-jwt`). Ela usa o segredo `ZERNIO_API_KEY` que o Atendimento já tem.

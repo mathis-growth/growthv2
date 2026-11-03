@@ -1,3 +1,9 @@
+## v0.245 — Aviso de formulário respondido
+**Pedido da Rebecka (02/11):** "receber o alerta de que chegou um lead novo e de que ele respondeu o formulário, tudo isso", para mostrar num vídeo da tela do Growths.
+**O que encontrei (fato):** só existia o aviso de lead novo (v0.244). Resposta de cliente a pesquisa ou diagnóstico só ficava registrada no histórico do diagnóstico.
+**Como ficou:** toda resposta de formulário avisa a equipe ativa (app, e-mail, WhatsApp, conforme o cadastro de cada um), com o nome do formulário e, na qualificação, a pontuação e as faixas. Lead novo pelo formulário gera os dois avisos. Cada pessoa pode desligar em Equipe.
+**Pendentes:** os mesmos do WhatsApp da v0.244 (publicar a função `avisos`, aprovar o modelo `aviso_growths`, telefone dela em Equipe).
+
 ## v0.244 — Aviso de lead novo e "Gerar novo link"
 **Pedido da Rebecka (02/11):** "gerar novo link nas pesquisas para pegar o link novo do Growths… o alerta quando entrar um lead novo, um aviso em verdinho no topo do Growths e uma mensagem no WhatsApp… acho que o Rogério já configurou".
 **Decisões dela:** as duas opções de link; o aviso vai para todos da equipe, de todos os leads; o WhatsApp sai pelo número da empresa.

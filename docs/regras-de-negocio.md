@@ -1,3 +1,6 @@
+## v0.245
+- **Formulário respondido:** toda resposta (lead, cliente, aluno, diagnóstico) avisa a equipe ativa com a opção ligada, nos canais de cada um. Título "<nome> respondeu o formulário"; sem cadastro, usa o e-mail. Na qualificação, a mensagem traz a pontuação e as faixas; quem foi eliminado aparece como "fora do perfil".
+
 ## v0.244
 - **Lead novo:** avisa toda a equipe ativa com a opção ligada; até 5 por vez, um aviso por lead; acima, um aviso com o total. Os canais seguem o cadastro de cada pessoa.
 - **Trocar o código do link:** o link antigo para de funcionar na hora (inclusive o colado nas páginas).

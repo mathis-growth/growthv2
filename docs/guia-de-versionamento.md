@@ -1,3 +1,8 @@
+## v0.245
+- `aplica245.py`: `ehAvisoLead` reconhece "… respondeu o formulário" (faixa verde); campo `avisar_resposta` na Equipe (some se a coluna não existir).
+- Migração `20261231200000_resposta_formulario_aviso.sql` = `RODAR_v0.245_resposta_formulario_aviso.sql` (nome escolhido para ficar antes da `20270101100000` do Rogério).
+- Teste novo `t245_resposta_aviso.py`.
+
 ## v0.244
 - `aplica244.py`: `linkOficial`, `pqNovoLinkLiga` (Perguntas e Formulário e aparência), `leadFaixa` chamado por `atualizaSino` (e `setInterval` de 60 s), campo `avisar_lead_novo` na Equipe.
 - Migração `20261231100000_lead_novo_aviso_e_novo_link.sql` = `RODAR_v0.244_lead_novo_e_novo_link.sql`.
