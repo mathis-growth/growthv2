@@ -11,7 +11,7 @@ i = s.index('<script>/* @supabase'); j = s.index('</script>', i) + 9
 W = 'w1'
 def ws(rows): return [dict(workspace_id=W, **r) for r in rows]
 def camp(id, nome, fim, st='finalizada', prod='p1', mod='lancamento', **k): return dict(id=id, nome=nome, status=st, produto_id=prod, modelo=mod, data_inicio=fim[:8] + '01', data_fim=fim, extras={}, criado_em='2026-01-01', **k)
-def vis(id, inv, ld, vd, cl, rec): return dict(campanha_id=id, investimento=inv, leads=ld, vendas=vd, clientes=cl, receita_bruta=rec, qualificados=0, cac=None, cpl=None, roas=None, taxa_lead_venda=None)
+def vis(id, inv, ld, vd, cl, rec): return dict(campanha_id=id, investimento=inv, leads=ld, vendas=vd, clientes=cl, receita=rec, receita_antes_churn=rec, qualificados=0, cac=None, cpl=None, roas=None, taxa_lead_venda=None)
 SEED = {
   'workspaces': [{'id': W, 'nome': 'Escola Aurora', 'modo_produto': 'completo', 'agencia': True}], 'rpc:sou_equipe_interna': True,
   'produtos': ws([dict(id='p1', nome='Curso', preco=997, ativo=True), dict(id='p2', nome='Mentoria', preco=5000, ativo=True)]),
@@ -46,15 +46,15 @@ with sync_playwright() as p:
     pg.evaluate("document.querySelector('#chDet').open = true"); pg.wait_for_timeout(100)
     nomes = ev(pg, "[...document.querySelectorAll('[data-chc]')].map(a => a.textContent)")
     chk(nomes == ['Lançamento Set', 'Lançamento Jun', 'Lançamento Mar orgânico'], 'só as 3 mais recentes, finalizadas, do mesmo produto e modelo, com dados', nomes)
-    md = ev(pg, "campHistMedias([{investimento:1000,leads:100,vendas:5,clientes:5,receita_bruta:5000},{investimento:3000,leads:200,vendas:12,clientes:10,receita_bruta:9000},{investimento:0,leads:50,vendas:1,clientes:1,receita_bruta:500}])")
+    md = ev(pg, "campHistMedias([{investimento:1000,leads:100,vendas:5,clientes:5,receita:5000},{investimento:3000,leads:200,vendas:12,clientes:10,receita:9000},{investimento:0,leads:50,vendas:1,clientes:1,receita:500}])")
     chk(abs(md['cpl']['v'] - 4000 / 300) < 1e-9, 'CPL ponderado: 4000 ÷ 300, sem a campanha sem investimento', md['cpl'])
-    chk(abs(md['cac']['v'] - 4000 / 15) < 1e-9, 'CAC ponderado: 4000 ÷ 15', md['cac'])
+    chk(abs(md['cac']['v'] - 4000 / 17) < 1e-9, 'CAC ponderado: 4000 ÷ 17 vendas', md['cac'])
     chk(abs(md['conv']['v'] - 18 * 100 / 350) < 1e-9 and md['conv']['n'] == 3, 'conversão ponderada: 18 ÷ 350, com as 3 campanhas', md['conv'])
     chk(abs(md['roas']['v'] - 14000 / 4000) < 1e-9, 'ROAS ponderado: 14000 ÷ 4000 (a receita orgânica fica fora)', md['roas'])
     media = ev(pg, "document.querySelector('#chMedia').textContent")
-    chk('13,33' in media and '266,67' in media and '5,14%' in media and '3,50' in media, 'a linha de média mostra os valores', media)
+    chk('13,33' in media and '235,29' in media and '5,14%' in media and '3,50' in media, 'a linha de média mostra os valores', media)
     chk(ev(pg, "!!document.querySelector('#chPoucos')"), 'avisa quando menos de 3 têm dados suficientes')
-    chk(not ev(pg, "!!document.querySelector('#chCoer')"), 'não avisa de incoerência quando o CAC bate (diferença abaixo de 5%)')
+    chk(ev(pg, "!!document.querySelector('#chCoer')"), 'avisa quando a conversão usa campanhas que o CAC não usa (a orgânica entra só na conversão)')
     chk(ev(pg, "campHistCoerencia({cpl:{v:10},cac:{v:500},conv:{v:5}})") == 200, 'detecta metas que não conversam (R$ 10 e 5% dão CAC de R$ 200)')
     chk(ev(pg, "campHistCoerencia(campHistMedias([]))") is None, 'sem dados, não calcula nada')
     # usar como metas: pede confirmação
@@ -64,10 +64,10 @@ with sync_playwright() as p:
     chk(ev(pg, "__D.campanhas.find(x => x.id === 'atual').meta_cpl") == 20, 'nada muda antes de confirmar')
     pg.evaluate("document.querySelector('#modalRoot form').requestSubmit()"); pg.wait_for_timeout(1500)
     cc = ev(pg, "__D.campanhas.find(x => x.id === 'atual')")
-    chk(cc['meta_cpl'] == 13.33 and cc['meta_cac'] == 266.67 and cc['meta_taxa_lead_venda'] == 5.14, 'aplica CPL, CAC e conversão', [cc['meta_cpl'], cc['meta_cac'], cc['meta_taxa_lead_venda']])
+    chk(cc['meta_cpl'] == 13.33 and cc['meta_cac'] == 235.29 and cc['meta_taxa_lead_venda'] == 5.14, 'aplica CPL, CAC e conversão', [cc['meta_cpl'], cc['meta_cac'], cc['meta_taxa_lead_venda']])
     chk(cc['meta_vendas'] == 77, 'não mexe nas outras metas')
     rf = cc['extras'].get('referencia_planejamento') or {}
-    chk(rf.get('valores') == {'cpl': 13.33, 'cac': 266.67, 'conv': 5.14} and rf.get('metas_antes', {}).get('cpl') == 20, 'guarda os valores usados e as metas de antes', rf)
+    chk(rf.get('valores') == {'cpl': 13.33, 'cac': 235.29, 'conv': 5.14} and rf.get('metas_antes', {}).get('cpl') == 20, 'guarda os valores usados e as metas de antes', rf)
     chk([x['id'] for x in rf.get('campanhas', [])] == ['a', 'b', 'c'] and rf['campanhas'][0]['investimento'] == 1000, 'guarda as campanhas usadas, com os números daquele momento', rf.get('campanhas'))
     chk(ev(pg, "!!document.querySelector('#chRef') && document.querySelector('#chDet').open"), 'mostra a referência usada e continua aberto')
     # segunda vez preserva o histórico

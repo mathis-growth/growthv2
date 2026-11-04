@@ -1,3 +1,12 @@
+## v0.251 — Uma conta só para CAC de mídia, ROAS e receita (03/11/2026)
+- **Investimento de mídia:** anúncios da campanha ou do canal. Sem anúncio conectado, as contas a pagar e os custos lançados, sem somar as duas fontes.
+- **CAC de mídia:** investimento ÷ vendas, na campanha e no canal. Order bump e upsell contam como venda.
+- **Receita de marketing:** valor líquido das vendas aprovadas, sem as vendas de quem saiu (a pessoa tem aluno e nenhum ativo). Os cards mostram quantas pessoas saíram e quanto saiu da conta.
+- **ROAS:** receita de marketing ÷ investimento, nas telas de campanha, canal, Dashboard de marketing, coortes, metas, vendas por canal e detalhes.
+- **Ticket médio:** receita antes do churn ÷ vendas.
+- **Não mudam:** CAC total (por cliente novo no período), ROI e as telas financeiras, que continuam com o dinheiro que entrou de verdade. O simulador do Growth Model também não muda.
+- Banco: `20270106100000_v0251_cac_roas_receita.sql`. Testes: banco `v0251_cac_roas_cenarios.sql` (OK); tela `t246`, `t249` e `t250` (0 falhas).
+
 ## v0.250 — Fase da campanha, luzinha de meta, foto e saudação (03/11/2026)
 - **Fase da campanha:** Captação, Aquecimento, Em vendas ou Finalizada, a partir das datas e das vendas. Antes das vendas, as telas mostram leads, investimento e CPL; ROAS, CAC e receita aparecem quando as vendas começam.
 - **Dashboard de marketing:**

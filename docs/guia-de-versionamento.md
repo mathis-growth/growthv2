@@ -1,3 +1,12 @@
+## v0.251
+- Migração `20270106100000_v0251_cac_roas_receita.sql`:
+  - novas: `v_pessoas_saiu`, `campanha_tem_anuncio`, `_arv_mkt_norm`;
+  - `v_marketing_campanha` e `v_marketing_canal` refeitas, com colunas novas no fim (`receita`, `receita_saiu`, `receita_antes_churn`, `pessoas_saiu`; no canal, `receita` e `roas`). `receita_bruta` continua existindo;
+  - trocas de texto em `funil_analise`, `funil_cohorts`, `vendas_por_canal`, `_meta_realizado`, `campanha_detalhe`, `growth_metricas_auto`, `campanha_series`, `arvore_no` e `_arv_extra2`;
+  - fórmulas do catálogo em `metricas_definicoes`.
+- index.html: as telas de campanha leem `receita` no lugar de `receita_bruta`; CAC por vendas em `razoes`, `cpZ`, `campHistMedias`, `CH_MET` e no detalhe da campanha. Rótulo da tela para 0.251.
+- Teste novo de banco `v0251_cac_roas_cenarios.sql`.
+
 ## v0.250
 - Migração `20270105100000_v0250_ticket_e_foto.sql`: `funil_analise` devolve `vendas` (troca de texto, com erro se o trecho não for encontrado); local `avatares` com políticas por pasta do usuário.
 - index.html: `campFase`, `campFaseHtml`, `campRitmo`, `metaLuz`, `luzHtml`, `olaPeriodo`, `olaNome`, `topoAtualiza`, `fotoReduz`. Topo novo em `.mainw` e `#topoU`; `#sair` e `#who` passam para o menu da conta. Rótulo da tela para 0.250.

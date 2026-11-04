@@ -10,7 +10,7 @@ i = s.index('<script>/* @supabase'); j = s.index('</script>', i) + 9
 W = 'w1'; FOTOS = os.environ.get('FOTOS')
 def ws(rows): return [dict(workspace_id=W, **r) for r in rows]
 def camp(id, nome, st='ativa', mod='lancamento', ini='2026-01-01', fim='2099-12-31', **k): return dict(id=id, nome=nome, status=st, produto_id='p1', modelo=mod, data_inicio=ini, data_fim=fim if mod != 'perpetuo' else None, **{'extras': {}, 'fases': {}, 'criado_em': '2026-01-01', **k})
-def vis(id, inv, ld, vd, cl, rec, **k): return dict(campanha_id=id, workspace_id=W, nome=id, status='ativa', investimento=inv, leads=ld, qualificados=0, vendas=vd, clientes=cl, receita_bruta=rec, cpl=inv / ld if ld else None, cac=inv / cl if cl else None, roas=rec / inv if inv else None, taxa_lead_venda=vd * 100 / ld if ld else None, orcamento_total=k.get('orc'), meta_leads=k.get('ml'), meta_vendas=k.get('mv'), meta_receita=k.get('mr'), meta_cac=k.get('mc'))
+def vis(id, inv, ld, vd, cl, rec, **k): return dict(campanha_id=id, workspace_id=W, nome=id, status='ativa', investimento=inv, leads=ld, qualificados=0, vendas=vd, clientes=cl, receita=rec, receita_saiu=k.get('rs', 0), pessoas_saiu=k.get('ps', 0), cpl=inv / ld if ld else None, cac=inv / cl if cl else None, roas=rec / inv if inv else None, taxa_lead_venda=vd * 100 / ld if ld else None, orcamento_total=k.get('orc'), meta_leads=k.get('ml'), meta_vendas=k.get('mv'), meta_receita=k.get('mr'), meta_cac=k.get('mc'))
 POS = dict(leads=1094, vendas=380, clientes=342, receita=329690.85, custo=7020.15, alunos=344, ativos=322, saiu=22, churn=.064, ltv=964.01, cac=20.53, roas=46.96, roi=45.96)
 SEED = {
   'workspaces': [{'id': W, 'nome': 'Demo', 'modo_produto': 'completo', 'agencia': True}], 'rpc:sou_equipe_interna': True,
@@ -19,7 +19,7 @@ SEED = {
     camp('aqu', 'Em aquecimento', fases={'aquecimento': {'ini': '2026-01-01', 'fim': '2099-01-01'}}, data_carrinho_abre='2099-06-01'),
     camp('ven', 'Em vendas', ini='2026-01-01', fim='2026-02-01', data_carrinho_abre='2026-01-15', meta_leads=100, meta_vendas=10, meta_receita=10000, meta_cac=500, meta_cpl=10, orcamento_total=1000, meta_taxa_lead_venda=5),
     camp('per', 'Perpétuo', mod='perpetuo')]),
-  'v_marketing_campanha': [vis('cap', 3000, 300, 0, 0, 0, orc=8000, ml=1000, mc=500), vis('aqu', 100, 10, 0, 0, 0), vis('ven', 1000, 120, 10, 2, 16000, orc=1000, ml=100, mv=10, mr=10000, mc=500), vis('per', 100, 10, 0, 0, 0)],
+  'v_marketing_campanha': [vis('cap', 3000, 300, 0, 0, 0, orc=8000, ml=1000, mc=500), vis('aqu', 100, 10, 0, 0, 0), vis('ven', 1000, 120, 10, 2, 16000, orc=1000, ml=100, mv=10, mr=10000, mc=500, rs=1497, ps=1), vis('per', 100, 10, 0, 0, 0)],
   'rpc:funil_analise': dict(pos=POS, passos=[], campanhas=[], por_campanha={}, por_canal={}, diagnostico={}, nomes_campanhas={}, periodo={}, anterior={}), 'rpc:funil_cohorts': [],
   'rpc:campanha_series': dict(usa_trafego=False, dias=[], reais=[], metas=[], meta_dia=None, tot_dias=0, serie=[], roas=None),
   'funis': ws([]), 'canais': ws([]), 'campanha_canais': ws([]), 'campanha_ofertas': ws([]), 'projetos': ws([]), 'pessoas': ws([]), 'campanha_conexoes': ws([]),
@@ -77,11 +77,12 @@ with sync_playwright() as p:
     k = kpis(pg); chk('ROAS' in k and 'CAC' in k and 'Vendas' in k, 'em vendas: aparece ROAS e CAC', k)
     lz = lambda n: ev(pg, f"(document.querySelector('[data-lm=\"{n}\"] .luz') || {{}}).className || ''")
     chk('luz-acima' in lz('Leads') and 'luz-ok' in lz('Vendas'), 'leads acima (120 de 100) e vendas no planejado', [lz('Leads'), lz('Vendas')])
-    chk('luz-acima' in lz('Receita bruta'), 'receita acima do planejado', lz('Receita bruta'))
+    chk('luz-acima' in lz('Receita'), 'receita acima do planejado', lz('Receita'))
     chk('luz-ok' in lz('Investimento'), 'investimento dentro do orçamento fica verde')
     chk('luz-ruim' in lz('CPL (custo por lead)') or 'luz-acima' in lz('CPL (custo por lead)') or 'luz-ok' in lz('CPL (custo por lead)'), 'CPL tem luz')
     chk(ev(pg, "getComputedStyle(document.querySelector('.luz-acima i')).backgroundColor") != ev(pg, "getComputedStyle(document.querySelector('.luz-ok i')).backgroundColor"), 'acima do planejado tem outra cor')
     foto(pg, 'vendas')
+    chk('1 pessoa saiu' in ev(pg, "document.querySelector('#main .kpis').textContent") and '1.497' in ev(pg, "document.querySelector('#main .kpis').textContent"), 'o card de receita mostra quanto saiu pelo churn')
     abre(pg, 'per'); chk('Fase: Em vendas' in ev(pg, "document.querySelector('#campFaseL').textContent"), 'perpétuo em vendas')
     # ---- dashboard de marketing ----
     pg.evaluate("S.view = 'mkt-dash'; S.campSel = null; S.mg = null; render();"); pg.wait_for_timeout(1500)

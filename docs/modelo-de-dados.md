@@ -1,3 +1,9 @@
+## v0.251
+- `v_pessoas_saiu`: pessoas com aluno e nenhum aluno ativo.
+- `v_marketing_campanha`: `investimento` (anúncios ou, sem eles, lançamentos), `cac` (÷ vendas), `roas` (receita ÷ investimento) e colunas novas `receita`, `receita_saiu`, `receita_antes_churn`, `pessoas_saiu`.
+- `v_marketing_canal`: `investimento` e `cac` na mesma regra; colunas novas `receita` e `roas`.
+- `funil_analise.pos` e cada campanha: `receita` sem o churn e `receita_antes_churn`. `funil_cohorts`: `vendas`.
+
 ## v0.250
 - `funil_analise`: `vendas` em cada campanha e em `pos`.
 - Storage: local público `avatares` (2 MB; JPG, PNG e WebP), arquivo `<id do usuário>/foto.jpg`. O endereço fica em `user_metadata.foto_url` da conta.

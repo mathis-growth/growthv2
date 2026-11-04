@@ -1,9 +1,19 @@
+## v0.251
+- **Investimento de mídia:** anúncios da campanha ou do canal. Se a campanha nunca teve gasto em anúncio, valem as contas a pagar (menos as canceladas) e os custos lançados nela. As duas fontes nunca somam, porque costumam ser o mesmo gasto.
+- **CAC de mídia:** investimento ÷ vendas aprovadas. Na campanha, soma todos os canais; no canal, usa as vendas atribuídas a ele. Order bump e upsell contam como venda.
+- **CAC total (negócio):** anúncios + equipe de marketing e vendas ÷ clientes novos do período. Não mudou.
+- **ROI (negócio):** (receita − custos totais) ÷ custos totais. Fica fora do marketing. Não mudou.
+- **Receita de marketing:** valor líquido das vendas aprovadas, tirando todo o valor das vendas de quem saiu. Saiu = a pessoa tem aluno e nenhum ativo; quem tem outro aluno ativo continua contando.
+- **ROAS:** receita de marketing ÷ investimento de mídia.
+- **Ticket médio:** receita antes do churn ÷ vendas.
+- **Financeiro:** não usa a receita de marketing. Por isso, as duas receitas são diferentes de propósito.
+- **Mídia paga:** o CAC dos anúncios usa as vendas informadas nos anúncios.
+
 ## v0.250
 - **Fase:** Finalizada pelo status. Em vendas quando há venda, o carrinho abriu, a fase de conversão começou ou é perpétuo sem data de carrinho. Aquecimento depois do início dele. Nos outros casos, Captação.
 - **ROAS** é receita ÷ investimento. **CAC** é investimento ÷ clientes. **Ticket médio** é receita ÷ vendas.
 - **ROI** não aparece no marketing; fica nos números do negócio.
 - **Luzinha:** volumes comparam com a meta × parte do período que já passou (leads pela aquisição, vendas e receita pelo carrinho, quando têm data). Custos e taxas comparam com o valor. Até 5% de diferença é "no planejado". Investimento acima do orçamento é vermelho; abaixo não ganha destaque. Antes de o período começar, não acende.
-- **Definição única de ROAS e receita sem o churn:** pendentes. Hoje a tela da campanha usa receita bruta e contas a pagar mais custos lançados; o Dashboard usa receita líquida e custo de anúncios.
 
 ## v0.249
 - **Oferta no assistente:** a principal é obrigatória e define o ticket dos cenários. Order bump parte da principal; downsell parte da principal com a condição "recusou"; as outras mantêm a etapa anterior que já tinham na aba Ofertas.

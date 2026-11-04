@@ -11,7 +11,7 @@ i = s.index('<script>/* @supabase'); j = s.index('</script>', i) + 9
 W = 'w1'; FOTOS = os.environ.get('FOTOS')
 def ws(rows): return [dict(workspace_id=W, **r) for r in rows]
 def camp(id, nome, fim, st='finalizada', prod='p1', mod='lancamento', **k): return dict(id=id, nome=nome, status=st, produto_id=prod, modelo=mod, data_inicio=(fim or '2026-05-31')[:8] + '01', data_fim=fim, extras={}, fases={}, criado_em='2026-01-01', **k)
-def vis(id, inv, ld, q, vd, cl, rec): return dict(campanha_id=id, investimento=inv, leads=ld, qualificados=q, vendas=vd, clientes=cl, receita_bruta=rec)
+def vis(id, inv, ld, q, vd, cl, rec): return dict(campanha_id=id, investimento=inv, leads=ld, qualificados=q, vendas=vd, clientes=cl, receita=rec, receita_antes_churn=rec)
 SEED = {
   'workspaces': [{'id': W, 'nome': 'Demo', 'modo_produto': 'completo', 'agencia': True}], 'rpc:sou_equipe_interna': True,
   'produtos': ws([dict(id='p1', nome='Método', preco=1497, ativo=True), dict(id='p2', nome='Mini', preco=197, ativo=True), dict(id='p3', nome='Planilha', preco=97, ativo=True), dict(id='p4', nome='Mentoria', preco=997, ativo=True)]),
