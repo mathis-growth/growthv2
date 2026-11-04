@@ -1,3 +1,19 @@
+## v0.255
+- **Eventos da Hotmart:** aprovada e completa → aprovada; boleto impresso → pendente; cancelada e expirada → cancelada; reembolso → reembolsada; chargeback → chargeback. Disputa e atraso de assinatura só ficam registrados.
+- **Ordem:** reembolso e chargeback não voltam atrás com evento atrasado. Aprovação de venda já estornada fica a revisar.
+- **Estorno:** venda aprovada com lançamento passa por `registrar_estorno`; as outras só mudam de status.
+- **Valor e taxa:** o valor da venda é `purchase.price.value`; a taxa vem do cadastro da plataforma; as comissões informadas pela Hotmart ficam em `extras.comissoes_hotmart`, sem uso no cálculo.
+- **Oferta:** a única oferta ativa do produto com o mesmo preço; com mais de uma, o papel desempata o order bump; sem definição, fica sem oferta.
+- **Campanha:** pelo código do vendedor; sem ele, a única campanha ativa com a oferta no período; depois, a campanha da pessoa.
+- **Comprador:** procura por e-mail e depois por telefone; se não existir, cria.
+- **A revisar:** produto sem ligação, moeda diferente de real, evento sem transação, sem valor ou sem contato. Responde 200 à Hotmart e reprocessa depois.
+
+## v0.254
+- **Vendedores da campanha:** aparecem os que têm regra de comissão em uma oferta ou um produto da campanha. Outros vendedores podem ser adicionados.
+- **Comissão na campanha:** vale mais que a da oferta e a do produto. Se o vendedor sai da campanha, a regra deixa de valer e volta a da oferta.
+- **Venda pelo link:** o código em `utm_content` ou `extras.sck` liga a venda ao vendedor e à campanha, e vale mais que o responsável pela pessoa. Vendedor informado à mão não é trocado.
+- **Sobra do faturamento (previsão):** faturamento − taxa da plataforma − impostos − comissões. Taxa e impostos vêm da média das últimas vendas; sem vendas, do cadastro. A comissão de cada vendedor é % × (meta dele ÷ meta da campanha) × faturamento, ou × faturamento líquido de taxa e impostos, conforme a base.
+
 ## v0.253
 - **Oferta da campanha:** sempre ligada ao cadastro. Nome, produto e preço vêm da oferta; para outro preço, cria-se outra oferta. Oferta nova no assistente entra no cadastro, reaproveitando a que tiver o mesmo nome, produto e preço. Oferta digitada antes é cadastrada quando o passo Oferta é salvo.
 - **Meta de vendas:** cada oferta tem a sua (principal = vendas do Base; as outras = vendas do Base × aceite). `campanhas.meta_vendas` é a soma. O CAC meta é investimento ÷ essa soma.

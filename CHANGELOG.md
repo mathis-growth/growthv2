@@ -1,3 +1,21 @@
+## v0.255 — Vendas da Hotmart entram sozinhas (04/11/2026)
+- **Integrações → Vendas da Hotmart:** novo quadro para guardar o hottok, gerar o endereço do webhook, ligar produtos e acompanhar os eventos.
+- **Função `vendas-hotmart`:** recebe o webhook 2.0.0 e confere o endereço e o hottok. Compra aprovada ou completa, boleto impresso, cancelamento, expiração, reembolso e chargeback atualizam a venda.
+- **Sem duplicar:** evento repetido não grava de novo, venda já importada é atualizada pelo código da transação e evento atrasado não desfaz um reembolso.
+- **Reembolso e chargeback:** usam o mesmo estorno da tela, com contabilidade, conta a receber, matrícula e situação do cliente.
+- **Vendedor:** o `sck` do link liga a venda ao vendedor e à campanha (v0.254).
+- **Nada se perde:** produto sem ligação, venda em outra moeda ou comprador sem contato ficam a revisar. Documento, endereço e dados de pagamento do comprador não são guardados.
+- Banco: `20270110100000_v0255_webhook_hotmart.sql`. Testes: banco `v0255_webhook_hotmart.sql` (OK); tela `t255` (0 falhas). Falta testar com um envio real da Hotmart.
+
+## v0.254 — Comercial da campanha (04/11/2026)
+- **Assistente:** novo passo 7, Comercial; Pesquisa vira o passo 8. Traz os vendedores cadastrados nas ofertas e nos produtos da campanha, e dá para adicionar outros ou cadastrar na hora.
+- **Vendedor:** o cadastro diz se é interno ou externo. A comissão e a meta de vendas são definidas por campanha.
+- **Link do vendedor:** cada um tem um código, que vai no link de checkout (`sck` e `utm_content`). A venda que chega com o código fica ligada ao vendedor e à campanha, e a comissão sai pelas regras que já existem.
+- **Importação de vendas:** nova coluna "Código do vendedor (sck)". Ainda não há integração automática com a Hotmart.
+- **Quanto sobra do faturamento:** previsão nos três cenários, com taxa da plataforma, impostos e comissões, no assistente e em Planejamento e metas.
+- **Detalhe de Vendas:** tabela por vendedor, com vendas, meta, valor e comissão.
+- Banco: `20270109100000_v0254_comercial_campanha.sql`. Testes: banco `v0254_comercial.sql` (OK); tela `t254` (novo), `t249` e `t253` (0 falhas).
+
 ## v0.253 — Assistente: ofertas do cadastro, cenários por oferta e canais em porcentagem (04/11/2026)
 - **Oferta:** toda oferta da campanha fica no cadastro. O preço vem da oferta e não muda na campanha: para outro preço, cria-se outra oferta.
 - **Orçamento e cenários:** a oferta principal fica aberta e cada order bump, upsell e downsell abre ao clicar, com aceite, meta de vendas e receita nos três cenários.

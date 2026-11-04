@@ -78,3 +78,9 @@ Conferido em 30/10/2026.
 
 ## v0.252 — Faturamento e Receita líquida (PGlite)
 `v0251_cac_roas_cenarios.sql` termina com "v0251 e v0252: tudo OK". Soma à v0.251: faturamento sem quem saiu; ROAS sobre o faturamento; comissão sai da receita líquida e não do faturamento; comissão cancelada não conta. Conferido em 03/11/2026.
+
+## v0.254 — Comercial da campanha (PGlite)
+`v0254_comercial.sql` termina com "v0254: tudo OK". Testa: vendedores pela oferta; venda ligada pelo código em `utm_content` e em `extras.sck`; vendedor manual mantido; comissão da campanha acima da oferta; recálculo ao mudar a comissão; tirar o vendedor desliga a regra. Conferido em 04/11/2026.
+
+## v0.255 — Webhook da Hotmart (PGlite)
+`v0255_webhook_hotmart.sql` termina com "v0255: tudo OK". Testa: chave e hottok errados; produto sem ligação; dados sensíveis fora do registro; ligar e reprocessar; evento repetido; reembolso com estorno; evento fora de ordem; boleto pendente, aprovado e expirado; renovação; order bump; vendedor pelo sck; moeda estrangeira; endereço novo revogando o antigo. O caminho HTTP da função e o formato real da Hotmart não passam por aqui. Conferido em 04/11/2026.

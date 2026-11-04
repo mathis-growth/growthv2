@@ -15,7 +15,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 03/11/2026, versão 0.253 (assistente com ofertas do cadastro, cenários por oferta e canais em porcentagem).
+**Última atualização:** 04/11/2026, versão 0.255 (vendas da Hotmart entrando sozinhas, com reembolso, chargeback e vendedor pelo link).
 
 **v0.245 · Resposta à vista.** Quando alguém responde um formulário (lead, cliente ou diagnóstico), a equipe fica sabendo na hora: faixa verde, Meus avisos e WhatsApp, com a pontuação da qualificação.
 

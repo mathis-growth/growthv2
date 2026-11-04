@@ -105,6 +105,7 @@ with sync_playwright() as p:
     poe('data-pl', 'email', 20); txt = ev(pg, "document.querySelector('#wzTab').textContent")
     chk('dos leads para fechar' not in txt and '1.000 de 1.000' in txt and '140 de 140' in txt, 'fecha 100% de leads e vendas', txt[:500])
     foto(pg, 'canais'); avanca(pg); pg.wait_for_timeout(500)
+    chk(ev(pg, "!!document.querySelector('#comUrl')"), 'depois de Canais vem Comercial')
     cc = {x['canal']: x for x in ev(pg, "__D.campanha_canais")}
     chk(cc['email']['meta_leads'] == 200 and cc['email']['percentual_meta_leads'] == 20, 'e-mail: 20% de 1.000 leads', cc['email'])
     chk(cc['meta_ads']['meta_vendas'] == 84 and cc['meta_ads']['percentual_meta_vendas'] == 60, 'Meta Ads: 60% de 140 vendas', cc['meta_ads'])

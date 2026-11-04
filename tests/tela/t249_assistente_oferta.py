@@ -44,7 +44,7 @@ with sync_playwright() as p:
     pg.evaluate("window.provisionaAuto = async () => {}; S.ws = S.wsBase = 'w1'; S.view = 'mkt-camp'; render();"); pg.wait_for_timeout(1000)
     pg.evaluate("abrirWizard()"); pg.wait_for_timeout(900)
     pa = ev(pg, "[...document.querySelectorAll('.wzp div')].map(x => x.textContent.trim())")
-    chk(pa == ['1. O básico', '2. Oferta', '3. Datas das etapas', '4. Histórico e referências', '5. Orçamento e cenários', '6. Canais', '7. Pesquisa'], 'os 7 passos, com a oferta logo depois do básico', pa)
+    chk(pa == ['1. O básico', '2. Oferta', '3. Datas das etapas', '4. Histórico e referências', '5. Orçamento e cenários', '6. Canais', '7. Comercial', '8. Pesquisa'], 'os 8 passos, com a oferta logo depois do básico', pa)
     pg.fill('[name=nome]', 'Método Jan/27'); pg.select_option('[name=produto_id]', 'p1'); pg.fill('[name=data_inicio]', '2027-01-10'); pg.fill('[name=data_fim]', '2027-01-31'); avanca(pg); pg.wait_for_timeout(500)
     # ---- oferta ----
     chk(ev(pg, "document.querySelector('[data-oi=\"0\"][data-ok=nome]').value") == 'Método' and ev(pg, "document.querySelector('[data-oi=\"0\"][data-ok=preco]').value") == '1497' and ev(pg, "document.querySelector('[data-oi=\"0\"][data-ok=papel]').disabled"), 'a oferta principal já vem do produto')
@@ -138,6 +138,7 @@ with sync_playwright() as p:
     chk(float(c['orcamento_total']) == 12000 and c['meta_receita'] > int(c['extras']['cenarios']['base']['V']) * 1497, 'o Base vira meta, com a receita das ofertas', [c.get('orcamento_total'), c.get('meta_vendas'), c.get('meta_receita')])
     chk(set(c['extras'].get('cenarios', {}).keys()) >= {'base', 'pessimista', 'otimista'}, 'guarda os três cenários')
     chk(ev(pg, "!!document.querySelector('[data-cn=meta_ads]')"), 'depois vem Canais'); avanca(pg); pg.wait_for_timeout(600)
+    chk(ev(pg, "!!document.querySelector('#comUrl')"), 'depois vem Comercial'); avanca(pg); pg.wait_for_timeout(600)
     chk('Concluir' in ev(pg, "document.querySelector('#modalRoot .pri').textContent"), 'por último, Pesquisa, que conclui')
     pg.evaluate("document.querySelector('#modalRoot').innerHTML = ''")
     # desmarcar datas limpa; oferta tirada sai

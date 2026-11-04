@@ -1,3 +1,14 @@
+## v0.255
+- `plataforma_webhooks`: configuração por workspace e provedor (`plataforma_id`, `chave_id`, `segredo_hash`, `ultimo_evento_em`). O hottok fica só como hash.
+- `plataforma_eventos`: registro de cada evento (`evento_id` único, `transacao`, `situacao` processado, ignorado, revisar ou erro; `motivo`, `venda_id`, `payload`). O payload não guarda documento, endereço, produtor nem dados de pagamento do boleto e do Pix.
+- `plataforma_produto_vinculos`: produto da plataforma → produto do Growths. Vale antes de `produto_plataforma.id_externo`.
+- `vendas.id_externo`: código da transação; renovação de assinatura recebe `-r<número>`. `vendas.pedido_ref`: transação principal, que agrupa o order bump.
+
+## v0.254
+- `equipe.externo`: vendedor de fora da casa.
+- `campanha_vendedores`: vendedor na campanha, com `comissao_pct`, `base`, `meta_vendas`, `codigo` (único no workspace) e `regra_id` (regra em `comissao_regras`, escopo campanha, sobre as próprias vendas).
+- `campanhas.extras.checkout_url`: link de checkout da oferta principal. `campanhas.extras.cenarios.previsao`: faturamento, taxa, impostos, comissões, sobra e resultado por cenário.
+
 ## v0.253
 - `campanha_canais.percentual_meta_vendas`: porcentagem da meta de vendas da campanha. `percentual_meta_leads` passa a ser preenchida pelo assistente.
 - `campanha_ofertas.meta_vendas`: meta de vendas da oferta. `campanhas.meta_vendas` passa a ser a soma das ofertas.

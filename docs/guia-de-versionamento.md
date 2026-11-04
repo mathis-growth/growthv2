@@ -1,3 +1,14 @@
+## v0.255
+- Migração `20270110100000_v0255_webhook_hotmart.sql`: tabelas `plataforma_webhooks`, `plataforma_eventos`, `plataforma_produto_vinculos`; funções `hotmart_webhook` (só service_role), `hotmart_configurar`, `hotmart_painel`, `hotmart_reprocessar`, `hotmart_ligar_produto`.
+- Função nova: `supabase/functions/vendas-hotmart`. Publicar sem verificação de JWT.
+- index.html: `hmDados`, `hmHtml`, `hmLiga` em `vIntegracoes`. Rótulo da tela para 0.255.
+- Testes novos: banco `v0255_webhook_hotmart.sql`; tela `t255_webhook_hotmart.py`.
+
+## v0.254
+- Migração `20270109100000_v0254_comercial_campanha.sql`: coluna `equipe.externo`; tabela `campanha_vendedores`; gatilho `vendas_a_codigo_t`; funções `campanha_comercial` e `campanha_comercial_salvar`; `_comissao_regras_aplicaveis` passa a dar prioridade à regra da campanha.
+- index.html: passo Comercial em `abrirWizard`, `comLink` e `comPrev`; campo externo no cadastro; coluna de código na importação de vendas; quadro da previsão em `tcResumo`; seção por vendedor em `cdAbrir`. Rótulo da tela para 0.254.
+- Testes novos: banco `v0254_comercial.sql`; tela `t254_comercial_campanha.py`.
+
 ## v0.253
 - Migração `20270108100000_v0253_metas_canal_e_oferta.sql`: colunas `campanha_canais.percentual_meta_vendas` e `campanha_ofertas.meta_vendas`.
 - index.html: `ofPassoHtml` escolhe do cadastro; `cenInicial`, `cenHtml` e `cenTotal` com aceite e preço por oferta (`extras.cenarios.ofertas`); passo Canais em porcentagem; `campOfertasMetas` e `ofLinhas` no card de Vendas; aba Ofertas exige oferta do catálogo. Rótulo da tela para 0.253.
