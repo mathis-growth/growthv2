@@ -1,3 +1,7 @@
+## v0.257
+- `kiwify_vendas_bruto`, `eduzz_vendas_bruto`, `hubla_vendas_bruto`: mesmas colunas de `hotmart_vendas_bruto`. Sem acesso direto para `anon` e `authenticated`.
+- `plataforma_webhooks.segredo_hmac`: segredo da Kiwify e da Eduzz, necessário para conferir a assinatura. A Hubla guarda só o hash.
+
 ## v0.256
 - `hotmart_vendas_bruto`: uma linha por evento, com `payload` completo, inclusive CPF e endereço; `tratamento` (aguardando, processado, ignorado, revisar, erro), `motivo`, `venda_id`. Sem acesso direto para `anon` e `authenticated`. Substitui `plataforma_eventos`.
 - `pessoas.documento` e `pessoas.extras.endereco` passam a ser preenchidos pela Hotmart quando estão vazios.

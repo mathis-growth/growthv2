@@ -1,3 +1,10 @@
+## v0.257 — Kiwify, Eduzz e Hubla (04/11/2026)
+- **Integrações → Plataformas de venda:** cada cliente ativa só as que usa: Hotmart, Kiwify, Eduzz e Hubla.
+- **Tabelas brutas:** `kiwify_vendas_bruto`, `eduzz_vendas_bruto` e `hubla_vendas_bruto` guardam o evento inteiro. O banco trata e atualiza vendas e clientes, com a plataforma de origem.
+- **Função `vendas-plataforma`:** confere a assinatura da Kiwify e da Eduzz e o token da Hubla.
+- **Conferir com evento real:** a documentação da Kiwify não publica os campos da venda no webhook e a Eduzz não diz a codificação da assinatura. Um campo diferente deixa o evento a revisar, com o bruto guardado.
+- Banco: `20270112100000_v0257_kiwify_eduzz_hubla.sql`. Testes: banco `v0257_kiwify_eduzz_hubla.sql` (OK); assinatura `tests/edge/assina_test.mjs` (OK); tela `t255` (0 falhas).
+
 ## v0.256 — Bruto da Hotmart e campanha por etapas (04/11/2026)
 - **Tabela bruta da Hotmart:** `hotmart_vendas_bruto` guarda o evento inteiro, inclusive CPF e endereço, sem acesso direto pelo app. Um gatilho trata cada linha e atualiza vendas e clientes, com a plataforma de origem.
 - **Clientes:** procura por e-mail, telefone e documento. Se já existe, não cria outro e só completa o que estiver vazio.

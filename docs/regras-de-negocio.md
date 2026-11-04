@@ -1,3 +1,9 @@
+## v0.257
+- **Kiwify:** `order_approved` → aprovada; `billet_created` e `pix_created` → pendente; `order_refunded` → reembolsada; `chargeback` → chargeback; recusa e eventos de assinatura só ficam registrados. Valor em centavos, conforme a API de vendas; falta confirmar no webhook.
+- **Eduzz:** `invoice_paid` → aprovada; `invoice_waiting_payment` → pendente; `invoice_canceled` e `invoice_expired` → cancelada; `invoice_refunded` → reembolsada; `invoice_chargeback` → chargeback; `invoice_opened` só fica registrado. A fatura vira uma venda, com o produto do primeiro item que não é order bump; os itens ficam em `extras.itens`.
+- **Hubla:** `invoice.payment_succeeded` e status `paid` → aprovada; `invoice.created` → pendente; `invoice.expired` e status `canceled` → cancelada; `invoice.refunded` e status `refunded` → reembolsada; status `chargeback` → chargeback. O valor exclui a taxa de parcelamento. Evento de teste (`x-hubla-sandbox`) fica registrado sem criar venda.
+- **Vendedor:** o código vem de `sck`; na Eduzz, de `tracker.code1` ou `utm.content`; na Hubla, de `paymentSession.params.SCK`.
+
 ## v0.256
 - **Bruto primeiro:** o evento é gravado inteiro e depois tratado. Se o tratamento falhar, a linha bruta fica com o erro e pode ser tratada de novo.
 - **Cliente:** procura por e-mail, depois telefone, depois documento. Cliente existente não é recriado nem tem dados sobrescritos: só completa o que está vazio.

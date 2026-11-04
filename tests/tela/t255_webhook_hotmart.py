@@ -30,11 +30,15 @@ with sync_playwright() as p:
     pg.on('pageerror', lambda e: errs.append(str(e)))
     pg.goto('file:///' + HTML.replace(chr(92), '/')); pg.wait_for_timeout(1000)
     pg.evaluate("""() => { window.provisionaAuto = async () => {}; S.ws = S.wsBase = 'w1'; window.__CH = [];
-      window.__RPC = { ...(window.__RPC || {}), hotmart_painel: () => (%s),
+      window.__RPC = { ...(window.__RPC || {}), hotmart_painel: () => (%s), plataforma_painel: () => ({configurado:false,pode_editar:true,recebidos:0,processados:0,revisar:0,sem_ligacao:[],ultimos:[]}),
+        plataforma_configurar: a => { __CH.push(['pv', a]); return { chave: 'gw_kiw' }; },
         hotmart_configurar: a => { __CH.push(['cfg', a]); return { chave: a.p_hottok || a.p_novo_endereco ? 'gw_abc' : null }; },
         hotmart_ligar_produto: a => { __CH.push(['liga', a]); return { resolvidos: 2, restam: 1 }; } }; }""" % VAZIO)
     pg.evaluate(ABRE); pg.wait_for_timeout(500)
-    chk(pg.locator('#hmPainel').count() == 1, 'o quadro aparece em Integrações')
+    chk(pg.locator('#pvEscolha').count() == 1 and not pg.locator('#hmPainel').is_visible(), 'plataforma não ativada fica fechada')
+    pg.click('[data-pvativa="hotmart"]'); pg.wait_for_timeout(100)
+    chk(pg.locator('#hmPainel').is_visible(), 'ao ativar, o quadro abre')
+    chk(not pg.locator('#pvkPainel').is_visible(), 'as outras continuam fechadas')
     chk('Não configurada' in pg.inner_text('#hmPainel'), 'sem configuração, mostra a situação')
     chk(pg.input_value('#hmPlat') == 'pl1', 'já traz a plataforma Hotmart do cadastro')
     chk(pg.get_attribute('#hmTok', 'type') == 'password', 'o hottok não aparece na tela')
@@ -56,6 +60,14 @@ with sync_playwright() as p:
     chk(pg.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), 'sem rolagem lateral')
     pg.set_viewport_size({'width': 390, 'height': 800}); pg.wait_for_timeout(200)
     chk(pg.evaluate("document.querySelector('#hmPainel').getBoundingClientRect().right <= innerWidth + 1"), 'cabe no celular')
+    pg.set_viewport_size({'width': 1280, 'height': 1000}); pg.evaluate("window.__RPC.hotmart_painel = () => (%s)" % VAZIO); pg.evaluate(ABRE); pg.wait_for_timeout(400)
+    pg.click('[data-pvativa="kiwify"]'); pg.wait_for_timeout(100)
+    chk('Token do webhook da Kiwify' in pg.inner_text('#pvkPainel'), 'Kiwify pede o token dela')
+    pg.fill('#pvkTok', 'token-kiwify-1')
+    chk(pg.evaluate("document.querySelector('#pvkPlat').value") == '', 'sem Kiwify no cadastro, não escolhe a Hotmart sozinha')
+    pg.select_option('#pvkPlat', 'pl1'); pg.click('#pvkSalva'); pg.wait_for_timeout(300)
+    chk('/vendas-plataforma?p=kiwify&chave=gw_kiw' in pg.input_value('#pvkUrl'), 'endereço da Kiwify', pg.input_value('#pvkUrl'))
+    chk(pg.evaluate("__CH.filter(x => x[0] === 'pv')[0][1].p_prov") == 'kiwify', 'grava como Kiwify')
     chk(not errs, 'sem erro de script', errs)
     b.close()
 print('t255:', 'tudo OK' if ok else 'COM FALHAS')

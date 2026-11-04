@@ -87,3 +87,6 @@ Conferido em 30/10/2026.
 
 ## v0.256 — Bruto da Hotmart (PGlite)
 `v0256_hotmart_bruto.sql` termina com "v0256: tudo OK". Testa: payload inteiro guardado; painel e app sem acesso aos dados pessoais; cliente identificado por e-mail, telefone e documento sem duplicar; documento inválido; erro de tratamento sem perder o bruto; evento repetido. Conferido em 04/11/2026.
+
+## v0.257 — Kiwify, Eduzz e Hubla (PGlite)
+`v0257_kiwify_eduzz_hubla.sql` termina com "v0257: tudo OK". Testa os eventos e campos documentados de cada plataforma, chave de outra plataforma, token errado, evento repetido, reembolso, chargeback, sandbox da Hubla, produto sem ligação e bruto guardado. `tests/edge/assina_test.mjs` confere as assinaturas com o vetor oficial da Kiwify. O caminho HTTP da função não passa por aqui. Conferido em 04/11/2026.

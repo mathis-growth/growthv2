@@ -1,3 +1,9 @@
+## v0.257
+- Migração `20270112100000_v0257_kiwify_eduzz_hubla.sql`: tabelas `kiwify_vendas_bruto`, `eduzz_vendas_bruto`, `hubla_vendas_bruto`; coluna `plataforma_webhooks.segredo_hmac`; funções `_pv_*` e `plataforma_*`.
+- Função nova: `supabase/functions/vendas-plataforma`. Publicar sem verificação de JWT.
+- index.html: `PV`, `pvRpc`, `pvCard`, `hmHtml` e `hmLiga` para as quatro plataformas. Rótulo da tela para 0.257.
+- Testes novos: banco `v0257_kiwify_eduzz_hubla.sql`; `tests/edge/assina_test.mjs`.
+
 ## v0.256
 - Migração `20270111100000_v0256_hotmart_bruto.sql`: tabela `hotmart_vendas_bruto` com gatilho de tratamento; funções `_hotmart_cliente`, `_hotmart_bruto_tratar`; remove `plataforma_eventos`, copiando o que houver.
 - index.html: componente `window.CampEtapas` (entre `/*CE-INI*/` e `/*CE-FIM*/`, em shadow DOM), `tcVisao`, `ceElegivel`, aba `visao` em `CAMP_TABS`. Rótulo da tela para 0.256.
