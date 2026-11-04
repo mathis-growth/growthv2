@@ -1,3 +1,14 @@
+## v0.246 — Histórico e referências no planejamento da campanha (03/11/2026)
+- **Campanha → Planejamento e metas:** bloco expansível "Histórico e referências", sem aba nova. Mostra até 3 campanhas finalizadas do mesmo produto e modelo, com investido, leads, clientes, receita, CPL, CAC, conversão e ROAS de cada uma.
+- **Média ponderada** pelos volumes reais, com as mesmas contas da visão consolidada. CPL, CAC e ROAS só somam campanhas com investimento lançado.
+- **Rastreabilidade:** cada campanha da lista abre com um clique.
+- **Avisos:** menos de 3 campanhas com investimento e leads; CPL ÷ conversão diferente do CAC médio em mais de 5%.
+- **"Usar as médias como metas":** mostra a meta atual e a nova e pede confirmação. Muda só CPL, CAC e conversão.
+- **Memória do planejamento:** guarda os valores, as metas de antes e as campanhas usadas, com os números daquele momento.
+- Implementação da primeira etapa combinada na conversa de reorganização da campanha; o commit local `c265120` não chegou ao GitHub.
+- Banco: sem migração (usa `v_marketing_campanha` e `campanhas.extras`). Teste: `t246_campanha_historico.py` (25 verificações, 0 falhas).
+- A versão na tela, que estava parada em 0.177, volta a acompanhar o histórico.
+
 ## v0.245 — Aviso de formulário respondido (02/11/2026)
 - **Formulário respondido:** toda resposta de formulário (lead, cliente, aluno, diagnóstico) avisa a equipe ativa, nos canais de cada um (app, e-mail, WhatsApp). Título "<nome> respondeu o formulário"; a mensagem traz o nome do formulário e, na qualificação, a pontuação e as faixas.
 - **Lead novo pelo formulário:** chegam os dois avisos (lead novo e respondeu o formulário).

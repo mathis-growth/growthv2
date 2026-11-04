@@ -1,3 +1,6 @@
+## v0.246
+- `campanhas.extras.referencia_planejamento` (sem mudança de estrutura): `{em, por, valores: {cpl, cac, conv}, metas_antes: {cpl, cac, conv}, campanhas: [{id, nome, data_fim, investimento, leads, vendas, clientes, receita_bruta}], historico: [até 10 anteriores]}`.
+
 ## v0.245
 - `equipe.avisar_resposta` (padrão sim).
 - Gatilho adiado `pesquisa_respostas_aviso_t` (`resposta_formulario_avisar`): roda no fim da gravação da resposta, depois da pontuação, e usa `equipe_avisa`.

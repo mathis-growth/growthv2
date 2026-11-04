@@ -1,3 +1,11 @@
+## v0.246
+- **Campanhas comparáveis:** mesma empresa, mesmo produto e mesmo modelo, status `finalizada`, com leads ou investimento; as 3 mais recentes pela data de fim (ou de início). A campanha aberta fica de fora.
+- **Médias ponderadas:** CPL = investimento ÷ leads; CAC = investimento ÷ clientes; ROAS = receita ÷ investimento, só com as campanhas com investimento lançado. Conversão = vendas ÷ leads, com as campanhas com leads.
+- **Aviso de poucos dados:** menos de 3 campanhas com investimento e leads.
+- **Aviso de coerência:** CPL ÷ conversão difere do CAC médio em mais de 5%.
+- **Aplicar:** só com confirmação; muda `meta_cpl`, `meta_cac` e `meta_taxa_lead_venda`. O ROAS é só consulta, pois a campanha não tem meta de ROAS.
+- **Limite:** o perpétuo só entra se estiver finalizado.
+
 ## v0.245
 - **Formulário respondido:** toda resposta (lead, cliente, aluno, diagnóstico) avisa a equipe ativa com a opção ligada, nos canais de cada um. Título "<nome> respondeu o formulário"; sem cadastro, usa o e-mail. Na qualificação, a mensagem traz a pontuação e as faixas; quem foi eliminado aparece como "fora do perfil".
 

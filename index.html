@@ -1362,7 +1362,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.177 · 30/10/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.246 · 03/11/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -2622,12 +2622,66 @@ async function tcResumo(el, c, r) {
   <div class="panel"><h2>Meta e realizado</h2><div class="tw"><table><thead><tr><th></th><th class="n">Realizado</th><th class="n">Meta</th><th></th></tr></thead><tbody>
     ${linhaMeta('Leads', leads, c.meta_leads, num, false)}${linhaMeta('Vendas', vendas, c.meta_vendas, num, false)}${linhaMeta('Receita bruta', Number(r.receita_bruta || 0), c.meta_receita, brl, false)}
     ${linhaMeta('Conversão lead → venda', taxa, c.meta_taxa_lead_venda, v => v.toFixed(2).replace('.', ',') + '%', false)}${linhaMeta('CPL (custo por lead)', leads && r.investimento != null ? Number(r.investimento) / leads : null, c.meta_cpl, brl, true)}${linhaMeta('CAC', r.cac != null ? Number(r.cac) : null, c.meta_cac, brl, true)}${linhaMeta('Investimento', Number(r.investimento || 0), c.orcamento_total, brl, true)}</tbody></table></div></div></div>
+  <div id="campHist"></div>
   <div class="panel"><div class="head"><h2>Canais</h2><div class="acts"><button class="btn" id="novoCanal">Novo canal</button></div></div><div class="tw"><table><thead><tr><th>Canal</th><th>utm_campaign</th><th class="n">Orçamento</th><th>Leads (meta)</th><th class="n">CPL</th><th class="n">Meta de CPL</th><th></th></tr></thead><tbody>
     ${canais.map(x => `<tr><td>${esc(x.canal)}${x.tipo ? ' <span class="pill ' + (x.tipo === 'pago' ? 'info' : 'good') + '">' + (x.tipo === 'pago' ? 'paga' : 'orgânica') + '</span>' : ''}${x.funil_id && EXC.funis.length ? '<br><span class="muted">' + esc((EXC.funis.find(f => f.id === x.funil_id) || {}).nome || '') + '</span>' : ''}${x.temperatura ? ' <span class="pill neutral">' + esc(TEMP[x.temperatura]) + '</span>' : ''}</td><td class="mono">${esc(x.utm_campaign)}</td><td class="n">${brl0(x.orcamento)}</td><td>${bar(CR[x.id] ? Number(CR[x.id].leads) : (lc[x.utm_campaign] || 0), x.meta_leads || 0)}</td><td class="n">${CR[x.id] && CR[x.id].cpl != null ? `<span class="pill ${x.meta_cpl ? (Number(CR[x.id].cpl) <= Number(x.meta_cpl) ? 'good' : 'bad') : 'neutral'}">${brl(CR[x.id].cpl)}</span>` : '—'}</td><td class="n">${x.meta_cpl ? brl(x.meta_cpl) : '—'}</td><td><button class="btn sm" data-ek="${x.id}">Editar</button></td></tr>`).join('') || '<tr><td colspan="7" class="muted">Nenhum canal. Cada canal tem a sua utm_campaign, que liga leads e vendas a esta campanha.</td></tr>'}</tbody></table></div></div>`;
   $('#novoCanal').onclick = () => abrirForm('Novo canal na campanha', 'campanha_canais', cCanal(null), null, { extra: { campanha_id: c.id }, ok: 'Canal adicionado', antes: async v => { campExecValida(c, EXC, v); v.utm_campaign = (v.utm_campaign || '').trim(); if (!v.utm_campaign) { const base = slug(c.nome) + '_' + slug(v.canal), ja = (await q(sb.from('campanha_canais').select('utm_campaign').eq('workspace_id', S.ws).limit(5000))).map(x => x.utm_campaign); let t = base, n = 2; while (ja.includes(t)) t = base + '_' + n++; v.utm_campaign = t; } return v; } });
   el.querySelectorAll('[data-ek]').forEach(b => b.onclick = () => abrirForm('Editar canal da campanha', 'campanha_canais', cCanal(null), canais.find(x => x.id === b.dataset.ek), { antes: v => campExecValida(c, EXC, { ...v, canal: v.canal || (canais.find(x => x.id === b.dataset.ek) || {}).canal }) }));
+  await campHistoricoPainel(el.querySelector('#campHist'), c).catch(er => { el.querySelector('#campHist').innerHTML = `<div class="panel"><span class="muted">Não consegui carregar o histórico: ${esc(er.message)}</span></div>`; });
   await campEstrategiasPainel(el, c);
   await campPesquisaPainel(el, c, canais);
+}
+
+/* ================= v0.246 — Histórico e referências no planejamento da campanha =================
+   Até 3 campanhas finalizadas do mesmo produto e modelo, com as médias ponderadas pelos volumes reais. As mesmas contas de
+   v_marketing_campanha: CPL = investimento ÷ leads; CAC = investimento ÷ clientes; conversão = vendas ÷ leads; ROAS = receita ÷ investimento.
+   CPL, CAC e ROAS só somam campanhas com investimento (sem custo lançado, o CPL de zero baixaria a média); a conversão soma as que têm leads.
+   Usar as médias como metas pede confirmação e guarda em campanhas.extras.referencia_planejamento os valores e as campanhas usadas. */
+function campHistMedias(L) {
+  const soma = (a, k) => a.reduce((t, x) => t + Number(x[k] || 0), 0), cInv = L.filter(x => Number(x.investimento) > 0), cLd = L.filter(x => Number(x.leads) > 0);
+  const inv = soma(cInv, 'investimento'), ld = soma(cInv, 'leads'), cli = soma(cInv, 'clientes');
+  return { cpl: { v: ld ? inv / ld : null, n: cInv.length }, cac: { v: cli ? inv / cli : null, n: cInv.length }, conv: { v: cLd.length ? soma(cLd, 'vendas') * 100 / soma(cLd, 'leads') : null, n: cLd.length }, roas: { v: inv ? soma(cInv, 'receita_bruta') / inv : null, n: cInv.length } };
+}
+// o CPL e a conversão levam a um CAC: avisa quando ele destoa do CAC médio
+function campHistCoerencia(md) {
+  const { cpl, cac, conv } = md; if (cpl.v == null || cac.v == null || !conv.v) return null;
+  const imp = cpl.v / (conv.v / 100); return Math.abs(imp - cac.v) / cac.v > 0.05 ? imp : null;
+}
+const campHistPct = v => v == null ? '—' : Number(v).toFixed(2).replace('.', ',') + '%', campHistX = v => v == null ? '—' : Number(v).toFixed(2).replace('.', ',');
+async function campHistoricoPainel(box, c) {
+  if (!box) return;
+  if (!c.produto_id) { box.innerHTML = '<div class="panel"><h2>Histórico e referências</h2><p class="muted">Esta campanha não tem produto. Escolha o produto em Editar campanha para comparar com as anteriores.</p></div>'; return; }
+  const cs = await q(sb.from('campanhas').select('id,nome,modelo,data_inicio,data_fim,data_carrinho_abre,data_carrinho_fecha').eq('workspace_id', S.ws).eq('produto_id', c.produto_id).eq('modelo', c.modelo).eq('status', 'finalizada').neq('id', c.id));
+  const vs = cs.length ? await q(sb.from('v_marketing_campanha').select('campanha_id,investimento,leads,vendas,clientes,receita_bruta').in('campanha_id', cs.map(x => x.id))) : [];
+  const V = Object.fromEntries(vs.map(x => [x.campanha_id, x])), quando = x => x.data_fim || x.data_inicio || '';
+  const L = cs.map(x => ({ ...x, ...(V[x.id] || {}) })).filter(x => Number(x.leads) > 0 || Number(x.investimento) > 0).sort((a, b) => quando(b).localeCompare(quando(a))).slice(0, 3);
+  const md = campHistMedias(L), ok = L.filter(x => Number(x.investimento) > 0 && Number(x.leads) > 0).length, imp = campHistCoerencia(md), ref = (c.extras || {}).referencia_planejamento;
+  const cel = (a, b, f) => Number(b) > 0 ? f(Number(a || 0) / Number(b)) : '—';
+  const linhaC = x => `<tr><td><a href="#" data-chc="${x.id}">${esc(x.nome)}</a><br><small class="muted">${periodoCamp(x)}</small></td><td class="n">${brl0(x.investimento || 0)}</td><td class="n">${num(Number(x.leads || 0))}</td><td class="n">${num(Number(x.clientes || 0))}</td><td class="n">${brl0(x.receita_bruta || 0)}</td>
+    <td class="n">${Number(x.investimento) > 0 ? cel(x.investimento, x.leads, brl) : '—'}</td><td class="n">${Number(x.investimento) > 0 ? cel(x.investimento, x.clientes, brl) : '—'}</td><td class="n">${Number(x.leads) > 0 ? campHistPct(Number(x.vendas || 0) * 100 / Number(x.leads)) : '—'}</td><td class="n">${Number(x.investimento) > 0 ? campHistX(Number(x.receita_bruta || 0) / Number(x.investimento)) : '—'}</td></tr>`;
+  const resumo = L.length ? `CPL ${md.cpl.v == null ? '—' : brl(md.cpl.v)} · CAC ${md.cac.v == null ? '—' : brl(md.cac.v)} · Conversão ${campHistPct(md.conv.v)} · ROAS ${campHistX(md.roas.v)}` : 'Sem campanha comparável';
+  box.innerHTML = `<div class="panel"><details id="chDet"${S.campHistAberto ? ' open' : ''}><summary style="cursor:pointer"><b style="font-size:16px">Histórico e referências</b> <span class="muted">${L.length} ${L.length === 1 ? 'campanha' : 'campanhas'} · ${resumo}</span></summary>
+    <p class="muted" style="margin:10px 0">Campanhas finalizadas com o mesmo produto e o mesmo modelo${c.modelo === 'perpetuo' ? ' (perpétuo)' : ' (lançamento)'}, as ${L.length === 1 ? 'mais recente' : 'mais recentes'} primeiro. A média pondera pelos volumes reais: uma campanha maior pesa mais.</p>
+    ${L.length ? `<div class="tw"><table><thead><tr><th>Campanha</th><th class="n">Investido</th><th class="n">Leads</th><th class="n">Clientes</th><th class="n">Receita</th><th class="n">CPL</th><th class="n">CAC</th><th class="n">Conversão</th><th class="n">ROAS</th></tr></thead><tbody>${L.map(linhaC).join('')}
+      <tr id="chMedia" style="font-weight:700"><td colspan="5">Média ponderada</td><td class="n">${md.cpl.v == null ? '—' : brl(md.cpl.v)}</td><td class="n">${md.cac.v == null ? '—' : brl(md.cac.v)}</td><td class="n">${campHistPct(md.conv.v)}</td><td class="n">${campHistX(md.roas.v)}</td></tr>
+      <tr><td colspan="5" class="muted">Meta atual desta campanha</td><td class="n muted">${c.meta_cpl ? brl(Number(c.meta_cpl)) : '—'}</td><td class="n muted">${c.meta_cac ? brl(Number(c.meta_cac)) : '—'}</td><td class="n muted">${c.meta_taxa_lead_venda ? campHistPct(c.meta_taxa_lead_venda) : '—'}</td><td class="n muted">—</td></tr></tbody></table></div>
+      <small class="muted">CPL, CAC e ROAS usam as ${md.cpl.n} com investimento lançado; a conversão usa as ${md.conv.n} com leads. Conversão = vendas ÷ leads; CAC = investimento ÷ clientes.</small>` : `<p class="empty">Nenhuma campanha finalizada com dados para este produto e este modelo.</p>`}
+    ${L.length && ok < 3 ? `<p id="chPoucos" class="muted" style="border-left:4px solid var(--warn);padding-left:10px">Só ${ok} ${ok === 1 ? 'campanha tem' : 'campanhas têm'} investimento e leads. Com menos de 3, use a média como ponto de partida, não como referência firme.</p>` : ''}
+    ${imp != null ? `<p id="chCoer" class="muted" style="border-left:4px solid var(--warn);padding-left:10px">CPL ÷ conversão dá um CAC de ${brl(imp)}, diferente do CAC médio de ${brl(md.cac.v)}. Isso acontece quando um cliente compra mais de uma vez ou quando as médias usam campanhas diferentes. Confira antes de fechar as metas.</p>` : ''}
+    ${L.length ? '<div class="acts" style="margin-top:10px"><button class="btn pri" id="chUsar">Usar as médias como metas</button></div>' : ''}
+    ${ref ? `<p id="chRef" style="margin-bottom:0"><b>Referência usada neste planejamento</b> <span class="muted">em ${dtt(ref.em)}${ref.por ? ' por ' + esc(ref.por) : ''}: ${[['CPL', ref.valores.cpl, brl], ['CAC', ref.valores.cac, brl], ['Conversão', ref.valores.conv, campHistPct]].filter(z => z[1] != null).map(z => z[0] + ' ' + z[2](z[1])).join(' · ')}. Campanhas: ${(ref.campanhas || []).map(x => esc(x.nome)).join(', ')}.</span></p>` : ''}</details></div>`;
+  box.querySelector('#chDet').addEventListener('toggle', ev => { S.campHistAberto = ev.target.open; });
+  box.querySelectorAll('[data-chc]').forEach(a => a.onclick = ev => { ev.preventDefault(); S.campSel = a.dataset.chc; S.campTab = 'resumo'; S.cfn = null; render(); });
+  const usar = box.querySelector('#chUsar'); if (!usar) return;
+  usar.onclick = () => { const nov = { cpl: md.cpl.v == null ? null : Math.round(md.cpl.v * 100) / 100, cac: md.cac.v == null ? null : Math.round(md.cac.v * 100) / 100, conv: md.conv.v == null ? null : Math.round(md.conv.v * 100) / 100 };
+    const linhas = [['CPL', c.meta_cpl, nov.cpl, brl], ['CAC', c.meta_cac, nov.cac, brl], ['Conversão lead → venda', c.meta_taxa_lead_venda, nov.conv, campHistPct]].filter(z => z[2] != null);
+    modal('Usar as médias como metas', `<p>As metas abaixo passam a ser as médias de ${L.length} ${L.length === 1 ? 'campanha' : 'campanhas'}: ${L.map(x => esc(x.nome)).join(', ')}.</p><div class="tw"><table><thead><tr><th></th><th class="n">Meta atual</th><th class="n">Nova meta</th></tr></thead><tbody>${linhas.map(z => `<tr><td>${z[0]}</td><td class="n">${z[1] ? z[3](Number(z[1])) : '—'}</td><td class="n"><b>${z[3](z[2])}</b></td></tr>`).join('')}</tbody></table></div><p class="muted">Nenhuma outra meta muda. Depois, você pode ajustar cada uma em Editar campanha.</p>`, async () => {
+      const ex = { ...((one(await q(sb.from('campanhas').select('extras').eq('id', c.id))) || {}).extras || {}) }, ant = ex.referencia_planejamento, { historico = [], ...antSem } = ant || {};
+      ex.referencia_planejamento = { em: new Date().toISOString(), por: (S.user && S.user.email) || '', valores: nov, metas_antes: { cpl: c.meta_cpl ?? null, cac: c.meta_cac ?? null, conv: c.meta_taxa_lead_venda ?? null },
+        campanhas: L.map(x => ({ id: x.id, nome: x.nome, data_fim: x.data_fim || null, investimento: Number(x.investimento || 0), leads: Number(x.leads || 0), vendas: Number(x.vendas || 0), clientes: Number(x.clientes || 0), receita_bruta: Number(x.receita_bruta || 0) })), historico: (ant ? [...historico, antSem] : []).slice(-10) };
+      const up = { extras: ex }; if (nov.cpl != null) up.meta_cpl = nov.cpl; if (nov.cac != null) up.meta_cac = nov.cac; if (nov.conv != null) up.meta_taxa_lead_venda = nov.conv;
+      await q(sb.from('campanhas').update(up).eq('id', c.id)); S.campHistAberto = true; toast('Metas atualizadas com as médias do histórico.');
+    }, 'Usar como metas'); };
 }
 
 async function tcFunil(el, c) {

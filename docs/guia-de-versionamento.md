@@ -1,3 +1,8 @@
+## v0.246
+- index.html: `campHistMedias`, `campHistCoerencia`, `campHistoricoPainel`, chamada em `tcResumo` (`#campHist`). Rótulo da tela de 0.177 para 0.246.
+- Sem migração.
+- Teste novo `t246_campanha_historico.py`.
+
 ## v0.245
 - `aplica245.py`: `ehAvisoLead` reconhece "… respondeu o formulário" (faixa verde); campo `avisar_resposta` na Equipe (some se a coluna não existir).
 - Migração `20261231200000_resposta_formulario_aviso.sql` = `RODAR_v0.245_resposta_formulario_aviso.sql` (nome escolhido para ficar antes da `20270101100000` do Rogério).
