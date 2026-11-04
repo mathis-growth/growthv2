@@ -94,8 +94,8 @@ export async function publicHost(host: string) {
   a.forEach(ip => urlPublica('https://' + ip));
   if (aaaa.some(ip => !/^[23][0-9a-f]{3}:/i.test(ip))) throw new Error('Endereço IPv6 não público.');
 }
-export async function request(url: string, key: string, method = 'GET', body?: unknown, evo = false) {
-  const r = await fetch(url, { method, redirect: 'error', signal: AbortSignal.timeout(20000),
+export async function request(url: string, key: string, method = 'GET', body?: unknown, evo = false, timeoutMs = 20000) {
+  const r = await fetch(url, { method, redirect: 'error', signal: AbortSignal.timeout(timeoutMs),
     headers: { 'Content-Type': 'application/json', ...(evo ? { apikey: key } : { Authorization: `Bearer ${key}` }) },
     body: body === undefined ? undefined : JSON.stringify(body) });
   const data = await r.json().catch(() => ({}));
@@ -104,11 +104,11 @@ export async function request(url: string, key: string, method = 'GET', body?: u
   return data;
 }
 export const zernio = (key: string, path: string, method = 'GET', body?: unknown) => request('https://zernio.com/api/v1' + path, key, method, body);
-export async function evolution(cfg: any, path: string, method = 'GET', body?: unknown) {
+export async function evolution(cfg: any, path: string, method = 'GET', body?: unknown, timeoutMs = 20000) {
   const u = urlPublica(cfg.evolution_url);
   // Bloqueia DNS apontando para redes internas antes de usar a chave do servidor.
   await publicHost(u.hostname);
-  return request(u.toString().replace(/\/$/, '') + path, cfg.evolution_key, method, body, true);
+  return request(u.toString().replace(/\/$/, '') + path, cfg.evolution_key, method, body, true, timeoutMs);
 }
 export const providers: Record<string, {
   send: (cfg: any, channel: any, conversation: any, text: string, attachment?: any) => Promise<string>;
@@ -666,8 +666,9 @@ async function handle(req: Request, b: any) {
     const channels=await q(db.from('atd_canais').select('*').eq('workspace_id',ws).eq('provedor','evolution').eq('canal','whatsapp').eq('ativo',true).in('id',canalIds));
     if(channels.length!==canalIds.length||channels.some((c:any)=>c.status!=='conectado'))throw Error('Selecione apenas chips Evolution conectados deste workspace.');
     const groupIds=[...new Set(grupos.map((g:any)=>String(g.conversa_id||'')))];if(groupIds.length!==grupos.length)throw Error('Há grupos duplicados na seleção.');
-    const groupRows=await q(db.from('atd_conversas').select('id,canal_id,grupo').eq('workspace_id',ws).eq('grupo',true).in('id',groupIds));
+    const groupRows=await q(db.from('atd_conversas').select('id,canal_id,grupo,grupo_tipo').eq('workspace_id',ws).eq('grupo',true).in('id',groupIds));
     if(groupRows.length!==groupIds.length||groupRows.some((g:any)=>!canalIds.includes(g.canal_id)||String(grupos.find((x:any)=>x.conversa_id===g.id)?.canal_id)!==g.canal_id))throw Error('Um ou mais grupos não correspondem aos chips selecionados.');
+    if(groupRows.some((g:any)=>g.grupo_tipo==='comunidade'))throw Error('A comunidade é um contêiner. Selecione os grupos ou avisos vinculados para enviar.');
     let media:any=null;
     if(b.midia){const mime=String(b.midia.mime||'').toLowerCase().split(';')[0];if(!['image/jpeg','image/png','image/webp','video/mp4'].includes(mime))throw Error('Use imagem JPG, PNG ou WebP, ou vídeo MP4.');const bytes=base64Bytes(String(b.midia.base64||''));if(!bytes.length||bytes.length>MAX_MEDIA)throw Error('A mídia deve ter até 8 MB.');media={bytes,mime,nome:String(b.midia.nome||'midia').replace(/[\\/\r\n]/g,'_').slice(0,150)};}
     const campaign=await q(db.from('atd_disparos_grupos').insert({workspace_id:ws,nome,texto,iniciar_em:iniciar.toISOString(),intervalo_segundos:intervalo,status:'agendado',total:groupRows.length,autor_id:user.id,autor_nome:ctx.nome}).select('id').single());
@@ -1263,7 +1264,10 @@ async function handle(req: Request, b: any) {
   }
   if (b.action === 'desativar') { await q(db.from('atd_canais').update({ativo:false,status:'desativado'}).eq('id',ch.id)); return json({ok:true}); }
   if (b.action === 'webhook') { await setupWebhook(ch, ch.provedor === 'evolution' ? await secret(ws) : null); return json({ok:true}); }
-  if (b.action === 'sincronizar') return json(await syncConversations(ch,b.cursor));
+  if (b.action === 'sincronizar') {
+    const mode=['conversas','grupos_sem_nome','grupos_novos'].includes(b.modo_sincronizacao)?b.modo_sincronizacao:'all';
+    return json(await syncConversations(ch,b.cursor,mode));
+  }
   if (b.action === 'status' && ch.provedor === 'zernio') {
     const raw=await zernio(zp(),'/accounts/'+encodeURIComponent(ch.externo_id)+'/health');
     const health=raw.data||raw,live=health.platformConnection?.status;
@@ -1304,6 +1308,15 @@ async function setupWebhook(ch: any,cfg: any) {
 // Metadados Evolution v2.3.x: GET /group/findGroupInfos/{instance}?groupJid=...
 // Todas as buscas usam a credencial do workspace e nunca expõem URLs externas.
 const isJid=(jid:string)=>/^[0-9]{5,22}@(g\.us|s\.whatsapp\.net|lid)$/.test(jid);
+const groupKind=(g:any):string|null=>{
+  if(g?.isCommunityAnnounce===true||g?.groupMetadata?.isCommunityAnnounce===true)return 'avisos_comunidade';
+  if(g?.isCommunity===true||g?.groupMetadata?.isCommunity===true)return 'comunidade';
+  return null;
+};
+const groupParent=(g:any):string|null=>{
+  const parent=String(g?.linkedParent||g?.parentGroupJid||g?.communityId||g?.groupMetadata?.linkedParent||'').trim();
+  return isJid(parent)&&parent.endsWith('@g.us')?parent:null;
+};
 const unwrapGroupMeta=(value:any):any=>{
   let current=value;
   for(let i=0;i<4;i++){
@@ -1316,8 +1329,13 @@ const unwrapGroupMeta=(value:any):any=>{
   return current&&typeof current==='object'?current:{};
 };
 const groupName=(g:any):string=>{
-  const value=String(g?.subject||g?.groupMetadata?.subject||g?.name||g?.title||g?.groupName||'').trim().slice(0,180);
-  return value.endsWith('@g.us')?'':value;
+  const candidates=[g?.subject,g?.groupMetadata?.subject,g?.name,g?.title,g?.groupName,
+    g?.pushName,g?.notify,g?.formattedName,g?.displayName,g?.group?.subject,g?.data?.subject];
+  for(const candidate of candidates){
+    const value=String(candidate||'').trim().slice(0,180);
+    if(value&&!isJid(value))return value;
+  }
+  return '';
 };
 const groupPicture=(g:any):string=>String(g?.pictureUrl||g?.profilePictureUrl||g?.groupMetadata?.pictureUrl||'');
 async function storedAvatar(ch:any,jid:string,cfg:any,preferredUrl=''):Promise<string|null>{
@@ -1356,11 +1374,12 @@ async function refreshAvatar(ch:any,cv:any,cfg:any,url=''):Promise<boolean>{
     .eq('id',cv.id).eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id));
   return true;
 }
-async function enrichGroup(ch:any,cv:any,original:any,cfg:any):
-  Promise<{named:boolean,photo:boolean,detailsOk:boolean}>{
+async function resolveGroupName(ch:any,cv:any,original:any,cfg:any):
+  Promise<{named:boolean,detailsOk:boolean,failure?:string,meta:any}>{
   const jid=String(cv.externo_id||'');
-  if(!isJid(jid)||!jid.endsWith('@g.us'))return {named:false,photo:false,detailsOk:false};
+  if(!isJid(jid)||!jid.endsWith('@g.us'))return {named:false,detailsOk:false,meta:original||{}};
   let meta=original||{},name=groupName(meta),detailsOk=Boolean(name);
+  let failure:string|undefined;
   if(!name){
     try{
       // Corrigido v0.190: a rota é GET e groupJid pertence à query, não ao corpo POST.
@@ -1369,7 +1388,7 @@ async function enrichGroup(ch:any,cv:any,original:any,cfg:any):
       meta=unwrapGroupMeta(response);
       name=groupName(meta);
       detailsOk=Boolean(name);
-    }catch{/* Algumas versões da Evolution retornam 404 para grupos antigos. */}
+    }catch(e){failure=evolutionFailure(e);}
   }
   let named=false;
   if(name&&name!==jid&&name!==cv.nome){
@@ -1377,10 +1396,20 @@ async function enrichGroup(ch:any,cv:any,original:any,cfg:any):
       .eq('id',cv.id).eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id));
     named=true;
   }
-  const photo=await refreshAvatar(ch,cv,cfg,groupPicture(meta)||groupPicture(original));
-  return {named,photo,detailsOk};
+  const metadata={...original,...meta},kind=groupKind(metadata),parent=groupParent(metadata);
+  if(kind||parent){
+    await q(db.from('atd_conversas').update({grupo_tipo:kind||'grupo',grupo_pai_externo_id:parent})
+      .eq('id',cv.id).eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id));
+  }
+  return {named,detailsOk,failure,meta};
 }
-async function syncConversations(ch:any,cursor?:string){
+async function enrichGroup(ch:any,cv:any,original:any,cfg:any):
+  Promise<{named:boolean,photo:boolean,detailsOk:boolean,failure?:string}>{
+  const resolved=await resolveGroupName(ch,cv,original,cfg);
+  const photo=await refreshAvatar(ch,cv,cfg,groupPicture(resolved.meta)||groupPicture(original));
+  return {named:resolved.named,photo,detailsOk:resolved.detailsOk,failure:resolved.failure};
+}
+async function syncConversations(ch:any,cursor?:string,mode='all'){
   if(ch.provedor==='evolution'){
     const cfg=await secret(ch.workspace_id),inst=encodeURIComponent(ch.externo_id);
     if(!cfg)throw Error('A Evolution não está configurada para este cliente.');
@@ -1390,14 +1419,29 @@ async function syncConversations(ch:any,cursor?:string){
       Array.isArray(raw?.chats)?raw.chats:
       Array.isArray(raw?.data)?raw.data:
       Array.isArray(raw?.data?.groups)?raw.data.groups:
-      Array.isArray(raw?.data?.chats)?raw.data.chats:[];
-    let chatRows:any[]=[],groupRows:any[]=[];
-    try{
+      Array.isArray(raw?.data?.chats)?raw.data.chats:
+      Array.isArray(raw?.response)?raw.response:
+      Array.isArray(raw?.result)?raw.result:
+      Array.isArray(raw?.data?.result)?raw.data.result:[];
+    let chatRows:any[]=[],groupRows:any[]=[],groupFetchOk=false;
+    if(mode!=='grupos_sem_nome'&&mode!=='grupos_novos')try{
       chatRows=shape(await evolution(cfg,'/chat/findChats/'+inst));
-    }catch(e){warnings.push('Conversas: '+(e instanceof ProviderError?'HTTP '+e.status:'consulta indisponível'));}
-    try{
-      groupRows=shape(await evolution(cfg,'/group/fetchAllGroups/'+inst+'?getParticipants=false'));
-    }catch(e){warnings.push('Grupos: '+(e instanceof ProviderError?'HTTP '+e.status:'consulta indisponível'));}
+    }catch(first){
+      // Algumas instalações Evolution 2.3.7 ainda expõem findChats via POST.
+      // Tenta o contrato legado apenas se o GET não estiver disponível.
+      if(first instanceof ProviderError&&first.status===404){
+        try{chatRows=shape(await evolution(cfg,'/chat/findChats/'+inst,'POST',{}));}
+        catch(second){warnings.push('Conversas: '+evolutionFailure(second));console.warn('atendimento evolução: findChats falhou nos métodos GET e POST',{canal:ch.id,causa:evolutionFailure(second)});}
+      }else{warnings.push('Conversas: '+evolutionFailure(first));console.warn('atendimento evolução: findChats falhou',{canal:ch.id,causa:evolutionFailure(first)});}
+    }
+    if(mode!=='conversas'&&mode!=='grupos_sem_nome')try{
+      // fetchAllGroups pode demorar quando a instância tem histórico amplo.
+      groupRows=shape(await evolution(cfg,'/group/fetchAllGroups/'+inst+'?getParticipants=false','GET',undefined,60000));
+      groupFetchOk=true;
+    }catch(e){warnings.push('Grupos: '+evolutionFailure(e));console.warn('atendimento evolução: fetchAllGroups falhou',{canal:ch.id,causa:evolutionFailure(e)});}
+    const existingGroupIds=mode==='grupos_novos'?new Set((await q(db.from('atd_conversas').select('externo_id')
+      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',true).limit(5000))).map((g:any)=>g.externo_id)):new Set<string>();
+    let newGroups=0;
     const byJid=new Map<string,any>();
     for(const item of chatRows){
       const id=String(item?.remoteJid||item?.id||item?.jid||item?.groupJid||'');
@@ -1421,26 +1465,43 @@ async function syncConversations(ch:any,cursor?:string){
         String(item.pushName||item.name||item.contact?.pushName||'').trim().slice(0,180);
       await q(db.rpc('atd_receber',{p_canal:ch.id,
         p_conversa:{id,nome:name&&name!==id?name:undefined,endereco:id,grupo:group}}));
+      if(group){
+        const kind=groupKind(item),parent=groupParent(item);
+        if(kind||parent)await q(db.from('atd_conversas').update({grupo_tipo:kind||'grupo',grupo_pai_externo_id:parent})
+          .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('externo_id',id));
+      }
+      if(mode==='grupos_novos'&&group&&!existingGroupIds.has(id))newGroups++;
+    }
+    if(mode==='conversas')return {total:byJid.size,cursor:null};
+    if(mode==='grupos_novos'){
+      if(!groupFetchOk)throw new Error(warnings.find((w:string)=>w.startsWith('Grupos:'))||'Não foi possível buscar novos grupos.');
+      const scannedAt=new Date().toISOString();
+      await q(db.from('atd_canais').update({grupos_sincronizados_em:scannedAt}).eq('id',ch.id).eq('workspace_id',ch.workspace_id));
+      return {grupos_encontrados:groupRows.length,novos_grupos:newGroups,grupos_sincronizados_em:scannedAt,avisos:[...new Set(warnings)].slice(0,4)};
     }
     // A recuperação deve funcionar mesmo que fetchAllGroups falhe: usar grupos
     // do banco, sem depender de um novo evento do WhatsApp.
     const groups=await q(db.from('atd_conversas')
       .select('id,externo_id,nome,avatar_path,avatar_atualizado_em')
       .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',true)
-      .order('ultima_em',{ascending:false,nullsFirst:false}).limit(150));
+      .order('ultima_em',{ascending:false,nullsFirst:false}).limit(mode==='grupos_sem_nome'?2500:150));
+    const missingGroups=groups;
     const initialMissing=groups.filter((g:any)=>g.nome===g.externo_id).length;
     const offset=/^g:(\d+)$/.test(String(cursor||''))?Number(String(cursor).split(':')[1]):0;
-    const start=Math.min(Number.isFinite(offset)?offset:0,Math.max(0,groups.length-1));
-    const subset=groups.slice(start,start+8);
+    const start=Math.min(Number.isFinite(offset)?offset:0,Math.max(0,missingGroups.length-1));
+    const page=missingGroups.slice(start,start+8);
+    const subset=mode==='grupos_sem_nome'?page.filter((g:any)=>g.nome===g.externo_id):page;
     let named=0,photos=0,details=0;
     for(let i=0;i<subset.length;i+=4){
+      const resolver=mode==='grupos_sem_nome'?resolveGroupName:enrichGroup;
       const results=await Promise.allSettled(subset.slice(i,i+4).map((g:any)=>
-        enrichGroup(ch,g,byJid.get(g.externo_id)||{},cfg)));
+        resolver(ch,g,byJid.get(g.externo_id)||{},cfg)));
       for(const result of results){
         if(result.status!=='fulfilled'){warnings.push('Detalhes do grupo: falha de consulta');continue;}
         if(result.value.named)named++;
-        if(result.value.photo)photos++;
+        if('photo' in result.value&&result.value.photo)photos++;
         if(result.value.detailsOk)details++;
+        if(result.value.failure)warnings.push('Detalhes: '+result.value.failure);
       }
     }
     // Buscar fotos também dos contatos recentes, independentemente dos grupos.
@@ -1452,9 +1513,9 @@ async function syncConversations(ch:any,cursor?:string){
       .map((cv:any)=>refreshAvatar(ch,cv,cfg)));
     photos+=cp.filter(x=>x.status==='fulfilled'&&x.value===true).length;
     const current=await q(db.from('atd_conversas').select('id,externo_id,nome,avatar_path')
-      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',true).limit(150));
+      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',true).limit(mode==='grupos_sem_nome'?2500:150));
     const remaining=current.filter((g:any)=>g.nome===g.externo_id).length;
-    const next=start+8<groups.length?'g:'+(start+8):null;
+    const next=start+8<missingGroups.length?'g:'+(start+8):null;
     if(!chatRows.length&&!groupRows.length&&!groups.length)
       warnings.push('Nenhuma conversa/grupo disponível; verifique a conexão Evolution.');
     return {
@@ -1473,6 +1534,34 @@ async function syncConversations(ch:any,cursor?:string){
       id:item.id,nome:item.participantName||item.participantUsername,
       endereco:item.participantId,grupo:false}}));
   return {total:(response.data||[]).length,cursor:response.pagination?.nextCursor||null};
+}
+function evolutionFailure(error:unknown):string{
+  if(error instanceof ProviderError)return 'HTTP '+error.status;
+  const name=String((error as any)?.name||'');
+  if(name==='TimeoutError'||name==='AbortError')return 'tempo esgotado na consulta';
+  if(error instanceof TypeError)return 'falha de conexão com a Evolution';
+  return 'falha ao consultar a Evolution';
+}
+
+async function processarGruposPeriodicos(req:Request){
+  const config=await q(db.from('sistema_config').select('valor').eq('chave','atd_agenda_token').maybeSingle());
+  const expected=String(config?.valor||'');
+  if(!expected||!await segredoIgual(req.headers.get('x-atd-agenda-token')||'',expected))
+    return json({erro:'Agendador não autorizado.'},401);
+  const cutoff=new Date(Date.now()-6*60*60*1000).toISOString();
+  const channels=await q(db.from('atd_canais').select('id,workspace_id,provedor,canal,nome,externo_id,status,ativo,grupos_sincronizados_em')
+    .eq('provedor','evolution').eq('canal','whatsapp').eq('ativo',true).eq('status','conectado')
+    .or('grupos_sincronizados_em.is.null,grupos_sincronizados_em.lte.'+cutoff)
+    .order('grupos_sincronizados_em',{ascending:true,nullsFirst:true}).limit(1));
+  if(!channels.length)return json({ok:true,verificados:0,aguardando_intervalo:true});
+  const ch=channels[0];
+  try{return json({ok:true,...await syncConversations(ch,undefined,'grupos_novos')});}
+  catch(e){
+    await q(db.from('atd_canais').update({grupos_sincronizados_em:new Date().toISOString()})
+      .eq('id',ch.id).eq('workspace_id',ch.workspace_id));
+    console.warn('atendimento evolução: rotina periódica de grupos falhou',{canal:ch.id,causa:evolutionFailure(e)});
+    return json({ok:false,canal_id:ch.id,erro:evolutionFailure(e)},502);
+  }
 }
 
 async function backfill(ch: any,cv: any,cursor?: string) {
@@ -1498,6 +1587,7 @@ Deno.serve(async req => {
     if(url.searchParams.has('provider'))return await webhook(req,url,raw);
     const b=JSON.parse(raw);
     if(b.action==='qr-share-view')return await qrSharePublico(b);
+    if(b.action==='processar-grupos-periodico')return await processarGruposPeriodicos(req);
     if(b.action==='processar-agendamentos')return await processarAgendamentos(req);
     return await handle(req,b);
   } catch(e) {
