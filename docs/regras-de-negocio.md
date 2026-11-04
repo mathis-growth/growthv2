@@ -1,3 +1,9 @@
+## v0.260
+- **Campanha de lançamento:** abre sempre no Dashboard, sem abas; Planejamento mostra o que foi cadastrado no assistente, somente para leitura. Atalhos antigos levam à etapa correspondente. Perpétuo continua nas abas.
+- **Filtros:** valem para números, gráficos, listas e cohorts. Qualificação e anúncio mudam leads e vendas; canal, anúncio e público mudam o investimento.
+- **Comparar com outra campanha:** alinha pelo primeiro dia da etapa em cada campanha. A campanha comparada precisa ter a data da etapa.
+- **Meta por canal:** soma as metas de `campanha_canais` pelo nome do canal; a meta de leads é proporcional ao tempo passado da captação.
+
 ## v0.259
 - **Barra da campanha:** Captação, Aquecimento, Carrinho e Pós-venda sempre aparecem em lançamento; Reabertura e Downsell, se tiverem data ou etapas.
 - **Submenus:** vêm de `campanha_etapas`, agrupados pelo bloco na fase. Sem cópia, mostram as etapas da estratégia ligada, sem números, com a opção de trazer para a campanha.

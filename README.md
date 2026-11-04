@@ -15,7 +15,7 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.259 · 04/11/2026 (`index.html` + `assets/atendimento.*`) |
+| **Versão da tela** | 0.260 · 04/11/2026 (`index.html` + `assets/atendimento.*`) |
 | **Atendimento (0.175)** | Código preparado; falta aplicar `supabase/migrations/20261030021541_central_atendimento.sql`, publicar a função `atendimento`, configurar canais e liberar as telas nos pacotes. [Guia](docs/atendimento.md). |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | conferido em 31/10/2026: tem tudo até a **v0.189**, inclusive as narrativas (v0.157, 39 modelos), o Growth's Content simplificado (v0.159), os subtemas (v0.160), o Customer Growth (v0.163), o Atendimento e o Diagnóstico 360° (v0.177) |
 | **Falta aplicar no banco** | `supabase/RODAR_v0.197_pesquisa_modelos.sql` (modelos de pesquisa fora da lista) e `supabase/RODAR_v0.198_plano_anual.sql` (meta do ano, com impostos e custos variáveis da v0.199) `supabase/RODAR_v0.205_go_to_market.sql` (pacote Go-to-Market e custos de marketing) `supabase/RODAR_v0.206_historico_vendas.sql` (histórico de vendas) `supabase/RODAR_v0.208_vendas_periodo.sql` (dashboard de vendas) e `supabase/RODAR_v0.209_financeiro_simplificado.sql` (Financeiro simplificado) |
@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.260 | 04/11/2026 | **Dashboard único da campanha**: lançamento sem abas, filtros que mudam os gráficos, comparação com outra campanha e meta por canal. | — |
 | 0.259 | 04/11/2026 | **Etapas e submenus pela estratégia**: barra sempre com Aquecimento e Carrinho, submenus por bloco e Editar campanha no assistente. | `20270114100000_v0259_etapas_por_dia.sql` |
 | 0.258 | 04/11/2026 | **Campanha com mini gráficos e order bump separado**: tela por etapas em todo lançamento, vendas por oferta e uma venda por item na Eduzz e na Hubla. | `20270113100000_v0258_order_bump_por_item.sql` |
 | 0.257 | 04/11/2026 | **Kiwify, Eduzz e Hubla**: ativação por cliente, tabelas brutas e tratamento em vendas e clientes. | `20270112100000_v0257_kiwify_eduzz_hubla.sql` |

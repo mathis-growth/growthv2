@@ -1,3 +1,13 @@
+## v0.260 — Dashboard único da campanha (04/11/2026)
+- **Lançamento sem abas:** Planejamento mostra tudo o que foi planejado, dividido em abas. Dashboard mostra realizado contra planejado. Mídia paga, Leads e Funil de leads ficam na Captação; Vídeos no Aquecimento, e VSL na Captação; Vendas no Carrinho; Fechamento no Pós-venda. Perpétuo continua com as abas.
+- **Assistente:** novo passo 9, Links e tracks.
+- **Filtros:** canal, anúncio, público, qualificação e período mudam números e gráficos; não há mais escolha de tipo de gráfico.
+- **Comparar:** com a semana anterior, entre os canais ou com outra campanha, dia a dia.
+- **Dashboard:** meta por canal com luzinha. **Captação:** gráfico de qualificados por dia.
+- **Números à mão:** digitados direto no submenu da etapa.
+- **Canal sem lead:** aparece zerado, e o detalhe respeita o canal escolhido.
+- Sem mudança no banco. Testes: tela `t256` (0 falhas).
+
 ## v0.259 — Etapas e submenus pela estratégia (04/11/2026)
 - **Menu antigo:** já nasce escondido na tela por etapas, sem aparecer e sumir.
 - **Editar campanha:** abre o assistente por etapas, igual ao de criar.

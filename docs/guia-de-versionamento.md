@@ -1,3 +1,6 @@
+## v0.260
+- index.html: `tcVisao` sem abas, com `ATALHO` e `LEG`; `CampEtapas` com filtros `an`, `pub` e `qual`, `compara`, `tbCanais`, `vPlan` e `CHIPS`; passo 9 no assistente; `cdAbrir` respeita `S.mCanal`. Rótulo da tela para 0.260. Sem migração.
+
 ## v0.259
 - Migração `20270114100000_v0259_etapas_por_dia.sql`: função `campanha_etapas_dia`.
 - index.html: `vBloco`, `subMenu`, `etapasBarra` em `CampEtapas`; `tcVisao` carrega etapas e blocos; `formCampanha` com campanha existente abre `abrirWizard`. Rótulo da tela para 0.259.

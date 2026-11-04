@@ -77,7 +77,7 @@ with sync_playwright() as p:
     chk(sv['p_campanha'] == 'c1' and len(sv['p_itens']) == 2 and sv['p_itens'][0]['comissao_pct'] == 20 and sv['p_itens'][0]['meta_vendas'] == 60 and sv['p_itens'][0]['codigo'].startswith('vd_ana'), 'grava comissão, meta e código', sv)
     c = ev(pg, "__D.campanhas.find(x => x.id === 'c1')"); pv = c['extras']['cenarios']['previsao']
     chk(c['extras']['checkout_url'].startswith('https://pay.hotmart') and abs(pv['base']['sobra'] - 68640) < .01 and pv['taxa_pct'] == 10, 'guarda o link e a previsão', pv.get('base'))
-    chk('Concluir' in ev(pg, "document.querySelector('#modalRoot .pri').textContent"), 'depois vem Pesquisa, que conclui')
+    chk('continuar' in ev(pg, "document.querySelector('#modalRoot .pri').textContent"), 'depois vem Pesquisa e Links e tracks')
     pg.evaluate("document.querySelector('#modalRoot').innerHTML = ''")
     # previsão em Planejamento e metas
     pg.evaluate("""() => { const c = __D.campanhas.find(x => x.id === 'c1'); c.status = 'ativa'; __D.v_marketing_campanha.push({ campanha_id: 'c1', workspace_id: 'w1', nome: c.nome, investimento: 0, leads: 0, vendas: 0, clientes: 0, faturamento: 0, receita: 0 }); S.view = 'mkt-camp'; S.campSel = 'c1'; S.campTab = 'resumo'; render(); }"""); pg.wait_for_timeout(1500)
