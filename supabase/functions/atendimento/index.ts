@@ -1454,13 +1454,13 @@ async function refreshAvatar(ch:any,cv:any,cfg:any,url=''):Promise<boolean>{
     .eq('id',cv.id).eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id));
   return true;
 }
-async function resolveGroupName(ch:any,cv:any,original:any,cfg:any):
+async function resolveGroupName(ch:any,cv:any,original:any,cfg:any,forceLookup=false):
   Promise<{named:boolean,detailsOk:boolean,failure?:string,meta:any,members:number|null}>{
   const jid=String(cv.externo_id||'');
   if(!isJid(jid)||!jid.endsWith('@g.us'))return {named:false,detailsOk:false,meta:original||{},members:null};
   let meta=original||{},name=groupName(meta),detailsOk=Boolean(name);
   let failure:string|undefined;
-  if(!name||!cv.avatar_path||cv.grupo_membros==null){
+  if(forceLookup||!name||!cv.avatar_path||cv.grupo_membros==null){
     try{
       // Corrigido v0.190: a rota é GET e groupJid pertence à query, não ao corpo POST.
       const params=new URLSearchParams({groupJid:jid});
@@ -1568,21 +1568,33 @@ async function syncConversations(ch:any,cursor?:string,mode='all'){
     }
     // A recuperação deve funcionar mesmo que fetchAllGroups falhe: usar grupos
     // do banco, sem depender de um novo evento do WhatsApp.
-    const groups=await q(db.from('atd_conversas')
+    let groupQuery=db.from('atd_conversas')
       .select('id,externo_id,nome,avatar_path,avatar_atualizado_em,grupo_membros')
-      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',true)
-      .order('externo_id',{ascending:true}).limit(mode==='grupos_sem_nome'?2500:150));
+      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',true);
+    // Para recuperar nomes, primeiro restringe no banco às linhas cujo nome
+    // ainda é um JID. Só depois aplica o cursor; assim nomes válidos à frente
+    // na tabela não escondem grupos pendentes.
+    const cursorJid=mode==='grupos_sem_nome'&&String(cursor||'').startsWith('g:')
+      ?decodeURIComponent(String(cursor).slice(2)):'';
+    if(mode==='grupos_sem_nome'){
+      groupQuery=groupQuery.like('nome','%@g.us');
+      if(cursorJid)groupQuery=groupQuery.gt('externo_id',cursorJid);
+    }
+    const groups=await q(groupQuery.order('externo_id',{ascending:true})
+      .limit(mode==='grupos_sem_nome'?2500:150));
     const needsMetadata=(g:any)=>groupNameMissing(g)||!g.avatar_path||g.grupo_membros==null;
     const initialMissing=groups.filter(groupNameMissing).length;
     const offset=/^g:(\d+)$/.test(String(cursor||''))?Number(String(cursor).split(':')[1]):0;
-    const start=Math.min(Number.isFinite(offset)?offset:0,Math.max(0,groups.length-1));
-    const page=groups.slice(start,start+8);
-    const subset=mode==='grupos_sem_nome'?page.filter(needsMetadata):page;
+    const start=mode==='grupos_sem_nome'?0:Math.min(Number.isFinite(offset)?offset:0,Math.max(0,groups.length-1));
+    const page=mode==='grupos_sem_nome'?groups.slice(0,8):groups.slice(start,start+8);
+    const subset=mode==='grupos_sem_nome'?page.filter((g:any)=>groupNameMissing(g)&&isJid(String(g.nome||''))&&String(g.nome).endsWith('@g.us')):page;
     let named=0,photos=0,details=0;
     for(let i=0;i<subset.length;i+=4){
-      const resolver=enrichGroup;
+      const resolver=mode==='grupos_sem_nome'?resolveGroupName:enrichGroup;
       const results=await Promise.allSettled(subset.slice(i,i+4).map((g:any)=>
-        resolver(ch,g,byJid.get(g.externo_id)||{},cfg)));
+        mode==='grupos_sem_nome'
+          ? resolveGroupName(ch,g,byJid.get(g.externo_id)||{},cfg,true)
+          : resolver(ch,g,byJid.get(g.externo_id)||{},cfg)));
       for(const result of results){
         if(result.status!=='fulfilled'){warnings.push('Detalhes do grupo: falha de consulta');continue;}
         if(result.value.named)named++;
@@ -1592,25 +1604,32 @@ async function syncConversations(ch:any,cursor?:string,mode='all'){
       }
     }
     // Buscar fotos também dos contatos recentes, independentemente dos grupos.
-    const contacts=await q(db.from('atd_conversas')
-      .select('id,externo_id,avatar_atualizado_em')
-      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',false)
-      .order('ultima_em',{ascending:false,nullsFirst:false}).limit(4));
-    const cp=await Promise.allSettled(contacts.filter((cv:any)=>isJid(cv.externo_id))
-      .map((cv:any)=>refreshAvatar(ch,cv,cfg)));
-    photos+=cp.filter(x=>x.status==='fulfilled'&&x.value===true).length;
-    const current=await q(db.from('atd_conversas').select('id,externo_id,nome,avatar_path,grupo_membros')
-      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',true).limit(mode==='grupos_sem_nome'?2500:150));
+    if(mode!=='grupos_sem_nome'){
+      const contacts=await q(db.from('atd_conversas')
+        .select('id,externo_id,avatar_atualizado_em')
+        .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',false)
+        .order('ultima_em',{ascending:false,nullsFirst:false}).limit(4));
+      const cp=await Promise.allSettled(contacts.filter((cv:any)=>isJid(cv.externo_id))
+        .map((cv:any)=>refreshAvatar(ch,cv,cfg)));
+      photos+=cp.filter(x=>x.status==='fulfilled'&&x.value===true).length;
+    }
+    let remainingQuery=db.from('atd_conversas').select('id,externo_id,nome,avatar_path,grupo_membros')
+      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',true);
+    if(mode==='grupos_sem_nome')remainingQuery=remainingQuery.like('nome','%@g.us');
+    const current=await q(remainingQuery.limit(mode==='grupos_sem_nome'?2500:150));
     const remaining=current.filter(groupNameMissing).length;
     const remainingMetadata=current.filter(needsMetadata).length;
-    const next=start+page.length<groups.length?'g:'+(start+page.length):null;
+    const next=mode==='grupos_sem_nome'
+      ?groups.length>page.length&&page.length?'g:'+encodeURIComponent(String(page[page.length-1].externo_id)):null
+      :start+page.length<groups.length?'g:'+(start+page.length):null;
     if(!chatRows.length&&!groupRows.length&&!groups.length)
       warnings.push('Nenhuma conversa/grupo disponível; verifique a conexão Evolution.');
     return {
       total:byJid.size,cursor:next,grupos_no_banco:groups.length,
-      nomes_atualizados:Math.max(0,initialMissing-remaining),
+      nomes_atualizados:mode==='grupos_sem_nome'?named:Math.max(0,initialMissing-remaining),
       detalhes_confirmados:details,fotos_salvas:photos,
-      grupos_sem_nome:remaining,grupos_sem_metadados:remainingMetadata,grupos_consultados:subset.length,
+      grupos_sem_nome:remaining,grupos_sem_metadados:remainingMetadata,
+      grupos_consultados:subset.length,grupos_consultados_sem_nome:subset.length,
       avisos:[...new Set(warnings)].slice(0,4)
     };
   }

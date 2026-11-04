@@ -1,3 +1,14 @@
+## v0.262 — Buscar e salvar o subject dos grupos pendentes (04/11/2026)
+- A atualização consulta `atd_conversas` diretamente por nomes terminados em `@g.us` antes de paginar.
+- Para cada linha pendente, chama `findGroupInfos` com o `externo_id` como `groupJid` e salva o `subject` em `nome`.
+- A paginação avança pelo JID do último item consultado; a tela informa os JIDs consultados e quantos nomes foram recuperados.
+- Edge única atualizada: `docs/edge-atendimento-v0214-index-unico.ts`. Sem migration adicional.
+
+## v0.261 — Imagem e membros dos grupos no Atendimento (04/11/2026)
+- A Edge salva a foto do grupo no armazenamento privado e persiste o total de membros retornado pela Evolution.
+- A imagem e o total ficam visíveis na lista e no cabeçalho do Chat, além dos grupos de Disparos.
+- Banco: `20270111100000_atendimento_grupos_imagem_membros.sql`. Edge única: `docs/edge-atendimento-v0213-index-unico.ts`.
+
 ## v0.260 — Dashboard único da campanha (04/11/2026)
 - **Lançamento sem abas:** Planejamento mostra tudo o que foi planejado, dividido em abas. Dashboard mostra realizado contra planejado. Mídia paga, Leads e Funil de leads ficam na Captação; Vídeos no Aquecimento, e VSL na Captação; Vendas no Carrinho; Fechamento no Pós-venda. Perpétuo continua com as abas.
 - **Assistente:** novo passo 9, Links e tracks.
@@ -44,11 +55,6 @@
 - **Vendedor:** o `sck` do link liga a venda ao vendedor e à campanha (v0.254).
 - **Nada se perde:** produto sem ligação, venda em outra moeda ou comprador sem contato ficam a revisar. Documento, endereço e dados de pagamento do comprador não são guardados.
 - Banco: `20270110100000_v0255_webhook_hotmart.sql`. Testes: banco `v0255_webhook_hotmart.sql` (OK); tela `t255` (0 falhas). Falta testar com um envio real da Hotmart.
-
-## v0.259 — Imagem e membros dos grupos no Atendimento (04/11/2026)
-- A Edge salva a foto do grupo no armazenamento privado e persiste o total de membros retornado pela Evolution.
-- A imagem e o total ficam visíveis na lista e no cabeçalho do Chat, além dos grupos de Disparos.
-- Banco: `20270111100000_atendimento_grupos_imagem_membros.sql`. Edge única: `docs/edge-atendimento-v0213-index-unico.ts`.
 
 ## v0.254 — Comercial da campanha (04/11/2026)
 - **Assistente:** novo passo 7, Comercial; Pesquisa vira o passo 8. Traz os vendedores cadastrados nas ofertas e nos produtos da campanha, e dá para adicionar outros ou cadastrar na hora.

@@ -604,7 +604,7 @@
         else if(action==='sincronizar'){
           if(mode==='grupos_sem_nome'){
             btn.dataset.cursor=r.cursor||'';btn.textContent=r.cursor?'Próximos dados de grupos':'Atualizar dados dos grupos';
-            target.textContent=`${r.grupos_consultados||0} grupos consultados · ${r.nomes_atualizados||0} nomes recuperados · ${r.fotos_salvas||0} fotos salvas · ${r.grupos_sem_metadados??'?'} ainda sem imagem ou total de membros. ${(r.avisos||[]).join(' | ')}${r.cursor?' Clique novamente para continuar.':''}`;
+            target.textContent=`${r.grupos_consultados_sem_nome??r.grupos_consultados??0} grupos com nome JID consultados · ${r.nomes_atualizados||0} subjects recuperados · ${r.grupos_sem_nome??'?'} ainda sem nome. ${(r.avisos||[]).join(' | ')}${r.cursor?' Clique novamente para continuar.':''}`;
           }else if(mode==='grupos_novos'){
             target.textContent=`Busca concluída: ${r.grupos_encontrados||0} grupos identificados, ${r.novos_grupos||0} novos. Próxima busca automática em até 6 horas. ${(r.avisos||[]).join(' | ')}`;
           }else target.textContent=(r.total||0)+' conversas consultadas.';
