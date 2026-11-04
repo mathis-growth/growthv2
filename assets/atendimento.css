@@ -15,6 +15,8 @@
 .atd-faixa--outro{border-left-color:var(--accent)}
 .atd-item .atd-faixa{margin-right:4px}
 .atd-top .atd-faixa{margin-top:4px}
+.atd-chat-identidade{display:flex;align-items:center;gap:10px;min-width:0}.atd-chat-identidade>div{min-width:0}.atd-chat-avatar{width:42px;height:42px;margin:0;flex:0 0 42px}.atd-chat-avatar img,.atd-disparo-avatar img,.atd-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}.atd-disparo-conteudo{flex:1;min-width:0}.atd-disparo-avatar{width:38px;height:38px;margin:0;flex:0 0 38px}.atd-grupo-membros{color:var(--muted);font-size:11px}
+.atd-disparo-grupos label{align-items:center;gap:10px}.atd-disparo-avatar{order:3}
 [data-theme="light"] .atd-faixa--instagram{color:#981b39;background:#ffe7ec}
 [data-theme="light"] .atd-faixa--whatsapp{color:#12693b;background:#e3f8eb}
 .atd-canal .atd-faixa{margin:8px 0}

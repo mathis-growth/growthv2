@@ -28,6 +28,11 @@
 - **Nada se perde:** produto sem ligação, venda em outra moeda ou comprador sem contato ficam a revisar. Documento, endereço e dados de pagamento do comprador não são guardados.
 - Banco: `20270110100000_v0255_webhook_hotmart.sql`. Testes: banco `v0255_webhook_hotmart.sql` (OK); tela `t255` (0 falhas). Falta testar com um envio real da Hotmart.
 
+## v0.259 — Imagem e membros dos grupos no Atendimento (04/11/2026)
+- A Edge salva a foto do grupo no armazenamento privado e persiste o total de membros retornado pela Evolution.
+- A imagem e o total ficam visíveis na lista e no cabeçalho do Chat, além dos grupos de Disparos.
+- Banco: `20270111100000_atendimento_grupos_imagem_membros.sql`. Edge única: `docs/edge-atendimento-v0213-index-unico.ts`.
+
 ## v0.254 — Comercial da campanha (04/11/2026)
 - **Assistente:** novo passo 7, Comercial; Pesquisa vira o passo 8. Traz os vendedores cadastrados nas ofertas e nos produtos da campanha, e dá para adicionar outros ou cadastrar na hora.
 - **Vendedor:** o cadastro diz se é interno ou externo. A comissão e a meta de vendas são definidas por campanha.
