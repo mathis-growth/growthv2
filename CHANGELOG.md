@@ -1,3 +1,14 @@
+## v0.248 — Assistente da campanha: passo de datas e três cenários (03/11/2026)
+- **Passo próprio "Datas das etapas"**, depois de O básico, só no lançamento: Aquisição, Aquecimento, Carrinho aberto e, se marcar, Reabertura e Downsell, que podem ficar sem data de fim. O assistente passa a ter 6 passos; no perpétuo, são 5.
+- **Histórico e referências:** gráficos dentro de uma linha fina; sem a linha "Não levar" (clicar de novo desmarca).
+- **"Orçamento e cenários"** no lugar de "Orçamento e metas":
+  - colunas Pessimista, Base e Otimista, com investimento, CPL, leads, conversão, vendas, CAC e ticket editáveis, mais receita e ROAS previstos;
+  - o Base traz o que foi marcado no histórico e vira a meta da campanha;
+  - mudar uma métrica recalcula as outras;
+  - pessimista e otimista partem do Base, com CPL e conversão 20% piores ou melhores; mexidos à mão, deixam de acompanhar o Base, e "Refazer a partir do Base" desfaz isso.
+- **Aba Estratégia e etapas:** "Datas das fases" mostra Reabertura e Downsell no lançamento e não apaga datas de outras etapas.
+- Banco: sem migração (`campanhas.fases` e `campanhas.extras.cenarios`). Teste: `t247_assistente_referencias.py` (69 verificações, 0 falhas).
+
 ## v0.247 — Assistente da campanha: datas de cada etapa e passo de histórico (03/11/2026)
 - **Passo 1, O básico:** no lançamento, datas de início e fim de Aquisição, Aquecimento, Conversão e Retenção, mais abertura e fechamento do carrinho. São opcionais e ficam nos mesmos campos da aba Estratégia e etapas.
 - **Passo 2 novo, Histórico e referências** (o assistente passa a ter 5 passos):

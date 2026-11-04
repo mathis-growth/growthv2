@@ -1,3 +1,16 @@
+## v0.248
+- **Datas das etapas:** passo só do lançamento. Reabertura e downsell são opcionais; marcados, pedem o início, e o fim pode ficar em branco.
+- **Cenários:** o Base vira as metas da campanha (orçamento, CPL, conversão, CAC, leads, vendas e receita). No perpétuo, os valores são por mês e só orçamento, leads por mês, CPL, conversão e CAC viram meta.
+- **Recálculo:**
+  - investimento: leads pelo CPL, vendas pela conversão, CAC = investimento ÷ vendas;
+  - CPL: leads e, com eles, vendas e CAC;
+  - leads: CPL, vendas e CAC;
+  - conversão: vendas e CAC;
+  - vendas: conversão e CAC;
+  - CAC: vendas pelo investimento e leads pela conversão.
+- **Quando CPL, conversão e CAC vêm marcados juntos**, o CAC é recalculado a partir dos outros dois ao preencher o investimento; o valor marcado continua indicado na linha.
+- **Pessimista e otimista:** CPL e conversão 20% piores ou melhores que o Base, com o mesmo investimento, até serem mexidos à mão.
+
 ## v0.247
 - **Datas no assistente:** só no lançamento e opcionais. O fim da etapa não pode vir antes do início, nem o fechamento do carrinho antes da abertura.
 - **Levar para as metas:** só CPL, CAC e conversão, com a média ou uma campanha da lista. Investido, leads, clientes, receita e ROAS são consulta.

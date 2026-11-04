@@ -1,3 +1,8 @@
+## v0.248
+- index.html: `LANC_EXTRAS`, `CEN_LIN`, `CEN_TIPOS`, `cenFecha`, `cenSolve`, `cenDeriva`, `cenInicial`, `cenHtml`. `abrirWizard` com 6 passos (o 2 só no lançamento, com `numPassos` e `semDatas`). `campRascunho` aponta para os passos novos. "Datas das fases" preserva o que não está na tela. Rótulo da tela para 0.248.
+- Sem migração.
+- Teste `t247_assistente_referencias.py` ampliado.
+
 ## v0.247
 - index.html: `CH_MET`, `chValor`, `chMedia`, `chEscolhas`, `chGraficos`, `chDetalheHtml`, `chPassoHtml`, `chResumoHtml`, `campHistComparaveis`. `abrirWizard` passa a ter 5 passos (`WZ_ETAPAS`), com as datas das etapas no passo 1. `campRascunho` aponta para os passos novos. Rótulo da tela para 0.247.
 - Sem migração.

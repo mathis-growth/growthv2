@@ -348,16 +348,15 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .maism button small{margin-left:auto;color:var(--muted);font-size:11px}
 .maism hr{border:0;border-top:1px solid var(--line);margin:5px 4px}
 .maism button.perigo{color:var(--bad)}
-.wz{max-width:760px!important;padding:0!important;overflow:hidden}.wz.wzl{max-width:1040px!important}
-.wz-fases{display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:12px;padding:12px 14px}.wz-fases .grid2{margin-top:6px}
+.wz{max-width:760px!important;padding:0!important;overflow:hidden}.wz.wzl{max-width:1040px!important}.cen-t input{text-align:right;min-width:110px}.cen-t td{padding:5px 8px}.cen-t .cen-b{background:var(--accent-soft)}.wz .wzb .wz-ck{flex-direction:row;align-items:center;gap:8px;font-weight:600}.wz-ck input{width:auto}.wz-ex{display:flex;flex-direction:column;gap:8px}.wz-ex [hidden]{display:none!important}
 .ch-top{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}.ch-top label{flex-direction:row;align-items:center;gap:8px;display:flex}.ch-top select{width:auto}.ch-top .sp{flex:1}
-.ch-gs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px}.ch-g{margin:0}.ch-det{background:var(--accent-soft);border-radius:10px;padding:12px 14px}.ch-deth{display:flex;gap:8px;align-items:center;margin-bottom:8px}.ch-deth .sp{flex:1}.ch-g figcaption{display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-bottom:6px}
+.ch-gs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}.ch-g{margin:0;border:1px solid var(--line);border-radius:10px;padding:10px 12px}.ch-det{background:var(--accent-soft);border-radius:10px;padding:12px 14px}.ch-deth{display:flex;gap:8px;align-items:center;margin-bottom:8px}.ch-deth .sp{flex:1}.ch-g figcaption{display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-bottom:6px}
 .ch-g figcaption span{white-space:nowrap}.ch-pl{position:relative;display:flex;gap:6px;height:100px;border-bottom:1px solid var(--line)}.ch-c{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}.ch-c i{display:block;width:100%;max-width:28px;background:var(--accent);border-radius:4px 4px 0 0}
 .ch-md{position:absolute;left:0;right:0;border-top:1px dashed var(--muted);pointer-events:none}.ch-xs{display:flex;gap:6px;font-size:11px;color:var(--muted);margin-top:3px}.ch-xs span{flex:1;min-width:0;text-align:center}.ch-xs b{display:block;color:var(--ink);font-weight:600;white-space:nowrap}
 .ch-t{font-size:13px}.ch-t th{font-size:11px;font-weight:600;white-space:normal;text-transform:none;letter-spacing:0;padding:6px}.ch-t td{padding:5px 6px}.ch-t td:first-child{min-width:110px}.ch-op{display:inline-flex!important;flex-direction:row!important;align-items:center;justify-content:flex-end;width:auto!important;margin:0!important;gap:4px;border:1px solid transparent;border-radius:8px;padding:2px 6px;cursor:pointer;white-space:nowrap}.ch-op input{appearance:radio;width:14px!important;height:14px;min-height:0;padding:0;margin:0;border:0;box-shadow:none!important;background:none;flex:none}.ch-op.on{border-color:var(--accent);background:var(--accent-soft)}.ch-op:focus-within{outline:2px solid var(--accent);outline-offset:1px}.ch-av{border-left:4px solid var(--warn);padding-left:10px;margin:0}
 .wz .wzh{padding:20px 24px 14px;border-bottom:1px solid var(--line)}
 .wz .wzh h2{margin:0 0 14px;font-size:20px}
-.wz .wzp{display:grid!important;grid-template-columns:repeat(5,1fr)!important;gap:8px}
+.wz .wzp{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px}.wz .wzp .wn{font-weight:inherit}
 .wz .wzp div{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--muted);font-weight:600}
 .wz .wzp div i{height:5px;border-radius:9px;background:var(--line)}
 .wz .wzp div.ok{color:var(--good)} .wz .wzp div.ok i{background:var(--good);box-shadow:0 0 10px rgba(47,245,143,.45)}
@@ -503,8 +502,7 @@ input:disabled,select:disabled,textarea:disabled,input[readonly],textarea[readon
 .cpq-b h3{margin:0;font-size:15px}
 .cpq-code{margin:0;max-height:180px;overflow:auto;white-space:pre-wrap;word-break:break-all;font-size:11.5px;padding:10px;border-radius:8px;background:var(--surface-2);border:1px solid var(--line)}
 .cpq-lk{word-break:break-all;font-size:12px}
-.wz .wzp{grid-template-columns:repeat(4,1fr)}
-@media (max-width:600px){.wz .wzp{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:600px){.wz .wzp{grid-auto-flow:row;grid-template-columns:repeat(2,1fr)}}
 /* v0.192 dashboards em seções */
 #main.secoes192{row-gap:28px}
 #main.secoes192 .secl{display:none!important}
@@ -1368,7 +1366,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.247 · 03/11/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.248 · 03/11/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -10177,6 +10175,8 @@ function modalBenchmarks(BM) {
    As etapas do Kanban da jornada (funil_etapas) continuam sendo os estados das pessoas; "chegou à etapa X" é uma origem do dado. */
 const EST_FASES = [['aquisicao', 'Aquisição'], ['aquecimento', 'Aquecimento'], ['conversao', 'Conversão'], ['retencao', 'Retenção']];
 const EST_FASE = Object.fromEntries(EST_FASES);
+// etapas que só o lançamento pode ter (ficam em campanhas.fases, junto das fases da estratégia)
+const LANC_EXTRAS = [['reabertura', 'Reabertura'], ['downsell', 'Downsell']];
 const EST_TIPOS = [['lancamento', 'Lançamento'], ['perpetuo', 'Perpétuo'], ['webinario', 'Webinário ou evento'], ['disparo', 'Disparo de WhatsApp'], ['recompra', 'Recompra e renovação'], ['comercial', 'Comercial'], ['captacao', 'Captação'], ['assinatura', 'Assinatura'], ['outro', 'Outro']];
 const EST_TIPO = Object.fromEntries(EST_TIPOS);
 const EST_ORIG = { anuncios: 'Anúncios', leads: 'Leads da campanha', etapa_funil: 'Etapa do Kanban da jornada', lista: 'Lista ou grupo', video: 'Vídeo (aula, webinário, VSL)', vendas: 'Vendas e contratos', disparo: 'Disparo (Sendflow)', manual: 'Manual (digitado por dia)' };
@@ -10465,7 +10465,7 @@ async function tcEtapas(el, c) {
   const dias = Array.from({ length: 7 }, (_, i) => diaMais(sem0, i));
   const vals = man.length ? await q(sb.from('campanha_etapa_valores').select('campanha_etapa_id,data,valor').in('campanha_etapa_id', man.map(e => e.id)).gte('data', dias[0]).lte('data', dias[6])) : [];
   const vv = (id, d) => { const x = vals.find(y => y.campanha_etapa_id === id && y.data === d); return x ? x.valor : ''; };
-  const fases = c.fases || {}, diaCurto = d => d.slice(8, 10) + '/' + d.slice(5, 7);
+  const fases = c.fases || {}, fasesC = c.modelo === 'lancamento' ? [...EST_FASES, ...LANC_EXTRAS] : EST_FASES, diaCurto = d => d.slice(8, 10) + '/' + d.slice(5, 7);
   el.innerHTML = `<div class="panel"><div class="head"><div><h2>Funil etapa por etapa</h2><span class="muted">Estratégia: <b>${f ? esc(f.nome) : '—'}</b></span></div>
       <div class="acts"><label style="flex-direction:row;align-items:center;gap:6px">De<input type="date" id="ceIni" value="${P.ini}"></label><label style="flex-direction:row;align-items:center;gap:6px">até<input type="date" id="ceFim" value="${P.fim}"></label></div></div>
       ${BLK_CSS}${estFunilHtml(F || [], false, CB)}</div>
@@ -10476,7 +10476,7 @@ async function tcEtapas(el, c) {
       </tbody></table></div></div>` : ''}
     <div class="panel"><div class="head"><div><h2>Etapas desta campanha</h2><span class="muted">Cópia das etapas da estratégia. Mudanças aqui valem só para esta campanha.</span></div>
       <div class="acts"><button class="btn" id="ceFases">Datas das fases</button><button class="btn" id="ceReap">Reaplicar a estratégia</button><button class="btn${CB && CB.length ? '' : ' pri'}" id="ceAdd">+ Etapa avulsa</button></div></div>
-      <div class="muted" style="margin:4px 0">${EST_FASES.map(([k, l]) => fases[k] && (fases[k].ini || fases[k].fim) ? `${l}: ${dd(fases[k].ini)} a ${dd(fases[k].fim)}` : '').filter(Boolean).join(' · ') || 'Datas das fases ainda não definidas.'}</div>
+      <div class="muted" style="margin:4px 0">${fasesC.map(([k, l]) => fases[k] && (fases[k].ini || fases[k].fim) ? `${l}: ${dd(fases[k].ini)} a ${fases[k].fim ? dd(fases[k].fim) : 'em aberto'}` : '').filter(Boolean).join(' · ') || 'Datas das fases ainda não definidas.'}</div>
       ${CB ? `<div id="ceQuadro">${blkQuadroHtml(CB, L, R, true)}</div>` : ''}
       ${!CB || Lo.some(e => !e.bloco_id) ? (CB ? '<h3 style="margin:14px 0 0">Etapas avulsas</h3>' : '') + estTabelaEtapas(CB ? Lo.filter(e => !e.bloco_id) : Lo, R, 'camp') : ''}</div>`;
   const per = () => { const a = $('#ceIni').value, b = $('#ceFim').value; if (a && b && a <= b) { S.cePer = { c: c.id, ini: a, fim: b }; render(); } };
@@ -10496,8 +10496,8 @@ async function tcEtapas(el, c) {
     <label style="flex-direction:row;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" name="subst"> Substituir as etapas desta campanha (apaga as atuais e os números lançados nelas)</label>
     <p class="muted">Sem marcar, só entram as etapas que faltam; as atuais ficam como estão.</p>`, async d => {
     const n = await q(sb.rpc('campanha_aplicar_estrategia', { p_campanha: c.id, p_funil: d.funil, p_substituir: !!d.subst })); toast(n + ' etapa(s) copiada(s)'); }, 'Aplicar');
-  $('#ceFases').onclick = () => modal('Datas das fases', `<div class="grid2">${EST_FASES.map(([k, l]) => `<label>${l}: início<input type="date" name="${k}_ini" value="${(fases[k] || {}).ini || ''}"></label><label>${l}: fim<input type="date" name="${k}_fim" value="${(fases[k] || {}).fim || ''}"></label>`).join('')}</div>`, async d => {
-    const o = {}; EST_FASES.forEach(([k]) => { const a = d[k + '_ini'] || null, b = d[k + '_fim'] || null; if (a && b && b < a) throw new Error('Em ' + EST_FASE[k] + ', o fim vem antes do início.'); if (a || b) o[k] = { ini: a, fim: b }; });
+  $('#ceFases').onclick = () => modal('Datas das fases', `<div class="grid2">${fasesC.map(([k, l]) => `<label>${l}: início<input type="date" name="${k}_ini" value="${(fases[k] || {}).ini || ''}"></label><label>${l}: fim<input type="date" name="${k}_fim" value="${(fases[k] || {}).fim || ''}"></label>`).join('')}</div>`, async d => {
+    const o = { ...fases }; fasesC.forEach(([k, l]) => { const a = d[k + '_ini'] || null, b = d[k + '_fim'] || null; if (a && b && b < a) throw new Error('Em ' + l + ', o fim vem antes do início.'); if (a || b) o[k] = { ini: a, fim: b }; else delete o[k]; });
     await q(sb.from('campanhas').update({ fases: o }).eq('id', c.id)); toast('Datas salvas'); }, 'Salvar', true);
 }
 
@@ -13935,7 +13935,7 @@ function chGraficos(L) { const C = L.slice().reverse(), H_ = 92;
     return `<figure class="ch-g" data-chg="${m.k}"><figcaption><b>${m.l}</b><span class="muted">média ${chFmt(m.un, md)}</span></figcaption><div class="ch-pl">${md != null && mx ? `<i class="ch-md" style="bottom:${md / mx * H_}px" title="Média: ${chFmt(m.un, md)}"></i>` : ''}${C.map((x, i) => `<div class="ch-c" title="${esc(x.nome)}: ${chFmt(m.un, vs[i])}"><i style="height:${vs[i] && mx ? Math.max(2, vs[i] / mx * H_) : 0}px"></i></div>`).join('')}</div><div class="ch-xs">${C.map((x, i) => `<span><b>${chFmt(m.un, vs[i])}</b>${chDataCurta(x)}</span>`).join('')}</div></figure>`; }).join('')}</div>`; }
 // o histórico mais detalhado da campanha clicada
 function chDetalheHtml(H) { const x = H.det && H.L.find(z => z.id === H.det.id); if (!x) return '';
-  const fz = EST_FASES.filter(([k]) => (x.fases || {})[k] && (x.fases[k].ini || x.fases[k].fim)).map(([k, l]) => `${l}: ${dd(x.fases[k].ini)} a ${dd(x.fases[k].fim)}`), cn = H.det.canais;
+  const fz = [...EST_FASES, ...LANC_EXTRAS].filter(([k]) => (x.fases || {})[k] && (x.fases[k].ini || x.fases[k].fim)).map(([k, l]) => `${l}: ${dd(x.fases[k].ini)} a ${x.fases[k].fim ? dd(x.fases[k].fim) : 'em aberto'}`), cn = H.det.canais;
   const it = [['Período', periodoCamp(x)], ['Vendas', num(chN(x, 'vendas'))], ['Leads qualificados', num(chN(x, 'qualificados'))], ['Ticket médio', chN(x, 'vendas') ? brl(chN(x, 'receita_bruta') / chN(x, 'vendas')) : '—']];
   return `<div id="chDetalhe" class="ch-det"><div class="ch-deth"><b>${esc(x.nome)}</b><span class="sp"></span><button type="button" class="btn sm" id="chAbreCamp">Abrir a campanha completa</button><button type="button" class="btn sm" id="chFechaDet">Fechar</button></div>
     <div class="infog">${it.map(([l, v]) => `<div><span class="muted" style="font-size:11px">${l}</span><br>${v}</div>`).join('')}</div>${fz.length ? `<p class="muted" style="margin:8px 0 0">${fz.join(' · ')}</p>` : ''}
@@ -13944,13 +13944,12 @@ function chDetalheHtml(H) { const x = H.det && H.L.find(z => z.id === H.det.id);
 function chPassoHtml(H) { const L = H.L.slice(0, H.qtd);
   if (!H.L.length) return `<p class="lead">Ainda não há campanha finalizada com dados deste produto neste modelo. Pode seguir: as metas ficam para o próximo passo.</p>`;
   const r = (m, v, t, on) => `<label class="ch-op${on && v ? ' on' : ''}"><input type="radio" name="ch_${m.k}" value="${esc(v)}"${on ? ' checked' : ''}><span>${t}</span></label>`;
-  return `<p class="lead">Veja como as campanhas anteriores deste produto foram. Em CPL, CAC e conversão, marque o que levar para esta: a média ou o número de uma campanha. Clique no nome de uma campanha para ver o histórico dela.</p>
+  return `<p class="lead">Veja como as campanhas anteriores deste produto foram. Em CPL, CAC e conversão, marque o que levar para esta: a média ou o número de uma campanha. Clicar de novo desmarca. Clique no nome de uma campanha para ver o histórico dela.</p>
     <div class="ch-top"><label>Trazer as últimas<select id="chQtd">${[...new Set([1, 2, 3, 4, 5, 6, 10, H.L.length])].filter(n => n <= Math.max(H.L.length, 1)).sort((a, b) => a - b).map(n => `<option value="${n}"${n === L.length ? ' selected' : ''}>${n} ${n === 1 ? 'campanha' : 'campanhas'}</option>`).join('')}</select></label>
       <span class="muted">${H.L.length} ${H.L.length === 1 ? 'disponível' : 'disponíveis'} deste produto e modelo</span><span class="sp"></span><button type="button" class="btn sm" id="chTudoMedia">Marcar a média nos três</button><button type="button" class="btn sm" id="chLimpa">Limpar</button></div>
     <div class="tw"><table class="ch-t"><thead><tr><th>Campanha</th>${CH_MET.map(m => `<th class="n">${m.l}</th>`).join('')}</tr></thead><tbody>
       ${L.map(x => `<tr data-chr="${x.id}"><td><a href="#" data-chdet="${x.id}">${esc(x.nome)}</a><br><small class="muted">${chDataCurta(x)}</small></td>${CH_MET.map(m => { const v = chValor(m, x); return `<td class="n">${m.campo && v != null ? r(m, x.id, chFmt(m.un, v), H.marks[m.k] === x.id) : chFmt(m.un, v)}</td>`; }).join('')}</tr>`).join('')}
-      <tr id="chMediaW" class="tot"><td><b>Média</b></td>${CH_MET.map(m => { const md = chMedia(m, L); return `<td class="n"><b>${m.campo && md != null ? r(m, 'media', chFmt(m.un, md), H.marks[m.k] === 'media') : chFmt(m.un, md)}</b></td>`; }).join('')}</tr>
-      <tr><td class="muted">Não levar</td>${CH_MET.map(m => `<td class="n">${m.campo ? r(m, '', '—', !H.marks[m.k]) : ''}</td>`).join('')}</tr></tbody></table></div>
+      <tr id="chMediaW" class="tot"><td><b>Média</b></td>${CH_MET.map(m => { const md = chMedia(m, L); return `<td class="n"><b>${m.campo && md != null ? r(m, 'media', chFmt(m.un, md), H.marks[m.k] === 'media') : chFmt(m.un, md)}</b></td>`; }).join('')}</tr></tbody></table></div>
     ${chDetalheHtml(H)}
     ${L.length < 3 ? `<p class="muted ch-av" id="chPoucos">Com menos de 3 campanhas, trate o número como ponto de partida, não como referência firme.</p>` : ''}
     ${chGraficos(L)}
@@ -13960,7 +13959,40 @@ function chResumoHtml(H) { const E = chEscolhas(H), por = k => (E.find(z => z.k 
   const imp = por('cpl') != null && por('conv') && por('cac') ? campHistCoerencia({ cpl: { v: por('cpl') }, cac: { v: por('cac') }, conv: { v: por('conv') } }) : null;
   return (E.length ? E.map(z => `<span><b>${chFmt(z.un, z.valor)}</b>${esc(z.l)}: ${esc(z.fonte)}</span>`).join('') : '<span>Nada marcado. Você também pode seguir sem levar nada.</span>')
     + (imp != null ? `<span id="chCoerW"><b class="vneg">${brl(imp)}</b>CAC que o CPL e a conversão escolhidos dão, diferente do CAC marcado</span>` : ''); }
-const WZ_ETAPAS = [[1, 'O básico'], [2, 'Histórico e referências'], [3, 'Orçamento e metas'], [4, 'Canais'], [5, 'Pesquisa']];
+/* Cenários do passo Orçamento: I investimento, p CPL, L leads, c conversão (%), V vendas, a CAC, t ticket.
+   Mudar uma métrica recalcula as outras. O Base traz o que foi marcado no histórico e é ele que vira meta da campanha;
+   pessimista e otimista saem do Base até serem mexidos à mão. */
+const CEN_LIN = [['I', 'Investimento', 'brl'], ['p', 'Custo por lead (CPL)', 'brl'], ['L', 'Leads', 'int'], ['c', 'Conversão lead → venda (%)', 'pct'], ['V', 'Vendas', 'int'], ['a', 'CAC', 'brl'], ['t', 'Ticket médio', 'brl']];
+const CEN_TIPOS = [['pessimista', 'Pessimista', 1.2, .8], ['base', 'Base', 1, 1], ['otimista', 'Otimista', .8, 1.2]];
+function cenFecha(s) { s.rec = s.V > 0 && s.t > 0 ? s.V * s.t : null; s.roas = s.rec != null && s.I > 0 ? s.rec / s.I : null; return s; }
+function cenSolve(s0, k) { const s = { ...s0 }, tem = x => s[x] != null && s[x] > 0, R = Math.round;
+  const vendas = () => { if (tem('L') && tem('c')) s.V = R(s.L * s.c / 100); }, cac = () => { if (tem('I') && tem('V')) s.a = s.I / s.V; else if (tem('p') && tem('c')) s.a = s.p / (s.c / 100); };
+  if (!tem(k)) return cenFecha(s);
+  if (k === 'I') { if (tem('p')) { s.L = R(s.I / s.p); if (tem('c')) { vendas(); cac(); } else if (tem('a')) { s.V = R(s.I / s.a); if (s.L) s.c = s.V / s.L * 100; } }
+    else if (tem('a')) { s.V = R(s.I / s.a); if (tem('c')) { s.L = R(s.V / (s.c / 100)); if (s.L) s.p = s.I / s.L; } } else if (tem('L')) { s.p = s.I / s.L; cac(); } else cac(); }
+  else if (k === 'p') { if (tem('I')) s.L = R(s.I / s.p); else if (tem('L')) s.I = s.L * s.p; if (tem('c')) { vendas(); cac(); } else if (tem('V') && tem('L')) { s.c = s.V / s.L * 100; cac(); } else if (tem('a')) s.c = s.p / s.a * 100; }
+  else if (k === 'L') { if (tem('I')) s.p = s.I / s.L; else if (tem('p')) s.I = s.L * s.p; if (tem('c')) { vendas(); cac(); } else if (tem('V')) { s.c = s.V / s.L * 100; cac(); } }
+  else if (k === 'c') { if (tem('L')) { vendas(); cac(); } else if (tem('I') && tem('a')) { s.V = R(s.I / s.a); s.L = R(s.V / (s.c / 100)); if (s.L) s.p = s.I / s.L; } else if (tem('p')) s.a = s.p / (s.c / 100); else if (tem('a')) s.p = s.a * s.c / 100; }
+  else if (k === 'V') { if (tem('L')) s.c = s.V / s.L * 100; else if (tem('c')) { s.L = R(s.V / (s.c / 100)); if (tem('I') && s.L) s.p = s.I / s.L; } if (tem('I')) s.a = s.I / s.V; else if (tem('a')) s.I = s.V * s.a; }
+  else if (k === 'a') { if (tem('I')) { s.V = R(s.I / s.a); if (tem('c')) { s.L = R(s.V / (s.c / 100)); if (s.L) s.p = s.I / s.L; } else if (tem('L') && s.L) s.c = s.V / s.L * 100; else if (tem('p')) { s.L = R(s.I / s.p); if (s.L) s.c = s.V / s.L * 100; } }
+    else if (tem('p')) s.c = s.p / s.a * 100; else if (tem('c')) s.p = s.a * s.c / 100; }
+  return cenFecha(s); }
+// pessimista e otimista a partir do Base: CPL e conversão 20% piores ou melhores, com o mesmo investimento
+function cenDeriva(b, fp, fc) { const s = { I: b.I ?? null, t: b.t ?? null, p: b.p > 0 ? b.p * fp : null, c: b.c > 0 ? b.c * fc : null, a: !(b.p > 0 && b.c > 0) && b.a > 0 ? b.a * fp / fc : null, L: null, V: null };
+  if (s.p && s.c) s.a = s.p / (s.c / 100); return s.I > 0 ? cenSolve(s, 'I') : cenFecha(s); }
+function cenInicial(c, prods) { const ex = (c.extras || {}).cenarios || {}, n = v => v == null || v === '' ? null : Number(v), per = c.modelo === 'perpetuo';
+  const b = { I: n(c.orcamento_total), p: n(c.meta_cpl), L: n(per ? c.meta_leads_mes : c.meta_leads), c: n(c.meta_taxa_lead_venda), V: per ? n((ex.base || {}).V) : n(c.meta_vendas), a: n(c.meta_cac), t: n((ex.base || {}).t) ?? n((prods.find(p => p.id === c.produto_id) || {}).preco) };
+  if (!(b.a > 0) && b.p > 0 && b.c > 0) b.a = b.p / (b.c / 100); if (!(b.p > 0) && b.a > 0 && b.c > 0) b.p = b.a * b.c / 100; if (!(b.c > 0) && b.p > 0 && b.a > 0) b.c = b.p / b.a * 100; cenFecha(b);
+  const C = { base: b, mexido: { ...(ex.mexido || {}) } }; CEN_TIPOS.filter(x => x[0] !== 'base').forEach(([k, , fp, fc]) => { C[k] = C.mexido[k] && ex[k] ? cenFecha({ ...ex[k] }) : cenDeriva(b, fp, fc); }); return C; }
+const cenTxt = v => v == null || !isFinite(v) ? '' : String(Math.round(v * 100) / 100);
+function cenHtml(C, c) { const esc_ = ((c.extras || {}).referencia_planejamento || {}).escolhas || [], veio = { p: 'cpl', c: 'conv', a: 'cac' }, per = c.modelo === 'perpetuo';
+  const num_ = (t, m, v) => `<input type="number" step="any" min="0" data-money="0" data-cen="${t}" data-m="${m}" aria-label="${m}" value="${cenTxt(v)}">`;
+  const lin = ([m, l]) => { const o = esc_.find(z => z.k === veio[m]); return `<tr><td>${per && m === 'I' ? 'Investimento por mês' : per && m === 'L' ? 'Leads por mês' : per && m === 'V' ? 'Vendas por mês' : l}${o ? `<br><small class="muted">Marcado: ${chFmt(o.un, o.valor)} (${esc(o.fonte)})</small>` : ''}</td>${CEN_TIPOS.map(([t]) => `<td class="n${t === 'base' ? ' cen-b' : ''}">${num_(t, m, C[t][m])}</td>`).join('')}</tr>`; };
+  const so = (m, l, f) => `<tr class="tot"><td>${l}</td>${CEN_TIPOS.map(([t]) => `<td class="n${t === 'base' ? ' cen-b' : ''}" data-cenv="${t}:${m}">${f(C[t][m])}</td>`).join('')}</tr>`;
+  return `<p class="lead">Preencha o investimento e ajuste o que quiser: ao mudar uma métrica, as outras se recalculam. O <b>Base</b> traz o que você marcou no histórico e vira a meta da campanha.</p>
+    <div class="tw"><table class="cen-t"><thead><tr><th></th>${CEN_TIPOS.map(([t, l]) => `<th class="n${t === 'base' ? ' cen-b' : ''}">${l}</th>`).join('')}</tr></thead><tbody>${CEN_LIN.map(lin).join('')}${so('rec', 'Receita prevista', v => v == null ? '—' : brl(v))}${so('roas', 'ROAS previsto', campHistX)}</tbody></table></div>
+    <small class="muted">Pessimista e otimista partem do Base, com CPL e conversão 20% piores ou melhores. Se você mexer neles à mão, deixam de acompanhar o Base. <a href="#" id="cenRefaz">Refazer a partir do Base</a></small>`; }
+const WZ_ETAPAS = [[1, 'O básico'], [2, 'Datas das etapas'], [3, 'Histórico e referências'], [4, 'Orçamento e cenários'], [5, 'Canais'], [6, 'Pesquisa']]; // o passo 2 só existe no lançamento
 async function abrirWizard(id = null, passo = 1) {
   const w = S.ws, root = $('#modalRoot');
   const [prods, funis, cad, canaisTx] = await Promise.all([
@@ -13978,9 +14010,11 @@ async function abrirWizard(id = null, passo = 1) {
   const opt = (l, v, cur) => l.map(([k, t]) => `<option value="${esc(k)}"${String(cur ?? '') === String(k) ? ' selected' : ''}>${esc(t)}</option>`).join('');
   const dias = () => { if (!c || !c.data_inicio) return 30; if (c.modelo === 'perpetuo' || !c.data_fim) return 30; return Math.max(1, Math.round((new Date(c.data_fim) - new Date(c.data_inicio)) / 864e5) + 1); };
   const pago = cod => String(cod).endsWith('_ads');
-  let sel = null, linhas = {}, wzCpq = null, wzH = null, txConfig = () => null;
+  let sel = null, linhas = {}, wzCpq = null, wzH = null, wzC = null, txConfig = () => null;
+  const semDatas = () => !!c && c.modelo === 'perpetuo';
+  const numPassos = perp => { let i = 0; root.querySelectorAll('.wzp [data-wn]').forEach(d => { const fora = perp && d.dataset.wn === '2'; d.hidden = fora; d.style.display = fora ? 'none' : ''; if (!fora) d.querySelector('.wn').textContent = ++i; }); };
   const tela = () => {
-    const passos = WZ_ETAPAS.map(([n, t]) => `<div class="${n < passo ? 'ok' : n === passo ? 'at' : ''}"><i></i>${n}. ${t}${n < passo ? ' ✓' : ''}</div>`).join('');
+    const passos = WZ_ETAPAS.map(([n, t]) => `<div data-wn="${n}" class="${n < passo ? 'ok' : n === passo ? 'at' : ''}"><i></i><span><b class="wn">${n}</b>. ${t}${n < passo ? ' ✓' : ''}</span></div>`).join('');
     let corpo = '';
     if (passo === 1) {
       const mo = c ? c.modelo : 'lancamento';
@@ -13992,43 +14026,42 @@ async function abrirWizard(id = null, passo = 1) {
         ${tmOk ? `<label>Tipo de mídia<select name="tipo_midia">${opt([['hibrida', 'Híbrida (paga e orgânica)'], ['paga', 'Só paga'], ['organica', 'Só orgânica']], c ? c.tipo_midia : 'hibrida')}</select></label>` : ''}
         <label>Início<input type="date" name="data_inicio" required value="${c && c.data_inicio || ''}"></label>
         <label class="wz-fim">Fim<input type="date" name="data_fim" value="${c && c.data_fim || ''}"></label></div>
-      <div class="wz-fases" id="wzFases"><b>Datas de cada etapa do lançamento</b><span class="muted">Opcional agora. Dá para ajustar depois, na aba Estratégia e etapas.</span>
-        <div class="grid2">${EST_FASES.map(([k, l]) => { const fz = ((c && c.fases) || {})[k] || {}; return `<label>${l}: início<input type="date" name="fase_${k}_ini" value="${fz.ini || ''}"></label><label>${l}: fim<input type="date" name="fase_${k}_fim" value="${fz.fim || ''}"></label>`; }).join('')}
-          <label>Abertura do carrinho<input type="date" name="data_carrinho_abre" value="${c && c.data_carrinho_abre || ''}"></label><label>Fechamento do carrinho<input type="date" name="data_carrinho_fecha" value="${c && c.data_carrinho_fecha || ''}"></label></div></div>
       <div class="wz-etapas" id="wzEt"></div>`;
     } else if (passo === 2) {
+      const dt = (nome, rot, v) => `<label>${rot}<input type="date" name="${nome}" value="${v || ''}"></label>`, fsc = c.fases || {};
+      corpo = `<p class="lead">Quando acontece cada etapa do lançamento. É opcional: dá para preencher ou ajustar depois, na aba Estratégia e etapas.</p>
+      <div class="grid2">${[['aquisicao', 'Aquisição'], ['aquecimento', 'Aquecimento']].map(([k, l]) => dt(`fase_${k}_ini`, l + ': início', (fsc[k] || {}).ini) + dt(`fase_${k}_fim`, l + ': fim', (fsc[k] || {}).fim)).join('')}
+        ${dt('data_carrinho_abre', 'Carrinho aberto: abertura', c.data_carrinho_abre)}${dt('data_carrinho_fecha', 'Carrinho aberto: fechamento', c.data_carrinho_fecha)}</div>
+      ${LANC_EXTRAS.map(([k, l]) => { const on = !!(fsc[k] && fsc[k].ini); return `<div class="wz-ex"><label class="wz-ck"><input type="checkbox" data-wzex="${k}"${on ? ' checked' : ''}> Tem ${l.toLowerCase()}</label><div class="grid2" data-wzexb="${k}"${on ? '' : ' hidden'}>${dt(`fase_${k}_ini`, l + ': início', (fsc[k] || {}).ini)}${dt(`fase_${k}_fim`, l + ': fim', (fsc[k] || {}).fim)}</div></div>`; }).join('')}
+      <small class="muted">Na reabertura e no downsell, deixe o fim em branco se o período ficar em aberto.</small>`;
+    } else if (passo === 3) {
       if (!wzH || wzH.chave !== c.produto_id + '|' + c.modelo) { corpo = '<p class="lead">Carregando as campanhas anteriores…</p>'; const chave = c.produto_id + '|' + c.modelo, rf = (c.extras || {}).referencia_planejamento || {};
         campHistComparaveis(c).then(L => { const marks = {}; (rf.escolhas || []).forEach(z => { marks[z.k] = z.fonte_id; }); wzH = { chave, L, qtd: Math.min(rf.qtd || 3, L.length || 3), marks, det: null, antes: JSON.stringify(rf.escolhas || []) }; tela(); }).catch(er => toast(er.message || String(er), true)); }
       else corpo = chPassoHtml(wzH);
-    } else if (passo === 3) {
-      const per = c.modelo === 'perpetuo';
-      corpo = `<p class="lead">Quanto vai investir e o que define sucesso. O resto o sistema calcula.${per ? ' No perpétuo, as metas por mês e o mix de produtos ficam na aba Metas mensais da campanha.' : ''}</p>
-      <div class="grid2"><label>${per ? 'Orçamento por mês (R$)' : 'Orçamento total (R$)'}<input type="number" step="0.01" min="0" name="orcamento_total" value="${c.orcamento_total ?? ''}"></label>
-        ${per ? '' : `<label>Meta de vendas<input type="number" min="0" name="meta_vendas" value="${c.meta_vendas ?? ''}"></label>`}
-        <label>${per ? 'Meta de leads por mês' : 'Meta de leads'}<input type="number" min="0" name="${per ? 'meta_leads_mes' : 'meta_leads'}" value="${(per ? c.meta_leads_mes : c.meta_leads) ?? ''}"></label>
-        <label>CAC máximo aceito (R$)<input type="number" step="0.01" min="0" name="meta_cac" value="${c.meta_cac ?? ''}"></label></div>
-      <div class="calc" id="wzCalc"></div>`;
     } else if (passo === 4) {
+      wzC = cenInicial(c, prods); corpo = cenHtml(wzC, c);
+    } else if (passo === 5) {
       const tm = c.tipo_midia || 'hibrida', ok = cad.filter(x => tm === 'paga' ? pago(x.codigo) : tm === 'organica' ? !pago(x.codigo) : true);
       if (!sel) { sel = new Set(canais.map(x => x.canal)); canais.forEach(x => linhas[x.canal] = { pct: c.orcamento_total && x.orcamento != null ? Math.round(x.orcamento / c.orcamento_total * 1000) / 10 : '', leads: x.meta_leads ?? '' }); }
       corpo = `<p class="lead">Escolha os canais e divida o orçamento e a meta de leads. A meta por dia é sugerida pelo período (${dias()} dias${c.modelo === 'perpetuo' ? ', por mês' : ''}).</p>
       <div class="cn">${ok.map(x => `<span data-cn="${esc(x.codigo)}" class="${sel.has(x.codigo) ? 'on' : ''}" role="button" tabindex="0">${esc(x.nome)}</span>`).join('')}<span class="novo" id="wzNovoCanal" role="button" tabindex="0">＋ Novo canal</span></div>
       <div id="wzTab"></div>`;
     }
-    if (passo === 5) { if (!wzCpq) { corpo = '<p class="lead">Carregando as pesquisas…</p>'; cpqDados().then(d => { wzCpq = d; tela(); }).catch(e => toast(e.message || String(e), true)); }
+    if (passo === 6) { if (!wzCpq) { corpo = '<p class="lead">Carregando as pesquisas…</p>'; cpqDados().then(d => { wzCpq = d; tela(); }).catch(e => toast(e.message || String(e), true)); }
       else corpo = '<p class="lead">Se a campanha vai ter pesquisa, escolha qual e onde ela entra. Dá para mudar depois, na aba Planejamento e metas.</p>' + cpqCampos(cpqCfg(c), wzCpq.pesqs, wzCpq.etapas) + txMarkup(c?.extras?.mensagem_cadastro, canaisTx, 'cadastro'); }
-    root.innerHTML = `<div class="ov"><div class="modal wz${passo === 2 ? ' wzl' : ''}" role="dialog" aria-label="Nova campanha"><div class="wzh"><h2>${c && passo > 1 ? esc(c.nome) : 'Nova campanha'}</h2><div class="wzp">${passos}</div></div>
+    root.innerHTML = `<div class="ov"><div class="modal wz${passo === 3 ? ' wzl' : ''}" role="dialog" aria-label="Nova campanha"><div class="wzh"><h2>${c && passo > 1 ? esc(c.nome) : 'Nova campanha'}</h2><div class="wzp">${passos}</div></div>
       <form><div class="wzb">${corpo}</div><div class="wzf">${passo > 1 ? '<button type="button" class="btn" data-w="volta">Voltar</button>' : '<button type="button" class="btn" data-w="x">Cancelar</button>'}<span class="sp"></span>
-      ${c ? '<span class="salvo">✓ Rascunho salvo</span>' : ''}${c ? '<button type="button" class="btn" data-w="depois">Terminar depois</button>' : ''}<button type="submit" class="btn pri">${passo < 5 ? 'Salvar e continuar' : 'Concluir e abrir a campanha'}</button></div></form></div></div>`;
+      ${c ? '<span class="salvo">✓ Rascunho salvo</span>' : ''}${c ? '<button type="button" class="btn" data-w="depois">Terminar depois</button>' : ''}<button type="submit" class="btn pri">${passo < 6 ? 'Salvar e continuar' : 'Concluir e abrir a campanha'}</button></div></form></div></div>`;
+    numPassos(semDatas());
     const f = root.querySelector('form');
     root.querySelector('.ov').onmousedown = e => { if (e.target.classList.contains('ov')) fecha(); };
     root.querySelectorAll('[data-w]').forEach(b => b.onclick = () => act(async () => {
       const a = b.dataset.w; if (a === 'x') return fecha();
-      if (a === 'volta') { passo--; return tela(); }
+      if (a === 'volta') { passo--; if (passo === 2 && semDatas()) passo = 1; return tela(); }
       if (a === 'depois') { await salvar(f); abreCampanha(); }
     }));
-    f.onsubmit = e => { e.preventDefault(); act(async () => { const btn = f.querySelector('.pri'); btn.disabled = true; try { await salvar(f); } finally { btn.disabled = false; } if (passo < 5) { passo++; tela(); } else abreCampanha(); }); };
-    if (passo === 5) {
+    f.onsubmit = e => { e.preventDefault(); act(async () => { const btn = f.querySelector('.pri'); btn.disabled = true; try { await salvar(f); } finally { btn.disabled = false; } if (passo < 6) { passo++; if (passo === 2 && semDatas()) passo = 3; tela(); } else abreCampanha(); }); };
+    if (passo === 6) {
       cpqLiga(f);
       const submit = f.querySelector('.pri'); submit.disabled = true;
       txLiga(f, c?.extras?.mensagem_cadastro, canaisTx, 'cadastro').then(get => { txConfig = get; }).catch(err => { txConfig = () => c?.extras?.mensagem_cadastro || null; toast(err.message || String(err), true); }).finally(() => { submit.disabled = false; });
@@ -14048,12 +14081,15 @@ async function abrirWizard(id = null, passo = 1) {
           fe.insertBefore(o, fe.querySelector('option[value="__nova_est__"]')); fe.value = nf.id; fe.dataset.prev = nf.id; prevEt(); });
       });
       fe.dataset.prev = fe.value; prevEt();
-      const mo = f.querySelector('[name=modelo]'), fim = f.querySelector('.wz-fim'); const fsB = f.querySelector('#wzFases'), ap = () => { fim.style.display = mo.value === 'perpetuo' ? 'none' : ''; fsB.style.display = mo.value === 'perpetuo' ? 'none' : ''; }; mo.onchange = ap; ap(); f.querySelector('[name=nome]').focus(); }
-    if (passo === 2 && wzH && wzH.L.length) {
+      const mo = f.querySelector('[name=modelo]'), fim = f.querySelector('.wz-fim'); const ap = () => { fim.style.display = mo.value === 'perpetuo' ? 'none' : ''; numPassos(mo.value === 'perpetuo'); }; mo.onchange = ap; ap(); f.querySelector('[name=nome]').focus(); }
+    if (passo === 2) f.querySelectorAll('[data-wzex]').forEach(i => i.onchange = () => { f.querySelector(`[data-wzexb="${i.dataset.wzex}"]`).hidden = !i.checked; });
+    if (passo === 3 && wzH && wzH.L.length) {
       const res = () => { const b = $('#chResumo'); if (b) b.innerHTML = chResumoHtml(wzH); };
       $('#chQtd').onchange = ev => { wzH.qtd = Number(ev.target.value); const ids = wzH.L.slice(0, wzH.qtd).map(x => x.id); Object.keys(wzH.marks).forEach(k => { if (wzH.marks[k] !== 'media' && !ids.includes(wzH.marks[k])) delete wzH.marks[k]; }); tela(); };
       $('#chTudoMedia').onclick = () => { CH_MET.filter(m => m.campo).forEach(m => { wzH.marks[m.k] = 'media'; }); tela(); };
       $('#chLimpa').onclick = () => { wzH.marks = {}; tela(); };
+      f.querySelector('.ch-t').addEventListener('click', ev => { const t = ev.target; if (!t.name || !t.name.startsWith('ch_')) return; const k = t.name.slice(3); if (wzH.marks[k] !== t.value) return;
+        t.checked = false; delete wzH.marks[k]; t.closest('.ch-op').classList.remove('on'); res(); });
       f.querySelector('.ch-t').addEventListener('change', ev => { const t = ev.target; if (!t.name || !t.name.startsWith('ch_')) return; const k = t.name.slice(3); if (t.value) wzH.marks[k] = t.value; else delete wzH.marks[k];
         f.querySelectorAll(`[name="${t.name}"]`).forEach(i => i.closest('.ch-op').classList.toggle('on', i.checked && !!i.value)); res(); });
       f.querySelectorAll('[data-chdet]').forEach(a => a.onclick = ev => { ev.preventDefault(); const id = a.dataset.chdet; wzH.det = { id, canais: null }; tela();
@@ -14061,15 +14097,14 @@ async function abrirWizard(id = null, passo = 1) {
       if ($('#chFechaDet')) { $('#chFechaDet').onclick = () => { wzH.det = null; tela(); };
         $('#chAbreCamp').onclick = () => act(async () => { const id = wzH.det.id; await salvar(f); fecha(); S.view = 'mkt-camp'; S.tabMkt = 'campanhas'; S.campSel = id; S.campTab = 'resumo'; render(); }); }
       res(); }
-    if (passo === 3) { const calc = () => { const g = n => { const i = f.querySelector(`[name=${n}]`); return i && i.value !== '' ? Number(i.value) : null; };
-        const orc = g('orcamento_total'), ld = g('meta_leads') ?? g('meta_leads_mes'), vd = g('meta_vendas'), pr = (prods.find(p => p.id === c.produto_id) || {}).preco;
-        const it = []; if (orc && ld) it.push(['CPL que cabe no orçamento', brl(orc / ld)]); if (ld && vd) it.push(['conversão lead → venda', (vd / ld * 100).toFixed(1).replace('.', ',') + '%']);
-        { const eh = ((c.extras || {}).referencia_planejamento || {}).escolhas || [], z = eh.find(y => y.k === 'cpl' && y.campo); if (z && orc && ld && Math.abs(orc / ld - z.valor) / z.valor > .01) it.push(['CPL escolhido no histórico (o orçamento e os leads dão o valor acima)', brl(z.valor)]); }
-        if (orc && vd) it.push(['CAC de mídia previsto', brl(orc / vd)]); if (vd && pr) it.push([`receita prevista (${num(vd)} × ${brl(pr)})`, brl(vd * pr), 'vpos']);
-        const cm = g('meta_cac'); if (cm && orc && vd && orc / vd > cm) it.push(['acima do CAC máximo aceito', brl(orc / vd), 'vneg']);
-        $('#wzCalc').innerHTML = it.length ? it.map(([t, v, cl]) => `<span><b class="${cl || ''}">${v}</b>${t}</span>`).join('') : '<span>Preencha orçamento e metas para ver o CPL, a conversão e o CAC previstos.</span>'; };
-      f.oninput = calc; calc(); }
-    if (passo === 4) { const tab = () => {
+    if (passo === 4) {
+      const mostra = (pula) => { CEN_TIPOS.forEach(([t]) => { CEN_LIN.forEach(([m]) => { const i = f.querySelector(`[data-cen="${t}"][data-m="${m}"]`); if (i && i !== pula) i.value = cenTxt(wzC[t][m]); });
+        [['rec', v => v == null ? '—' : brl(v)], ['roas', campHistX]].forEach(([m, fm]) => { f.querySelector(`[data-cenv="${t}:${m}"]`).textContent = fm(wzC[t][m]); }); }); };
+      const seguem = () => CEN_TIPOS.filter(x => x[0] !== 'base' && !wzC.mexido[x[0]]).forEach(([k, , fp, fc]) => { wzC[k] = cenDeriva(wzC.base, fp, fc); });
+      f.querySelector('.cen-t').addEventListener('input', ev => { const i = ev.target, t = i.dataset.cen, m = i.dataset.m; if (!t) return; wzC[t] = cenSolve({ ...wzC[t], [m]: i.value === '' ? null : Number(i.value) }, m);
+        if (t === 'base') seguem(); else wzC.mexido[t] = true; mostra(i); });
+      $('#cenRefaz').onclick = ev => { ev.preventDefault(); wzC.mexido = {}; seguem(); mostra(); }; }
+    if (passo === 5) { const tab = () => {
         const L = [...sel], orc = Number(c.orcamento_total || 0), meta = Number((c.modelo === 'perpetuo' ? c.meta_leads_mes : c.meta_leads) || 0), D = dias();
         const tp = L.reduce((s, k) => s + Number((linhas[k] || {}).pct || 0), 0), tl = L.reduce((s, k) => s + Number((linhas[k] || {}).leads || 0), 0);
         $('#wzTab').innerHTML = L.length ? `<div class="tw"><table><thead><tr><th>Canal</th><th class="n">% do orçamento</th><th class="n">Orçamento</th><th class="n">Meta de leads</th><th class="n">Leads por dia</th></tr></thead><tbody>
@@ -14098,8 +14133,6 @@ async function abrirWizard(id = null, passo = 1) {
       if (v.modelo === 'perpetuo') { v.data_fim = null; v.data_carrinho_abre = null; v.data_carrinho_fecha = null; }
       else if (!v.data_fim) throw new Error('Informe a data de fim do lançamento. Para uma campanha sem fim, escolha o modelo Perpétuo.');
       if (v.data_fim && v.data_fim < v.data_inicio) throw new Error('O fim não pode ser antes do início.');
-      if (v.modelo !== 'perpetuo') { const fz = {}; EST_FASES.forEach(([k, l]) => { const a = val('fase_' + k + '_ini'), b = val('fase_' + k + '_fim'); if (a && b && b < a) throw new Error('Em ' + l + ', o fim vem antes do início.'); if (a || b) fz[k] = { ini: a, fim: b }; }); v.fases = fz;
-        v.data_carrinho_abre = val('data_carrinho_abre'); v.data_carrinho_fecha = val('data_carrinho_fecha'); if (v.data_carrinho_abre && v.data_carrinho_fecha && v.data_carrinho_fecha < v.data_carrinho_abre) throw new Error('O fechamento do carrinho vem antes da abertura.'); }
       const trocouEst = !c || c.funil_id !== v.funil_id;
       if (c) await q(sb.from('campanhas').update(v).eq('id', c.id));
       else {
@@ -14110,6 +14143,12 @@ async function abrirWizard(id = null, passo = 1) {
       c = (await q(sb.from('campanhas').select('*').eq('id', c ? c.id : v.id)))[0];
       if (trocouEst && c.funil_id) { try { await q(sb.rpc('campanha_aplicar_estrategia', { p_campanha: c.id, p_funil: c.funil_id, p_substituir: false })); } catch (e) { toast('Campanha salva, mas as etapas da estratégia não foram copiadas: ' + (e.message || e), true); } }
     } else if (passo === 2) {
+      const fz = { ...(c.fases || {}) }; [['aquisicao', 'Aquisição'], ['aquecimento', 'Aquecimento'], ...LANC_EXTRAS].forEach(([k, l]) => { const ck = f.querySelector(`[data-wzex="${k}"]`), usa = !ck || ck.checked, a = usa ? val('fase_' + k + '_ini') : null, b = usa ? val('fase_' + k + '_fim') : null;
+        if (a && b && b < a) throw new Error('Em ' + l + ', o fim vem antes do início.'); if (ck && usa && !a) throw new Error('Informe o início de ' + l + ', ou desmarque.'); if (a || b) fz[k] = { ini: a, fim: b }; else delete fz[k]; });
+      const v = { fases: fz, data_carrinho_abre: val('data_carrinho_abre'), data_carrinho_fecha: val('data_carrinho_fecha') };
+      if (v.data_carrinho_abre && v.data_carrinho_fecha && v.data_carrinho_fecha < v.data_carrinho_abre) throw new Error('O fechamento do carrinho vem antes da abertura.');
+      await q(sb.from('campanhas').update(v).eq('id', c.id)); c = { ...c, ...v };
+    } else if (passo === 3) {
       if (!wzH) return;
       const E = chEscolhas(wzH), js = JSON.stringify(E); if (js === wzH.antes) return; // sem mudança: não mexe nas metas nem repete a memória
       const ex = { ...((one(await q(sb.from('campanhas').select('extras').eq('id', c.id))) || {}).extras || {}) }, ant = ex.referencia_planejamento, { historico = [], ...antSem } = ant || {}, up = {}, antes = {}, por = k => (E.find(z => z.k === k) || {}).valor ?? null;
@@ -14117,14 +14156,13 @@ async function abrirWizard(id = null, passo = 1) {
       ex.referencia_planejamento = { em: new Date().toISOString(), por: (S.user && S.user.email) || '', qtd: wzH.qtd, escolhas: E, valores: { cpl: por('cpl'), cac: por('cac'), conv: por('conv') }, metas_antes: antes,
         campanhas: wzH.L.slice(0, wzH.qtd).map(x => ({ id: x.id, nome: x.nome, data_fim: x.data_fim || null, investimento: chN(x, 'investimento'), leads: chN(x, 'leads'), qualificados: chN(x, 'qualificados'), vendas: chN(x, 'vendas'), clientes: chN(x, 'clientes'), receita_bruta: chN(x, 'receita_bruta') })), historico: (ant ? [...historico, antSem] : []).slice(-10) };
       await q(sb.from('campanhas').update({ ...up, extras: ex }).eq('id', c.id)); c = { ...c, ...up, extras: ex }; wzH.antes = js;
-    } else if (passo === 3) {
-      const v = {}; ['orcamento_total', 'meta_vendas', 'meta_leads', 'meta_leads_mes', 'meta_cac'].forEach(n => { const x = val(n); if (x !== undefined) v[n] = x; });
-      const ld = v.meta_leads ?? v.meta_leads_mes, esc_ = ((c.extras || {}).referencia_planejamento || {}).escolhas || [], veio = k => esc_.some(z => z.k === k && z.campo);
-      // o CPL e a conversão escolhidos no histórico não são sobrescritos pela conta deste passo
-      if (v.orcamento_total && ld && !veio('cpl')) v.meta_cpl = Math.round(v.orcamento_total / ld * 100) / 100;
-      if (v.meta_vendas && v.meta_leads && !veio('conv')) v.meta_taxa_lead_venda = Math.round(v.meta_vendas / v.meta_leads * 10000) / 100;
-      await q(sb.from('campanhas').update(v).eq('id', c.id)); c = { ...c, ...v };
     } else if (passo === 4) {
+      const per = c.modelo === 'perpetuo', B = wzC.base, n2 = v => v == null || !isFinite(v) ? null : Math.round(v * 100) / 100, n0 = v => v == null || !isFinite(v) ? null : Math.round(v);
+      const ex = { ...((one(await q(sb.from('campanhas').select('extras').eq('id', c.id))) || {}).extras || {}), cenarios: { base: wzC.base, pessimista: wzC.pessimista, otimista: wzC.otimista, mexido: wzC.mexido, atualizado_em: new Date().toISOString() } };
+      const v = { orcamento_total: n2(B.I), meta_cpl: n2(B.p), meta_taxa_lead_venda: n2(B.c), meta_cac: n2(B.a), extras: ex };
+      if (per) v.meta_leads_mes = n0(B.L); else { v.meta_leads = n0(B.L); v.meta_vendas = n0(B.V); v.meta_receita = n2(B.rec); }
+      await q(sb.from('campanhas').update(v).eq('id', c.id)); c = { ...c, ...v };
+    } else if (passo === 5) {
       const orc = Number(c.orcamento_total || 0), meta = Number((c.modelo === 'perpetuo' ? c.meta_leads_mes : c.meta_leads) || 0);
       const ja = (await q(sb.from('campanha_canais').select('utm_campaign').eq('workspace_id', w).limit(5000))).map(x => x.utm_campaign);
       for (const k of sel) {
@@ -14136,7 +14174,7 @@ async function abrirWizard(id = null, passo = 1) {
           await q(sb.from('campanha_canais').insert({ ...v, workspace_id: w, campanha_id: c.id, canal: k, utm_campaign: t, tipo: pago(k) ? 'pago' : 'organico' })); }
       }
       canais = await q(sb.from('campanha_canais').select('*').eq('campanha_id', c.id));
-    } else if (passo === 5) {
+    } else if (passo === 6) {
       if (f.querySelector('[data-cpq]')) await cpqSalva(f, c);
       const extras = txSalvarExtras(c.extras, 'mensagem_cadastro', txConfig());
       await q(sb.from('campanhas').update({ extras }).eq('id', c.id)); c.extras = extras;
@@ -14151,7 +14189,7 @@ async function campRascunho(m, c, nProj) {
   const nCan = (await q(sb.from('campanha_canais').select('id').eq('campanha_id', c.id))).length;
   const metas = !!(c.orcamento_total && (c.meta_leads || c.meta_leads_mes));
   const itens = [['O básico', !!(c.nome && c.produto_id && c.data_inicio)], ['Orçamento e metas', metas], ['Canais e metas por canal', nCan > 0], ['Projeto da equipe', nProj > 0]];
-  const passo = !metas ? 3 : !nCan ? 4 : 0, falta = itens.filter(x => !x[1]).length;
+  const passo = !metas ? 4 : !nCan ? 5 : 0, falta = itens.filter(x => !x[1]).length;
   const d = document.createElement('div'); d.className = 'rasc';
   d.innerHTML = `<span class="pill warn">Rascunho</span><div class="tx"><b>${falta ? 'Falta pouco para essa campanha ficar pronta' : 'Tudo pronto. Quando quiser, ative a campanha.'}</b>
     <ul>${itens.map(([t, ok]) => `<li class="${ok ? 'f' : 'p'}">${t}</li>`).join('')}</ul></div>

@@ -1,3 +1,7 @@
+## v0.248
+- `campanhas.fases` aceita também `reabertura` e `downsell` (`{ini, fim}`; `fim` nulo = em aberto).
+- `campanhas.extras.cenarios`: `{base, pessimista, otimista, mexido, atualizado_em}`, cada cenário com `I` (investimento), `p` (CPL), `L` (leads), `c` (conversão %), `V` (vendas), `a` (CAC), `t` (ticket), `rec` e `roas`.
+
 ## v0.247
 - `campanhas.extras.referencia_planejamento` ganha `qtd` e `escolhas: [{k, l, un, valor, fonte, fonte_id, campo}]` (`fonte_id` = `media` ou o id da campanha). `metas_antes` passa a usar o nome do campo da meta nas escolhas feitas pelo assistente.
 - As datas do assistente usam `campanhas.fases`, `data_carrinho_abre` e `data_carrinho_fecha`, que já existiam.
