@@ -1375,7 +1375,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
     <div class="foot">
       <button class="btn sm temaBtn" id="temaBtn" type="button"></button>
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.251 · 03/11/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.252 · 03/11/2026</span>
     </div>
   </aside>
   <div class="mainw"><div class="topou" id="topoU"><div class="ola" id="olaTxt"></div><div class="tou-m"><button type="button" class="tou-av" id="fotoBtn" aria-haspopup="true" aria-expanded="false" aria-controls="fotoMenu" aria-label="Sua conta"></button>
@@ -1999,8 +1999,8 @@ async function vMktDash(m) {
   const abrir = () => body.querySelectorAll('[data-camp]').forEach(r => r.onclick = () => { if (!r.dataset.camp) { toast('Leads sem campanha não têm página própria.'); return; } S.campSel = r.dataset.camp; S.campTab = 'dash'; S.view = 'mkt-camp'; render(); });
   const rot = c => A.gran === 'mes' ? mesFmt(c.coorte) : 'Sem. ' + dd(c.coorte).slice(0, 5);
   const graf = A.gran !== 'campanha' && (C || []).length > 1 ? `<div class="cols"><div class="panel"><h2>Leads por ${A.gran === 'mes' ? 'mês' : 'semana'} de entrada</h2>${linhas(C.map(rot), null, C.map(c => c.leads), v => String(Math.round(v)), true)}</div><div class="panel"><h2>Investimento por ${A.gran === 'mes' ? 'mês' : 'semana'}</h2>${linhas(C.map(rot), null, C.map(c => Number(c.custo)), v => 'R$ ' + (v >= 1000 ? Math.round(v / 1000) + 'k' : Math.round(v)), true)}</div></div>` : '';
-  const faseG = A.camp ? campFase(camps.find(x => x.id === A.camp), P.clientes) : null, tkt = Number(P.vendas) > 0 ? Number(P.receita_antes_churn ?? P.receita) / Number(P.vendas) : P.ltv;
-  body.innerHTML = `${faseG ? campFaseHtml(faseG) : ''}<div class="kpis">${kpi('Leads', num(P.leads), faseG && faseG.antes ? '' : num(P.alunos) + ' viraram alunos')}${kpi('Investido', brl(P.custo || 0), 'anúncios do período; sem anúncio, os lançamentos')}${kpi('CPL', fB(cpl), 'investimento ÷ leads')}${faseG && faseG.antes ? '' : `${kpi('Clientes', num(P.clientes), fP(div(P.clientes, P.leads)) + ' dos leads')}${kpi('CAC', fB(P.cac), 'investimento em anúncios ÷ vendas')}${kpi('Receita', brl(P.receita || 0), 'líquida, sem as vendas de quem saiu')}${kpi('ROAS', P.roas == null ? '—' : fX(P.roas), 'receita ÷ investimento')}${kpi('Ticket médio', fB(tkt), 'receita antes do churn ÷ vendas')}${kpi('Churn', fP(P.churn), Number(P.alunos) > 0 ? num(P.saiu) + ' saíram de ' + num(P.alunos) + ' alunos · ' + num(P.ativos) + ' ativos' : 'alunos que saíram')}`}</div>
+  const faseG = A.camp ? campFase(camps.find(x => x.id === A.camp), P.clientes) : null, tkt = Number(P.vendas) > 0 ? Number(P.faturamento_antes_churn ?? P.receita) / Number(P.vendas) : P.ltv;
+  body.innerHTML = `${faseG ? campFaseHtml(faseG) : ''}<div class="kpis">${kpi('Leads', num(P.leads), faseG && faseG.antes ? '' : num(P.alunos) + ' viraram alunos')}${kpi('Investido', brl(P.custo || 0), 'anúncios do período; sem anúncio, os lançamentos')}${kpi('CPL', fB(cpl), 'investimento ÷ leads')}${faseG && faseG.antes ? '' : `${kpi('Clientes', num(P.clientes), fP(div(P.clientes, P.leads)) + ' dos leads')}${kpi('CAC', fB(P.cac), 'investimento em anúncios ÷ vendas')}${kpi('Faturamento', brl(P.faturamento ?? P.receita ?? 0), 'vendas, sem as de quem saiu')}${kpi('Receita líquida', brl(P.receita || 0), 'faturamento − taxas − comissões')}${kpi('ROAS', P.roas == null ? '—' : fX(P.roas), 'faturamento ÷ investimento')}${kpi('Ticket médio', fB(tkt), 'valor das vendas ÷ vendas')}${kpi('Churn', fP(P.churn), Number(P.alunos) > 0 ? num(P.saiu) + ' saíram de ' + num(P.alunos) + ' alunos · ' + num(P.ativos) + ' ativos' : 'alunos que saíram')}`}</div>
   ${graf}<div id="mgCoh" style="display:flex;flex-direction:column;gap:16px"></div>`;
   corpoCohorts($('#mgCoh'), C, A);
   mktContexto(body, A).catch(e => console.warn('contexto v0.155', e));
@@ -2031,7 +2031,7 @@ async function vMktDashCampanha(m, fixo) {
   const SM = S.mSer = S.mSer || { inv: true, rec: true, cpl: true, cac: true };
   const defSer = [
     { k: 'inv', nome: 'Investimento', cor: 'var(--muted)', eixo: 'e', fmt: brl, valores: serie.map(x => x.inv) },
-    { k: 'rec', nome: 'Receita', cor: 'var(--accent)', eixo: 'e', fmt: brl, valores: serie.map(x => x.rec) },
+    { k: 'rec', nome: 'Faturamento', cor: 'var(--accent)', eixo: 'e', fmt: brl, valores: serie.map(x => x.rec) },
     { k: 'cpl', nome: 'Custo por lead', cor: 'var(--gc-c3)', eixo: 'd', dash: '6 4', fmt: brl, valores: serie.map(x => x.cpl) },
     { k: 'cac', nome: 'CAC', cor: 'var(--ink)', eixo: 'd', dash: '2 3', fmt: brl, valores: serie.map(x => x.cac) }
   ].map(x => ({ ...x, on: SM[x.k] }));
@@ -2054,25 +2054,26 @@ async function vMktDashCampanha(m, fixo) {
     ${kpi('Custo por lead', fB(alvo.cpl), leadsK != null ? 'investimento ÷ leads novos' : 'investimento ÷ leads')}
     ${faseC.antes ? '' : `${kpi('Vendas', num(alvo.vendas), (alvo.meta_vendas ? 'meta ' + num(alvo.meta_vendas) + ' (' + pct(alvo.vendas, alvo.meta_vendas) + '%)' : num(alvo.clientes) + ' clientes') + luzHtml(metaLuz(Number(alvo.vendas), alvo.meta_vendas, { frac: frVd })))}
     ${kpi('CAC', fB(alvo.cac), (alvo.meta_cac ? 'meta ' + brl(alvo.meta_cac) : 'investimento ÷ vendas') + luzHtml(metaLuz(alvo.cac == null ? null : Number(alvo.cac), alvo.meta_cac, { menor: true })))}
-    ${kpi('Receita', brl(alvo.receita), (alvo.meta_receita ? 'meta ' + brl(alvo.meta_receita) : 'sem as vendas de quem saiu') + (Number(alvo.pessoas_saiu) > 0 ? ' · ' + num(alvo.pessoas_saiu) + (Number(alvo.pessoas_saiu) === 1 ? ' pessoa saiu' : ' pessoas saíram') + ' (−' + brl(alvo.receita_saiu) + ')' : '') + luzHtml(metaLuz(Number(alvo.receita), alvo.meta_receita, { frac: frVd })))}
-    ${kpi('ROAS', fX(roas), 'receita ÷ investimento')}
+    ${kpi('Faturamento', brl(alvo.faturamento), (alvo.meta_receita ? 'meta ' + brl(alvo.meta_receita) : 'vendas, sem as de quem saiu') + (Number(alvo.pessoas_saiu) > 0 ? ' · ' + num(alvo.pessoas_saiu) + (Number(alvo.pessoas_saiu) === 1 ? ' pessoa saiu' : ' pessoas saíram') + ' (−' + brl(alvo.faturamento_saiu) + ')' : '') + luzHtml(metaLuz(Number(alvo.faturamento), alvo.meta_receita, { frac: frVd })))}
+    ${alvo.receita != null ? kpi('Receita líquida', brl(alvo.receita), 'faturamento − taxas − comissões') : ''}
+    ${kpi('ROAS', fX(roas), 'faturamento ÷ investimento')}
     ${kpi('Lead → venda', fP(div(alvo.vendas, alvo.leads)), 'vendas ÷ leads')}`}
   </div>
   <div class="ml-grid" id="mlGrid"><div class="panel" id="cuInv"></div><div class="panel" id="cuCpl"></div></div>
-  <div class="panel"><h2>Por canal: vendas, investimento e custos</h2><div class="tw"><table><thead><tr><th>Canal</th><th>Vendas</th><th>Investimento</th><th class="n">CPL</th><th class="n">CAC</th><th class="n">Receita</th></tr></thead><tbody>
+  <div class="panel"><h2>Por canal: vendas, investimento e custos</h2><div class="tw"><table><thead><tr><th>Canal</th><th>Vendas</th><th>Investimento</th><th class="n">CPL</th><th class="n">CAC</th><th class="n">Faturamento</th></tr></thead><tbody>
     ${canais.map(c => `<tr class="clk${CC && CC.campanha_canal_id === c.campanha_canal_id ? ' sel' : ''}" data-cc="${c.campanha_canal_id}"><td>${esc(c.canal)}<br><span class="muted mono" style="font-weight:400">${esc(c.utm_campaign)}</span></td>
       <td>${bar(c.vendas, c.meta_vendas || 0)}</td><td>${barBRL(Number(c.investimento), Number(c.orcamento || 0))}</td>
-      <td class="n">${fB(c.cpl)}</td><td class="n">${fB(c.cac)}${c.meta_cac && c.cac != null ? ` <span class="pill ${Number(c.cac) <= Number(c.meta_cac) ? 'good' : 'bad'}">meta ${brl(c.meta_cac)}</span>` : ''}</td><td class="n">${brl(c.receita)}</td></tr>`).join('') || '<tr><td colspan="6" class="empty">Esta campanha ainda não tem canais.</td></tr>'}
+      <td class="n">${fB(c.cpl)}</td><td class="n">${fB(c.cac)}${c.meta_cac && c.cac != null ? ` <span class="pill ${Number(c.cac) <= Number(c.meta_cac) ? 'good' : 'bad'}">meta ${brl(c.meta_cac)}</span>` : ''}</td><td class="n">${brl(c.faturamento)}</td></tr>`).join('') || '<tr><td colspan="6" class="empty">Esta campanha ainda não tem canais.</td></tr>'}
   </tbody></table></div><span class="muted">Clique em um canal para filtrar os gráficos. CPL aqui usa os leads novos na base. Investimento vem ${usaTrafego ? 'do custo dos anúncios' : 'das contas a pagar ligadas ao canal'}.</span></div>
-  ${fixo ? '' : `<div class="panel"><h2>Todas as campanhas</h2><div class="tw"><table><thead><tr><th>Campanha</th><th class="n">Investimento</th><th class="n">Leads</th><th class="n">CPL</th><th class="n">Vendas</th><th class="n">CAC</th><th class="n">Receita</th><th class="n">ROAS</th></tr></thead><tbody>
-    ${camp.map(c => `<tr><td>${esc(c.nome)}</td><td class="n">${brl(c.investimento)}</td><td class="n">${num(c.leads)}</td><td class="n">${fB(c.cpl)}</td><td class="n">${num(c.vendas)}</td><td class="n">${fB(c.cac)}</td><td class="n">${brl(c.receita)}</td><td class="n">${c.roas ?? '—'}</td></tr>`).join('')}
+  ${fixo ? '' : `<div class="panel"><h2>Todas as campanhas</h2><div class="tw"><table><thead><tr><th>Campanha</th><th class="n">Investimento</th><th class="n">Leads</th><th class="n">CPL</th><th class="n">Vendas</th><th class="n">CAC</th><th class="n">Faturamento</th><th class="n">ROAS</th></tr></thead><tbody>
+    ${camp.map(c => `<tr><td>${esc(c.nome)}</td><td class="n">${brl(c.investimento)}</td><td class="n">${num(c.leads)}</td><td class="n">${fB(c.cpl)}</td><td class="n">${num(c.vendas)}</td><td class="n">${fB(c.cac)}</td><td class="n">${brl(c.faturamento)}</td><td class="n">${c.roas ?? '—'}</td></tr>`).join('')}
   </tbody></table></div></div>`}`;
   const rotC = dias.map(d => dd(d).slice(0, 5)), nomeK = CC ? esc(CC.utm_campaign || CC.canal) : 'todos os canais';
   const fKc = v => 'R$ ' + (v >= 1000 ? (v / 1000).toFixed(v >= 10000 ? 0 : 1).replace('.', ',') + 'k' : Math.round(v));
-  const tabC = `<details><summary>Ver valores por dia</summary><div class="tw"><table><thead><tr><th>Dia</th><th class="n">Investimento</th><th class="n">Receita</th><th class="n">Custo por lead</th><th class="n">CAC</th></tr></thead><tbody>${dias.map((d, i) => `<tr><td>${dd(d)}</td><td class="n">${brl(serie[i].inv)}</td><td class="n">${brl(serie[i].rec)}</td><td class="n">${fB(serie[i].cpl)}</td><td class="n">${fB(serie[i].cac)}</td></tr>`).reverse().join('')}</tbody></table></div></details>`;
+  const tabC = `<details><summary>Ver valores por dia</summary><div class="tw"><table><thead><tr><th>Dia</th><th class="n">Investimento</th><th class="n">Faturamento</th><th class="n">Custo por lead</th><th class="n">CAC</th></tr></thead><tbody>${dias.map((d, i) => `<tr><td>${dd(d)}</td><td class="n">${brl(serie[i].inv)}</td><td class="n">${brl(serie[i].rec)}</td><td class="n">${fB(serie[i].cpl)}</td><td class="n">${fB(serie[i].cac)}</td></tr>`).reverse().join('')}</tbody></table></div></details>`;
   mlCss();
   $('#cuInv').innerHTML = `<h2>Investimento e receita ${S.mAcum ? 'acumulados' : 'por dia'}</h2><div class="ml-sub">${nomeK} · investimento: ${usaTrafego ? 'custo dos anúncios' : 'contas a pagar da campanha'}; receita: vendas aprovadas (bruto)</div>`
-    + mlLinhas({ rot: rotC, fmt: fKc, alt: 'Investimento e receita', tip: i => `${dd(dias[i])}: investimento ${brl(serie[i].inv)} · receita ${brl(serie[i].rec)}`, series: [{ nome: 'Investimento', cor: 'var(--accent)', vals: serie.map(x => x.inv) }, { nome: 'Receita', cor: 'var(--risk)', vals: serie.map(x => x.rec) }] }) + tabC;
+    + mlLinhas({ rot: rotC, fmt: fKc, alt: 'Investimento e faturamento', tip: i => `${dd(dias[i])}: investimento ${brl(serie[i].inv)} · faturamento ${brl(serie[i].rec)}`, series: [{ nome: 'Investimento', cor: 'var(--accent)', vals: serie.map(x => x.inv) }, { nome: 'Faturamento', cor: 'var(--risk)', vals: serie.map(x => x.rec) }] }) + tabC;
   $('#cuCpl').innerHTML = `<h2>Custo por lead e CAC ${S.mAcum ? 'acumulados' : 'por dia'}</h2><div class="ml-sub">${nomeK} · dia sem lead ou sem cliente fica sem ponto</div>`
     + mlLinhas({ rot: rotC, fmt: v => fU(v), alt: 'Custo por lead e CAC', tip: i => `${dd(dias[i])}: custo por lead ${fB(serie[i].cpl)} · CAC ${fB(serie[i].cac)}`, series: [{ nome: 'Custo por lead', cor: 'var(--accent)', vals: serie.map(x => x.cpl) }, { nome: 'CAC', cor: 'var(--risk)', vals: serie.map(x => x.cac) }] });
   await mlPainel($('#mlGrid'), C, { R: ML, canal: CC ? CC.campanha_canal_id : '', escolhe: id => { S.mCanal = id; render(); } });
@@ -2578,8 +2579,8 @@ async function tabCampanhas(el) {
   el.innerHTML = `<div class="head"><span class="muted">Cada campanha é uma página com tudo dela: metas, funil, mídia, vídeos, leads, vendas, links e debriefing. Clique para abrir.</span><div class="acts"><button class="btn pri" id="novaCamp">Nova campanha</button></div></div>
   <div class="filters"><label>Status<select id="clSt"><option value="">Todos</option>${Object.entries(CAMP_ST).map(([k, v]) => `<option value="${k}"${F.st === k ? ' selected' : ''}>${v[1]}</option>`).join('')}</select></label>
   <label>Modelo<select id="clMod"><option value="">Todos</option>${Object.entries(CAMP_MOD).map(([k, v]) => `<option value="${k}"${F.mod === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label></div>
-  <div class="panel"><div class="tw"><table><thead><tr><th>Campanha</th><th>Status</th><th>Período</th><th>Estratégia</th><th>Leads (meta)</th><th>Vendas (meta)</th><th class="n">Receita</th><th class="n">CAC</th></tr></thead><tbody>
-  ${L.map(c => { const r = mkc[c.id] || {}, f = fn[c.funil_id]; return `<tr class="clk" data-c="${c.id}"><td><b>${esc(c.nome)}</b> ${pillModelo(c)}</td><td>${pillCamp(c)}</td><td><small>${periodoCamp(c)}</small></td><td>${f ? esc(f.nome) + ' <small class="muted">' + esc(f.tipo) + '</small>' : '<span class="muted">—</span>'}</td><td>${bar(r.leads || 0, c.meta_leads || 0)}</td><td>${bar(r.vendas || 0, c.meta_vendas || 0)}</td><td class="n">${brl(r.receita || 0)}</td><td class="n">${r.cac != null ? `<span class="${c.meta_cac && Number(r.cac) > Number(c.meta_cac) ? 'neg' : ''}">${brl(r.cac)}</span>` : '—'}</td></tr>`; }).join('') || `<tr><td colspan="8" class="empty">${camp.length ? 'Nenhuma campanha com esses filtros.' : 'Nenhuma campanha ainda. Crie a primeira.'}</td></tr>`}
+  <div class="panel"><div class="tw"><table><thead><tr><th>Campanha</th><th>Status</th><th>Período</th><th>Estratégia</th><th>Leads (meta)</th><th>Vendas (meta)</th><th class="n">Faturamento</th><th class="n">CAC</th></tr></thead><tbody>
+  ${L.map(c => { const r = mkc[c.id] || {}, f = fn[c.funil_id]; return `<tr class="clk" data-c="${c.id}"><td><b>${esc(c.nome)}</b> ${pillModelo(c)}</td><td>${pillCamp(c)}</td><td><small>${periodoCamp(c)}</small></td><td>${f ? esc(f.nome) + ' <small class="muted">' + esc(f.tipo) + '</small>' : '<span class="muted">—</span>'}</td><td>${bar(r.leads || 0, c.meta_leads || 0)}</td><td>${bar(r.vendas || 0, c.meta_vendas || 0)}</td><td class="n">${brl(r.faturamento || 0)}</td><td class="n">${r.cac != null ? `<span class="${c.meta_cac && Number(r.cac) > Number(c.meta_cac) ? 'neg' : ''}">${brl(r.cac)}</span>` : '—'}</td></tr>`; }).join('') || `<tr><td colspan="8" class="empty">${camp.length ? 'Nenhuma campanha com esses filtros.' : 'Nenhuma campanha ainda. Crie a primeira.'}</td></tr>`}
   </tbody></table></div></div>`;
   $('#novaCamp').onclick = () => abrirWizard();
   $('#clSt').onchange = e => { F.st = e.target.value; render(); }; $('#clMod').onchange = e => { F.mod = e.target.value; render(); };
@@ -2664,14 +2665,14 @@ async function tcResumo(el, c, r) {
   const cCanal = row => [{ k: 'canal', l: 'Canal', t: 'select', req: 1, novo: 'canais', opts: sel(cad, 'codigo', 'nome') }, { k: 'utm_campaign', l: 'utm_campaign (única)', full: 1, ph: 'Automática', hint: 'Deixe vazia: o sistema cria a partir da campanha e do canal. É por ela que cada lead é ligado à campanha e ao canal.' },
     { k: 'orcamento', l: 'Orçamento (R$)', t: 'number', step: '0.01' }, { k: 'meta_leads', l: 'Meta de leads do canal', t: 'number' }, { k: 'meta_cpl', l: 'Meta de CPL do canal (R$)', t: 'number', step: '0.01' }, { k: 'meta_cac', l: 'Meta de CAC (R$)', t: 'number', step: '0.01' }, { k: 'percentual_meta_leads', l: '% da meta de leads', t: 'number', step: '0.01' }, { k: 'meta_vendas', l: 'Meta de vendas', t: 'number' },
     ...(temTemp ? [{ k: 'temperatura', l: 'Público', t: 'select', opts: [['', 'Sem classificação'], ['frio', 'Frio (ainda não conhece)'], ['quente', 'Quente (já conhece)']], hint: 'Meta Ads frio e quente viram dois canais, cada um com a sua utm_campaign. Sem classificação o Growths não adivinha.' }] : []), ...EXC.campos];
-  el.innerHTML = `${campFaseHtml(fase)}<div class="kpis">${kpi('Leads', num(leads), c.meta_leads ? 'meta ' + num(c.meta_leads) : '')}${kpi('Investido', brl(r.investimento || 0), c.orcamento_total ? 'orçamento ' + brl(c.orcamento_total) : '')}${fase.antes ? kpi('CPL', leads && Number(r.investimento) > 0 ? brl(Number(r.investimento) / leads) : '—', c.meta_cpl ? 'meta ' + brl(c.meta_cpl) : '') : `${kpi('Vendas', num(vendas), c.meta_vendas ? 'meta ' + num(c.meta_vendas) : '')}${kpi('Receita', brl(r.receita || 0), (c.meta_receita ? 'meta ' + brl(c.meta_receita) : 'sem as vendas de quem saiu') + (Number(r.pessoas_saiu) > 0 ? ' · ' + num(r.pessoas_saiu) + (Number(r.pessoas_saiu) === 1 ? ' pessoa saiu' : ' pessoas saíram') + ' (−' + brl(r.receita_saiu) + ')' : ''))}${kpi('CAC', r.cac != null ? brl(r.cac) : '—', c.meta_cac ? 'meta ' + brl(c.meta_cac) : 'investimento ÷ vendas')}${kpi('ROAS', r.roas != null ? fX(Number(r.roas)) : '—', 'receita ÷ investimento')}`}</div>
+  el.innerHTML = `${campFaseHtml(fase)}<div class="kpis">${kpi('Leads', num(leads), c.meta_leads ? 'meta ' + num(c.meta_leads) : '')}${kpi('Investido', brl(r.investimento || 0), c.orcamento_total ? 'orçamento ' + brl(c.orcamento_total) : '')}${fase.antes ? kpi('CPL', leads && Number(r.investimento) > 0 ? brl(Number(r.investimento) / leads) : '—', c.meta_cpl ? 'meta ' + brl(c.meta_cpl) : '') : `${kpi('Vendas', num(vendas), c.meta_vendas ? 'meta ' + num(c.meta_vendas) : '')}${kpi('Faturamento', brl(r.faturamento || 0), (c.meta_receita ? 'meta ' + brl(c.meta_receita) : 'vendas, sem as de quem saiu') + (Number(r.pessoas_saiu) > 0 ? ' · ' + num(r.pessoas_saiu) + (Number(r.pessoas_saiu) === 1 ? ' pessoa saiu' : ' pessoas saíram') + ' (−' + brl(r.faturamento_saiu) + ')' : ''))}${kpi('Receita líquida', brl(r.receita || 0), 'faturamento − taxas − comissões')}${kpi('CAC', r.cac != null ? brl(r.cac) : '—', c.meta_cac ? 'meta ' + brl(c.meta_cac) : 'investimento ÷ vendas')}${kpi('ROAS', r.roas != null ? fX(Number(r.roas)) : '—', 'faturamento ÷ investimento')}`}</div>
   <div class="cols"><div class="panel"><h2>Planejamento</h2><div class="tw"><table><tbody>
     <tr><td>Modelo</td><td>${pillModelo(c)} <small class="muted">${c.modelo === 'perpetuo' ? 'sem data de fim; acompanhe por período' : 'começo, meio e fim'}</small></td></tr>
     <tr><td>Status</td><td>${pillCamp(c)}</td></tr>${c.tipo_midia ? `<tr><td>Mídia</td><td>${{ hibrida: 'Híbrida (paga e orgânica)', paga: 'Só paga', organica: 'Só orgânica' }[c.tipo_midia] || esc(c.tipo_midia)}</td></tr>` : ''}<tr><td>Período</td><td>${periodoCamp(c)}</td></tr>
     ${c.modelo === 'lancamento' || c.data_carrinho_abre ? `<tr><td>Carrinho</td><td>${c.data_carrinho_abre ? dd(c.data_carrinho_abre) : '—'} a ${c.data_carrinho_fecha ? dd(c.data_carrinho_fecha) : '—'}</td></tr>` : ''}
     <tr><td>Orçamento total</td><td>${brl0(c.orcamento_total)}</td></tr></tbody></table></div>${c.observacoes ? `<p>${esc(c.observacoes)}</p>` : '<p class="muted">Sem observações. Use Editar campanha para registrar a estratégia.</p>'}</div>
   <div class="panel"><h2>Meta e realizado</h2><div class="tw"><table><thead><tr><th></th><th class="n">Realizado</th><th class="n">Meta</th><th></th></tr></thead><tbody>
-    ${linhaMeta('Leads', leads, c.meta_leads, num, { frac: frLd })}${linhaMeta('Vendas', vendas, c.meta_vendas, num, { frac: frVd })}${linhaMeta('Receita', Number(r.receita || 0), c.meta_receita, brl, { frac: frVd })}
+    ${linhaMeta('Leads', leads, c.meta_leads, num, { frac: frLd })}${linhaMeta('Vendas', vendas, c.meta_vendas, num, { frac: frVd })}${linhaMeta('Faturamento', Number(r.faturamento || 0), c.meta_receita, brl, { frac: frVd })}
     ${fase.antes ? '' : linhaMeta('Conversão lead → venda', taxa, c.meta_taxa_lead_venda, v => v.toFixed(2).replace('.', ',') + '%')}${linhaMeta('CPL (custo por lead)', leads && r.investimento != null ? Number(r.investimento) / leads : null, c.meta_cpl, brl, { menor: true })}${fase.antes ? '' : linhaMeta('CAC', r.cac != null ? Number(r.cac) : null, c.meta_cac, brl, { menor: true })}${linhaMeta('Investimento', Number(r.investimento || 0), c.orcamento_total, brl, { menor: true, teto: true, frac: frL })}</tbody></table></div></div></div>
   <div id="campHist"></div>
   <div class="panel"><div class="head"><h2>Canais</h2><div class="acts"><button class="btn" id="novoCanal">Novo canal</button></div></div><div class="tw"><table><thead><tr><th>Canal</th><th>utm_campaign</th><th class="n">Orçamento</th><th>Leads (meta)</th><th class="n">CPL</th><th class="n">Meta de CPL</th><th></th></tr></thead><tbody>
@@ -2685,13 +2686,13 @@ async function tcResumo(el, c, r) {
 
 /* ================= v0.246 — Histórico e referências no planejamento da campanha =================
    Até 3 campanhas finalizadas do mesmo produto e modelo, com as médias ponderadas pelos volumes reais. As mesmas contas de
-   v_marketing_campanha: CPL = investimento ÷ leads; CAC = investimento ÷ vendas; conversão = vendas ÷ leads; ROAS = receita sem o churn ÷ investimento.
+   v_marketing_campanha: CPL = investimento ÷ leads; CAC = investimento ÷ vendas; conversão = vendas ÷ leads; ROAS = faturamento ÷ investimento.
    CPL, CAC e ROAS só somam campanhas com investimento (sem custo lançado, o CPL de zero baixaria a média); a conversão soma as que têm leads.
    Usar as médias como metas pede confirmação e guarda em campanhas.extras.referencia_planejamento os valores e as campanhas usadas. */
 function campHistMedias(L) {
   const soma = (a, k) => a.reduce((t, x) => t + Number(x[k] || 0), 0), cInv = L.filter(x => Number(x.investimento) > 0), cLd = L.filter(x => Number(x.leads) > 0);
   const inv = soma(cInv, 'investimento'), ld = soma(cInv, 'leads'), ven = soma(cInv, 'vendas');
-  return { cpl: { v: ld ? inv / ld : null, n: cInv.length }, cac: { v: ven ? inv / ven : null, n: cInv.length }, conv: { v: cLd.length ? soma(cLd, 'vendas') * 100 / soma(cLd, 'leads') : null, n: cLd.length }, roas: { v: inv ? soma(cInv, 'receita') / inv : null, n: cInv.length } };
+  return { cpl: { v: ld ? inv / ld : null, n: cInv.length }, cac: { v: ven ? inv / ven : null, n: cInv.length }, conv: { v: cLd.length ? soma(cLd, 'vendas') * 100 / soma(cLd, 'leads') : null, n: cLd.length }, roas: { v: inv ? soma(cInv, 'faturamento') / inv : null, n: cInv.length } };
 }
 // o CPL e a conversão levam a um CAC: avisa quando ele destoa do CAC médio
 function campHistCoerencia(md) {
@@ -2702,7 +2703,7 @@ const campHistPct = v => v == null ? '—' : Number(v).toFixed(2).replace('.', '
 // campanhas finalizadas do mesmo produto e modelo, com dados, da mais recente para a mais antiga
 async function campHistComparaveis(c) {
   const cs = await q(sb.from('campanhas').select('id,nome,modelo,data_inicio,data_fim,data_carrinho_abre,data_carrinho_fecha,fases').eq('workspace_id', S.ws).eq('produto_id', c.produto_id).eq('modelo', c.modelo).eq('status', 'finalizada').neq('id', c.id));
-  const vs = cs.length ? await q(sb.from('v_marketing_campanha').select('campanha_id,investimento,leads,qualificados,vendas,clientes,receita,receita_antes_churn').in('campanha_id', cs.map(x => x.id))) : [];
+  const vs = cs.length ? await q(sb.from('v_marketing_campanha').select('campanha_id,investimento,leads,qualificados,vendas,clientes,faturamento,receita_bruta,receita').in('campanha_id', cs.map(x => x.id))) : [];
   const V = Object.fromEntries(vs.map(x => [x.campanha_id, x])), quando = x => x.data_fim || x.data_inicio || '';
   return cs.map(x => ({ ...x, ...(V[x.id] || {}) })).filter(x => Number(x.leads) > 0 || Number(x.investimento) > 0).sort((a, b) => quando(b).localeCompare(quando(a)));
 }
@@ -2713,14 +2714,14 @@ async function campHistoricoPainel(box, c) {
   const md = campHistMedias(L), ok = L.filter(x => Number(x.investimento) > 0 && Number(x.leads) > 0).length, imp = campHistCoerencia(md), ref = (c.extras || {}).referencia_planejamento;
   const cel = (a, b, f) => Number(b) > 0 ? f(Number(a || 0) / Number(b)) : '—';
   const linhaC = x => `<tr><td><a href="#" data-chc="${x.id}">${esc(x.nome)}</a><br><small class="muted">${periodoCamp(x)}</small></td><td class="n">${brl0(x.investimento || 0)}</td><td class="n">${num(Number(x.leads || 0))}</td><td class="n">${num(Number(x.clientes || 0))}</td><td class="n">${brl0(x.receita || 0)}</td>
-    <td class="n">${Number(x.investimento) > 0 ? cel(x.investimento, x.leads, brl) : '—'}</td><td class="n">${Number(x.investimento) > 0 ? cel(x.investimento, x.vendas, brl) : '—'}</td><td class="n">${Number(x.leads) > 0 ? campHistPct(Number(x.vendas || 0) * 100 / Number(x.leads)) : '—'}</td><td class="n">${Number(x.investimento) > 0 ? campHistX(Number(x.receita || 0) / Number(x.investimento)) : '—'}</td></tr>`;
+    <td class="n">${Number(x.investimento) > 0 ? cel(x.investimento, x.leads, brl) : '—'}</td><td class="n">${Number(x.investimento) > 0 ? cel(x.investimento, x.vendas, brl) : '—'}</td><td class="n">${Number(x.leads) > 0 ? campHistPct(Number(x.vendas || 0) * 100 / Number(x.leads)) : '—'}</td><td class="n">${Number(x.investimento) > 0 ? campHistX(Number(x.faturamento || 0) / Number(x.investimento)) : '—'}</td></tr>`;
   const resumo = L.length ? `CPL ${md.cpl.v == null ? '—' : brl(md.cpl.v)} · CAC ${md.cac.v == null ? '—' : brl(md.cac.v)} · Conversão ${campHistPct(md.conv.v)} · ROAS ${campHistX(md.roas.v)}` : 'Sem campanha comparável';
   box.innerHTML = `<div class="panel"><details id="chDet"${S.campHistAberto ? ' open' : ''}><summary style="cursor:pointer"><b style="font-size:16px">Histórico e referências</b> <span class="muted">${L.length} ${L.length === 1 ? 'campanha' : 'campanhas'} · ${resumo}</span></summary>
     <p class="muted" style="margin:10px 0">Campanhas finalizadas com o mesmo produto e o mesmo modelo${c.modelo === 'perpetuo' ? ' (perpétuo)' : ' (lançamento)'}, as ${L.length === 1 ? 'mais recente' : 'mais recentes'} primeiro. A média pondera pelos volumes reais: uma campanha maior pesa mais.</p>
-    ${L.length ? `<div class="tw"><table><thead><tr><th>Campanha</th><th class="n">Investido</th><th class="n">Leads</th><th class="n">Clientes</th><th class="n">Receita</th><th class="n">CPL</th><th class="n">CAC</th><th class="n">Conversão</th><th class="n">ROAS</th></tr></thead><tbody>${L.map(linhaC).join('')}
+    ${L.length ? `<div class="tw"><table><thead><tr><th>Campanha</th><th class="n">Investido</th><th class="n">Leads</th><th class="n">Clientes</th><th class="n">Faturamento</th><th class="n">CPL</th><th class="n">CAC</th><th class="n">Conversão</th><th class="n">ROAS</th></tr></thead><tbody>${L.map(linhaC).join('')}
       <tr id="chMedia" style="font-weight:700"><td colspan="5">Média ponderada</td><td class="n">${md.cpl.v == null ? '—' : brl(md.cpl.v)}</td><td class="n">${md.cac.v == null ? '—' : brl(md.cac.v)}</td><td class="n">${campHistPct(md.conv.v)}</td><td class="n">${campHistX(md.roas.v)}</td></tr>
       <tr><td colspan="5" class="muted">Meta atual desta campanha</td><td class="n muted">${c.meta_cpl ? brl(Number(c.meta_cpl)) : '—'}</td><td class="n muted">${c.meta_cac ? brl(Number(c.meta_cac)) : '—'}</td><td class="n muted">${c.meta_taxa_lead_venda ? campHistPct(c.meta_taxa_lead_venda) : '—'}</td><td class="n muted">—</td></tr></tbody></table></div>
-      <small class="muted">CPL, CAC e ROAS usam as ${md.cpl.n} com investimento lançado; a conversão usa as ${md.conv.n} com leads. Conversão = vendas ÷ leads; CAC = investimento ÷ vendas; ROAS = receita sem o churn ÷ investimento.</small>` : `<p class="empty">Nenhuma campanha finalizada com dados para este produto e este modelo.</p>`}
+      <small class="muted">CPL, CAC e ROAS usam as ${md.cpl.n} com investimento lançado; a conversão usa as ${md.conv.n} com leads. Conversão = vendas ÷ leads; CAC = investimento ÷ vendas; ROAS = faturamento ÷ investimento.</small>` : `<p class="empty">Nenhuma campanha finalizada com dados para este produto e este modelo.</p>`}
     ${L.length && ok < 3 ? `<p id="chPoucos" class="muted" style="border-left:4px solid var(--warn);padding-left:10px">Só ${ok} ${ok === 1 ? 'campanha tem' : 'campanhas têm'} investimento e leads. Com menos de 3, use a média como ponto de partida, não como referência firme.</p>` : ''}
     ${imp != null ? `<p id="chCoer" class="muted" style="border-left:4px solid var(--warn);padding-left:10px">CPL ÷ conversão dá um CAC de ${brl(imp)}, diferente do CAC médio de ${brl(md.cac.v)}. Isso acontece quando um cliente compra mais de uma vez ou quando as médias usam campanhas diferentes. Confira antes de fechar as metas.</p>` : ''}
     ${L.length ? '<div class="acts" style="margin-top:10px"><button class="btn pri" id="chUsar">Usar as médias como metas</button></div>' : ''}
@@ -2733,7 +2734,7 @@ async function campHistoricoPainel(box, c) {
     modal('Usar as médias como metas', `<p>As metas abaixo passam a ser as médias de ${L.length} ${L.length === 1 ? 'campanha' : 'campanhas'}: ${L.map(x => esc(x.nome)).join(', ')}.</p><div class="tw"><table><thead><tr><th></th><th class="n">Meta atual</th><th class="n">Nova meta</th></tr></thead><tbody>${linhas.map(z => `<tr><td>${z[0]}</td><td class="n">${z[1] ? z[3](Number(z[1])) : '—'}</td><td class="n"><b>${z[3](z[2])}</b></td></tr>`).join('')}</tbody></table></div><p class="muted">Nenhuma outra meta muda. Depois, você pode ajustar cada uma em Editar campanha.</p>`, async () => {
       const ex = { ...((one(await q(sb.from('campanhas').select('extras').eq('id', c.id))) || {}).extras || {}) }, ant = ex.referencia_planejamento, { historico = [], ...antSem } = ant || {};
       ex.referencia_planejamento = { em: new Date().toISOString(), por: (S.user && S.user.email) || '', valores: nov, metas_antes: { cpl: c.meta_cpl ?? null, cac: c.meta_cac ?? null, conv: c.meta_taxa_lead_venda ?? null },
-        campanhas: L.map(x => ({ id: x.id, nome: x.nome, data_fim: x.data_fim || null, investimento: Number(x.investimento || 0), leads: Number(x.leads || 0), vendas: Number(x.vendas || 0), clientes: Number(x.clientes || 0), receita: Number(x.receita || 0) })), historico: (ant ? [...historico, antSem] : []).slice(-10) };
+        campanhas: L.map(x => ({ id: x.id, nome: x.nome, data_fim: x.data_fim || null, investimento: Number(x.investimento || 0), leads: Number(x.leads || 0), vendas: Number(x.vendas || 0), clientes: Number(x.clientes || 0), faturamento: Number(x.faturamento || 0) })), historico: (ant ? [...historico, antSem] : []).slice(-10) };
       const up = { extras: ex }; if (nov.cpl != null) up.meta_cpl = nov.cpl; if (nov.cac != null) up.meta_cac = nov.cac; if (nov.conv != null) up.meta_taxa_lead_venda = nov.conv;
       await q(sb.from('campanhas').update(up).eq('id', c.id)); S.campHistAberto = true; toast('Metas atualizadas com as médias do histórico.');
     }, 'Usar como metas'); };
@@ -2803,7 +2804,7 @@ async function tcLeads(el, c, r) {
     q(sb.from('vendas').select('data_venda,valor_bruto,status,pessoas(nome),produtos(nome)').eq('campanha_id', c.id).order('data_venda', { ascending: false }).limit(100))]);
   const por = {}; pes.forEach(p => { const k = p.canal_origem || '(sem origem)'; const x = por[k] = por[k] || { n: 0, q: 0 }; x.n++; if (p.qualificacao === 'qualificado') x.q++; });
   el.innerHTML = `<div class="head"><span class="muted">Os leads desta campanha entram no funil da campanha, onde você filtra por origem e lista.</span><div class="acts"><button class="btn pri" id="lCrm">Abrir o funil da campanha</button></div></div>
-  <div class="kpis">${kpi('Leads', num(r.leads || pes.length))}${kpi('Qualificados', num(r.qualificados || 0), fP(div(Number(r.qualificados || 0), Number(r.leads || 0))))}${kpi('Clientes', num(r.clientes || 0))}${kpi('Vendas', num(r.vendas || 0))}${kpi('Receita', brl(r.receita || 0))}</div>
+  <div class="kpis">${kpi('Leads', num(r.leads || pes.length))}${kpi('Qualificados', num(r.qualificados || 0), fP(div(Number(r.qualificados || 0), Number(r.leads || 0))))}${kpi('Clientes', num(r.clientes || 0))}${kpi('Vendas', num(r.vendas || 0))}${kpi('Faturamento', brl(r.faturamento || 0))}</div>
   <div class="cols"><div class="panel"><h2>Por origem</h2><div class="tw"><table><thead><tr><th>Origem</th><th class="n">Leads</th><th class="n">Qualificados</th></tr></thead><tbody>${Object.entries(por).sort((a, b) => b[1].n - a[1].n).map(([k, x]) => `<tr><td>${esc(k)}</td><td class="n">${num(x.n)}</td><td class="n">${num(x.q)}</td></tr>`).join('') || '<tr><td colspan="3" class="empty">Sem leads.</td></tr>'}</tbody></table></div></div>
   <div class="panel"><h2>Últimas vendas</h2><div class="tw"><table><thead><tr><th>Data</th><th>Pessoa</th><th>Produto</th><th class="n">Valor</th><th>Status</th></tr></thead><tbody>${ven.slice(0, 15).map(v => `<tr><td>${dd(v.data_venda)}</td><td>${esc((one(v.pessoas) || {}).nome || '—')}</td><td>${esc((one(v.produtos) || {}).nome || '—')}</td><td class="n">${brl(v.valor_bruto)}</td><td>${esc(v.status)}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">Sem vendas.</td></tr>'}</tbody></table></div></div></div>
   <div class="panel"><h2>Últimos leads</h2><div class="tw"><table><thead><tr><th>Nome</th><th>E-mail</th><th>Origem</th><th>Anúncio</th><th>Qualif.</th><th>Entrou</th></tr></thead><tbody>${pes.slice(0, 30).map(p => `<tr><td>${esc(p.nome || '—')}</td><td>${esc(p.email || '')}</td><td>${esc(p.canal_origem || '—')}${p.utm_source ? ' · ' + esc(p.utm_source) : ''}</td><td>${esc(p.utm_content || '—')}</td><td>${p.qualificacao ? pillQual(p.qualificacao) : '—'}</td><td>${dtt(p.criado_em)}</td></tr>`).join('') || '<tr><td colspan="6" class="empty">Nenhum lead nesta campanha.</td></tr>'}</tbody></table></div><small class="muted">Mostrando os 30 mais recentes. Todos estão no funil da campanha.</small></div>`;
@@ -2826,7 +2827,7 @@ async function dadosFechamento(c, r) {
   const metas = [
     { k: 'leads', nome: 'Leads', real: leads, meta: c.meta_leads, f: 'n', menor: false },
     { k: 'vendas', nome: 'Vendas', real: vendas, meta: c.meta_vendas, f: 'n', menor: false },
-    { k: 'receita', nome: 'Receita', real: Number(r.receita || 0), meta: c.meta_receita, f: 'brl', menor: false },
+    { k: 'receita', nome: 'Faturamento', real: Number(r.faturamento || 0), meta: c.meta_receita, f: 'brl', menor: false },
     { k: 'conv', nome: 'Conversão lead → venda', real: r.taxa_lead_venda == null ? null : Number(r.taxa_lead_venda), meta: c.meta_taxa_lead_venda, f: 'pct', menor: false },
     { k: 'cac', nome: 'CAC', real: r.cac != null ? Number(r.cac) : null, meta: c.meta_cac, f: 'brl', menor: true },
     { k: 'inv', nome: 'Investimento', real: Number(r.investimento || 0), meta: c.orcamento_total, f: 'brl', menor: true }
@@ -2938,7 +2939,7 @@ async function planCamp(el, a, P) {
   const [camp, prod, mk] = await Promise.all([
     q(sb.from('campanhas').select('*').eq('workspace_id', w).order('data_inicio', { nullsFirst: false })),
     q(sb.from('produtos').select('id,nome').eq('workspace_id', w)),
-    q(sb.from('v_marketing_campanha').select('campanha_id,receita,investimento').eq('workspace_id', w)).catch(() => [])]);
+    q(sb.from('v_marketing_campanha').select('campanha_id,faturamento,investimento').eq('workspace_id', w)).catch(() => [])]);
   const pn = Object.fromEntries(prod.map(x => [x.id, x.nome])), rl = Object.fromEntries(mk.map(x => [x.campanha_id, x]));
   const ini = `${a}-01-01`, fim = `${a}-12-31`;
   const dia = d => Math.round((new Date(d + 'T12:00:00') - new Date(ini + 'T12:00:00')) / 864e5);
@@ -2948,7 +2949,7 @@ async function planCamp(el, a, P) {
   const lista = noAno.concat(semData.map(c => Object.assign({}, c, { _semData: true })));
   const metaC = c => Number(c.meta_receita || 0);
   const totMeta = noAno.reduce((t, c) => t + metaC(c), 0), totOrc = noAno.reduce((t, c) => t + Number(c.orcamento_total || 0), 0);
-  const totReal = noAno.reduce((t, c) => t + Number((rl[c.id] || {}).receita || 0), 0);
+  const totReal = noAno.reduce((t, c) => t + Number((rl[c.id] || {}).faturamento || 0), 0);
   const metaAno = Object.values(P).reduce((t, x) => t + Number(x.meta_receita || 0), 0);
   // distribuição estimada da meta por mês: lançamento cai no mês do fechamento do carrinho (ou do fim); perpétua se espalha do início até dezembro
   const porMes = Array(12).fill(0);
@@ -2980,7 +2981,7 @@ async function planCamp(el, a, P) {
   </div>${lista.length ? '' : '<div class="empty">Nenhuma campanha neste ano ainda. Use os botões acima para planejar os lançamentos e a campanha perpétua.</div>'}
   <p class="muted" style="font-size:12px;margin-top:8px">Barra clara = período da campanha; trecho mais forte = carrinho aberto; ↻ = perpétua; linha laranja = hoje. O valor na barra é a meta de faturamento da campanha.</p></div>
   ${noAno.length ? `<div class="panel"><div class="tw"><table><thead><tr><th>Campanha</th><th>Produto</th><th>Período</th><th>Status</th><th class="n">Meta de faturamento</th><th class="n">Orçamento</th><th class="n">Realizado</th><th></th></tr></thead><tbody>
-    ${noAno.map(c => `<tr class="clk" data-pc="${c.id}"><td><b>${esc(c.nome)}</b> ${pillModelo(c)}</td><td>${c.produto_id ? esc(pn[c.produto_id] || '—') : '—'}</td><td><small>${periodoCamp(c)}</small></td><td>${pillCamp(c)}</td><td class="n">${metaC(c) ? brl(metaC(c)) : '—'}</td><td class="n">${c.orcamento_total ? brl(c.orcamento_total) : '—'}</td><td class="n">${brl((rl[c.id] || {}).receita || 0)}</td><td><button class="btn sm" data-abre="${c.id}">Abrir</button></td></tr>`).join('')}
+    ${noAno.map(c => `<tr class="clk" data-pc="${c.id}"><td><b>${esc(c.nome)}</b> ${pillModelo(c)}</td><td>${c.produto_id ? esc(pn[c.produto_id] || '—') : '—'}</td><td><small>${periodoCamp(c)}</small></td><td>${pillCamp(c)}</td><td class="n">${metaC(c) ? brl(metaC(c)) : '—'}</td><td class="n">${c.orcamento_total ? brl(c.orcamento_total) : '—'}</td><td class="n">${brl((rl[c.id] || {}).faturamento || 0)}</td><td><button class="btn sm" data-abre="${c.id}">Abrir</button></td></tr>`).join('')}
     <tr><td colspan="4"><b>Total</b></td><td class="n"><b>${brl(totMeta)}</b></td><td class="n"><b>${brl(totOrc)}</b></td><td class="n"><b>${brl(totReal)}</b></td><td></td></tr></tbody></table></div>
     <p class="muted" style="font-size:12px;margin-top:8px">Por mês (estimativa da meta das campanhas): lançamento conta no mês em que o carrinho fecha; perpétua se divide igualmente do início até dezembro.</p>
     <div class="tw"><table><thead><tr><th></th>${MESES.map(n => `<th class="n">${n}</th>`).join('')}</tr></thead><tbody>
@@ -3008,7 +3009,7 @@ async function tabPlan(el) {
   const agora = new Date(), mesAtual = agora.getFullYear() === a ? agora.getMonth() + 1 : (a < agora.getFullYear() ? 12 : 0);
   const val = (mes, k) => P[mes] && P[mes][k] != null ? P[mes][k] : '';
   el.innerHTML = `<div id="paAnos" class="pa-anobar"></div><div id="paObj"></div><div id="paAreas"></div><div id="paAno" class="pa-wrap"></div><section class="pa-sec"><header class="pa-h"><div><h2>3. Calendário de campanhas</h2><p>Quais campanhas fazem a meta, e quanto falta planejar?</p></div></header><div id="planCamp" style="display:flex;flex-direction:column;gap:16px"></div></section><section class="pa-sec" id="paMeses"><header class="pa-h"><div><h2>Metas mês a mês</h2><p>O detalhe de cada mês: leads, vendas, receita e orçamento. A receita pode vir da sugestão da seção 2.</p></div></header><div class="head"><div><h2 style="margin:0">Metas mensais da empresa</h2><span class="muted">Meta e orçamento mês a mês, independente das campanhas.</span></div><div class="filters"><label>Ano<select id="anoSel">${[a - 1, a, a + 1].map(x => `<option${x === a ? ' selected' : ''}>${x}</option>`).join('')}</select></label></div><div class="acts"><button class="btn pri" id="salvaPlan">Salvar planejamento</button></div></div>
-  <div class="panel"><div class="tw"><table><thead><tr><th>Mês</th><th class="n">Meta leads</th><th class="n">Leads</th><th class="n">Meta vendas</th><th class="n">Vendas</th><th class="n">Meta receita</th><th class="n">Receita</th><th class="n">Orçamento</th></tr></thead><tbody>
+  <div class="panel"><div class="tw"><table><thead><tr><th>Mês</th><th class="n">Meta leads</th><th class="n">Leads</th><th class="n">Meta vendas</th><th class="n">Vendas</th><th class="n">Meta receita</th><th class="n">Faturamento</th><th class="n">Orçamento</th></tr></thead><tbody>
   ${MESES.map((n, i) => { const k = i + 1; return `<tr><td>${n}</td>
     <td class="n"><input type="number" data-m="${k}" data-k="meta_leads" value="${val(k, 'meta_leads')}"></td><td class="n">${k <= mesAtual ? num(rl[i]) : '—'}</td>
     <td class="n"><input type="number" data-m="${k}" data-k="meta_vendas" value="${val(k, 'meta_vendas')}"></td><td class="n">${k <= mesAtual ? num(rv[i]) : '—'}</td>
@@ -4041,7 +4042,7 @@ async function plCarregar(w, plano) {
     q(sb.from('plano_indicadores').select('*').eq('plano_id', plano.id).order('nome')),
     q(sb.from('plano_metas').select('*').eq('plano_id', plano.id).order('setor').order('titulo')),
     q(sb.from('campanhas').select('id,nome,status,meta_id,modelo,data_inicio,data_fim').eq('workspace_id', w).order('nome')),
-    q(sb.from('v_marketing_campanha').select('campanha_id,leads,vendas,receita,investimento').eq('workspace_id', w))
+    q(sb.from('v_marketing_campanha').select('campanha_id,leads,vendas,faturamento,investimento').eq('workspace_id', w))
   ]);
   const fim = plano.data_fim < hoje() ? plano.data_fim : hoje();
   const chaves = [...new Set([...inds, ...metas].map(x => x.chave).filter(Boolean))];
@@ -4106,7 +4107,7 @@ async function vPlano(m) {
       <span class="muted">${ind ? 'apoia: ' + esc(ind.nome) + ' · ' : ''}${x.prazo ? 'prazo ' + dd(x.prazo) + ' · ' : ''}${cs.length ? 'campanhas: ' + cs.map(c => esc(c.nome)).join(', ') : 'sem campanha ligada'}</span></div></td></tr>`; }).join('')}</tbody></table></div></div>`).join('') : '<div class="panel empty">Nenhuma meta por setor. Abra um índice na aba Objetivos e clique em "+ Meta de setor", ou use o botão acima.</div>');
   } else {
     const gr = D.metas.map(x => ({ x, cs: campsDe(x.id) })).filter(g => g.cs.length), sem = D.camps.filter(c => !D.metas.some(x => x.id === c.meta_id));
-    const tb = cs => `<div class="tw"><table><thead><tr><th>Campanha</th><th>Status</th><th class="n">Leads</th><th class="n">Vendas</th><th class="n">Receita</th><th class="n">Investido</th></tr></thead><tbody>${cs.map(c => { const r = D.mk[c.id] || {}; return `<tr class="clk" data-camp="${c.id}"><td><b>${esc(c.nome)}</b></td><td>${pillCamp(c)}</td><td class="n">${num(r.leads || 0)}</td><td class="n">${num(r.vendas || 0)}</td><td class="n">${brl(r.receita || 0)}</td><td class="n">${brl(r.investimento || 0)}</td></tr>`; }).join('')}</tbody></table></div>`;
+    const tb = cs => `<div class="tw"><table><thead><tr><th>Campanha</th><th>Status</th><th class="n">Leads</th><th class="n">Vendas</th><th class="n">Faturamento</th><th class="n">Investido</th></tr></thead><tbody>${cs.map(c => { const r = D.mk[c.id] || {}; return `<tr class="clk" data-camp="${c.id}"><td><b>${esc(c.nome)}</b></td><td>${pillCamp(c)}</td><td class="n">${num(r.leads || 0)}</td><td class="n">${num(r.vendas || 0)}</td><td class="n">${brl(r.faturamento || 0)}</td><td class="n">${brl(r.investimento || 0)}</td></tr>`; }).join('')}</tbody></table></div>`;
     corpo = gr.map(g => `<div class="panel"><h2>${esc(PL_SETOR[g.x.setor])}: ${esc(g.x.titulo)}</h2>${tb(g.cs)}</div>`).join('') + (sem.length ? `<div class="panel"><h2>Campanhas sem meta do plano</h2><span class="muted">Ligue cada campanha a uma meta de setor para ver o plano se desdobrando em ações.</span>${tb(sem)}</div>` : '') || '<div class="panel empty">Nenhuma campanha ainda.</div>';
   }
   m.innerHTML = `<div class="head"><div><h1>Planejamento da empresa</h1><span class="muted">Plano maior da empresa: onde queremos chegar, quais índices mover, metas por setor e as campanhas que fazem acontecer.</span></div>
@@ -4789,11 +4790,11 @@ async function vPainel(m) {
   const perRot = PG.per === 'custom' ? dd(ini) + ' a ' + dd(fim) : { '7d': 'últimos 7 dias', '15d': 'últimos 15 dias', '30d': 'últimos 30 dias', mes: 'mês atual', '12m': 'últimos 12 meses', ano: 'ano ' + ano, tudo: 'todo o período' }[PG.per];
   // ---- campanhas ativas (uma linha por campanha) ----
   const ativasC = cps.filter(c => c.status === 'ativa'), mkc = id => mk.find(x => x.campanha_id === id) || {};
-  const linhaCamp = c => { const v = mkc(c.id), inv = Number(v.investimento || 0), rb = Number(v.receita || 0);
+  const linhaCamp = c => { const v = mkc(c.id), inv = Number(v.investimento || 0), rb = Number(v.faturamento || 0);
     return `<tr class="clk" data-ca="${c.id}"><td><b>${esc(c.nome)}</b><br><span class="muted">${esc(c.modelo === 'lancamento' ? 'Lançamento' : c.modelo === 'perpetuo' ? 'Perpétuo' : c.modelo || '')} · ${c.data_inicio ? dd(c.data_inicio) : ''}${c.data_fim ? ' a ' + dd(c.data_fim) : ' · sem data final'}</span></td>
       <td>${bar(Number(v.leads || 0), Number(v.meta_leads || 0))}</td><td>${bar(Number(v.vendas || 0), Number(v.meta_vendas || 0))}</td>
       <td class="n">${brl(inv)}</td><td class="n">${brl(rb)}</td><td class="n">${v.cac != null ? brl(v.cac) : '—'}</td><td class="n">${v.roas != null ? Number(v.roas).toFixed(2).replace('.', ',') + 'x' : '—'}</td></tr>`; };
-  const campHtml = ativasC.length ? `<div class="tw"><table><thead><tr><th>Campanha</th><th>Leads (meta)</th><th>Vendas (meta)</th><th class="n">Investido</th><th class="n">Receita</th><th class="n">CAC de mídia</th><th class="n">ROAS</th></tr></thead><tbody>${ativasC.map(linhaCamp).join('')}</tbody></table></div><span class="muted">Totais da campanha desde o início. O CAC por campanha com todos os custos está mais abaixo, no período escolhido.</span>` : '<div class="empty">Nenhuma campanha ativa. Ative uma em Marketing → Campanhas e planejamento.</div>';
+  const campHtml = ativasC.length ? `<div class="tw"><table><thead><tr><th>Campanha</th><th>Leads (meta)</th><th>Vendas (meta)</th><th class="n">Investido</th><th class="n">Faturamento</th><th class="n">CAC de mídia</th><th class="n">ROAS</th></tr></thead><tbody>${ativasC.map(linhaCamp).join('')}</tbody></table></div><span class="muted">Totais da campanha desde o início. O CAC por campanha com todos os custos está mais abaixo, no período escolhido.</span>` : '<div class="empty">Nenhuma campanha ativa. Ative uma em Marketing → Campanhas e planejamento.</div>';
   const optPer = [['7d', 'Últimos 7 dias'], ['15d', 'Últimos 15 dias'], ['30d', 'Últimos 30 dias'], ['mes', 'Mês atual'], ['12m', 'Últimos 12 meses'], ['ano', 'Ano atual'], ['tudo', 'Todo o período'], ['custom', 'Período personalizado']];
   const seletor = perPadrao(perGlobal());
   const finHtml = `<div class="panel"><h2 style="margin:0 0 4px">Métricas financeiras <span class="muted" style="font-weight:400">· ${perRot}</span></h2>
@@ -4866,7 +4867,7 @@ async function vPainel(m) {
       ${[['Pessoas', total], ['Qualificados', quals], ['Clientes', FU.clientes], ['Ativos', cliAt]].map(([l, v]) => `<div class="row"><span>${l}</span><div class="bar"><i style="width:${pct(v, total)}%"></i></div><span class="mono">${num(v)}</span></div>`).join('')}
     </div></div>
     <div class="panel"><h2>Campanhas: meta e realizado</h2>
-      ${fun.length ? `<div class="tw"><table><thead><tr><th>Campanha</th><th>Leads</th><th>Vendas</th><th>Receita</th></tr></thead><tbody>${fun.map(c => `<tr><td>${esc(c.nome)}<br><span class="muted">${num(c.leads_qualificados)} qualificados</span></td><td>${bar(c.leads, c.meta_leads)}</td><td>${bar(c.vendas, c.meta_vendas)}</td><td>${barBRL(Number(c.receita), Number(c.meta_receita || 0))}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">Nenhuma campanha.</div>'}
+      ${fun.length ? `<div class="tw"><table><thead><tr><th>Campanha</th><th>Leads</th><th>Vendas</th><th>Faturamento</th></tr></thead><tbody>${fun.map(c => `<tr><td>${esc(c.nome)}<br><span class="muted">${num(c.leads_qualificados)} qualificados</span></td><td>${bar(c.leads, c.meta_leads)}</td><td>${bar(c.vendas, c.meta_vendas)}</td><td>${barBRL(Number(c.faturamento), Number(c.meta_receita || 0))}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">Nenhuma campanha.</div>'}
     </div>
   </div>
   <div class="secl">Tabelas completas</div>
@@ -8944,7 +8945,7 @@ function arvMapa(vk, el) {
   if (vk === 'mkt-camp' && S.campSel) { const c = S.campSel, T = S.campTab || 'dash', cn = T === 'dash' && S.mCanal ? { canal: S.mCanal } : {}, P = { campanha: c, ...cn };
     const leadsDash = (() => { const k = [...el.querySelectorAll('.kpi')].find(x => /^Leads/.test((x.querySelector('.l') || {}).innerText || '')); return k && /novos na base/.test(k.innerText) ? ['mkt.leads_campanha', P] : ['crm.pessoas', { ...P, filtro: 'novos_campanha' }]; })();
     const base = { 'Investimento': ['mkt.ads', { ...P, campo: 'custo' }], 'Investido': ['mkt.ads', { ...P, campo: 'custo' }], 'Custo por lead': ['mkt.cpl', P], 'Vendas': ['ven.soma', { ...P, campo: 'qtd' }],
-      'CAC': ['mkt.cac', P], 'Receita': ['ven.soma', { ...P, campo: 'liquido' }], 'ROAS': ['mkt.roas', P], 'Lead → venda': ['mkt.conv', P] };
+      'CAC': ['mkt.cac', P], 'Faturamento': ['ven.soma', { ...P, campo: 'bruto' }], 'ROAS': ['mkt.roas', P], 'Lead → venda': ['mkt.conv', P] };
     if (T === 'captacao') return { 'Leads únicos': ['mkt.leads_campanha', { campanha: c }], 'Qualificados': ['mkt.leads_campanha', { campanha: c, qualificacao: 'qualificado' }] };
     if (T === 'resumo') return { ...base, 'Leads': ['crm.pessoas', { campanha: c, filtro: 'novos_campanha' }] };
     if (T === 'dash') return { ...base, 'Leads': leadsDash };
@@ -9074,7 +9075,7 @@ function cdCss() { mlCss(); if (!document.getElementById('cd115')) document.head
 const CD_ROT = { leads: 'Leads', investimento: 'Investimento', cpl: 'Custo por lead', vendas: 'Vendas', cac: 'CAC', receita: 'Receita', roas: 'ROAS', conv: 'Lead → venda' };
 // rótulo do card → detalhe (vale no Dashboard, em Planejamento e metas e em Captação e metas)
 const CD_KPI = { 'Leads': 'leads', 'Leads únicos': 'leads', 'Cadastros repetidos': 'leads', 'Qualificados': 'leads', 'Alunos / não alunos': 'leads', 'Já eram clientes': 'leads',
-  'Investimento': 'investimento', 'Investido': 'investimento', 'Custo por lead': 'cpl', 'Vendas': 'vendas', 'CAC': 'cac', 'Receita': 'receita', 'ROAS': 'roas', 'Lead → venda': 'conv' };
+  'Investimento': 'investimento', 'Investido': 'investimento', 'Custo por lead': 'cpl', 'Vendas': 'vendas', 'CAC': 'cac', 'Faturamento': 'receita', 'ROAS': 'roas', 'Lead → venda': 'conv' };
 function cdLigaKpis(root, campId) {
   if (!root || !campId) return; cdCss();
   root.querySelectorAll('.kpi').forEach(k => {
@@ -9155,12 +9156,12 @@ async function cdAbrir(campId, met) {
       ['Meta de CPL', x => x.meta_cpl ? brl(x.meta_cpl) : '—', null], ['Leads (todos)', x => fN(x.leads), a => fN(cdS(a, 'leads'))], ['CPL (todos)', x => fB(cdDiv(x.investimento, x.leads)), a => fB(cdDiv(cdS(a, 'investimento'), cdS(a, 'leads')))]], campId)}</section>`;
   } else if (met === 'vendas' || met === 'receita') {
     const v = met === 'vendas';
-    corpo = `<div class="cd-kpis">${cdK('Vendas aprovadas', fN(vend), fN(cli) + ' cliente(s)')}${cdK('Receita', brl(rec), '')}${cdK('Ticket médio', fB(cdDiv(rec, vend)), '')}${cdK('Lead → venda', cdPct(cdDiv(cli, leads)), 'clientes ÷ leads')}</div>
-    <div class="cd-g">${v ? cdLinha(R, 'Vendas por dia', 'vendas aprovadas da campanha', [{ nome: 'Vendas', cor: 'var(--accent)', vals: sVend }], fN) : cdLinha(R, 'Receita por dia', 'valor bruto das vendas aprovadas', [{ nome: 'Receita', cor: 'var(--accent)', vals: sRec }], fR)}
+    corpo = `<div class="cd-kpis">${cdK('Vendas aprovadas', fN(vend), fN(cli) + ' cliente(s)')}${cdK('Faturamento', brl(rec), '')}${cdK('Ticket médio', fB(cdDiv(rec, vend)), '')}${cdK('Lead → venda', cdPct(cdDiv(cli, leads)), 'clientes ÷ leads')}</div>
+    <div class="cd-g">${v ? cdLinha(R, 'Vendas por dia', 'vendas aprovadas da campanha', [{ nome: 'Vendas', cor: 'var(--accent)', vals: sVend }], fN) : cdLinha(R, 'Faturamento por dia', 'vendas aprovadas, sem as de quem saiu', [{ nome: 'Faturamento', cor: 'var(--accent)', vals: sRec }], fR)}
       ${cdLinha(R, v ? 'Vendas acumuladas' : 'Receita acumulada', 'soma dia a dia', [{ nome: 'Acumulado', cor: 'var(--accent)', vals: cdAcum(v ? sVend : sRec) }], v ? fN : fR)}
-      <section><h3>${v ? 'Vendas' : 'Receita'} por canal</h3><div class="ml-sub">${v ? 'A marca é a meta de vendas do canal' : 'Canal de quem comprou (por onde entrou na campanha)'}</div>${v ? cdBarras(cs, x => Number(x.vendas), x => Number(x.meta_vendas) || null, fN, false) : cdBarras(cs, x => Number(x.receita), () => null, brl, false)}</section>${prods}</div>
+      <section><h3>${v ? 'Vendas' : 'Faturamento'} por canal</h3><div class="ml-sub">${v ? 'A marca é a meta de vendas do canal' : 'Canal de quem comprou (por onde entrou na campanha)'}</div>${v ? cdBarras(cs, x => Number(x.vendas), x => Number(x.meta_vendas) || null, fN, false) : cdBarras(cs, x => Number(x.receita), () => null, brl, false)}</section>${prods}</div>
     <section class="cd-sec"><h3>Por canal</h3>${cdTabela(cs, [['Vendas', x => fN(x.vendas), a => fN(cdS(a, 'vendas'))], ['Meta', x => x.meta_vendas ? fN(x.meta_vendas) : '—', a => fN(cdS(a, 'meta_vendas'))], ['Clientes', x => fN(x.clientes), a => fN(cdS(a, 'clientes'))],
-      ['Receita', x => brl(x.receita), a => brl(cdS(a, 'receita'))], ['Ticket', x => fB(cdDiv(x.receita, x.vendas)), a => fB(cdDiv(cdS(a, 'receita'), cdS(a, 'vendas')))], ['Lead → venda', x => cdPct(cdDiv(x.clientes, x.leads)), a => cdPct(cdDiv(cdS(a, 'clientes'), cdS(a, 'leads')))]], campId)}</section>${listaVendas}`;
+      ['Faturamento', x => brl(x.receita), a => brl(cdS(a, 'receita'))], ['Ticket', x => fB(cdDiv(x.receita, x.vendas)), a => fB(cdDiv(cdS(a, 'receita'), cdS(a, 'vendas')))], ['Lead → venda', x => cdPct(cdDiv(x.clientes, x.leads)), a => cdPct(cdDiv(cdS(a, 'clientes'), cdS(a, 'leads')))]], campId)}</section>${listaVendas}`;
   } else if (met === 'cac') {
     const pagos = com.filter(x => Number(x.investimento) > 0);
     corpo = `<div class="cd-kpis">${cdK('CAC', fB(cdDiv(inv, cli)), brl(inv) + ' ÷ ' + fN(cli) + ' cliente(s)')}${cdK('Investido', brl(inv), '')}${cdK('Clientes', fN(cli), '')}</div>
@@ -9169,10 +9170,10 @@ async function cdAbrir(campId, met) {
     <section class="cd-sec"><h3>Por canal</h3>${cdTabela(pagos, [['Investido', x => brl(x.investimento), a => brl(cdS(a, 'investimento'))], ['Clientes', x => fN(x.clientes), a => fN(cdS(a, 'clientes'))], ['CAC', x => fB(cac(x)), a => fB(cdDiv(cdS(a, 'investimento'), cdS(a, 'clientes')))], ['Meta de CAC', x => x.meta_cac ? brl(x.meta_cac) : '—', null]], campId)}</section>`;
   } else if (met === 'roas') {
     const pagos = com.filter(x => Number(x.investimento) > 0);
-    corpo = `<div class="cd-kpis">${cdK('ROAS', fX(cdDiv(rec, inv)), 'receita ÷ investimento')}${cdK('Receita', brl(rec), '')}${cdK('Investido', brl(inv), '')}${cdK('Resultado da mídia', brl(rec - inv), 'receita − investimento')}</div>
-    <div class="cd-g">${cdLinha(R, 'Receita e investimento acumulados', 'quando a receita passa o investimento, o ROAS passa de 1x', [{ nome: 'Investimento', cor: 'var(--accent)', vals: cdAcum(sInv) }, { nome: 'Receita', cor: 'var(--risk)', vals: cdAcum(sRec) }], fR)}
+    corpo = `<div class="cd-kpis">${cdK('ROAS', fX(cdDiv(rec, inv)), 'faturamento ÷ investimento')}${cdK('Faturamento', brl(rec), '')}${cdK('Investido', brl(inv), '')}${cdK('Resultado da mídia', brl(rec - inv), 'faturamento − investimento')}</div>
+    <div class="cd-g">${cdLinha(R, 'Faturamento e investimento acumulados', 'quando o faturamento passa o investimento, o ROAS passa de 1x', [{ nome: 'Investimento', cor: 'var(--accent)', vals: cdAcum(sInv) }, { nome: 'Faturamento', cor: 'var(--risk)', vals: cdAcum(sRec) }], fR)}
       <section><h3>ROAS por canal</h3><div class="ml-sub">A marca é 1x (empate)</div>${cdBarras(pagos, roas, () => 1, fX, false, 'empate')}</section></div>
-    <section class="cd-sec"><h3>Por canal</h3>${cdTabela(pagos, [['Investido', x => brl(x.investimento), a => brl(cdS(a, 'investimento'))], ['Receita', x => brl(x.receita), a => brl(cdS(a, 'receita'))], ['ROAS', x => fX(roas(x)), a => fX(cdDiv(cdS(a, 'receita'), cdS(a, 'investimento')))]], campId)}</section>`;
+    <section class="cd-sec"><h3>Por canal</h3>${cdTabela(pagos, [['Investido', x => brl(x.investimento), a => brl(cdS(a, 'investimento'))], ['Faturamento', x => brl(x.receita), a => brl(cdS(a, 'receita'))], ['ROAS', x => fX(roas(x)), a => fX(cdDiv(cdS(a, 'receita'), cdS(a, 'investimento')))]], campId)}</section>`;
   } else {
     corpo = `<div class="cd-kpis">${cdK('Lead → venda', cdPct(cdDiv(cli, leads)), fN(cli) + ' cliente(s) de ' + fN(leads) + ' leads')}${cdK('Qualificado → venda', cdPct(cdDiv(cli, cdS(cs, 'qualificados'))), 'clientes ÷ qualificados')}${cdK('Leads novos → venda', cdPct(cdDiv(cli, novos)), '')}</div>
     <div class="cd-g"><section><h3>Conversão por canal</h3><div class="ml-sub">Clientes ÷ leads do canal</div>${cdBarras(cs, x => cdDiv(Number(x.clientes), Number(x.leads)) || 0, () => null, cdPct, false)}</section>
@@ -9920,7 +9921,7 @@ const SEM_MIG89 = t => `<div class="panel"><h2>${t}</h2><p class="muted">Precisa
 const TEMP = { frio: 'Frio', quente: 'Quente' };
 const SEG = { aluno: 'Alunos', nao_aluno: 'Não alunos', cliente: 'Já clientes' };
 const META_TIPO = { investimento: ['Investimento', 'brl'], leads: ['Leads', 'n'], leads_qualificados: ['Leads qualificados', 'n'], vendas: ['Vendas', 'n'], conversao: ['Conversão lead → venda', 'pct'],
-  receita: ['Receita', 'brl'], ticket_medio: ['Ticket médio', 'brl'], cpl: ['CPL', 'brl'], cac: ['CAC', 'brl'], roas: ['ROAS', 'x'], impressoes: ['Impressões', 'n'], cliques: ['Cliques', 'n'] };
+  receita: ['Faturamento', 'brl'], ticket_medio: ['Ticket médio', 'brl'], cpl: ['CPL', 'brl'], cac: ['CAC', 'brl'], roas: ['ROAS', 'x'], impressoes: ['Impressões', 'n'], cliques: ['Cliques', 'n'] };
 const fMeta = (v, u) => v == null ? '—' : u === 'brl' ? brl(v) : u === 'pct' ? String(Number(v).toFixed(1)).replace('.', ',') + '%' : u === 'x' ? String(Number(v).toFixed(2)).replace('.', ',') + 'x' : num(v);
 const _colCache = {};
 async function temColuna(t, c) {
@@ -9937,7 +9938,7 @@ async function vendasPorCanalHtml(ini, fim, campanha, modelo) {
   const L = R.canais || [], tot = L.reduce((a, x) => ({ v: a.v + Number(x.vendas), r: a.r + Number(x.receita), i: a.i + Number(x.investimento || 0) }), { v: 0, r: 0, i: 0 });
   return `<div class="panel vpc89"><div class="head"><div><h2 style="margin:0">Vendas por canal</h2><span class="muted">${dd(ini)} a ${dd(fim)} · atribuição pelo <b>${R.modelo === 'primeiro_toque' ? 'primeiro toque' : 'último toque'}</b>. ROAS bruto = receita bruta ÷ investimento.</span></div>
     <div class="acts"><select data-vpcm><option value="ultimo_toque"${R.modelo === 'ultimo_toque' ? ' selected' : ''}>Último toque (oficial)</option><option value="primeiro_toque"${R.modelo === 'primeiro_toque' ? ' selected' : ''}>Primeiro toque</option></select></div></div>
-    ${L.length ? `<div class="tw"><table><thead><tr><th>Canal</th><th>Público</th><th class="n">Vendas</th><th class="n">Clientes</th><th class="n">Receita</th><th class="n">Investimento</th><th class="n">CAC</th><th class="n">ROAS</th></tr></thead><tbody>
+    ${L.length ? `<div class="tw"><table><thead><tr><th>Canal</th><th>Público</th><th class="n">Vendas</th><th class="n">Clientes</th><th class="n">Faturamento</th><th class="n">Investimento</th><th class="n">CAC</th><th class="n">ROAS</th></tr></thead><tbody>
     ${L.map(x => `<tr><td>${esc(x.nome)}</td><td>${x.temperatura ? esc(TEMP[x.temperatura]) : '<span class="muted">—</span>'}</td><td class="n">${num(x.vendas)}</td><td class="n">${num(x.clientes)}</td><td class="n">${brl(x.receita)}</td><td class="n">${x.investimento == null ? '<span class="muted" title="Sem dado de mídia ligado a este canal">sem dado</span>' : brl(x.investimento)}</td><td class="n">${x.cac == null ? '—' : brl(x.cac)}</td><td class="n">${x.roas == null ? '—' : fMeta(x.roas, 'x')}</td></tr>`).join('')}
     <tr class="tot"><td colspan="2">Total</td><td class="n">${num(tot.v)}</td><td></td><td class="n">${brl(tot.r)}</td><td class="n">${brl(tot.i)}</td><td></td><td class="n">${tot.i > 0 ? fMeta(tot.r / tot.i, 'x') : '—'}</td></tr></tbody></table></div>` : '<div class="empty">Nenhuma venda nem investimento no período.</div>'}</div>`;
 }
@@ -13962,9 +13963,9 @@ function campFormCompacto() {
    a média, uma campanha específica ou nada. Rates usam média ponderada (as contas de campHistMedias); volumes, média simples.
    Só CPL, CAC e conversão vão para as metas; investido, leads, clientes, receita e ROAS são consulta. Clicar numa campanha abre o histórico dela. Tudo em extras.referencia_planejamento. */
 const CH_MET = [
-  { k: 'investimento', l: 'Investido', un: 'brl', vol: 1 }, { k: 'leads', l: 'Leads', un: 'int', vol: 1 }, { k: 'clientes', l: 'Clientes', un: 'int', vol: 1 }, { k: 'receita', l: 'Receita', un: 'brl', vol: 1 },
+  { k: 'investimento', l: 'Investido', un: 'brl', vol: 1 }, { k: 'leads', l: 'Leads', un: 'int', vol: 1 }, { k: 'clientes', l: 'Clientes', un: 'int', vol: 1 }, { k: 'faturamento', l: 'Faturamento', un: 'brl', vol: 1 },
   { k: 'cpl', l: 'CPL', un: 'brl', n: 'investimento', d: 'leads', f: 'investimento', campo: 'meta_cpl' }, { k: 'cac', l: 'CAC', un: 'brl', n: 'investimento', d: 'vendas', f: 'investimento', campo: 'meta_cac' },
-  { k: 'conv', l: 'Conversão', un: 'pct', n: 'vendas', d: 'leads', f: 'leads', x: 100, campo: 'meta_taxa_lead_venda' }, { k: 'roas', l: 'ROAS', un: 'x', n: 'receita', d: 'investimento', f: 'investimento' }];
+  { k: 'conv', l: 'Conversão', un: 'pct', n: 'vendas', d: 'leads', f: 'leads', x: 100, campo: 'meta_taxa_lead_venda' }, { k: 'roas', l: 'ROAS', un: 'x', n: 'faturamento', d: 'investimento', f: 'investimento' }];
 const chFmt = (un, v) => v == null ? '—' : un === 'brl' ? brl(v) : un === 'int' ? num(Math.round(v)) : un === 'pct' ? campHistPct(v) : campHistX(v);
 const chN = (x, k) => Number(x[k] || 0);
 // valor de uma métrica numa campanha (null quando não dá para calcular)
@@ -14015,7 +14016,7 @@ function chOfertasHtml(H, L) { const tipos = CH_PAPEIS.filter(p => chOfResumo(L,
 // o histórico mais detalhado da campanha clicada
 function chDetalheHtml(H) { const x = H.det && H.L.find(z => z.id === H.det.id); if (!x) return '';
   const fz = [...EST_FASES, ...LANC_EXTRAS].filter(([k]) => (x.fases || {})[k] && (x.fases[k].ini || x.fases[k].fim)).map(([k, l]) => `${l}: ${dd(x.fases[k].ini)} a ${x.fases[k].fim ? dd(x.fases[k].fim) : 'em aberto'}`), cn = H.det.canais;
-  const it = [['Período', periodoCamp(x)], ['Vendas', num(chN(x, 'vendas'))], ['Leads qualificados', num(chN(x, 'qualificados'))], ['Ticket médio', chN(x, 'vendas') ? brl(chN(x, 'receita_antes_churn') / chN(x, 'vendas')) : '—']];
+  const it = [['Período', periodoCamp(x)], ['Vendas', num(chN(x, 'vendas'))], ['Leads qualificados', num(chN(x, 'qualificados'))], ['Ticket médio', chN(x, 'vendas') ? brl(chN(x, 'receita_bruta') / chN(x, 'vendas')) : '—']];
   return `<div id="chDetalhe" class="ch-det"><div class="ch-deth"><b>${esc(x.nome)}</b><span class="sp"></span><button type="button" class="btn sm" id="chAbreCamp">Abrir a campanha completa</button><button type="button" class="btn sm" id="chFechaDet">Fechar</button></div>
     <div class="infog">${it.map(([l, v]) => `<div><span class="muted" style="font-size:11px">${l}</span><br>${v}</div>`).join('')}</div>${fz.length ? `<p class="muted" style="margin:8px 0 0">${fz.join(' · ')}</p>` : ''}
     ${x.data_carrinho_abre ? `<p class="muted" style="margin:4px 0 0">Carrinho: ${dd(x.data_carrinho_abre)} a ${x.data_carrinho_fecha ? dd(x.data_carrinho_fecha) : '—'}</p>` : ''}
@@ -14036,7 +14037,7 @@ function chPassoHtml(H) { const L = chLista(H);
     ${L.length < 3 ? `<p class="muted ch-av" id="chPoucos">Com menos de 3 campanhas, trate o número como ponto de partida, não como referência firme.</p>` : ''}
     ${chOfertasHtml(H, L)}
     ${chGraficos(L)}
-    <small class="muted">Investido, leads, clientes e receita: média simples por campanha. CPL, CAC, conversão e ROAS: média ponderada pelos volumes reais.</small>
+    <small class="muted">Investido, leads, clientes e faturamento: média simples por campanha. CPL, CAC, conversão e ROAS: média ponderada pelos volumes reais.</small>
     <div id="chResumo" class="calc"></div>`; }
 function chResumoHtml(H) { const E = chEscolhas(H), por = k => (E.find(z => z.k === k) || {}).valor;
   const imp = por('cpl') != null && por('conv') && por('cac') ? campHistCoerencia({ cpl: { v: por('cpl') }, cac: { v: por('cac') }, conv: { v: por('conv') } }) : null;
@@ -14047,29 +14048,38 @@ function chResumoHtml(H) { const E = chEscolhas(H), por = k => (E.find(z => z.k 
    pessimista e otimista saem do Base até serem mexidos à mão. */
 const CEN_LIN = [['I', 'Investimento', 'brl'], ['p', 'Custo por lead (CPL)', 'brl'], ['L', 'Leads', 'int'], ['c', 'Conversão lead → venda (%)', 'pct'], ['V', 'Vendas', 'int'], ['a', 'CAC', 'brl'], ['t', 'Ticket médio', 'brl']];
 const CEN_TIPOS = [['pessimista', 'Pessimista', 1.2, .8], ['base', 'Base', 1, 1], ['otimista', 'Otimista', .8, 1.2]];
-function cenFecha(s) { s.rec = s.V > 0 && s.t > 0 ? s.V * s.t : null; s.roas = s.rec != null && s.I > 0 ? s.rec / s.I : null; return s; }
+function cenFecha(s) { const tem = x => s[x] != null && s[x] > 0, R = Math.round;
+  // completa só o que está vazio: nunca muda o que foi digitado
+  if (!tem('p')) { if (tem('I') && tem('L')) s.p = s.I / s.L; else if (tem('a') && tem('c')) s.p = s.a * s.c / 100; }
+  if (!tem('L') && tem('I') && tem('p')) s.L = R(s.I / s.p);
+  if (!tem('c')) { if (tem('V') && tem('L')) s.c = s.V / s.L * 100; else if (tem('p') && tem('a')) s.c = s.p / s.a * 100; }
+  if (!tem('V') && tem('L') && tem('c')) s.V = R(s.L * s.c / 100);
+  if (!tem('a')) { if (tem('I') && tem('V')) s.a = s.I / s.V; else if (tem('p') && tem('c')) s.a = s.p / (s.c / 100); }
+  s.rec = s.V > 0 && s.t > 0 ? s.V * s.t : null; s.roas = s.rec != null && s.I > 0 ? s.rec / s.I : null; return s; }
 function cenSolve(s0, k) { const s = { ...s0 }, tem = x => s[x] != null && s[x] > 0, R = Math.round;
   const vendas = () => { if (tem('L') && tem('c')) s.V = R(s.L * s.c / 100); }, cac = () => { if (tem('I') && tem('V')) s.a = s.I / s.V; else if (tem('p') && tem('c')) s.a = s.p / (s.c / 100); };
   if (!tem(k)) return cenFecha(s);
   if (k === 'I') { if (tem('p')) { s.L = R(s.I / s.p); if (tem('c')) { vendas(); cac(); } else if (tem('a')) { s.V = R(s.I / s.a); if (s.L) s.c = s.V / s.L * 100; } }
-    else if (tem('a')) { s.V = R(s.I / s.a); if (tem('c')) { s.L = R(s.V / (s.c / 100)); if (s.L) s.p = s.I / s.L; } } else if (tem('L')) { s.p = s.I / s.L; cac(); } else cac(); }
+    else if (tem('a')) { s.V = R(s.I / s.a); if (tem('c')) { s.L = R(s.I / s.a / (s.c / 100)); if (s.L) s.p = s.I / s.L; } } else if (tem('L')) { s.p = s.I / s.L; cac(); } else cac(); }
   else if (k === 'p') { if (tem('I')) s.L = R(s.I / s.p); else if (tem('L')) s.I = s.L * s.p; if (tem('c')) { vendas(); cac(); } else if (tem('V') && tem('L')) { s.c = s.V / s.L * 100; cac(); } else if (tem('a')) s.c = s.p / s.a * 100; }
   else if (k === 'L') { if (tem('I')) s.p = s.I / s.L; else if (tem('p')) s.I = s.L * s.p; if (tem('c')) { vendas(); cac(); } else if (tem('V')) { s.c = s.V / s.L * 100; cac(); } }
-  else if (k === 'c') { if (tem('L')) { vendas(); cac(); } else if (tem('I') && tem('a')) { s.V = R(s.I / s.a); s.L = R(s.V / (s.c / 100)); if (s.L) s.p = s.I / s.L; } else if (tem('p')) s.a = s.p / (s.c / 100); else if (tem('a')) s.p = s.a * s.c / 100; }
+  else if (k === 'c') { if (tem('L')) { vendas(); cac(); } else if (tem('I') && tem('a')) { s.V = R(s.I / s.a); s.L = R(s.I / s.a / (s.c / 100)); if (s.L) s.p = s.I / s.L; } else if (tem('p')) s.a = s.p / (s.c / 100); else if (tem('a')) s.p = s.a * s.c / 100; }
   else if (k === 'V') { if (tem('L')) s.c = s.V / s.L * 100; else if (tem('c')) { s.L = R(s.V / (s.c / 100)); if (tem('I') && s.L) s.p = s.I / s.L; } if (tem('I')) s.a = s.I / s.V; else if (tem('a')) s.I = s.V * s.a; }
-  else if (k === 'a') { if (tem('I')) { s.V = R(s.I / s.a); if (tem('c')) { s.L = R(s.V / (s.c / 100)); if (s.L) s.p = s.I / s.L; } else if (tem('L') && s.L) s.c = s.V / s.L * 100; else if (tem('p')) { s.L = R(s.I / s.p); if (s.L) s.c = s.V / s.L * 100; } }
+  else if (k === 'a') { if (tem('I')) { s.V = R(s.I / s.a); if (tem('c')) { s.L = R(s.I / s.a / (s.c / 100)); if (s.L) s.p = s.I / s.L; } else if (tem('L') && s.L) s.c = s.V / s.L * 100; else if (tem('p')) { s.L = R(s.I / s.p); if (s.L) s.c = s.V / s.L * 100; } }
     else if (tem('p')) s.c = s.p / s.a * 100; else if (tem('c')) s.p = s.a * s.c / 100; }
   return cenFecha(s); }
 // pessimista e otimista a partir do Base: CPL e conversão 20% piores ou melhores, com o mesmo investimento
 function cenDeriva(b, fp, fc) { const s = { I: b.I ?? null, t: b.t ?? null, p: b.p > 0 ? b.p * fp : null, c: b.c > 0 ? b.c * fc : null, a: !(b.p > 0 && b.c > 0) && b.a > 0 ? b.a * fp / fc : null, L: null, V: null };
   if (s.p && s.c) s.a = s.p / (s.c / 100); return s.I > 0 ? cenSolve(s, 'I') : cenFecha(s); }
+// cenário mexido à mão: mantém o que foi digitado e busca no Base só o que ainda está vazio
+function cenCompleta(s0, b, fp, fc) { const s = cenFecha({ ...s0 }), d = cenDeriva(b, fp, fc); ['I', 'p', 'c', 't'].forEach(x => { if (!(s[x] > 0) && d[x] > 0) s[x] = d[x]; }); return cenFecha(s); }
 // receita das ofertas adicionais: vendas × aceite × preço
 const cenOfertaRec = (s, o) => s.V > 0 && o.taxa_aceite != null ? s.V * Number(o.taxa_aceite) * Number(o.preco || 0) : null;
 const cenTotal = (s, rows) => { const ad = rows.filter(o => o.papel !== 'principal').map(o => cenOfertaRec(s, o) || 0).reduce((a, b) => a + b, 0), t = (s.rec || 0) + ad; return t || null; };
 function cenInicial(c, prods, rows = []) { const ex = (c.extras || {}).cenarios || {}, n = v => v == null || v === '' ? null : Number(v), per = c.modelo === 'perpetuo';
   const b = { I: n(c.orcamento_total), p: n(c.meta_cpl), L: n(per ? c.meta_leads_mes : c.meta_leads), c: n(c.meta_taxa_lead_venda), V: per ? n((ex.base || {}).V) : n(c.meta_vendas), a: n(c.meta_cac), t: n((rows.find(o => o.papel === 'principal') || {}).preco) ?? n((ex.base || {}).t) ?? n((prods.find(p => p.id === c.produto_id) || {}).preco) };
   if (!(b.a > 0) && b.p > 0 && b.c > 0) b.a = b.p / (b.c / 100); if (!(b.p > 0) && b.a > 0 && b.c > 0) b.p = b.a * b.c / 100; if (!(b.c > 0) && b.p > 0 && b.a > 0) b.c = b.p / b.a * 100; cenFecha(b);
-  const C = { base: b, mexido: { ...(ex.mexido || {}) } }; CEN_TIPOS.filter(x => x[0] !== 'base').forEach(([k, , fp, fc]) => { C[k] = C.mexido[k] && ex[k] ? cenFecha({ ...ex[k] }) : cenDeriva(b, fp, fc); }); return C; }
+  const C = { base: b, mexido: { ...(ex.mexido || {}) } }; CEN_TIPOS.filter(x => x[0] !== 'base').forEach(([k, , fp, fc]) => { C[k] = C.mexido[k] && ex[k] ? cenCompleta(ex[k], b, fp, fc) : cenDeriva(b, fp, fc); }); return C; }
 const cenTxt = v => v == null || !isFinite(v) ? '' : String(Math.round(v * 100) / 100);
 function cenHtml(C, c, rows = []) { const ad = rows.filter(o => o.papel !== 'principal'); const esc_ = ((c.extras || {}).referencia_planejamento || {}).escolhas || [], veio = { p: 'cpl', c: 'conv', a: 'cac' }, per = c.modelo === 'perpetuo';
   const num_ = (t, m, v) => `<input type="number" step="any" min="0" data-money="0" data-cen="${t}" data-m="${m}" aria-label="${m}" value="${cenTxt(v)}">`;
@@ -14214,9 +14224,9 @@ async function abrirWizard(id = null, passo = 1) {
       const ofAd = wzO.rows.filter(o => o.papel !== 'principal'), cel = (t, m, v) => { const n = f.querySelector(`[data-cenv="${t}:${m}"]`); if (n) n.textContent = v; };
       const mostra = (pula) => { CEN_TIPOS.forEach(([t]) => { const s = wzC[t]; CEN_LIN.forEach(([m]) => { const i = f.querySelector(`[data-cen="${t}"][data-m="${m}"]`); if (i && i !== pula) i.value = cenTxt(s[m]); });
         const tot = cenTotal(s, wzO.rows); cel(t, 'rec', s.rec == null ? '—' : brl(s.rec)); ofAd.forEach((o, i) => { const r = cenOfertaRec(s, o); cel(t, 'o' + i, r == null ? '—' : brl(r)); }); cel(t, 'rt', tot == null ? '—' : brl(tot)); cel(t, 'roas', tot != null && s.I > 0 ? campHistX(tot / s.I) : '—'); }); };
-      const seguem = () => CEN_TIPOS.filter(x => x[0] !== 'base' && !wzC.mexido[x[0]]).forEach(([k, , fp, fc]) => { wzC[k] = cenDeriva(wzC.base, fp, fc); });
+      const seguem = () => CEN_TIPOS.filter(x => x[0] !== 'base').forEach(([k, , fp, fc]) => { wzC[k] = wzC.mexido[k] ? cenCompleta(wzC[k], wzC.base, fp, fc) : cenDeriva(wzC.base, fp, fc); });
       f.querySelector('.cen-t').addEventListener('input', ev => { const i = ev.target, t = i.dataset.cen, m = i.dataset.m; if (!t) return; wzC[t] = cenSolve({ ...wzC[t], [m]: i.value === '' ? null : Number(i.value) }, m);
-        if (t === 'base') seguem(); else wzC.mexido[t] = true; mostra(i); });
+        if (t === 'base') seguem(); else { wzC.mexido[t] = true; const [, , fp, fc] = CEN_TIPOS.find(x => x[0] === t); wzC[t] = cenCompleta(wzC[t], wzC.base, fp, fc); } mostra(i); });
       $('#cenRefaz').onclick = ev => { ev.preventDefault(); wzC.mexido = {}; seguem(); mostra(); }; mostra(); }
     if (passo === 6) { const tab = () => {
         const L = [...sel], orc = Number(c.orcamento_total || 0), meta = Number((c.modelo === 'perpetuo' ? c.meta_leads_mes : c.meta_leads) || 0), D = dias();
@@ -14276,7 +14286,7 @@ async function abrirWizard(id = null, passo = 1) {
       const ex = { ...((one(await q(sb.from('campanhas').select('extras').eq('id', c.id))) || {}).extras || {}) }, ant = ex.referencia_planejamento, { historico = [], ...antSem } = ant || {}, up = {}, antes = {}, por = k => (E.find(z => z.k === k) || {}).valor ?? null;
       E.filter(z => z.campo).forEach(z => { up[z.campo] = z.valor; antes[z.campo] = c[z.campo] ?? null; });
       ex.referencia_planejamento = { em: new Date().toISOString(), por: (S.user && S.user.email) || '', filtro: wzH.filtro, qtd: wzH.qtd, ini: wzH.ini, fim: wzH.fim, escolhas: E, aceites: AC, valores: { cpl: por('cpl'), cac: por('cac'), conv: por('conv') }, metas_antes: antes,
-        campanhas: chLista(wzH).map(x => ({ id: x.id, nome: x.nome, data_fim: x.data_fim || null, investimento: chN(x, 'investimento'), leads: chN(x, 'leads'), qualificados: chN(x, 'qualificados'), vendas: chN(x, 'vendas'), clientes: chN(x, 'clientes'), receita: chN(x, 'receita') })), historico: (ant ? [...historico, antSem] : []).slice(-10) };
+        campanhas: chLista(wzH).map(x => ({ id: x.id, nome: x.nome, data_fim: x.data_fim || null, investimento: chN(x, 'investimento'), leads: chN(x, 'leads'), qualificados: chN(x, 'qualificados'), vendas: chN(x, 'vendas'), clientes: chN(x, 'clientes'), faturamento: chN(x, 'faturamento') })), historico: (ant ? [...historico, antSem] : []).slice(-10) };
       await q(sb.from('campanhas').update({ ...up, extras: ex }).eq('id', c.id)); c = { ...c, ...up, extras: ex }; wzH.antes = js;
       // o aceite levado vira a premissa da oferta desta campanha (aba Ofertas)
       for (const z of AC) { const fr = Math.round(z.valor * 100) / 10000; await q(sb.from('campanha_ofertas').update({ taxa_aceite: fr }).eq('campanha_id', c.id).eq('papel', z.papel)); (wzO ? wzO.rows : []).filter(r => r.papel === z.papel).forEach(r => { r.taxa_aceite = fr; }); }
@@ -16140,9 +16150,9 @@ function corpoCohorts(el, C, A) {
   const arvP = c => { const i = String(c.coorte).slice(0, 10), f = A.gran === 'mes' ? arvFimMes(i.slice(0, 7)) : diaMais(i, 6);
     return ` data-arvp="${esc(JSON.stringify({ ini: i < A.ini ? A.ini : i, fim: f > A.fim ? A.fim : f }))}"`; };
   const camp = c => porCamp ? ` class="clk" data-camp="${esc(c.coorte)}"` : arvP(c);
-  const SUM = ['leads', 'qualificados', 'pesquisa', 'clientes', 'receita', 'custo', 'alunos', 'ativos', 'saiu', 'ascensao', 'recompra', ...jan.map(j => j[0]), ...ret.flatMap(r => [r[0] + '_ok', r[0] + '_base'])];
+  const SUM = ['leads', 'qualificados', 'pesquisa', 'clientes', 'vendas', 'faturamento', 'receita', 'custo', 'alunos', 'ativos', 'saiu', 'ascensao', 'recompra', ...jan.map(j => j[0]), ...ret.flatMap(r => [r[0] + '_ok', r[0] + '_base'])];
   const tot = L.reduce((t, c) => { SUM.forEach(k => t[k] = (t[k] || 0) + Number(c[k] || 0)); return t; }, {});
-  const deriv = t => ({ ...t, ltv: t.clientes ? t.receita / t.clientes : null, cac: t.clientes && t.custo ? t.custo / t.clientes : null, cpl: t.leads && t.custo ? t.custo / t.leads : null, roas: t.custo ? t.receita / t.custo : null, roi: t.custo ? (t.receita - t.custo) / t.custo : null, ltv_cac: t.clientes && t.custo ? (t.receita / t.clientes) / (t.custo / t.clientes) : null, churn: t.alunos ? t.saiu / t.alunos : null, retencao: t.alunos ? t.ativos / t.alunos : null });
+  const deriv = t => ({ ...t, ltv: t.clientes ? t.faturamento / t.clientes : null, cac: t.vendas && t.custo ? t.custo / t.vendas : null, cpl: t.leads && t.custo ? t.custo / t.leads : null, roas: t.custo ? t.faturamento / t.custo : null, roi: t.custo ? (t.receita - t.custo) / t.custo : null, ltv_cac: t.clientes && t.custo ? (t.receita / t.clientes) / (t.custo / t.clientes) : null, churn: t.alunos ? t.saiu / t.alunos : null, retencao: t.alunos ? t.ativos / t.alunos : null });
   const T = deriv(tot);
   const cel = (v, f) => `<td class="n">${v == null ? '—' : f(v)}</td>`;
   let cab = '', lin = null, rod = null, nota = '';
@@ -16153,10 +16163,10 @@ function corpoCohorts(el, C, A) {
     rod = `<tr style="font-weight:600"><td>Total</td><td class="n">${num(tot.leads)}</td><td class="n">${fP(div(tot.qualificados, tot.leads))}</td><td class="n">${fP(div(tot.pesquisa, tot.leads))}</td>${jan.map(([k]) => `<td class="n">${fP(div(tot[k], tot.leads))}</td>`).join('')}<td class="n">${num(tot.clientes)} <span class="muted">(${fP(div(tot.clientes, tot.leads))})</span></td><td class="n">${brl(tot.receita)}</td><td class="n">${tot.leads ? brl(tot.receita / tot.leads) : '—'}</td></tr>`;
     nota = 'Cada linha é uma coorte: os leads que entraram naquela semana, mês ou campanha. As colunas de 7 a 90 dias mostram quantos por cento dos leads compraram até aquele prazo depois de entrar. Em itálico, a janela ainda está aberta e o número vai subir.';
   } else if (A.cv === 'ret') {
-    cab = `<th>Coorte</th><th class="n">Leads</th><th class="n">Clientes</th><th class="n">Custo</th><th class="n">CPL</th><th class="n">CAC</th><th class="n">Receita</th><th class="n">Receita por cliente</th><th class="n">ROAS</th>`;
-    const l = (c, b) => `<tr${b ? '' : camp(c)}${b ? ' style="font-weight:600"' : ''}><td style="white-space:nowrap"><b>${b ? 'Total' : esc(rot(c))}</b></td><td class="n">${num(c.leads)}</td><td class="n">${num(c.clientes)}</td><td class="n">${c.custo ? brl(c.custo) : '—'}</td>${cel(c.cpl, brl)}${cel(c.cac, brl)}<td class="n">${brl(c.receita)}</td>${cel(c.ltv, brl)}${cel(c.roas, fX)}</tr>`;
+    cab = `<th>Coorte</th><th class="n">Leads</th><th class="n">Clientes</th><th class="n">Custo</th><th class="n">CPL</th><th class="n">CAC</th><th class="n">Faturamento</th><th class="n">Receita líquida</th><th class="n">Faturamento por cliente</th><th class="n">ROAS</th>`;
+    const l = (c, b) => `<tr${b ? '' : camp(c)}${b ? ' style="font-weight:600"' : ''}><td style="white-space:nowrap"><b>${b ? 'Total' : esc(rot(c))}</b></td><td class="n">${num(c.leads)}</td><td class="n">${num(c.clientes)}</td><td class="n">${c.custo ? brl(c.custo) : '—'}</td>${cel(c.cpl, brl)}${cel(c.cac, brl)}<td class="n">${brl(c.faturamento)}</td><td class="n">${brl(c.receita)}</td>${cel(c.ltv, brl)}${cel(c.roas, fX)}</tr>`;
     lin = c => l(c, false); rod = l(T, true);
-    nota = 'Custo = gasto dos anúncios nas datas da coorte (dentro do período) ou da campanha. Receita = vendas aprovadas dessas pessoas até hoje, então o ROAS de coortes novas ainda vai subir. Receita por cliente = receita ÷ clientes. ROAS = receita ÷ custo. Sem custo registrado, CAC e ROAS ficam em branco.';
+    nota = 'Custo = gasto dos anúncios nas datas da coorte (dentro do período) ou da campanha. Faturamento = vendas aprovadas dessas pessoas até hoje, sem as de quem saiu; o ROAS de coortes novas ainda vai subir. Receita líquida = faturamento − taxas − comissões. ROAS = faturamento ÷ custo. Sem custo registrado, CAC e ROAS ficam em branco.';
   } else {
     cab = `<th>Coorte</th><th class="n">Clientes</th><th class="n">Alunos</th><th class="n">Ativos</th><th class="n">Saíram</th><th class="n">Churn</th><th class="n">Retenção</th><th class="n">30 dias</th><th class="n">60 dias</th><th class="n">90 dias</th><th class="n">Ascensão</th><th class="n">Recompra</th>`;
     const rc = (c, k) => { const b = c[k + '_base'], v = div(c[k + '_ok'], b); return `<td class="n" title="${num(c[k + '_ok'])} de ${num(b)} alunos que entraram há pelo menos ${k.slice(1)} dias">${b ? fP(v) : '—'}</td>`; };

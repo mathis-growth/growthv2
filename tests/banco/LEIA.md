@@ -75,3 +75,6 @@ Conferido em 30/10/2026.
 
 ## v0.251 — CAC de mídia, ROAS e receita (PGlite)
 `v0251_cac_roas_cenarios.sql` termina com "v0251: tudo OK". Testa: anúncios sem somar contas a pagar; sem anúncio, os lançamentos; CAC por vendas; receita sem quem saiu; quem tem aluno ativo não saiu; campanha, canal, dashboard, coortes, gráfico, vendas por canal, métricas do Growth e árvore de detalhes. Conferido em 03/11/2026.
+
+## v0.252 — Faturamento e Receita líquida (PGlite)
+`v0251_cac_roas_cenarios.sql` termina com "v0251 e v0252: tudo OK". Soma à v0.251: faturamento sem quem saiu; ROAS sobre o faturamento; comissão sai da receita líquida e não do faturamento; comissão cancelada não conta. Conferido em 03/11/2026.

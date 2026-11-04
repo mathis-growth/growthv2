@@ -15,7 +15,7 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.251 · 03/11/2026 (`index.html` + `assets/atendimento.*`) |
+| **Versão da tela** | 0.252 · 03/11/2026 (`index.html` + `assets/atendimento.*`) |
 | **Atendimento (0.175)** | Código preparado; falta aplicar `supabase/migrations/20261030021541_central_atendimento.sql`, publicar a função `atendimento`, configurar canais e liberar as telas nos pacotes. [Guia](docs/atendimento.md). |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | conferido em 31/10/2026: tem tudo até a **v0.189**, inclusive as narrativas (v0.157, 39 modelos), o Growth's Content simplificado (v0.159), os subtemas (v0.160), o Customer Growth (v0.163), o Atendimento e o Diagnóstico 360° (v0.177) |
 | **Falta aplicar no banco** | `supabase/RODAR_v0.197_pesquisa_modelos.sql` (modelos de pesquisa fora da lista) e `supabase/RODAR_v0.198_plano_anual.sql` (meta do ano, com impostos e custos variáveis da v0.199) `supabase/RODAR_v0.205_go_to_market.sql` (pacote Go-to-Market e custos de marketing) `supabase/RODAR_v0.206_historico_vendas.sql` (histórico de vendas) `supabase/RODAR_v0.208_vendas_periodo.sql` (dashboard de vendas) e `supabase/RODAR_v0.209_financeiro_simplificado.sql` (Financeiro simplificado) |
@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.252 | 03/11/2026 | **Faturamento e Receita líquida**: as campanhas mostram os dois números e o ROAS passa a ser sobre o faturamento. O financeiro não muda. | `20270107110000_v0252_faturamento_e_receita.sql` |
 | 0.251 | 03/11/2026 | **Uma conta só para CAC de mídia, ROAS e receita**: investimento pelos anúncios, CAC por vendas e receita sem as vendas de quem saiu, nas telas de marketing. O financeiro não muda. | `20270106100000_v0251_cac_roas_receita.sql` |
 | 0.250 | 03/11/2026 | **Fase da campanha, luzinha de meta, foto e saudação**: telas conforme a fase; dashboard de marketing sem ROI e LTV, com ticket médio e churn em pessoas; luzinha de meta × planejado; foto com menu da conta e saudação pelo horário. | `20270105100000_v0250_ticket_e_foto.sql` |
 | 0.249 | 03/11/2026 | **Assistente da campanha**: passo Oferta, datas em qualquer campanha, filtro por período, gráficos de linha e order bump, upsell e downsell no histórico e nos cenários. | Sem migração |

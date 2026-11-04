@@ -1,3 +1,11 @@
+## v0.252
+- Migração `20270107110000_v0252_faturamento_e_receita.sql`:
+  - nova: `v_vendas_mkt`;
+  - `v_marketing_campanha`: colunas novas no fim (`faturamento`, `faturamento_saiu`, `comissoes`), `receita` sem comissões e `roas` sobre o faturamento. `v_marketing_canal`: coluna nova `faturamento`;
+  - trocas de texto em `funil_analise`, `funil_cohorts`, `vendas_por_canal`, `campanha_detalhe`, `_meta_realizado`, `growth_metricas_auto`, `campanha_series` e `_arv_extra2`; `_arv_mkt_norm` refeita;
+  - fórmulas do catálogo em `metricas_definicoes`.
+- index.html: as telas de campanha leem `faturamento` e mostram Receita líquida ao lado. Rótulo da tela para 0.252.
+
 ## v0.251
 - Migração `20270106100000_v0251_cac_roas_receita.sql`:
   - novas: `v_pessoas_saiu`, `campanha_tem_anuncio`, `_arv_mkt_norm`;

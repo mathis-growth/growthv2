@@ -10,8 +10,8 @@ i = s.index('<script>/* @supabase'); j = s.index('</script>', i) + 9
 W = 'w1'; FOTOS = os.environ.get('FOTOS')
 def ws(rows): return [dict(workspace_id=W, **r) for r in rows]
 def camp(id, nome, st='ativa', mod='lancamento', ini='2026-01-01', fim='2099-12-31', **k): return dict(id=id, nome=nome, status=st, produto_id='p1', modelo=mod, data_inicio=ini, data_fim=fim if mod != 'perpetuo' else None, **{'extras': {}, 'fases': {}, 'criado_em': '2026-01-01', **k})
-def vis(id, inv, ld, vd, cl, rec, **k): return dict(campanha_id=id, workspace_id=W, nome=id, status='ativa', investimento=inv, leads=ld, qualificados=0, vendas=vd, clientes=cl, receita=rec, receita_saiu=k.get('rs', 0), pessoas_saiu=k.get('ps', 0), cpl=inv / ld if ld else None, cac=inv / cl if cl else None, roas=rec / inv if inv else None, taxa_lead_venda=vd * 100 / ld if ld else None, orcamento_total=k.get('orc'), meta_leads=k.get('ml'), meta_vendas=k.get('mv'), meta_receita=k.get('mr'), meta_cac=k.get('mc'))
-POS = dict(leads=1094, vendas=380, clientes=342, receita=329690.85, custo=7020.15, alunos=344, ativos=322, saiu=22, churn=.064, ltv=964.01, cac=20.53, roas=46.96, roi=45.96)
+def vis(id, inv, ld, vd, cl, rec, **k): return dict(campanha_id=id, workspace_id=W, nome=id, status='ativa', investimento=inv, leads=ld, qualificados=0, vendas=vd, clientes=cl, faturamento=rec, receita=rec * .9, faturamento_saiu=k.get('rs', 0), pessoas_saiu=k.get('ps', 0), cpl=inv / ld if ld else None, cac=inv / cl if cl else None, roas=rec / inv if inv else None, taxa_lead_venda=vd * 100 / ld if ld else None, orcamento_total=k.get('orc'), meta_leads=k.get('ml'), meta_vendas=k.get('mv'), meta_receita=k.get('mr'), meta_cac=k.get('mc'))
+POS = dict(leads=1094, vendas=380, clientes=342, receita=320000, faturamento=329690.85, faturamento_antes_churn=329690.85, custo=7020.15, alunos=344, ativos=322, saiu=22, churn=.064, ltv=964.01, cac=20.53, roas=46.96, roi=45.96)
 SEED = {
   'workspaces': [{'id': W, 'nome': 'Demo', 'modo_produto': 'completo', 'agencia': True}], 'rpc:sou_equipe_interna': True,
   'produtos': ws([dict(id='p1', nome='Método', preco=1497, ativo=True)]),
@@ -68,7 +68,7 @@ with sync_playwright() as p:
     foto(pg, 'captacao')
     # o resto da aba Dashboard usa funções do banco que o teste não simula: confere só os cards
     k = ev(pg, "(async () => { const d = document.createElement('div'); document.body.appendChild(d); try { await vMktDashCampanha(d, 'cap'); } catch (e) {} const r = [...d.querySelectorAll('.kpi .l')].map(x => x.textContent), f = d.querySelector('#campFaseL').textContent; d.remove(); return [r, f]; })()")
-    chk('ROAS' not in k[0] and 'CAC' not in k[0] and 'Receita bruta' not in k[0] and 'Custo por lead' in k[0] and 'Captação' in k[1], 'o dashboard da campanha também', k)
+    chk('ROAS' not in k[0] and 'CAC' not in k[0] and 'Faturamento' not in k[0] and 'Custo por lead' in k[0] and 'Captação' in k[1], 'o dashboard da campanha também', k)
     k = ev(pg, "(async () => { const d = document.createElement('div'); document.body.appendChild(d); try { await vMktDashCampanha(d, 'ven'); } catch (e) {} const r = [...d.querySelectorAll('.kpi .l')].map(x => x.textContent), l = d.querySelectorAll('.kpi .luz').length; d.remove(); return [r, l]; })()")
     chk('ROAS' in k[0] and 'CAC' in k[0] and k[1] >= 3, 'em vendas, o dashboard mostra ROAS, CAC e as luzinhas', k)
     abre(pg, 'aqu'); chk('Fase: Aquecimento' in ev(pg, "document.querySelector('#campFaseL').textContent"), 'mostra aquecimento')
@@ -77,7 +77,7 @@ with sync_playwright() as p:
     k = kpis(pg); chk('ROAS' in k and 'CAC' in k and 'Vendas' in k, 'em vendas: aparece ROAS e CAC', k)
     lz = lambda n: ev(pg, f"(document.querySelector('[data-lm=\"{n}\"] .luz') || {{}}).className || ''")
     chk('luz-acima' in lz('Leads') and 'luz-ok' in lz('Vendas'), 'leads acima (120 de 100) e vendas no planejado', [lz('Leads'), lz('Vendas')])
-    chk('luz-acima' in lz('Receita'), 'receita acima do planejado', lz('Receita'))
+    chk('luz-acima' in lz('Faturamento'), 'receita acima do planejado', lz('Faturamento'))
     chk('luz-ok' in lz('Investimento'), 'investimento dentro do orçamento fica verde')
     chk('luz-ruim' in lz('CPL (custo por lead)') or 'luz-acima' in lz('CPL (custo por lead)') or 'luz-ok' in lz('CPL (custo por lead)'), 'CPL tem luz')
     chk(ev(pg, "getComputedStyle(document.querySelector('.luz-acima i')).backgroundColor") != ev(pg, "getComputedStyle(document.querySelector('.luz-ok i')).backgroundColor"), 'acima do planejado tem outra cor')

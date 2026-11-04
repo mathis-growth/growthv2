@@ -1,3 +1,10 @@
+## v0.252
+- **Faturamento:** valor total das vendas aprovadas, tirando todo o valor das vendas de quem saiu. Saiu = a pessoa tem aluno e nenhum ativo.
+- **Receita líquida (marketing):** faturamento − taxas − impostos − comissões. Comissão cancelada ou estornada não conta.
+- **ROAS:** faturamento ÷ investimento de mídia. Substitui a regra da v0.251, que usava o valor líquido.
+- **Ticket médio:** valor das vendas, antes de tirar quem saiu, ÷ vendas.
+- **Meta de receita da campanha:** compara com o Faturamento.
+
 ## v0.251
 - **Investimento de mídia:** anúncios da campanha ou do canal. Se a campanha nunca teve gasto em anúncio, valem as contas a pagar (menos as canceladas) e os custos lançados nela. As duas fontes nunca somam, porque costumam ser o mesmo gasto.
 - **CAC de mídia:** investimento ÷ vendas aprovadas. Na campanha, soma todos os canais; no canal, usa as vendas atribuídas a ele. Order bump e upsell contam como venda.

@@ -1,3 +1,12 @@
+## v0.252 — Faturamento e Receita líquida (03/11/2026)
+- **Faturamento:** valor total das vendas aprovadas, sem as vendas de quem saiu. É o número novo das campanhas, canais e coortes, e o que a meta de receita acompanha.
+- **Receita líquida:** faturamento menos taxas, impostos e comissões. Aparece ao lado do Faturamento.
+- **ROAS:** faturamento ÷ investimento (antes era sobre o valor líquido).
+- **Ticket médio:** valor das vendas ÷ vendas.
+- **Não mudam:** CAC de mídia, CAC total, ROI e as telas financeiras.
+- **Cenários do assistente:** coluna mexida à mão mantém o que foi digitado e completa o que está vazio, como o custo por lead do Pessimista.
+- Banco: `20270107110000_v0252_faturamento_e_receita.sql`. Testes: banco `v0251_cac_roas_cenarios.sql` (OK); tela `t172`, `t173`, `t246`, `t249` e `t250` (0 falhas).
+
 ## v0.251 — Uma conta só para CAC de mídia, ROAS e receita (03/11/2026)
 - **Investimento de mídia:** anúncios da campanha ou do canal. Sem anúncio conectado, as contas a pagar e os custos lançados, sem somar as duas fontes.
 - **CAC de mídia:** investimento ÷ vendas, na campanha e no canal. Order bump e upsell contam como venda.

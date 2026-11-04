@@ -1,3 +1,9 @@
+## v0.252
+- `v_vendas_mkt`: uma linha por venda aprovada, com `valor_bruto`, `liquido`, `comissao` (sem as canceladas e estornadas) e `saiu`.
+- `v_marketing_campanha`: colunas novas `faturamento`, `faturamento_saiu` e `comissoes`. `receita` = líquido − comissões, sem quem saiu. `roas` = faturamento ÷ investimento.
+- `v_marketing_canal`: coluna nova `faturamento`; `roas` sobre ela.
+- `funil_analise`: `faturamento` e `faturamento_antes_churn`, por campanha e em `pos`. `funil_cohorts`: `faturamento`; `ltv` e `roas` sobre ele.
+
 ## v0.251
 - `v_pessoas_saiu`: pessoas com aluno e nenhum aluno ativo.
 - `v_marketing_campanha`: `investimento` (anúncios ou, sem eles, lançamentos), `cac` (÷ vendas), `roas` (receita ÷ investimento) e colunas novas `receita`, `receita_saiu`, `receita_antes_churn`, `pessoas_saiu`.

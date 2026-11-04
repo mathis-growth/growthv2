@@ -11,7 +11,7 @@ i = s.index('<script>/* @supabase'); j = s.index('</script>', i) + 9
 W = 'w1'; FOTOS = os.environ.get('FOTOS')
 def ws(rows): return [dict(workspace_id=W, **r) for r in rows]
 def camp(id, nome, fim, st='finalizada', prod='p1', mod='lancamento', **k): return dict(id=id, nome=nome, status=st, produto_id=prod, modelo=mod, data_inicio=(fim or '2026-05-31')[:8] + '01', data_fim=fim, extras={}, fases={}, criado_em='2026-01-01', **k)
-def vis(id, inv, ld, q, vd, cl, rec): return dict(campanha_id=id, investimento=inv, leads=ld, qualificados=q, vendas=vd, clientes=cl, receita=rec, receita_antes_churn=rec)
+def vis(id, inv, ld, q, vd, cl, rec): return dict(campanha_id=id, investimento=inv, leads=ld, qualificados=q, vendas=vd, clientes=cl, faturamento=rec, receita=rec, receita_bruta=rec)
 SEED = {
   'workspaces': [{'id': W, 'nome': 'Demo', 'modo_produto': 'completo', 'agencia': True}], 'rpc:sou_equipe_interna': True,
   'produtos': ws([dict(id='p1', nome='Método', preco=1497, ativo=True), dict(id='p2', nome='Mini', preco=197, ativo=True), dict(id='p3', nome='Planilha', preco=97, ativo=True), dict(id='p4', nome='Mentoria', preco=997, ativo=True)]),
@@ -75,7 +75,7 @@ with sync_playwright() as p:
     chk(c['fases'] == {'aquisicao': {'ini': '2027-01-10', 'fim': '2027-01-20'}, 'reabertura': {'ini': '2027-01-30', 'fim': None}} and c['data_carrinho_abre'] == '2027-01-25', 'salva as datas; a reabertura pode ficar em aberto', c.get('fases'))
     # ---- histórico ----
     head = ev(pg, "[...document.querySelectorAll('.ch-t thead th')].map(t => t.textContent)")
-    chk(head[:9] == ['Campanha', 'Investido', 'Leads', 'Clientes', 'Receita', 'CPL', 'CAC', 'Conversão', 'ROAS'], 'a lista tem as 8 métricas', head)
+    chk(head[:9] == ['Campanha', 'Investido', 'Leads', 'Clientes', 'Faturamento', 'CPL', 'CAC', 'Conversão', 'ROAS'], 'a lista tem as 8 métricas', head)
     nm = lambda: ev(pg, "[...document.querySelectorAll('[data-chdet]')].map(a => a.textContent)")
     chk(nm() == ['Método Set/26', 'Método Jun/26', 'Método Mar/26'], 'últimas 3, só do produto escolhido', nm())
     chk(ev(pg, "[...document.querySelectorAll('.ch-g')].map(g => g.dataset.chg).join()") == 'cpl,cac,conv' and ev(pg, "document.querySelectorAll('.ch-g[data-chg=cpl] circle.ch-pt').length") == 3 and ev(pg, "!!document.querySelector('.ch-g[data-chg=cpl] polyline')"), 'gráfico de linha de CPL, CAC e conversão, um ponto por campanha')
