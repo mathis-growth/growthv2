@@ -15,7 +15,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 03/11/2026, versão 0.252 (Faturamento e Receita líquida; ROAS sobre o faturamento).
+**Última atualização:** 03/11/2026, versão 0.253 (assistente com ofertas do cadastro, cenários por oferta e canais em porcentagem).
 
 **v0.245 · Resposta à vista.** Quando alguém responde um formulário (lead, cliente ou diagnóstico), a equipe fica sabendo na hora: faixa verde, Meus avisos e WhatsApp, com a pontuação da qualificação.
 

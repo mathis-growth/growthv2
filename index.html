@@ -355,7 +355,7 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .ch-seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}.ch-seg button{font:inherit;font-size:13px;font-weight:600;border:0;background:none;color:var(--muted);padding:6px 12px;cursor:pointer}.ch-seg button.on{background:var(--accent);color:#fff}.ch-seg button:focus-visible,.ch-ofb:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .ch-top input[type=date]{width:auto}.ch-tags{display:flex;gap:3px;flex-wrap:wrap;margin-top:2px}.ch-tag{font-size:10.5px;font-weight:700;border-radius:99px;padding:0 7px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}.ch-tag.up{background:var(--good-soft);color:var(--good)}.ch-tag.dw{background:var(--warn-soft);color:var(--warn)}
 .ch-of{border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column}.ch-ofb{all:unset;box-sizing:border-box;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;width:100%;padding:9px 12px;cursor:pointer}.ch-seta{margin-left:auto;color:var(--accent);font-weight:600;font-size:12.5px}.ch-fx{border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px;padding-bottom:6px}.ch-fx .tw{padding:0 12px}.wz .wzb .ch-ac{padding:0 12px}
-.of-l{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,1fr) 110px 60px;gap:8px;align-items:end}.of-h{grid-column:1/-1;font-size:12.5px;color:var(--muted);margin-top:-4px}
+.cen-bl{border:1px solid var(--line);border-radius:10px;margin-top:8px}.cen-bl>summary{cursor:pointer;padding:10px 12px;display:flex;justify-content:space-between;gap:4px 12px;flex-wrap:wrap}.cen-bl>summary small{font-size:12.5px}.cen-bl[open]>summary{border-bottom:1px solid var(--line)}.cen-tot{margin-top:12px}.cen-tot h3{margin:0 0 4px;font-size:14px}.cen-t{table-layout:fixed;width:100%;min-width:560px}.cen-t th:first-child,.cen-t td:first-child{width:37%}.wz .cen-t input{min-width:0;width:100%}.cen-t input[readonly]{background:var(--surface-2);color:var(--muted)}.of-lin{display:grid;grid-template-columns:1fr auto;gap:1px 8px;margin-top:6px;font-size:12px}.of-lin .of-t{color:var(--ink);font-weight:500}.of-lin .n{color:var(--ink);font-variant-numeric:tabular-nums}.of-lin .of-bar{grid-column:1/-1;height:3px;border-radius:2px;background:var(--line);overflow:hidden;display:block}.of-lin .of-bar b{display:block;height:100%;background:currentColor;border-radius:2px}.of-lin.luz-acima{color:var(--info)}.of-lin.luz-ok{color:var(--good)}.of-lin.luz-ruim{color:var(--bad)}.of-l .of-cad{grid-column:1/-1}.cen-t .cen-g td{font-weight:600;background:var(--surface-2);font-size:12.5px;padding:7px 8px}#wzTab input{width:76px;text-align:right}#wzTab td small{display:block}.of-l{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,1fr) 110px 60px;gap:8px;align-items:end}.of-h{grid-column:1/-1;font-size:12.5px;color:var(--muted);margin-top:-4px}
 @media (max-width:760px){.of-l{grid-template-columns:1fr}}
 .ch-pl{position:relative;display:flex;gap:6px;height:100px;border-bottom:1px solid var(--line)}.ch-c{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}.ch-c i{display:block;width:100%;max-width:28px;background:var(--accent);border-radius:4px 4px 0 0}
 .ch-md{position:absolute;left:0;right:0;border-top:1px dashed var(--muted);pointer-events:none}.ch-xs{display:flex;gap:6px;font-size:11px;color:var(--muted);margin-top:3px}.ch-xs span{flex:1;min-width:0;text-align:center}.ch-xs b{display:block;color:var(--ink);font-weight:600;white-space:nowrap}
@@ -1350,6 +1350,14 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
 .gtree ul.alav>li>.gn.gar{border:2px solid var(--bad)}
 </style>
 </head>
+<style id="v253">/* v0.253: quadros bem delimitados, com profundidade */
+:root{--q-borda:#3a2c35;--q-sombra:0 1px 2px rgba(0,0,0,.5),0 8px 22px rgba(0,0,0,.45)}
+:root[data-theme="light"]{--q-borda:#dccbd2;--q-sombra:0 1px 2px rgba(36,19,26,.08),0 8px 20px rgba(36,19,26,.08)}
+:root[data-estilo="azul"]{--q-borda:#2e4070;--line:#22325c;--surface:#0d162e;--bg:#04070f}
+:root[data-estilo="azul"][data-theme="light"]{--q-borda:#c3cfe2;--q-sombra:0 1px 2px rgba(15,26,51,.08),0 8px 20px rgba(15,26,51,.08);--line:#d3dcea;--surface:#ffffff;--bg:#e9eef7}
+.kpi,.panel,:root[data-estilo="azul"] .kpi,:root[data-estilo="azul"] .panel,:root[data-estilo="azul"][data-theme="light"] .kpi,:root[data-estilo="azul"][data-theme="light"] .panel{border:1px solid var(--q-borda);box-shadow:var(--q-sombra)}
+.modal .kpi,.modal .panel{box-shadow:0 1px 3px rgba(15,26,51,.1)}
+</style>
 <body>
 
 <div id="login" class="login hide">
@@ -1375,7 +1383,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
     <div class="foot">
       <button class="btn sm temaBtn" id="temaBtn" type="button"></button>
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.252 · 03/11/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.253 · 04/11/2026</span>
     </div>
   </aside>
   <div class="mainw"><div class="topou" id="topoU"><div class="ola" id="olaTxt"></div><div class="tou-m"><button type="button" class="tou-av" id="fotoBtn" aria-haspopup="true" aria-expanded="false" aria-controls="fotoMenu" aria-label="Sua conta"></button>
@@ -1972,6 +1980,13 @@ const campFaseHtml = f => `<div class="fase-l" id="campFaseL"><span class="pill 
 // quanto do período já passou (0 a 1); sem datas, conta o valor inteiro
 function campRitmo(ini, fim, h = hoje()) { if (!ini) return 1; if (h < ini) return 0; if (!fim || h >= fim) return 1; return (Math.round((new Date(h) - new Date(ini)) / 864e5) + 1) / (Math.round((new Date(fim) - new Date(ini)) / 864e5) + 1); }
 // ruim = pior que o planejado; ok = no planejado (até 5% de diferença); acima = melhor, a caminho do cenário ótimo. teto: passar é ruim e ficar abaixo não é mérito (investimento)
+// vendas e meta de cada oferta da campanha
+async function campOfertasMetas(w, id) { const [res, mt] = await Promise.all([q(sb.rpc('campanha_ofertas_resultado', { p_ws: w, p_campanha: id })).catch(() => []), q(sb.from('campanha_ofertas').select('id,meta_vendas').eq('campanha_id', id)).catch(() => [])]);
+  return (Array.isArray(res) ? res : []).map(o => ({ ...o, vendas: Number(o.vendas || 0), meta_vendas: ((mt || []).find(x => x.id === o.id) || {}).meta_vendas ?? null })).sort((a, b) => (a.papel === 'principal' ? 0 : 1) - (b.papel === 'principal' ? 0 : 1) || (a.ordem || 0) - (b.ordem || 0)); }
+const campFracVendas = c => !c ? 1 : c.data_carrinho_abre ? campRitmo(c.data_carrinho_abre, c.data_carrinho_fecha || c.data_fim) : c.modelo === 'lancamento' ? campRitmo(c.data_inicio, c.data_fim) : 1;
+function ofLinhas(rows, total, op = {}) { if (!rows || rows.length < 2) return ''; const soma_ = rows.reduce((a, o) => a + o.vendas, 0), fora = Number(total || 0) - soma_;
+  return rows.map(o => { const meta = op.semMeta ? null : Number(o.meta_vendas) || null, l = meta ? metaLuz(o.vendas, meta, { frac: op.frac }) : null, nome = o.papel === 'principal' ? 'Principal' : OFERTA_PAPEL[o.papel] || o.papel, larg = meta ? Math.min(100, Math.round(o.vendas / meta * 100)) : 0;
+    return `<span class="of-lin${l ? ' luz-' + l.k : ''}" data-ofl="${esc(o.papel)}" title="${esc(o.nome)}${l ? ': ' + esc(l.txt) : ''}"><span class="of-t">${esc(nome)}</span><span class="n">${num(o.vendas)}${meta ? ' de ' + num(meta) : ''}</span>${meta ? `<i class="of-bar"><b style="width:${larg}%"></b></i>` : ''}</span>`; }).join('') + (fora > 0 ? `<span class="of-lin"><span class="of-t muted">Outras vendas</span><span class="n">${num(fora)}</span></span>` : ''); }
 function metaLuz(real, meta, op = {}) { const m = Number(meta), fr = op.frac == null ? 1 : op.frac; if (!m || real == null || !isFinite(real) || !fr) return null; const alvo = m * fr;
   const r = op.menor ? (Number(real) > 0 ? alvo / Number(real) : null) : Number(real) / alvo; if (r == null) return null;
   if (r >= 1.05 && !op.teto) return { k: 'acima', txt: op.menor ? 'Melhor que o planejado' : 'Acima do planejado' }; if (r >= .95) return { k: 'ok', txt: 'No planejado' }; return { k: 'ruim', txt: op.menor ? 'Pior que o planejado' : 'Abaixo do planejado' }; }
@@ -2040,7 +2055,7 @@ async function vMktDashCampanha(m, fixo) {
   const ML = await q(sb.rpc('campanha_meta_leads', { p_campanha: C.campanha_id, p_hoje: hoje() })).catch(() => null);
   const mlC = ML && CC ? (ML.canais || []).find(x => x.id === CC.campanha_canal_id) : null;
   const leadsK = ML && ML.modo === 'lancamento' ? (CC ? (mlC ? mlC.leads : null) : ML.leads_total) : null;
-  const cF = (await q(sb.from('campanhas').select('*').eq('id', C.campanha_id)))[0], faseC = campFase(cF, C.vendas), fsC = (cF && cF.fases) || {};
+  const cF = (await q(sb.from('campanhas').select('*').eq('id', C.campanha_id)))[0], faseC = campFase(cF, C.vendas), fsC = (cF && cF.fases) || {}, ofVd = CC || !cF ? [] : await campOfertasMetas(cF.workspace_id, cF.id);
   const frL = cF && cF.modelo === 'lancamento' ? campRitmo(cF.data_inicio, cF.data_fim) : 1, frLd = fsC.aquisicao && fsC.aquisicao.ini ? campRitmo(fsC.aquisicao.ini, fsC.aquisicao.fim || (cF && cF.data_fim)) : frL, frVd = cF && cF.data_carrinho_abre ? campRitmo(cF.data_carrinho_abre, cF.data_carrinho_fecha || cF.data_fim) : frL;
   m.innerHTML = `${fixo ? '' : '<div class="head"><h1>Dashboard de campanhas</h1><div class="acts"><button class="btn" onclick="render()">Atualizar</button></div></div>'}
   <div class="filters">
@@ -2052,7 +2067,7 @@ async function vMktDashCampanha(m, fixo) {
     ${leadsK != null ? kpi('Leads', num(leadsK), (alvo.meta_leads ? 'meta ' + num(alvo.meta_leads) + ' (' + pct(leadsK, alvo.meta_leads) + '%) · ' : '') + num(alvo.leads) + ' novos na base' + luzHtml(metaLuz(leadsK, alvo.meta_leads, { frac: frLd }))) : kpi('Leads', num(alvo.leads), (alvo.meta_leads ? 'meta ' + num(alvo.meta_leads) + ' (' + pct(alvo.leads, alvo.meta_leads) + '%)' : num(alvo.qualificados) + ' qualificados') + luzHtml(metaLuz(alvo.leads, alvo.meta_leads, { frac: frLd })))}
     ${kpi('Investimento', brl(alvo.investimento), orc ? 'orçamento ' + brl(orc) : 'anúncios; sem anúncio, os lançamentos')}
     ${kpi('Custo por lead', fB(alvo.cpl), leadsK != null ? 'investimento ÷ leads novos' : 'investimento ÷ leads')}
-    ${faseC.antes ? '' : `${kpi('Vendas', num(alvo.vendas), (alvo.meta_vendas ? 'meta ' + num(alvo.meta_vendas) + ' (' + pct(alvo.vendas, alvo.meta_vendas) + '%)' : num(alvo.clientes) + ' clientes') + luzHtml(metaLuz(Number(alvo.vendas), alvo.meta_vendas, { frac: frVd })))}
+    ${faseC.antes ? '' : `${kpi('Vendas', num(alvo.vendas), (alvo.meta_vendas ? 'meta total ' + num(alvo.meta_vendas) + ' (' + pct(alvo.vendas, alvo.meta_vendas) + '%)' : num(alvo.clientes) + ' clientes') + luzHtml(metaLuz(Number(alvo.vendas), alvo.meta_vendas, { frac: frVd })) + ofLinhas(ofVd, alvo.vendas, { frac: frVd, semMeta: cF && cF.modelo === 'perpetuo' }))}
     ${kpi('CAC', fB(alvo.cac), (alvo.meta_cac ? 'meta ' + brl(alvo.meta_cac) : 'investimento ÷ vendas') + luzHtml(metaLuz(alvo.cac == null ? null : Number(alvo.cac), alvo.meta_cac, { menor: true })))}
     ${kpi('Faturamento', brl(alvo.faturamento), (alvo.meta_receita ? 'meta ' + brl(alvo.meta_receita) : 'vendas, sem as de quem saiu') + (Number(alvo.pessoas_saiu) > 0 ? ' · ' + num(alvo.pessoas_saiu) + (Number(alvo.pessoas_saiu) === 1 ? ' pessoa saiu' : ' pessoas saíram') + ' (−' + brl(alvo.faturamento_saiu) + ')' : '') + luzHtml(metaLuz(Number(alvo.faturamento), alvo.meta_receita, { frac: frVd })))}
     ${alvo.receita != null ? kpi('Receita líquida', brl(alvo.receita), 'faturamento − taxas − comissões') : ''}
@@ -2665,7 +2680,8 @@ async function tcResumo(el, c, r) {
   const cCanal = row => [{ k: 'canal', l: 'Canal', t: 'select', req: 1, novo: 'canais', opts: sel(cad, 'codigo', 'nome') }, { k: 'utm_campaign', l: 'utm_campaign (única)', full: 1, ph: 'Automática', hint: 'Deixe vazia: o sistema cria a partir da campanha e do canal. É por ela que cada lead é ligado à campanha e ao canal.' },
     { k: 'orcamento', l: 'Orçamento (R$)', t: 'number', step: '0.01' }, { k: 'meta_leads', l: 'Meta de leads do canal', t: 'number' }, { k: 'meta_cpl', l: 'Meta de CPL do canal (R$)', t: 'number', step: '0.01' }, { k: 'meta_cac', l: 'Meta de CAC (R$)', t: 'number', step: '0.01' }, { k: 'percentual_meta_leads', l: '% da meta de leads', t: 'number', step: '0.01' }, { k: 'meta_vendas', l: 'Meta de vendas', t: 'number' },
     ...(temTemp ? [{ k: 'temperatura', l: 'Público', t: 'select', opts: [['', 'Sem classificação'], ['frio', 'Frio (ainda não conhece)'], ['quente', 'Quente (já conhece)']], hint: 'Meta Ads frio e quente viram dois canais, cada um com a sua utm_campaign. Sem classificação o Growths não adivinha.' }] : []), ...EXC.campos];
-  el.innerHTML = `${campFaseHtml(fase)}<div class="kpis">${kpi('Leads', num(leads), c.meta_leads ? 'meta ' + num(c.meta_leads) : '')}${kpi('Investido', brl(r.investimento || 0), c.orcamento_total ? 'orçamento ' + brl(c.orcamento_total) : '')}${fase.antes ? kpi('CPL', leads && Number(r.investimento) > 0 ? brl(Number(r.investimento) / leads) : '—', c.meta_cpl ? 'meta ' + brl(c.meta_cpl) : '') : `${kpi('Vendas', num(vendas), c.meta_vendas ? 'meta ' + num(c.meta_vendas) : '')}${kpi('Faturamento', brl(r.faturamento || 0), (c.meta_receita ? 'meta ' + brl(c.meta_receita) : 'vendas, sem as de quem saiu') + (Number(r.pessoas_saiu) > 0 ? ' · ' + num(r.pessoas_saiu) + (Number(r.pessoas_saiu) === 1 ? ' pessoa saiu' : ' pessoas saíram') + ' (−' + brl(r.faturamento_saiu) + ')' : ''))}${kpi('Receita líquida', brl(r.receita || 0), 'faturamento − taxas − comissões')}${kpi('CAC', r.cac != null ? brl(r.cac) : '—', c.meta_cac ? 'meta ' + brl(c.meta_cac) : 'investimento ÷ vendas')}${kpi('ROAS', r.roas != null ? fX(Number(r.roas)) : '—', 'faturamento ÷ investimento')}`}</div>
+  const ofVd = await campOfertasMetas(c.workspace_id, c.id);
+  el.innerHTML = `${campFaseHtml(fase)}<div class="kpis">${kpi('Leads', num(leads), c.meta_leads ? 'meta ' + num(c.meta_leads) : '')}${kpi('Investido', brl(r.investimento || 0), c.orcamento_total ? 'orçamento ' + brl(c.orcamento_total) : '')}${fase.antes ? kpi('CPL', leads && Number(r.investimento) > 0 ? brl(Number(r.investimento) / leads) : '—', c.meta_cpl ? 'meta ' + brl(c.meta_cpl) : '') : `${kpi('Vendas', num(vendas), (c.meta_vendas ? 'meta total ' + num(c.meta_vendas) : '') + luzHtml(metaLuz(Number(vendas), c.meta_vendas, { frac: frVd })) + ofLinhas(ofVd, vendas, { frac: frVd, semMeta: c.modelo === 'perpetuo' }))}${kpi('Faturamento', brl(r.faturamento || 0), (c.meta_receita ? 'meta ' + brl(c.meta_receita) : 'vendas, sem as de quem saiu') + (Number(r.pessoas_saiu) > 0 ? ' · ' + num(r.pessoas_saiu) + (Number(r.pessoas_saiu) === 1 ? ' pessoa saiu' : ' pessoas saíram') + ' (−' + brl(r.faturamento_saiu) + ')' : ''))}${kpi('Receita líquida', brl(r.receita || 0), 'faturamento − taxas − comissões')}${kpi('CAC', r.cac != null ? brl(r.cac) : '—', c.meta_cac ? 'meta ' + brl(c.meta_cac) : 'investimento ÷ vendas')}${kpi('ROAS', r.roas != null ? fX(Number(r.roas)) : '—', 'faturamento ÷ investimento')}`}</div>
   <div class="cols"><div class="panel"><h2>Planejamento</h2><div class="tw"><table><tbody>
     <tr><td>Modelo</td><td>${pillModelo(c)} <small class="muted">${c.modelo === 'perpetuo' ? 'sem data de fim; acompanhe por período' : 'começo, meio e fim'}</small></td></tr>
     <tr><td>Status</td><td>${pillCamp(c)}</td></tr>${c.tipo_midia ? `<tr><td>Mídia</td><td>${{ hibrida: 'Híbrida (paga e orgânica)', paga: 'Só paga', organica: 'Só orgânica' }[c.tipo_midia] || esc(c.tipo_midia)}</td></tr>` : ''}<tr><td>Período</td><td>${periodoCamp(c)}</td></tr>
@@ -7291,10 +7307,10 @@ async function tcOfertas(el, c) {
     const proib = row ? desc(row.id) : new Set();
     const opOf = of.filter(o => (o.status || (o.ativo ? 'ativa' : 'pausada')) !== 'encerrada').map(o => `<option value="${o.id}"${row && row.oferta_id === o.id ? ' selected' : ''}>${esc(o.nome)} · ${brl(o.preco)}${o.versao ? ' (v' + o.versao + ')' : ''}</option>`).join('');
     const f = modal(row ? 'Editar oferta da esteira' : 'Adicionar oferta à esteira', `<div class="grid2">
-      <label style="grid-column:1/-1">Oferta do catálogo<select name="oferta_id" id="ofSel"><option value="">— criar só para esta campanha —</option>${opOf}</select></label>
-      <label>Produto<select name="produto_id" id="ofProd">${prod.map(p => `<option value="${p.id}"${row && row.produto_id === p.id ? ' selected' : ''}>${esc(p.nome)}</option>`).join('')}</select></label>
+      <label style="grid-column:1/-1">Oferta do catálogo<select name="oferta_id" id="ofSel" required><option value="">Escolha uma oferta…</option>${opOf}</select><small class="muted">Nome, produto e preço vêm da oferta. Para outro preço, crie outra oferta em Produtos → Ofertas.</small></label>
+      <label>Produto<select name="produto_id" id="ofProd" disabled>${prod.map(p => `<option value="${p.id}"${row && row.produto_id === p.id ? ' selected' : ''}>${esc(p.nome)}</option>`).join('')}</select></label>
       <label>Papel<select name="papel" id="ofPapel">${Object.entries(OFERTA_PAPEL).map(([k, v]) => `<option value="${k}"${(row ? row.papel : (princ ? 'order_bump' : 'principal')) === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
-      <label>Nome<input name="nome" id="ofNome" required maxlength="120" value="${esc(row ? row.nome : '')}"></label><label>Preço nesta campanha (R$)<input name="preco" id="ofPreco" type="number" step="0.01" min="0" required value="${row ? row.preco : ''}"></label>
+      <label>Nome<input name="nome" id="ofNome" readonly maxlength="120" value="${esc(row ? row.nome : '')}"></label><label>Preço (R$)<input name="preco" id="ofPreco" type="number" step="0.01" min="0" readonly value="${row ? row.preco : ''}"></label>
       ${est ? `<label>Etapa anterior<select name="pai_id"><option value="">— nenhuma (após a principal) —</option>${rs.filter(x => !proib.has(x.id)).map(x => `<option value="${x.id}"${row && row.pai_id === x.id ? ' selected' : ''}>${esc(x.nome)} (${esc(OFERTA_PAPEL[x.papel] || x.papel)})</option>`).join('')}</select></label>
       <label>Aparece<select name="condicao">${Object.entries({ sempre: 'Sempre', aceitou: 'Se aceitou a etapa anterior', recusou: 'Se recusou a etapa anterior' }).map(([k, v]) => `<option value="${k}"${(row ? row.condicao : 'sempre') === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
       <label>Onde aparece<select name="etapa_exibicao"><option value="">—</option>${OF_ETAPA.map(([k, v]) => `<option value="${k}"${row && row.etapa_exibicao === k ? ' selected' : ''}>${v}</option>`).join('')}</select></label>
@@ -7304,8 +7320,8 @@ async function tcOfertas(el, c) {
       <label>Quem pode receber<input name="elegibilidade" maxlength="200" value="${esc(row && row.elegibilidade ? row.elegibilidade : '')}" placeholder="Ex.: quem comprou à vista"></label>
       <label>Gatilho<input name="gatilho" maxlength="200" value="${esc(row && row.gatilho ? row.gatilho : '')}" placeholder="Ex.: logo após o pagamento"></label>` : ''}
     </div>`, async d => {
-      const v = { nome: String(d.nome || '').trim(), papel: d.papel, preco: Number(d.preco), produto_id: d.produto_id };
-      if (!v.nome || !isFinite(v.preco) || v.preco < 0) throw new Error('Informe o nome e um preço válido.');
+      const ofr = of.find(o => o.id === d.oferta_id); if (!ofr) throw new Error('Escolha uma oferta do catálogo. Para outro preço, crie outra oferta em Produtos → Ofertas.');
+      const mesma = row && row.oferta_id === ofr.id, v = { nome: mesma ? row.nome : ofr.nome, papel: d.papel, preco: Number(mesma ? row.preco : ofr.preco), produto_id: mesma ? row.produto_id : ofr.produto_id, oferta_id: ofr.id };
       if (est) {
         const pp = x => x === '' || x == null ? null : Number(x) / 100;
         Object.assign(v, { pai_id: d.pai_id || null, condicao: d.condicao || 'sempre', etapa_exibicao: d.etapa_exibicao || null, ordem: Number(d.ordem) || 0, taxa_exposicao: pp(d.taxa_exposicao), taxa_aceite: pp(d.taxa_aceite), elegibilidade: d.elegibilidade || null, gatilho: d.gatilho || null });
@@ -7314,8 +7330,7 @@ async function tcOfertas(el, c) {
         if (v.papel === 'downsell' && (!v.pai_id || v.condicao !== 'recusou')) throw new Error('Downsell aparece depois de uma recusa: escolha a etapa anterior e "Se recusou".');
         if (!v.pai_id && v.condicao !== 'sempre') throw new Error('Escolha a etapa anterior para usar "se aceitou" ou "se recusou".');
       }
-      const ofr = of.find(o => o.id === d.oferta_id);
-      if (d.oferta_id) { v.oferta_id = d.oferta_id; if (est && ofr && ofr.versao) v.oferta_versao = ofr.versao; } else if (row) v.oferta_id = null;
+      if (est && !mesma && ofr.versao) v.oferta_versao = ofr.versao;
       if (row) await q(sb.from('campanha_ofertas').update(v).eq('id', row.id));
       else await q(sb.from('campanha_ofertas').insert({ ...v, workspace_id: w, campanha_id: c.id, ordem: v.ordem != null ? v.ordem : rs.length }));
       toast('Esteira salva');
@@ -9155,13 +9170,14 @@ async function cdAbrir(campId, met) {
     <section class="cd-sec"><h3>Por canal</h3>${cdTabela(pagos, [['Investido', x => brl(x.investimento), a => brl(cdS(a, 'investimento'))], ['Leads novos', x => fN(x.leads_novos), a => fN(cdS(a, 'leads_novos'))], ['CPL novo', x => fB(cpl(x)), a => fB(cdDiv(cdS(a, 'investimento'), cdS(a, 'leads_novos')))],
       ['Meta de CPL', x => x.meta_cpl ? brl(x.meta_cpl) : '—', null], ['Leads (todos)', x => fN(x.leads), a => fN(cdS(a, 'leads'))], ['CPL (todos)', x => fB(cdDiv(x.investimento, x.leads)), a => fB(cdDiv(cdS(a, 'investimento'), cdS(a, 'leads')))]], campId)}</section>`;
   } else if (met === 'vendas' || met === 'receita') {
-    const v = met === 'vendas';
+    const v = met === 'vendas', cCd = one(await q(sb.from('campanhas').select('*').eq('id', campId))) || {}, ofDet = await campOfertasMetas(cCd.workspace_id || S.ws, campId), frOf = campFracVendas(cCd), semM = cCd.modelo === 'perpetuo';
+    const ofSec = ofDet.length ? `<section class="cd-sec" id="cdOfertas"><h3>Por oferta</h3><div class="ml-sub">Vendas aprovadas de cada oferta, comparadas com a meta dela${semM ? '' : ' até hoje'}</div><div class="tw"><table class="cd-tab"><thead><tr><th>Oferta</th><th>Tipo</th><th class="n">Vendas</th><th class="n">Meta</th><th>Situação</th><th class="n">Aceite</th><th class="n">Valor</th></tr></thead><tbody>${ofDet.map(o => { const m_ = semM ? null : Number(o.meta_vendas) || null; return `<tr><td>${esc(o.nome)}</td><td><small>${esc(OFERTA_PAPEL[o.papel] || o.papel)}</small></td><td class="n">${fN(o.vendas)}</td><td class="n">${m_ ? fN(m_) : '—'}</td><td>${m_ ? luzHtml(metaLuz(o.vendas, m_, { frac: frOf })) : ''}</td><td class="n">${o.aceite != null ? String(o.aceite).replace('.', ',') + '%' : '—'}</td><td class="n">${brl(o.receita || 0)}</td></tr>`; }).join('')}</tbody><tfoot><tr><td colspan="2"><b>Total</b></td><td class="n"><b>${fN(ofDet.reduce((a, o) => a + o.vendas, 0))}</b></td><td class="n"><b>${semM || !cCd.meta_vendas ? '—' : fN(cCd.meta_vendas)}</b></td><td></td><td></td><td class="n"><b>${brl(ofDet.reduce((a, o) => a + Number(o.receita || 0), 0))}</b></td></tr></tfoot></table></div></section>` : '';
     corpo = `<div class="cd-kpis">${cdK('Vendas aprovadas', fN(vend), fN(cli) + ' cliente(s)')}${cdK('Faturamento', brl(rec), '')}${cdK('Ticket médio', fB(cdDiv(rec, vend)), '')}${cdK('Lead → venda', cdPct(cdDiv(cli, leads)), 'clientes ÷ leads')}</div>
     <div class="cd-g">${v ? cdLinha(R, 'Vendas por dia', 'vendas aprovadas da campanha', [{ nome: 'Vendas', cor: 'var(--accent)', vals: sVend }], fN) : cdLinha(R, 'Faturamento por dia', 'vendas aprovadas, sem as de quem saiu', [{ nome: 'Faturamento', cor: 'var(--accent)', vals: sRec }], fR)}
       ${cdLinha(R, v ? 'Vendas acumuladas' : 'Receita acumulada', 'soma dia a dia', [{ nome: 'Acumulado', cor: 'var(--accent)', vals: cdAcum(v ? sVend : sRec) }], v ? fN : fR)}
       <section><h3>${v ? 'Vendas' : 'Faturamento'} por canal</h3><div class="ml-sub">${v ? 'A marca é a meta de vendas do canal' : 'Canal de quem comprou (por onde entrou na campanha)'}</div>${v ? cdBarras(cs, x => Number(x.vendas), x => Number(x.meta_vendas) || null, fN, false) : cdBarras(cs, x => Number(x.receita), () => null, brl, false)}</section>${prods}</div>
     <section class="cd-sec"><h3>Por canal</h3>${cdTabela(cs, [['Vendas', x => fN(x.vendas), a => fN(cdS(a, 'vendas'))], ['Meta', x => x.meta_vendas ? fN(x.meta_vendas) : '—', a => fN(cdS(a, 'meta_vendas'))], ['Clientes', x => fN(x.clientes), a => fN(cdS(a, 'clientes'))],
-      ['Faturamento', x => brl(x.receita), a => brl(cdS(a, 'receita'))], ['Ticket', x => fB(cdDiv(x.receita, x.vendas)), a => fB(cdDiv(cdS(a, 'receita'), cdS(a, 'vendas')))], ['Lead → venda', x => cdPct(cdDiv(x.clientes, x.leads)), a => cdPct(cdDiv(cdS(a, 'clientes'), cdS(a, 'leads')))]], campId)}</section>${listaVendas}`;
+      ['Faturamento', x => brl(x.receita), a => brl(cdS(a, 'receita'))], ['Ticket', x => fB(cdDiv(x.receita, x.vendas)), a => fB(cdDiv(cdS(a, 'receita'), cdS(a, 'vendas')))], ['Lead → venda', x => cdPct(cdDiv(x.clientes, x.leads)), a => cdPct(cdDiv(cdS(a, 'clientes'), cdS(a, 'leads')))]], campId)}</section>${listaVendas}`; corpo = corpo.replace('<section class="cd-sec"><h3>Por canal</h3>', ofSec + '<section class="cd-sec"><h3>Por canal</h3>');
   } else if (met === 'cac') {
     const pagos = com.filter(x => Number(x.investimento) > 0);
     corpo = `<div class="cd-kpis">${cdK('CAC', fB(cdDiv(inv, cli)), brl(inv) + ' ÷ ' + fN(cli) + ' cliente(s)')}${cdK('Investido', brl(inv), '')}${cdK('Clientes', fN(cli), '')}</div>
@@ -13975,14 +13991,15 @@ function chMedia(m, L) { if (!L.length) return null; if (m.vol) return L.reduce(
   const B = L.filter(x => chN(x, m.f) > 0), den = B.reduce((t, x) => t + chN(x, m.d), 0); return den ? B.reduce((t, x) => t + chN(x, m.n), 0) * (m.x || 1) / den : null; }
 const chDataCurta = x => { const d = x.data_fim || x.data_inicio || ''; return d ? d.slice(5, 7) + '/' + d.slice(2, 4) : ''; };
 // passo Oferta: a principal define o ticket dos cenários; as outras são opcionais. Grava em campanha_ofertas (a mesma da aba Ofertas)
-function ofPassoHtml(rows, prods, hist) { const tipos = Object.entries(OFERTA_PAPEL);
-  return `<p class="lead">O que você vai vender nesta campanha. A oferta principal define o ticket dos cenários. Order bump, upsell e downsell são opcionais.</p>
-    ${rows.map((r, i) => { const h = r.papel !== 'principal' ? chOfResumo(hist, r.papel) : null; return `<div class="of-l" data-ofl="${i}"><label>Tipo<select data-oi="${i}" data-ok="papel"${r.papel === 'principal' ? ' disabled' : ''}>${tipos.filter(([k]) => r.papel === 'principal' ? k === 'principal' : k !== 'principal').map(([k, l]) => `<option value="${k}"${r.papel === k ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select></label>
-      <label>Produto<select data-oi="${i}" data-ok="produto_id"><option value="">Escolha…</option>${prods.map(p => `<option value="${esc(p.id)}"${r.produto_id === p.id ? ' selected' : ''}>${esc(p.nome)}</option>`).join('')}</select></label>
-      <label>Nome da oferta<input data-oi="${i}" data-ok="nome" maxlength="120" value="${esc(r.nome || '')}"></label><label>Preço (R$)<input type="number" step="0.01" min="0" data-money="0" data-oi="${i}" data-ok="preco" value="${r.preco ?? ''}"></label>
+function ofPassoHtml(rows, prods, hist, cad = []) { const tipos = Object.entries(OFERTA_PAPEL), usadas = rows.map(x => x.oferta_id).filter(Boolean);
+  const ativas = cad.filter(o => o.ativo !== false && (o.status == null || o.status === 'ativa'));
+  return `<p class="lead">Escolha as ofertas desta campanha entre as que já estão cadastradas. Se a oferta ainda não existir, preencha os dados: ela entra no cadastro e fica pronta para as próximas campanhas.</p>
+    ${rows.map((r, i) => { const h = r.papel !== 'principal' ? chOfResumo(hist, r.papel) : null, liga = !!r.oferta_id, lista = ativas.concat(liga && !ativas.some(o => o.id === r.oferta_id) ? cad.filter(o => o.id === r.oferta_id) : []); return `<div class="of-l" data-ofl="${i}"><label class="of-cad">Oferta cadastrada<select data-oi="${i}" data-ok="oferta_id"><option value="">Nova oferta (entra no cadastro)</option>${lista.map(o => `<option value="${esc(o.id)}"${r.oferta_id === o.id ? ' selected' : ''}${usadas.includes(o.id) && r.oferta_id !== o.id ? ' disabled' : ''}>${esc(o.nome)} · ${esc(OFERTA_PAPEL[o.papel] || o.papel)} · ${brl(o.preco)}</option>`).join('')}</select></label><label>Tipo<select data-oi="${i}" data-ok="papel"${r.papel === 'principal' ? ' disabled' : ''}>${tipos.filter(([k]) => r.papel === 'principal' ? k === 'principal' : k !== 'principal').map(([k, l]) => `<option value="${k}"${r.papel === k ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select></label>
+      <label>Produto<select data-oi="${i}" data-ok="produto_id"${liga ? ' disabled' : ''}><option value="">Escolha…</option>${prods.map(p => `<option value="${esc(p.id)}"${r.produto_id === p.id ? ' selected' : ''}>${esc(p.nome)}</option>`).join('')}</select></label>
+      <label>Nome da oferta<input data-oi="${i}" data-ok="nome" maxlength="120" value="${esc(r.nome || '')}"${liga ? ' readonly' : ''}></label><label>Preço (R$)<input type="number" step="0.01" min="0" data-money="0" data-oi="${i}" data-ok="preco" value="${r.preco ?? ''}"${liga ? ' readonly' : ''}></label>
       ${r.papel === 'principal' ? '<span></span>' : `<button type="button" class="btn sm" data-orm="${i}">Tirar</button>`}${h ? `<div class="of-h">No histórico: em ${h.cs} de ${hist.length} campanhas${h.aceite != null ? ', aceite médio de ' + campHistPct(h.aceite) : ''}.</div>` : ''}</div>`; }).join('')}
     <div><button type="button" class="btn sm" id="ofMais">+ Adicionar oferta</button></div>
-    <small class="muted">Cada oferta precisa de um produto próprio para o Growths separar as vendas dela. Regras mais detalhadas (quando aparece, exposição) ficam na aba Ofertas da campanha.</small>`; }
+    <small class="muted">Cada oferta precisa de um produto próprio para o Growths separar as vendas dela. O preço vem da oferta: para outro preço, crie outra oferta. Regras mais detalhadas (quando aparece, exposição) ficam na aba Ofertas da campanha.</small>`; }
 const chQuando = x => x.data_fim || x.data_inicio || '';
 function chLista(H) { return H.filtro === 'periodo' ? H.L.filter(x => { const d = chQuando(x); return d && (!H.ini || d >= H.ini) && (!H.fim || d <= H.fim); }) : H.L.slice(0, H.qtd); }
 // ofertas adicionais no histórico: quantas campanhas tiveram e o aceite ponderado (vendas da oferta ÷ quem recebeu)
@@ -14046,7 +14063,7 @@ function chResumoHtml(H) { const E = chEscolhas(H), por = k => (E.find(z => z.k 
 /* Cenários do passo Orçamento: I investimento, p CPL, L leads, c conversão (%), V vendas, a CAC, t ticket.
    Mudar uma métrica recalcula as outras. O Base traz o que foi marcado no histórico e é ele que vira meta da campanha;
    pessimista e otimista saem do Base até serem mexidos à mão. */
-const CEN_LIN = [['I', 'Investimento', 'brl'], ['p', 'Custo por lead (CPL)', 'brl'], ['L', 'Leads', 'int'], ['c', 'Conversão lead → venda (%)', 'pct'], ['V', 'Vendas', 'int'], ['a', 'CAC', 'brl'], ['t', 'Ticket médio', 'brl']];
+const CEN_LIN = [['I', 'Investimento', 'brl'], ['p', 'Custo por lead (CPL)', 'brl'], ['L', 'Leads', 'int'], ['c', 'Conversão lead → venda (%)', 'pct'], ['V', 'Vendas da oferta principal', 'int'], ['a', 'CAC da oferta principal', 'brl'], ['t', 'Preço da oferta principal', 'brl']];
 const CEN_TIPOS = [['pessimista', 'Pessimista', 1.2, .8], ['base', 'Base', 1, 1], ['otimista', 'Otimista', .8, 1.2]];
 function cenFecha(s) { const tem = x => s[x] != null && s[x] > 0, R = Math.round;
   // completa só o que está vazio: nunca muda o que foi digitado
@@ -14074,22 +14091,31 @@ function cenDeriva(b, fp, fc) { const s = { I: b.I ?? null, t: b.t ?? null, p: b
 // cenário mexido à mão: mantém o que foi digitado e busca no Base só o que ainda está vazio
 function cenCompleta(s0, b, fp, fc) { const s = cenFecha({ ...s0 }), d = cenDeriva(b, fp, fc); ['I', 'p', 'c', 't'].forEach(x => { if (!(s[x] > 0) && d[x] > 0) s[x] = d[x]; }); return cenFecha(s); }
 // receita das ofertas adicionais: vendas × aceite × preço
-const cenOfertaRec = (s, o) => s.V > 0 && o.taxa_aceite != null ? s.V * Number(o.taxa_aceite) * Number(o.preco || 0) : null;
-const cenTotal = (s, rows) => { const ad = rows.filter(o => o.papel !== 'principal').map(o => cenOfertaRec(s, o) || 0).reduce((a, b) => a + b, 0), t = (s.rec || 0) + ad; return t || null; };
+const cenOfDeriva = (b, fc) => ({ a: b.a == null ? null : Math.min(100, Math.round(b.a * fc * 100) / 100), p: b.p });
+const cenOfVal = (C, t, o) => { const v = C && C.of && C.of[o.id] && C.of[o.id][t]; return { a: v ? v.a : o.taxa_aceite != null ? Number(o.taxa_aceite) * 100 : null, p: Number(o.preco || 0) }; };
+const cenOfertaVendas = (s, v) => s.V > 0 && v.a != null ? s.V * v.a / 100 : null;
+const cenOfertaRec = (s, o, C, t) => { const v = cenOfVal(C, t, o), n = cenOfertaVendas(s, v); return n == null ? null : n * Number(v.p || 0); };
+const cenTotal = (s, rows, C, tp) => { const ad = rows.filter(o => o.papel !== 'principal').map(o => cenOfertaRec(s, o, C, tp) || 0).reduce((a, b) => a + b, 0), t = (s.rec || 0) + ad; return t || null; };
 function cenInicial(c, prods, rows = []) { const ex = (c.extras || {}).cenarios || {}, n = v => v == null || v === '' ? null : Number(v), per = c.modelo === 'perpetuo';
-  const b = { I: n(c.orcamento_total), p: n(c.meta_cpl), L: n(per ? c.meta_leads_mes : c.meta_leads), c: n(c.meta_taxa_lead_venda), V: per ? n((ex.base || {}).V) : n(c.meta_vendas), a: n(c.meta_cac), t: n((rows.find(o => o.papel === 'principal') || {}).preco) ?? n((ex.base || {}).t) ?? n((prods.find(p => p.id === c.produto_id) || {}).preco) };
+  const b = { I: n(c.orcamento_total), p: n(c.meta_cpl), L: n(per ? c.meta_leads_mes : c.meta_leads), c: n(c.meta_taxa_lead_venda), V: per || (ex.meta_total != null && Number(c.meta_vendas) === Number(ex.meta_total)) ? n((ex.base || {}).V) : n(c.meta_vendas), a: ex.meta_cac_total != null && Number(c.meta_cac) === Number(ex.meta_cac_total) ? n((ex.base || {}).a) : n(c.meta_cac), t: n((rows.find(o => o.papel === 'principal') || {}).preco) ?? n((ex.base || {}).t) ?? n((prods.find(p => p.id === c.produto_id) || {}).preco) };
   if (!(b.a > 0) && b.p > 0 && b.c > 0) b.a = b.p / (b.c / 100); if (!(b.p > 0) && b.a > 0 && b.c > 0) b.p = b.a * b.c / 100; if (!(b.c > 0) && b.p > 0 && b.a > 0) b.c = b.p / b.a * 100; cenFecha(b);
-  const C = { base: b, mexido: { ...(ex.mexido || {}) } }; CEN_TIPOS.filter(x => x[0] !== 'base').forEach(([k, , fp, fc]) => { C[k] = C.mexido[k] && ex[k] ? cenCompleta(ex[k], b, fp, fc) : cenDeriva(b, fp, fc); }); return C; }
+  const C = { base: b, mexido: { ...(ex.mexido || {}) } }; CEN_TIPOS.filter(x => x[0] !== 'base').forEach(([k, , fp, fc]) => { C[k] = C.mexido[k] && ex[k] ? cenCompleta(ex[k], b, fp, fc) : cenDeriva(b, fp, fc); C[k].t = b.t; cenFecha(C[k]); });
+  C.of = {}; rows.filter(o => o.papel !== 'principal').forEach(o => { const sv = (ex.ofertas || {})[o.id] || {}, bo = { a: o.taxa_aceite != null ? Math.round(Number(o.taxa_aceite) * 10000) / 100 : null, p: Number(o.preco || 0) }, it = { base: bo, mexido: { ...(sv.mexido || {}) } };
+    CEN_TIPOS.filter(x => x[0] !== 'base').forEach(([k, , , fc]) => { it[k] = it.mexido[k] && sv[k] ? { ...sv[k] } : cenOfDeriva(bo, fc); }); C.of[o.id] = it; });
+  return C; }
 const cenTxt = v => v == null || !isFinite(v) ? '' : String(Math.round(v * 100) / 100);
-function cenHtml(C, c, rows = []) { const ad = rows.filter(o => o.papel !== 'principal'); const esc_ = ((c.extras || {}).referencia_planejamento || {}).escolhas || [], veio = { p: 'cpl', c: 'conv', a: 'cac' }, per = c.modelo === 'perpetuo';
-  const num_ = (t, m, v) => `<input type="number" step="any" min="0" data-money="0" data-cen="${t}" data-m="${m}" aria-label="${m}" value="${cenTxt(v)}">`;
+function cenHtml(C, c, rows = []) { const ad = rows.filter(o => o.papel !== 'principal'), pr = rows.find(o => o.papel === 'principal'); const esc_ = ((c.extras || {}).referencia_planejamento || {}).escolhas || [], veio = { p: 'cpl', c: 'conv', a: 'cac' }, per = c.modelo === 'perpetuo';
+  const num_ = (t, m, v) => `<input type="number" step="any" min="0" data-money="0" data-cen="${t}" data-m="${m}" aria-label="${m}" value="${cenTxt(v)}"${m === 't' && pr ? ' readonly' : ''}>`;
   const lin = ([m, l]) => { const o = esc_.find(z => z.k === veio[m]); return `<tr><td>${per && m === 'I' ? 'Investimento por mês' : per && m === 'L' ? 'Leads por mês' : per && m === 'V' ? 'Vendas por mês' : l}${o ? `<br><small class="muted">Marcado: ${chFmt(o.un, o.valor)} (${esc(o.fonte)})</small>` : ''}</td>${CEN_TIPOS.map(([t]) => `<td class="n${t === 'base' ? ' cen-b' : ''}">${num_(t, m, C[t][m])}</td>`).join('')}</tr>`; };
   const so = (m, l, f) => `<tr class="tot"><td>${l}</td>${CEN_TIPOS.map(([t]) => `<td class="n${t === 'base' ? ' cen-b' : ''}" data-cenv="${t}:${m}">${f(C[t][m])}</td>`).join('')}</tr>`;
-  return `<p class="lead">Preencha o investimento e ajuste o que quiser: ao mudar uma métrica, as outras se recalculam. O <b>Base</b> traz o que você marcou no histórico e vira a meta da campanha.</p>
-    <div class="tw"><table class="cen-t"><thead><tr><th></th>${CEN_TIPOS.map(([t, l]) => `<th class="n${t === 'base' ? ' cen-b' : ''}">${l}</th>`).join('')}</tr></thead><tbody>${CEN_LIN.map(lin).join('')}${so('rec', 'Receita da oferta principal', v => v == null ? '—' : brl(v))}
-      ${ad.map((o, i) => `<tr data-cenof="${i}"><td>${esc(OFERTA_PAPEL[o.papel] || o.papel)}: ${esc(o.nome)}<br><small class="muted">${o.taxa_aceite != null ? 'aceite ' + campHistPct(Number(o.taxa_aceite) * 100) : 'sem aceite: marque no histórico ou preencha na aba Ofertas'}</small></td>${CEN_TIPOS.map(([t]) => `<td class="n${t === 'base' ? ' cen-b' : ''}" data-cenv="${t}:o${i}"></td>`).join('')}</tr>`).join('')}
-      ${so('rt', 'Receita prevista total', v => v == null ? '—' : brl(v))}${so('roas', 'ROAS previsto', campHistX)}</tbody></table></div>
-    <small class="muted">Pessimista e otimista partem do Base, com CPL e conversão 20% piores ou melhores. Se você mexer neles à mão, deixam de acompanhar o Base. <a href="#" id="cenRefaz">Refazer a partir do Base</a></small>`; }
+  const cab = `<thead><tr><th></th>${CEN_TIPOS.map(([t, l]) => `<th class="n${t === 'base' ? ' cen-b' : ''}">${l}</th>`).join('')}</tr></thead>`, tab = corpo => `<div class="tw"><table class="cen-t">${cab}<tbody>${corpo}</tbody></table></div>`;
+  const cels = (m, i) => CEN_TIPOS.map(([t]) => `<td class="n${t === 'base' ? ' cen-b' : ''}" data-cenv="${t}:${m}${i}"></td>`).join('');
+  return `<p class="lead">Preencha o investimento e ajuste o que quiser: ao mudar uma métrica, as outras se recalculam. O <b>Base</b> traz o que você marcou no histórico e vira a meta da campanha. Abra cada oferta para preencher o aceite.</p>
+    <div id="cenBox"><details class="cen-bl" open><summary><b>Oferta principal${pr && pr.nome ? ': ' + esc(pr.nome) : ''}</b><small class="muted" data-censum="p"></small></summary>${tab(CEN_LIN.map(lin).join('') + so('rec', 'Receita da oferta principal', v => v == null ? '—' : brl(v)))}</details>
+      ${ad.map((o, i) => { const e_ = (C.of || {})[o.id] || {}, inp = t => `<input type="number" step="any" min="0" max="100" data-money="0" data-cof="${esc(o.id)}" data-t="${t}" data-k="a" aria-label="Aceite de ${esc(o.nome)}" value="${cenTxt((e_[t] || {}).a)}">`;
+        return `<details class="cen-bl" data-cenof="${i}"><summary><b>${esc(OFERTA_PAPEL[o.papel] || o.papel)}: ${esc(o.nome)}</b><small class="muted" data-censum="${i}"></small></summary>${tab(`<tr><td>Aceite (%)</td>${CEN_TIPOS.map(([t]) => `<td class="n${t === 'base' ? ' cen-b' : ''}">${inp(t)}</td>`).join('')}</tr><tr><td>Preço</td>${cels('pr', i)}</tr><tr><td>Meta de vendas</td>${cels('ov', i)}</tr><tr class="tot"><td>Receita</td>${cels('o', i)}</tr>`)}</details>`; }).join('')}
+      <div class="cen-tot"><h3>Total da campanha</h3>${tab(so('vt', 'Vendas, somando todas as ofertas', () => '—') + so('rt', 'Receita prevista total', v => v == null ? '—' : brl(v)) + so('cact', 'CAC sobre todas as vendas', () => '—') + so('roas', 'ROAS previsto', campHistX))}</div></div>
+    <small class="muted">Pessimista e otimista partem do Base, com CPL, conversão e aceite das ofertas 20% piores ou melhores. O que você digitar neles à mão fica como está, e o que estiver vazio vem do Base. O preço vem da oferta: para outro preço, crie outra oferta. <a href="#" id="cenRefaz">Refazer a partir do Base</a></small>`; }
 const WZ_ETAPAS = [[1, 'O básico'], [2, 'Oferta'], [3, 'Datas das etapas'], [4, 'Histórico e referências'], [5, 'Orçamento e cenários'], [6, 'Canais'], [7, 'Pesquisa']];
 async function abrirWizard(id = null, passo = 1) {
   const w = S.ws, root = $('#modalRoot');
@@ -14098,7 +14124,7 @@ async function abrirWizard(id = null, passo = 1) {
     q(sb.from('funis').select('id,nome,tipo').eq('workspace_id', w).eq('ativo', true).order('nome')),
     q(sb.from('canais').select('codigo,nome').eq('workspace_id', w).eq('ativo', true).order('nome')),
     txCanais()]);
-  const tmOk = await temColuna('campanhas', 'tipo_midia'), pjAuto = await temColuna('campanhas', 'projeto_auto');
+  const tmOk = await temColuna('campanhas', 'tipo_midia'), pjAuto = await temColuna('campanhas', 'projeto_auto'), pctVOk = await temColuna('campanha_canais', 'percentual_meta_vendas'), ofMetaOk = await temColuna('campanha_ofertas', 'meta_vendas');
   let c = id ? (await q(sb.from('campanhas').select('*').eq('id', id)))[0] : null;
   let canais = id ? await q(sb.from('campanha_canais').select('*').eq('campanha_id', id)) : [];
   const fecha = () => { root.innerHTML = ''; document.removeEventListener('keydown', tecla); };
@@ -14108,6 +14134,9 @@ async function abrirWizard(id = null, passo = 1) {
   const opt = (l, v, cur) => l.map(([k, t]) => `<option value="${esc(k)}"${String(cur ?? '') === String(k) ? ' selected' : ''}>${esc(t)}</option>`).join('');
   const dias = () => { if (!c || !c.data_inicio) return 30; if (c.modelo === 'perpetuo' || !c.data_fim) return 30; return Math.max(1, Math.round((new Date(c.data_fim) - new Date(c.data_inicio)) / 864e5) + 1); };
   const pago = cod => String(cod).endsWith('_ads');
+  const metaL = () => Number((c.modelo === 'perpetuo' ? c.meta_leads_mes : c.meta_leads) || 0), metaV = () => { const cn = (c.extras || {}).cenarios || {}; return Number((c.modelo === 'perpetuo' ? cn.meta_total ?? (cn.base || {}).V : c.meta_vendas) || 0); };
+  const wzPct = (val, salvo, meta) => { const n = val === '' || val == null ? null : Number(val); if (salvo != null && meta && (n == null || Math.round(meta * Number(salvo) / 100) === n)) return Number(salvo); return n != null && meta ? Math.round(n / meta * 1000) / 10 : salvo != null ? Number(salvo) : ''; };
+  const wzQtd = (r, pk, qk, meta) => r[pk] !== '' && r[pk] != null && meta ? Math.round(meta * r[pk] / 100) : r[qk] === '' || r[qk] == null ? null : Number(r[qk]);
   let sel = null, linhas = {}, wzCpq = null, wzH = null, wzC = null, wzO = null, wzUsaDatas = null, txConfig = () => null;
   const wzPrecisaH = () => !wzH || wzH.chave !== c.produto_id + '|' + c.modelo;
   // carrega o histórico (com as ofertas de cada campanha) e as ofertas desta campanha
@@ -14117,8 +14146,8 @@ async function abrirWizard(id = null, passo = 1) {
       L.forEach((x, i) => { x.ofertas = (rs[i] || []).filter(o => o.papel !== 'principal'); });
       const h = hoje(), ano = (Number(h.slice(0, 4)) - 1) + h.slice(4);
       wzH = { chave, L, filtro: rf.filtro || 'ultimas', qtd: Math.min(rf.qtd || 3, L.length || 3), ini: rf.ini || ano, fim: rf.fim || h, marks, aceite, abreOf: false, abre: null, det: null, antes: '' }; wzH.antes = JSON.stringify([chEscolhas(wzH), chAceites(wzH)]); }
-    if (!wzO) { const of = await q(sb.from('campanha_ofertas').select('*').eq('campanha_id', c.id).order('ordem')).catch(() => []), pr = prods.find(p => p.id === c.produto_id) || {};
-      wzO = { rows: of.length ? of.map(x => ({ ...x, preco: Number(x.preco) })) : [{ papel: 'principal', produto_id: c.produto_id, nome: pr.nome || '', preco: Number(pr.preco || 0) }], tirar: [] }; if (!wzO.rows.some(r => r.papel === 'principal')) wzO.rows.unshift({ papel: 'principal', produto_id: c.produto_id, nome: pr.nome || '', preco: Number(pr.preco || 0) }); }
+    if (!wzO) { const of = await q(sb.from('campanha_ofertas').select('*').eq('campanha_id', c.id).order('ordem')).catch(() => []), pr = prods.find(p => p.id === c.produto_id) || {}, cadOf = await q(sb.from('ofertas').select('*').eq('workspace_id', w).order('nome')).catch(() => []), soUma = cadOf.filter(o => o.produto_id === c.produto_id && o.papel === 'principal' && o.ativo !== false);
+      wzO = { cad: cadOf, rows: of.length ? of.map(x => ({ ...x, preco: Number(x.preco) })) : [soUma.length === 1 ? { papel: 'principal', produto_id: c.produto_id, oferta_id: soUma[0].id, nome: soUma[0].nome, preco: Number(soUma[0].preco) } : { papel: 'principal', produto_id: c.produto_id, nome: pr.nome || '', preco: Number(pr.preco || 0) }], tirar: [] }; if (!wzO.rows.some(r => r.papel === 'principal')) wzO.rows.unshift({ papel: 'principal', produto_id: c.produto_id, nome: pr.nome || '', preco: Number(pr.preco || 0) }); }
   };
   const tela = () => {
     const passos = WZ_ETAPAS.map(([n, t]) => `<div data-wn="${n}" class="${n < passo ? 'ok' : n === passo ? 'at' : ''}"><i></i><span><b class="wn">${n}</b>. ${t}${n < passo ? ' ✓' : ''}</span></div>`).join('');
@@ -14136,7 +14165,7 @@ async function abrirWizard(id = null, passo = 1) {
       <div class="wz-etapas" id="wzEt"></div>`;
     } else if (passo === 2) {
       if (wzPrecisaH() || !wzO) { corpo = '<p class="lead">Carregando as ofertas…</p>'; wzCarrega().then(tela).catch(er => toast(er.message || String(er), true)); }
-      else corpo = ofPassoHtml(wzO.rows, prods, chHist(wzH));
+      else corpo = ofPassoHtml(wzO.rows, prods, chHist(wzH), wzO.cad);
     } else if (passo === 3) {
       const dt = (nome, rot, v) => `<label>${rot}<input type="date" name="${nome}" value="${v || ''}"></label>`, fsc = c.fases || {};
       const usa = wzUsaDatas ?? (c.modelo === 'lancamento' || !!(c.data_carrinho_abre || ['aquisicao', 'aquecimento', 'reabertura', 'downsell'].some(k => fsc[k])));
@@ -14154,14 +14183,14 @@ async function abrirWizard(id = null, passo = 1) {
       else { wzC = cenInicial(c, prods, wzO.rows); corpo = cenHtml(wzC, c, wzO.rows); }
     } else if (passo === 6) {
       const tm = c.tipo_midia || 'hibrida', ok = cad.filter(x => tm === 'paga' ? pago(x.codigo) : tm === 'organica' ? !pago(x.codigo) : true);
-      if (!sel) { sel = new Set(canais.map(x => x.canal)); canais.forEach(x => linhas[x.canal] = { pct: c.orcamento_total && x.orcamento != null ? Math.round(x.orcamento / c.orcamento_total * 1000) / 10 : '', leads: x.meta_leads ?? '' }); }
-      corpo = `<p class="lead">Escolha os canais e divida o orçamento e a meta de leads. A meta por dia é sugerida pelo período (${dias()} dias${c.modelo === 'perpetuo' ? ', por mês' : ''}).</p>
+      if (!sel) { sel = new Set(canais.map(x => x.canal)); canais.forEach(x => linhas[x.canal] = { pct: c.orcamento_total && x.orcamento != null ? Math.round(x.orcamento / c.orcamento_total * 1000) / 10 : '', leads: x.meta_leads ?? '', vendas: x.meta_vendas ?? '', pl: wzPct(x.meta_leads, x.percentual_meta_leads, metaL()), pv: wzPct(x.meta_vendas, x.percentual_meta_vendas, metaV()) }); }
+      corpo = `<p class="lead">Escolha os canais e coloque a porcentagem do orçamento, dos leads e das vendas de cada um. O sistema calcula sobre as metas do passo anterior: ${metaL() ? num(metaL()) + ' leads' : 'sem meta de leads'} e ${metaV() ? num(metaV()) + ' vendas, somando todas as ofertas' : 'sem meta de vendas'}${c.modelo === 'perpetuo' ? ' por mês' : ''}.</p>
       <div class="cn">${ok.map(x => `<span data-cn="${esc(x.codigo)}" class="${sel.has(x.codigo) ? 'on' : ''}" role="button" tabindex="0">${esc(x.nome)}</span>`).join('')}<span class="novo" id="wzNovoCanal" role="button" tabindex="0">＋ Novo canal</span></div>
       <div id="wzTab"></div>`;
     }
     if (passo === 7) { if (!wzCpq) { corpo = '<p class="lead">Carregando as pesquisas…</p>'; cpqDados().then(d => { wzCpq = d; tela(); }).catch(e => toast(e.message || String(e), true)); }
       else corpo = '<p class="lead">Se a campanha vai ter pesquisa, escolha qual e onde ela entra. Dá para mudar depois, na aba Planejamento e metas.</p>' + cpqCampos(cpqCfg(c), wzCpq.pesqs, wzCpq.etapas) + txMarkup(c?.extras?.mensagem_cadastro, canaisTx, 'cadastro'); }
-    root.innerHTML = `<div class="ov"><div class="modal wz${passo === 4 ? ' wzl' : ''}" role="dialog" aria-label="Nova campanha"><div class="wzh"><h2>${c && passo > 1 ? esc(c.nome) : 'Nova campanha'}</h2><div class="wzp">${passos}</div></div>
+    root.innerHTML = `<div class="ov"><div class="modal wz${passo === 4 || passo === 6 ? ' wzl' : ''}" role="dialog" aria-label="Nova campanha"><div class="wzh"><h2>${c && passo > 1 ? esc(c.nome) : 'Nova campanha'}</h2><div class="wzp">${passos}</div></div>
       <form><div class="wzb">${corpo}</div><div class="wzf">${passo > 1 ? '<button type="button" class="btn" data-w="volta">Voltar</button>' : '<button type="button" class="btn" data-w="x">Cancelar</button>'}<span class="sp"></span>
       ${c ? '<span class="salvo">✓ Rascunho salvo</span>' : ''}${c ? '<button type="button" class="btn" data-w="depois">Terminar depois</button>' : ''}<button type="submit" class="btn pri">${passo < 7 ? 'Salvar e continuar' : 'Concluir e abrir a campanha'}</button></div></form></div></div>`;
     const f = root.querySelector('form');
@@ -14172,7 +14201,8 @@ async function abrirWizard(id = null, passo = 1) {
       if (a === 'depois') { await salvar(f); abreCampanha(); }
     }));
     f.onsubmit = e => { e.preventDefault(); act(async () => { const btn = f.querySelector('.pri'); btn.disabled = true; try { await salvar(f); } finally { btn.disabled = false; } if (passo < 7) { passo++; tela(); } else abreCampanha(); }); };
-    if (passo === 7) {
+    if (passo === 7 && !wzCpq) f.querySelector('.pri').disabled = true; // ainda carregando: não conclui antes de ter os campos
+    if (passo === 7 && wzCpq) {
       cpqLiga(f);
       const submit = f.querySelector('.pri'); submit.disabled = true;
       txLiga(f, c?.extras?.mensagem_cadastro, canaisTx, 'cadastro').then(get => { txConfig = get; }).catch(err => { txConfig = () => c?.extras?.mensagem_cadastro || null; toast(err.message || String(err), true); }).finally(() => { submit.disabled = false; });
@@ -14195,7 +14225,7 @@ async function abrirWizard(id = null, passo = 1) {
       const mo = f.querySelector('[name=modelo]'), fim = f.querySelector('.wz-fim'); const ap = () => { fim.style.display = mo.value === 'perpetuo' ? 'none' : ''; }; mo.onchange = ap; ap(); f.querySelector('[name=nome]').focus(); }
     if (passo === 2 && wzO) {
       f.querySelector('.wzb').addEventListener('input', ev => { const t = ev.target, r = wzO.rows[+t.dataset.oi]; if (!r || !t.dataset.ok) return; r[t.dataset.ok] = t.dataset.ok === 'preco' ? (t.value === '' ? null : Number(t.value)) : t.value; });
-      f.querySelector('.wzb').addEventListener('change', ev => { const t = ev.target, r = wzO.rows[+t.dataset.oi]; if (!r || t.dataset.ok !== 'produto_id') return; const pr = prods.find(x => x.id === t.value); if (pr) { if (!r.nome) r.nome = pr.nome; if (r.preco == null || r.preco === 0) r.preco = Number(pr.preco || 0); tela(); } });
+      f.querySelector('.wzb').addEventListener('change', ev => { const t = ev.target, r = wzO.rows[+t.dataset.oi]; if (r && t.dataset.ok === 'oferta_id') { const o = wzO.cad.find(x => x.id === t.value); if (o) { r.oferta_id = o.id; r.nome = o.nome; r.produto_id = o.produto_id; r.preco = Number(o.preco); if (r.papel !== 'principal' && o.papel !== 'principal') r.papel = o.papel; } else r.oferta_id = null; tela(); return; } if (!r || t.dataset.ok !== 'produto_id') return; const pr = prods.find(x => x.id === t.value); if (pr) { if (!r.nome) r.nome = pr.nome; if (r.preco == null || r.preco === 0) r.preco = Number(pr.preco || 0); tela(); } });
       f.querySelector('#ofMais').onclick = () => { const usados = wzO.rows.map(x => x.papel); wzO.rows.push({ papel: ['order_bump', 'upsell', 'downsell'].find(x => !usados.includes(x)) || 'order_bump', produto_id: '', nome: '', preco: null }); tela(); };
       f.querySelectorAll('[data-orm]').forEach(b => b.onclick = () => { const r = wzO.rows.splice(+b.dataset.orm, 1)[0]; if (r.id) wzO.tirar.push(r.id); tela(); }); }
     if (passo === 3) { const u = f.querySelector('#wzUsaDatas'); u.onchange = () => { wzUsaDatas = u.checked; f.querySelector('#wzDatas').hidden = !u.checked; }; f.querySelectorAll('[data-wzex]').forEach(i => i.onchange = () => { f.querySelector(`[data-wzexb="${i.dataset.wzex}"]`).hidden = !i.checked; }); }
@@ -14223,30 +14253,37 @@ async function abrirWizard(id = null, passo = 1) {
     if (passo === 5 && wzC) {
       const ofAd = wzO.rows.filter(o => o.papel !== 'principal'), cel = (t, m, v) => { const n = f.querySelector(`[data-cenv="${t}:${m}"]`); if (n) n.textContent = v; };
       const mostra = (pula) => { CEN_TIPOS.forEach(([t]) => { const s = wzC[t]; CEN_LIN.forEach(([m]) => { const i = f.querySelector(`[data-cen="${t}"][data-m="${m}"]`); if (i && i !== pula) i.value = cenTxt(s[m]); });
-        const tot = cenTotal(s, wzO.rows); cel(t, 'rec', s.rec == null ? '—' : brl(s.rec)); ofAd.forEach((o, i) => { const r = cenOfertaRec(s, o); cel(t, 'o' + i, r == null ? '—' : brl(r)); }); cel(t, 'rt', tot == null ? '—' : brl(tot)); cel(t, 'roas', tot != null && s.I > 0 ? campHistX(tot / s.I) : '—'); }); };
+        const tot = cenTotal(s, wzO.rows, wzC, t); let vt = s.V > 0 ? s.V : 0; cel(t, 'rec', s.rec == null ? '—' : brl(s.rec)); ofAd.forEach((o, i) => { const vv = cenOfVal(wzC, t, o), n_ = cenOfertaVendas(s, vv), r = cenOfertaRec(s, o, wzC, t); vt += n_ || 0; cel(t, 'ov' + i, n_ == null ? '—' : n_.toLocaleString('pt-BR', { maximumFractionDigits: 1 })); cel(t, 'o' + i, r == null ? '—' : brl(r)); cel(t, 'pr' + i, brl(vv.p)); const inp = f.querySelector(`[data-cof="${o.id}"][data-t="${t}"][data-k="a"]`); if (inp && inp !== pula) inp.value = cenTxt(vv.a); if (t === 'base') { const su = f.querySelector(`[data-censum="${i}"]`); if (su) su.textContent = vv.a == null ? 'sem aceite: abra para preencher' : `Base: aceite ${cenTxt(vv.a)}% · ${n_ == null ? '—' : num(Math.round(n_))} vendas · ${r == null ? '—' : brl(r)}`; } }); if (t === 'base') { const su = f.querySelector('[data-censum="p"]'); if (su) su.textContent = s.V > 0 ? `Base: ${num(s.V)} vendas · ${s.rec == null ? '—' : brl(s.rec)}` : ''; } cel(t, 'vt', vt > 0 ? vt.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) : '—'); cel(t, 'cact', vt > 0 && s.I > 0 ? brl(s.I / vt) : '—'); cel(t, 'rt', tot == null ? '—' : brl(tot)); cel(t, 'roas', tot != null && s.I > 0 ? campHistX(tot / s.I) : '—'); }); };
       const seguem = () => CEN_TIPOS.filter(x => x[0] !== 'base').forEach(([k, , fp, fc]) => { wzC[k] = wzC.mexido[k] ? cenCompleta(wzC[k], wzC.base, fp, fc) : cenDeriva(wzC.base, fp, fc); });
-      f.querySelector('.cen-t').addEventListener('input', ev => { const i = ev.target, t = i.dataset.cen, m = i.dataset.m; if (!t) return; wzC[t] = cenSolve({ ...wzC[t], [m]: i.value === '' ? null : Number(i.value) }, m);
+      f.querySelector('#cenBox').addEventListener('input', ev => { const i = ev.target, t = i.dataset.cen, m = i.dataset.m;
+        if (i.dataset.cof) { const it = wzC.of[i.dataset.cof], tp = i.dataset.t, k = i.dataset.k, v_ = i.value === '' ? null : Number(i.value); if (!it) return; it[tp] = { ...it[tp], [k]: k === 'a' && v_ != null ? Math.min(100, v_) : v_ };
+          if (tp === 'base') CEN_TIPOS.filter(x => x[0] !== 'base' && !it.mexido[x[0]]).forEach(([k2, , , fc]) => { it[k2] = cenOfDeriva(it.base, fc); }); else it.mexido[tp] = true; mostra(i); return; }
+        if (!t) return; wzC[t] = cenSolve({ ...wzC[t], [m]: i.value === '' ? null : Number(i.value) }, m);
         if (t === 'base') seguem(); else { wzC.mexido[t] = true; const [, , fp, fc] = CEN_TIPOS.find(x => x[0] === t); wzC[t] = cenCompleta(wzC[t], wzC.base, fp, fc); } mostra(i); });
-      $('#cenRefaz').onclick = ev => { ev.preventDefault(); wzC.mexido = {}; seguem(); mostra(); }; mostra(); }
+      $('#cenRefaz').onclick = ev => { ev.preventDefault(); wzC.mexido = {}; seguem(); Object.values(wzC.of || {}).forEach(it => { it.mexido = {}; CEN_TIPOS.filter(x => x[0] !== 'base').forEach(([k2, , , fc]) => { it[k2] = cenOfDeriva(it.base, fc); }); }); mostra(); }; mostra(); }
     if (passo === 6) { const tab = () => {
-        const L = [...sel], orc = Number(c.orcamento_total || 0), meta = Number((c.modelo === 'perpetuo' ? c.meta_leads_mes : c.meta_leads) || 0), D = dias();
-        const tp = L.reduce((s, k) => s + Number((linhas[k] || {}).pct || 0), 0), tl = L.reduce((s, k) => s + Number((linhas[k] || {}).leads || 0), 0);
-        $('#wzTab').innerHTML = L.length ? `<div class="tw"><table><thead><tr><th>Canal</th><th class="n">% do orçamento</th><th class="n">Orçamento</th><th class="n">Meta de leads</th><th class="n">Leads por dia</th></tr></thead><tbody>
-          ${L.map(k => { const r = linhas[k] || {}, nm = (cad.find(x => x.codigo === k) || {}).nome || k, o = r.pct !== '' && r.pct != null ? orc * r.pct / 100 : null;
-            return `<tr><td><b>${esc(nm)}</b></td><td class="n">${pago(k) || r.pct ? `<input type="number" step="0.1" min="0" data-p="${esc(k)}" value="${r.pct ?? ''}">` : '<span class="muted">—</span>'}</td><td class="n">${o != null ? brl(o) : '—'}</td><td class="n"><input type="number" min="0" data-l="${esc(k)}" value="${r.leads ?? ''}"></td><td class="n">${r.leads ? num(Math.round(r.leads / D)) : '—'}</td></tr>`; }).join('')}
-          <tr class="tot"><td>Total</td><td class="n ${tp > 100.05 ? 'vneg' : tp >= 99.95 ? 'vpos' : ''}">${tp.toFixed(1).replace('.', ',').replace(',0', '')}%</td><td class="n">${brl(orc * tp / 100)}</td><td class="n ${meta && tl === meta ? 'vpos' : meta && tl > meta ? 'vneg' : ''}">${num(tl)}${meta && tl === meta ? ' ✓' : meta ? ' de ' + num(meta) : ''}</td><td class="n">${num(Math.round(tl / D))}</td></tr></tbody></table></div>
-          ${tp > 100.05 ? '<p class="lead"><span class="pill bad">Acima</span> Os canais somam mais de 100% do orçamento.</p>' : tp > 0 && tp < 99.95 && orc ? `<p class="lead"><span class="pill warn">Atenção</span> Sobram ${(100 - tp).toFixed(1).replace('.', ',').replace(',0', '')}% do orçamento (${brl(orc * (100 - tp) / 100)}) sem canal. Pode deixar como reserva.</p>` : ''}`
+        const L = [...sel], orc = Number(c.orcamento_total || 0), mL = metaL(), mV = metaV(), D = dias(), fp = v => (Math.round(v * 10) / 10).toString().replace('.', ',') + '%';
+        const lds = k => wzQtd(linhas[k] || {}, 'pl', 'leads', mL), vds = k => wzQtd(linhas[k] || {}, 'pv', 'vendas', mV), sp = key => L.reduce((s, k) => s + Number((linhas[k] || {})[key] || 0), 0);
+        const tp = sp('pct'), tpl = sp('pl'), tpv = sp('pv'), tl = L.reduce((s, k) => s + (lds(k) || 0), 0), tv = L.reduce((s, k) => s + (vds(k) || 0), 0);
+        const cor = t => t > 100.05 ? 'vneg' : t >= 99.95 ? 'vpos' : '', ent = (attr, k, v) => `<input type="number" step="0.1" min="0" ${attr}="${esc(k)}" value="${v ?? ''}">`;
+        const falta = (t, nome) => t > 100.05 ? `<p class="lead"><span class="pill bad">Acima</span> Os canais somam mais de 100% ${nome}.</p>` : t > 0 && t < 99.95 ? `<p class="lead"><span class="pill warn">Atenção</span> Faltam ${fp(100 - t)} ${nome} para fechar a meta.</p>` : '';
+        $('#wzTab').innerHTML = L.length ? `<div class="tw"><table><thead><tr><th>Canal</th><th class="n">% do orçamento</th><th class="n">Orçamento</th><th class="n">% dos leads</th><th class="n">Leads</th><th class="n">% das vendas</th><th class="n">Vendas</th></tr></thead><tbody>
+          ${L.map(k => { const r = linhas[k] || {}, nm = (cad.find(x => x.codigo === k) || {}).nome || k, o = r.pct !== '' && r.pct != null ? orc * r.pct / 100 : null, l = lds(k), vd = vds(k);
+            return `<tr><td><b>${esc(nm)}</b></td><td class="n">${pago(k) || r.pct ? ent('data-p', k, r.pct) : '<span class="muted">—</span>'}</td><td class="n">${o != null ? brl(o) : '—'}</td><td class="n">${ent('data-pl', k, r.pl)}</td><td class="n">${l != null ? num(l) + `<small class="muted">${num(Math.round(l / D))} por dia</small>` : '—'}</td><td class="n">${ent('data-pv', k, r.pv)}</td><td class="n">${vd != null ? num(vd) : '—'}</td></tr>`; }).join('')}
+          <tr class="tot"><td>Total</td><td class="n ${cor(tp)}">${fp(tp)}</td><td class="n">${brl(orc * tp / 100)}</td><td class="n ${cor(tpl)}">${fp(tpl)}</td><td class="n">${num(tl)}${mL ? ' de ' + num(mL) : ''}</td><td class="n ${cor(tpv)}">${fp(tpv)}</td><td class="n">${num(tv)}${mV ? ' de ' + num(mV) : ''}</td></tr></tbody></table></div>
+          ${!mL || !mV ? `<p class="lead"><span class="pill warn">Atenção</span> Defina ${!mL && !mV ? 'as metas de leads e de vendas' : !mL ? 'a meta de leads' : 'a meta de vendas'} em Orçamento e cenários para o sistema calcular.</p>` : ''}${mL ? falta(tpl, 'dos leads') : ''}${mV ? falta(tpv, 'das vendas') : ''}
+          ${tp > 100.05 ? '<p class="lead"><span class="pill bad">Acima</span> Os canais somam mais de 100% do orçamento.</p>' : tp > 0 && tp < 99.95 && orc ? `<p class="lead"><span class="pill warn">Atenção</span> Sobram ${fp(100 - tp)} do orçamento (${brl(orc * (100 - tp) / 100)}) sem canal. Pode deixar como reserva.</p>` : ''}`
           : '<div class="empty">Escolha pelo menos um canal acima. Também dá para adicionar canais depois, na aba Planejamento e metas da campanha.</div>';
-        $('#wzTab').querySelectorAll('input').forEach(i => i.onchange = () => { const k = i.dataset.p || i.dataset.l; linhas[k] = linhas[k] || {}; linhas[k][i.dataset.p ? 'pct' : 'leads'] = i.value === '' ? '' : Number(i.value); tab(); }); };
+        $('#wzTab').querySelectorAll('input').forEach(i => i.onchange = () => { const k = i.dataset.p || i.dataset.pl || i.dataset.pv, cp = i.dataset.p ? 'pct' : i.dataset.pl ? 'pl' : 'pv'; linhas[k] = linhas[k] || {}; linhas[k][cp] = i.value === '' ? '' : Number(i.value); if (i.value === '' && cp === 'pl') linhas[k].leads = ''; if (i.value === '' && cp === 'pv') linhas[k].vendas = ''; linhas[k].mexido = true; tab(); }); };
       /* sugestão ao marcar um canal: orçamento dividido entre os pagos e a meta de leads proporcional (orgânicos ficam com 10%) */
-      const sugere = () => { const L = [...sel], pg = L.filter(pago), og = L.filter(k => !pago(k)), meta = Number((c.modelo === 'perpetuo' ? c.meta_leads_mes : c.meta_leads) || 0);
+      const sugere = () => { const L = [...sel], pg = L.filter(pago), og = L.filter(k => !pago(k));
         const mexido = L.some(k => linhas[k] && linhas[k].mexido); if (mexido) return;
-        pg.forEach(k => linhas[k] = { pct: Math.round(1000 / pg.length) / 10, leads: meta ? Math.round(meta * (og.length ? .9 : 1) / pg.length) : '' });
-        og.forEach(k => linhas[k] = { pct: '', leads: meta ? Math.round(meta * (pg.length ? .1 : 1) / og.length) : '' }); };
+        const pp = Math.round((og.length ? 90 : 100) / (pg.length || 1) * 10) / 10, po = Math.round((pg.length ? 10 : 100) / (og.length || 1) * 10) / 10;
+        pg.forEach(k => linhas[k] = { pct: Math.round(1000 / pg.length) / 10, pl: pp, pv: pp });
+        og.forEach(k => linhas[k] = { pct: '', pl: po, pv: po }); };
       $('#wzNovoCanal').onclick = () => cadastroRapido(ENT.canais, ENT.canais.campos({}), row => { cad.push(row); sel.add(row.codigo); if (!canais.length) sugere(); tela(); });
       root.querySelectorAll('[data-cn]').forEach(s => s.onclick = () => { const k = s.dataset.cn; if (sel.has(k)) sel.delete(k); else sel.add(k); s.classList.toggle('on'); if (!canais.length) sugere(); tab(); });
-      $('#wzTab').addEventListener('change', e => { const k = e.target.dataset.p || e.target.dataset.l; if (k && linhas[k]) linhas[k].mexido = true; });
-      tab(); }
+            tab(); }
   };
   const salvar = async f => {
     const val = n => { const i = f.querySelector(`[name=${n}]`); return !i ? undefined : i.value === '' ? null : i.type === 'number' ? Number(i.value) : i.value; };
@@ -14270,7 +14307,16 @@ async function abrirWizard(id = null, passo = 1) {
       if (!wzO) return; const pr = wzO.rows.find(r => r.papel === 'principal');
       wzO.rows.forEach(r => { if (!(r.nome || '').trim()) throw new Error('Dê um nome para cada oferta.'); if (!r.produto_id) throw new Error('Escolha o produto de "' + r.nome + '".'); if (r.preco == null || !(Number(r.preco) >= 0)) throw new Error('Informe o preço de "' + r.nome + '".'); });
       for (const id of wzO.tirar) await q(sb.from('campanha_ofertas').delete().eq('id', id)); wzO.tirar = [];
-      const grava = async (r, i) => { const x = { papel: r.papel, produto_id: r.produto_id, nome: r.nome.trim(), preco: Number(r.preco), ordem: i, pai_id: r.papel === 'principal' ? null : r.papel === 'order_bump' ? pr.id : r.papel === 'downsell' ? (r.pai_id && r.pai_id !== pr.id ? r.pai_id : ((wzO.rows.find(y => y.papel === 'upsell') || pr).id)) : (r.pai_id || null), condicao: r.papel === 'downsell' ? 'recusou' : (r.papel === 'order_bump' || r.papel === 'principal' || !r.pai_id) ? 'sempre' : (r.condicao || 'sempre') };
+      // toda oferta da campanha fica no cadastro: mesmo nome, produto e preço reaproveitam a que já existe
+      for (const r of wzO.rows.filter(x => !x.oferta_id)) { const nm = r.nome.trim(), ja = wzO.cad.find(o => o.produto_id === r.produto_id && o.nome.trim().toLowerCase() === nm.toLowerCase() && Number(o.preco) === Number(r.preco));
+        if (ja) { r.oferta_id = ja.id; continue; }
+        try { const novoCad = await temColuna('ofertas', 'versao'); let idO = null;
+          if (novoCad) idO = await q(sb.rpc('oferta_salvar', { p_ws: w, p_id: null, p_dados: { nome: nm, preco: Number(r.preco), status: 'ativa', papel: r.papel, condicoes: '', descricao: '', parcelas_max: '', vigencia_ini: '', vigencia_fim: '' }, p_itens: [{ produto_id: r.produto_id, quantidade: 1, alocacao_pct: 100 }] }));
+          else { idO = crypto.randomUUID(); await q(sb.from('ofertas').insert({ id: idO, workspace_id: w, produto_id: r.produto_id, nome: nm, papel: r.papel, preco: Number(r.preco), ativo: true })); }
+          if (!idO) throw new Error('o cadastro não devolveu a oferta');
+          { r.oferta_id = idO; wzO.cad.push({ id: idO, produto_id: r.produto_id, nome: nm, papel: r.papel, preco: Number(r.preco), ativo: true, status: 'ativa', versao: 1 }); }
+        } catch (er) { throw new Error('Não deu para cadastrar a oferta "' + nm + '": ' + (er.message || er)); } }
+      const grava = async (r, i) => { const cadR = wzO.cad.find(o => o.id === r.oferta_id), x = { oferta_id: r.oferta_id || null, ...(cadR && cadR.versao ? { oferta_versao: cadR.versao } : {}), papel: r.papel, produto_id: r.produto_id, nome: r.nome.trim(), preco: Number(r.preco), ordem: i, pai_id: r.papel === 'principal' ? null : r.papel === 'order_bump' ? pr.id : r.papel === 'downsell' ? (r.pai_id && r.pai_id !== pr.id ? r.pai_id : ((wzO.rows.find(y => y.papel === 'upsell') || pr).id)) : (r.pai_id || null), condicao: r.papel === 'downsell' ? 'recusou' : (r.papel === 'order_bump' || r.papel === 'principal' || !r.pai_id) ? 'sempre' : (r.condicao || 'sempre') };
         if (r.id) await q(sb.from('campanha_ofertas').update(x).eq('id', r.id)); else { r.id = crypto.randomUUID(); await q(sb.from('campanha_ofertas').insert({ ...x, id: r.id, workspace_id: w, campanha_id: c.id })); } };
       await grava(pr, 0); for (const [i, r] of wzO.rows.entries()) if (r !== pr && r.papel !== 'downsell') await grava(r, i); for (const [i, r] of wzO.rows.entries()) if (r.papel === 'downsell') await grava(r, i);
     } else if (passo === 3) {
@@ -14292,16 +14338,24 @@ async function abrirWizard(id = null, passo = 1) {
       for (const z of AC) { const fr = Math.round(z.valor * 100) / 10000; await q(sb.from('campanha_ofertas').update({ taxa_aceite: fr }).eq('campanha_id', c.id).eq('papel', z.papel)); (wzO ? wzO.rows : []).filter(r => r.papel === z.papel).forEach(r => { r.taxa_aceite = fr; }); }
     } else if (passo === 5) {
       const per = c.modelo === 'perpetuo', B = wzC.base, n2 = v => v == null || !isFinite(v) ? null : Math.round(v * 100) / 100, n0 = v => v == null || !isFinite(v) ? null : Math.round(v);
-      const ex = { ...((one(await q(sb.from('campanhas').select('extras').eq('id', c.id))) || {}).extras || {}), cenarios: { base: wzC.base, pessimista: wzC.pessimista, otimista: wzC.otimista, mexido: wzC.mexido, atualizado_em: new Date().toISOString() } };
-      const v = { orcamento_total: n2(B.I), meta_cpl: n2(B.p), meta_taxa_lead_venda: n2(B.c), meta_cac: n2(B.a), extras: ex };
-      if (per) v.meta_leads_mes = n0(B.L); else { v.meta_leads = n0(B.L); v.meta_vendas = n0(B.V); v.meta_receita = n2(cenTotal(B, wzO ? wzO.rows : [])); }
+      const ex = { ...((one(await q(sb.from('campanhas').select('extras').eq('id', c.id))) || {}).extras || {}), cenarios: { base: wzC.base, pessimista: wzC.pessimista, otimista: wzC.otimista, mexido: wzC.mexido, ofertas: wzC.of || {}, atualizado_em: new Date().toISOString() } };
+      const ofAdS = (wzO ? wzO.rows : []).filter(x => x.papel !== 'principal' && x.id), metaDe = o => { const m_ = cenOfertaVendas(B, cenOfVal(wzC, 'base', o)); return m_ == null ? null : Math.round(m_); }, totalV = (n0(B.V) || 0) + ofAdS.reduce((a_, o) => a_ + (metaDe(o) || 0), 0), cacT = B.I > 0 && totalV > 0 ? n2(B.I / totalV) : n2(B.a);
+      ex.cenarios.meta_total = totalV || null; ex.cenarios.meta_cac_total = cacT;
+      const v = { orcamento_total: n2(B.I), meta_cpl: n2(B.p), meta_taxa_lead_venda: n2(B.c), meta_cac: cacT, extras: ex };
+      if (per) v.meta_leads_mes = n0(B.L); else { v.meta_leads = n0(B.L); v.meta_vendas = totalV || null; v.meta_receita = n2(cenTotal(B, wzO ? wzO.rows : [], wzC, 'base')); }
       await q(sb.from('campanhas').update(v).eq('id', c.id)); c = { ...c, ...v };
+      // o Base de cada oferta vira a premissa e a meta de vendas dela nesta campanha
+      const prS = (wzO ? wzO.rows : []).find(x => x.papel === 'principal'); if (ofMetaOk && prS && prS.id) await q(sb.from('campanha_ofertas').update({ meta_vendas: n0(B.V) }).eq('id', prS.id));
+      for (const o of ofAdS) { const bo = ((wzC.of || {})[o.id] || {}).base; if (!bo) continue; const fr = bo.a == null ? null : Math.round(bo.a * 100) / 10000; await q(sb.from('campanha_ofertas').update({ taxa_aceite: fr, ...(ofMetaOk ? { meta_vendas: metaDe(o) } : {}) }).eq('id', o.id)); o.taxa_aceite = fr; }
+      // canais em porcentagem acompanham a meta nova
+      for (const x of canais) { const up = {}; if (x.percentual_meta_leads != null && B.L > 0) up.meta_leads = Math.round(B.L * Number(x.percentual_meta_leads) / 100); if (pctVOk && x.percentual_meta_vendas != null && totalV > 0) up.meta_vendas = Math.round(totalV * Number(x.percentual_meta_vendas) / 100);
+        if (Object.keys(up).length) { await q(sb.from('campanha_canais').update(up).eq('id', x.id)); Object.assign(x, up); if (linhas[x.canal]) Object.assign(linhas[x.canal], up.meta_leads != null ? { leads: up.meta_leads } : {}, up.meta_vendas != null ? { vendas: up.meta_vendas } : {}); } }
     } else if (passo === 6) {
-      const orc = Number(c.orcamento_total || 0), meta = Number((c.modelo === 'perpetuo' ? c.meta_leads_mes : c.meta_leads) || 0);
+      const orc = Number(c.orcamento_total || 0), mL = metaL(), mV = metaV();
       const ja = (await q(sb.from('campanha_canais').select('utm_campaign').eq('workspace_id', w).limit(5000))).map(x => x.utm_campaign);
       for (const k of sel) {
-        const r = linhas[k] || {}, o = r.pct !== '' && r.pct != null && orc ? Math.round(orc * r.pct) / 100 : null, l = r.leads === '' || r.leads == null ? null : Number(r.leads);
-        const v = { orcamento: o, meta_leads: l, meta_cpl: o && l ? Math.round(o / l * 100) / 100 : null, percentual_meta_leads: meta && l ? Math.round(l / meta * 1000) / 10 : null };
+        const r = linhas[k] || {}, o = r.pct !== '' && r.pct != null && orc ? Math.round(orc * r.pct) / 100 : null, l = wzQtd(r, 'pl', 'leads', mL), vd = wzQtd(r, 'pv', 'vendas', mV), np = x => x === '' || x == null ? null : Number(x);
+        const v = { orcamento: o, meta_leads: l, meta_vendas: vd, meta_cpl: o && l ? Math.round(o / l * 100) / 100 : null, percentual_meta_leads: np(r.pl), ...(pctVOk ? { percentual_meta_vendas: np(r.pv) } : {}) };
         const ex = canais.find(x => x.canal === k);
         if (ex) await q(sb.from('campanha_canais').update(v).eq('id', ex.id));
         else { const base = slug(c.nome) + '_' + slug(k); let t = base, n = 2; while (ja.includes(t)) t = base + '_' + n++; ja.push(t);

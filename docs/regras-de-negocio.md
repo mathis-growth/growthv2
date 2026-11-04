@@ -1,3 +1,9 @@
+## v0.253
+- **Oferta da campanha:** sempre ligada ao cadastro. Nome, produto e preço vêm da oferta; para outro preço, cria-se outra oferta. Oferta nova no assistente entra no cadastro, reaproveitando a que tiver o mesmo nome, produto e preço. Oferta digitada antes é cadastrada quando o passo Oferta é salvo.
+- **Meta de vendas:** cada oferta tem a sua (principal = vendas do Base; as outras = vendas do Base × aceite). `campanhas.meta_vendas` é a soma. O CAC meta é investimento ÷ essa soma.
+- **Cenários por oferta:** vendas da oferta = vendas previstas da principal × aceite. Pessimista e otimista partem do Base com aceite 20% pior ou melhor. O aceite do Base vira a premissa da oferta na campanha.
+- **Canais:** meta do canal = porcentagem × meta da campanha, para leads e para vendas (a soma de todas as ofertas). Se a meta muda em Orçamento e cenários, os canais em porcentagem são recalculados.
+
 ## v0.252
 - **Faturamento:** valor total das vendas aprovadas, tirando todo o valor das vendas de quem saiu. Saiu = a pessoa tem aluno e nenhum ativo.
 - **Receita líquida (marketing):** faturamento − taxas − impostos − comissões. Comissão cancelada ou estornada não conta.

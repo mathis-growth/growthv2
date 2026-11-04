@@ -1,3 +1,13 @@
+## v0.253 — Assistente: ofertas do cadastro, cenários por oferta e canais em porcentagem (04/11/2026)
+- **Oferta:** toda oferta da campanha fica no cadastro. O preço vem da oferta e não muda na campanha: para outro preço, cria-se outra oferta.
+- **Orçamento e cenários:** a oferta principal fica aberta e cada order bump, upsell e downsell abre ao clicar, com aceite, meta de vendas e receita nos três cenários.
+- **Meta de vendas:** cada oferta tem a sua, e a meta da campanha é a soma. O CAC meta usa o mesmo total.
+- **Dashboard:** o card de Vendas mostra o total e uma linha por oferta com a luzinha. Ao clicar, o detalhe traz a tabela por oferta.
+- **Visual:** quadros e cards mais delimitados em todo o app, com borda, sombra e mais contraste com o fundo.
+- **Passo Pesquisa:** não mostra mais o erro "Cannot set properties of null" ao abrir, e o botão de concluir espera a tela carregar.
+- **Canais:** porcentagem do orçamento, dos leads e das vendas, calculadas sobre as metas. Se a meta muda depois, os canais acompanham.
+- Banco: `20270108100000_v0253_metas_canal_e_oferta.sql`. Testes: tela `t253` (novo) e `t249` (0 falhas).
+
 ## v0.252 — Faturamento e Receita líquida (03/11/2026)
 - **Faturamento:** valor total das vendas aprovadas, sem as vendas de quem saiu. É o número novo das campanhas, canais e coortes, e o que a meta de receita acompanha.
 - **Receita líquida:** faturamento menos taxas, impostos e comissões. Aparece ao lado do Faturamento.

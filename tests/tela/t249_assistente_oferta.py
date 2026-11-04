@@ -13,7 +13,7 @@ def ws(rows): return [dict(workspace_id=W, **r) for r in rows]
 def camp(id, nome, fim, st='finalizada', prod='p1', mod='lancamento', **k): return dict(id=id, nome=nome, status=st, produto_id=prod, modelo=mod, data_inicio=(fim or '2026-05-31')[:8] + '01', data_fim=fim, extras={}, fases={}, criado_em='2026-01-01', **k)
 def vis(id, inv, ld, q, vd, cl, rec): return dict(campanha_id=id, investimento=inv, leads=ld, qualificados=q, vendas=vd, clientes=cl, faturamento=rec, receita=rec, receita_bruta=rec)
 SEED = {
-  'workspaces': [{'id': W, 'nome': 'Demo', 'modo_produto': 'completo', 'agencia': True}], 'rpc:sou_equipe_interna': True,
+  'workspaces': [{'id': W, 'nome': 'Demo', 'modo_produto': 'completo', 'agencia': True}], 'rpc:sou_equipe_interna': True, 'rpc:oferta_salvar': 'of-test',
   'produtos': ws([dict(id='p1', nome='Método', preco=1497, ativo=True), dict(id='p2', nome='Mini', preco=197, ativo=True), dict(id='p3', nome='Planilha', preco=97, ativo=True), dict(id='p4', nome='Mentoria', preco=997, ativo=True)]),
   'campanhas': ws([camp('set', 'Método Set/26', '2026-09-30'), camp('jun', 'Método Jun/26', '2026-06-30'), camp('mar', 'Método Mar/26', '2026-03-31'), camp('nov', 'Método Nov/25', '2025-11-30'), camp('mini', 'Mini Set/26', '2026-09-30', prod='p2')]),
   'v_marketing_campanha': [vis('set', 6000, 200, 40, 10, 8, 14970), vis('jun', 4500, 180, 30, 7, 7, 10479), vis('mar', 3000, 150, 20, 5, 5, 7485), vis('nov', 1500, 50, 5, 1, 1, 1497), vis('mini', 800, 100, 0, 6, 6, 1182)],
@@ -135,7 +135,7 @@ with sync_playwright() as p:
     chk(V('otimista', 'L') == ot and float(V('pessimista', 'I')) == 12000, 'cenário mexido à mão deixa de acompanhar o Base')
     pg.click('#cenRefaz'); pg.wait_for_timeout(60); chk(float(V('otimista', 'I')) == 12000, 'refazer volta a acompanhar')
     avanca(pg); c = nova(pg)
-    chk(float(c['orcamento_total']) == 12000 and c['meta_receita'] > int(c['meta_vendas']) * 1497, 'o Base vira meta, com a receita das ofertas', [c.get('orcamento_total'), c.get('meta_vendas'), c.get('meta_receita')])
+    chk(float(c['orcamento_total']) == 12000 and c['meta_receita'] > int(c['extras']['cenarios']['base']['V']) * 1497, 'o Base vira meta, com a receita das ofertas', [c.get('orcamento_total'), c.get('meta_vendas'), c.get('meta_receita')])
     chk(set(c['extras'].get('cenarios', {}).keys()) >= {'base', 'pessimista', 'otimista'}, 'guarda os três cenários')
     chk(ev(pg, "!!document.querySelector('[data-cn=meta_ads]')"), 'depois vem Canais'); avanca(pg); pg.wait_for_timeout(600)
     chk('Concluir' in ev(pg, "document.querySelector('#modalRoot .pri').textContent"), 'por último, Pesquisa, que conclui')

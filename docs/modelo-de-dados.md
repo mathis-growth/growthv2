@@ -1,3 +1,9 @@
+## v0.253
+- `campanha_canais.percentual_meta_vendas`: porcentagem da meta de vendas da campanha. `percentual_meta_leads` passa a ser preenchida pelo assistente.
+- `campanha_ofertas.meta_vendas`: meta de vendas da oferta. `campanhas.meta_vendas` passa a ser a soma das ofertas.
+- `campanhas.extras.cenarios.ofertas`: por oferta da campanha, aceite (`a`, em %) em cada cenário, mais o que foi mexido à mão. `meta_total` e `meta_cac_total` guardam o que foi gravado em `campanhas`.
+- `campanha_ofertas.oferta_id` e `oferta_versao`: preenchidas ao escolher ou criar a oferta no assistente.
+
 ## v0.252
 - `v_vendas_mkt`: uma linha por venda aprovada, com `valor_bruto`, `liquido`, `comissao` (sem as canceladas e estornadas) e `saiu`.
 - `v_marketing_campanha`: colunas novas `faturamento`, `faturamento_saiu` e `comissoes`. `receita` = líquido − comissões, sem quem saiu. `roas` = faturamento ÷ investimento.

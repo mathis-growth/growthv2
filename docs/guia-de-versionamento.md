@@ -1,3 +1,8 @@
+## v0.253
+- Migração `20270108100000_v0253_metas_canal_e_oferta.sql`: colunas `campanha_canais.percentual_meta_vendas` e `campanha_ofertas.meta_vendas`.
+- index.html: `ofPassoHtml` escolhe do cadastro; `cenInicial`, `cenHtml` e `cenTotal` com aceite e preço por oferta (`extras.cenarios.ofertas`); passo Canais em porcentagem; `campOfertasMetas` e `ofLinhas` no card de Vendas; aba Ofertas exige oferta do catálogo. Rótulo da tela para 0.253.
+- Teste novo de tela `t253_oferta_cenario_canal.py`.
+
 ## v0.252
 - Migração `20270107110000_v0252_faturamento_e_receita.sql`:
   - nova: `v_vendas_mkt`;
