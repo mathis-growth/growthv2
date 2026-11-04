@@ -1,3 +1,7 @@
+## v0.261
+- **Bruto de anúncios:** gravado antes do tratamento. Falha no bruto vira aviso na sincronização e não interrompe os números de `ads_externo_dia`.
+- **YouTube Ads:** campanha do Google Ads com `advertisingChannelType = VIDEO`.
+
 ## v0.260
 - **Campanha de lançamento:** abre sempre no Dashboard, sem abas; Planejamento mostra o que foi cadastrado no assistente, somente para leitura. Atalhos antigos levam à etapa correspondente. Perpétuo continua nas abas.
 - **Filtros:** valem para números, gráficos, listas e cohorts. Qualificação e anúncio mudam leads e vendas; canal, anúncio e público mudam o investimento.

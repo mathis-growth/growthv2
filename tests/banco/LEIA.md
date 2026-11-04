@@ -96,3 +96,6 @@ Conferido em 30/10/2026.
 
 ## v0.259 — Etapas por dia (PGlite)
 `v0259_etapas_por_dia.sql` termina com "v0259: tudo OK". Testa que a soma dos dias bate com `campanha_funil_etapas` para leads, receita e valor manual. Conferido em 04/11/2026.
+
+## v0.261 — Bruto de anúncios (PGlite)
+`v0261_ads_bruto.sql` termina com "v0261: tudo OK". Testa payload completo, regravação do mesmo dia, tabela por plataforma e acesso. `tests/edge/ads_bruto_test.mjs` simula as APIs. Conferido em 04/11/2026.

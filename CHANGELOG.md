@@ -1,3 +1,9 @@
+## v0.261 — Bruto de Meta, Google Ads e YouTube Ads (04/11/2026)
+- **Tabelas brutas:** `meta_ads_bruto`, `google_ads_bruto` e `youtube_ads_bruto`, uma linha por anúncio e dia, com tudo o que a API devolve. Campanhas de vídeo do Google vão para a do YouTube.
+- **Campos:** a sincronização pede mais campos. Se a plataforma recusar, volta aos de sempre e registra o aviso.
+- **Sem mudança nos números:** `ads_externo_dia` e o tratamento atual continuam iguais.
+- Banco: `20270115100000_v0261_ads_bruto.sql`. Testes: banco `v0261_ads_bruto.sql` (OK); `tests/edge/ads_bruto_test.mjs` (OK). Falta testar com uma conta conectada.
+
 ## v0.260 — Dashboard único da campanha (04/11/2026)
 - **Lançamento sem abas:** Planejamento mostra tudo o que foi planejado, dividido em abas. Dashboard mostra realizado contra planejado. Mídia paga, Leads e Funil de leads ficam na Captação; Vídeos no Aquecimento, e VSL na Captação; Vendas no Carrinho; Fechamento no Pós-venda. Perpétuo continua com as abas.
 - **Assistente:** novo passo 9, Links e tracks.

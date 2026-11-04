@@ -1,3 +1,8 @@
+## v0.261
+- Migração `20270115100000_v0261_ads_bruto.sql`: tabelas `meta_ads_bruto`, `google_ads_bruto`, `youtube_ads_bruto`; função `conexao_gravar_bruto`.
+- Função `conexoes`: `metaAnuncios` e `googleAnuncios` coletam o bruto; `guardaBruto` em `rotas.ts`. A versão publicada era de arquivo único; passa a ser publicada com os arquivos do repositório.
+- Testes novos: banco `v0261_ads_bruto.sql`; `tests/edge/ads_bruto_test.mjs`.
+
 ## v0.260
 - index.html: `tcVisao` sem abas, com `ATALHO` e `LEG`; `CampEtapas` com filtros `an`, `pub` e `qual`, `compara`, `tbCanais`, `vPlan` e `CHIPS`; passo 9 no assistente; `cdAbrir` respeita `S.mCanal`. Rótulo da tela para 0.260. Sem migração.
 

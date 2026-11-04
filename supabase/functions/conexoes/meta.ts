@@ -51,12 +51,23 @@ const acao = (lista: unknown, tipos: string[]) => ((lista as Dic[]) || []).filte
 const LEAD = ['lead', 'onsite_conversion.lead_grouped', 'offsite_conversion.fb_pixel_lead', 'leadgen_grouped'];
 const COMPRA = ['purchase', 'offsite_conversion.fb_pixel_purchase', 'omni_purchase'];
 
-export async function metaAnuncios(tk: string, conta: string, de: string, ate: string): Promise<Dic[]> {
-  const tags: Record<string, string> = {};
-  const ads = await todas(`${G()}/${conta}/ads?` + qs({ fields: 'id,creative{url_tags}', limit: 500, access_token: tk })).catch(() => []);
-  for (const a of ads) { const t = ((a.creative as Dic) || {}).url_tags; if (t) tags[String(a.id)] = String(t); }
-  const linhas = await todas(`${G()}/${conta}/insights?` + qs({ level: 'ad', time_increment: 1, time_range: JSON.stringify({ since: de, until: ate }), limit: 500, access_token: tk,
-    fields: 'date_start,campaign_id,campaign_name,adset_name,ad_id,ad_name,impressions,clicks,spend,reach,actions,action_values' }), 100);
+// Bruto: pede tudo o que a API oferece por anúncio e por dia. Se a plataforma recusar algum campo, volta aos campos de sempre: o tratamento não pode parar.
+const INSIGHTS_BASE = 'date_start,campaign_id,campaign_name,adset_name,ad_id,ad_name,impressions,clicks,spend,reach,actions,action_values';
+const INSIGHTS_TUDO = INSIGHTS_BASE + ',date_stop,account_id,account_name,account_currency,adset_id,objective,buying_type,frequency,cpm,cpc,ctr,cpp,unique_clicks,unique_ctr,inline_link_clicks,inline_link_click_ctr,outbound_clicks,outbound_clicks_ctr,cost_per_action_type,cost_per_unique_click,conversions,conversion_values,purchase_roas,website_purchase_roas,video_30_sec_watched_actions,video_p25_watched_actions,video_p50_watched_actions,video_p75_watched_actions,video_p100_watched_actions,video_avg_time_watched_actions,quality_ranking,engagement_rate_ranking,conversion_rate_ranking';
+const perdeuAcesso = (e: unknown) => e instanceof ErroPlataforma && (e.status === 401 || /token|oauth|expir|session/i.test(e.message));
+export type Coleta = { bruto: Dic[]; avisos: string[] };
+
+export async function metaAnuncios(tk: string, conta: string, de: string, ate: string, coleta?: Coleta): Promise<Dic[]> {
+  const tags: Record<string, string> = {}, fichas: Record<string, Dic> = {};
+  let ads: Dic[];
+  try { ads = await todas(`${G()}/${conta}/ads?` + qs({ fields: 'id,name,status,effective_status,adset_id,campaign_id,created_time,updated_time,creative{id,name,title,body,url_tags,thumbnail_url,call_to_action_type,object_url}', limit: 500, access_token: tk })); }
+  catch (e) { if (perdeuAcesso(e)) throw e; ads = await todas(`${G()}/${conta}/ads?` + qs({ fields: 'id,creative{url_tags}', limit: 500, access_token: tk })).catch(() => []); }
+  for (const a of ads) { fichas[String(a.id)] = a; const t = ((a.creative as Dic) || {}).url_tags; if (t) tags[String(a.id)] = String(t); }
+  const pede_ = (fields: string) => todas(`${G()}/${conta}/insights?` + qs({ level: 'ad', time_increment: 1, time_range: JSON.stringify({ since: de, until: ate }), limit: 500, access_token: tk, fields }), 100);
+  let linhas: Dic[];
+  try { linhas = await pede_(INSIGHTS_TUDO); }
+  catch (e) { if (perdeuAcesso(e)) throw e; if (coleta) coleta.avisos.push(`Meta: bruto só com os campos básicos (${(e as Error).message})`); linhas = await pede_(INSIGHTS_BASE); }
+  if (coleta) for (const l of linhas) coleta.bruto.push({ prov: 'meta_ads', data: l.date_start, anuncio_ext: l.ad_id, payload: { insights: l, anuncio: fichas[String(l.ad_id)] || null } });
   return linhas.map(l => ({ data: l.date_start, campanha_ext: l.campaign_id, campanha_nome: l.campaign_name, conjunto_nome: l.adset_name, anuncio_ext: l.ad_id, anuncio_nome: l.ad_name,
     url_tags: tags[String(l.ad_id)] || null, impressoes: num(l.impressions) || 0, cliques: num(l.clicks) || 0, custo: num(l.spend) || 0, alcance: num(l.reach),
     leads: acao(l.actions, LEAD) || null, conversoes: acao(l.actions, COMPRA) || null, receita: acao(l.action_values, COMPRA) || null }));

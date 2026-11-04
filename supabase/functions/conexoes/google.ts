@@ -81,16 +81,23 @@ export async function youtubeVideos(tk: string, canal: string, videos: { fonte_i
   return { linhas: out, avisos };
 }
 
-export async function googleAnuncios(tk: string, cliente: string, de: string, ate: string): Promise<Dic[]> {
+const GADS_BASE = 'segments.date, campaign.id, campaign.name, ad_group.name, ad_group_ad.ad.id, ad_group_ad.ad.name, ad_group_ad.ad.final_urls, ad_group_ad.ad.tracking_url_template, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions, metrics.conversions_value';
+const GADS_TUDO = GADS_BASE + ', customer.id, customer.currency_code, campaign.status, campaign.advertising_channel_type, campaign.advertising_channel_sub_type, campaign.bidding_strategy_type, ad_group.id, ad_group.status, ad_group.type, ad_group_ad.status, ad_group_ad.ad.type, metrics.ctr, metrics.average_cpc, metrics.average_cpm, metrics.interactions, metrics.engagements, metrics.all_conversions, metrics.all_conversions_value, metrics.view_through_conversions, metrics.video_views, metrics.video_view_rate, metrics.video_quartile_p25_rate, metrics.video_quartile_p50_rate, metrics.video_quartile_p75_rate, metrics.video_quartile_p100_rate';
+const perdeuAcesso = (e: unknown) => e instanceof ErroPlataforma && (e.status === 401 || /token|oauth|expir|session/i.test(e.message));
+
+// Bruto: campanhas de vídeo vão para youtube_ads_bruto, as outras para google_ads_bruto. Se a API recusar algum campo, volta aos campos de sempre.
+export async function googleAnuncios(tk: string, cliente: string, de: string, ate: string, coleta?: { bruto: Dic[]; avisos: string[] }): Promise<Dic[]> {
   if (!env('GOOGLE_ADS_DEVELOPER_TOKEN')) throw new ErroPlataforma('Google Ads', 'falta o segredo GOOGLE_ADS_DEVELOPER_TOKEN no Supabase');
-  const query = `SELECT segments.date, campaign.id, campaign.name, ad_group.name, ad_group_ad.ad.id, ad_group_ad.ad.name, ad_group_ad.ad.final_urls, ad_group_ad.ad.tracking_url_template,
-    metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions, metrics.conversions_value FROM ad_group_ad WHERE segments.date BETWEEN '${de}' AND '${ate}'`;
-  const j = await pede('Google Ads', `https://googleads.googleapis.com/${GADS_V()}/customers/${cliente.replace(/\D/g, '')}/googleAds:searchStream`, { method: 'POST', headers: adsHeaders(tk), body: JSON.stringify({ query }) });
+  const pede_ = (campos: string) => pede('Google Ads', `https://googleads.googleapis.com/${GADS_V()}/customers/${cliente.replace(/\D/g, '')}/googleAds:searchStream`, { method: 'POST', headers: adsHeaders(tk), body: JSON.stringify({ query: `SELECT ${campos} FROM ad_group_ad WHERE segments.date BETWEEN '${de}' AND '${ate}'` }) });
+  let j: Dic;
+  try { j = await pede_(GADS_TUDO); }
+  catch (e) { if (perdeuAcesso(e)) throw e; if (coleta) coleta.avisos.push(`Google Ads: bruto só com os campos básicos (${(e as Error).message})`); j = await pede_(GADS_BASE); }
   const lotes = Array.isArray(j) ? j as Dic[] : ((j as Dic)[0] !== undefined ? Object.values(j) as Dic[] : [j]);
   const out: Dic[] = [];
   for (const b of lotes) for (const r of (b.results as Dic[]) || []) {
     const c = (r.campaign as Dic) || {}, g = (r.adGroup as Dic) || {}, ad = (((r.adGroupAd as Dic) || {}).ad as Dic) || {}, m = (r.metrics as Dic) || {}, s = (r.segments as Dic) || {};
     const url = String(((ad.finalUrls as string[]) || [])[0] || ''), tags = url.includes('?') ? url.split('?')[1] : (ad.trackingUrlTemplate ? String(ad.trackingUrlTemplate).split('?')[1] || null : null);
+    if (coleta) coleta.bruto.push({ prov: c.advertisingChannelType === 'VIDEO' ? 'youtube_ads' : 'google_ads', data: s.date, anuncio_ext: String(ad.id), payload: r });
     out.push({ data: s.date, campanha_ext: String(c.id), campanha_nome: c.name, conjunto_nome: g.name, anuncio_ext: String(ad.id), anuncio_nome: ad.name || g.name, url_tags: tags,
       impressoes: num(m.impressions) || 0, cliques: num(m.clicks) || 0, custo: (Number(m.costMicros) || 0) / 1e6, conversoes: num(m.conversions), receita: num(m.conversionsValue) });
   }

@@ -1,3 +1,6 @@
+## v0.261
+- `meta_ads_bruto`, `google_ads_bruto`, `youtube_ads_bruto`: `conta_id`, `data`, `anuncio_ext`, `payload`; únicos por conta, anúncio e dia, e regravados quando a plataforma ajusta o número. Sem acesso direto para `anon` e `authenticated`.
+
 ## v0.257
 - `kiwify_vendas_bruto`, `eduzz_vendas_bruto`, `hubla_vendas_bruto`: mesmas colunas de `hotmart_vendas_bruto`. Sem acesso direto para `anon` e `authenticated`.
 - `plataforma_webhooks.segredo_hmac`: segredo da Kiwify e da Eduzz, necessário para conferir a assinatura. A Hubla guarda só o hash.

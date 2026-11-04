@@ -52,6 +52,17 @@ async function retorno(url: URL) {
   }
 }
 
+// grava o bruto antes do tratamento, por plataforma e em lotes. Falha aqui vira aviso: os números de sempre continuam entrando.
+async function guardaBruto(sb: SB, conta: string, co: { bruto: Dic[]; avisos: string[] }, avisos: string[]) {
+  avisos.push(...co.avisos);
+  const prov: Record<string, Dic[]> = {};
+  for (const b of co.bruto) (prov[String(b.prov)] = prov[String(b.prov)] || []).push({ data: b.data, anuncio_ext: b.anuncio_ext, payload: b.payload });
+  for (const [p, l] of Object.entries(prov)) for (let i = 0; i < l.length; i += 500) {
+    try { await rpc(sb, 'conexao_gravar_bruto', { p_conta: conta, p_prov: p, p_linhas: l.slice(i, i + 500) }); }
+    catch (e) { avisos.push(`Bruto de ${p}: ${(e as Error).message}`); break; }
+  }
+}
+
 // uma conexão: renova o token se precisar, puxa cada conta escolhida e registra a execução
 async function sincronizaConexao(sb: SB, c: Dic, por: string) {
   const ex = await rpc(sb, 'conexao_execucao', { p_conexao: c.id, p_id: null, p_status: 'rodando', p_registros: 0, p_erro: null, p_detalhe: null, p_por: por });
@@ -68,7 +79,7 @@ async function sincronizaConexao(sb: SB, c: Dic, por: string) {
     for (const k of (c.contas as Dic[]) || []) {
       const conta = String(k.id_externo), cid = String(k.id);
       try {
-        if (k.tipo === 'meta_ads') { const l = await metaAnuncios(tk, conta, de, ate); n += Number(await rpc(sb, 'conexao_gravar', { p_conta: cid, p_tipo: 'ads', p_linhas: l })); det[String(k.nome)] = l.length + ' linhas de anúncio'; }
+        if (k.tipo === 'meta_ads') { const co = { bruto: [] as Dic[], avisos: [] as string[] }, l = await metaAnuncios(tk, conta, de, ate, co); await guardaBruto(sb, cid, co, avisos); n += Number(await rpc(sb, 'conexao_gravar', { p_conta: cid, p_tipo: 'ads', p_linhas: l })); det[String(k.nome)] = l.length + ' linhas de anúncio'; }
         else if (k.tipo === 'instagram') { const r = await metaInstagram(tk, conta, de, ate); avisos.push(...r.avisos);
           n += Number(await rpc(sb, 'conexao_gravar', { p_conta: cid, p_tipo: 'perfil', p_linhas: r.perfil })) + Number(await rpc(sb, 'conexao_gravar', { p_conta: cid, p_tipo: 'posts', p_linhas: r.posts }));
           det[String(k.nome)] = `${r.perfil.length} dias, ${r.posts.length} posts`; }
@@ -77,7 +88,7 @@ async function sincronizaConexao(sb: SB, c: Dic, por: string) {
           const vv = await youtubeVideos(tk, conta, (c.videos as { fonte_id: string; video: string }[]) || [], de, ate); avisos.push(...vv.avisos);
           if (vv.linhas.length) n += Number(await rpc(sb, 'conexao_gravar', { p_conta: cid, p_tipo: 'video', p_linhas: vv.linhas }));
           det[String(k.nome)] = `${r.perfil.length} dias, ${r.posts.length} vídeos, ${vv.linhas.length} dias de vídeos cadastrados`; }
-        else if (k.tipo === 'google_ads') { const l = await googleAnuncios(tk, conta, de, ate); n += Number(await rpc(sb, 'conexao_gravar', { p_conta: cid, p_tipo: 'ads', p_linhas: l })); det[String(k.nome)] = l.length + ' linhas de anúncio'; }
+        else if (k.tipo === 'google_ads') { const co = { bruto: [] as Dic[], avisos: [] as string[] }, l = await googleAnuncios(tk, conta, de, ate, co); await guardaBruto(sb, cid, co, avisos); n += Number(await rpc(sb, 'conexao_gravar', { p_conta: cid, p_tipo: 'ads', p_linhas: l })); det[String(k.nome)] = l.length + ' linhas de anúncio'; }
       } catch (e) {
         if (e instanceof ErroPlataforma && (e.status === 401 || /token|oauth|expir|session/i.test(e.message))) throw e;  // acesso perdido: para tudo
         avisos.push(`${k.nome}: ${(e as Error).message}`);
