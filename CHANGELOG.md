@@ -1,3 +1,16 @@
+## v0.247 — Assistente da campanha: datas de cada etapa e passo de histórico (03/11/2026)
+- **Passo 1, O básico:** no lançamento, datas de início e fim de Aquisição, Aquecimento, Conversão e Retenção, mais abertura e fechamento do carrinho. São opcionais e ficam nos mesmos campos da aba Estratégia e etapas.
+- **Passo 2 novo, Histórico e referências** (o assistente passa a ter 5 passos):
+  - escolha de quantas campanhas trazer do produto e do modelo;
+  - lista com investido, leads, clientes, receita, CPL, CAC, conversão e ROAS de cada uma, mais a média;
+  - em CPL, CAC e conversão, marcar a média, uma campanha específica ou não levar;
+  - gráficos de CPL, CAC e conversão, abertos, abaixo da tabela, com a linha da média;
+  - clicar no nome da campanha abre o histórico dela (período, datas das etapas, carrinho, vendas, qualificados, ticket e canais), com o botão para abrir a campanha completa;
+  - aviso quando há menos de 3 campanhas e quando o CAC marcado não conversa com o CPL e a conversão.
+- **Passo 3, Orçamento e metas:** não sobrescreve o CPL nem a conversão escolhidos no histórico e mostra quando a conta do orçamento dá outro CPL.
+- **Memória:** `campanhas.extras.referencia_planejamento` guarda as escolhas, a origem de cada uma, as metas de antes e as campanhas usadas.
+- Banco: sem migração. Teste: `t247_assistente_referencias.py` (45 verificações, 0 falhas).
+
 ## v0.246 — Histórico e referências no planejamento da campanha (03/11/2026)
 - **Campanha → Planejamento e metas:** bloco expansível "Histórico e referências", sem aba nova. Mostra até 3 campanhas finalizadas do mesmo produto e modelo, com investido, leads, clientes, receita, CPL, CAC, conversão e ROAS de cada uma.
 - **Média ponderada** pelos volumes reais, com as mesmas contas da visão consolidada. CPL, CAC e ROAS só somam campanhas com investimento lançado.

@@ -348,10 +348,16 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .maism button small{margin-left:auto;color:var(--muted);font-size:11px}
 .maism hr{border:0;border-top:1px solid var(--line);margin:5px 4px}
 .maism button.perigo{color:var(--bad)}
-.wz{max-width:760px!important;padding:0!important;overflow:hidden}
+.wz{max-width:760px!important;padding:0!important;overflow:hidden}.wz.wzl{max-width:1040px!important}
+.wz-fases{display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:12px;padding:12px 14px}.wz-fases .grid2{margin-top:6px}
+.ch-top{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}.ch-top label{flex-direction:row;align-items:center;gap:8px;display:flex}.ch-top select{width:auto}.ch-top .sp{flex:1}
+.ch-gs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px}.ch-g{margin:0}.ch-det{background:var(--accent-soft);border-radius:10px;padding:12px 14px}.ch-deth{display:flex;gap:8px;align-items:center;margin-bottom:8px}.ch-deth .sp{flex:1}.ch-g figcaption{display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-bottom:6px}
+.ch-g figcaption span{white-space:nowrap}.ch-pl{position:relative;display:flex;gap:6px;height:100px;border-bottom:1px solid var(--line)}.ch-c{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}.ch-c i{display:block;width:100%;max-width:28px;background:var(--accent);border-radius:4px 4px 0 0}
+.ch-md{position:absolute;left:0;right:0;border-top:1px dashed var(--muted);pointer-events:none}.ch-xs{display:flex;gap:6px;font-size:11px;color:var(--muted);margin-top:3px}.ch-xs span{flex:1;min-width:0;text-align:center}.ch-xs b{display:block;color:var(--ink);font-weight:600;white-space:nowrap}
+.ch-t{font-size:13px}.ch-t th{font-size:11px;font-weight:600;white-space:normal;text-transform:none;letter-spacing:0;padding:6px}.ch-t td{padding:5px 6px}.ch-t td:first-child{min-width:110px}.ch-op{display:inline-flex!important;flex-direction:row!important;align-items:center;justify-content:flex-end;width:auto!important;margin:0!important;gap:4px;border:1px solid transparent;border-radius:8px;padding:2px 6px;cursor:pointer;white-space:nowrap}.ch-op input{appearance:radio;width:14px!important;height:14px;min-height:0;padding:0;margin:0;border:0;box-shadow:none!important;background:none;flex:none}.ch-op.on{border-color:var(--accent);background:var(--accent-soft)}.ch-op:focus-within{outline:2px solid var(--accent);outline-offset:1px}.ch-av{border-left:4px solid var(--warn);padding-left:10px;margin:0}
 .wz .wzh{padding:20px 24px 14px;border-bottom:1px solid var(--line)}
 .wz .wzh h2{margin:0 0 14px;font-size:20px}
-.wz .wzp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.wz .wzp{display:grid!important;grid-template-columns:repeat(5,1fr)!important;gap:8px}
 .wz .wzp div{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--muted);font-weight:600}
 .wz .wzp div i{height:5px;border-radius:9px;background:var(--line)}
 .wz .wzp div.ok{color:var(--good)} .wz .wzp div.ok i{background:var(--good);box-shadow:0 0 10px rgba(47,245,143,.45)}
@@ -1362,7 +1368,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
       <span class="muted" id="who"></span>
       <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.246 · 03/11/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.247 · 03/11/2026</span>
     </div>
   </aside>
   <main class="main" id="main"></main>
@@ -2648,13 +2654,17 @@ function campHistCoerencia(md) {
   const imp = cpl.v / (conv.v / 100); return Math.abs(imp - cac.v) / cac.v > 0.05 ? imp : null;
 }
 const campHistPct = v => v == null ? '—' : Number(v).toFixed(2).replace('.', ',') + '%', campHistX = v => v == null ? '—' : Number(v).toFixed(2).replace('.', ',');
+// campanhas finalizadas do mesmo produto e modelo, com dados, da mais recente para a mais antiga
+async function campHistComparaveis(c) {
+  const cs = await q(sb.from('campanhas').select('id,nome,modelo,data_inicio,data_fim,data_carrinho_abre,data_carrinho_fecha,fases').eq('workspace_id', S.ws).eq('produto_id', c.produto_id).eq('modelo', c.modelo).eq('status', 'finalizada').neq('id', c.id));
+  const vs = cs.length ? await q(sb.from('v_marketing_campanha').select('campanha_id,investimento,leads,qualificados,vendas,clientes,receita_bruta').in('campanha_id', cs.map(x => x.id))) : [];
+  const V = Object.fromEntries(vs.map(x => [x.campanha_id, x])), quando = x => x.data_fim || x.data_inicio || '';
+  return cs.map(x => ({ ...x, ...(V[x.id] || {}) })).filter(x => Number(x.leads) > 0 || Number(x.investimento) > 0).sort((a, b) => quando(b).localeCompare(quando(a)));
+}
 async function campHistoricoPainel(box, c) {
   if (!box) return;
   if (!c.produto_id) { box.innerHTML = '<div class="panel"><h2>Histórico e referências</h2><p class="muted">Esta campanha não tem produto. Escolha o produto em Editar campanha para comparar com as anteriores.</p></div>'; return; }
-  const cs = await q(sb.from('campanhas').select('id,nome,modelo,data_inicio,data_fim,data_carrinho_abre,data_carrinho_fecha').eq('workspace_id', S.ws).eq('produto_id', c.produto_id).eq('modelo', c.modelo).eq('status', 'finalizada').neq('id', c.id));
-  const vs = cs.length ? await q(sb.from('v_marketing_campanha').select('campanha_id,investimento,leads,vendas,clientes,receita_bruta').in('campanha_id', cs.map(x => x.id))) : [];
-  const V = Object.fromEntries(vs.map(x => [x.campanha_id, x])), quando = x => x.data_fim || x.data_inicio || '';
-  const L = cs.map(x => ({ ...x, ...(V[x.id] || {}) })).filter(x => Number(x.leads) > 0 || Number(x.investimento) > 0).sort((a, b) => quando(b).localeCompare(quando(a))).slice(0, 3);
+  const L = (await campHistComparaveis(c)).slice(0, 3);
   const md = campHistMedias(L), ok = L.filter(x => Number(x.investimento) > 0 && Number(x.leads) > 0).length, imp = campHistCoerencia(md), ref = (c.extras || {}).referencia_planejamento;
   const cel = (a, b, f) => Number(b) > 0 ? f(Number(a || 0) / Number(b)) : '—';
   const linhaC = x => `<tr><td><a href="#" data-chc="${x.id}">${esc(x.nome)}</a><br><small class="muted">${periodoCamp(x)}</small></td><td class="n">${brl0(x.investimento || 0)}</td><td class="n">${num(Number(x.leads || 0))}</td><td class="n">${num(Number(x.clientes || 0))}</td><td class="n">${brl0(x.receita_bruta || 0)}</td>
@@ -2669,7 +2679,7 @@ async function campHistoricoPainel(box, c) {
     ${L.length && ok < 3 ? `<p id="chPoucos" class="muted" style="border-left:4px solid var(--warn);padding-left:10px">Só ${ok} ${ok === 1 ? 'campanha tem' : 'campanhas têm'} investimento e leads. Com menos de 3, use a média como ponto de partida, não como referência firme.</p>` : ''}
     ${imp != null ? `<p id="chCoer" class="muted" style="border-left:4px solid var(--warn);padding-left:10px">CPL ÷ conversão dá um CAC de ${brl(imp)}, diferente do CAC médio de ${brl(md.cac.v)}. Isso acontece quando um cliente compra mais de uma vez ou quando as médias usam campanhas diferentes. Confira antes de fechar as metas.</p>` : ''}
     ${L.length ? '<div class="acts" style="margin-top:10px"><button class="btn pri" id="chUsar">Usar as médias como metas</button></div>' : ''}
-    ${ref ? `<p id="chRef" style="margin-bottom:0"><b>Referência usada neste planejamento</b> <span class="muted">em ${dtt(ref.em)}${ref.por ? ' por ' + esc(ref.por) : ''}: ${[['CPL', ref.valores.cpl, brl], ['CAC', ref.valores.cac, brl], ['Conversão', ref.valores.conv, campHistPct]].filter(z => z[1] != null).map(z => z[0] + ' ' + z[2](z[1])).join(' · ')}. Campanhas: ${(ref.campanhas || []).map(x => esc(x.nome)).join(', ')}.</span></p>` : ''}</details></div>`;
+    ${ref && (!ref.escolhas || ref.escolhas.length) ? `<p id="chRef" style="margin-bottom:0"><b>Referência usada neste planejamento</b> <span class="muted">em ${dtt(ref.em)}${ref.por ? ' por ' + esc(ref.por) : ''}: ${ref.escolhas ? ref.escolhas.map(z => esc(z.l) + ' ' + chFmt(z.un, z.valor) + ' (' + esc(z.fonte) + ')').join(' · ') : [['CPL', ref.valores.cpl, brl], ['CAC', ref.valores.cac, brl], ['Conversão', ref.valores.conv, campHistPct]].filter(z => z[1] != null).map(z => z[0] + ' ' + z[2](z[1])).join(' · ')}. Campanhas: ${(ref.campanhas || []).map(x => esc(x.nome)).join(', ')}.</span></p>` : ''}</details></div>`;
   box.querySelector('#chDet').addEventListener('toggle', ev => { S.campHistAberto = ev.target.open; });
   box.querySelectorAll('[data-chc]').forEach(a => a.onclick = ev => { ev.preventDefault(); S.campSel = a.dataset.chc; S.campTab = 'resumo'; S.cfn = null; render(); });
   const usar = box.querySelector('#chUsar'); if (!usar) return;
@@ -13900,7 +13910,57 @@ function campFormCompacto() {
 }
 
 /* ---------- Nova campanha em 3 etapas: cada etapa salva; dá para terminar depois ---------- */
-const WZ_ETAPAS = [[1, 'O básico'], [2, 'Orçamento e metas'], [3, 'Canais'], [4, 'Pesquisa']];
+/* ================= v0.247 — Assistente da campanha: datas de cada etapa e passo "Histórico e referências" =================
+   Lista de métricas das campanhas anteriores do mesmo produto e modelo, gráficos e a escolha, métrica por métrica, do que levar:
+   a média, uma campanha específica ou nada. Rates usam média ponderada (as contas de campHistMedias); volumes, média simples.
+   Só CPL, CAC e conversão vão para as metas; investido, leads, clientes, receita e ROAS são consulta. Clicar numa campanha abre o histórico dela. Tudo em extras.referencia_planejamento. */
+const CH_MET = [
+  { k: 'investimento', l: 'Investido', un: 'brl', vol: 1 }, { k: 'leads', l: 'Leads', un: 'int', vol: 1 }, { k: 'clientes', l: 'Clientes', un: 'int', vol: 1 }, { k: 'receita_bruta', l: 'Receita', un: 'brl', vol: 1 },
+  { k: 'cpl', l: 'CPL', un: 'brl', n: 'investimento', d: 'leads', f: 'investimento', campo: 'meta_cpl' }, { k: 'cac', l: 'CAC', un: 'brl', n: 'investimento', d: 'clientes', f: 'investimento', campo: 'meta_cac' },
+  { k: 'conv', l: 'Conversão', un: 'pct', n: 'vendas', d: 'leads', f: 'leads', x: 100, campo: 'meta_taxa_lead_venda' }, { k: 'roas', l: 'ROAS', un: 'x', n: 'receita_bruta', d: 'investimento', f: 'investimento' }];
+const chFmt = (un, v) => v == null ? '—' : un === 'brl' ? brl(v) : un === 'int' ? num(Math.round(v)) : un === 'pct' ? campHistPct(v) : campHistX(v);
+const chN = (x, k) => Number(x[k] || 0);
+// valor de uma métrica numa campanha (null quando não dá para calcular)
+function chValor(m, x) { if (m.vol) return chN(x, m.k); if (!(chN(x, m.f) > 0) || !(chN(x, m.d) > 0)) return null; return chN(x, m.n) * (m.x || 1) / chN(x, m.d); }
+// média: volumes, simples; taxas, ponderada pelos volumes das campanhas que têm a base da conta
+function chMedia(m, L) { if (!L.length) return null; if (m.vol) return L.reduce((t, x) => t + chN(x, m.k), 0) / L.length;
+  const B = L.filter(x => chN(x, m.f) > 0), den = B.reduce((t, x) => t + chN(x, m.d), 0); return den ? B.reduce((t, x) => t + chN(x, m.n), 0) * (m.x || 1) / den : null; }
+const chDataCurta = x => { const d = x.data_fim || x.data_inicio || ''; return d ? d.slice(5, 7) + '/' + d.slice(2, 4) : ''; };
+function chEscolhas(H) { const L = H.L.slice(0, H.qtd);
+  return CH_MET.filter(m => m.campo && H.marks[m.k]).map(m => { const mk = H.marks[m.k], x = mk === 'media' ? null : L.find(z => z.id === mk), v = mk === 'media' ? chMedia(m, L) : x ? chValor(m, x) : null;
+    return v == null ? null : { k: m.k, l: m.l, un: m.un, valor: Math.round(v * 100) / 100, fonte: mk === 'media' ? 'média de ' + L.length : x.nome, fonte_id: mk, campo: m.campo }; }).filter(Boolean); }
+// gráficos só de CPL, CAC e conversão, abertos, abaixo da tabela; da campanha mais antiga para a mais recente
+function chGraficos(L) { const C = L.slice().reverse(), H_ = 92;
+  return `<div class="ch-gs">${CH_MET.filter(m => m.campo).map(m => { const vs = C.map(x => chValor(m, x)), md = chMedia(m, L), mx = Math.max(...vs.map(v => v || 0), md || 0);
+    return `<figure class="ch-g" data-chg="${m.k}"><figcaption><b>${m.l}</b><span class="muted">média ${chFmt(m.un, md)}</span></figcaption><div class="ch-pl">${md != null && mx ? `<i class="ch-md" style="bottom:${md / mx * H_}px" title="Média: ${chFmt(m.un, md)}"></i>` : ''}${C.map((x, i) => `<div class="ch-c" title="${esc(x.nome)}: ${chFmt(m.un, vs[i])}"><i style="height:${vs[i] && mx ? Math.max(2, vs[i] / mx * H_) : 0}px"></i></div>`).join('')}</div><div class="ch-xs">${C.map((x, i) => `<span><b>${chFmt(m.un, vs[i])}</b>${chDataCurta(x)}</span>`).join('')}</div></figure>`; }).join('')}</div>`; }
+// o histórico mais detalhado da campanha clicada
+function chDetalheHtml(H) { const x = H.det && H.L.find(z => z.id === H.det.id); if (!x) return '';
+  const fz = EST_FASES.filter(([k]) => (x.fases || {})[k] && (x.fases[k].ini || x.fases[k].fim)).map(([k, l]) => `${l}: ${dd(x.fases[k].ini)} a ${dd(x.fases[k].fim)}`), cn = H.det.canais;
+  const it = [['Período', periodoCamp(x)], ['Vendas', num(chN(x, 'vendas'))], ['Leads qualificados', num(chN(x, 'qualificados'))], ['Ticket médio', chN(x, 'vendas') ? brl(chN(x, 'receita_bruta') / chN(x, 'vendas')) : '—']];
+  return `<div id="chDetalhe" class="ch-det"><div class="ch-deth"><b>${esc(x.nome)}</b><span class="sp"></span><button type="button" class="btn sm" id="chAbreCamp">Abrir a campanha completa</button><button type="button" class="btn sm" id="chFechaDet">Fechar</button></div>
+    <div class="infog">${it.map(([l, v]) => `<div><span class="muted" style="font-size:11px">${l}</span><br>${v}</div>`).join('')}</div>${fz.length ? `<p class="muted" style="margin:8px 0 0">${fz.join(' · ')}</p>` : ''}
+    ${x.data_carrinho_abre ? `<p class="muted" style="margin:4px 0 0">Carrinho: ${dd(x.data_carrinho_abre)} a ${x.data_carrinho_fecha ? dd(x.data_carrinho_fecha) : '—'}</p>` : ''}
+    ${cn == null ? '<p class="muted">Carregando os canais…</p>' : cn.length ? `<div class="tw" style="margin-top:8px"><table><thead><tr><th>Canal</th><th class="n">Investido</th><th class="n">Leads</th><th class="n">CPL</th></tr></thead><tbody>${cn.map(y => `<tr><td>${esc(y.canal)}</td><td class="n">${y.investimento != null ? brl(Number(y.investimento)) : '—'}</td><td class="n">${num(Number(y.leads || 0))}</td><td class="n">${y.cpl != null ? brl(Number(y.cpl)) : '—'}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted" style="margin:8px 0 0">Sem canais cadastrados nesta campanha.</p>'}</div>`; }
+function chPassoHtml(H) { const L = H.L.slice(0, H.qtd);
+  if (!H.L.length) return `<p class="lead">Ainda não há campanha finalizada com dados deste produto neste modelo. Pode seguir: as metas ficam para o próximo passo.</p>`;
+  const r = (m, v, t, on) => `<label class="ch-op${on && v ? ' on' : ''}"><input type="radio" name="ch_${m.k}" value="${esc(v)}"${on ? ' checked' : ''}><span>${t}</span></label>`;
+  return `<p class="lead">Veja como as campanhas anteriores deste produto foram. Em CPL, CAC e conversão, marque o que levar para esta: a média ou o número de uma campanha. Clique no nome de uma campanha para ver o histórico dela.</p>
+    <div class="ch-top"><label>Trazer as últimas<select id="chQtd">${[...new Set([1, 2, 3, 4, 5, 6, 10, H.L.length])].filter(n => n <= Math.max(H.L.length, 1)).sort((a, b) => a - b).map(n => `<option value="${n}"${n === L.length ? ' selected' : ''}>${n} ${n === 1 ? 'campanha' : 'campanhas'}</option>`).join('')}</select></label>
+      <span class="muted">${H.L.length} ${H.L.length === 1 ? 'disponível' : 'disponíveis'} deste produto e modelo</span><span class="sp"></span><button type="button" class="btn sm" id="chTudoMedia">Marcar a média nos três</button><button type="button" class="btn sm" id="chLimpa">Limpar</button></div>
+    <div class="tw"><table class="ch-t"><thead><tr><th>Campanha</th>${CH_MET.map(m => `<th class="n">${m.l}</th>`).join('')}</tr></thead><tbody>
+      ${L.map(x => `<tr data-chr="${x.id}"><td><a href="#" data-chdet="${x.id}">${esc(x.nome)}</a><br><small class="muted">${chDataCurta(x)}</small></td>${CH_MET.map(m => { const v = chValor(m, x); return `<td class="n">${m.campo && v != null ? r(m, x.id, chFmt(m.un, v), H.marks[m.k] === x.id) : chFmt(m.un, v)}</td>`; }).join('')}</tr>`).join('')}
+      <tr id="chMediaW" class="tot"><td><b>Média</b></td>${CH_MET.map(m => { const md = chMedia(m, L); return `<td class="n"><b>${m.campo && md != null ? r(m, 'media', chFmt(m.un, md), H.marks[m.k] === 'media') : chFmt(m.un, md)}</b></td>`; }).join('')}</tr>
+      <tr><td class="muted">Não levar</td>${CH_MET.map(m => `<td class="n">${m.campo ? r(m, '', '—', !H.marks[m.k]) : ''}</td>`).join('')}</tr></tbody></table></div>
+    ${chDetalheHtml(H)}
+    ${L.length < 3 ? `<p class="muted ch-av" id="chPoucos">Com menos de 3 campanhas, trate o número como ponto de partida, não como referência firme.</p>` : ''}
+    ${chGraficos(L)}
+    <small class="muted">Investido, leads, clientes e receita: média simples por campanha. CPL, CAC, conversão e ROAS: média ponderada pelos volumes reais.</small>
+    <div id="chResumo" class="calc"></div>`; }
+function chResumoHtml(H) { const E = chEscolhas(H), por = k => (E.find(z => z.k === k) || {}).valor;
+  const imp = por('cpl') != null && por('conv') && por('cac') ? campHistCoerencia({ cpl: { v: por('cpl') }, cac: { v: por('cac') }, conv: { v: por('conv') } }) : null;
+  return (E.length ? E.map(z => `<span><b>${chFmt(z.un, z.valor)}</b>${esc(z.l)}: ${esc(z.fonte)}</span>`).join('') : '<span>Nada marcado. Você também pode seguir sem levar nada.</span>')
+    + (imp != null ? `<span id="chCoerW"><b class="vneg">${brl(imp)}</b>CAC que o CPL e a conversão escolhidos dão, diferente do CAC marcado</span>` : ''); }
+const WZ_ETAPAS = [[1, 'O básico'], [2, 'Histórico e referências'], [3, 'Orçamento e metas'], [4, 'Canais'], [5, 'Pesquisa']];
 async function abrirWizard(id = null, passo = 1) {
   const w = S.ws, root = $('#modalRoot');
   const [prods, funis, cad, canaisTx] = await Promise.all([
@@ -13918,7 +13978,7 @@ async function abrirWizard(id = null, passo = 1) {
   const opt = (l, v, cur) => l.map(([k, t]) => `<option value="${esc(k)}"${String(cur ?? '') === String(k) ? ' selected' : ''}>${esc(t)}</option>`).join('');
   const dias = () => { if (!c || !c.data_inicio) return 30; if (c.modelo === 'perpetuo' || !c.data_fim) return 30; return Math.max(1, Math.round((new Date(c.data_fim) - new Date(c.data_inicio)) / 864e5) + 1); };
   const pago = cod => String(cod).endsWith('_ads');
-  let sel = null, linhas = {}, wzCpq = null, txConfig = () => null;
+  let sel = null, linhas = {}, wzCpq = null, wzH = null, txConfig = () => null;
   const tela = () => {
     const passos = WZ_ETAPAS.map(([n, t]) => `<div class="${n < passo ? 'ok' : n === passo ? 'at' : ''}"><i></i>${n}. ${t}${n < passo ? ' ✓' : ''}</div>`).join('');
     let corpo = '';
@@ -13932,8 +13992,15 @@ async function abrirWizard(id = null, passo = 1) {
         ${tmOk ? `<label>Tipo de mídia<select name="tipo_midia">${opt([['hibrida', 'Híbrida (paga e orgânica)'], ['paga', 'Só paga'], ['organica', 'Só orgânica']], c ? c.tipo_midia : 'hibrida')}</select></label>` : ''}
         <label>Início<input type="date" name="data_inicio" required value="${c && c.data_inicio || ''}"></label>
         <label class="wz-fim">Fim<input type="date" name="data_fim" value="${c && c.data_fim || ''}"></label></div>
+      <div class="wz-fases" id="wzFases"><b>Datas de cada etapa do lançamento</b><span class="muted">Opcional agora. Dá para ajustar depois, na aba Estratégia e etapas.</span>
+        <div class="grid2">${EST_FASES.map(([k, l]) => { const fz = ((c && c.fases) || {})[k] || {}; return `<label>${l}: início<input type="date" name="fase_${k}_ini" value="${fz.ini || ''}"></label><label>${l}: fim<input type="date" name="fase_${k}_fim" value="${fz.fim || ''}"></label>`; }).join('')}
+          <label>Abertura do carrinho<input type="date" name="data_carrinho_abre" value="${c && c.data_carrinho_abre || ''}"></label><label>Fechamento do carrinho<input type="date" name="data_carrinho_fecha" value="${c && c.data_carrinho_fecha || ''}"></label></div></div>
       <div class="wz-etapas" id="wzEt"></div>`;
     } else if (passo === 2) {
+      if (!wzH || wzH.chave !== c.produto_id + '|' + c.modelo) { corpo = '<p class="lead">Carregando as campanhas anteriores…</p>'; const chave = c.produto_id + '|' + c.modelo, rf = (c.extras || {}).referencia_planejamento || {};
+        campHistComparaveis(c).then(L => { const marks = {}; (rf.escolhas || []).forEach(z => { marks[z.k] = z.fonte_id; }); wzH = { chave, L, qtd: Math.min(rf.qtd || 3, L.length || 3), marks, det: null, antes: JSON.stringify(rf.escolhas || []) }; tela(); }).catch(er => toast(er.message || String(er), true)); }
+      else corpo = chPassoHtml(wzH);
+    } else if (passo === 3) {
       const per = c.modelo === 'perpetuo';
       corpo = `<p class="lead">Quanto vai investir e o que define sucesso. O resto o sistema calcula.${per ? ' No perpétuo, as metas por mês e o mix de produtos ficam na aba Metas mensais da campanha.' : ''}</p>
       <div class="grid2"><label>${per ? 'Orçamento por mês (R$)' : 'Orçamento total (R$)'}<input type="number" step="0.01" min="0" name="orcamento_total" value="${c.orcamento_total ?? ''}"></label>
@@ -13941,18 +14008,18 @@ async function abrirWizard(id = null, passo = 1) {
         <label>${per ? 'Meta de leads por mês' : 'Meta de leads'}<input type="number" min="0" name="${per ? 'meta_leads_mes' : 'meta_leads'}" value="${(per ? c.meta_leads_mes : c.meta_leads) ?? ''}"></label>
         <label>CAC máximo aceito (R$)<input type="number" step="0.01" min="0" name="meta_cac" value="${c.meta_cac ?? ''}"></label></div>
       <div class="calc" id="wzCalc"></div>`;
-    } else if (passo === 3) {
+    } else if (passo === 4) {
       const tm = c.tipo_midia || 'hibrida', ok = cad.filter(x => tm === 'paga' ? pago(x.codigo) : tm === 'organica' ? !pago(x.codigo) : true);
       if (!sel) { sel = new Set(canais.map(x => x.canal)); canais.forEach(x => linhas[x.canal] = { pct: c.orcamento_total && x.orcamento != null ? Math.round(x.orcamento / c.orcamento_total * 1000) / 10 : '', leads: x.meta_leads ?? '' }); }
       corpo = `<p class="lead">Escolha os canais e divida o orçamento e a meta de leads. A meta por dia é sugerida pelo período (${dias()} dias${c.modelo === 'perpetuo' ? ', por mês' : ''}).</p>
       <div class="cn">${ok.map(x => `<span data-cn="${esc(x.codigo)}" class="${sel.has(x.codigo) ? 'on' : ''}" role="button" tabindex="0">${esc(x.nome)}</span>`).join('')}<span class="novo" id="wzNovoCanal" role="button" tabindex="0">＋ Novo canal</span></div>
       <div id="wzTab"></div>`;
     }
-    if (passo === 4) { if (!wzCpq) { corpo = '<p class="lead">Carregando as pesquisas…</p>'; cpqDados().then(d => { wzCpq = d; tela(); }).catch(e => toast(e.message || String(e), true)); }
+    if (passo === 5) { if (!wzCpq) { corpo = '<p class="lead">Carregando as pesquisas…</p>'; cpqDados().then(d => { wzCpq = d; tela(); }).catch(e => toast(e.message || String(e), true)); }
       else corpo = '<p class="lead">Se a campanha vai ter pesquisa, escolha qual e onde ela entra. Dá para mudar depois, na aba Planejamento e metas.</p>' + cpqCampos(cpqCfg(c), wzCpq.pesqs, wzCpq.etapas) + txMarkup(c?.extras?.mensagem_cadastro, canaisTx, 'cadastro'); }
-    root.innerHTML = `<div class="ov"><div class="modal wz" role="dialog" aria-label="Nova campanha"><div class="wzh"><h2>${c && passo > 1 ? esc(c.nome) : 'Nova campanha'}</h2><div class="wzp">${passos}</div></div>
+    root.innerHTML = `<div class="ov"><div class="modal wz${passo === 2 ? ' wzl' : ''}" role="dialog" aria-label="Nova campanha"><div class="wzh"><h2>${c && passo > 1 ? esc(c.nome) : 'Nova campanha'}</h2><div class="wzp">${passos}</div></div>
       <form><div class="wzb">${corpo}</div><div class="wzf">${passo > 1 ? '<button type="button" class="btn" data-w="volta">Voltar</button>' : '<button type="button" class="btn" data-w="x">Cancelar</button>'}<span class="sp"></span>
-      ${c ? '<span class="salvo">✓ Rascunho salvo</span>' : ''}${c ? '<button type="button" class="btn" data-w="depois">Terminar depois</button>' : ''}<button type="submit" class="btn pri">${passo < 4 ? 'Salvar e continuar' : 'Concluir e abrir a campanha'}</button></div></form></div></div>`;
+      ${c ? '<span class="salvo">✓ Rascunho salvo</span>' : ''}${c ? '<button type="button" class="btn" data-w="depois">Terminar depois</button>' : ''}<button type="submit" class="btn pri">${passo < 5 ? 'Salvar e continuar' : 'Concluir e abrir a campanha'}</button></div></form></div></div>`;
     const f = root.querySelector('form');
     root.querySelector('.ov').onmousedown = e => { if (e.target.classList.contains('ov')) fecha(); };
     root.querySelectorAll('[data-w]').forEach(b => b.onclick = () => act(async () => {
@@ -13960,8 +14027,8 @@ async function abrirWizard(id = null, passo = 1) {
       if (a === 'volta') { passo--; return tela(); }
       if (a === 'depois') { await salvar(f); abreCampanha(); }
     }));
-    f.onsubmit = e => { e.preventDefault(); act(async () => { const btn = f.querySelector('.pri'); btn.disabled = true; try { await salvar(f); } finally { btn.disabled = false; } if (passo < 4) { passo++; tela(); } else abreCampanha(); }); };
-    if (passo === 4) {
+    f.onsubmit = e => { e.preventDefault(); act(async () => { const btn = f.querySelector('.pri'); btn.disabled = true; try { await salvar(f); } finally { btn.disabled = false; } if (passo < 5) { passo++; tela(); } else abreCampanha(); }); };
+    if (passo === 5) {
       cpqLiga(f);
       const submit = f.querySelector('.pri'); submit.disabled = true;
       txLiga(f, c?.extras?.mensagem_cadastro, canaisTx, 'cadastro').then(get => { txConfig = get; }).catch(err => { txConfig = () => c?.extras?.mensagem_cadastro || null; toast(err.message || String(err), true); }).finally(() => { submit.disabled = false; });
@@ -13981,15 +14048,28 @@ async function abrirWizard(id = null, passo = 1) {
           fe.insertBefore(o, fe.querySelector('option[value="__nova_est__"]')); fe.value = nf.id; fe.dataset.prev = nf.id; prevEt(); });
       });
       fe.dataset.prev = fe.value; prevEt();
-      const mo = f.querySelector('[name=modelo]'), fim = f.querySelector('.wz-fim'); const ap = () => { fim.style.display = mo.value === 'perpetuo' ? 'none' : ''; }; mo.onchange = ap; ap(); f.querySelector('[name=nome]').focus(); }
-    if (passo === 2) { const calc = () => { const g = n => { const i = f.querySelector(`[name=${n}]`); return i && i.value !== '' ? Number(i.value) : null; };
+      const mo = f.querySelector('[name=modelo]'), fim = f.querySelector('.wz-fim'); const fsB = f.querySelector('#wzFases'), ap = () => { fim.style.display = mo.value === 'perpetuo' ? 'none' : ''; fsB.style.display = mo.value === 'perpetuo' ? 'none' : ''; }; mo.onchange = ap; ap(); f.querySelector('[name=nome]').focus(); }
+    if (passo === 2 && wzH && wzH.L.length) {
+      const res = () => { const b = $('#chResumo'); if (b) b.innerHTML = chResumoHtml(wzH); };
+      $('#chQtd').onchange = ev => { wzH.qtd = Number(ev.target.value); const ids = wzH.L.slice(0, wzH.qtd).map(x => x.id); Object.keys(wzH.marks).forEach(k => { if (wzH.marks[k] !== 'media' && !ids.includes(wzH.marks[k])) delete wzH.marks[k]; }); tela(); };
+      $('#chTudoMedia').onclick = () => { CH_MET.filter(m => m.campo).forEach(m => { wzH.marks[m.k] = 'media'; }); tela(); };
+      $('#chLimpa').onclick = () => { wzH.marks = {}; tela(); };
+      f.querySelector('.ch-t').addEventListener('change', ev => { const t = ev.target; if (!t.name || !t.name.startsWith('ch_')) return; const k = t.name.slice(3); if (t.value) wzH.marks[k] = t.value; else delete wzH.marks[k];
+        f.querySelectorAll(`[name="${t.name}"]`).forEach(i => i.closest('.ch-op').classList.toggle('on', i.checked && !!i.value)); res(); });
+      f.querySelectorAll('[data-chdet]').forEach(a => a.onclick = ev => { ev.preventDefault(); const id = a.dataset.chdet; wzH.det = { id, canais: null }; tela();
+        q(sb.rpc('campanha_canais_resultado', { p_campanha: id })).then(r => { if (wzH.det && wzH.det.id === id) { wzH.det.canais = r || []; tela(); } }).catch(() => { if (wzH.det && wzH.det.id === id) { wzH.det.canais = []; tela(); } }); });
+      if ($('#chFechaDet')) { $('#chFechaDet').onclick = () => { wzH.det = null; tela(); };
+        $('#chAbreCamp').onclick = () => act(async () => { const id = wzH.det.id; await salvar(f); fecha(); S.view = 'mkt-camp'; S.tabMkt = 'campanhas'; S.campSel = id; S.campTab = 'resumo'; render(); }); }
+      res(); }
+    if (passo === 3) { const calc = () => { const g = n => { const i = f.querySelector(`[name=${n}]`); return i && i.value !== '' ? Number(i.value) : null; };
         const orc = g('orcamento_total'), ld = g('meta_leads') ?? g('meta_leads_mes'), vd = g('meta_vendas'), pr = (prods.find(p => p.id === c.produto_id) || {}).preco;
         const it = []; if (orc && ld) it.push(['CPL que cabe no orçamento', brl(orc / ld)]); if (ld && vd) it.push(['conversão lead → venda', (vd / ld * 100).toFixed(1).replace('.', ',') + '%']);
+        { const eh = ((c.extras || {}).referencia_planejamento || {}).escolhas || [], z = eh.find(y => y.k === 'cpl' && y.campo); if (z && orc && ld && Math.abs(orc / ld - z.valor) / z.valor > .01) it.push(['CPL escolhido no histórico (o orçamento e os leads dão o valor acima)', brl(z.valor)]); }
         if (orc && vd) it.push(['CAC de mídia previsto', brl(orc / vd)]); if (vd && pr) it.push([`receita prevista (${num(vd)} × ${brl(pr)})`, brl(vd * pr), 'vpos']);
         const cm = g('meta_cac'); if (cm && orc && vd && orc / vd > cm) it.push(['acima do CAC máximo aceito', brl(orc / vd), 'vneg']);
         $('#wzCalc').innerHTML = it.length ? it.map(([t, v, cl]) => `<span><b class="${cl || ''}">${v}</b>${t}</span>`).join('') : '<span>Preencha orçamento e metas para ver o CPL, a conversão e o CAC previstos.</span>'; };
       f.oninput = calc; calc(); }
-    if (passo === 3) { const tab = () => {
+    if (passo === 4) { const tab = () => {
         const L = [...sel], orc = Number(c.orcamento_total || 0), meta = Number((c.modelo === 'perpetuo' ? c.meta_leads_mes : c.meta_leads) || 0), D = dias();
         const tp = L.reduce((s, k) => s + Number((linhas[k] || {}).pct || 0), 0), tl = L.reduce((s, k) => s + Number((linhas[k] || {}).leads || 0), 0);
         $('#wzTab').innerHTML = L.length ? `<div class="tw"><table><thead><tr><th>Canal</th><th class="n">% do orçamento</th><th class="n">Orçamento</th><th class="n">Meta de leads</th><th class="n">Leads por dia</th></tr></thead><tbody>
@@ -14018,6 +14098,8 @@ async function abrirWizard(id = null, passo = 1) {
       if (v.modelo === 'perpetuo') { v.data_fim = null; v.data_carrinho_abre = null; v.data_carrinho_fecha = null; }
       else if (!v.data_fim) throw new Error('Informe a data de fim do lançamento. Para uma campanha sem fim, escolha o modelo Perpétuo.');
       if (v.data_fim && v.data_fim < v.data_inicio) throw new Error('O fim não pode ser antes do início.');
+      if (v.modelo !== 'perpetuo') { const fz = {}; EST_FASES.forEach(([k, l]) => { const a = val('fase_' + k + '_ini'), b = val('fase_' + k + '_fim'); if (a && b && b < a) throw new Error('Em ' + l + ', o fim vem antes do início.'); if (a || b) fz[k] = { ini: a, fim: b }; }); v.fases = fz;
+        v.data_carrinho_abre = val('data_carrinho_abre'); v.data_carrinho_fecha = val('data_carrinho_fecha'); if (v.data_carrinho_abre && v.data_carrinho_fecha && v.data_carrinho_fecha < v.data_carrinho_abre) throw new Error('O fechamento do carrinho vem antes da abertura.'); }
       const trocouEst = !c || c.funil_id !== v.funil_id;
       if (c) await q(sb.from('campanhas').update(v).eq('id', c.id));
       else {
@@ -14028,11 +14110,21 @@ async function abrirWizard(id = null, passo = 1) {
       c = (await q(sb.from('campanhas').select('*').eq('id', c ? c.id : v.id)))[0];
       if (trocouEst && c.funil_id) { try { await q(sb.rpc('campanha_aplicar_estrategia', { p_campanha: c.id, p_funil: c.funil_id, p_substituir: false })); } catch (e) { toast('Campanha salva, mas as etapas da estratégia não foram copiadas: ' + (e.message || e), true); } }
     } else if (passo === 2) {
-      const v = {}; ['orcamento_total', 'meta_vendas', 'meta_leads', 'meta_leads_mes', 'meta_cac'].forEach(n => { const x = val(n); if (x !== undefined) v[n] = x; });
-      const ld = v.meta_leads ?? v.meta_leads_mes; if (v.orcamento_total && ld) v.meta_cpl = Math.round(v.orcamento_total / ld * 100) / 100;
-      if (v.meta_vendas && v.meta_leads) v.meta_taxa_lead_venda = Math.round(v.meta_vendas / v.meta_leads * 10000) / 100;
-      await q(sb.from('campanhas').update(v).eq('id', c.id)); c = { ...c, ...v };
+      if (!wzH) return;
+      const E = chEscolhas(wzH), js = JSON.stringify(E); if (js === wzH.antes) return; // sem mudança: não mexe nas metas nem repete a memória
+      const ex = { ...((one(await q(sb.from('campanhas').select('extras').eq('id', c.id))) || {}).extras || {}) }, ant = ex.referencia_planejamento, { historico = [], ...antSem } = ant || {}, up = {}, antes = {}, por = k => (E.find(z => z.k === k) || {}).valor ?? null;
+      E.filter(z => z.campo).forEach(z => { up[z.campo] = z.valor; antes[z.campo] = c[z.campo] ?? null; });
+      ex.referencia_planejamento = { em: new Date().toISOString(), por: (S.user && S.user.email) || '', qtd: wzH.qtd, escolhas: E, valores: { cpl: por('cpl'), cac: por('cac'), conv: por('conv') }, metas_antes: antes,
+        campanhas: wzH.L.slice(0, wzH.qtd).map(x => ({ id: x.id, nome: x.nome, data_fim: x.data_fim || null, investimento: chN(x, 'investimento'), leads: chN(x, 'leads'), qualificados: chN(x, 'qualificados'), vendas: chN(x, 'vendas'), clientes: chN(x, 'clientes'), receita_bruta: chN(x, 'receita_bruta') })), historico: (ant ? [...historico, antSem] : []).slice(-10) };
+      await q(sb.from('campanhas').update({ ...up, extras: ex }).eq('id', c.id)); c = { ...c, ...up, extras: ex }; wzH.antes = js;
     } else if (passo === 3) {
+      const v = {}; ['orcamento_total', 'meta_vendas', 'meta_leads', 'meta_leads_mes', 'meta_cac'].forEach(n => { const x = val(n); if (x !== undefined) v[n] = x; });
+      const ld = v.meta_leads ?? v.meta_leads_mes, esc_ = ((c.extras || {}).referencia_planejamento || {}).escolhas || [], veio = k => esc_.some(z => z.k === k && z.campo);
+      // o CPL e a conversão escolhidos no histórico não são sobrescritos pela conta deste passo
+      if (v.orcamento_total && ld && !veio('cpl')) v.meta_cpl = Math.round(v.orcamento_total / ld * 100) / 100;
+      if (v.meta_vendas && v.meta_leads && !veio('conv')) v.meta_taxa_lead_venda = Math.round(v.meta_vendas / v.meta_leads * 10000) / 100;
+      await q(sb.from('campanhas').update(v).eq('id', c.id)); c = { ...c, ...v };
+    } else if (passo === 4) {
       const orc = Number(c.orcamento_total || 0), meta = Number((c.modelo === 'perpetuo' ? c.meta_leads_mes : c.meta_leads) || 0);
       const ja = (await q(sb.from('campanha_canais').select('utm_campaign').eq('workspace_id', w).limit(5000))).map(x => x.utm_campaign);
       for (const k of sel) {
@@ -14044,7 +14136,7 @@ async function abrirWizard(id = null, passo = 1) {
           await q(sb.from('campanha_canais').insert({ ...v, workspace_id: w, campanha_id: c.id, canal: k, utm_campaign: t, tipo: pago(k) ? 'pago' : 'organico' })); }
       }
       canais = await q(sb.from('campanha_canais').select('*').eq('campanha_id', c.id));
-    } else if (passo === 4) {
+    } else if (passo === 5) {
       if (f.querySelector('[data-cpq]')) await cpqSalva(f, c);
       const extras = txSalvarExtras(c.extras, 'mensagem_cadastro', txConfig());
       await q(sb.from('campanhas').update({ extras }).eq('id', c.id)); c.extras = extras;
@@ -14059,7 +14151,7 @@ async function campRascunho(m, c, nProj) {
   const nCan = (await q(sb.from('campanha_canais').select('id').eq('campanha_id', c.id))).length;
   const metas = !!(c.orcamento_total && (c.meta_leads || c.meta_leads_mes));
   const itens = [['O básico', !!(c.nome && c.produto_id && c.data_inicio)], ['Orçamento e metas', metas], ['Canais e metas por canal', nCan > 0], ['Projeto da equipe', nProj > 0]];
-  const passo = !metas ? 2 : !nCan ? 3 : 0, falta = itens.filter(x => !x[1]).length;
+  const passo = !metas ? 3 : !nCan ? 4 : 0, falta = itens.filter(x => !x[1]).length;
   const d = document.createElement('div'); d.className = 'rasc';
   d.innerHTML = `<span class="pill warn">Rascunho</span><div class="tx"><b>${falta ? 'Falta pouco para essa campanha ficar pronta' : 'Tudo pronto. Quando quiser, ative a campanha.'}</b>
     <ul>${itens.map(([t, ok]) => `<li class="${ok ? 'f' : 'p'}">${t}</li>`).join('')}</ul></div>

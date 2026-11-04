@@ -1,3 +1,8 @@
+## v0.247
+- index.html: `CH_MET`, `chValor`, `chMedia`, `chEscolhas`, `chGraficos`, `chDetalheHtml`, `chPassoHtml`, `chResumoHtml`, `campHistComparaveis`. `abrirWizard` passa a ter 5 passos (`WZ_ETAPAS`), com as datas das etapas no passo 1. `campRascunho` aponta para os passos novos. Rótulo da tela para 0.247.
+- Sem migração.
+- Teste novo `t247_assistente_referencias.py`.
+
 ## v0.246
 - index.html: `campHistMedias`, `campHistCoerencia`, `campHistoricoPainel`, chamada em `tcResumo` (`#campHist`). Rótulo da tela de 0.177 para 0.246.
 - Sem migração.

@@ -1,3 +1,11 @@
+## v0.247
+- **Datas no assistente:** só no lançamento e opcionais. O fim da etapa não pode vir antes do início, nem o fechamento do carrinho antes da abertura.
+- **Levar para as metas:** só CPL, CAC e conversão, com a média ou uma campanha da lista. Investido, leads, clientes, receita e ROAS são consulta.
+- **Médias:** investido, leads, clientes e receita, simples por campanha; CPL, CAC, conversão e ROAS, ponderadas pelos volumes reais.
+- **Mudar a quantidade de campanhas** solta a marca que apontava para uma campanha que saiu da lista.
+- **Seguir sem mudar nada** não altera as metas nem cria outro registro na memória.
+- **Passo de orçamento:** o CPL e a conversão vindos do histórico não são recalculados. Sem escolha, seguem sendo calculados pelo orçamento e pelas metas.
+
 ## v0.246
 - **Campanhas comparáveis:** mesma empresa, mesmo produto e mesmo modelo, status `finalizada`, com leads ou investimento; as 3 mais recentes pela data de fim (ou de início). A campanha aberta fica de fora.
 - **Médias ponderadas:** CPL = investimento ÷ leads; CAC = investimento ÷ clientes; ROAS = receita ÷ investimento, só com as campanhas com investimento lançado. Conversão = vendas ÷ leads, com as campanhas com leads.
