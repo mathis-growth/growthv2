@@ -1,3 +1,29 @@
+## v0.251
+- `v_pessoas_saiu`: pessoas com aluno e nenhum aluno ativo.
+- `v_marketing_campanha`: `investimento` (anúncios ou, sem eles, lançamentos), `cac` (÷ vendas), `roas` (receita ÷ investimento) e colunas novas `receita`, `receita_saiu`, `receita_antes_churn`, `pessoas_saiu`.
+- `v_marketing_canal`: `investimento` e `cac` na mesma regra; colunas novas `receita` e `roas`.
+- `funil_analise.pos` e cada campanha: `receita` sem o churn e `receita_antes_churn`. `funil_cohorts`: `vendas`.
+
+## v0.250
+- `funil_analise`: `vendas` em cada campanha e em `pos`.
+- Storage: local público `avatares` (2 MB; JPG, PNG e WebP), arquivo `<id do usuário>/foto.jpg`. O endereço fica em `user_metadata.foto_url` da conta.
+
+## v0.249
+- `campanhas.extras.referencia_planejamento` ganha `filtro` (`ultimas` ou `periodo`), `ini`, `fim` e `aceites: [{papel, valor, fonte}]`.
+- O aceite levado grava `campanha_ofertas.taxa_aceite` (fração de 0 a 1) nas ofertas daquele tipo.
+- `campanhas.data_carrinho_abre` e `data_carrinho_fecha` podem ser usadas também no perpétuo.
+
+## v0.248
+- `campanhas.fases` aceita também `reabertura` e `downsell` (`{ini, fim}`; `fim` nulo = em aberto).
+- `campanhas.extras.cenarios`: `{base, pessimista, otimista, mexido, atualizado_em}`, cada cenário com `I` (investimento), `p` (CPL), `L` (leads), `c` (conversão %), `V` (vendas), `a` (CAC), `t` (ticket), `rec` e `roas`.
+
+## v0.247
+- `campanhas.extras.referencia_planejamento` ganha `qtd` e `escolhas: [{k, l, un, valor, fonte, fonte_id, campo}]` (`fonte_id` = `media` ou o id da campanha). `metas_antes` passa a usar o nome do campo da meta nas escolhas feitas pelo assistente.
+- As datas do assistente usam `campanhas.fases`, `data_carrinho_abre` e `data_carrinho_fecha`, que já existiam.
+
+## v0.246
+- `campanhas.extras.referencia_planejamento` (sem mudança de estrutura): `{em, por, valores: {cpl, cac, conv}, metas_antes: {cpl, cac, conv}, campanhas: [{id, nome, data_fim, investimento, leads, vendas, clientes, receita_bruta}], historico: [até 10 anteriores]}`.
+
 ## v0.245
 - `equipe.avisar_resposta` (padrão sim).
 - Gatilho adiado `pesquisa_respostas_aviso_t` (`resposta_formulario_avisar`): roda no fim da gravação da resposta, depois da pontuação, e usa `equipe_avisa`.

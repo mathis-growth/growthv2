@@ -1,3 +1,57 @@
+## v0.251
+- **Investimento de mídia:** anúncios da campanha ou do canal. Se a campanha nunca teve gasto em anúncio, valem as contas a pagar (menos as canceladas) e os custos lançados nela. As duas fontes nunca somam, porque costumam ser o mesmo gasto.
+- **CAC de mídia:** investimento ÷ vendas aprovadas. Na campanha, soma todos os canais; no canal, usa as vendas atribuídas a ele. Order bump e upsell contam como venda.
+- **CAC total (negócio):** anúncios + equipe de marketing e vendas ÷ clientes novos do período. Não mudou.
+- **ROI (negócio):** (receita − custos totais) ÷ custos totais. Fica fora do marketing. Não mudou.
+- **Receita de marketing:** valor líquido das vendas aprovadas, tirando todo o valor das vendas de quem saiu. Saiu = a pessoa tem aluno e nenhum ativo; quem tem outro aluno ativo continua contando.
+- **ROAS:** receita de marketing ÷ investimento de mídia.
+- **Ticket médio:** receita antes do churn ÷ vendas.
+- **Financeiro:** não usa a receita de marketing. Por isso, as duas receitas são diferentes de propósito.
+- **Mídia paga:** o CAC dos anúncios usa as vendas informadas nos anúncios.
+
+## v0.250
+- **Fase:** Finalizada pelo status. Em vendas quando há venda, o carrinho abriu, a fase de conversão começou ou é perpétuo sem data de carrinho. Aquecimento depois do início dele. Nos outros casos, Captação.
+- **ROAS** é receita ÷ investimento. **CAC** é investimento ÷ clientes. **Ticket médio** é receita ÷ vendas.
+- **ROI** não aparece no marketing; fica nos números do negócio.
+- **Luzinha:** volumes comparam com a meta × parte do período que já passou (leads pela aquisição, vendas e receita pelo carrinho, quando têm data). Custos e taxas comparam com o valor. Até 5% de diferença é "no planejado". Investimento acima do orçamento é vermelho; abaixo não ganha destaque. Antes de o período começar, não acende.
+
+## v0.249
+- **Oferta no assistente:** a principal é obrigatória e define o ticket dos cenários. Order bump parte da principal; downsell parte da principal com a condição "recusou"; as outras mantêm a etapa anterior que já tinham na aba Ofertas.
+- **Vendas por oferta:** seguem a regra da aba Ofertas: são as vendas aprovadas (e contratos) do produto da oferta, dentro da campanha. Por isso cada oferta precisa de um produto próprio.
+- **Aceite médio no histórico:** vendas da oferta ÷ quem recebeu, somando as campanhas do filtro.
+- **Filtro por período:** usa a data de fim da campanha finalizada (ou a de início, quando não há fim). Uma campanha conta inteira, sem recortar os números pelo período.
+- **Datas das etapas:** opcionais em qualquer campanha. Desmarcar "Vai usar datas de etapas" limpa aquisição, aquecimento, reabertura, downsell e carrinho; conversão e retenção da aba Estratégia e etapas ficam como estão.
+- **Limite conhecido:** `v_marketing_campanha` conta todas as vendas aprovadas da campanha. Order bump ou upsell registrado como venda separada entra nas vendas, na conversão e no ticket da campanha, e também pesa no CAC e no ROAS quando há comprador novo ou receita adicional.
+
+## v0.248
+- **Datas das etapas:** passo só do lançamento. Reabertura e downsell são opcionais; marcados, pedem o início, e o fim pode ficar em branco.
+- **Cenários:** o Base vira as metas da campanha (orçamento, CPL, conversão, CAC, leads, vendas e receita). No perpétuo, os valores são por mês e só orçamento, leads por mês, CPL, conversão e CAC viram meta.
+- **Recálculo:**
+  - investimento: leads pelo CPL, vendas pela conversão, CAC = investimento ÷ vendas;
+  - CPL: leads e, com eles, vendas e CAC;
+  - leads: CPL, vendas e CAC;
+  - conversão: vendas e CAC;
+  - vendas: conversão e CAC;
+  - CAC: vendas pelo investimento e leads pela conversão.
+- **Quando CPL, conversão e CAC vêm marcados juntos**, o CAC é recalculado a partir dos outros dois ao preencher o investimento; o valor marcado continua indicado na linha.
+- **Pessimista e otimista:** CPL e conversão 20% piores ou melhores que o Base, com o mesmo investimento, até serem mexidos à mão.
+
+## v0.247
+- **Datas no assistente:** só no lançamento e opcionais. O fim da etapa não pode vir antes do início, nem o fechamento do carrinho antes da abertura.
+- **Levar para as metas:** só CPL, CAC e conversão, com a média ou uma campanha da lista. Investido, leads, clientes, receita e ROAS são consulta.
+- **Médias:** investido, leads, clientes e receita, simples por campanha; CPL, CAC, conversão e ROAS, ponderadas pelos volumes reais.
+- **Mudar a quantidade de campanhas** solta a marca que apontava para uma campanha que saiu da lista.
+- **Seguir sem mudar nada** não altera as metas nem cria outro registro na memória.
+- **Passo de orçamento:** o CPL e a conversão vindos do histórico não são recalculados. Sem escolha, seguem sendo calculados pelo orçamento e pelas metas.
+
+## v0.246
+- **Campanhas comparáveis:** mesma empresa, mesmo produto e mesmo modelo, status `finalizada`, com leads ou investimento; as 3 mais recentes pela data de fim (ou de início). A campanha aberta fica de fora.
+- **Médias ponderadas:** CPL = investimento ÷ leads; CAC = investimento ÷ clientes; ROAS = receita ÷ investimento, só com as campanhas com investimento lançado. Conversão = vendas ÷ leads, com as campanhas com leads.
+- **Aviso de poucos dados:** menos de 3 campanhas com investimento e leads.
+- **Aviso de coerência:** CPL ÷ conversão difere do CAC médio em mais de 5%.
+- **Aplicar:** só com confirmação; muda `meta_cpl`, `meta_cac` e `meta_taxa_lead_venda`. O ROAS é só consulta, pois a campanha não tem meta de ROAS.
+- **Limite:** o perpétuo só entra se estiver finalizado.
+
 ## v0.245
 - **Formulário respondido:** toda resposta (lead, cliente, aluno, diagnóstico) avisa a equipe ativa com a opção ligada, nos canais de cada um. Título "<nome> respondeu o formulário"; sem cadastro, usa o e-mail. Na qualificação, a mensagem traz a pontuação e as faixas; quem foi eliminado aparece como "fora do perfil".
 

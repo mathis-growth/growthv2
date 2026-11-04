@@ -72,3 +72,6 @@ Mesmo jeito da v0.163: `node pglite_run.mjs <pasta do repositório> canvas_s1_s3
   - políticas.
 
 Conferido em 30/10/2026.
+
+## v0.251 — CAC de mídia, ROAS e receita (PGlite)
+`v0251_cac_roas_cenarios.sql` termina com "v0251: tudo OK". Testa: anúncios sem somar contas a pagar; sem anúncio, os lançamentos; CAC por vendas; receita sem quem saiu; quem tem aluno ativo não saiu; campanha, canal, dashboard, coortes, gráfico, vendas por canal, métricas do Growth e árvore de detalhes. Conferido em 03/11/2026.

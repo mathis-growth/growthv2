@@ -1,3 +1,37 @@
+## v0.251
+- Migração `20270106100000_v0251_cac_roas_receita.sql`:
+  - novas: `v_pessoas_saiu`, `campanha_tem_anuncio`, `_arv_mkt_norm`;
+  - `v_marketing_campanha` e `v_marketing_canal` refeitas, com colunas novas no fim (`receita`, `receita_saiu`, `receita_antes_churn`, `pessoas_saiu`; no canal, `receita` e `roas`). `receita_bruta` continua existindo;
+  - trocas de texto em `funil_analise`, `funil_cohorts`, `vendas_por_canal`, `_meta_realizado`, `campanha_detalhe`, `growth_metricas_auto`, `campanha_series`, `arvore_no` e `_arv_extra2`;
+  - fórmulas do catálogo em `metricas_definicoes`.
+- index.html: as telas de campanha leem `receita` no lugar de `receita_bruta`; CAC por vendas em `razoes`, `cpZ`, `campHistMedias`, `CH_MET` e no detalhe da campanha. Rótulo da tela para 0.251.
+- Teste novo de banco `v0251_cac_roas_cenarios.sql`.
+
+## v0.250
+- Migração `20270105100000_v0250_ticket_e_foto.sql`: `funil_analise` devolve `vendas` (troca de texto, com erro se o trecho não for encontrado); local `avatares` com políticas por pasta do usuário.
+- index.html: `campFase`, `campFaseHtml`, `campRitmo`, `metaLuz`, `luzHtml`, `olaPeriodo`, `olaNome`, `topoAtualiza`, `fotoReduz`. Topo novo em `.mainw` e `#topoU`; `#sair` e `#who` passam para o menu da conta. Rótulo da tela para 0.250.
+- Teste novo `t250_fase_luz_topo.py`.
+
+## v0.249
+- index.html: `ofPassoHtml`, `chLista`, `chQuando`, `chOfertasDe`, `chOfResumo`, `chAceites`, `chLinha`, `chOfertasHtml`, `cenOfertaRec`, `cenTotal`. `abrirWizard` com 7 passos, sem o passo condicional, e `wzCarrega` para o histórico e as ofertas. A edição da campanha deixa de apagar o carrinho no perpétuo. Rótulo da tela para 0.249.
+- Sem migração.
+- Teste novo `t249_assistente_oferta.py`, no lugar de `t247_assistente_referencias.py`.
+
+## v0.248
+- index.html: `LANC_EXTRAS`, `CEN_LIN`, `CEN_TIPOS`, `cenFecha`, `cenSolve`, `cenDeriva`, `cenInicial`, `cenHtml`. `abrirWizard` com 6 passos (o 2 só no lançamento, com `numPassos` e `semDatas`). `campRascunho` aponta para os passos novos. "Datas das fases" preserva o que não está na tela. Rótulo da tela para 0.248.
+- Sem migração.
+- Teste `t247_assistente_referencias.py` ampliado.
+
+## v0.247
+- index.html: `CH_MET`, `chValor`, `chMedia`, `chEscolhas`, `chGraficos`, `chDetalheHtml`, `chPassoHtml`, `chResumoHtml`, `campHistComparaveis`. `abrirWizard` passa a ter 5 passos (`WZ_ETAPAS`), com as datas das etapas no passo 1. `campRascunho` aponta para os passos novos. Rótulo da tela para 0.247.
+- Sem migração.
+- Teste novo `t247_assistente_referencias.py`.
+
+## v0.246
+- index.html: `campHistMedias`, `campHistCoerencia`, `campHistoricoPainel`, chamada em `tcResumo` (`#campHist`). Rótulo da tela de 0.177 para 0.246.
+- Sem migração.
+- Teste novo `t246_campanha_historico.py`.
+
 ## v0.245
 - `aplica245.py`: `ehAvisoLead` reconhece "… respondeu o formulário" (faixa verde); campo `avisar_resposta` na Equipe (some se a coluna não existir).
 - Migração `20261231200000_resposta_formulario_aviso.sql` = `RODAR_v0.245_resposta_formulario_aviso.sql` (nome escolhido para ficar antes da `20270101100000` do Rogério).

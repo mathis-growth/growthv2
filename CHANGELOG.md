@@ -1,3 +1,73 @@
+## v0.251 — Uma conta só para CAC de mídia, ROAS e receita (03/11/2026)
+- **Investimento de mídia:** anúncios da campanha ou do canal. Sem anúncio conectado, as contas a pagar e os custos lançados, sem somar as duas fontes.
+- **CAC de mídia:** investimento ÷ vendas, na campanha e no canal. Order bump e upsell contam como venda.
+- **Receita de marketing:** valor líquido das vendas aprovadas, sem as vendas de quem saiu (a pessoa tem aluno e nenhum ativo). Os cards mostram quantas pessoas saíram e quanto saiu da conta.
+- **ROAS:** receita de marketing ÷ investimento, nas telas de campanha, canal, Dashboard de marketing, coortes, metas, vendas por canal e detalhes.
+- **Ticket médio:** receita antes do churn ÷ vendas.
+- **Não mudam:** CAC total (por cliente novo no período), ROI e as telas financeiras, que continuam com o dinheiro que entrou de verdade. O simulador do Growth Model também não muda.
+- Banco: `20270106100000_v0251_cac_roas_receita.sql`. Testes: banco `v0251_cac_roas_cenarios.sql` (OK); tela `t246`, `t249` e `t250` (0 falhas).
+
+## v0.250 — Fase da campanha, luzinha de meta, foto e saudação (03/11/2026)
+- **Fase da campanha:** Captação, Aquecimento, Em vendas ou Finalizada, a partir das datas e das vendas. Antes das vendas, as telas mostram leads, investimento e CPL; ROAS, CAC e receita aparecem quando as vendas começam.
+- **Dashboard de marketing:**
+  - saem o ROI e o LTV. O ROI fica para os números do negócio;
+  - entra o **Ticket médio** (receita ÷ vendas);
+  - o churn mostra quantas pessoas: "22 saíram de 344 alunos · 322 ativos";
+  - nas coortes, "LTV" vira "Receita por cliente"; saem ROI e LTV ÷ CAC.
+- **Luzinha de meta × planejado** em Planejamento e metas e no Dashboard da campanha: vermelho (pior que o planejado), verde (até 5% de diferença) e azul com brilho (melhor, a caminho do cenário ótimo). Leads, vendas e receita comparam com o ritmo do período; custos e taxas, com o valor.
+- **Foto e menu da conta:** foto no canto superior direito, com trocar foto, tirar foto e Sair. Sem foto, aparece a inicial.
+- **Saudação pelo horário:** "Bom dia, Rebecka", com uma frase.
+- **Assistente:** o downsell novo parte da recusa do upsell, quando houver, e assim o aceite dele é calculado.
+- Banco: `20270105100000_v0250_ticket_e_foto.sql` (vendas em `funil_analise` e local `avatares`). Teste: `t250_fase_luz_topo.py` (46 verificações, 0 falhas).
+- **Ainda não muda:** a definição única de ROAS e a receita sem o churn dependem de duas decisões.
+
+## v0.249 — Assistente da campanha: oferta, período e gráficos de linha (03/11/2026)
+- **Passo novo "Oferta"**, logo depois de O básico (o assistente passa a ter 7 passos): oferta principal e, se quiser, order bump, upsell e downsell. Grava na mesma esteira da aba Ofertas. O histórico mostra, em cada oferta, em quantas campanhas ela apareceu e o aceite médio.
+- **Datas das etapas em qualquer campanha:** "Vai usar datas de etapas". No perpétuo, o passo existe e começa desligado.
+- **Histórico e referências:**
+  - filtro "Últimas" ou "Por período": traz as campanhas finalizadas do período, com a média embaixo;
+  - **gráficos de linha** de CPL, CAC e conversão, da mais antiga para a mais recente, com a escala acompanhando os valores;
+  - etiqueta embaixo do nome da campanha que teve order bump, upsell ou downsell;
+  - bloco único "Ver order bump, upsell e downsell": abre o resumo por tipo, os detalhes e "Levar o aceite médio para os cenários";
+  - o detalhe da campanha mostra as ofertas dela.
+- **Orçamento e cenários:** ticket vindo da oferta principal; receita de cada oferta adicional (vendas × aceite × preço), receita total e ROAS sobre o total. O aceite levado vira a premissa da oferta na aba Ofertas.
+- Banco: sem migração (`campanha_ofertas`, `campanha_ofertas_resultado`, `campanhas.fases`, `campanhas.extras`). Teste: `t249_assistente_oferta.py` (60 verificações, 0 falhas), no lugar de `t247_assistente_referencias.py`.
+
+## v0.248 — Assistente da campanha: passo de datas e três cenários (03/11/2026)
+- **Passo próprio "Datas das etapas"**, depois de O básico, só no lançamento: Aquisição, Aquecimento, Carrinho aberto e, se marcar, Reabertura e Downsell, que podem ficar sem data de fim. O assistente passa a ter 6 passos; no perpétuo, são 5.
+- **Histórico e referências:** gráficos dentro de uma linha fina; sem a linha "Não levar" (clicar de novo desmarca).
+- **"Orçamento e cenários"** no lugar de "Orçamento e metas":
+  - colunas Pessimista, Base e Otimista, com investimento, CPL, leads, conversão, vendas, CAC e ticket editáveis, mais receita e ROAS previstos;
+  - o Base traz o que foi marcado no histórico e vira a meta da campanha;
+  - mudar uma métrica recalcula as outras;
+  - pessimista e otimista partem do Base, com CPL e conversão 20% piores ou melhores; mexidos à mão, deixam de acompanhar o Base, e "Refazer a partir do Base" desfaz isso.
+- **Aba Estratégia e etapas:** "Datas das fases" mostra Reabertura e Downsell no lançamento e não apaga datas de outras etapas.
+- Banco: sem migração (`campanhas.fases` e `campanhas.extras.cenarios`). Teste: `t247_assistente_referencias.py` (69 verificações, 0 falhas).
+
+## v0.247 — Assistente da campanha: datas de cada etapa e passo de histórico (03/11/2026)
+- **Passo 1, O básico:** no lançamento, datas de início e fim de Aquisição, Aquecimento, Conversão e Retenção, mais abertura e fechamento do carrinho. São opcionais e ficam nos mesmos campos da aba Estratégia e etapas.
+- **Passo 2 novo, Histórico e referências** (o assistente passa a ter 5 passos):
+  - escolha de quantas campanhas trazer do produto e do modelo;
+  - lista com investido, leads, clientes, receita, CPL, CAC, conversão e ROAS de cada uma, mais a média;
+  - em CPL, CAC e conversão, marcar a média, uma campanha específica ou não levar;
+  - gráficos de CPL, CAC e conversão, abertos, abaixo da tabela, com a linha da média;
+  - clicar no nome da campanha abre o histórico dela (período, datas das etapas, carrinho, vendas, qualificados, ticket e canais), com o botão para abrir a campanha completa;
+  - aviso quando há menos de 3 campanhas e quando o CAC marcado não conversa com o CPL e a conversão.
+- **Passo 3, Orçamento e metas:** não sobrescreve o CPL nem a conversão escolhidos no histórico e mostra quando a conta do orçamento dá outro CPL.
+- **Memória:** `campanhas.extras.referencia_planejamento` guarda as escolhas, a origem de cada uma, as metas de antes e as campanhas usadas.
+- Banco: sem migração. Teste: `t247_assistente_referencias.py` (45 verificações, 0 falhas).
+
+## v0.246 — Histórico e referências no planejamento da campanha (03/11/2026)
+- **Campanha → Planejamento e metas:** bloco expansível "Histórico e referências", sem aba nova. Mostra até 3 campanhas finalizadas do mesmo produto e modelo, com investido, leads, clientes, receita, CPL, CAC, conversão e ROAS de cada uma.
+- **Média ponderada** pelos volumes reais, com as mesmas contas da visão consolidada. CPL, CAC e ROAS só somam campanhas com investimento lançado.
+- **Rastreabilidade:** cada campanha da lista abre com um clique.
+- **Avisos:** menos de 3 campanhas com investimento e leads; CPL ÷ conversão diferente do CAC médio em mais de 5%.
+- **"Usar as médias como metas":** mostra a meta atual e a nova e pede confirmação. Muda só CPL, CAC e conversão.
+- **Memória do planejamento:** guarda os valores, as metas de antes e as campanhas usadas, com os números daquele momento.
+- Implementação da primeira etapa combinada na conversa de reorganização da campanha; o commit local `c265120` não chegou ao GitHub.
+- Banco: sem migração (usa `v_marketing_campanha` e `campanhas.extras`). Teste: `t246_campanha_historico.py` (25 verificações, 0 falhas).
+- A versão na tela, que estava parada em 0.177, volta a acompanhar o histórico.
+
 ## v0.245 — Aviso de formulário respondido (02/11/2026)
 - **Formulário respondido:** toda resposta de formulário (lead, cliente, aluno, diagnóstico) avisa a equipe ativa, nos canais de cada um (app, e-mail, WhatsApp). Título "<nome> respondeu o formulário"; a mensagem traz o nome do formulário e, na qualificação, a pontuação e as faixas.
 - **Lead novo pelo formulário:** chegam os dois avisos (lead novo e respondeu o formulário).
