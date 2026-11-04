@@ -395,6 +395,17 @@ async function webhook(req: Request, url: URL, raw: string) {
     if (!cfg || !await segredoIgual(req.headers.get('x-atd-secret') || '', cfg.webhook_secret) || p.instance !== ch.externo_id) return json({ ok: false }, 401);
     const event = String(p.event || '').toUpperCase().replaceAll('.', '_');
     if (event === 'CONNECTION_UPDATE') await q(db.from('atd_canais').update({ status: p.data?.state === 'open' ? 'conectado' : p.data?.state === 'connecting' ? 'conectando' : 'desconectado' }).eq('id', ch.id));
+    if (event === 'GROUPS_UPSERT' || event === 'GROUPS_UPDATE') for (const rawGroup of Array.isArray(p.data) ? p.data : [p.data]) {
+      const group = unwrapGroupMeta(rawGroup);
+      const id = String(group?.remoteJid || group?.id || group?.jid || group?.groupJid || '').trim();
+      if (!id.endsWith('@g.us') || !isJid(id)) continue;
+      const name = groupName(group);
+      await q(db.rpc('atd_receber', { p_canal: ch.id,
+        p_conversa: { id, nome: name && name !== id ? name : undefined, endereco: id, grupo: true } }));
+      const kind = groupKind(group), parent = groupParent(group);
+      if (kind || parent) await q(db.from('atd_conversas').update({ grupo_tipo: kind || 'grupo', grupo_pai_externo_id: parent })
+        .eq('workspace_id', ch.workspace_id).eq('canal_id', ch.id).eq('externo_id', id));
+    }
     if (event === 'MESSAGES_UPSERT') for (const d of Array.isArray(p.data) ? p.data : [p.data]) {
       const normalized=evolutionMensagem(d), cvId=await receive(ch,normalized);
       if(normalized&&cvId&&normalized.mensagem.direcao==='recebida')
@@ -1288,7 +1299,7 @@ async function handle(req: Request, b: any) {
 async function setupWebhook(ch: any,cfg: any) {
   const root = URL_SB + '/functions/v1/atendimento?provider=' + ch.provedor;
   if (ch.provedor === 'evolution') {
-    await evolution(cfg,'/webhook/set/'+encodeURIComponent(ch.externo_id),'POST',{webhook:{enabled:true,url:root+'&channel='+ch.id,headers:{'x-atd-secret':cfg.webhook_secret},byEvents:false,base64:false,events:['MESSAGES_UPSERT','MESSAGES_UPDATE','CONNECTION_UPDATE']}});
+    await evolution(cfg,'/webhook/set/'+encodeURIComponent(ch.externo_id),'POST',{webhook:{enabled:true,url:root+'&channel='+ch.id,headers:{'x-atd-secret':cfg.webhook_secret},byEvents:false,base64:false,events:['MESSAGES_UPSERT','MESSAGES_UPDATE','CONNECTION_UPDATE','GROUPS_UPSERT','GROUPS_UPDATE']}});
   } else {
     const s = Deno.env.get('ZERNIO_ATENDIMENTO_WEBHOOK_SECRET'); if (!s) throw new Error('Configure ZERNIO_ATENDIMENTO_WEBHOOK_SECRET no servidor.');
     const current = await zernio(zp(),'/webhooks/settings');
@@ -1436,7 +1447,7 @@ async function syncConversations(ch:any,cursor?:string,mode='all'){
     }
     if(mode!=='conversas'&&mode!=='grupos_sem_nome')try{
       // fetchAllGroups pode demorar quando a instância tem histórico amplo.
-      groupRows=shape(await evolution(cfg,'/group/fetchAllGroups/'+inst+'?getParticipants=false','GET',undefined,60000));
+      groupRows=shape(await evolution(cfg,'/group/fetchAllGroups/'+inst+'?getParticipants=false','GET',undefined,120000));
       groupFetchOk=true;
     }catch(e){warnings.push('Grupos: '+evolutionFailure(e));console.warn('atendimento evolução: fetchAllGroups falhou',{canal:ch.id,causa:evolutionFailure(e)});}
     const existingGroupIds=mode==='grupos_novos'?new Set((await q(db.from('atd_conversas').select('externo_id')

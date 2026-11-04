@@ -8,6 +8,13 @@
 - **Canais:** porcentagem do orçamento, dos leads e das vendas, calculadas sobre as metas. Se a meta muda depois, os canais acompanham.
 - Banco: `20270108100000_v0253_metas_canal_e_oferta.sql`. Testes: tela `t253` (novo) e `t249` (0 falhas).
 
+## v0.253 — Descoberta resiliente de grupos Evolution (04/11/2026)
+- A consulta de grupos novos agora pode aguardar até 120 segundos antes de expirar; os logs mostraram que a Evolution excedia o limite anterior de 60 segundos.
+- Eventos `GROUPS_UPSERT` e `GROUPS_UPDATE` passam a salvar grupos novos e alterações de nome/metadados assim que a Evolution os emitir.
+- Para ativar os novos eventos, reative **Ativar recebimento** no cartão do chip após publicar a Edge.
+- O link temporário do QR usa `atd_qr_compartilhamentos` no schema `public` com acesso restrito à `service_role`.
+- Banco: `20270107120000_atendimento_qr_compartilhamentos_data_api.sql`. Edge única: `docs/edge-atendimento-v0210-index-unico.ts`.
+
 ## v0.252 — Faturamento e Receita líquida (03/11/2026)
 - **Faturamento:** valor total das vendas aprovadas, sem as vendas de quem saiu. É o número novo das campanhas, canais e coortes, e o que a meta de receita acompanha.
 - **Receita líquida:** faturamento menos taxas, impostos e comissões. Aparece ao lado do Faturamento.
