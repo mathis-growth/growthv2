@@ -6,6 +6,7 @@
 - **Não mudam:** CAC de mídia, CAC total, ROI e as telas financeiras.
 - **Cenários do assistente:** coluna mexida à mão mantém o que foi digitado e completa o que está vazio, como o custo por lead do Pessimista.
 - Banco: `20270107110000_v0252_faturamento_e_receita.sql`. Testes: banco `v0251_cac_roas_cenarios.sql` (OK); tela `t172`, `t173`, `t246`, `t249` e `t250` (0 falhas).
+
 ## v0.252 — Grupos Evolution sob demanda e descoberta periódica (04/11/2026)
 - **Atualizar nomes sem nome:** consulta apenas os JIDs já salvos que ainda não têm nome, em lotes de oito; não varre todos os grupos a cada clique.
 - **Buscar conversas** e **Buscar grupos novos** passam a ser ações separadas. A descoberta automática roda a cada 15 minutos e respeita seis horas entre tentativas por chip conectado.
