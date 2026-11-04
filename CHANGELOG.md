@@ -1,3 +1,10 @@
+## v0.258 — Campanha com mini gráficos e order bump separado (04/11/2026)
+- **Tela por etapas:** abre em todo lançamento com data de início, inclusive rascunho e campanha sem datas de carrinho, e quem entra pela lista cai nela.
+- **Topo:** número, meta e mini gráfico lado a lado. Os demais números ficam em "Mais números", e os gráficos vêm antes das tabelas.
+- **Vendas por oferta:** cada oferta e cada order bump em uma linha.
+- **Eduzz e Hubla:** fatura com order bump vira uma venda por item, com produto, valor e status próprios.
+- Banco: `20270113100000_v0258_order_bump_por_item.sql`. Testes: banco `v0258_order_bump_por_item.sql` e `v0257` (OK); tela `t256` (0 falhas).
+
 ## v0.257 — Kiwify, Eduzz e Hubla (04/11/2026)
 - **Integrações → Plataformas de venda:** cada cliente ativa só as que usa: Hotmart, Kiwify, Eduzz e Hubla.
 - **Tabelas brutas:** `kiwify_vendas_bruto`, `eduzz_vendas_bruto` e `hubla_vendas_bruto` guardam o evento inteiro. O banco trata e atualiza vendas e clientes, com a plataforma de origem.

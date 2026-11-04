@@ -31,7 +31,7 @@ SEED = {'workspaces': [{'id': W, 'nome': 'Escola Aurora', 'modo_produto': 'compl
   'v_marketing_campanha': ws([dict(campanha_id='c0', nome='Anterior', investimento=3000, leads=300, vendas=20, faturamento=18000)]),
   'campanha_canais': ws([dict(id='k1', campanha_id='c1', canal='meta_ads', temperatura='frio'), dict(id='k2', campanha_id='c1', canal='google_ads', temperatura='morno')]),
   'anuncios': ws([dict(id='a1', nome='Vídeo depoimento', utm_content='a1', campanha_canal_id='k1'), dict(id='a2', nome='Busca', utm_content='a2', campanha_canal_id='k2')]),
-  'campanha_ofertas': ws([dict(id='co1', campanha_id='c1', oferta_id='o1', nome='À vista', papel='principal', preco=1000, taxa_aceite=None), dict(id='co2', campanha_id='c1', oferta_id='o2', nome='Bump', papel='order_bump', preco=97, taxa_aceite=25)]),
+  'campanha_ofertas': ws([dict(id='co1', campanha_id='c1', oferta_id='o1', nome='À vista', papel='principal', preco=1000, taxa_aceite=None), dict(id='co2', campanha_id='c1', oferta_id='o2', nome='Bump Planilha', papel='order_bump', preco=97, taxa_aceite=25), dict(id='co3', campanha_id='c1', oferta_id='o3', nome='Bump Checklist', papel='order_bump', preco=47, taxa_aceite=10)]),
   'v_trafego_anuncio_dia': ws(traf), 'campanha_participacoes': ws(leads), 'vendas': ws(vend), 'pessoa_toques': ws(toq), 'comissoes': ws([]), 'fontes_video': ws([]), 'presencas_video': [], 'plataformas_venda': ws([dict(id='pl', nome='Hotmart', taxa_percentual=10)]), 'growth_experimentos': []}
 MOCK = open(SP + 'mockdb.js', encoding='utf-8').read()
 open(HTML, 'w', encoding='utf-8').write(s[:i] + '<script>window.__SEED=' + json.dumps(SEED) + ';</script><script>' + MOCK + '</script>' + s[j:])
@@ -59,6 +59,11 @@ with sync_playwright() as p:
     chk('NaN' not in t and 'undefined' not in t, 'etapa do dia sem número quebrado', t[:800])
     foto('et_abre')
     et('geral'); t = txt()
+    chk('meta 100' in t, 'Geral mostra a meta de leads da campanha', t[:500])
+    chk('Bump Planilha' in t and 'Bump Checklist' in t, 'cada order bump aparece em uma linha', t[:900])
+    chk(pg.locator('#ceHost').evaluate("e => e.shadowRoot.querySelector('.painel .kpis').querySelectorAll('.kpi svg.spk').length") >= 5, 'cards do topo têm mini gráfico')
+    chk(pg.locator('#ceHost').evaluate("e => e.shadowRoot.querySelector('details.mais') && !e.shadowRoot.querySelector('details.mais').open"), 'os outros números ficam em Mais números')
+    ord_ = pg.locator('#ceHost').evaluate("e => { const q = e.shadowRoot.querySelector('.painel').innerText; return [q.indexOf('Faturamento e investimento acumulados'), q.indexOf('Resultado por etapa')]; }"); chk(ord_[0] < ord_[1], 'gráficos vêm antes das tabelas', ord_)
     chk('Faturamento' in t and 'Receita líquida' in t and 'Comparar com outras campanhas' in t and 'Anterior' in t, 'Geral tem faturamento, receita líquida e comparação', t[:600])
     chk(pg.locator('#ceHost').evaluate("e => e.shadowRoot.querySelectorAll('.gf svg').length") >= 4, 'Geral desenha os gráficos')
     chk('NaN' not in t and 'undefined' not in t, 'Geral sem número quebrado', t[:800])
@@ -94,8 +99,10 @@ with sync_playwright() as p:
     chk('NaN' not in t and 'undefined' not in t, 'simulador sem número quebrado', t[:600])
     foto('et_sim')
     chk(pg.evaluate("document.querySelector('.tabs').style.display") == 'none', 'abas ficam escondidas na tela por etapas'); pg.click('#cOutras'); chk(pg.evaluate("document.querySelector('.tabs').style.display") == '' and pg.evaluate("document.querySelectorAll('[data-t]').length") > 3, 'outras visões abrem com um clique')
-    abre('c2')
-    chk(pg.locator('#ceHost').count() == 0, 'campanha sem datas das etapas continua nas abas de antes')
+    abre('c2'); t = txt()
+    chk(pg.locator('#ceHost').count() == 1 and 'Definir datas' in t and 'Carrinho' not in t.split('Geral')[1][:80], 'lançamento sem datas abre a tela e pede as datas', t[:400])
+    chk('NaN' not in t and 'undefined' not in t, 'sem datas, sem número quebrado', t[:500])
+    foto('et_sem_datas')
     chk(not errs, 'sem erro de script', errs)
     b.close()
 print('t256:', 'tudo OK' if ok else 'COM FALHAS')

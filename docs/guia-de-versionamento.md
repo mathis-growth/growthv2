@@ -1,3 +1,8 @@
+## v0.258
+- Migração `20270113100000_v0258_order_bump_por_item.sql`: funções `_pv_linhas` e `_pv_produto`; `_pv_tenta` aplica as linhas juntas; `_pv_bruto_tratar` aponta o produto que falta ligar.
+- index.html: `spk`, `acc`, `tbOfertas` no componente `CampEtapas`; `ceElegivel` vale para todo lançamento com data de início; aberturas pela lista vão para a aba `visao`. Rótulo da tela para 0.258.
+- Testes novos: banco `v0258_order_bump_por_item.sql`.
+
 ## v0.257
 - Migração `20270112100000_v0257_kiwify_eduzz_hubla.sql`: tabelas `kiwify_vendas_bruto`, `eduzz_vendas_bruto`, `hubla_vendas_bruto`; coluna `plataforma_webhooks.segredo_hmac`; funções `_pv_*` e `plataforma_*`.
 - Função nova: `supabase/functions/vendas-plataforma`. Publicar sem verificação de JWT.

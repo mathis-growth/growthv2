@@ -90,3 +90,6 @@ Conferido em 30/10/2026.
 
 ## v0.257 — Kiwify, Eduzz e Hubla (PGlite)
 `v0257_kiwify_eduzz_hubla.sql` termina com "v0257: tudo OK". Testa os eventos e campos documentados de cada plataforma, chave de outra plataforma, token errado, evento repetido, reembolso, chargeback, sandbox da Hubla, produto sem ligação e bruto guardado. `tests/edge/assina_test.mjs` confere as assinaturas com o vetor oficial da Kiwify. O caminho HTTP da função não passa por aqui. Conferido em 04/11/2026.
+
+## v0.258 — Order bump por item (PGlite)
+`v0258_order_bump_por_item.sql` termina com "v0258: tudo OK". Testa: uma venda por item; valor de cada uma; item sem ligação sem deixar venda pela metade; reembolso de todos os itens; bump em fatura própria sem contar duas vezes; fatura sem bump. Conferido em 04/11/2026.

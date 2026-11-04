@@ -17,7 +17,7 @@ begin
   ce := plataforma_configurar(ws, 'eduzz', ple, 'token-eduzz-1') ->> 'chave';
   ch := plataforma_configurar(ws, 'hubla', plh, 'token-hubla-1') ->> 'chave';
   if (select segredo_hmac from plataforma_webhooks where workspace_id = ws and provedor = 'hubla') is not null then raise exception 'X: Hubla não guarda o token'; end if;
-  perform plataforma_ligar_produto(ws, 'kiwify', 'K1', pr); perform plataforma_ligar_produto(ws, 'eduzz', 'E1', pr); perform plataforma_ligar_produto(ws, 'hubla', 'H1', pr);
+  perform plataforma_ligar_produto(ws, 'kiwify', 'K1', pr); perform plataforma_ligar_produto(ws, 'eduzz', 'E1', pr); perform plataforma_ligar_produto(ws, 'eduzz', 'Z9', pr); perform plataforma_ligar_produto(ws, 'hubla', 'H1', pr);
   if has_table_privilege('authenticated', 'public.kiwify_vendas_bruto', 'select') or has_table_privilege('anon', 'public.hubla_vendas_bruto', 'select') then raise exception 'X: bruto acessível'; end if;
   delete from t.cfg where k = 'uid'; insert into t.cfg values ('role', 'service_role') on conflict (k) do update set v = excluded.v;
 

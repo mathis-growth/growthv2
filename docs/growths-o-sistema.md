@@ -15,7 +15,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 04/11/2026, versão 0.257 (Kiwify, Eduzz e Hubla com tabela bruta e ativação por cliente).
+**Última atualização:** 04/11/2026, versão 0.258 (campanha com mini gráficos e order bump separado).
 
 **v0.245 · Resposta à vista.** Quando alguém responde um formulário (lead, cliente ou diagnóstico), a equipe fica sabendo na hora: faixa verde, Meus avisos e WhatsApp, com a pontuação da qualificação.
 

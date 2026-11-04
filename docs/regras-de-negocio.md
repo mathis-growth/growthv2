@@ -1,3 +1,9 @@
+## v0.258
+- **Order bump:** na Eduzz, itens com `isBump`; na Hubla, ofertas com `isOrderBump`. Cada um vira uma venda com `id_externo` `<fatura>:<produto>` e `pedido_ref` da fatura. A venda principal fica com o valor restante.
+- **Produto sem ligação:** nenhum item da fatura entra até todos estarem ligados. A tela mostra qual falta.
+- **Bump repetido:** o mesmo produto no mesmo pedido, vindo em fatura própria, conta uma vez.
+- **Vendas por oferta:** agrupa pela oferta da campanha; sem oferta ligada, pelo produto.
+
 ## v0.257
 - **Kiwify:** `order_approved` → aprovada; `billet_created` e `pix_created` → pendente; `order_refunded` → reembolsada; `chargeback` → chargeback; recusa e eventos de assinatura só ficam registrados. Valor em centavos, conforme a API de vendas; falta confirmar no webhook.
 - **Eduzz:** `invoice_paid` → aprovada; `invoice_waiting_payment` → pendente; `invoice_canceled` e `invoice_expired` → cancelada; `invoice_refunded` → reembolsada; `invoice_chargeback` → chargeback; `invoice_opened` só fica registrado. A fatura vira uma venda, com o produto do primeiro item que não é order bump; os itens ficam em `extras.itens`.
