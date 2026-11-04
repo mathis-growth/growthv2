@@ -1,3 +1,7 @@
+## v0.256
+- `hotmart_vendas_bruto`: uma linha por evento, com `payload` completo, inclusive CPF e endereço; `tratamento` (aguardando, processado, ignorado, revisar, erro), `motivo`, `venda_id`. Sem acesso direto para `anon` e `authenticated`. Substitui `plataforma_eventos`.
+- `pessoas.documento` e `pessoas.extras.endereco` passam a ser preenchidos pela Hotmart quando estão vazios.
+
 ## v0.255
 - `plataforma_webhooks`: configuração por workspace e provedor (`plataforma_id`, `chave_id`, `segredo_hash`, `ultimo_evento_em`). O hottok fica só como hash.
 - `plataforma_eventos`: registro de cada evento (`evento_id` único, `transacao`, `situacao` processado, ignorado, revisar ou erro; `motivo`, `venda_id`, `payload`). O payload não guarda documento, endereço, produtor nem dados de pagamento do boleto e do Pix.

@@ -1,3 +1,10 @@
+## v0.256 — Bruto da Hotmart e campanha por etapas (04/11/2026)
+- **Tabela bruta da Hotmart:** `hotmart_vendas_bruto` guarda o evento inteiro, inclusive CPF e endereço, sem acesso direto pelo app. Um gatilho trata cada linha e atualiza vendas e clientes, com a plataforma de origem.
+- **Clientes:** procura por e-mail, telefone e documento. Se já existe, não cria outro e só completa o que estiver vazio.
+- **Campanha por etapas:** lançamento com datas abre na tela aprovada na prévia, com dados reais: Geral, Captação, Aquecimento, Carrinho, Reabertura, Downsell, Pós-venda e Growth Model com simulador. As outras abas ficam em "Outras visões da campanha".
+- **Filtros e gráficos:** canal, semana, comparar canais, semana anterior e outras campanhas. Geral com faturamento e receita líquida; cohorts com gráfico que muda com o agrupamento.
+- Banco: `20270111100000_v0256_hotmart_bruto.sql`. Testes: banco `v0256_hotmart_bruto.sql` e `v0255_webhook_hotmart.sql` (OK); tela `t256` (0 falhas).
+
 ## v0.255 — Vendas da Hotmart entram sozinhas (04/11/2026)
 - **Integrações → Vendas da Hotmart:** novo quadro para guardar o hottok, gerar o endereço do webhook, ligar produtos e acompanhar os eventos.
 - **Função `vendas-hotmart`:** recebe o webhook 2.0.0 e confere o endereço e o hottok. Compra aprovada ou completa, boleto impresso, cancelamento, expiração, reembolso e chargeback atualizam a venda.

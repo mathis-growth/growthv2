@@ -84,3 +84,6 @@ Conferido em 30/10/2026.
 
 ## v0.255 — Webhook da Hotmart (PGlite)
 `v0255_webhook_hotmart.sql` termina com "v0255: tudo OK". Testa: chave e hottok errados; produto sem ligação; dados sensíveis fora do registro; ligar e reprocessar; evento repetido; reembolso com estorno; evento fora de ordem; boleto pendente, aprovado e expirado; renovação; order bump; vendedor pelo sck; moeda estrangeira; endereço novo revogando o antigo. O caminho HTTP da função e o formato real da Hotmart não passam por aqui. Conferido em 04/11/2026.
+
+## v0.256 — Bruto da Hotmart (PGlite)
+`v0256_hotmart_bruto.sql` termina com "v0256: tudo OK". Testa: payload inteiro guardado; painel e app sem acesso aos dados pessoais; cliente identificado por e-mail, telefone e documento sem duplicar; documento inválido; erro de tratamento sem perder o bruto; evento repetido. Conferido em 04/11/2026.

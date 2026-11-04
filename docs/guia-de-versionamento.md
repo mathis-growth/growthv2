@@ -1,3 +1,8 @@
+## v0.256
+- Migração `20270111100000_v0256_hotmart_bruto.sql`: tabela `hotmart_vendas_bruto` com gatilho de tratamento; funções `_hotmart_cliente`, `_hotmart_bruto_tratar`; remove `plataforma_eventos`, copiando o que houver.
+- index.html: componente `window.CampEtapas` (entre `/*CE-INI*/` e `/*CE-FIM*/`, em shadow DOM), `tcVisao`, `ceElegivel`, aba `visao` em `CAMP_TABS`. Rótulo da tela para 0.256.
+- Testes novos: banco `v0256_hotmart_bruto.sql`; tela `t256_campanha_etapas.py`.
+
 ## v0.255
 - Migração `20270110100000_v0255_webhook_hotmart.sql`: tabelas `plataforma_webhooks`, `plataforma_eventos`, `plataforma_produto_vinculos`; funções `hotmart_webhook` (só service_role), `hotmart_configurar`, `hotmart_painel`, `hotmart_reprocessar`, `hotmart_ligar_produto`.
 - Função nova: `supabase/functions/vendas-hotmart`. Publicar sem verificação de JWT.

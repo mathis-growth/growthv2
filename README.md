@@ -15,7 +15,7 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.255 · 04/11/2026 (`index.html` + `assets/atendimento.*`) |
+| **Versão da tela** | 0.256 · 04/11/2026 (`index.html` + `assets/atendimento.*`) |
 | **Atendimento (0.175)** | Código preparado; falta aplicar `supabase/migrations/20261030021541_central_atendimento.sql`, publicar a função `atendimento`, configurar canais e liberar as telas nos pacotes. [Guia](docs/atendimento.md). |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | conferido em 31/10/2026: tem tudo até a **v0.189**, inclusive as narrativas (v0.157, 39 modelos), o Growth's Content simplificado (v0.159), os subtemas (v0.160), o Customer Growth (v0.163), o Atendimento e o Diagnóstico 360° (v0.177) |
 | **Falta aplicar no banco** | `supabase/RODAR_v0.197_pesquisa_modelos.sql` (modelos de pesquisa fora da lista) e `supabase/RODAR_v0.198_plano_anual.sql` (meta do ano, com impostos e custos variáveis da v0.199) `supabase/RODAR_v0.205_go_to_market.sql` (pacote Go-to-Market e custos de marketing) `supabase/RODAR_v0.206_historico_vendas.sql` (histórico de vendas) `supabase/RODAR_v0.208_vendas_periodo.sql` (dashboard de vendas) e `supabase/RODAR_v0.209_financeiro_simplificado.sql` (Financeiro simplificado) |
@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.256 | 04/11/2026 | **Bruto da Hotmart e campanha por etapas**: tabela bruta completa, tratamento de clientes sem duplicar, tela por etapas com filtros, gráficos e simulador. | `20270111100000_v0256_hotmart_bruto.sql` |
 | 0.255 | 04/11/2026 | **Vendas da Hotmart automáticas**: webhook 2.0.0, reembolso e chargeback com estorno, vendedor pelo código do link e eventos a revisar. | `20270110100000_v0255_webhook_hotmart.sql` |
 | 0.254 | 04/11/2026 | **Comercial da campanha**: vendedor interno ou externo, comissão, meta e link por campanha, e a previsão do que sobra do faturamento. | `20270109100000_v0254_comercial_campanha.sql` |
 | 0.253 | 04/11/2026 | **Assistente da campanha**: ofertas escolhidas do cadastro, cenários para cada oferta e canais com porcentagem de leads e de vendas. | `20270108100000_v0253_metas_canal_e_oferta.sql` |

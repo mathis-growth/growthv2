@@ -42,7 +42,7 @@ begin
   j := hotmart_webhook(ch, tok, t.ev255('e1', 'PURCHASE_APPROVED', 'HP1', '111'));
   if j ->> 'situacao' <> 'revisar' then raise exception 'X: sem ligação %', j; end if;
   if exists (select 1 from vendas where workspace_id = ws) then raise exception 'X: criou venda sem produto'; end if;
-  if exists (select 1 from plataforma_eventos where evento_id = 'e1' and (payload::text like '%12345678900%' or payload::text like '%Lavras%' or payload::text like '%segredo%')) then raise exception 'X: dado sensível no registro'; end if;
+  -- v0.256: o bruto guarda tudo; ver v0256_hotmart_bruto.sql
 
   -- ligar e reprocessar (volta o usuário, que é quem liga pela tela)
   insert into t.cfg values ('uid', (select user_id::text from workspace_membros where workspace_id = ws limit 1)); update t.cfg set v = 'authenticated' where t.cfg.k = 'role';

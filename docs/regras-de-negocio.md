@@ -1,3 +1,10 @@
+## v0.256
+- **Bruto primeiro:** o evento é gravado inteiro e depois tratado. Se o tratamento falhar, a linha bruta fica com o erro e pode ser tratada de novo.
+- **Cliente:** procura por e-mail, depois telefone, depois documento. Cliente existente não é recriado nem tem dados sobrescritos: só completa o que está vazio.
+- **Tela por etapas:** vale para lançamento com data de início e data do carrinho. Perpétuo e lançamento sem datas continuam nas abas.
+- **Metas da tela:** leads por dia = meta de leads ÷ dias da captação; vendas e faturamento ficam no carrinho, por igual entre os dias; sem meta definida, não há luzinha.
+- **Entradas no grupo:** toques do tipo lista cuja descrição começa com "Grupo". Saídas do grupo ainda não têm registro.
+
 ## v0.255
 - **Eventos da Hotmart:** aprovada e completa → aprovada; boleto impresso → pendente; cancelada e expirada → cancelada; reembolso → reembolsada; chargeback → chargeback. Disputa e atraso de assinatura só ficam registrados.
 - **Ordem:** reembolso e chargeback não voltam atrás com evento atrasado. Aprovação de venda já estornada fica a revisar.

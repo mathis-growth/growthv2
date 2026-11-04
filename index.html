@@ -1383,7 +1383,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
     <div class="foot">
       <button class="btn sm temaBtn" id="temaBtn" type="button"></button>
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.255 · 04/11/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.256 · 04/11/2026</span>
     </div>
   </aside>
   <div class="mainw"><div class="topou" id="topoU"><div class="ola" id="olaTxt"></div><div class="tou-m"><button type="button" class="tou-av" id="fotoBtn" aria-haspopup="true" aria-expanded="false" aria-controls="fotoMenu" aria-label="Sua conta"></button>
@@ -2602,15 +2602,846 @@ async function tabCampanhas(el) {
   el.querySelectorAll('tr[data-c]').forEach(tr => tr.onclick = () => { S.campSel = tr.dataset.c; S.campTab = 'dash'; S.cfn = null; render(); });
 }
 
-const CAMP_TABS = [['dash', 'Dashboard'], ['etapas', 'Estratégia e etapas'], ['metas', 'Metas mensais'], ['resumo', 'Planejamento e metas'], ['captacao', 'Captação e metas'], ['crm', 'Funil da campanha'], ['funil', 'Análise e cohorts'], ['midia', 'Mídia paga'], ['videos', 'Vídeos e eventos'], ['leads', 'Leads e vendas'], ['links', 'Links e tracking'], ['debrief', 'Fechamento'], ['ofertas', 'Ofertas e preços']];
+const CAMP_TABS = [['visao', 'Visão por etapas'], ['dash', 'Dashboard'], ['etapas', 'Estratégia e etapas'], ['metas', 'Metas mensais'], ['resumo', 'Planejamento e metas'], ['captacao', 'Captação e metas'], ['crm', 'Funil da campanha'], ['funil', 'Análise e cohorts'], ['midia', 'Mídia paga'], ['videos', 'Vídeos e eventos'], ['leads', 'Leads e vendas'], ['links', 'Links e tracking'], ['debrief', 'Fechamento'], ['ofertas', 'Ofertas e preços']];
+const ceElegivel = c => c.modelo === 'lancamento' && !!c.data_inicio && !!(c.data_carrinho_abre || (c.fases && c.fases.conversao && c.fases.conversao.ini));
+async function ceTudo(mk) { const r = []; for (let i = 0; i < 60; i++) { const p = await q(mk().range(i * 1000, i * 1000 + 999)); r.push(...p); if (p.length < 1000) break; } return r; }
+async function tcVisao(el, c) {
+  const id = c.id, tabs = el.previousElementSibling;
+  el.innerHTML = '<div class="panel"><span class="muted">Carregando a campanha…</span></div>';
+  const ign = () => [];
+  const [canais, ofertas, trafego, leads, vendas, grupo, comissoes, fontes, cmps, mk] = await Promise.all([
+    q(sb.from('campanha_canais').select('id,canal,temperatura,tipo').eq('campanha_id', id)),
+    q(sb.from('campanha_ofertas').select('oferta_id,nome,papel,preco,taxa_aceite').eq('campanha_id', id)),
+    ceTudo(() => sb.from('v_trafego_anuncio_dia').select('anuncio_id,data,custo,impressoes,cliques,visualizacoes_pagina').eq('campanha_id', id).order('data')).catch(ign),
+    ceTudo(() => sb.from('campanha_participacoes').select('pessoa_id,entrou_em,canal,campanha_canal_id,utm_content,pessoas(nome,qualificacao)').eq('campanha_id', id).order('entrou_em')),
+    ceTudo(() => sb.from('vendas').select('id,pessoa_id,oferta_id,status,data_venda,valor_bruto,taxa_plataforma,impostos,reembolsada_em,pessoas(nome)').eq('campanha_id', id).in('status', ['aprovada', 'reembolsada', 'chargeback']).order('data_venda')),
+    ceTudo(() => sb.from('pessoa_toques').select('pessoa_id,em,descricao').eq('campanha_id', id).eq('tipo', 'lista').ilike('descricao', 'Grupo%')).catch(ign),
+    ceTudo(() => sb.from('comissoes').select('venda_id,valor,status,vendas!inner(campanha_id)').eq('vendas.campanha_id', id)).catch(ign),
+    q(sb.from('fontes_video').select('id,nome,data_evento').eq('campanha_id', id).order('data_evento')).catch(ign),
+    q(sb.from('campanhas').select('id,nome,data_inicio').eq('workspace_id', c.workspace_id).eq('modelo', 'lancamento').neq('id', id).order('data_inicio', { ascending: false }).limit(3)).catch(ign),
+    q(sb.from('v_marketing_campanha').select('campanha_id,nome,investimento,leads,vendas,faturamento').eq('workspace_id', c.workspace_id)).catch(ign)]);
+  const anuncios = canais.length ? await q(sb.from('anuncios').select('id,nome,utm_content,campanha_canal_id').in('campanha_canal_id', canais.map(x => x.id))).catch(ign) : [];
+  const pres = fontes.length ? await ceTudo(() => sb.from('presencas_video').select('fonte_id').in('fonte_id', fontes.map(x => x.id))).catch(ign) : [];
+  const aulas = fontes.filter(x => x.data_evento).map(x => ({ nome: x.nome, data_evento: x.data_evento, presentes: pres.filter(p => p.fonte_id === x.id).length }));
+  const outras = cmps.map(x => mk.find(r => r.campanha_id === x.id)).filter(Boolean);
+  const plat = await q(sb.from('plataformas_venda').select('taxa_percentual').eq('workspace_id', c.workspace_id).limit(1)).catch(ign);
+  const NM = { meta_ads: 'Meta Ads', google_ads: 'Google Ads', tiktok_ads: 'TikTok Ads', youtube_ads: 'YouTube Ads', organico: 'Orgânico', email: 'E-mail', whatsapp: 'WhatsApp', instagram: 'Instagram', comercial: 'Comercial' };
+  const H = { hoje: hoje(), dia: s => new Date(s).toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' }), canalNome: k => k ? (NM[k] || String(k)) : '', taxaPadrao: plat[0] ? (Number(plat[0].taxa_percentual) || 0) / 100 : 0,
+    editar: () => abrirWizard(id),
+    aprova: async cn => { await q(sb.from('growth_experimentos').insert({ workspace_id: c.workspace_id, titulo: (cn.nome + ' · ' + c.nome).slice(0, 120), hipotese: cn.hip, insight: 'Simulador da campanha ' + c.nome, etapa: 'ideia', impacto: cn.ice.i, confianca: cn.ice.c, facilidade: cn.ice.f })); toast('Ideia criada no Ciclo de Growth'); } };
+  // os outros detalhes da campanha continuam a um clique
+  if (tabs && tabs.classList.contains('tabs')) tabs.style.display = 'none';
+  el.innerHTML = '<div style="display:flex;justify-content:flex-end"><button class="btn sm" id="cOutras">Outras visões da campanha</button></div><div id="ceHost"></div>';
+  $('#cOutras').onclick = () => { if (tabs) tabs.style.display = tabs.style.display === 'none' ? '' : 'none'; };
+  window.CampEtapas($('#ceHost'), c, { canais, anuncios, ofertas, trafego, leads, vendas, grupo, comissoes, aulas, outras }, H);
+}
+/*CE-INI*/
+/* v0.256: tela da campanha por etapas (mesma tela aprovada na prévia), com dados reais. CSS isolado em shadow DOM. Gerada a partir da prévia; ver docs. */
+window.CampEtapas = function (el, c, D, H) {
+const raiz = el.shadowRoot || el.attachShadow({ mode: 'open' });
+el.dataset.tema = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+raiz.innerHTML = `<style>
+/* Layout: mesma tela de campanha do Growths, com a barra de etapas no topo e o detalhe abrindo no próprio painel. */
+:host{
+  --bg:#e9eef7;--surface:#ffffff;--surface-2:#f0f4fb;--ink:#0f1a33;--muted:#55647f;--line:#d3dcea;--borda:#c3cfe2;--am:#fff1a8;--am-tx:#5c4700;--am-bd:#e3c84a;--sombra:0 1px 2px rgba(15,26,51,.08),0 8px 20px rgba(15,26,51,.08);
+  --accent:#1d4ed8;--accent-soft:#e3ecfd;--accent-ink:#ffffff;--serie2:#c9650f;
+  --good:#17803d;--good-soft:#dcf3e3;--warn:#9a6700;--warn-soft:#fbefc9;--bad:#b42318;--bad-soft:#fbe1de;--info:#2457a6;--info-soft:#e0eaf9;
+  --raio:14px;--font:'Inter','Segoe UI',system-ui,sans-serif;
+}
+:host([data-tema="dark"]){
+  --bg:#04070f;--surface:#0d162e;--surface-2:#131f3d;--ink:#e7edfa;--muted:#94a4c4;--line:#22325c;--borda:#2e4070;--am:#4a3c08;--am-tx:#ffe58a;--am-bd:#a58a1f;--sombra:0 1px 2px rgba(0,0,0,.5),0 8px 22px rgba(0,0,0,.45);
+  --accent:#3b82f6;--accent-soft:#10224a;--accent-ink:#ffffff;--serie2:#e8892f;
+  --good:#4ade80;--good-soft:#12301f;--warn:#f5b942;--warn-soft:#3a2c0e;--bad:#ff6b6b;--bad-soft:#401719;--info:#7fb0ff;--info-soft:#15284a;color-scheme:dark}
+
+.kpis.oito{grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+*{box-sizing:border-box}
+.pag{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.45}
+.pag{max-width:1180px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:16px}
+.pag>*{min-width:0}
+h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0;text-wrap:balance}
+h2{font-size:17px;font-weight:700;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h3{font-size:14px;font-weight:600;margin:0}
+p{margin:0}
+.muted{color:var(--muted)}.peq{font-size:12.5px}
+button,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-weight:600}
+.btn:hover{border-color:var(--accent)}
+.btn-p{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+select{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:7px 10px;max-width:100%}
+.simula{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;background:var(--info-soft);border-radius:10px;padding:9px 14px;font-size:13px}
+.simula label{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.simula b{font-weight:600}
+.topo{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;justify-content:space-between}
+.topo>div{min-width:0}
+.trilha{font-size:12.5px;color:var(--muted);margin-bottom:4px}
+.chip{display:inline-block;font-size:11.5px;font-weight:600;border-radius:999px;padding:2px 9px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.etapas{display:flex;gap:6px;overflow-x:auto;padding:4px;background:var(--surface);border:1px solid var(--borda);box-shadow:var(--sombra);border-radius:var(--raio);scrollbar-width:thin}
+.et{flex:1 0 auto;min-width:108px;text-align:left;background:transparent;border:0;border-radius:10px;padding:8px 12px;display:grid;gap:1px}
+.et:hover{background:var(--surface-2)}
+.et b{font-weight:600;font-size:13.5px}
+.et small{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.et.sel{background:var(--accent);color:var(--accent-ink)}
+.et.sel small{color:var(--accent-ink);opacity:.85}
+.et .ag{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--good);margin-right:5px;vertical-align:1px}
+.et.geral{flex:0 0 auto;min-width:84px;border-right:1px solid var(--line);border-radius:10px}
+.et.gm{flex:0 0 auto;min-width:120px;border-left:1px solid var(--line)}
+.gmt td,.gmt th{padding:6px 10px}
+.gmt .col{min-width:112px}
+.gmt .g td{font-weight:600;font-size:12px;color:var(--muted);background:var(--surface-2);border-bottom:0}
+.gmt .sim{background:var(--accent-soft)}
+.gmt .forte td{font-weight:600}
+.gmt input{width:104px;text-align:right;font:inherit;font-variant-numeric:tabular-nums;color:var(--ink);background:var(--surface);border:1px solid var(--accent);border-radius:8px;padding:4px 8px}
+.gmf{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.gmf>*{min-width:0}
+tr.ativa td{background:var(--accent-soft)}
+.gmt .grp td{font-weight:600;font-size:12px;color:var(--muted);background:var(--surface-2);border-bottom:0}
+.sim-rolo{overflow:auto;max-height:72vh;border:1px solid var(--borda);border-radius:10px}
+.sim-t{border-collapse:separate;border-spacing:0;width:auto;min-width:100%;font-size:13px}
+.sim-t th,.sim-t td{padding:6px 10px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);background:var(--surface);white-space:nowrap}
+.sim-t thead th{position:sticky;top:0;z-index:2;background:var(--surface-2);color:var(--ink);font-size:12.5px;vertical-align:bottom}
+.sim-t thead th small{display:block;font-weight:400;color:var(--muted);font-size:11px}
+.sim-t tbody th{position:sticky;left:0;z-index:1;text-align:left;font-weight:500;font-size:13px;color:var(--ink);min-width:178px;max-width:220px;white-space:normal;box-shadow:1px 0 0 var(--borda)}
+.sim-t thead th:first-child{position:sticky;left:0;z-index:3}
+.sim-t .tot,.sim-t td[data-c$="|t"],.sim-t td[data-i$="|t"]{font-weight:600;box-shadow:inset -2px 0 0 var(--borda)}
+.sim-t .grp td{position:sticky;left:0;background:var(--surface-2);font-weight:700;font-size:12px;color:var(--ink);text-align:left}
+.sim-t .grpb{cursor:pointer}.sim-t .grpb .sg{display:inline-block;width:14px;color:var(--accent)}
+.sim-t .forte th,.sim-t .forte td{font-weight:600}
+.sim-t input{width:92px;text-align:right;font:inherit;font-variant-numeric:tabular-nums;color:var(--ink);background:transparent;border:1px solid transparent;border-radius:6px;padding:3px 6px;box-shadow:inset 0 0 0 1px var(--line)}
+.sim-t input:hover,.sim-t input:focus{box-shadow:inset 0 0 0 1px var(--accent);background:var(--surface)}
+.sim-t .cmp{display:block;font-size:10.5px;font-weight:400;color:var(--muted);min-height:13px}
+.sim-t td.am{background:var(--am)}.sim-t td.am input,.sim-t td.am .v{color:var(--am-tx);font-weight:700}.sim-t td.am input{box-shadow:inset 0 0 0 1px var(--am-bd)}.sim-t td.am .cmp{color:var(--am-tx)}
+.sim-t td.vd{background:var(--good-soft)}.sim-t td.vd input,.sim-t td.vd .v{color:var(--good);font-weight:600}.sim-t td.vd .cmp{color:var(--good)}
+.sim-t td.fc,.sim-t th.fc{background:var(--surface-2)}.sim-t td.fc .v{color:var(--muted)}
+.sim-t .imp th,.sim-t .imp td{background:var(--info-soft);font-weight:600}
+.sim-t .imp td.pos{color:var(--good)}.sim-t .imp td.neg{color:var(--bad)}
+.sim-hip{flex:1 1 320px;display:grid;gap:4px;min-width:0}
+.leg-sim{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;align-items:center}.leg-sim span{display:inline-flex;gap:6px;align-items:center}
+.sw{width:16px;height:12px;border-radius:3px;border:1px solid var(--borda);display:inline-block}.sw.am{background:var(--am);border-color:var(--am-bd)}.sw.vd{background:var(--good-soft);border-color:var(--good)}.sw.fc{background:var(--surface-2)}
+#simCards .kpi:first-child{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--sombra)}
+.simgrid{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:12px;align-items:start}
+#simTab td:first-child{white-space:nowrap}
+#simTab td,#simTab th{padding-left:7px;padding-right:7px}
+.simgrid>*{min-width:0}.simcol{display:grid;gap:12px;min-width:0}.simcol>*{min-width:0}
+@media (max-width:960px){.simgrid{grid-template-columns:1fr}}
+textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--borda);border-radius:8px;padding:8px 10px;width:100%;resize:vertical}
+tr.fechado td{color:var(--muted)}
+.gmt input:disabled{opacity:.45;border-color:var(--line)}
+.gmt input.ice{width:64px}
+.chip.ok{background:var(--good-soft);color:var(--good)}.chip.info{background:var(--info-soft);color:var(--info)}
+.confirma{background:var(--surface-2);border:1px solid var(--borda);border-radius:10px;padding:12px 14px;display:grid;gap:8px}
+.confirma.ok{background:var(--good-soft);border-color:var(--good)}
+.caixa.aprovado{border-color:var(--good)}
+.painel{display:grid;gap:16px}
+.painel>*{min-width:0}
+.cab{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.cab>div{min-width:0}
+.per{display:flex;flex-wrap:wrap;gap:6px}
+.per button{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:12.5px;font-weight:500}
+.per button.sel{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.kpi{background:var(--surface);border:1px solid var(--borda);box-shadow:var(--sombra);border-radius:var(--raio);padding:14px 16px;text-align:left;display:grid;gap:3px;align-content:start;min-width:0}
+button.kpi:hover{border-color:var(--accent)}
+.kpi .r{display:flex;justify-content:space-between;gap:6px;font-size:12.5px;color:var(--muted);font-weight:500}
+.kpi .seta{color:var(--accent);font-weight:600}
+.kpi .v{font-size:23px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kpi .s{font-size:12px;color:var(--muted)}
+.luz{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;white-space:nowrap}
+.luz i{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.luz-acima{color:var(--info)}.luz-ok{color:var(--good)}.luz-ruim{color:var(--bad)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:12px}
+.cols>*{min-width:0}
+.caixa{background:var(--surface);border:1px solid var(--borda);box-shadow:var(--sombra);border-radius:var(--raio);padding:16px 18px;display:grid;gap:10px;align-content:start;min-width:0}
+.caixa>*{min-width:0}
+.caixa>.tit{border-bottom:1px solid var(--line);padding-bottom:10px}
+button.kpi:hover{box-shadow:0 2px 4px rgba(15,26,51,.1),0 12px 26px rgba(15,26,51,.12)}
+.caixa .tit{display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:space-between;align-items:baseline}
+.leg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}
+.leg span{display:inline-flex;gap:6px;align-items:center}
+.leg i{width:16px;height:0;border-top:2px solid var(--c);display:inline-block}
+.leg i.tr{border-top-style:dashed}
+.gf{position:relative;width:100%;height:210px}
+.gf svg{display:block;width:100%;height:100%}
+.gf text{font-family:var(--font);font-size:11px;fill:var(--muted);font-variant-numeric:tabular-nums}
+.gf .fim{fill:var(--ink);font-weight:600}
+.dica{position:absolute;pointer-events:none;background:var(--ink);color:var(--surface);font-size:12px;border-radius:8px;padding:6px 9px;white-space:nowrap;z-index:2;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{font-weight:600;font-size:12px;color:var(--muted);text-align:left;padding:6px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tfoot td{font-weight:600;border-top:1px solid var(--line);border-bottom:0}
+tbody tr.cl{cursor:pointer}
+tbody tr.cl:hover{background:var(--surface-2)}
+.lk{background:none;border:0;padding:0;color:var(--accent);font-weight:600;text-align:left}
+.lk:hover{text-decoration:underline}
+.funil{display:grid;gap:8px}
+.funil .l{display:grid;grid-template-columns:minmax(96px,130px) 1fr auto;gap:10px;align-items:center;font-size:13px}
+.funil .b{height:10px;background:var(--surface-2);border-radius:999px;overflow:hidden}
+.funil .b i{display:block;height:100%;background:var(--accent);border-radius:999px}
+.conta{display:grid;gap:0}
+.conta div{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.conta div:last-child{border-bottom:0}
+.conta .tot{font-weight:700}
+.nota{background:var(--surface-2);border-radius:10px;padding:10px 14px;font-size:13px;max-width:none}
+.ver{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.vazio{background:var(--surface);border:1px dashed var(--line);border-radius:var(--raio);padding:24px;display:grid;gap:6px;text-align:center}
+.volta{background:none;border:0;padding:0;color:var(--accent);font-weight:600;font-size:13px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tabs button{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-weight:500;font-size:13px}
+.tabs button.sel{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.lista{display:grid;gap:8px}
+.lista li{margin:0}
+ul.lista{list-style:none;padding:0;margin:0}
+.fundo{position:fixed;inset:0;background:rgba(5,10,24,.5);display:grid;place-items:center;padding:16px;z-index:20}
+.modal{background:var(--surface);border-radius:var(--raio);padding:20px;width:min(480px,100%);display:grid;gap:12px;max-height:90vh;overflow:auto}
+.passos{list-style:decimal;padding-left:22px;margin:0;display:grid;gap:4px}
+@media (prefers-reduced-motion:no-preference){.painel{animation:ent .14s ease-out}@keyframes ent{from{transform:translateY(3px)}to{transform:none}}}
+
+:host{display:block;--s3:#0f9d8a;--s4:#a21caf;color:var(--ink);font-family:var(--font)}
+:host([data-tema="dark"]){--s3:#2dd4bf;--s4:#c084fc}
+.pag{background:transparent!important;padding:0!important;max-width:none!important}
+</style><div class="pag"><div class="topo"><div><p class="muted" id="fase"></p></div></div><nav class="etapas" id="etapas" aria-label="Etapas da campanha"></nav><div id="filtros"></div><main class="painel" id="painel"></main></div>`;
+
+/* ---------- utilitários ---------- */
+const $ = s => raiz.querySelector(s);
+const fBrl = v => !isFinite(v) || v == null ? '—' : (v < 0 ? '−' : '') + 'R$ ' + Math.abs(Number(v)).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+const fBrl2 = v => !isFinite(v) || v == null ? '—' : 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fN = v => !isFinite(v) || v == null ? '—' : Math.round(v).toLocaleString('pt-BR');
+const fP = v => !isFinite(v) || v == null ? '—' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%';
+const fX = v => !isFinite(v) || v == null ? '—' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + 'x';
+const dm = s => s.slice(8, 10) + '/' + s.slice(5, 7);
+const diaMais = (s, n) => { const d = new Date(s + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const dias = (a, b) => { const r = []; for (let d = a; d <= b; d = diaMais(d, 1)) r.push(d); return r; };
+
+const soma = (a, f) => a.reduce((t, x) => t + (f ? f(x) : x), 0);
+const div = (a, b) => b ? a / b : null;
+
+/* Mesma regra da luzinha do app: azul acima de 105%, verde entre 95% e 105%, vermelho abaixo. */
+function luz(real, meta, op = {}) {
+  const fr = op.frac == null ? 1 : op.frac; if (!meta || real == null || !fr) return '';
+  if (!isFinite(real) || !isFinite(meta * fr)) return ''; const alvo = meta * fr, r = op.menor ? (real > 0 ? alvo / real : null) : real / alvo; if (r == null) return '';
+  const k = r >= 1.05 ? ['acima', op.menor ? 'Melhor que a meta' : 'Acima da meta'] : r >= .95 ? ['ok', 'Dentro da meta'] : ['ruim', op.menor ? 'Pior que a meta' : 'Abaixo da meta'];
+  return `<span class="luz luz-${k[0]}"><i></i>${k[1]}</span>`;
+}
+
+
+const ETAPAS = [], ET = {}, ANUNCIOS = [], AN = {}, OFERTAS = {}, LEADS = [], GASTO = {}, VENDAS = [], SAIDAS = [], CAMP_ANT = [], AULAS = [], LINKS = [], SAI_GRUPO = {}, MID = {}, LEADS_DIA = {}, GRUPO_DIA = {}, PREM = {};
+const META = {};
+const cnOrg = 'Sem origem';
+let CANAIS = [];
+{ const fs = c.fases || {}, ini = c.data_inicio, per = x => x && x.ini && x.fim ? x : null;
+  const conv = per(fs.conversao) || (c.data_carrinho_abre ? { ini: c.data_carrinho_abre, fim: c.data_carrinho_fecha || c.data_carrinho_abre } : null);
+  const aq = per(fs.aquecimento), rea = per(fs.reabertura), dow = per(fs.downsell);
+  const fimCap = per(fs.aquisicao) ? fs.aquisicao.fim : diaMais((aq || conv).ini, -1);
+  const seq = [['cap', 'Captação', { ini: per(fs.aquisicao) ? fs.aquisicao.ini : ini, fim: fimCap }, true], ['aq', 'Aquecimento', aq, !!aq], ['car', 'Carrinho', conv, true], ['rea', 'Reabertura', rea, !!rea], ['dow', 'Downsell', dow, !!dow]];
+  let ult = fimCap; seq.forEach(s => { const p = s[2] || { ini: diaMais(ult, 1), fim: diaMais(ult, 1) }; if (s[3] && p.fim > ult) ult = p.fim; ETAPAS.push({ k: s[0], nome: s[1], ini: p.ini, fim: p.fim, ativa: s[3] }); });
+  const ret = per(fs.retencao), fimC = c.data_fim && c.data_fim > ult ? c.data_fim : diaMais(ult, 30);
+  ETAPAS.push({ k: 'pos', nome: 'Pós-venda', ini: ret ? ret.ini : diaMais(ult, 1), fim: ret ? ret.fim : fimC, ativa: true });
+  ETAPAS.forEach(e => { ET[e.k] = e; }); }
+{ const cc = Object.fromEntries((D.canais || []).map(x => [x.id, x]));
+  (D.anuncios || []).forEach(a => { const k = cc[a.campanha_canal_id] || {}; AN[a.id] = { id: a.id, nome: a.nome, canal: H.canalNome(k.canal), pub: k.temperatura || k.tipo || '—', utm: a.utm_content, f: 0, q: 1 }; });
+  (D.trafego || []).forEach(t => { if (!AN[t.anuncio_id]) return; const cu = Number(t.custo) || 0; if (cu) { (GASTO[t.data] = GASTO[t.data] || {})[t.anuncio_id] = cu; AN[t.anuncio_id].f = 1; }
+    const m = MID[t.data] = MID[t.data] || { imp: 0, clk: 0 }; m.imp += Number(t.impressoes) || 0; m.clk += Number(t.cliques) || 0; AN[t.anuncio_id].vis = (AN[t.anuncio_id].vis || 0) + (Number(t.visualizacoes_pagina) || 0); });
+  const sem = cn => { const id = 'sem:' + cn; if (!AN[id]) AN[id] = { id, nome: 'Sem anúncio (' + cn + ')', canal: cn, pub: '—', f: 0, q: 1 }; return id; };
+  const porUtm = {}; Object.values(AN).forEach(a => { if (a.utm) porUtm[a.utm] = a.id; });
+  const P = {};
+  (D.leads || []).forEach(l => { const pe = l.pessoas || {}, canal = H.canalNome(l.canal || (cc[l.campanha_canal_id] || {}).canal) || cnOrg, an = porUtm[l.utm_content] || sem(canal);
+    const p = { id: l.pessoa_id, nome: pe.nome || 'Sem nome', dia: H.dia(l.entrou_em), an, custo: 0, grupo: null, qual: pe.qualificacao === 'qualificado', comprou: null, saiu: null }; P[l.pessoa_id] = p; LEADS.push(p); });
+  LEADS.sort((a, b) => a.dia < b.dia ? -1 : 1);
+  const qt = {}; LEADS.forEach(p => { qt[p.an] = (qt[p.an] || 0) + 1; });
+  const gastoAn = {}; Object.keys(GASTO).filter(d => d >= ET.cap.ini && d <= ET.cap.fim).forEach(d => Object.entries(GASTO[d]).forEach(([id, v]) => { gastoAn[id] = (gastoAn[id] || 0) + v; }));
+  LEADS.forEach(p => { p.custo = (gastoAn[p.an] || 0) / qt[p.an]; });
+  (D.grupo || []).forEach(g => { const p = P[g.pessoa_id], d = H.dia(g.em); if (p && (!p.grupo || d < p.grupo)) p.grupo = d; });
+  const of_ = Object.fromEntries((D.ofertas || []).map(o => [o.oferta_id, o])), TIPO = { principal: 'principal', order_bump: 'bump', upsell: 'upsell', downsell: 'down', cross_sell: 'upsell' };
+  const rot = { principal: 'Oferta principal', bump: 'Order bump', upsell: 'Upsell', down: 'Downsell' };
+  Object.keys(rot).forEach(t => { const l = (D.ofertas || []).filter(o => (TIPO[o.papel] || 'principal') === t); OFERTAS[t] = [l.length === 1 ? l[0].nome : rot[t], l.length ? Number(l[0].preco) || 0 : 0]; });
+  const com = {}; (D.comissoes || []).forEach(x => { if (!['cancelada', 'estorno_pendente', 'estornada'].includes(x.status)) com[x.venda_id] = (com[x.venda_id] || 0) + (Number(x.valor) || 0); });
+  const etDe = d => { const a = ETAPAS.filter(e => e.ativa && e.ini <= d); return a.length ? a[a.length - 1].k : 'cap'; };
+  (D.vendas || []).forEach(v => { const d = H.dia(v.data_venda), o = of_[v.oferta_id]; let p = P[v.pessoa_id];
+    if (!p) { p = P[v.pessoa_id] = { id: v.pessoa_id, nome: (v.pessoas || {}).nome || 'Sem nome', dia: d, an: sem(cnOrg), custo: 0, grupo: null, qual: false, comprou: null, saiu: null }; }
+    const saida = v.status === 'reembolsada' || v.status === 'chargeback', tipo = o ? TIPO[o.papel] || 'principal' : 'principal';
+    VENDAS.push({ dia: d, et: etDe(d), tipo, p, valor: Number(v.valor_bruto) || 0, tx: (Number(v.taxa_plataforma) || 0) + (Number(v.impostos) || 0), cm: com[v.id] || 0 });
+    p.comprou = p.comprou && p.comprou < d ? p.comprou : d;
+    if (saida) { const ds = H.dia(v.reembolsada_em || v.data_venda); p.saiu = ds; SAIDAS.push({ p, dia: ds, motivo: v.status === 'chargeback' ? 'Chargeback' : 'Reembolso', valor: Number(v.valor_bruto) || 0 }); } });
+  VENDAS.sort((a, b) => a.dia < b.dia ? -1 : 1);
+  Object.values(AN).filter(a => a.vis).forEach(a => LINKS.push({ nome: a.nome, vis: a.vis, an: [a.id] }));
+  (D.aulas || []).forEach(a => AULAS.push({ nome: a.nome, dia: a.data_evento, pres: Number(a.presentes) || 0 }));
+  (D.outras || []).forEach(x => CAMP_ANT.push({ nome: x.nome, inv: Number(x.investimento) || 0, leads: Number(x.leads) || 0, vendas: Number(x.vendas) || 0, fat: Number(x.faturamento) || 0 }));
+  LEADS.forEach(p => { LEADS_DIA[p.dia] = (LEADS_DIA[p.dia] || 0) + 1; if (p.grupo) GRUPO_DIA[p.grupo] = (GRUPO_DIA[p.grupo] || 0) + 1; });
+  const uso = {}; Object.values(AN).forEach(a => { uso[a.canal] = 0; }); LEADS.forEach(p => { uso[AN[p.an].canal] = (uso[AN[p.an].canal] || 0) + 1; }); sem(cnOrg);
+  CANAIS = Object.keys(uso).filter(k => uso[k] || Object.values(AN).some(a => a.canal === k && a.f)).sort((a, b) => (uso[b] || 0) - (uso[a] || 0));
+  Object.values(AN).forEach(a => { ANUNCIOS.push(a); });
+  { const dCap = dias(ET.cap.ini, ET.cap.fim).length, ml = Number(c.meta_leads) || 0, mv = Number(c.meta_vendas) || 0, mr = Number(c.meta_receita) || 0, orc = Number(c.orcamento_total) || 0, ext = c.extras || {}, cen = ext.cenarios || {};
+    const diasM = n => ({ car: dias(ET.car.ini, ET.car.fim), rea: dias(ET.rea.ini, ET.rea.fim), dow: dias(ET.dow.ini, ET.dow.fim) })[n];
+    const fl = (t, n) => diasM(n).map(() => t / diasM(n).length);
+    Object.assign(META, { leadsDia: ml / dCap, cpl: Number(c.meta_cpl) || (ml && orc ? orc / ml : 0), noGrupo: Number(cen.meta_grupo) || 0, grupoDia: [], conv: Number(c.meta_taxa_lead_venda) || 0,
+      vendas: { car: fl(mv, 'car'), rea: fl(0, 'rea'), dow: fl(0, 'dow') }, fat: { car: mr, rea: 0, dow: 0 }, fatTotal: mr, cac: Number(c.meta_cac) || 0, roas: orc && mr ? mr / orc : 0, churn: Number(cen.meta_churn) || 0, orc });
+    if (META.noGrupo) { const n = dias(ET.aq.ini, ET.aq.fim); META.grupoDia = n.map(() => META.noGrupo / n.length); }
+    const dPago = ETAPAS.filter(e => e.ativa && e.k !== 'pos').reduce((a, e) => a + dias(e.ini, e.fim).length, 0); META.invDia = orc / (dPago || 1);
+    const of0 = t => (D.ofertas || []).filter(o => (TIPO[o.papel] || 'principal') === t), ace = t => { const o = of0(t)[0]; return o ? (Number(o.taxa_aceite) || 0) / 100 : 0; };
+    const bruto = soma(VENDAS, v => v.valor), imp = soma(Object.values(MID), m => m.imp), clk = soma(Object.values(MID), m => m.clk), gt = soma(Object.values(GASTO), g => soma(Object.values(g)));
+    Object.assign(PREM, { ob: OFERTAS.bump[1], up: OFERTAS.upsell[1], churn: META.churn, acum: true, cpm: imp ? gt / imp * 1000 : 20, ctr: imp ? clk / imp * 100 : 1.5, aceOb: ace('bump'), aceUp: ace('upsell'), tax: bruto ? soma(VENDAS, v => v.tx) / bruto : H.taxaPadrao, com: bruto ? soma(VENDAS, v => v.cm) / bruto : 0 }); } }
+const LF = () => S.canal ? LEADS.filter(p => AN[p.an].canal === S.canal) : LEADS;
+const VF = () => S.canal ? VENDAS.filter(v => AN[v.p.an].canal === S.canal) : VENDAS;
+const SF = () => S.canal ? SAIDAS.filter(v => AN[v.p.an].canal === S.canal) : SAIDAS;
+const metaTx = (f, v) => v ? 'meta ' + f(v) : 'sem meta definida';
+const COR = ['--accent', '--serie2', '--s3', '--s4'];
+function grCanal(tit, rot, ds, fn, fmt, nome, metaV, comp, sub) {
+  let ser;
+  if (S.verPor === 'canal' && !S.canal) { const us = CANAIS.slice(0, 4), resto = CANAIS.slice(4), mede = cn => { const g = S.canal; S.canal = cn; const r = ds.map(fn); S.canal = g; return r; };
+    ser = us.map((cn, i) => ({ nome: cn, cor: COR[i], vals: mede(cn) })); if (resto.length && !/Custo/.test(tit)) { const rs = resto.map(mede); ser.push({ nome: 'Outros', cor: '--muted', vals: ds.map((_, i) => rs.some(r => r[i] != null) ? soma(rs, r => r[i] || 0) : null) }); } }
+  else { ser = [{ nome, cor: '--accent', vals: ds.map(fn) }]; if (comp) ser.push(comp); if (metaV) ser.push({ nome: 'Meta', cor: '--muted', tr: 1, vals: metaV }); }
+  return grafico(tit, sub || '', rot, ser, fmt);
+}
+function compara(e, ds, fn) { if (S.cmp !== 'anterior') return null; const se = semanas(e), at = S.per[e.k]; if (at == null || at === 'tudo' || !at) return null; const ant = se[at - 1].dias; return { nome: se[at - 1].nome, cor: '--serie2', semRot: 1, vals: ds.map((_, i) => ant[i] ? fn(ant[i]) : null) }; }
+function barraFiltros() { const e = ET[S.etapa], at = e && S.per[e.k], temSem = e && semanas(e).length > 1;
+  return `<div class="ver"><label class="peq" for="fxCanal">Canal <select id="fxCanal"><option value="">Todos</option>${CANAIS.map(x => `<option ${x === S.canal ? 'selected' : ''}>${x}</option>`).join('')}</select></label>
+  <label class="peq" for="fxVer">Gráficos <select id="fxVer" ${S.canal ? 'disabled' : ''}><option value="total" ${S.verPor === 'total' ? 'selected' : ''}>Total</option><option value="canal" ${S.verPor === 'canal' ? 'selected' : ''}>Comparar canais</option></select></label>
+  ${temSem && at != null && at !== 'tudo' && at > 0 ? `<label class="peq" for="fxCmp">Comparar período <select id="fxCmp"><option value="">Não comparar</option><option value="anterior" ${S.cmp === 'anterior' ? 'selected' : ''}>Com a semana anterior</option></select></label>` : ''}</div>`; }
+const liqAte = d => { const ok = VF().filter(v => v.dia <= d && !(v.p.saiu && v.p.saiu <= d)); return soma(ok, v => v.valor - v.tx - v.cm); };
+function comparaCampanhas(T, inv, leads) { if (!CAMP_ANT.length) return ''; const c2 = [['Campanha'], ['Investido', 'n'], ['Leads', 'n'], ['CPL', 'n'], ['Vendas', 'n'], ['Faturamento', 'n'], ['ROAS', 'n']], l = (n, i, q, v, f) => linha(c2, [n, fBrl(i), fN(q), q ? fBrl2(i / q) : '—', fN(v), fBrl(f), i ? fX(f / i) : '—']);
+  return `<section class="caixa"><h3>Comparar com outras campanhas</h3>${tabela(c2, [l('<b>Esta campanha</b>', inv, leads, T.vendas, T.fat), ...CAMP_ANT.map(x => l(x.nome, x.inv, x.leads, x.vendas, x.fat))])}</section>`; }
+function barrasCoorte(ord, grupos, nomeG) { const ls = ord.map(k => { const ps = grupos.get(k), ids = new Set(ps.map(p => p.id)); return { n: nomeG(k), q: ps.length, f: soma(vendasOk(v => ids.has(v.p.id) && !saiu(v)), v => v.valor) }; }).slice(0, 12), mq = Math.max(1, ...ls.map(x => x.q)), mf = Math.max(1, ...ls.map(x => x.f));
+  const bl = (tit, k, m, f) => `<section class="caixa"><h3>${tit}</h3><div class="funil">${ls.map(x => `<div class="l"><span>${x.n}</span><div class="b"><i style="width:${Math.max(1, x[k] / m * 100)}%"></i></div><span class="n">${f(x[k])}</span></div>`).join('')}</div></section>`;
+  return `<div class="cols">${bl('Leads em cada grupo', 'q', mq, fN)}${bl('Faturamento de cada grupo', 'f', mf, fBrl)}</div>`; }
+
+/* ---------- estado e contas ---------- */
+const S = { hoje: H.hoje, etapa: null, per: {}, drill: null, temRea: ETAPAS.some(e => e.k === 'rea' && e.ativa), canal: '', verPor: 'total', cmp: '' };
+const etapasAtivas = () => ETAPAS.filter(e => e.ativa);
+const etapaAtual = () => { const a = etapasAtivas(); if (S.hoje > a[a.length - 1].fim) return null; return a.find(e => S.hoje >= e.ini && S.hoje <= e.fim) || a.find(e => S.hoje < e.ini); };
+const ate = d => d <= S.hoje;
+const leadsAte = (lim = S.hoje) => LF().filter(p => p.dia <= lim);
+const vendasOk = (f = () => true) => VF().filter(v => ate(v.dia) && f(v));
+const saiu = v => v.p.saiu && ate(v.p.saiu);
+const invDia = d => { const g = GASTO[d] || {}; return soma(Object.keys(g).filter(id => !S.canal || AN[id].canal === S.canal), id => g[id]); };
+const invEtapa = k => soma(dias(ET[k].ini, ET[k].fim).filter(ate), invDia);
+const invTotal = () => soma(etapasAtivas(), e => invEtapa(e.k));
+const vendasEt = k => vendasOk(v => v.et === k && (k !== 'rea' || S.temRea));
+function totais(vs = vendasOk(v => v.et !== 'rea' || S.temRea)) {
+  const bruto = soma(vs, v => v.valor), sai = soma(vs.filter(saiu), v => v.valor), fat = bruto - sai;
+  const ok = vs.filter(v => !saiu(v)), taxas = soma(ok, v => v.tx), comis = soma(ok, v => v.cm);
+  return { vendas: vs.length, bruto, sai, fat, taxas, comis, liq: fat - taxas - comis, ticket: div(bruto, vs.length) };
+}
+const estadoEt = e => S.hoje < e.ini ? 'futura' : S.hoje > e.fim ? 'feita' : 'agora';
+const fracEt = e => dias(e.ini, e.fim).filter(ate).length / dias(e.ini, e.fim).length;
+const semanas = e => { const t = dias(e.ini, e.fim), r = []; for (let i = 0; i < t.length; i += 7) { const s = t.slice(i, i + 7); r.push({ nome: 'Semana ' + (r.length + 1), dias: s }); } return r; };
+const diasPer = e => { const per = S.per[e.k], t = dias(e.ini, e.fim); if (per == null || per === 'tudo') return t; return semanas(e)[per].dias; };
+
+/* ---------- gráfico de linha: um eixo, linhas de 2px, meta tracejada, dica ao passar o mouse ---------- */
+const GR = [];
+function grafico(tit, sub, rot, series, fmt) {
+  const id = GR.push({ rot, series, fmt }) - 1;
+  const leg = series.length > 1 ? `<div class="leg">${series.map(s => `<span><i class="${s.tr ? 'tr' : ''}" style="--c:var(${s.cor})"></i>${s.nome}</span>`).join('')}</div>` : '';
+  return `<section class="caixa"><div class="tit"><h3>${tit}</h3><span class="muted peq">${sub || ''}</span></div>${leg}<div class="gf" data-g="${id}" role="img" aria-label="${tit}"></div></section>`;
+}
+function passoEixo(max) { const b = Math.pow(10, Math.floor(Math.log10(max || 1))); for (const m of [1, 2, 2.5, 5, 10]) if (b * m * 4 >= max) return b * m; return b * 10; }
+function desenha() {
+  raiz.querySelectorAll('.gf').forEach(el => {
+    const g = GR[+el.dataset.g], W = el.clientWidth, H = el.clientHeight; if (!W) return;
+    const curto = v => v >= 1000 ? (v / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mil' : v.toLocaleString('pt-BR', { maximumFractionDigits: 2 });
+    const M = { e: 46, d: 16, t: 20, b: 24 }, max = Math.max(...g.series.flatMap(s => s.vals.filter(v => v != null && isFinite(v))), 0) * 1.02;
+    const p = passoEixo(max), topo = Math.ceil(max / p) * p || 1, n = g.rot.length;
+    const x = i => M.e + (n > 1 ? i * (W - M.e - M.d) / (n - 1) : (W - M.e - M.d) / 2), y = v => H - M.b - v * (H - M.t - M.b) / topo;
+    let h = '';
+    for (let v = 0; v <= topo + 1e-9; v += p) h += `<line x1="${M.e}" x2="${W - M.d}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${M.e - 8}" y="${y(v) + 4}" text-anchor="end">${curto(v)}</text>`;
+    const passo = Math.max(1, Math.ceil(n / Math.max(2, Math.floor((W - M.e - M.d) / 56))));
+    g.rot.forEach((r, i) => { if (i % passo === 0) h += `<text x="${x(i)}" y="${H - 6}" text-anchor="${i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle'}">${r}</text>`; });
+    g.series.slice().reverse().forEach(s => {
+      const pts = s.vals.map((v, i) => v == null || !isFinite(v) ? null : [x(i), y(v)]).filter(Boolean); if (!pts.length) return;
+      h += `<polyline fill="none" stroke="var(${s.cor})" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" ${s.tr ? 'stroke-dasharray="5 5" opacity=".8"' : ''} points="${pts.map(q => q.join(',')).join(' ')}"/>`;
+      if (!s.tr) { const f = pts[pts.length - 1], ultimo = s.vals.filter(v => v != null && isFinite(v)).pop(), noFim = f[0] > W - 90; h += `<circle cx="${f[0]}" cy="${f[1]}" r="4" fill="var(${s.cor})" stroke="var(--surface)" stroke-width="2"/>` + (s.semRot ? '' : `<text class="fim" x="${f[0] + (noFim ? 0 : 8)}" y="${f[1] - 9}" text-anchor="${noFim ? 'end' : 'start'}">${g.fmt(ultimo)}</text>`); }
+    });
+    h += `<line class="cruz" x1="0" x2="0" y1="${M.t}" y2="${H - M.b}" stroke="var(--muted)" stroke-dasharray="2 3" visibility="hidden"/>`;
+    el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${h}</svg><div class="dica" hidden></div>`;
+    const cruz = el.querySelector('.cruz'), dica = el.querySelector('.dica');
+    const mostra = cx => {
+      const r = el.getBoundingClientRect(), i = Math.max(0, Math.min(n - 1, Math.round((cx - r.left - M.e) / ((W - M.e - M.d) / Math.max(1, n - 1)))));
+      cruz.setAttribute('x1', x(i)); cruz.setAttribute('x2', x(i)); cruz.setAttribute('visibility', 'visible');
+      dica.hidden = false; dica.innerHTML = `<b>${g.rot[i]}</b><br>` + g.series.map(s => `${s.nome}: ${s.vals[i] == null ? 'ainda sem dado' : g.fmt(s.vals[i])}`).join('<br>');
+      dica.style.left = Math.max(0, Math.min(W - dica.offsetWidth, x(i) - dica.offsetWidth / 2)) + 'px'; dica.style.top = '0';
+    };
+    el.onpointermove = e => mostra(e.clientX); el.onpointerdown = e => mostra(e.clientX);
+    el.onpointerleave = () => { dica.hidden = true; cruz.setAttribute('visibility', 'hidden'); };
+  });
+}
+{ let rz; const aoRedim = () => { if (!el.isConnected) { window.removeEventListener('resize', aoRedim); return; } clearTimeout(rz); rz = setTimeout(desenha, 120); }; window.addEventListener('resize', aoRedim); }
+
+/* ---------- peças da tela ---------- */
+function kpi(nome, valor, sub, luzH, abre) {
+  const dentro = `<div class="r"><span>${nome}</span>${abre ? '<span class="seta">Abrir ›</span>' : ''}</div><div class="v">${valor}</div>${sub ? `<div class="s">${sub}</div>` : ''}${luzH || ''}`;
+  return abre ? `<button class="kpi" type="button" data-abre="${abre}">${dentro}</button>` : `<div class="kpi">${dentro}</div>`;
+}
+const filtroPer = e => { const se = semanas(e); if (se.length < 2) return ''; const at = S.per[e.k] == null ? 'tudo' : S.per[e.k]; return `<div class="per" role="group" aria-label="Filtrar por período"><button type="button" class="${at === 'tudo' ? 'sel' : ''}" data-per="tudo">Etapa toda</button>${se.map((s, i) => `<button type="button" class="${at === i ? 'sel' : ''}" data-per="${i}">${s.nome}</button>`).join('')}</div>`; };
+const cabEtapa = (e, extra) => `<div class="cab"><div><h2>${e.nome}</h2><p class="muted peq">${dm(e.ini)} a ${dm(e.fim)}${estadoEt(e) === 'agora' ? ` · dia ${dias(e.ini, S.hoje).length} de ${dias(e.ini, e.fim).length}` : estadoEt(e) === 'feita' ? ' · encerrada' : ''}</p></div>${extra || ''}</div>`;
+const tabela = (cab, linhas, pe) => `<div class="tw"><table><thead><tr>${cab.map(c => `<th class="${c[1] || ''}">${c[0]}</th>`).join('')}</tr></thead><tbody>${linhas.join('')}</tbody>${pe ? `<tfoot><tr>${pe.map((c, i) => `<td class="${cab[i][1] || ''}">${c}</td>`).join('')}</tr></tfoot>` : ''}</table></div>`;
+const linha = (cab, cels) => `<tr>${cels.map((c, i) => `<td class="${cab[i][1] || ''}">${c}</td>`).join('')}</tr>`;
+const botaoCoorte = (pad = 'semana') => `<div class="ver"><button class="btn" type="button" data-abre="coorte:${pad}">Ver por cohorts</button><span class="muted peq">Agrupe por período, anúncio, canal ou público.</span></div>`;
+const vazioEt = (e, txt) => `<div class="vazio"><h3>${e.nome} começa em ${dm(e.ini)}</h3><p class="muted">${txt}</p></div>`;
+const notaRoas = `<p class="nota muted"><b>Por que o ROAS daqui pode diferir do Dashboard de marketing?</b> Aqui ele soma todas as vendas da campanha. O Dashboard olha as vendas dos leads que entraram no período escolhido. As duas contas usam faturamento ÷ investimento; muda quem entra na conta.</p>`;
+
+/* ---------- etapas ---------- */
+function vCap() {
+  const e = ET.cap, ds = diasPer(e), feitos = ds.filter(ate), ls = LF().filter(p => ds.includes(p.dia) && ate(p.dia));
+  const inv = soma(feitos, invDia), cpl = div(inv, ls.length), metaL = META.leadsDia * ds.length, frac = feitos.length / ds.length;
+  const porDia = d => ate(d) ? LF().filter(p => p.dia === d).length : null, cplDia = d => ate(d) ? div(invDia(d), LF().filter(p => p.dia === d).length) : null;
+  const rot = ds.map(dm), vis = soma(LINKS, l => l.vis) * (ls.length / LF().length);
+  const qual = ls.filter(p => p.qual).length, grp = ls.filter(p => p.grupo && ate(p.grupo)).length;
+  const blocos = S.per.cap == null || S.per.cap === 'tudo' ? semanas(e).map(s => ({ nome: s.nome, dias: s.dias, sub: `${dm(s.dias[0])} a ${dm(s.dias[s.dias.length - 1])}` })) : ds.map(d => ({ nome: dm(d), dias: [d] }));
+  const cL = [['Período'], ['Leads', 'n'], ['Meta', 'n'], ['Situação']], cC = [['Período'], ['CPL', 'n'], ['Meta', 'n'], ['Situação']];
+  const lL = [], lC = [];
+  blocos.forEach(b => { const f = b.dias.filter(ate); if (!f.length) { lL.push(linha(cL, [b.nome, '—', fN(META.leadsDia * b.dias.length), '<span class="muted peq">Ainda não começou</span>'])); lC.push(linha(cC, [b.nome, '—', fBrl2(META.cpl), '<span class="muted peq">Ainda não começou</span>'])); return; }
+    const q = LF().filter(p => b.dias.includes(p.dia) && ate(p.dia)).length, i = soma(f, invDia), c = div(i, q);
+    lL.push(linha(cL, [b.nome, fN(q), fN(META.leadsDia * b.dias.length), luz(q, META.leadsDia * b.dias.length, { frac: f.length / b.dias.length })])); lC.push(linha(cC, [b.nome, fBrl2(c), fBrl2(META.cpl), luz(c, META.cpl, { menor: 1 })])); });
+  const pagos = CANAIS.filter(cn => !S.canal || cn === S.canal).map(cn => { const ids = ANUNCIOS.filter(a => a.canal === cn).map(a => a.id), lc = ls.filter(p => ids.includes(p.an)), ic = soma(feitos, d => soma(ids, id => (GASTO[d] || {})[id] || 0)); return { cn, q: lc.length, ic, cpl: div(ic, lc.length) }; });
+  const cM = [['Canal'], ['Investido', 'n'], ['Leads', 'n'], ['CPL', 'n']], cK = [['Link'], ['Visitas', 'n'], ['Leads', 'n'], ['Conversão', 'n']];
+  return `${cabEtapa(e, filtroPer(e))}
+  <div class="kpis">
+    ${kpi('Leads', fN(ls.length), `${metaTx(fN, metaL)}`, luz(ls.length, metaL, { frac }), 'leads')}
+    ${kpi('Custo por lead', cpl ? fBrl2(cpl) : '—', `${metaTx(fBrl2, META.cpl)}`, luz(cpl, META.cpl, { menor: 1 }), 'cpl')}
+    ${kpi('Investido', fBrl(inv), 'anúncios no período', '', 'inv')}
+    ${kpi('Qualificados', fN(qual), `${fP(div(qual, ls.length) * 100 || 0)} dos leads`, '', 'leads')}
+  </div>
+  <div class="cols">
+    ${grCanal('Leads por dia', rot, ds, porDia, fN, 'Leads', META.leadsDia ? ds.map(() => META.leadsDia) : null, compara(e, ds, porDia))}
+    ${grCanal('Custo por lead por dia', rot, ds, cplDia, fBrl2, 'CPL', META.cpl ? ds.map(() => META.cpl) : null, compara(e, ds, cplDia))}
+  </div>
+  <div class="cols">
+    <section class="caixa"><h3>Leads: dentro e fora da meta</h3>${tabela(cL, lL)}</section>
+    <section class="caixa"><h3>Custo por lead: dentro e fora da meta</h3>${tabela(cC, lC)}</section>
+  </div>
+  ${botaoCoorte('semana')}
+  <div class="cols">
+    <section class="caixa"><h3>Funil da captação</h3><div class="funil">${(vis ? [['Visitas', vis]] : []).concat([['Leads', ls.length], ['Qualificados', qual]]).concat(grp ? [['Entraram no grupo', grp]] : []).map(f => `<div class="l"><span>${f[0]}</span><div class="b"><i style="width:${Math.max(1, f[1] / (vis || ls.length || 1) * 100)}%"></i></div><span class="n">${fN(f[1])}</span></div>`).join('')}</div></section>
+    <section class="caixa"><h3>Mídia paga</h3>${tabela(cM, pagos.map(m => linha(cM, [m.cn, fBrl(m.ic), fN(m.q), m.cpl ? fBrl2(m.cpl) : '—'])))}</section>
+  </div>
+  <section class="caixa"><h3>Links de captação</h3>${tabela(cK, LINKS.map(l => { const q = ls.filter(p => l.an.includes(p.an)).length, vs = l.vis * (ls.length / LF().length); return linha(cK, [l.nome, fN(vs), fN(q), vs ? fP(q / vs * 100) : '—']); }))}</section>`;
+}
+function grupoAte(d) { const ent = LF().filter(p => p.grupo && p.grupo <= d).length, sai = soma(Object.keys(SAI_GRUPO).filter(k => k <= d), k => SAI_GRUPO[k]); return ent - sai; }
+function vAq() {
+  const e = ET.aq; if (estadoEt(e) === 'futura') return cabEtapa(e) + vazioEt(e, `Os gráficos aparecem quando as entradas começarem.`);
+  const ds = dias(e.ini, e.fim), feitos = ds.filter(ate), ent = d => ate(d) ? LF().filter(p => p.grupo === d).length : null, tEnt = soma(feitos, ent), tSai = soma(feitos, d => SAI_GRUPO[d] || 0), no = grupoAte(S.hoje), leads = leadsAte().length;
+  const metaAcum = (i) => soma(META.grupoDia.slice(0, i + 1)); const frac = metaAcum(feitos.length - 1) / META.noGrupo;
+  const cT = [['Dia'], ['Entradas', 'n'], ['Meta', 'n'], ['Situação']], cA = [['Aula'], ['Dia'], ['Presentes', 'n'], ['Do grupo', 'n']];
+  const aulas = AULAS.filter(a => ate(a.dia));
+  return `${cabEtapa(e)}
+  <div class="kpis">
+    ${kpi('Pessoas no grupo', fN(no), `${metaTx(fN, META.noGrupo)}`, luz(no, META.noGrupo, { frac }), 'det:grupo')}
+    ${kpi('Entradas', fN(tEnt), 'na etapa', '', 'det:entradas')}
+    ${kpi('Saídas do grupo', fN(tSai), tEnt ? `${fP(tSai / tEnt * 100)} das entradas` : 'na etapa', '', 'det:saigrupo')}
+    ${kpi('Leads no grupo', fP(no / leads * 100), `${fN(no)} de ${fN(leads)} leads`, '', 'coorte:canal')}
+  </div>
+  <div class="cols">
+    ${grCanal('Entradas no grupo por dia', ds.map(dm), ds, ent, fN, 'Entradas', META.noGrupo ? META.grupoDia : null)}
+    ${grafico('Pessoas no grupo', 'acumulado', ds.map(dm), [{ nome: 'No grupo', cor: '--accent', vals: ds.map(d => ate(d) ? grupoAte(d) : null) }, { nome: 'Meta', cor: '--muted', tr: 1, vals: ds.map((_, i) => metaAcum(i)) }], fN)}
+  </div>
+  <div class="cols">
+    <section class="caixa"><h3>Entradas: dentro e fora da meta</h3>${tabela(cT, ds.map((d, i) => ate(d) ? linha(cT, [dm(d), fN(ent(d)), fN(META.grupoDia[i]), luz(ent(d), META.grupoDia[i])]) : linha(cT, [dm(d), '—', fN(META.grupoDia[i]), '<span class="muted peq">Ainda não chegou</span>'])))}</section>
+    <section class="caixa"><h3>Aulas do aquecimento</h3>${aulas.length ? tabela(cA, aulas.map(a => linha(cA, [a.nome, dm(a.dia), fN(a.pres), fP(a.pres / grupoAte(a.dia) * 100)]))) : '<p class="muted">Nenhuma aula cadastrada para esta campanha até agora.</p>'}</section>
+  </div>
+  ${botaoCoorte('semana')}`;
+}
+function painelVendas(k, ofertas) {
+  const e = ET[k]; if (estadoEt(e) === 'futura') return cabEtapa(e) + vazioEt(e, `As vendas aparecem aqui quando a etapa começar.`);
+  const ds = dias(e.ini, e.fim), vs = vendasEt(k), T = totais(vs), fr = soma(META.vendas[k].slice(0, ds.filter(ate).length)) / soma(META.vendas[k]);
+  const Tg = totais(), invT = invTotal(), cac = div(invT, Tg.vendas), roas = div(Tg.fat, invT), leads = leadsAte().length;
+  const vd = d => ate(d) ? vs.filter(v => v.dia === d).length : null, acum = (d) => ate(d) ? soma(vs.filter(v => v.dia <= d && !saiu(v)), v => v.valor) : null;
+  const cT = [['Dia'], ['Vendas', 'n'], ['Meta', 'n'], ['Situação']], cO = [['Oferta'], ['Preço', 'n'], ['Vendas', 'n'], ['Aceite', 'n'], ['Faturamento', 'n']];
+  const base = vs.filter(v => v.tipo === 'principal' || v.tipo === 'down').length;
+  const metaAcum = ds.map((_, i) => META.fat[k] * soma(META.vendas[k].slice(0, i + 1)) / soma(META.vendas[k]));
+  return `${cabEtapa(e)}
+  <div class="kpis">
+    ${kpi('Vendas', fN(vs.length), `${metaTx(fN, soma(META.vendas[k]))}. Order bump e upsell contam`, luz(vs.length, soma(META.vendas[k]), { frac: fr }), 'vendas')}
+    ${kpi('Faturamento', fBrl(T.fat), `${metaTx(fBrl, META.fat[k])}`, luz(T.fat, META.fat[k], { frac: fr }), `det:fat:${k}`)}
+    ${kpi('Conversão', fP(div(base, leads) * 100 || 0), `${fN(base)} compradores ÷ ${fN(leads)} leads`, '', 'coorte:canal')}
+    ${kpi('CAC de mídia', cac ? fBrl2(cac) : '—', `campanha até aqui · ${metaTx(fBrl2, META.cac)}`, luz(cac, META.cac, { menor: 1 }), 'geral:canais')}
+    ${kpi('ROAS', roas ? fX(roas) : '—', `campanha até aqui · ${metaTx(fX, META.roas)}`, luz(roas, META.roas), 'geral:canais')}
+    ${kpi('Ticket médio', T.ticket ? fBrl(T.ticket) : '—', 'valor das vendas ÷ vendas', '', 'geral:fat')}
+  </div>
+  <div class="cols">
+    ${grCanal('Vendas por dia', ds.map(dm), ds, d => ate(d) ? vendasEt(k).filter(v => v.dia === d).length : null, fN, 'Vendas', soma(META.vendas[k]) ? META.vendas[k] : null)}
+    ${grCanal('Faturamento acumulado', ds.map(dm), ds, d => ate(d) ? soma(vendasEt(k).filter(v => v.dia <= d && !saiu(v)), v => v.valor) : null, fBrl, 'Faturamento', META.fat[k] ? metaAcum : null, null, 'sem as vendas de quem saiu')}
+  </div>
+  <div class="cols">
+    <section class="caixa"><h3>Vendas: dentro e fora da meta</h3>${tabela(cT, ds.map((d, i) => ate(d) ? linha(cT, [dm(d), fN(vd(d)), fN(META.vendas[k][i]), luz(vd(d), META.vendas[k][i])]) : linha(cT, [dm(d), '—', fN(META.vendas[k][i]), '<span class="muted peq">Ainda não chegou</span>'])))}</section>
+    <section class="caixa"><h3>Ofertas</h3>${tabela(cO, ofertas.map(t => { const o = vs.filter(v => v.tipo === t); return linha(cO, [OFERTAS[t][0], fBrl(OFERTAS[t][1]), fN(o.length), base ? fP(o.length / base * 100) : '—', fBrl(soma(o.filter(v => !saiu(v)), v => v.valor))]); }))}</section>
+  </div>
+  ${botaoCoorte('semana')}`;
+}
+function vPos() {
+  const e = ET.pos; if (estadoEt(e) === 'futura') return cabEtapa(e) + vazioEt(e, `Aqui entram saídas, reembolsos e o fechamento da campanha.`);
+  const ds = diasPer(e), sa = SF().filter(s => ate(s.dia) && ds.includes(s.dia)), todos = SF().filter(s => ate(s.dia)), T = totais();
+  const compr = new Set(vendasOk().map(v => v.p.id)).size, churn = todos.length / compr * 100;
+  const motivos = {}; sa.forEach(s => { (motivos[s.motivo] = motivos[s.motivo] || { q: 0, v: 0 }); motivos[s.motivo].q++; motivos[s.motivo].v += s.valor; });
+  const cM = [['Motivo'], ['Pessoas', 'n'], ['Valor', 'n']], cS = [['Semana'], ['Saíram', 'n'], ['Valor', 'n'], ['Situação']];
+  const lim = compr * META.churn / 100;
+  return `${cabEtapa(e, filtroPer(e))}
+  <div class="kpis">
+    ${kpi('Saíram', fN(todos.length), `${fN(compr)} compradores`, '', 'det:saidas')}
+    ${kpi('Churn', fP(churn), `${META.churn ? 'limite ' + fP(META.churn) : 'sem limite definido'}`, luz(churn, META.churn, { menor: 1 }), 'det:saidas')}
+    ${kpi('Retenção', fP(100 - churn), 'compradores que continuam', '', 'det:saidas')}
+    ${kpi('Valor que saiu', fBrl(T.sai), 'fora do faturamento', '', 'geral:fat')}
+  </div>
+  <div class="cols">
+    ${grafico('Pessoas que saíram', 'acumulado', ds.map(dm), [{ nome: 'Saíram', cor: '--accent', vals: ds.map(d => ate(d) ? SF().filter(s => s.dia <= d).length : null) }, { nome: 'Limite', cor: '--muted', tr: 1, vals: ds.map(() => lim) }], fN)}
+    <section class="caixa"><h3>Por que saíram</h3>${Object.keys(motivos).length ? tabela(cM, Object.entries(motivos).sort((a, b) => b[1].q - a[1].q).map(([m, v]) => linha(cM, [m, fN(v.q), fBrl(v.v)]))) : '<p class="muted">Ninguém saiu neste período.</p>'}</section>
+  </div>
+  <div class="cols">
+    <section class="caixa"><h3>Saídas: dentro e fora do limite</h3>${tabela(cS, semanas(e).map(s => { const q = SF().filter(x => s.dias.includes(x.dia) && ate(x.dia)); return linha(cS, [s.nome, fN(q.length), fBrl(soma(q, x => x.valor)), s.dias[0] > S.hoje ? '<span class="muted peq">Ainda não chegou</span>' : luz(q.length, lim / semanas(e).length, { menor: 1 })]); }))}</section>
+    <section class="caixa"><h3>Fechamento da campanha</h3>${contaFechamento()}</section>
+  </div>`;
+}
+function contaFechamento() { const T = totais(), inv = invTotal(); return `<div class="conta"><div><span>Valor das vendas</span><span>${fBrl(T.bruto)}</span></div><div><span>− Vendas de quem saiu</span><span>${fBrl(T.sai)}</span></div><div class="tot"><span>Faturamento</span><span>${fBrl(T.fat)}</span></div><div><span>− Taxas e impostos</span><span>${fBrl(T.taxas)}</span></div><div><span>− Comissões</span><span>${fBrl(T.comis)}</span></div><div class="tot"><span>Receita líquida</span><span>${fBrl(T.liq)}</span></div><div><span>− Investimento</span><span>${fBrl(inv)}</span></div><div class="tot"><span>Resultado da campanha</span><span>${fBrl(T.liq - inv)}</span></div></div>`; }
+function vGeral() {
+  const T = totais(), inv = invTotal(), leads = leadsAte().length, cac = div(inv, T.vendas), roas = div(T.fat, inv), cpl = div(soma(dias(ET.cap.ini, ET.cap.fim).filter(ate), invDia), leads);
+  const c = [['Etapa'], ['Período'], ['Investido', 'n'], ['Leads', 'n'], ['Vendas', 'n'], ['Faturamento', 'n'], ['Receita líquida', 'n'], ['Situação']];
+  const metaEt = k => k === 'cap' ? luz(leads, (Number(c.meta_leads) || 0), { frac: fracEt(ET.cap) }) : k === 'aq' ? luz(grupoAte(S.hoje), META.noGrupo, { frac: soma(META.grupoDia.slice(0, dias(ET.aq.ini, ET.aq.fim).filter(ate).length)) / META.noGrupo }) : k === 'pos' ? luz(SF().filter(s => ate(s.dia)).length / (new Set(vendasOk().map(v => v.p.id)).size || 1) * 100, META.churn, { menor: 1 }) : luz(totais(vendasEt(k)).fat, META.fat[k], { frac: soma(META.vendas[k].slice(0, dias(ET[k].ini, ET[k].fim).filter(ate).length)) / soma(META.vendas[k]) });
+  const linhas = etapasAtivas().map(e => { const fut = estadoEt(e) === 'futura', t = totais(vendasEt(e.k)), v = [e.nome, `${dm(e.ini)} a ${dm(e.fim)}`, fut || e.k === 'pos' ? '—' : fBrl(invEtapa(e.k)), e.k === 'cap' ? fN(leads) : '—', ['cap', 'aq', 'pos'].includes(e.k) || fut ? '—' : fN(t.vendas), ['cap', 'aq', 'pos'].includes(e.k) || fut ? '—' : fBrl(t.fat), ['cap', 'aq', 'pos'].includes(e.k) || fut ? '—' : fBrl(t.liq), fut ? '<span class="muted peq">Ainda não começou</span>' : metaEt(e.k)];
+    return `<tr class="cl" data-et="${e.k}">${v.map((x, i) => `<td class="${c[i][1] || ''}">${i === 0 ? `<button class="lk" type="button" data-et="${e.k}">${x}</button>` : x}</td>`).join('')}</tr>`; });
+  const fimC = etapasAtivas()[etapasAtivas().length - 1].fim, ds = dias(ET.cap.ini, fimC), lim = S.hoje < fimC ? S.hoje : fimC, acumInv = {}; let a = 0; ds.forEach(d => { a += invDia(d); acumInv[d] = a; });
+  const fatAte = d => { const ok = VF().filter(v => v.dia <= d && (v.et !== 'rea' || S.temRea)); return soma(ok, v => v.valor) - soma(ok.filter(v => v.p.saiu && v.p.saiu <= d), v => v.valor); };
+  const ads = ANUNCIOS.filter(x => x.f).map(x => { const l = leadsAte().filter(p => p.an === x.id), i = soma(l, p => p.custo), vd = vendasOk(v => v.p.an === x.id); return { x, cpl: div(i, l.length), roas: div(soma(vd.filter(v => !saiu(v)), v => v.valor), i), vd: vd.length }; }).filter(x => x.cpl);
+  const melhor = ads.slice().sort((p, q) => p.cpl - q.cpl)[0], pior = ads.slice().sort((p, q) => q.cpl - p.cpl)[0];
+  const notas = melhor ? [`Anúncio com menor CPL: <b>${melhor.x.nome}</b>, ${fBrl2(melhor.cpl)}.`, `Anúncio com maior CPL: <b>${pior.x.nome}</b>, ${fBrl2(pior.cpl)}.`] : ['Ainda não há anúncios com custo e leads para comparar.'];
+  if (T.vendas) { const r = ads.filter(x => x.vd).sort((p, q) => q.roas - p.roas)[0]; if (r) notas.push(`Anúncio com melhor ROAS: <b>${r.x.nome}</b>, ${fX(r.roas)}.`); const et = etapasAtivas().filter(e => vendasEt(e.k).length).sort((p, q) => totais(vendasEt(q.k)).fat - totais(vendasEt(p.k)).fat)[0]; if (et) notas.push(`Etapa que mais faturou: <b>${et.nome}</b>, ${fBrl(totais(vendasEt(et.k)).fat)}.`); }
+  return `<div class="cab"><div><h2>Geral</h2><p class="muted peq">Todas as etapas somadas, até ${dm(S.hoje)}.</p></div></div>
+  <div class="kpis oito">
+    ${kpi('Faturamento', fBrl(T.fat), `${metaTx(fBrl, META.fatTotal)}${T.sai ? ` · ${fN(SF().filter(s => ate(s.dia)).length)} ${SF().filter(s => ate(s.dia)).length === 1 ? 'pessoa saiu' : 'pessoas saíram'} (−${fBrl(T.sai)})` : ''}`, T.fat ? luz(T.fat, META.fatTotal) : '', 'geral:fat')}
+    ${kpi('Receita líquida', fBrl(T.liq), 'faturamento − taxas − comissões', '', 'geral:conta')}
+    ${kpi('Investido', fBrl(inv), META.orc ? `orçamento ${fBrl(META.orc)}` : 'sem orçamento definido', '', 'geral:inv')}
+    ${kpi('Resultado', fBrl(T.liq - inv), 'receita líquida − investimento', '', 'geral:conta')}
+    ${kpi('Leads', fN(leads), `${metaTx(fN, (Number(c.meta_leads) || 0))}`, luz(leads, (Number(c.meta_leads) || 0), { frac: fracEt(ET.cap) }), 'leads')}
+    ${kpi('Vendas', fN(T.vendas), 'order bump e upsell contam', '', 'vendas')}
+    ${kpi('Custo por lead', cpl ? fBrl2(cpl) : '—', `${metaTx(fBrl2, META.cpl)}`, luz(cpl, META.cpl, { menor: 1 }), 'cpl')}
+    ${kpi('CAC de mídia', cac ? fBrl2(cac) : '—', `investimento ÷ vendas · ${metaTx(fBrl2, META.cac)}`, cac ? luz(cac, META.cac, { menor: 1 }) : '', 'geral:canais')}
+    ${kpi('ROAS', roas ? fX(roas) : '—', `faturamento ÷ investimento · ${metaTx(fX, META.roas)}`, roas ? luz(roas, META.roas) : '', 'geral:canais')}
+    ${kpi('Ticket médio', T.ticket ? fBrl(T.ticket) : '—', 'valor das vendas ÷ vendas', '', 'geral:fat')}
+  </div>
+  <section class="caixa"><h3>Resultado por etapa</h3>${tabela(c, linhas)}<p class="muted peq">Clique em uma etapa para abrir.</p></section>
+  ${grafico('Faturamento e investimento acumulados', 'quando a linha do faturamento passa a do investimento, o ROAS passa de 1x', ds.map(dm), [{ nome: 'Faturamento', cor: '--accent', vals: ds.map(d => d <= lim ? fatAte(d) : null) }, { nome: 'Investimento', cor: '--serie2', vals: ds.map(d => d <= lim ? acumInv[d] : null) }], fBrl)}
+  ${grafico('Faturamento e receita líquida acumulados', 'até o dia, sem as vendas de quem saiu', ds.map(dm), [{ nome: 'Faturamento', cor: '--accent', vals: ds.map(d => d <= lim ? fatAte(d) : null) }, { nome: 'Receita líquida', cor: '--serie2', vals: ds.map(d => d <= lim ? liqAte(d) : null) }], fBrl)}
+  <div class="cols">${grCanal('Leads por dia', dias(ET.cap.ini, ET.cap.fim).map(dm), dias(ET.cap.ini, ET.cap.fim), d => ate(d) ? LF().filter(p => p.dia === d).length : null, fN, 'Leads')}${grCanal('Vendas por dia', ds.map(dm), ds, d => d <= lim ? VF().filter(v => v.dia === d).length : null, fN, 'Vendas')}</div>
+  ${comparaCampanhas(T, inv, leads)}
+  <div class="cols">
+    <section class="caixa"><h3>Do valor vendido ao resultado</h3>${contaFechamento()}</section>
+    <section class="caixa"><h3>Debriefing</h3><ul class="lista">${notas.map(n => `<li>${n}</li>`).join('')}</ul>${botaoCoorte('semana')}</section>
+  </div>
+  ${notaRoas}`;
+}
+
+/* ---------- detalhes ao clicar ---------- */
+const nomeVolta = () => S.etapa === 'geral' ? 'Geral' : ET[S.etapa].nome;
+function dGeral(tipo) {
+  const T = totais(), comVenda = etapasAtivas().filter(e => !['cap', 'aq', 'pos'].includes(e.k)), okRea = v => v.et !== 'rea' || S.temRea;
+  const cE = [['Etapa'], ['Vendas', 'n'], ['Valor das vendas', 'n'], ['Quem saiu', 'n'], ['Faturamento', 'n'], ['Receita líquida', 'n']];
+  const porEtapa = `<section class="caixa"><h3>Por etapa</h3>${T.vendas ? tabela(cE, comVenda.map(e => { const t = totais(vendasEt(e.k)); return linha(cE, [`<button class="lk" type="button" data-et="${e.k}">${e.nome}</button>`, fN(t.vendas), fBrl(t.bruto), fBrl(t.sai), fBrl(t.fat), fBrl(t.liq)]); }), ['Total', fN(T.vendas), fBrl(T.bruto), fBrl(T.sai), fBrl(T.fat), fBrl(T.liq)]) : '<p class="muted">As vendas começam no carrinho.</p>'}</section>`;
+  if (tipo === 'fat') { const c = [['Oferta'], ['Vendas', 'n'], ['Ticket', 'n'], ['Valor das vendas', 'n'], ['Quem saiu', 'n'], ['Faturamento', 'n']];
+    const lin = Object.keys(OFERTAS).map(t => { const v = vendasOk(x => x.tipo === t && okRea(x)), b = soma(v, x => x.valor), s = soma(v.filter(saiu), x => x.valor); return linha(c, [OFERTAS[t][0], fN(v.length), v.length ? fBrl(b / v.length) : '—', fBrl(b), fBrl(s), fBrl(b - s)]); });
+    return `${voltar('Geral', 'Faturamento', `${fBrl(T.fat)} em ${fN(T.vendas)} vendas. Faturamento = valor das vendas − vendas de quem saiu.`)}
+    <section class="caixa"><h3>Por oferta</h3>${tabela(c, lin, ['Total', fN(T.vendas), T.ticket ? fBrl(T.ticket) : '—', fBrl(T.bruto), fBrl(T.sai), fBrl(T.fat)])}</section>
+    ${porEtapa}<div class="ver"><button class="btn" type="button" data-abre="vendas">Ver todas as vendas</button><button class="btn" type="button" data-abre="coorte:canal">Ver por cohorts</button></div>`; }
+  if (tipo === 'conta') return `${voltar('Geral', 'Do faturamento ao resultado', 'Como cada número chega até o resultado da campanha.')}
+    <section class="caixa">${contaFechamento()}</section>${porEtapa}`;
+  const canais = CANAIS.filter(cn => cn !== 'Sem origem'), gastoCanal = cn => soma(leadsAte().filter(p => AN[p.an].canal === cn), p => p.custo);
+  if (tipo === 'inv') { const cI = [['Etapa'], ['Período'], ['Investido', 'n']], cC = [['Canal'], ['Investido', 'n']], capI = invEtapa('cap'), dep = invTotal() - capI;
+    return `${voltar('Geral', 'Investimento', META.orc ? `${fBrl(invTotal())} de ${fBrl(META.orc)} do orçamento.` : `${fBrl(invTotal())} investidos.`)}
+    <div class="cols"><section class="caixa"><h3>Por etapa</h3>${tabela(cI, etapasAtivas().filter(e => e.k !== 'pos').map(e => linha(cI, [`<button class="lk" type="button" data-et="${e.k}">${e.nome}</button>`, `${dm(e.ini)} a ${dm(e.fim)}`, fBrl(invEtapa(e.k))])), ['Total', '', fBrl(invTotal())])}</section>
+    <section class="caixa"><h3>Por canal</h3>${tabela(cC, canais.map(cn => linha(cC, [cn, fBrl(gastoCanal(cn))])).concat(dep ? [linha(cC, ['Depois da captação (remarketing)', fBrl(dep)])] : []), ['Total', fBrl(invTotal())])}</section></div>`; }
+  const c = [['Canal'], ['Investido na captação', 'n'], ['Leads', 'n'], ['Vendas', 'n'], ['Faturamento', 'n'], ['CAC de mídia', 'n'], ['ROAS', 'n']];
+  return `${voltar(nomeVolta(), 'CAC de mídia e ROAS por canal', 'Cada canal com as vendas dos leads que ele trouxe.')}
+  <section class="caixa">${tabela(c, CANAIS.map(cn => { const ids = new Set(leadsAte().filter(p => AN[p.an].canal === cn).map(p => p.id)), v = vendasOk(x => ids.has(x.p.id) && okRea(x)), g = gastoCanal(cn), f = soma(v.filter(x => !saiu(x)), x => x.valor); return linha(c, [cn, g ? fBrl(g) : '—', fN(ids.size), fN(v.length), fBrl(f), g && v.length ? fBrl2(g / v.length) : '—', g && f ? fX(f / g) : '—']); }))}
+  <p class="muted peq">Aqui entra só o investimento da captação de cada canal. O número da campanha soma também as outras etapas, por isso fica diferente.</p></section>${notaRoas}`;
+}
+const voltar = (e, tit, sub) => `<div class="cab"><div><button class="volta" type="button" data-volta="1">‹ Voltar para ${e}</button><h2>${tit}</h2>${sub ? `<p class="muted peq">${sub}</p>` : ''}</div></div>`;
+function dLeads() {
+  const D = S.drill, canal = D.canal || '', gr = D.gr || ''; const todos = leadsAte().filter(p => (!canal || AN[p.an].canal === canal) && (gr === '' || (gr === 'sim') === !!(p.grupo && ate(p.grupo)))).slice().reverse(), lim = D.lim || 12;
+  const c = [['Pessoa'], ['Entrou em'], ['Canal'], ['Anúncio'], ['Grupo'], ['Comprou']];
+  return `${voltar(nomeVolta(), 'Leads captados nesta campanha', `${fN(todos.length)} pessoas${canal ? ' em ' + canal : ''}.`)}
+  <div class="ver"><label class="peq" for="fCanal">Canal <select id="fCanal"><option value="">Todos</option>${[...new Set(ANUNCIOS.map(a => a.canal))].map(x => `<option ${x === canal ? 'selected' : ''}>${x}</option>`).join('')}</select></label>
+  <label class="peq" for="fGr">Grupo <select id="fGr"><option value="">Todos</option><option value="sim" ${gr === 'sim' ? 'selected' : ''}>Entrou</option><option value="nao" ${gr === 'nao' ? 'selected' : ''}>Não entrou</option></select></label>
+  <button class="btn" type="button" data-abre="coorte:semana">Ver por cohorts</button></div>
+  <section class="caixa">${tabela(c, todos.slice(0, lim).map(p => linha(c, [p.nome, dm(p.dia), AN[p.an].canal, AN[p.an].nome, p.grupo && ate(p.grupo) ? 'Sim' : 'Não', p.comprou && ate(p.comprou) ? 'Sim' : 'Não'])))}
+  ${todos.length > lim ? `<button class="btn" type="button" id="maisL">Mostrar mais 12</button>` : ''}</section>`;
+}
+function dCpl() {
+  const v = S.drill.v || 'anuncio', ls = leadsAte(), invC = soma(dias(ET.cap.ini, ET.cap.fim).filter(ate), invDia);
+  let corpo = '';
+  if (v === 'anuncio') { const c = [['Anúncio'], ['Canal'], ['Público'], ['Investido', 'n'], ['Leads', 'n'], ['CPL', 'n'], ['Situação']];
+    const r = ANUNCIOS.filter(a => a.f).map(a => { const l = ls.filter(p => p.an === a.id), i = soma(l, p => p.custo); return { a, q: l.length, i, cpl: div(i, l.length) }; }).sort((p, q) => p.cpl - q.cpl);
+    corpo = `<section class="caixa">${tabela(c, r.map(x => linha(c, [x.a.nome, x.a.canal, x.a.pub, fBrl(x.i), fN(x.q), fBrl2(x.cpl), luz(x.cpl, META.cpl, { menor: 1 })])))}</section>`; }
+  if (v === 'campanha') { const c = [['Campanha'], ['Investido', 'n'], ['Leads', 'n'], ['CPL', 'n'], ['Situação']];
+    corpo = `<section class="caixa">${tabela(c, [...CAMP_ANT.map(x => linha(c, [x.nome, fBrl(x.inv), fN(x.leads), fBrl2(x.inv / x.leads), luz(x.inv / x.leads, META.cpl, { menor: 1 })])), linha(c, ['<b>Esta campanha</b>', fBrl(invC), fN(ls.length), `<b>${fBrl2(invC / ls.length)}</b>`, luz(invC / ls.length, META.cpl, { menor: 1 })])])}</section>`; }
+  if (v === 'dia') { const ds = dias(ET.cap.ini, ET.cap.fim), c = [['Dia'], ['Investido', 'n'], ['Leads', 'n'], ['CPL', 'n'], ['Situação']], f = ds.filter(ate);
+    corpo = grafico('Custo por lead por dia', '', ds.map(dm), [{ nome: 'CPL', cor: '--accent', vals: ds.map(d => ate(d) ? div(invDia(d), LF().filter(p => p.dia === d).length) : null) }, { nome: 'Meta', cor: '--muted', tr: 1, vals: ds.map(() => META.cpl) }], fBrl2) + `<section class="caixa">${tabela(c, f.slice().reverse().map(d => { const q = LF().filter(p => p.dia === d).length, i = invDia(d); return linha(c, [dm(d), fBrl(i), fN(q), fBrl2(i / q), luz(i / q, META.cpl, { menor: 1 })]); }))}</section>`; }
+  return `${voltar(nomeVolta(), 'Custo por lead', `Esta campanha: ${fBrl2(invC / ls.length)}. ${META.cpl ? 'Meta: ' + fBrl2(META.cpl) + '. ' : ''}Orgânico fica fora da lista por anúncio, porque não tem custo.`)}
+  <div class="tabs" role="group" aria-label="Ver custo por lead">${[['anuncio', 'Por anúncio'], ['campanha', 'Por campanha'], ['dia', 'Por dia']].map(t => `<button type="button" data-cplv="${t[0]}" class="${v === t[0] ? 'sel' : ''}">${t[1]}</button>`).join('')}</div>
+  ${corpo}${botaoCoorte('anuncio')}`;
+}
+function dCoorte() {
+  const g = S.drill.g || 'semana', chave = { semana: p => semanas(ET.cap).findIndex(s => s.dias.includes(p.dia)), dia: p => p.dia, anuncio: p => p.an, canal: p => AN[p.an].canal, publico: p => AN[p.an].pub }[g];
+  const nomeG = { semana: k => `Semana ${k + 1} (${dm(semanas(ET.cap)[k].dias[0])} a ${dm(semanas(ET.cap)[k].dias[semanas(ET.cap)[k].dias.length - 1])})`, dia: k => dm(k), anuncio: k => AN[k].nome, canal: k => k, publico: k => k }[g];
+  const grupos = new Map(); leadsAte().forEach(p => { const k = chave(p); if (!grupos.has(k)) grupos.set(k, []); grupos.get(k).push(p); });
+  const c = [[{ semana: 'Semana de entrada', dia: 'Dia de entrada', anuncio: 'Anúncio', canal: 'Canal', publico: 'Público' }[g]], ['Leads', 'n'], ['No grupo', 'n'], ['Custo', 'n'], ['CPL', 'n'], ['Vendas', 'n'], ['Conversão', 'n'], ['Faturamento', 'n'], ['ROAS', 'n']];
+  const calc = ps => { const ids = new Set(ps.map(p => p.id)), vs = vendasOk(v => ids.has(v.p.id)), cu = soma(ps, p => p.custo), fa = soma(vs.filter(v => !saiu(v)), v => v.valor), comp = new Set(vs.map(v => v.p.id)).size, gr = ps.filter(p => p.grupo && ate(p.grupo)).length; return [fN(ps.length), `${fN(gr)} (${fP(gr / ps.length * 100)})`, cu ? fBrl(cu) : '—', cu ? fBrl2(cu / ps.length) : '—', fN(vs.length), fP(comp / ps.length * 100), fBrl(fa), cu ? fX(fa / cu) : '—']; };
+  const ord = [...grupos.keys()].sort((a, b) => g === 'semana' || g === 'dia' ? (a < b ? -1 : 1) : grupos.get(b).length - grupos.get(a).length);
+  const volta = ETAPAS.find(e => e.k === S.etapa);
+  return `${voltar(volta ? volta.nome : 'Geral', 'Cohorts da campanha', 'Cada linha acompanha um grupo de leads do começo ao fim da campanha.')}
+  <div class="tabs" role="group" aria-label="Agrupar cohorts por">${[['semana', 'Semana de entrada'], ['dia', 'Dia de entrada'], ['anuncio', 'Anúncio'], ['canal', 'Canal'], ['publico', 'Público']].map(t => `<button type="button" data-gcoorte="${t[0]}" class="${g === t[0] ? 'sel' : ''}">${t[1]}</button>`).join('')}</div>
+  ${barrasCoorte(ord, grupos, nomeG)}
+  <section class="caixa">${tabela(c, ord.map(k => linha(c, [nomeG(k), ...calc(grupos.get(k))])), ['Total', ...calc(leadsAte())])}
+  <p class="muted peq">Custo = anúncios da captação que trouxeram essas pessoas. Por isso, o ROAS desta tabela é maior que o da campanha, que soma também o investimento das outras etapas. Faturamento e ROAS das cohorts novas ainda podem subir.</p></section>`;
+}
+function dVendas() {
+  const vs = vendasOk(v => S.etapa === 'geral' ? (v.et !== 'rea' || S.temRea) : v.et === S.etapa).slice().reverse(), lim = S.drill.lim || 12, c = [['Pessoa'], ['Dia'], ['Oferta'], ['Valor', 'n'], ['Veio de']];
+  return `${voltar(nomeVolta(), S.etapa === 'geral' ? 'Todas as vendas da campanha' : 'Vendas da etapa', `${fN(vs.length)} vendas. Order bump e upsell aparecem como vendas próprias.`)}
+  ${botaoCoorte('semana')}
+  <section class="caixa">${tabela(c, vs.slice(0, lim).map(v => linha(c, [v.p.nome + (saiu(v) ? ' <span class="chip">Saiu</span>' : ''), dm(v.dia), OFERTAS[v.tipo][0], fBrl(v.valor), AN[v.p.an].nome])))}${vs.length > lim ? '<button class="btn" type="button" id="maisL">Mostrar mais 12</button>' : ''}</section>`;
+}
+function dDet(tipo, k) {
+  const et = ETAPAS.find(e => e.k === S.etapa); let tit, ds, vals, fmt = fN, metaV = null, sub = '';
+  if (tipo === 'inv') { ds = dias(ET.cap.ini, ET.cap.fim); tit = 'Investimento por dia'; fmt = fBrl; vals = ds.map(d => ate(d) ? invDia(d) : null); sub = 'Anúncios da etapa'; }
+  if (tipo === 'grupo') { ds = dias(ET.aq.ini, ET.aq.fim); tit = 'Pessoas no grupo'; vals = ds.map(d => ate(d) ? grupoAte(d) : null); metaV = ds.map((_, i) => soma(META.grupoDia.slice(0, i + 1))); }
+  if (tipo === 'entradas') { ds = dias(ET.aq.ini, ET.aq.fim); tit = 'Entradas no grupo'; vals = ds.map(d => ate(d) ? LF().filter(p => p.grupo === d).length : null); metaV = META.grupoDia; }
+  if (tipo === 'fat') { ds = dias(ET[k].ini, ET[k].fim); tit = 'Faturamento por dia'; fmt = fBrl; vals = ds.map(d => ate(d) ? soma(vendasEt(k).filter(v => v.dia === d && !saiu(v)), v => v.valor) : null); sub = 'Vendas do dia, sem as de quem saiu'; }
+  if (tipo === 'saidas') { ds = dias(ET.pos.ini, ET.pos.fim); tit = 'Saídas por dia'; vals = ds.map(d => ate(d) ? SF().filter(s => s.dia === d).length : null); }
+  if (tipo === 'saigrupo') { ds = dias(ET.aq.ini, ET.aq.fim); tit = 'Saídas do grupo'; vals = ds.map(d => ate(d) ? (SAI_GRUPO[d] || 0) : null); }
+  const c = [['Dia'], [tit.split(' ')[0], 'n']].concat(metaV ? [['Meta', 'n'], ['Situação']] : []);
+  const ser = [{ nome: tit.split(' ')[0], cor: '--accent', vals }]; if (metaV) ser.push({ nome: 'Meta', cor: '--muted', tr: 1, vals: metaV });
+  return `${voltar(nomeVolta(), tit, sub)}${grafico(tit, '', ds.map(dm), ser, fmt)}<section class="caixa">${tabela(c, ds.map((d, i) => vals[i] == null ? '' : linha(c, [dm(d), fmt(vals[i])].concat(metaV ? [fN(metaV[i]), luz(vals[i], metaV[i])] : []))).filter(Boolean).reverse())}</section>${botaoCoorte('semana')}`;
+}
+
+/* ---------- Growth Model da campanha: Meta e Real; o simulador abre em outra tela ---------- */
+const GMC = { lanc: PREM, perp: PREM };
+const PERP_INI = c.data_inicio, PERP_DIA = {};
+function gmPlanoDia(d) {
+  const zero = { inv: 0, leads: 0, comp: 0, obQ: 0, upQ: 0, val: 0, gr: 0 };
+  if (S.gm.tipo === 'perp') { const l = 45, c = l * .028; return { ...zero, inv: 500, leads: l, comp: c, obQ: c * .25, upQ: c * .08, val: c * 497 }; }
+  if (d >= ET.cap.ini && d <= ET.cap.fim) return { ...zero, inv: META.leadsDia * META.cpl || META.invDia, leads: META.leadsDia };
+  if (d >= ET.aq.ini && d <= ET.aq.fim) return { ...zero, inv: META.invDia, gr: META.grupoDia[dias(ET.aq.ini, d).length - 1] || 0 };
+  for (const k of ['car', 'rea', 'dow']) { const e = ET[k]; if (d >= e.ini && d <= e.fim) { if (k === 'rea' && !S.temRea) break; const i = dias(e.ini, d).length - 1, tem = k !== 'dow', c = META.vendas[k][i] || 0; return { ...zero, inv: META.invDia, comp: c, obQ: tem ? c * PREM.aceOb : 0, upQ: tem ? c * PREM.aceUp : 0, val: c * (tem ? OFERTAS.principal[1] : OFERTAS.down[1]) }; } }
+  return zero;
+}
+function gmRealDia(d) {
+  if (S.gm.tipo === 'perp') return PERP_DIA[d];
+  const vs = VF().filter(v => v.dia === d && (v.et !== 'rea' || S.temRea)), mains = vs.filter(v => v.tipo === 'principal' || v.tipo === 'down');
+  return { inv: invDia(d), leads: LEADS_DIA[d] || 0, gr: GRUPO_DIA[d] || 0, comp: mains.length, obQ: vs.filter(v => v.tipo === 'bump').length, upQ: vs.filter(v => v.tipo === 'upsell').length, val: soma(mains, v => v.valor), bruto: soma(vs, v => v.valor), sai: soma(vs.filter(v => saiu(v)), v => v.valor) };
+}
+S.gm = { tipo: 'lanc', tela: 'home', agr: 'semana', horiz: 3, atual: 'A', met: 'fat', cmp: 'meta', ch: '', D: [], cen: {}, aprovado: null, confirma: null, aviso: '', fech: {} };
+const SIM_AGR = [['semana', 'Semana'], ['quinzena', 'Quinzena'], ['mes', 'Mês'], ['trimestre', 'Trimestre'], ['semestre', 'Semestre']];
+/* linha: chave, nome, formato, quando se aplica, o que muda ao digitar [ajuste, expoente] */
+const SIM_GRUPOS = [
+  ['Aquisição', [['inv', 'Investimento', fBrl, 'tudo', ['inv', 1]], ['cpm', 'CPM', fBrl2, 'capta', ['cpm', 1]], ['imp', 'Impressões', fN, 'capta', ['inv', 1]], ['ctr', 'CTR', fP, 'capta', ['ctr', 1]], ['clk', 'Cliques', fN, 'capta', ['ctr', 1]], ['cpc', 'CPC', fBrl2, 'capta', ['ctr', -1]], ['tpl', 'Conversão da página', fP, 'capta', ['tpl', 1]], ['leads', 'Leads', fN, 'capta', ['tpl', 1]], ['cpl', 'Custo por lead', fBrl2, 'capta', ['tpl', -1]]]],
+  ['Aquecimento', [['gr', 'Entradas no grupo', fN, 'grupo', ['gr', 1]]]],
+  ['Carrinho e ofertas', [['conv', 'Conversão lead → compra', fP, 'vende', ['conv', 1]], ['comp', 'Compradores', fN, 'vende', ['conv', 1]], ['ob', 'Aceite do order bump', fP, 'vende', ['ob', 1]], ['obQ', 'Vendas de order bump', fN, 'vende', ['ob', 1]], ['up', 'Aceite do upsell', fP, 'vende', ['up', 1]], ['upQ', 'Vendas de upsell', fN, 'vende', ['up', 1]], ['vendas', 'Vendas no total', fN, 'vende', null]]],
+  ['Resultado', [['churn', 'Valor que sai (churn)', fP, 'vende', ['churn', 1]], ['fat', 'Faturamento', fBrl, 'vende', null], ['tax', 'Taxas e impostos', fP, 'vende', ['tax', 1]], ['com', 'Comissões', fP, 'vende', ['com', 1]], ['liq', 'Receita líquida', fBrl, 'vende', null], ['res', 'Resultado', fBrl, 'tudo', null], ['margem', 'Margem prevista', fP, 'vende', null]]]];
+const SIM_LIN = SIM_GRUPOS.flatMap(g => g[1]);
+const SIM_MET = { fat: ['Faturamento', fBrl], liq: ['Receita líquida', fBrl], leads: ['Leads', fN], vendas: ['Vendas', fN], inv: ['Investimento', fBrl] };
+const sinal = (v, f) => Math.abs(v) < .5 ? f(0) : (v > 0 ? '+' : '−') + f(Math.abs(v));
+
+function simPrepara() {
+  const G = S.gm, ch = [G.tipo, S.hoje, S.temRea, G.horiz].join('|'); if (G.ch === ch) return; G.ch = ch;
+  let ini, fim;
+  if (G.tipo === 'lanc') { ini = ET.cap.ini; fim = etapasAtivas().filter(e => e.k !== 'pos').pop().fim; }
+  else { ini = PERP_INI; const h = new Date(S.hoje + 'T12:00:00Z'); fim = new Date(Date.UTC(h.getUTCFullYear(), h.getUTCMonth() + 1 + G.horiz, 0, 12)).toISOString().slice(0, 10); }
+  const cfg = GMC[G.tipo];
+  G.D = dias(ini, fim).map(d => { const r = ate(d) ? gmRealDia(d) : null; return { d, p: { ...gmPlanoDia(d), cpm: cfg.cpm, ctr: cfg.ctr }, r: r && { ...r, cpm: MID[d] && MID[d].imp ? r.inv / MID[d].imp * 1000 : cfg.cpm, ctr: MID[d] && MID[d].imp ? MID[d].clk / MID[d].imp * 100 : cfg.ctr }, aberto: !ate(d) }; });
+  const ab = G.D.filter(x => x.aberto), semente = aj => { const m = {}; ab.forEach(x => { const o = {}; aj.forEach(([k, f, ok]) => { if (ok(x)) o[k] = f; }); if (Object.keys(o).length) m[x.d] = o; }); return m; };
+  const tudo = () => true, capt = x => x.p.leads > 0, vd = x => x.p.comp > 0;
+  G.cen = { A: { nome: 'Cenário A', hip: '', m: {}, edits: [], ice: {} } };
+  G.atual = 'A'; G.aprovado = null; G.confirma = null; G.aviso = '';
+}
+function simBase(x, fonte) { const cfg = GMC[S.gm.tipo]; if (fonte === 'meta' || !x.r) return { ...x.p, churn: cfg.churn }; return { ...x.r, churn: x.r.bruto ? x.r.sai / x.r.bruto * 100 : 0 }; }
+function simCalc(fonte, mult) {
+  const G = S.gm, cfg = GMC[G.tipo]; let acL = 0, acB = 0, acG = 0, acGb = 0;
+  return G.D.map(x => {
+    if (fonte === 'real' && !x.r) return null;
+    const b = simBase(x, fonte), m = (mult && mult[x.d]) || {}, g = k => m[k] == null ? 1 : m[k];
+    const inv = b.inv * g('inv'); let imp = 0, clk = 0, leads = 0;
+    if (b.leads > 0) { const imp0 = b.inv / b.cpm * 1000, clk0 = imp0 * b.ctr / 100, tpl0 = clk0 ? b.leads / clk0 : 0; imp = inv / (b.cpm * g('cpm')) * 1000; clk = imp * b.ctr * g('ctr') / 100; leads = clk * tpl0 * g('tpl'); }
+    acL += leads; acB += b.leads;
+    const fL = cfg.acum ? (acB ? acL / acB : 1) : (b.leads ? leads / b.leads : 1), gr = (b.gr || 0) * fL * g('gr'); acG += gr; acGb += b.gr || 0;
+    const fv = cfg.acum && acGb ? acG / acGb : fL, comp = b.comp * fv * g('conv'), obQ = b.obQ * fv * g('conv') * g('ob'), upQ = b.upQ * fv * g('conv') * g('up'), val = b.val * fv * g('conv');
+    const bruto = val + obQ * cfg.ob + upQ * cfg.up, churn = Math.min(100, b.churn * g('churn')), fat = bruto * (1 - churn / 100), taxV = fat * PREM.tax * g('tax'), comV = fat * PREM.com * g('com'), liq = fat - taxV - comV;
+    return { inv, invC: leads > 0 ? inv : 0, imp, clk, leads, gr, comp, obQ, upQ, vendas: comp + obQ + upQ, bruto, fat, taxV, comV, liq, res: liq - inv, acL };
+  });
+}
+function simSoma(rows) {
+  const r = rows.filter(Boolean); if (!r.length) return null; const R = k => soma(r, x => x[k] || 0), t = {}; ['inv', 'invC', 'imp', 'clk', 'leads', 'gr', 'comp', 'obQ', 'upQ', 'vendas', 'bruto', 'fat', 'taxV', 'comV', 'liq', 'res'].forEach(k => { t[k] = R(k); });
+  const refL = GMC[S.gm.tipo].acum ? r[r.length - 1].acL : t.leads;
+  t.cpm = t.imp ? t.invC / t.imp * 1000 : null; t.ctr = t.imp ? t.clk / t.imp * 100 : null; t.cpc = t.clk ? t.invC / t.clk : null; t.tpl = t.clk ? t.leads / t.clk * 100 : null; t.cpl = t.leads ? t.invC / t.leads : null;
+  t.conv = refL && t.comp ? t.comp / refL * 100 : null; t.ob = t.comp ? t.obQ / t.comp * 100 : null; t.up = t.comp ? t.upQ / t.comp * 100 : null; t.churn = t.bruto ? (1 - t.fat / t.bruto) * 100 : null; t.tax = t.fat ? t.taxV / t.fat * 100 : null; t.com = t.fat ? t.comV / t.fat * 100 : null; t.margem = t.fat ? t.res / t.fat * 100 : null; t.cac = t.vendas ? t.inv / t.vendas : null; t.roas = t.inv && t.fat ? t.fat / t.inv : null; return t;
+}
+function simPeriodos() {
+  const G = S.gm, D = G.D; if (!D.length) return []; const ini = D[0].d, fim = D[D.length - 1].d; let r = [];
+  if (G.agr === 'etapa') r = etapasAtivas().filter(e => e.k !== 'pos').map(e => ({ key: e.k, nome: e.nome, sub: `${dm(e.ini)} a ${dm(e.fim)}`, ini: e.ini, fim: e.fim }));
+  else if (G.agr === 'semana' || G.agr === 'quinzena') { const n = G.agr === 'semana' ? 7 : 14, rot = G.agr === 'semana' ? 'Semana' : 'Quinzena'; for (let a = ini; a <= fim; a = diaMais(a, n)) { const b = diaMais(a, n - 1) > fim ? fim : diaMais(a, n - 1); r.push({ key: a, nome: `${rot} ${r.length + 1}`, sub: `${dm(a)} a ${dm(b)}`, ini: a, fim: b }); } }
+  else { const meses = { mes: 1, trimestre: 3, semestre: 6 }[G.agr], NM = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']; let a = ini;
+    while (a <= fim) { const d = new Date(a + 'T12:00:00Z'), y = d.getUTCFullYear(), mi = d.getUTCMonth(), pri = Math.floor(mi / meses) * meses, f = new Date(Date.UTC(y, pri + meses, 0, 12)).toISOString().slice(0, 10), b = f > fim ? fim : f, ano = String(y).slice(2); r.push({ key: a, nome: meses === 1 ? `${NM[mi]}/${ano}` : meses === 3 ? `${pri / 3 + 1}º tri/${ano}` : `${pri / 6 + 1}º sem/${ano}`, sub: `${dm(a)} a ${dm(b)}`, ini: a, fim: b }); a = diaMais(b, 1); } }
+  r.forEach(p => { const ds = D.filter(x => x.d >= p.ini && x.d <= p.fim); p.aberto = ds.some(x => x.aberto); p.capta = ds.some(x => x.p.leads > 0); p.vende = ds.some(x => x.p.comp > 0); p.grupo = ds.some(x => x.p.gr > 0); p.tudo = true; p.feito = ds.length && !p.aberto; }); return r;
+}
+const naFaixa = (rows, p) => rows.map((x, i) => x && S.gm.D[i].d >= p.ini && S.gm.D[i].d <= p.fim ? x : null);
+
+/* tela 1: Meta e Real por etapa do funil */
+function vGmHome() {
+  simPrepara(); const G = S.gm, mt = simCalc('meta'), rr = simCalc('real'), M = simSoma(mt), Mh = simSoma(mt.map((x, i) => G.D[i].aberto ? null : x)), Rt = simSoma(rr), V = k => Rt ? Rt[k] : null;
+  const lin = (nome, k, f, menor) => { const r = V(k), mh = Mh ? Mh[k] : null, sem = r == null || !mh || (!r && !menor); return `<tr><td>${nome}</td><td class="n">${M[k] != null ? f(M[k]) : '—'}</td><td class="n">${mh != null ? f(mh) : '—'}</td><td class="n"><b>${r != null ? f(r) : '—'}</b></td><td>${sem ? '<span class="muted peq">Ainda sem dado</span>' : luz(r, mh, { menor })}</td></tr>`; };
+  const g = t => `<tr class="grp"><td colspan="5">${t}</td></tr>`, ap = G.aprovado && G.cen[G.aprovado];
+  return `<div class="gmf"><div><h2>Growth Model da campanha</h2><p class="muted peq">O que era a meta e o que está acontecendo em cada etapa do funil.</p></div>
+    <div class="ver"><button class="btn btn-p" id="simAbre" type="button">Simular cenários</button></div></div>
+  ${ap ? `<section class="caixa aprovado"><div class="tit"><h3>Cenário aprovado: ${ap.nome}</h3><span class="chip ok">No Ciclo de Growth, em Ideias</span></div><p>${ap.hip}</p></section>` : ''}
+  <section class="caixa"><div class="tw"><table class="gmt"><thead><tr><th>Etapa do funil</th><th class="n">Meta total</th><th class="n">Meta até hoje</th><th class="n">Real</th><th>Situação</th></tr></thead><tbody>
+    ${g('Aquisição')}${lin('Investimento', 'inv', fBrl, 1)}${lin('CPM', 'cpm', fBrl2, 1)}${lin('Impressões', 'imp', fN)}${lin('CTR', 'ctr', fP)}${lin('Cliques', 'clk', fN)}${lin('CPC', 'cpc', fBrl2, 1)}${lin('Conversão da página', 'tpl', fP)}${lin('Leads', 'leads', fN)}${lin('Custo por lead', 'cpl', fBrl2, 1)}
+    ${G.tipo === 'lanc' ? g('Aquecimento') + lin('Entradas no grupo', 'gr', fN) : ''}
+    ${g('Carrinho e ofertas')}${lin('Compradores', 'comp', fN)}${lin('Vendas, com todas as ofertas', 'vendas', fN)}${lin('Faturamento', 'fat', fBrl)}
+    ${g('Resultado')}${lin('Receita líquida', 'liq', fBrl)}${lin('ROAS', 'roas', fX)}</tbody></table></div></section>`;
+}
+
+/* tela 2: simulador em grade, uma coluna por período */
+function vSim() {
+  simPrepara(); const G = S.gm, P = simPeriodos(), abas = Object.keys(G.cen), semFuturo = !G.D.some(x => x.aberto);
+  const agr = G.tipo === 'lanc' ? SIM_AGR.concat([['etapa', 'Etapa']]) : SIM_AGR;
+  const topo = `<div class="gmf"><div><button class="volta" type="button" id="simVolta">‹ Voltar para o Growth Model</button><h2>Simular cenários</h2></div>
+    <div class="tabs" role="group" aria-label="Cenários">${abas.map(k => `<button type="button" data-simcen="${k}" class="${G.atual === k ? 'sel' : ''}">${G.cen[k].nome}${G.aprovado === k ? ' ✓' : ''}</button>`).join('')}${abas.length < 3 ? '<button type="button" id="simNovo">+ Novo cenário</button>' : ''}<button type="button" data-simcen="comparar" class="${G.atual === 'comparar' ? 'sel' : ''}">Comparar</button></div></div>`;
+  if (semFuturo) return `${topo}<div class="vazio"><h3>Esta campanha já encerrou</h3><p class="muted">Só dá para simular o que ainda não aconteceu.</p></div>`;
+  if (G.atual === 'comparar') return topo + vSimComparar();
+  const c = G.cen[G.atual], cols = P.length;
+  const cel = (k, i, ed, nome) => `<td class="n cel" data-c="${k}|${i}">${ed ? `<input id="simI_${k}_${i}" data-simi="${k}|${i}" type="number" step="any" min="0" aria-label="${nome}, ${i === 't' ? 'total' : P[i].nome}">` : '<span class="v"></span>'}<small class="cmp"></small></td>`;
+  const linha = (l, g) => { const [k, nome, , qd, aj] = l; return `<tr data-g="${g}" class="${aj ? '' : 'forte'}"><th scope="row">${nome}</th>${cel(k, 't', !!aj, nome)}${P.map((p, i) => cel(k, i, !!aj && p.aberto && p[qd], nome)).join('')}</tr>`; };
+  const grupos = SIM_GRUPOS.filter(g => g[0] !== 'Aquecimento' || G.tipo === 'lanc').map(g => `<tr class="grp grpb" data-simg="${g[0]}"><td colspan="${cols + 2}"><span class="sg">${G.fech[g[0]] ? '▸' : '▾'}</span> ${g[0]}</td></tr>${g[1].map(l => linha(l, g[0])).join('')}`).join('');
+  const imp = (k, nome) => `<tr class="imp"><th scope="row">${nome}</th><td class="n" data-i="${k}|t"></td>${P.map((p, i) => `<td class="n" data-i="${k}|${i}"></td>`).join('')}</tr>`;
+  return `${topo}
+  <div class="kpis" id="simCards"></div>
+  <section class="caixa"><div class="gmf"><div class="sim-hip"><label class="peq" for="simHip"><b>O que você quer testar</b></label><textarea id="simHip" rows="2" maxlength="240" placeholder="Escreva a hipótese deste cenário">${c.hip}</textarea></div>
+      <div class="ver"><label class="peq" for="simAgr">Ver por <select id="simAgr">${agr.map(a => `<option value="${a[0]}" ${G.agr === a[0] ? 'selected' : ''}>${a[1]}</option>`).join('')}</select></label><label class="peq" for="simCmp">Comparar com <select id="simCmp">${[['meta', 'Meta'], ['real', 'Real'], ['nada', 'Se nada mudar']].map(a => `<option value="${a[0]}" ${G.cmp === a[0] ? 'selected' : ''}>${a[1]}</option>`).join('')}</select></label>${G.tipo === 'perp' ? `<label class="peq" for="simHor">Simular até <select id="simHor">${[3, 6, 12].map(n => `<option value="${n}" ${G.horiz === n ? 'selected' : ''}>+${n} meses</option>`).join('')}</select></label>` : ''}<button class="btn" type="button" id="simLimpa">Limpar cenário</button></div></div>
+    <div class="leg-sim"><span><i class="sw am"></i>O que você mudou</span><span><i class="sw vd"></i>O que o sistema calculou</span><span><i class="sw fc"></i>Já aconteceu, não muda</span><span class="muted">Clique em qualquer número branco para mudar.</span></div>
+    <div class="sim-rolo"><table class="sim-t"><thead><tr><th></th><th class="n tot">Total</th>${P.map(p => `<th class="n${p.feito ? ' fc' : ''}">${p.nome}<small>${p.sub}</small></th>`).join('')}</tr></thead>
+    <tbody><tr class="grp"><td colspan="${cols + 2}">Impacto da simulação</td></tr>${imp('iliq', 'Receita líquida incremental')}${imp('iliqa', 'Receita líquida incremental acumulada')}${imp('ifat', 'Faturamento incremental')}${imp('ifata', 'Faturamento incremental acumulado')}${imp('ires', 'Resultado incremental')}${grupos}</tbody></table></div>
+    <p class="muted peq">Mudou um número no Total? Vale para todos os períodos abertos, na mesma proporção. O preço vem da oferta: para testar outro preço, crie outra oferta.</p></section>
+  <section class="caixa"><div class="tit"><h3>Acumulado</h3><label class="peq" for="simMet">Número <select id="simMet">${Object.entries(SIM_MET).map(([k, v]) => `<option value="${k}" ${G.met === k ? 'selected' : ''}>${v[0]}</option>`).join('')}</select></label></div><div id="simGraf"></div></section>`;
+}
+function simAtualiza() {
+  const G = S.gm, c = G.cen[G.atual]; if (!c || !raiz.querySelector('.sim-t')) { desenha(); return; }
+  const P = simPeriodos(), rM = simCalc('meta'), rR = simCalc('real'), rB = simCalc('base'), rS = simCalc('base', c.m), T = r => simSoma(r), por = r => P.map(p => simSoma(naFaixa(r, p)));
+  const oM = por(rM), oR = por(rR), oB = por(rB), oS = por(rS), tM = T(rM), tR = T(rR), tB = T(rB), tS = T(rS), rot = { meta: 'meta', real: 'real', nada: 'antes' }[G.cmp];
+  const editou = (k, p) => (c.edits || []).some(e => e.k === k && (!p || (e.ini <= p.fim && e.fim >= p.ini)));
+  const pinta = (k, f, qd, aj, sel, p, S_, B_, M_, R_) => { const td = raiz.querySelector(`[data-c="${k}|${sel}"]`); if (!td) return; const app = sel === 't' || p[qd], v = app && S_ ? S_[k] : null, b = app && B_ ? B_[k] : null, cm = G.cmp === 'meta' ? M_ : G.cmp === 'real' ? R_ : B_, cv = app && cm ? cm[k] : null, inp = td.querySelector('input'), span = td.querySelector('.v'), tem = v != null && isFinite(v) && (v !== 0 || k === 'res' || k === 'fat' || k === 'liq' || k === 'inv');
+    if (inp && inp !== raiz.activeElement) inp.value = tem ? +Number(v).toFixed(['inv', 'imp', 'clk', 'leads', 'gr'].includes(k) ? 0 : 2) : ''; if (span) span.textContent = tem ? f(v) : '—';
+    const fech = sel !== 't' && p.feito, am = !fech && tem && editou(k, sel === 't' ? null : p), vd = !fech && !am && tem && b != null && Math.abs(v - b) > Math.max(.005, Math.abs(b) * .001); td.classList.toggle('am', !!am); td.classList.toggle('vd', !!vd); td.classList.toggle('fc', !!fech);
+    td.querySelector('.cmp').textContent = app && cv != null && (cv !== 0 || G.cmp === 'meta') ? `${rot} ${f(cv)}` : ''; };
+  SIM_LIN.forEach(([k, , f, qd, aj]) => { pinta(k, f, qd, aj, 't', null, tS, tB, tM, tR); P.forEach((p, i) => pinta(k, f, qd, aj, i, p, oS[i], oB[i], oM[i], oR[i])); });
+  const dif = (i, k) => { const a = oS[i], b = oB[i]; return (a ? a[k] : 0) - (b ? b[k] : 0); }; let aL = 0, aF = 0;
+  const pi = (k, s, v, f) => { const n = raiz.querySelector(`[data-i="${k}|${s}"]`); if (n) { n.textContent = sinal(v, f); n.classList.toggle('pos', v > .5); n.classList.toggle('neg', v < -.5); } };
+  P.forEach((p, i) => { const l = dif(i, 'liq'), fa = dif(i, 'fat'); aL += l; aF += fa; pi('iliq', i, l, fBrl); pi('ifat', i, fa, fBrl); pi('ires', i, dif(i, 'res'), fBrl); pi('iliqa', i, aL, fBrl); pi('ifata', i, aF, fBrl); });
+  ['iliq', 'iliqa'].forEach(k => pi(k, 't', tS.liq - tB.liq, fBrl)); ['ifat', 'ifata'].forEach(k => pi(k, 't', tS.fat - tB.fat, fBrl)); pi('ires', 't', tS.res - tB.res, fBrl);
+  raiz.querySelectorAll('.sim-t [data-g]').forEach(tr => { tr.hidden = !!G.fech[tr.dataset.g]; });
+  const card = (n, k, f) => kpi(n, sinal(tS[k] - tB[k], f), `${f(tB[k])} se nada mudar → ${f(tS[k])}`);
+  const faixa = `${dm(G.D[0].d)} a ${dm(G.D[G.D.length - 1].d)}`;
+  $('#simCards').innerHTML = kpi('Receita líquida incremental', sinal(tS.liq - tB.liq, fBrl), `Total de ${faixa}: ${fBrl(tB.liq)} se nada mudar → ${fBrl(tS.liq)}`) + card('Faturamento incremental', 'fat', fBrl) + card('Resultado incremental', 'res', fBrl) + kpi('Margem prevista', tS.margem != null ? fP(tS.margem) : '—', tB.margem != null ? `${fP(tB.margem)} se nada mudar` : '');
+  const met = G.met, f = SIM_MET[met][1]; GR.length = 0; const acu = r => { let a = 0; return P.map(p => { const s = simSoma(naFaixa(r, p)); a += s ? s[met] : 0; return a; }); };
+  $('#simGraf').innerHTML = grafico(`${SIM_MET[met][0]} acumulado`, '', P.map(p => p.nome), [{ nome: 'Meta', cor: '--muted', tr: 1, vals: acu(rM) }, { nome: 'Se nada mudar', cor: '--accent', vals: acu(rB), semRot: 1 }, { nome: c.nome, cor: '--serie2', vals: acu(rS) }], f).replace(/<section class="caixa">|<\/section>/g, '');
+  desenha();
+}
+function simDigita(ref, val) {
+  const G = S.gm, c = G.cen[G.atual], [k, s] = ref.split('|'); if (!(val >= 0)) return; const lin = SIM_LIN.find(l => l[0] === k), [mk, ex] = lin[4], qd = lin[3], P = simPeriodos(), p = s === 't' ? { ini: G.D[0].d, fim: G.D[G.D.length - 1].d } : P[+s];
+  const aplica = x => x.aberto && x.d >= p.ini && x.d <= p.fim && (qd === 'tudo' || (qd === 'capta' && x.p.leads > 0) || (qd === 'vende' && x.p.comp > 0) || (qd === 'grupo' && x.p.gr > 0)), alvo = G.D.filter(aplica); if (!alvo.length) return;
+  const orig = {}; alvo.forEach(x => { orig[x.d] = (c.m[x.d] || {})[mk] == null ? 1 : c.m[x.d][mk]; });
+  const poe = r => { alvo.forEach(x => { const m = c.m[x.d] = c.m[x.d] || {}; m[mk] = orig[x.d] * Math.pow(r, ex); }); }, mede = r => { poe(r); const so = simSoma(naFaixa(simCalc('base', c.m), p)); return so ? so[k] : 0; };
+  let lo = 1e-3, hi = 1e3; const flo = mede(lo), fhi = mede(hi), sobe = fhi >= flo; for (let i = 0; i < 44; i++) { const mid = Math.sqrt(lo * hi), v = mede(mid); if ((v < val) === sobe) lo = mid; else hi = mid; } poe(Math.sqrt(lo * hi));
+  c.edits = (c.edits || []).filter(e => !(e.k === k && e.ini === p.ini && e.fim === p.fim)); c.edits.push({ k, ini: p.ini, fim: p.fim }); simAtualiza();
+}
+function vSimComparar() {
+  const G = S.gm, ks = Object.keys(G.cen), rM = simSoma(simCalc('meta')), rB = simSoma(simCalc('base')), rs = Object.fromEntries(ks.map(k => [k, simSoma(simCalc('base', G.cen[k].m))]));
+  const ice = k => { const i = G.cen[k].ice; return i.i && i.c && i.f ? (i.i + i.c + i.f) / 3 : null; }, melhor = ks.filter(k => ice(k) != null).sort((a, b) => ice(b) - ice(a))[0];
+  const lin = (nome, k, f, forte) => `<tr class="${forte ? 'forte' : ''}"><td>${nome}</td><td class="n">${rM[k] != null ? f(rM[k]) : '—'}</td><td class="n">${rB[k] != null ? f(rB[k]) : '—'}</td>${ks.map(c => `<td class="n">${rs[c][k] != null ? f(rs[c][k]) : '—'}</td>`).join('')}</tr>`;
+  const inc = (nome, k, f) => `<tr class="forte"><td>${nome}</td><td class="n">—</td><td class="n">—</td>${ks.map(c => `<td class="n">${sinal(rs[c][k] - rB[k], f)}</td>`).join('')}</tr>`;
+  const nota = (l, a) => `<tr><td>${l}</td><td></td><td></td>${ks.map(c => `<td class="n"><input class="ice" type="number" min="1" max="10" step="1" data-ice="${c}:${a}" aria-label="${l} de ${G.cen[c].nome}" value="${G.cen[c].ice[a] || ''}"></td>`).join('')}</tr>`;
+  const cf = G.confirma;
+  return `<section class="caixa"><div class="tw"><table class="gmt comp"><thead><tr><th></th><th class="n">Meta</th><th class="n">Se nada mudar</th>${ks.map(c => `<th class="n">${G.cen[c].nome}${G.aprovado === c ? '<br><span class="chip ok">Aprovado</span>' : c === melhor ? '<br><span class="chip info">Maior ICE</span>' : ''}</th>`).join('')}</tr></thead><tbody>
+    <tr class="grp"><td colspan="${3 + ks.length}">Resultado no fim</td></tr>${lin('Investimento', 'inv', fBrl)}${lin('Leads', 'leads', fN)}${lin('Vendas', 'vendas', fN)}${lin('Faturamento', 'fat', fBrl)}${lin('Receita líquida', 'liq', fBrl)}${lin('Resultado', 'res', fBrl, 1)}${lin('Margem', 'margem', fP)}${lin('ROAS', 'roas', fX)}
+    <tr class="grp"><td colspan="${3 + ks.length}">Impacto em relação a "se nada mudar"</td></tr>${inc('Faturamento incremental', 'fat', fBrl)}${inc('Receita líquida incremental', 'liq', fBrl)}${inc('Resultado incremental', 'res', fBrl)}
+    <tr class="grp"><td colspan="${3 + ks.length}">ICE: dê notas de 1 a 10</td></tr>${nota('Impacto', 'i')}${nota('Confiança', 'c')}${nota('Facilidade', 'f')}
+    <tr class="forte"><td>Nota ICE</td><td></td><td></td>${ks.map(c => `<td class="n" data-icev="${c}">${ice(c) != null ? ice(c).toFixed(1).replace('.', ',') : '—'}</td>`).join('')}</tr>
+    <tr><td></td><td></td><td></td>${ks.map(c => `<td class="n">${G.aprovado === c ? '<span class="muted peq">Aprovado</span>' : `<button class="btn ${c === melhor ? 'btn-p' : ''}" type="button" data-aprova="${c}">Aprovar</button>`}</td>`).join('')}</tr></tbody></table></div>
+    <p class="muted peq">O sistema destaca o maior ICE, mas quem decide é você. O maior ICE pode não ser o de maior resultado.</p>
+    ${G.aviso ? `<p class="nota">${G.aviso}</p>` : ''}
+    ${cf ? `<div class="confirma"><h3>Aprovar ${G.cen[cf].nome}?</h3><p><b>Hipótese:</b> ${G.cen[cf].hip}</p><p class="muted peq">Ele entra no Ciclo de Growth como ideia, com a hipótese, o ICE e o impacto previsto. Os outros cenários ficam guardados.</p><div class="ver"><button class="btn btn-p" type="button" id="simConfirma">Aprovar e criar a ideia</button><button class="btn" type="button" id="simCancela">Cancelar</button></div></div>` : ''}
+    ${G.aprovado ? `<div class="confirma ok"><h3>${G.cen[G.aprovado].nome} aprovado</h3><p>Entrou no Ciclo de Growth, na coluna Ideias. De lá, "Converter em planejamento" cria as tarefas em Projetos.</p></div>` : ''}</section>`;
+}
+function vGm() { return S.gm.tela === 'sim' ? vSim() : vGmHome(); }
+function gmAtualiza() { if (S.gm.tela === 'sim' && S.gm.atual !== 'comparar') simAtualiza(); else desenha(); }
+
+/* ---------- desenho geral ---------- */
+function render() {
+  GR.length = 0;
+  const at = etapaAtual();
+  $('#fase').textContent = at ? (estadoEt(at) === 'agora' ? `Etapa atual: ${at.nome}, dia ${dias(at.ini, S.hoje).length} de ${dias(at.ini, at.fim).length}` : `Próxima etapa: ${at.nome}, em ${dm(at.ini)}`) : 'Campanha encerrada. Aqui está o debriefing.';
+  $('#etapas').innerHTML = `<button class="et geral ${S.etapa === 'geral' ? 'sel' : ''}" type="button" data-et="geral"><b>Geral</b><small>tudo somado</small></button>` + etapasAtivas().map(e => `<button class="et ${S.etapa === e.k ? 'sel' : ''}" type="button" data-et="${e.k}" ${at === e && estadoEt(e) === 'agora' ? 'aria-current="step"' : ''}><b>${at === e && estadoEt(e) === 'agora' ? '<span class="ag"></span>' : ''}${e.nome}</b><small>${dm(e.ini)} a ${dm(e.fim)}</small></button>`).join('') + `<button class="et gm ${S.etapa === 'gm' ? 'sel' : ''}" type="button" data-et="gm"><b>Growth Model</b><small>meta, real e simulação</small></button>`;
+  let h;
+  const D = S.drill;
+  if (D) h = D.t === 'leads' ? dLeads() : D.t === 'cpl' ? dCpl() : D.t === 'coorte' ? dCoorte() : D.t === 'vendas' ? dVendas() : D.t === 'geral' ? dGeral(D.tipo) : dDet(D.tipo, D.k);
+  else h = { geral: vGeral, cap: vCap, aq: vAq, car: () => painelVendas('car', ['principal', 'bump', 'upsell']), rea: () => painelVendas('rea', ['principal', 'bump', 'upsell']), dow: () => painelVendas('dow', ['down']), pos: vPos, gm: vGm }[S.etapa]();
+  const fx = $('#filtros'); if (fx) fx.innerHTML = S.etapa === 'gm' ? '' : barraFiltros(); $('#painel').innerHTML = h;
+  if (S.etapa === 'gm' && !D) gmAtualiza(); else desenha();
+}
+function abreEtapaDoDia() { const at = etapaAtual(); S.etapa = at ? at.k : 'geral'; S.drill = null; S.per = {}; render(); }
+raiz.addEventListener('click', ev => {
+  const q = s => ev.target.closest(s); let b;
+  if (ev.target.id === 'simAbre') { S.gm.tela = 'sim'; S.gm.atual = 'A'; render(); return; }
+  if (ev.target.id === 'simVolta') { S.gm.tela = 'home'; render(); return; }
+  if ((b = q('[data-simcen]'))) { S.gm.atual = b.dataset.simcen; S.gm.aviso = ''; S.gm.confirma = null; render(); return; }
+  if (ev.target.id === 'simNovo') { const k = ['A', 'B', 'C'].find(x => !S.gm.cen[x]); S.gm.cen[k] = { nome: 'Cenário ' + k, hip: '', m: {}, edits: [], ice: {} }; S.gm.atual = k; render(); return; }
+  if (ev.target.id === 'simLimpa') { const c = S.gm.cen[S.gm.atual]; c.m = {}; c.edits = []; simAtualiza(); return; }
+  if ((b = q('[data-simg]'))) { const g = b.dataset.simg; S.gm.fech[g] = !S.gm.fech[g]; render(); return; }
+  if ((b = q('[data-aprova]'))) { const k = b.dataset.aprova, c = S.gm.cen[k]; if (!c.hip.trim() || !(c.ice.i && c.ice.c && c.ice.f)) { S.gm.aviso = `Para aprovar o ${c.nome}, ${!c.hip.trim() ? 'escreva a hipótese' : 'dê as três notas do ICE'}.`; S.gm.confirma = null; } else { S.gm.aviso = ''; S.gm.confirma = k; } render(); return; }
+  if (ev.target.id === 'simConfirma') { const k = S.gm.confirma; H.aprova(S.gm.cen[k]).then(() => { S.gm.aprovado = k; S.gm.confirma = null; render(); }, e => { S.gm.aviso = e.message || String(e); S.gm.confirma = null; render(); }); return; }
+  if (ev.target.id === 'simCancela') { S.gm.confirma = null; render(); return; }
+  if ((b = q('[data-et]'))) { S.etapa = b.dataset.et; S.drill = null; render(); return; }
+  if ((b = q('[data-per]'))) { S.per[S.etapa] = b.dataset.per === 'tudo' ? 'tudo' : +b.dataset.per; render(); return; }
+  if ((b = q('[data-volta]'))) { S.drill = null; render(); return; }
+  if ((b = q('[data-cplv]'))) { S.drill.v = b.dataset.cplv; render(); return; }
+  if ((b = q('[data-gcoorte]'))) { S.drill.g = b.dataset.gcoorte; render(); return; }
+  if (ev.target.id === 'maisL') { S.drill.lim = (S.drill.lim || 12) + 12; render(); return; }
+  if ((b = q('[data-abre]'))) { const a = b.dataset.abre.split(':');
+    if (a[0] === 'coorte') { S.drill = { t: 'coorte', g: a[1] }; if (S.etapa === 'geral') S.etapa = 'geral'; }
+    else if (a[0] === 'geral') S.drill = { t: 'geral', tipo: a[1] };
+    else if (a[0] === 'det') S.drill = { t: 'det', tipo: a[1], k: a[2] };
+    else if (a[0] === 'inv') S.drill = { t: 'det', tipo: 'inv' };
+    else S.drill = { t: a[0] };
+    render(); $('#etapas').scrollIntoView({ block: 'nearest' }); return; }
+  if (ev.target.id === 'btEditar') { H.editar(); return; }
+  });
+raiz.addEventListener('change', ev => {
+  if (ev.target.id === 'fxCanal') { S.canal = ev.target.value; S.gm.ch = ''; render(); }
+  if (ev.target.id === 'fxVer') { S.verPor = ev.target.value; render(); }
+  if (ev.target.id === 'fxCmp') { S.cmp = ev.target.value; render(); }
+  if (ev.target.id === 'simAgr') { S.gm.agr = ev.target.value; render(); }
+  if (ev.target.id === 'simCmp') { S.gm.cmp = ev.target.value; simAtualiza(); }
+  if (ev.target.id === 'simMet') { S.gm.met = ev.target.value; simAtualiza(); }
+  if (ev.target.id === 'simHor') { const G = S.gm, ant = G.cen; G.horiz = Number(ev.target.value); G.ch = ''; simPrepara(); G.cen = ant; render(); }
+  if (ev.target.id === 'fCanal') { S.drill.canal = ev.target.value; S.drill.lim = 12; render(); }
+  if (ev.target.id === 'fGr') { S.drill.gr = ev.target.value; S.drill.lim = 12; render(); }
+});
+raiz.addEventListener('input', ev => { const t = ev.target, k = t.dataset && t.dataset.simi; if (k && t.value !== '') simDigita(k, Number(t.value));
+  if (t.id === 'simHip') S.gm.cen[S.gm.atual].hip = t.value;
+  if (t.dataset && t.dataset.ice) { const [c, a] = t.dataset.ice.split(':'); S.gm.cen[c].ice[a] = t.value === '' ? null : Math.max(1, Math.min(10, Number(t.value))); const i = S.gm.cen[c].ice, n = raiz.querySelector(`[data-icev="${c}"]`); if (n) n.textContent = i.i && i.c && i.f ? ((i.i + i.c + i.f) / 3).toFixed(1).replace('.', ',') : '—'; } });
+raiz.addEventListener('focusout', ev => { if (ev.target.dataset && ev.target.dataset.simi) simAtualiza();
+  if (ev.target.dataset && ev.target.dataset.ice && S.gm.tela === 'sim') setTimeout(() => { if (!(raiz.activeElement && raiz.activeElement.dataset && raiz.activeElement.dataset.ice)) render(); }, 0); });
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && !$('#modal').hidden) { $('#modal').hidden = true; $('#modal').innerHTML = ''; $('#btEditar').focus(); } });
+abreEtapaDoDia();
+
+abreEtapaDoDia();
+};
+/*CE-FIM*/
 async function vCampanha(m) {
-  const w = S.ws, id = S.campSel; let T = CAMP_TABS.some(t => t[0] === S.campTab) ? S.campTab : 'dash';
+  const w = S.ws, id = S.campSel; let T = CAMP_TABS.some(t => t[0] === S.campTab) ? S.campTab : 'visao';
   const [cs, funis, prod, mk, pjs] = await Promise.all([
     q(sb.from('campanhas').select('*').eq('id', id)), q(sb.from('funis').select('id,nome,tipo').eq('workspace_id', w)), q(sb.from('produtos').select('id,nome').eq('workspace_id', w)),
     q(sb.from('v_marketing_campanha').select('*').eq('campanha_id', id)), q(sb.from('projetos').select('id').eq('campanha_id', id))]);
   const c = cs[0]; if (!c) { S.campSel = null; return vMktCamp(m); }
   const r = mk[0] || {}, f = funis.find(x => x.id === c.funil_id), p = prod.find(x => x.id === c.produto_id);
-  const TABS = CAMP_TABS.filter(t => t[0] !== 'metas' || c.modelo === 'perpetuo'); if (!TABS.some(t => t[0] === T)) T = 'dash';
+  const TABS = CAMP_TABS.filter(t => (t[0] !== 'metas' || c.modelo === 'perpetuo') && (t[0] !== 'visao' || ceElegivel(c))); if (!TABS.some(t => t[0] === T)) T = 'dash';
   m.innerHTML = `<div class="head"><div><button class="btn sm" id="cVoltar">← Todas as campanhas</button><h1 style="margin-top:8px">${esc(c.nome)}</h1>
     <span class="muted">${pillModelo(c)} ${pillCamp(c)} · ${periodoCamp(c)} · estratégia: ${f ? esc(f.nome) + ' (' + esc(f.tipo) + ')' : '—'}${p ? ' · produto: ' + esc(p.nome) : ''}</span></div>
     <div class="acts"><label style="flex-direction:row;align-items:center;gap:6px">Status<select id="cSt">${Object.entries(CAMP_ST).map(([k, v]) => `<option value="${k}"${c.status === k ? ' selected' : ''}>${v[1]}</option>`).join('')}</select></label><button class="btn" id="cPj">Projeto${pjs.length ? ' (' + pjs.length + ')' : ''}</button><button class="btn" id="cMidia" title="Abre a Mídia paga filtrada nesta campanha, no período dela">Ver na Mídia paga</button><button class="btn" id="cEd">Editar campanha</button><button class="btn${c.status === 'rascunho' ? '' : ' pri'}" id="cFechar">${c.modelo === 'perpetuo' ? 'Fechar o ciclo' : 'Fechar a campanha'}</button></div></div>
@@ -2624,7 +3455,7 @@ async function vCampanha(m) {
   $('#cSt').onchange = e => act(async () => { await q(sb.from('campanhas').update({ status: e.target.value }).eq('id', id)); render(); }, 'Status atualizado');
   m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { S.campTab = b.dataset.t; render(); });
   const el = $('#cBody');
-  try { await ({ dash: async (el, c) => { await vMktDashCampanha(el, c.id); await campPainel128(el, c); await estAnexaFunil(el, c); await campBurnup(el, c); }, etapas: tcEtapas, metas: tcMetas, resumo: tcResumo, crm: (el, c) => vJornada(el, c), funil: tcFunil, midia: tcMidia, videos: tcVideos, leads: tcLeads, links: tcLinks, debrief: tcFechamento, ofertas: tcOfertas, captacao: tcCaptacao }[T])(el, c, r, { funis, p }); cdLigaKpis(el, c.id); }
+  try { await ({ visao: tcVisao, dash: async (el, c) => { await vMktDashCampanha(el, c.id); await campPainel128(el, c); await estAnexaFunil(el, c); await campBurnup(el, c); }, etapas: tcEtapas, metas: tcMetas, resumo: tcResumo, crm: (el, c) => vJornada(el, c), funil: tcFunil, midia: tcMidia, videos: tcVideos, leads: tcLeads, links: tcLinks, debrief: tcFechamento, ofertas: tcOfertas, captacao: tcCaptacao }[T])(el, c, r, { funis, p }); cdLigaKpis(el, c.id); }
   catch (e) { el.innerHTML = `<div class="panel"><b>Não foi possível carregar esta aba.</b> <span class="muted">${esc(e.message || String(e))}</span></div>`; }
 }
 const periodoPadrao = c => { const h = hoje(), fim = c.modelo === 'perpetuo' || !c.data_fim || c.data_fim > h ? h : c.data_fim; let ini = c.data_inicio || diaMais(fim, -89); if (ini > fim) ini = diaMais(fim, -89); return { ini: ini < diaMais(fim, -399) ? diaMais(fim, -399) : ini, fim }; };
