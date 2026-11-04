@@ -1,3 +1,11 @@
+## v0.249
+- **Oferta no assistente:** a principal é obrigatória e define o ticket dos cenários. Order bump parte da principal; downsell parte da principal com a condição "recusou"; as outras mantêm a etapa anterior que já tinham na aba Ofertas.
+- **Vendas por oferta:** seguem a regra da aba Ofertas: são as vendas aprovadas (e contratos) do produto da oferta, dentro da campanha. Por isso cada oferta precisa de um produto próprio.
+- **Aceite médio no histórico:** vendas da oferta ÷ quem recebeu, somando as campanhas do filtro.
+- **Filtro por período:** usa a data de fim da campanha finalizada (ou a de início, quando não há fim). Uma campanha conta inteira, sem recortar os números pelo período.
+- **Datas das etapas:** opcionais em qualquer campanha. Desmarcar "Vai usar datas de etapas" limpa aquisição, aquecimento, reabertura, downsell e carrinho; conversão e retenção da aba Estratégia e etapas ficam como estão.
+- **Limite conhecido:** `v_marketing_campanha` conta todas as vendas aprovadas da campanha. Order bump ou upsell registrado como venda separada entra nas vendas, na conversão e no ticket da campanha, e também pesa no CAC e no ROAS quando há comprador novo ou receita adicional.
+
 ## v0.248
 - **Datas das etapas:** passo só do lançamento. Reabertura e downsell são opcionais; marcados, pedem o início, e o fim pode ficar em branco.
 - **Cenários:** o Base vira as metas da campanha (orçamento, CPL, conversão, CAC, leads, vendas e receita). No perpétuo, os valores são por mês e só orçamento, leads por mês, CPL, conversão e CAC viram meta.

@@ -1,3 +1,15 @@
+## v0.249 — Assistente da campanha: oferta, período e gráficos de linha (03/11/2026)
+- **Passo novo "Oferta"**, logo depois de O básico (o assistente passa a ter 7 passos): oferta principal e, se quiser, order bump, upsell e downsell. Grava na mesma esteira da aba Ofertas. O histórico mostra, em cada oferta, em quantas campanhas ela apareceu e o aceite médio.
+- **Datas das etapas em qualquer campanha:** "Vai usar datas de etapas". No perpétuo, o passo existe e começa desligado.
+- **Histórico e referências:**
+  - filtro "Últimas" ou "Por período": traz as campanhas finalizadas do período, com a média embaixo;
+  - **gráficos de linha** de CPL, CAC e conversão, da mais antiga para a mais recente, com a escala acompanhando os valores;
+  - etiqueta embaixo do nome da campanha que teve order bump, upsell ou downsell;
+  - bloco único "Ver order bump, upsell e downsell": abre o resumo por tipo, os detalhes e "Levar o aceite médio para os cenários";
+  - o detalhe da campanha mostra as ofertas dela.
+- **Orçamento e cenários:** ticket vindo da oferta principal; receita de cada oferta adicional (vendas × aceite × preço), receita total e ROAS sobre o total. O aceite levado vira a premissa da oferta na aba Ofertas.
+- Banco: sem migração (`campanha_ofertas`, `campanha_ofertas_resultado`, `campanhas.fases`, `campanhas.extras`). Teste: `t249_assistente_oferta.py` (60 verificações, 0 falhas), no lugar de `t247_assistente_referencias.py`.
+
 ## v0.248 — Assistente da campanha: passo de datas e três cenários (03/11/2026)
 - **Passo próprio "Datas das etapas"**, depois de O básico, só no lançamento: Aquisição, Aquecimento, Carrinho aberto e, se marcar, Reabertura e Downsell, que podem ficar sem data de fim. O assistente passa a ter 6 passos; no perpétuo, são 5.
 - **Histórico e referências:** gráficos dentro de uma linha fina; sem a linha "Não levar" (clicar de novo desmarca).

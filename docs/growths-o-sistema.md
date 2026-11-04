@@ -15,7 +15,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 03/11/2026, versão 0.248 (assistente da campanha com passo de datas e três cenários).
+**Última atualização:** 03/11/2026, versão 0.249 (assistente da campanha com oferta, período e gráficos de linha).
 
 **v0.245 · Resposta à vista.** Quando alguém responde um formulário (lead, cliente ou diagnóstico), a equipe fica sabendo na hora: faixa verde, Meus avisos e WhatsApp, com a pontuação da qualificação.
 

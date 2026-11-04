@@ -15,7 +15,7 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.248 · 03/11/2026 (`index.html` + `assets/atendimento.*`) |
+| **Versão da tela** | 0.249 · 03/11/2026 (`index.html` + `assets/atendimento.*`) |
 | **Atendimento (0.175)** | Código preparado; falta aplicar `supabase/migrations/20261030021541_central_atendimento.sql`, publicar a função `atendimento`, configurar canais e liberar as telas nos pacotes. [Guia](docs/atendimento.md). |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | conferido em 31/10/2026: tem tudo até a **v0.189**, inclusive as narrativas (v0.157, 39 modelos), o Growth's Content simplificado (v0.159), os subtemas (v0.160), o Customer Growth (v0.163), o Atendimento e o Diagnóstico 360° (v0.177) |
 | **Falta aplicar no banco** | `supabase/RODAR_v0.197_pesquisa_modelos.sql` (modelos de pesquisa fora da lista) e `supabase/RODAR_v0.198_plano_anual.sql` (meta do ano, com impostos e custos variáveis da v0.199) `supabase/RODAR_v0.205_go_to_market.sql` (pacote Go-to-Market e custos de marketing) `supabase/RODAR_v0.206_historico_vendas.sql` (histórico de vendas) `supabase/RODAR_v0.208_vendas_periodo.sql` (dashboard de vendas) e `supabase/RODAR_v0.209_financeiro_simplificado.sql` (Financeiro simplificado) |
@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.249 | 03/11/2026 | **Assistente da campanha**: passo Oferta, datas em qualquer campanha, filtro por período, gráficos de linha e order bump, upsell e downsell no histórico e nos cenários. | Sem migração |
 | 0.248 | 03/11/2026 | **Assistente da campanha**: passo próprio para as datas das etapas do lançamento (com reabertura e downsell) e três cenários no orçamento, com recálculo entre as métricas e o Base vindo do histórico. | Sem migração |
 | 0.247 | 03/11/2026 | **Assistente da campanha**: datas de cada etapa do lançamento e passo "Histórico e referências", com quantas campanhas trazer, lista de métricas, gráficos, histórico da campanha clicada e a escolha de levar a média ou uma campanha para CPL, CAC e conversão. | Sem migração |
 | 0.246 | 03/11/2026 | **Histórico e referências no planejamento da campanha**: até 3 campanhas finalizadas do mesmo produto e modelo, médias ponderadas, avisos, "Usar as médias como metas" e memória das referências usadas. | Sem migração |

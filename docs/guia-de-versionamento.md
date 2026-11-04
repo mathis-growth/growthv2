@@ -1,3 +1,8 @@
+## v0.249
+- index.html: `ofPassoHtml`, `chLista`, `chQuando`, `chOfertasDe`, `chOfResumo`, `chAceites`, `chLinha`, `chOfertasHtml`, `cenOfertaRec`, `cenTotal`. `abrirWizard` com 7 passos, sem o passo condicional, e `wzCarrega` para o histórico e as ofertas. A edição da campanha deixa de apagar o carrinho no perpétuo. Rótulo da tela para 0.249.
+- Sem migração.
+- Teste novo `t249_assistente_oferta.py`, no lugar de `t247_assistente_referencias.py`.
+
 ## v0.248
 - index.html: `LANC_EXTRAS`, `CEN_LIN`, `CEN_TIPOS`, `cenFecha`, `cenSolve`, `cenDeriva`, `cenInicial`, `cenHtml`. `abrirWizard` com 6 passos (o 2 só no lançamento, com `numPassos` e `semDatas`). `campRascunho` aponta para os passos novos. "Datas das fases" preserva o que não está na tela. Rótulo da tela para 0.248.
 - Sem migração.

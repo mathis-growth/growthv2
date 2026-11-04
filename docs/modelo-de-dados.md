@@ -1,3 +1,8 @@
+## v0.249
+- `campanhas.extras.referencia_planejamento` ganha `filtro` (`ultimas` ou `periodo`), `ini`, `fim` e `aceites: [{papel, valor, fonte}]`.
+- O aceite levado grava `campanha_ofertas.taxa_aceite` (fração de 0 a 1) nas ofertas daquele tipo.
+- `campanhas.data_carrinho_abre` e `data_carrinho_fecha` podem ser usadas também no perpétuo.
+
 ## v0.248
 - `campanhas.fases` aceita também `reabertura` e `downsell` (`{ini, fim}`; `fim` nulo = em aberto).
 - `campanhas.extras.cenarios`: `{base, pessimista, otimista, mexido, atualizado_em}`, cada cenário com `I` (investimento), `p` (CPL), `L` (leads), `c` (conversão %), `V` (vendas), `a` (CAC), `t` (ticket), `rec` e `roas`.
