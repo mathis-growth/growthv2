@@ -1,3 +1,7 @@
+## v0.262
+- **Histórico por canal:** porcentagem de cada canal no total da campanha: investimento, leads e vendas aprovadas. A venda conta para o canal pelo qual a pessoa entrou na campanha. Usa as campanhas do passo Histórico e referências; sem nenhuma finalizada, os últimos lançamentos do workspace, com aviso.
+- **Média:** média simples das porcentagens de cada campanha.
+
 ## v0.261
 - **Bruto de anúncios:** gravado antes do tratamento. Falha no bruto vira aviso na sincronização e não interrompe os números de `ads_externo_dia`.
 - **YouTube Ads:** campanha do Google Ads com `advertisingChannelType = VIDEO`.

@@ -1,3 +1,8 @@
+## v0.262
+- Migração `20270116100000_v0262_canais_historico.sql`: função `campanhas_canais_historico`.
+- index.html: quadro `#wzHistCanal` no passo 6; `LEG.etapas` mostra só a edição das etapas. Rótulo da tela para 0.262.
+- Testes novos: banco `v0262_canais_historico.sql`; tela `t262_canais_historico.py`.
+
 ## v0.261
 - Migração `20270115100000_v0261_ads_bruto.sql`: tabelas `meta_ads_bruto`, `google_ads_bruto`, `youtube_ads_bruto`; função `conexao_gravar_bruto`.
 - Função `conexoes`: `metaAnuncios` e `googleAnuncios` coletam o bruto; `guardaBruto` em `rotas.ts`. A versão publicada era de arquivo único; passa a ser publicada com os arquivos do repositório.

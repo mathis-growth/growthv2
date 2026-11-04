@@ -1,3 +1,8 @@
+## v0.262 — Histórico no passo Canais e menos repetição (04/11/2026)
+- **Passo Canais:** embaixo das metas, a porcentagem de investimento, leads e vendas de cada canal na última campanha e a média das campanhas escolhidas.
+- **Planejamento:** saiu a parte que repetia o funil e os números por dia. Editar as etapas fica na aba Etapas da estratégia.
+- Banco: `20270116100000_v0262_canais_historico.sql`. Testes: banco `v0262_canais_historico.sql` (OK); tela `t262` (0 falhas).
+
 ## v0.261 — Bruto de Meta, Google Ads e YouTube Ads (04/11/2026)
 - **Tabelas brutas:** `meta_ads_bruto`, `google_ads_bruto` e `youtube_ads_bruto`, uma linha por anúncio e dia, com tudo o que a API devolve. Campanhas de vídeo do Google vão para a do YouTube.
 - **Campos:** a sincronização pede mais campos. Se a plataforma recusar, volta aos de sempre e registra o aviso.

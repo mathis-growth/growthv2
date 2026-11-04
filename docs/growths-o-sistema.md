@@ -15,7 +15,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 04/11/2026, versão 0.261 (bruto de Meta, Google Ads e YouTube Ads).
+**Última atualização:** 04/11/2026, versão 0.262 (histórico por canal no assistente).
 
 **v0.245 · Resposta à vista.** Quando alguém responde um formulário (lead, cliente ou diagnóstico), a equipe fica sabendo na hora: faixa verde, Meus avisos e WhatsApp, com a pontuação da qualificação.
 
