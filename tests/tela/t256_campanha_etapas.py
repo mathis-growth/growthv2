@@ -25,14 +25,17 @@ for n in range(-10, -3):
     vend.append(dict(id=f'b{n}', campanha_id='c1', pessoa_id=f'p{n-30}_0', oferta_id='o2', status='aprovada', data_venda=d(n) + 'T15:00:00Z', valor_bruto=97, taxa_plataforma=9, impostos=5, pessoas=dict(nome='Comprador')))
 C = dict(id='c1', nome='Lançamento Real', status='ativa', produto_id='p1', modelo='lancamento', data_inicio=d(-40), data_fim=d(30), data_carrinho_abre=d(-10), data_carrinho_fecha=d(-4), orcamento_total=5000, meta_leads=100, meta_vendas=20, meta_cpl=10, meta_receita=20000, meta_cac=200, extras={},
   fases=dict(aquisicao=dict(ini=d(-40), fim=d(-18)), aquecimento=dict(ini=d(-17), fim=d(-11)), conversao=dict(ini=d(-10), fim=d(-4))))
-C2 = dict(id='c2', nome='Sem datas', status='ativa', produto_id='p1', modelo='lancamento', data_inicio=d(-5), data_fim=d(5), fases={}, extras={})
+C2 = dict(id='c2', nome='Sem datas', status='rascunho', produto_id='p1', funil_id='f9', modelo='lancamento', data_inicio=d(-5), data_fim=d(5), fases={}, extras={})
 SEED = {'workspaces': [{'id': W, 'nome': 'Escola Aurora', 'modo_produto': 'completo', 'agencia': True}], 'rpc:sou_equipe_interna': True,
   'campanhas': ws([C, C2, dict(id='c0', nome='Anterior', modelo='lancamento', data_inicio=d(-200), fases={}, extras={})]), 'produtos': ws([dict(id='p1', nome='Curso', preco=1000)]), 'funis': ws([]), 'projetos': ws([]),
   'v_marketing_campanha': ws([dict(campanha_id='c0', nome='Anterior', investimento=3000, leads=300, vendas=20, faturamento=18000)]),
   'campanha_canais': ws([dict(id='k1', campanha_id='c1', canal='meta_ads', temperatura='frio'), dict(id='k2', campanha_id='c1', canal='google_ads', temperatura='morno')]),
   'anuncios': ws([dict(id='a1', nome='Vídeo depoimento', utm_content='a1', campanha_canal_id='k1'), dict(id='a2', nome='Busca', utm_content='a2', campanha_canal_id='k2')]),
   'campanha_ofertas': ws([dict(id='co1', campanha_id='c1', oferta_id='o1', nome='À vista', papel='principal', preco=1000, taxa_aceite=None), dict(id='co2', campanha_id='c1', oferta_id='o2', nome='Bump Planilha', papel='order_bump', preco=97, taxa_aceite=25), dict(id='co3', campanha_id='c1', oferta_id='o3', nome='Bump Checklist', papel='order_bump', preco=47, taxa_aceite=10)]),
-  'v_trafego_anuncio_dia': ws(traf), 'campanha_participacoes': ws(leads), 'vendas': ws(vend), 'pessoa_toques': ws(toq), 'comissoes': ws([]), 'fontes_video': ws([]), 'presencas_video': [], 'plataformas_venda': ws([dict(id='pl', nome='Hotmart', taxa_percentual=10)]), 'growth_experimentos': []}
+  'v_trafego_anuncio_dia': ws(traf), 'campanha_participacoes': ws(leads), 'vendas': ws(vend), 'pessoa_toques': ws(toq), 'comissoes': ws([]), 'fontes_video': ws([]), 'presencas_video': [], 'plataformas_venda': ws([dict(id='pl', nome='Hotmart', taxa_percentual=10)]), 'growth_experimentos': [],
+  'campanha_blocos': ws([dict(id='b1', campanha_id='c1', nome='Tráfego pago', fase='aquisicao'), dict(id='b2', campanha_id='c1', nome='Grupo de WhatsApp', fase='aquecimento')]),
+  'campanha_etapas': ws([dict(id='e1', campanha_id='c1', fase='aquisicao', nome='Tráfego pago · Investimento', unidade='brl', bloco_id='b1', ordem=1, ativa=True), dict(id='e2', campanha_id='c1', fase='aquisicao', nome='Tráfego pago · Cliques', unidade='numero', bloco_id='b1', ordem=2, ativa=True), dict(id='e3', campanha_id='c1', fase='aquecimento', nome='Grupo de WhatsApp · Entradas', unidade='numero', bloco_id='b2', ordem=3, ativa=True), dict(id='e4', campanha_id='c1', fase='aquisicao', nome='Página · Leads', unidade='numero', ordem=4, ativa=True)]),
+  'estrategia_etapas': ws([dict(id='x1', funil_id='f9', fase='aquisicao', nome='Página · Leads', unidade='numero', ordem=1), dict(id='x2', funil_id='f9', fase='conversao', nome='Checkout · Checkouts iniciados', unidade='numero', ordem=2)]), 'estrategia_blocos': ws([])}
 MOCK = open(SP + 'mockdb.js', encoding='utf-8').read()
 open(HTML, 'w', encoding='utf-8').write(s[:i] + '<script>window.__SEED=' + json.dumps(SEED) + ';</script><script>' + MOCK + '</script>' + s[j:])
 ok = True
@@ -45,6 +48,7 @@ with sync_playwright() as p:
     pg = b.new_page(viewport={'width': 1280, 'height': 1100}); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)))
     pg.goto('file:///' + HTML.replace(chr(92), '/')); pg.wait_for_timeout(1000)
+    pg.evaluate("window.__RPC = { ...(window.__RPC || {}), campanha_etapas_dia: () => [{ id: 'e1', dias: { [new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10)]: 70 } }, { id: 'e2', dias: {} }] }")
     def abre(cid):
         pg.evaluate("""async id => { window.provisionaAuto = async () => {}; S.ws = S.wsBase = 'w1'; S.view = 'mkt-camp'; S.campSel = id; S.campTab = null; const m = document.querySelector('main') || document.body; await vCampanha(m); }""", cid); pg.wait_for_timeout(700)
     def foto(n):
@@ -52,6 +56,7 @@ with sync_playwright() as p:
     def txt(): return pg.locator('#ceHost').evaluate("e => e.shadowRoot.querySelector('.pag').innerText")
     def et(k): pg.locator(f'#ceHost [data-et="{k}"]').first.click(); pg.wait_for_timeout(250)
     abre('c1')
+    chk(pg.evaluate("document.querySelector('.tabs').style.display") == 'none', 'o menu antigo já nasce escondido')
     chk(pg.locator('#ceHost').count() == 1, 'campanha com datas abre a tela por etapas')
     t = txt()
     for n in ['Geral', 'Captação', 'Aquecimento', 'Carrinho', 'Pós-venda', 'Growth Model']: chk(n in t, 'barra mostra ' + n, t[:300])
@@ -69,6 +74,12 @@ with sync_playwright() as p:
     chk('NaN' not in t and 'undefined' not in t, 'Geral sem número quebrado', t[:800])
     foto('et_geral')
     et('cap'); t = txt()
+    chk('Tráfego pago' in t and 'Página' in t and 'Visão da etapa' in t, 'submenu vem da estratégia, por bloco', t[:300])
+    chk('Grupo de WhatsApp' not in t, 'submenu só da etapa aberta')
+    pg.locator('#ceHost [data-sub="Tráfego pago"]').click(); pg.wait_for_timeout(250); t9 = txt()
+    chk('Captação · Tráfego pago' in t9 and 'Investimento por dia' in t9 and 'Cliques por dia' in t9 and 'R$ 70' in t9 and 'NaN' not in t9, 'submenu abre número, gráfico e dia a dia', t9[:500])
+    foto('et_submenu')
+    pg.locator('#ceHost [data-sub=""]').click(); pg.wait_for_timeout(150); t = txt()
     chk('132' in t, 'captação conta os 132 leads reais', t[:400])
     chk('R$ 11,67' in t, 'CPL real: 1.540 ÷ 132', t[:500])
     pg.locator('#ceHost [data-per="1"]').click(); pg.wait_for_timeout(200); t2 = txt()
@@ -100,9 +111,16 @@ with sync_playwright() as p:
     foto('et_sim')
     chk(pg.evaluate("document.querySelector('.tabs').style.display") == 'none', 'abas ficam escondidas na tela por etapas'); pg.click('#cOutras'); chk(pg.evaluate("document.querySelector('.tabs').style.display") == '' and pg.evaluate("document.querySelectorAll('[data-t]').length") > 3, 'outras visões abrem com um clique')
     abre('c2'); t = txt()
-    chk(pg.locator('#ceHost').count() == 1 and 'Definir datas' in t and 'Carrinho' not in t.split('Geral')[1][:80], 'lançamento sem datas abre a tela e pede as datas', t[:400])
+    chk(pg.locator('#ceHost').count() == 1 and 'Completar a campanha' in t, 'rascunho sem datas abre a tela e avisa', t[:400])
+    chk('Aquecimento' in t and 'Carrinho' in t and 'sem data definida' in t, 'Aquecimento e Carrinho sempre aparecem', t[:400])
     chk('NaN' not in t and 'undefined' not in t, 'sem datas, sem número quebrado', t[:500])
+    et('car'); t = txt(); chk('Carrinho ainda não tem data' in t and 'Checkout' in t, 'carrinho sem data explica e mostra as etapas da estratégia', t[:400])
+    pg.locator('#ceHost [data-sub="Checkout"]').click(); pg.wait_for_timeout(200); t = txt(); chk('Checkouts iniciados' in t and 'Trazer para a campanha' in t, 'etapa da estratégia ainda não copiada', t[:400])
+    et('geral'); t = txt(); chk('NaN' not in t and 'Carrinho' in t, 'Geral lista as etapas sem data', t[:500])
+    et('cap')
     foto('et_sem_datas')
+    pg.click('#cEd'); pg.wait_for_timeout(700)
+    chk(pg.evaluate("!!document.querySelector('#modalRoot .wz, #modalRoot [data-passo], #modalRoot form') && /Passo|Comercial|O básico/.test(document.querySelector('#modalRoot').innerText)"), 'Editar campanha abre o assistente por etapas', pg.evaluate("document.querySelector('#modalRoot').innerText.slice(0, 200)"))
     chk(not errs, 'sem erro de script', errs)
     b.close()
 print('t256:', 'tudo OK' if ok else 'COM FALHAS')

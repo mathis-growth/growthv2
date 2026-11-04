@@ -93,3 +93,6 @@ Conferido em 30/10/2026.
 
 ## v0.258 — Order bump por item (PGlite)
 `v0258_order_bump_por_item.sql` termina com "v0258: tudo OK". Testa: uma venda por item; valor de cada uma; item sem ligação sem deixar venda pela metade; reembolso de todos os itens; bump em fatura própria sem contar duas vezes; fatura sem bump. Conferido em 04/11/2026.
+
+## v0.259 — Etapas por dia (PGlite)
+`v0259_etapas_por_dia.sql` termina com "v0259: tudo OK". Testa que a soma dos dias bate com `campanha_funil_etapas` para leads, receita e valor manual. Conferido em 04/11/2026.

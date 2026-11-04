@@ -1,3 +1,10 @@
+## v0.259 — Etapas e submenus pela estratégia (04/11/2026)
+- **Menu antigo:** já nasce escondido na tela por etapas, sem aparecer e sumir.
+- **Editar campanha:** abre o assistente por etapas, igual ao de criar.
+- **Barra:** Aquecimento e Carrinho sempre aparecem; sem data, a etapa avisa e pede a data.
+- **Submenus:** cada fase mostra os blocos da estratégia da campanha, como Tráfego pago, Grupo de WhatsApp ou Aula 1, com número, mini gráfico, gráfico por dia e tabela.
+- Banco: `20270114100000_v0259_etapas_por_dia.sql` (`campanha_etapas_dia`). Testes: banco `v0259_etapas_por_dia.sql` (OK); tela `t256` (0 falhas).
+
 ## v0.258 — Campanha com mini gráficos e order bump separado (04/11/2026)
 - **Tela por etapas:** abre em todo lançamento com data de início, inclusive rascunho e campanha sem datas de carrinho, e quem entra pela lista cai nela.
 - **Topo:** número, meta e mini gráfico lado a lado. Os demais números ficam em "Mais números", e os gráficos vêm antes das tabelas.

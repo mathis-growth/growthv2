@@ -1,3 +1,8 @@
+## v0.259
+- Migração `20270114100000_v0259_etapas_por_dia.sql`: função `campanha_etapas_dia`.
+- index.html: `vBloco`, `subMenu`, `etapasBarra` em `CampEtapas`; `tcVisao` carrega etapas e blocos; `formCampanha` com campanha existente abre `abrirWizard`. Rótulo da tela para 0.259.
+- Testes novos: banco `v0259_etapas_por_dia.sql`.
+
 ## v0.258
 - Migração `20270113100000_v0258_order_bump_por_item.sql`: funções `_pv_linhas` e `_pv_produto`; `_pv_tenta` aplica as linhas juntas; `_pv_bruto_tratar` aponta o produto que falta ligar.
 - index.html: `spk`, `acc`, `tbOfertas` no componente `CampEtapas`; `ceElegivel` vale para todo lançamento com data de início; aberturas pela lista vão para a aba `visao`. Rótulo da tela para 0.258.

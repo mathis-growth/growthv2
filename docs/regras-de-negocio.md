@@ -1,3 +1,8 @@
+## v0.259
+- **Barra da campanha:** Captação, Aquecimento, Carrinho e Pós-venda sempre aparecem em lançamento; Reabertura e Downsell, se tiverem data ou etapas.
+- **Submenus:** vêm de `campanha_etapas`, agrupados pelo bloco na fase. Sem cópia, mostram as etapas da estratégia ligada, sem números, com a opção de trazer para a campanha.
+- **Número por dia:** `campanha_etapas_dia` usa as mesmas fontes de `campanha_funil_etapas`, e a soma dos dias bate com o total.
+
 ## v0.258
 - **Order bump:** na Eduzz, itens com `isBump`; na Hubla, ofertas com `isOrderBump`. Cada um vira uma venda com `id_externo` `<fatura>:<produto>` e `pedido_ref` da fatura. A venda principal fica com o valor restante.
 - **Produto sem ligação:** nenhum item da fatura entra até todos estarem ligados. A tela mostra qual falta.

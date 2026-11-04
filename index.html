@@ -1383,7 +1383,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
     <div class="foot">
       <button class="btn sm temaBtn" id="temaBtn" type="button"></button>
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.258 · 04/11/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.259 · 04/11/2026</span>
     </div>
   </aside>
   <div class="mainw"><div class="topou" id="topoU"><div class="ola" id="olaTxt"></div><div class="tou-m"><button type="button" class="tou-av" id="fotoBtn" aria-haspopup="true" aria-expanded="false" aria-controls="fotoMenu" aria-label="Sua conta"></button>
@@ -2537,6 +2537,7 @@ function txSalvarExtras(extras, key, config) {
   return next;
 }
 async function formCampanha(row, pre = {}) {
+  if (row && row.id) return abrirWizard(row.id);
   const w = S.ws;
   const [prod, funis, metasPl] = await Promise.all([q(sb.from('produtos').select('id,nome').eq('workspace_id', w).order('nome')), q(sb.from('funis').select('id,nome,tipo').eq('workspace_id', w).eq('ativo', true).order('nome')), q(sb.from('plano_metas').select('id,titulo,setor').eq('workspace_id', w).neq('status', 'cancelada').order('setor'))]);
   const canaisTx = await txCanais();
@@ -2625,15 +2626,20 @@ async function tcVisao(el, c) {
   const aulas = fontes.filter(x => x.data_evento).map(x => ({ nome: x.nome, data_evento: x.data_evento, presentes: pres.filter(p => p.fonte_id === x.id).length }));
   const outras = cmps.map(x => mk.find(r => r.campanha_id === x.id)).filter(Boolean);
   const plat = await q(sb.from('plataformas_venda').select('taxa_percentual').eq('workspace_id', c.workspace_id).limit(1)).catch(ign);
+  // etapas da estratégia: as da campanha; se ainda não foram copiadas, as da estratégia ligada
+  let etapas = await q(sb.from('campanha_etapas').select('id,fase,nome,unidade,taxa_esperada,bloco_id,ordem').eq('campanha_id', id).eq('ativa', true).order('ordem')).catch(ign), blocos = await q(sb.from('campanha_blocos').select('id,nome').eq('campanha_id', id)).catch(ign), copia = true, serie = [];
+  if (!etapas.length && c.funil_id) { copia = false; etapas = await q(sb.from('estrategia_etapas').select('id,fase,nome,unidade,taxa_esperada,bloco_id,ordem').eq('funil_id', c.funil_id).order('ordem')).catch(ign); blocos = await q(sb.from('estrategia_blocos').select('id,nome').eq('funil_id', c.funil_id)).catch(ign); }
+  else if (etapas.length) { const h0 = hoje(), fim0 = c.data_fim && c.data_fim < h0 ? diaMais(c.data_fim, 60) : h0; serie = await q(sb.rpc('campanha_etapas_dia', { p_campanha: id, p_ini: c.data_inicio, p_fim: fim0 < h0 ? fim0 : h0 })).catch(ign); }
   const NM = { meta_ads: 'Meta Ads', google_ads: 'Google Ads', tiktok_ads: 'TikTok Ads', youtube_ads: 'YouTube Ads', organico: 'Orgânico', email: 'E-mail', whatsapp: 'WhatsApp', instagram: 'Instagram', comercial: 'Comercial' };
   const H = { hoje: hoje(), dia: s => new Date(s).toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' }), canalNome: k => k ? (NM[k] || String(k)) : '', taxaPadrao: plat[0] ? (Number(plat[0].taxa_percentual) || 0) / 100 : 0,
     editar: () => abrirWizard(id),
+    aplicar: () => act(async () => { await q(sb.rpc('campanha_aplicar_estrategia', { p_campanha: id, p_funil: c.funil_id, p_substituir: false })); toast('Etapas trazidas da estratégia'); render(); }),
     aprova: async cn => { await q(sb.from('growth_experimentos').insert({ workspace_id: c.workspace_id, titulo: (cn.nome + ' · ' + c.nome).slice(0, 120), hipotese: cn.hip, insight: 'Simulador da campanha ' + c.nome, etapa: 'ideia', impacto: cn.ice.i, confianca: cn.ice.c, facilidade: cn.ice.f })); toast('Ideia criada no Ciclo de Growth'); } };
   // os outros detalhes da campanha continuam a um clique
   if (tabs && tabs.classList.contains('tabs')) tabs.style.display = 'none';
   el.innerHTML = '<div style="display:flex;justify-content:flex-end"><button class="btn sm" id="cOutras">Outras visões da campanha</button></div><div id="ceHost"></div>';
   $('#cOutras').onclick = () => { if (tabs) tabs.style.display = tabs.style.display === 'none' ? '' : 'none'; };
-  window.CampEtapas($('#ceHost'), c, { canais, anuncios, ofertas, trafego, leads, vendas, grupo, comissoes, aulas, outras }, H);
+  window.CampEtapas($('#ceHost'), c, { canais, anuncios, ofertas, trafego, leads, vendas, grupo, comissoes, aulas, outras, etapas, blocos, serie, copia }, H);
 }
 /*CE-INI*/
 /* v0.256: tela da campanha por etapas (mesma tela aprovada na prévia), com dados reais. CSS isolado em shadow DOM. Gerada a partir da prévia; ver docs. */
@@ -2805,10 +2811,14 @@ ul.lista{list-style:none;padding:0;margin:0}
 .pag{background:transparent!important;padding:0!important;max-width:none!important}
 .kpi svg.spk{display:block;width:100%;height:34px;margin-top:6px;overflow:visible}
 .painel .kpis{grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr))}
+.subm{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px;padding:8px;background:var(--surface);border:1px solid var(--borda);border-radius:var(--raio);box-shadow:var(--sombra)}
+.subm button{background:transparent;border:1px solid transparent;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:500;color:var(--ink);cursor:pointer}
+.subm button:hover{background:var(--surface-2)}
+.subm button.sel{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
 details.mais{margin:2px 0}
 details.mais>summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);padding:4px 0}
 details.mais .kpis{margin-top:8px}
-</style><div class="pag"><div class="topo"><div><p class="muted" id="fase"></p></div></div><div id="aviso"></div><nav class="etapas" id="etapas" aria-label="Etapas da campanha"></nav><div id="filtros"></div><main class="painel" id="painel"></main></div>`;
+</style><div class="pag"><div class="topo"><div><p class="muted" id="fase"></p></div></div><div id="aviso"></div><nav class="etapas" id="etapas" aria-label="Etapas da campanha"></nav><div id="sub"></div><div id="filtros"></div><main class="painel" id="painel"></main></div>`;
 
 /* ---------- utilitários ---------- */
 const $ = s => raiz.querySelector(s);
@@ -2837,14 +2847,18 @@ const ETAPAS = [], ET = {}, ANUNCIOS = [], AN = {}, OFERTAS = {}, LEADS = [], GA
 const META = {};
 const cnOrg = 'Sem origem';
 let CANAIS = [];
+const FASEK = { aquisicao: 'cap', aquecimento: 'aq', conversao: 'car', retencao: 'pos', reabertura: 'rea', downsell: 'dow' }, BLOCOS = {};
+{ const nb = Object.fromEntries((D.blocos || []).map(b => [b.id, b.nome])), sr = Object.fromEntries((D.serie || []).map(x => [x.id, x.dias || {}]));
+  (D.etapas || []).forEach(e => { const k = FASEK[e.fase] || 'cap', pt = String(e.nome || '').split(' · '), nome = nb[e.bloco_id] || (pt.length > 1 ? pt[0] : 'Geral'), met = pt.length > 1 ? pt.slice(1).join(' · ') : e.nome, L = BLOCOS[k] = BLOCOS[k] || [];
+    let b = L.find(x => x.nome === nome); if (!b) { b = { nome, mets: [] }; L.push(b); } b.mets.push({ id: e.id, nome: met, un: e.unidade, taxa: e.taxa_esperada, dias: sr[e.id] || {} }); }); }
 { const fs = c.fases || {}, ini = c.data_inicio, per = x => x && x.ini && x.fim ? x : null;
   const conv = per(fs.conversao) || (c.data_carrinho_abre ? { ini: c.data_carrinho_abre, fim: c.data_carrinho_fecha || c.data_carrinho_abre } : null);
   const aq = per(fs.aquecimento), rea = per(fs.reabertura), dow = per(fs.downsell);
   const fimCap = per(fs.aquisicao) ? fs.aquisicao.fim : (aq || conv) ? diaMais((aq || conv).ini, -1) : (c.data_fim || diaMais(ini, 29));
   const seq = [['cap', 'Captação', { ini: per(fs.aquisicao) ? fs.aquisicao.ini : ini, fim: fimCap }, true], ['aq', 'Aquecimento', aq, !!aq], ['car', 'Carrinho', conv, !!conv], ['rea', 'Reabertura', rea, !!rea], ['dow', 'Downsell', dow, !!dow]];
-  let ult = fimCap; seq.forEach(s => { const p = s[2] || { ini: diaMais(ult, 1), fim: diaMais(ult, 1) }; if (s[3] && p.fim > ult) ult = p.fim; ETAPAS.push({ k: s[0], nome: s[1], ini: p.ini, fim: p.fim, ativa: s[3] }); });
+  let ult = fimCap; seq.forEach(s => { const p = s[2] || { ini: diaMais(ult, 1), fim: diaMais(ult, 1) }; if (s[3] && p.fim > ult) ult = p.fim; ETAPAS.push({ k: s[0], nome: s[1], ini: p.ini, fim: p.fim, ativa: s[3], semData: !s[3], mostra: s[3] || ['aq', 'car'].includes(s[0]) || !!BLOCOS[s[0]] }); });
   const ret = per(fs.retencao), fimC = c.data_fim && c.data_fim > ult ? c.data_fim : diaMais(ult, 30);
-  ETAPAS.push({ k: 'pos', nome: 'Pós-venda', ini: ret ? ret.ini : diaMais(ult, 1), fim: ret ? ret.fim : fimC, ativa: true });
+  ETAPAS.push({ k: 'pos', nome: 'Pós-venda', ini: ret ? ret.ini : diaMais(ult, 1), fim: ret ? ret.fim : fimC, ativa: true, semData: false, mostra: true });
   ETAPAS.forEach(e => { ET[e.k] = e; }); }
 { const cc = Object.fromEntries((D.canais || []).map(x => [x.id, x]));
   (D.anuncios || []).forEach(a => { const k = cc[a.campanha_canal_id] || {}; AN[a.id] = { id: a.id, nome: a.nome, canal: H.canalNome(k.canal), pub: k.temperatura || k.tipo || '—', utm: a.utm_content, f: 0, q: 1 }; });
@@ -2898,6 +2912,20 @@ function tbOfertas(vs) { const G = new Map(); (D.ofertas || []).forEach(o => G.s
   const c2 = [['Oferta'], ['Tipo'], ['Vendas', 'n'], ['Ticket', 'n'], ['Quem saiu', 'n'], ['Faturamento', 'n']], L = [...G.values()].sort((a, b) => a.o - b.o || b.l.length - a.l.length), tot = soma(vs, v => v.valor), sai = soma(vs.filter(saiu), v => v.valor);
   if (!L.length) return '<p class="muted">Nenhuma oferta ligada a esta campanha ainda.</p>';
   return tabela(c2, L.map(x => { const b = soma(x.l, v => v.valor), s = soma(x.l.filter(saiu), v => v.valor); return linha(c2, [x.n, x.t, fN(x.l.length), x.l.length ? fBrl(b / x.l.length) : '—', fBrl(s), fBrl(b - s)]); }), ['Total', '', fN(vs.length), vs.length ? fBrl(tot / vs.length) : '—', fBrl(sai), fBrl(tot - sai)]); }
+const etapasBarra = () => ETAPAS.filter(e => e.mostra);
+const perTx = e => e.semData ? 'sem data definida' : dm(e.ini) + ' a ' + dm(e.fim);
+const fUn = u => u === 'brl' ? fBrl : u === 'pct' ? fP : fN;
+function subMenu() { const L = BLOCOS[S.etapa]; if (!L || !L.length || S.drill) return ''; const at = S.sub[S.etapa] || ''; return `<div class="subm" role="group" aria-label="Etapas da estratégia"><button type="button" data-sub="" class="${at ? '' : 'sel'}">Visão da etapa</button>${L.map(b => `<button type="button" data-sub="${b.nome.replace(/"/g, '&quot;')}" class="${at === b.nome ? 'sel' : ''}">${b.nome}</button>`).join('')}</div>`; }
+function vBloco(k, nome) { const e = ET[k], b = (BLOCOS[k] || []).find(x => x.nome === nome); if (!b) return ''; const ds = e.semData ? [] : diasPer(e), rot = ds.map(dm);
+  const copiar = D.copia === false ? `<div class="nota" style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><span>Estas etapas vêm da estratégia e ainda não foram trazidas para a campanha. Por isso ainda não têm números.</span><button class="btn" id="ceAplicar" type="button">Trazer para a campanha</button></div>` : '';
+  const cab = `<div class="cab"><div><h2>${e.nome} · ${b.nome}</h2><p class="muted peq">${perTx(e)}</p></div>${e.semData ? '' : filtroPer(e)}</div>`;
+  if (e.semData) return `${cab}${copiar}<div class="vazio"><h3>${e.nome} ainda não tem data</h3><p class="muted">Defina as datas para acompanhar: ${b.mets.map(m => m.nome).join(', ')}.</p><button class="btn" id="btEditar" type="button">Definir datas</button></div>`;
+  const val = (m, d) => ate(d) ? Number(m.dias[d]) || 0 : null, tot = m => { const f = ds.filter(ate), s_ = soma(f, d => val(m, d)); return m.un === 'pct' ? (f.length ? s_ / f.length : null) : s_; };
+  const cards = b.mets.map((m, i) => { const ant = b.mets[i - 1], tx = ant && tot(ant) && m.un !== 'brl' && ant.un !== 'brl' ? `${fP(tot(m) / tot(ant) * 100)} de ${ant.nome}${m.taxa ? ' · esperado ' + fP(Number(m.taxa)) : ''}` : (m.taxa ? 'esperado ' + fP(Number(m.taxa)) : ''); return kpi(m.nome, fUn(m.un)(tot(m)), tx, '', '', spk(ds.map(d => val(m, d)))); }).join('');
+  const gr = b.mets.slice(0, 6).map(m => grafico(m.nome + ' por dia', '', rot, [{ nome: m.nome, cor: '--accent', vals: ds.map(d => val(m, d)) }], fUn(m.un))).join('');
+  const cT = [['Dia'], ...b.mets.map(m => [m.nome, 'n'])], f = ds.filter(ate).slice().reverse();
+  return `${cab}${copiar}<div class="kpis">${cards}</div><div class="cols">${gr}</div><section class="caixa"><h3>Dia a dia</h3>${f.length ? tabela(cT, f.map(d => linha(cT, [dm(d), ...b.mets.map(m => fUn(m.un)(val(m, d)))]))) : '<p class="muted">Este período ainda não começou.</p>'}</section>
+  <p class="nota muted">Números digitados à mão são lançados em Outras visões da campanha, na aba Estratégia e etapas.</p>`; }
 const LF = () => S.canal ? LEADS.filter(p => AN[p.an].canal === S.canal) : LEADS;
 const VF = () => S.canal ? VENDAS.filter(v => AN[v.p.an].canal === S.canal) : VENDAS;
 const SF = () => S.canal ? SAIDAS.filter(v => AN[v.p.an].canal === S.canal) : SAIDAS;
@@ -2923,7 +2951,7 @@ function barrasCoorte(ord, grupos, nomeG) { const ls = ord.map(k => { const ps =
   return `<div class="cols">${bl('Leads em cada grupo', 'q', mq, fN)}${bl('Faturamento de cada grupo', 'f', mf, fBrl)}</div>`; }
 
 /* ---------- estado e contas ---------- */
-const S = { hoje: H.hoje, etapa: null, per: {}, drill: null, temRea: ETAPAS.some(e => e.k === 'rea' && e.ativa), canal: '', verPor: 'total', cmp: '' };
+const S = { hoje: H.hoje, etapa: null, per: {}, drill: null, temRea: ETAPAS.some(e => e.k === 'rea' && e.ativa), canal: '', verPor: 'total', cmp: '', sub: {} };
 const etapasAtivas = () => ETAPAS.filter(e => e.ativa);
 const etapaAtual = () => { const a = etapasAtivas(); if (S.hoje > a[a.length - 1].fim) return null; return a.find(e => S.hoje >= e.ini && S.hoje <= e.fim) || a.find(e => S.hoje < e.ini); };
 const ate = d => d <= S.hoje;
@@ -2939,7 +2967,7 @@ function totais(vs = vendasOk(v => v.et !== 'rea' || S.temRea)) {
   const ok = vs.filter(v => !saiu(v)), taxas = soma(ok, v => v.tx), comis = soma(ok, v => v.cm);
   return { vendas: vs.length, bruto, sai, fat, taxas, comis, liq: fat - taxas - comis, ticket: div(bruto, vs.length) };
 }
-const estadoEt = e => S.hoje < e.ini ? 'futura' : S.hoje > e.fim ? 'feita' : 'agora';
+const estadoEt = e => e.semData ? 'futura' : S.hoje < e.ini ? 'futura' : S.hoje > e.fim ? 'feita' : 'agora';
 const fracEt = e => dias(e.ini, e.fim).filter(ate).length / dias(e.ini, e.fim).length;
 const semanas = e => { const t = dias(e.ini, e.fim), r = []; for (let i = 0; i < t.length; i += 7) { const s = t.slice(i, i + 7); r.push({ nome: 'Semana ' + (r.length + 1), dias: s }); } return r; };
 const diasPer = e => { const per = S.per[e.k], t = dias(e.ini, e.fim); if (per == null || per === 'tudo') return t; return semanas(e)[per].dias; };
@@ -2989,11 +3017,11 @@ function kpi(nome, valor, sub, luzH, abre, sp) {
   return abre ? `<button class="kpi" type="button" data-abre="${abre}">${dentro}</button>` : `<div class="kpi">${dentro}</div>`;
 }
 const filtroPer = e => { const se = semanas(e); if (se.length < 2) return ''; const at = S.per[e.k] == null ? 'tudo' : S.per[e.k]; return `<div class="per" role="group" aria-label="Filtrar por período"><button type="button" class="${at === 'tudo' ? 'sel' : ''}" data-per="tudo">Etapa toda</button>${se.map((s, i) => `<button type="button" class="${at === i ? 'sel' : ''}" data-per="${i}">${s.nome}</button>`).join('')}</div>`; };
-const cabEtapa = (e, extra) => `<div class="cab"><div><h2>${e.nome}</h2><p class="muted peq">${dm(e.ini)} a ${dm(e.fim)}${estadoEt(e) === 'agora' ? ` · dia ${dias(e.ini, S.hoje).length} de ${dias(e.ini, e.fim).length}` : estadoEt(e) === 'feita' ? ' · encerrada' : ''}</p></div>${extra || ''}</div>`;
+const cabEtapa = (e, extra) => `<div class="cab"><div><h2>${e.nome}</h2><p class="muted peq">${perTx(e)}${estadoEt(e) === 'agora' ? ` · dia ${dias(e.ini, S.hoje).length} de ${dias(e.ini, e.fim).length}` : estadoEt(e) === 'feita' ? ' · encerrada' : ''}</p></div>${extra || ''}</div>`;
 const tabela = (cab, linhas, pe) => `<div class="tw"><table><thead><tr>${cab.map(c => `<th class="${c[1] || ''}">${c[0]}</th>`).join('')}</tr></thead><tbody>${linhas.join('')}</tbody>${pe ? `<tfoot><tr>${pe.map((c, i) => `<td class="${cab[i][1] || ''}">${c}</td>`).join('')}</tr></tfoot>` : ''}</table></div>`;
 const linha = (cab, cels) => `<tr>${cels.map((c, i) => `<td class="${cab[i][1] || ''}">${c}</td>`).join('')}</tr>`;
 const botaoCoorte = (pad = 'semana') => `<div class="ver"><button class="btn" type="button" data-abre="coorte:${pad}">Ver por cohorts</button><span class="muted peq">Agrupe por período, anúncio, canal ou público.</span></div>`;
-const vazioEt = (e, txt) => `<div class="vazio"><h3>${e.nome} começa em ${dm(e.ini)}</h3><p class="muted">${txt}</p></div>`;
+const vazioEt = (e, txt) => `<div class="vazio"><h3>${e.semData ? e.nome + ' ainda não tem data' : e.nome + ' começa em ' + dm(e.ini)}</h3><p class="muted">${e.semData ? 'Defina as datas desta etapa para acompanhar os números aqui.' : txt}</p>${e.semData ? '<button class="btn" id="btEditar" type="button">Definir datas</button>' : ''}</div>`;
 const notaRoas = `<p class="nota muted"><b>Por que o ROAS daqui pode diferir do Dashboard de marketing?</b> Aqui ele soma todas as vendas da campanha. O Dashboard olha as vendas dos leads que entraram no período escolhido. As duas contas usam faturamento ÷ investimento; muda quem entra na conta.</p>`;
 
 /* ---------- etapas ---------- */
@@ -3111,7 +3139,7 @@ function vGeral() {
   const T = totais(), inv = invTotal(), leads = leadsAte().length, cac = div(inv, T.vendas), roas = div(T.fat, inv), cpl = div(soma(dias(ET.cap.ini, ET.cap.fim).filter(ate), invDia), leads);
   const c = [['Etapa'], ['Período'], ['Investido', 'n'], ['Leads', 'n'], ['Vendas', 'n'], ['Faturamento', 'n'], ['Receita líquida', 'n'], ['Situação']];
   const metaEt = k => k === 'cap' ? luz(leads, META.leadsTotal, { frac: fracEt(ET.cap) }) : k === 'aq' ? luz(grupoAte(S.hoje), META.noGrupo, { frac: soma(META.grupoDia.slice(0, dias(ET.aq.ini, ET.aq.fim).filter(ate).length)) / META.noGrupo }) : k === 'pos' ? luz(SF().filter(s => ate(s.dia)).length / (new Set(vendasOk().map(v => v.p.id)).size || 1) * 100, META.churn, { menor: 1 }) : luz(totais(vendasEt(k)).fat, META.fat[k], { frac: soma(META.vendas[k].slice(0, dias(ET[k].ini, ET[k].fim).filter(ate).length)) / soma(META.vendas[k]) });
-  const linhas = etapasAtivas().map(e => { const fut = estadoEt(e) === 'futura', t = totais(vendasEt(e.k)), v = [e.nome, `${dm(e.ini)} a ${dm(e.fim)}`, fut || e.k === 'pos' ? '—' : fBrl(invEtapa(e.k)), e.k === 'cap' ? fN(leads) : '—', ['cap', 'aq', 'pos'].includes(e.k) || fut ? '—' : fN(t.vendas), ['cap', 'aq', 'pos'].includes(e.k) || fut ? '—' : fBrl(t.fat), ['cap', 'aq', 'pos'].includes(e.k) || fut ? '—' : fBrl(t.liq), fut ? '<span class="muted peq">Ainda não começou</span>' : metaEt(e.k)];
+  const linhas = etapasBarra().map(e => { const fut = estadoEt(e) === 'futura', t = totais(vendasEt(e.k)), v = [e.nome, perTx(e), fut || e.k === 'pos' ? '—' : fBrl(invEtapa(e.k)), e.k === 'cap' ? fN(leads) : '—', ['cap', 'aq', 'pos'].includes(e.k) || fut ? '—' : fN(t.vendas), ['cap', 'aq', 'pos'].includes(e.k) || fut ? '—' : fBrl(t.fat), ['cap', 'aq', 'pos'].includes(e.k) || fut ? '—' : fBrl(t.liq), fut ? '<span class="muted peq">Ainda não começou</span>' : metaEt(e.k)];
     return `<tr class="cl" data-et="${e.k}">${v.map((x, i) => `<td class="${c[i][1] || ''}">${i === 0 ? `<button class="lk" type="button" data-et="${e.k}">${x}</button>` : x}</td>`).join('')}</tr>`; });
   const fimC = etapasAtivas()[etapasAtivas().length - 1].fim, ds = dias(ET.cap.ini, fimC), lim = S.hoje < fimC ? S.hoje : fimC, dV = ds.filter(d => d <= lim), acumInv = {}; let a = 0; ds.forEach(d => { a += invDia(d); acumInv[d] = a; });
   const fatAte = d => { const ok = VF().filter(v => v.dia <= d && (v.et !== 'rea' || S.temRea)); return soma(ok, v => v.valor) - soma(ok.filter(v => v.p.saiu && v.p.saiu <= d), v => v.valor); };
@@ -3394,12 +3422,13 @@ function render() {
   GR.length = 0;
   const at = etapaAtual();
   $('#fase').textContent = at ? (estadoEt(at) === 'agora' ? `Etapa atual: ${at.nome}, dia ${dias(at.ini, S.hoje).length} de ${dias(at.ini, at.fim).length}` : `Próxima etapa: ${at.nome}, em ${dm(at.ini)}`) : 'Campanha encerrada. Aqui está o debriefing.';
-  $('#etapas').innerHTML = `<button class="et geral ${S.etapa === 'geral' ? 'sel' : ''}" type="button" data-et="geral"><b>Geral</b><small>tudo somado</small></button>` + etapasAtivas().map(e => `<button class="et ${S.etapa === e.k ? 'sel' : ''}" type="button" data-et="${e.k}" ${at === e && estadoEt(e) === 'agora' ? 'aria-current="step"' : ''}><b>${at === e && estadoEt(e) === 'agora' ? '<span class="ag"></span>' : ''}${e.nome}</b><small>${dm(e.ini)} a ${dm(e.fim)}</small></button>`).join('') + `<button class="et gm ${S.etapa === 'gm' ? 'sel' : ''}" type="button" data-et="gm"><b>Growth Model</b><small>meta, real e simulação</small></button>`;
+  $('#etapas').innerHTML = `<button class="et geral ${S.etapa === 'geral' ? 'sel' : ''}" type="button" data-et="geral"><b>Geral</b><small>tudo somado</small></button>` + etapasBarra().map(e => `<button class="et ${S.etapa === e.k ? 'sel' : ''}" type="button" data-et="${e.k}" ${at === e && estadoEt(e) === 'agora' ? 'aria-current="step"' : ''}><b>${at === e && estadoEt(e) === 'agora' ? '<span class="ag"></span>' : ''}${e.nome}</b><small>${perTx(e)}</small></button>`).join('') + `<button class="et gm ${S.etapa === 'gm' ? 'sel' : ''}" type="button" data-et="gm"><b>Growth Model</b><small>meta, real e simulação</small></button>`;
   let h;
   const D = S.drill;
   if (D) h = D.t === 'leads' ? dLeads() : D.t === 'cpl' ? dCpl() : D.t === 'coorte' ? dCoorte() : D.t === 'vendas' ? dVendas() : D.t === 'geral' ? dGeral(D.tipo) : dDet(D.tipo, D.k);
+  else if (S.sub[S.etapa]) h = vBloco(S.etapa, S.sub[S.etapa]);
   else h = { geral: vGeral, cap: vCap, aq: vAq, car: () => painelVendas('car', ['principal', 'bump', 'upsell']), rea: () => painelVendas('rea', ['principal', 'bump', 'upsell']), dow: () => painelVendas('dow', ['down']), pos: vPos, gm: vGm }[S.etapa]();
-  const fx = $('#filtros'); if (fx) fx.innerHTML = S.etapa === 'gm' ? '' : barraFiltros(); $('#painel').innerHTML = h;
+  const fx = $('#filtros'); if (fx) fx.innerHTML = S.etapa === 'gm' || S.sub[S.etapa] ? '' : barraFiltros(); const sm = $('#sub'); if (sm) sm.innerHTML = subMenu(); $('#painel').innerHTML = h;
   if (S.etapa === 'gm' && !D) gmAtualiza(); else desenha();
 }
 function abreEtapaDoDia() { const at = etapaAtual(); S.etapa = at ? at.k : 'geral'; S.drill = null; S.per = {}; render(); }
@@ -3414,6 +3443,8 @@ raiz.addEventListener('click', ev => {
   if ((b = q('[data-aprova]'))) { const k = b.dataset.aprova, c = S.gm.cen[k]; if (!c.hip.trim() || !(c.ice.i && c.ice.c && c.ice.f)) { S.gm.aviso = `Para aprovar o ${c.nome}, ${!c.hip.trim() ? 'escreva a hipótese' : 'dê as três notas do ICE'}.`; S.gm.confirma = null; } else { S.gm.aviso = ''; S.gm.confirma = k; } render(); return; }
   if (ev.target.id === 'simConfirma') { const k = S.gm.confirma; H.aprova(S.gm.cen[k]).then(() => { S.gm.aprovado = k; S.gm.confirma = null; render(); }, e => { S.gm.aviso = e.message || String(e); S.gm.confirma = null; render(); }); return; }
   if (ev.target.id === 'simCancela') { S.gm.confirma = null; render(); return; }
+  if ((b = q('[data-sub]'))) { S.sub[S.etapa] = b.dataset.sub; render(); return; }
+  if (ev.target.id === 'ceAplicar') { H.aplicar(); return; }
   if ((b = q('[data-et]'))) { S.etapa = b.dataset.et; S.drill = null; render(); return; }
   if ((b = q('[data-per]'))) { S.per[S.etapa] = b.dataset.per === 'tudo' ? 'tudo' : +b.dataset.per; render(); return; }
   if ((b = q('[data-volta]'))) { S.drill = null; render(); return; }
@@ -3448,7 +3479,7 @@ raiz.addEventListener('focusout', ev => { if (ev.target.dataset && ev.target.dat
 document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && !$('#modal').hidden) { $('#modal').hidden = true; $('#modal').innerHTML = ''; $('#btEditar').focus(); } });
 abreEtapaDoDia();
 
-if (!ET.car.ativa) $('#aviso').innerHTML = `<div class="nota" style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px"><span>Esta campanha ainda não tem as datas de aquecimento e carrinho. Defina para abrir as outras etapas.</span><button class="btn" id="btEditar" type="button">Definir datas</button></div>`;
+if (ET.aq.semData || ET.car.semData || !c.funil_id) $('#aviso').innerHTML = `<div class="nota" style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px"><span>${[ET.aq.semData || ET.car.semData ? 'Faltam as datas de ' + [ET.aq.semData ? 'aquecimento' : '', ET.car.semData ? 'carrinho' : ''].filter(Boolean).join(' e ') + '.' : '', c.funil_id ? '' : 'Ligue uma estratégia para abrir as etapas dela aqui.'].filter(Boolean).join(' ')}</span><button class="btn" id="btEditar" type="button">Completar a campanha</button></div>`;
 abreEtapaDoDia();
 };
 /*CE-FIM*/
@@ -3463,7 +3494,7 @@ async function vCampanha(m) {
   m.innerHTML = `<div class="head"><div><button class="btn sm" id="cVoltar">← Todas as campanhas</button><h1 style="margin-top:8px">${esc(c.nome)}</h1>
     <span class="muted">${pillModelo(c)} ${pillCamp(c)} · ${periodoCamp(c)} · estratégia: ${f ? esc(f.nome) + ' (' + esc(f.tipo) + ')' : '—'}${p ? ' · produto: ' + esc(p.nome) : ''}</span></div>
     <div class="acts"><label style="flex-direction:row;align-items:center;gap:6px">Status<select id="cSt">${Object.entries(CAMP_ST).map(([k, v]) => `<option value="${k}"${c.status === k ? ' selected' : ''}>${v[1]}</option>`).join('')}</select></label><button class="btn" id="cPj">Projeto${pjs.length ? ' (' + pjs.length + ')' : ''}</button><button class="btn" id="cMidia" title="Abre a Mídia paga filtrada nesta campanha, no período dela">Ver na Mídia paga</button><button class="btn" id="cEd">Editar campanha</button><button class="btn${c.status === 'rascunho' ? '' : ' pri'}" id="cFechar">${c.modelo === 'perpetuo' ? 'Fechar o ciclo' : 'Fechar a campanha'}</button></div></div>
-    <div class="tabs">${TABS.map(([k, l]) => `<button data-t="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="cBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
+    <div class="tabs"${T === 'visao' ? ' style="display:none"' : ''}>${TABS.map(([k, l]) => `<button data-t="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="cBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
   $('#cVoltar').onclick = () => { S.campSel = null; render(); };
   campRascunho(m, c, pjs.length);
   $('#cEd').onclick = () => formCampanha(c);
