@@ -642,7 +642,7 @@ async function handle(req: Request, b: any) {
   const { data: { user }, error } = await userDb.auth.getUser();
   if (error || !user) return json({ erro: 'Faça login novamente.' },401);
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
-  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo','disparos-grupos-list'];
+  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo','disparos-grupos-list','grupos-busca-status'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
   const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete','templates-mapping-save','canal-salvar','qr-share-create'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
@@ -1275,8 +1275,31 @@ async function handle(req: Request, b: any) {
   }
   if (b.action === 'desativar') { await q(db.from('atd_canais').update({ativo:false,status:'desativado'}).eq('id',ch.id)); return json({ok:true}); }
   if (b.action === 'webhook') { await setupWebhook(ch, ch.provedor === 'evolution' ? await secret(ws) : null); return json({ok:true}); }
+  if (b.action === 'grupos-busca-status') return json({
+    estado:ch.grupos_busca_estado||'ociosa',
+    resultado:ch.grupos_busca_resultado||{},
+    atualizada_em:ch.grupos_busca_atualizada_em||null
+  });
   if (b.action === 'sincronizar') {
     const mode=['conversas','grupos_sem_nome','grupos_novos'].includes(b.modo_sincronizacao)?b.modo_sincronizacao:'all';
+    if(mode==='grupos_novos'){
+      if(ch.provedor!=='evolution'||ch.canal!=='whatsapp'||!ch.ativo)throw new Error('Selecione um chip Evolution ativo.');
+      const running=ch.grupos_busca_estado==='em_andamento'&&ch.grupos_busca_atualizada_em&&Date.now()-new Date(ch.grupos_busca_atualizada_em).getTime()<3*60*1000;
+      if(running)return json({busca_em_andamento:true});
+      const started=new Date().toISOString();
+      await q(db.from('atd_canais').update({grupos_busca_estado:'em_andamento',grupos_busca_resultado:{},grupos_busca_atualizada_em:started}).eq('id',ch.id).eq('workspace_id',ws));
+      EdgeRuntime.waitUntil((async()=>{
+        try{
+          const resultado=await syncConversations(ch,undefined,'grupos_novos');
+          await q(db.from('atd_canais').update({grupos_busca_estado:'concluida',grupos_busca_resultado:resultado,grupos_busca_atualizada_em:new Date().toISOString()}).eq('id',ch.id).eq('workspace_id',ws));
+        }catch(e){
+          const mensagem=(e as Error).message||'Falha ao consultar grupos.';
+          console.warn('atendimento evolução: busca de grupos em segundo plano falhou',{canal:ch.id,causa:mensagem.slice(0,180)});
+          await q(db.from('atd_canais').update({grupos_busca_estado:'falhou',grupos_busca_resultado:{erro:mensagem.slice(0,220)},grupos_busca_atualizada_em:new Date().toISOString()}).eq('id',ch.id).eq('workspace_id',ws));
+        }
+      })());
+      return json({busca_em_andamento:true});
+    }
     return json(await syncConversations(ch,b.cursor,mode));
   }
   if (b.action === 'status' && ch.provedor === 'zernio') {
@@ -1449,6 +1472,10 @@ async function syncConversations(ch:any,cursor?:string,mode='all'){
       // fetchAllGroups pode demorar quando a instância tem histórico amplo.
       groupRows=shape(await evolution(cfg,'/group/fetchAllGroups/'+inst+'?getParticipants=false','GET',undefined,120000));
       groupFetchOk=true;
+      if(mode==='grupos_novos')await q(db.from('atd_canais').update({
+        grupos_busca_resultado:{grupos_encontrados:groupRows.length,novos_grupos:null,parcial:true},
+        grupos_busca_atualizada_em:new Date().toISOString()
+      }).eq('id',ch.id).eq('workspace_id',ch.workspace_id));
     }catch(e){warnings.push('Grupos: '+evolutionFailure(e));console.warn('atendimento evolução: fetchAllGroups falhou',{canal:ch.id,causa:evolutionFailure(e)});}
     const existingGroupIds=mode==='grupos_novos'?new Set((await q(db.from('atd_conversas').select('externo_id')
       .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',true).limit(5000))).map((g:any)=>g.externo_id)):new Set<string>();

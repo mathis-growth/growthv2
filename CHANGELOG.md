@@ -16,6 +16,10 @@
 - **Detalhe de Vendas:** tabela por vendedor, com vendas, meta, valor e comissão.
 - Banco: `20270109100000_v0254_comercial_campanha.sql`. Testes: banco `v0254_comercial.sql` (OK); tela `t254` (novo), `t249` e `t253` (0 falhas).
 
+## v0.254 — Contagem visível na busca de grupos (04/11/2026)
+- A busca de grupos roda em segundo plano; a tela mostra quando começa, quantos grupos foram identificados e o resultado final, sem aguardar a resposta completa da Evolution.
+- Banco: `20270107130000_atendimento_busca_grupos_assincrona.sql`. Edge única: `docs/edge-atendimento-v0211-index-unico.ts`.
+
 ## v0.253 — Assistente: ofertas do cadastro, cenários por oferta e canais em porcentagem (04/11/2026)
 - **Oferta:** toda oferta da campanha fica no cadastro. O preço vem da oferta e não muda na campanha: para outro preço, cria-se outra oferta.
 - **Orçamento e cenários:** a oferta principal fica aberta e cada order bump, upsell e downsell abre ao clicar, com aceite, meta de vendas e receita nos três cenários.

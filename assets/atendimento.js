@@ -579,17 +579,33 @@
         if(!confirm(aviso))return;
       }
       btn.disabled=true;
-      try{const r=await api(action,{canal_id:id,cursor:btn.dataset.cursor||undefined,modo_sincronizacao:btn.dataset.modo||undefined},ws);
+      const target=$('#ca-'+id),mode=btn.dataset.modo||'all';
+      try{let r;
+        if(action==='sincronizar'&&mode==='grupos_novos'){
+          target.textContent='Buscando grupos na Evolution… a consulta pode levar alguns minutos.';
+          await api(action,{canal_id:id,modo_sincronizacao:mode},ws);
+          let elapsed=0,status=await api('grupos-busca-status',{canal_id:id},ws);
+          while(status.estado==='em_andamento'&&elapsed<150){
+            await new Promise(resolve=>setTimeout(resolve,5000));elapsed+=5;
+            if(S.ws!==ws||S.view!=='atd-canais')return;
+            status=await api('grupos-busca-status',{canal_id:id},ws);
+            const encontrados=status.resultado?.grupos_encontrados;
+            target.textContent=encontrados!=null
+              ?`${encontrados} grupos identificados. Salvando a lista… ${elapsed}s decorridos.`
+              :`Buscando grupos na Evolution… ${elapsed}s decorridos.`;
+          }
+          if(status.estado==='concluida')r=status.resultado||{};
+          else if(status.estado==='falhou')throw new Error(status.resultado?.erro||'Não foi possível consultar os grupos.');
+          else {target.textContent='A busca ainda está em andamento. Clique em “Buscar grupos” novamente em instantes para consultar o resultado.';return;}
+        }else r=await api(action,{canal_id:id,cursor:btn.dataset.cursor||undefined,modo_sincronizacao:mode},ws);
         if(action==='excluir-instancia'){toast('Instância excluída da Evolution. Histórico preservado.');await render();return;}if(S.ws!==ws||S.view!=='atd-canais')return;
-        const target=$('#ca-'+id);
         if(action==='conectar'){target.innerHTML=r.qrcode&&/^data:image\/(png|jpeg);base64,/.test(r.qrcode)?`<img class="atd-qr" alt="QR Code para conectar o WhatsApp" src="${r.qrcode}"><p>WhatsApp → Aparelhos conectados → Conectar aparelho. Se expirar, clique em QR Code novamente.</p>`:'<p>QR Code indisponível. Confira o status ou tente novamente.</p>';}
         else if(action==='sincronizar'){
-          const mode=btn.dataset.modo||'all';
           if(mode==='grupos_sem_nome'){
             btn.dataset.cursor=r.cursor||'';btn.textContent=r.cursor?'Próximos grupos sem nome':'Atualizar nomes sem nome';
             target.textContent=`${r.grupos_consultados||0} grupos sem nome consultados · ${r.nomes_atualizados||0} nomes recuperados · ${r.grupos_sem_nome??'?'} ainda sem nome. ${(r.avisos||[]).join(' | ')}${r.cursor?' Clique novamente para continuar.':''}`;
           }else if(mode==='grupos_novos'){
-            target.textContent=`Lista atualizada: ${r.grupos_encontrados||0} grupos encontrados, ${r.novos_grupos||0} novos. Próxima busca automática em até 6 horas. ${(r.avisos||[]).join(' | ')}`;
+            target.textContent=`Busca concluída: ${r.grupos_encontrados||0} grupos identificados, ${r.novos_grupos||0} novos. Próxima busca automática em até 6 horas. ${(r.avisos||[]).join(' | ')}`;
           }else target.textContent=(r.total||0)+' conversas consultadas.';
         }
         else if(action==='status'){const badge=document.querySelector(`[data-channel-status="${id}"]`);if(badge){badge.textContent=r.status;badge.className='pill '+(r.status==='conectado'?'good':'warn');}target.textContent=r.phone_status?'Status Meta do número: '+r.phone_status+(r.webhook_recebimento===false?' · webhook de entrada não inscrito':''):r.status==='conectado'?'Conexão ativa na Zernio.':'Status: '+r.status;if(r.status==='conectado')target.querySelector('img')?.remove();}
