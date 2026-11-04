@@ -1,3 +1,8 @@
+## v0.250
+- Migração `20270105100000_v0250_ticket_e_foto.sql`: `funil_analise` devolve `vendas` (troca de texto, com erro se o trecho não for encontrado); local `avatares` com políticas por pasta do usuário.
+- index.html: `campFase`, `campFaseHtml`, `campRitmo`, `metaLuz`, `luzHtml`, `olaPeriodo`, `olaNome`, `topoAtualiza`, `fotoReduz`. Topo novo em `.mainw` e `#topoU`; `#sair` e `#who` passam para o menu da conta. Rótulo da tela para 0.250.
+- Teste novo `t250_fase_luz_topo.py`.
+
 ## v0.249
 - index.html: `ofPassoHtml`, `chLista`, `chQuando`, `chOfertasDe`, `chOfResumo`, `chAceites`, `chLinha`, `chOfertasHtml`, `cenOfertaRec`, `cenTotal`. `abrirWizard` com 7 passos, sem o passo condicional, e `wzCarrega` para o histórico e as ofertas. A edição da campanha deixa de apagar o carrinho no perpétuo. Rótulo da tela para 0.249.
 - Sem migração.

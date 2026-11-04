@@ -1,3 +1,7 @@
+## v0.250
+- `funil_analise`: `vendas` em cada campanha e em `pos`.
+- Storage: local público `avatares` (2 MB; JPG, PNG e WebP), arquivo `<id do usuário>/foto.jpg`. O endereço fica em `user_metadata.foto_url` da conta.
+
 ## v0.249
 - `campanhas.extras.referencia_planejamento` ganha `filtro` (`ultimas` ou `periodo`), `ini`, `fim` e `aceites: [{papel, valor, fonte}]`.
 - O aceite levado grava `campanha_ofertas.taxa_aceite` (fração de 0 a 1) nas ofertas daquele tipo.

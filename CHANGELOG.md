@@ -1,3 +1,17 @@
+## v0.250 — Fase da campanha, luzinha de meta, foto e saudação (03/11/2026)
+- **Fase da campanha:** Captação, Aquecimento, Em vendas ou Finalizada, a partir das datas e das vendas. Antes das vendas, as telas mostram leads, investimento e CPL; ROAS, CAC e receita aparecem quando as vendas começam.
+- **Dashboard de marketing:**
+  - saem o ROI e o LTV. O ROI fica para os números do negócio;
+  - entra o **Ticket médio** (receita ÷ vendas);
+  - o churn mostra quantas pessoas: "22 saíram de 344 alunos · 322 ativos";
+  - nas coortes, "LTV" vira "Receita por cliente"; saem ROI e LTV ÷ CAC.
+- **Luzinha de meta × planejado** em Planejamento e metas e no Dashboard da campanha: vermelho (pior que o planejado), verde (até 5% de diferença) e azul com brilho (melhor, a caminho do cenário ótimo). Leads, vendas e receita comparam com o ritmo do período; custos e taxas, com o valor.
+- **Foto e menu da conta:** foto no canto superior direito, com trocar foto, tirar foto e Sair. Sem foto, aparece a inicial.
+- **Saudação pelo horário:** "Bom dia, Rebecka", com uma frase.
+- **Assistente:** o downsell novo parte da recusa do upsell, quando houver, e assim o aceite dele é calculado.
+- Banco: `20270105100000_v0250_ticket_e_foto.sql` (vendas em `funil_analise` e local `avatares`). Teste: `t250_fase_luz_topo.py` (46 verificações, 0 falhas).
+- **Ainda não muda:** a definição única de ROAS e a receita sem o churn dependem de duas decisões.
+
 ## v0.249 — Assistente da campanha: oferta, período e gráficos de linha (03/11/2026)
 - **Passo novo "Oferta"**, logo depois de O básico (o assistente passa a ter 7 passos): oferta principal e, se quiser, order bump, upsell e downsell. Grava na mesma esteira da aba Ofertas. O histórico mostra, em cada oferta, em quantas campanhas ela apareceu e o aceite médio.
 - **Datas das etapas em qualquer campanha:** "Vai usar datas de etapas". No perpétuo, o passo existe e começa desligado.

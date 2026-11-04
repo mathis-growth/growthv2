@@ -1266,6 +1266,11 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
 @media (max-width:860px){.dg-reu{grid-template-columns:minmax(0,1fr)}.dg-lado{position:static;max-height:none}}</style>
 <style id="tx-mensagens">.tx-config{border:1px solid var(--line);border-radius:12px;padding:14px;margin:14px 0 0}.tx-config legend{padding:0 7px;font-weight:700;color:var(--accent)}.tx-config>p{margin:2px 0 12px}.tx-config .grid2{margin:0}.tx-config small{display:block;margin-top:8px}.tx-map{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:12px;padding:12px;border:1px dashed var(--line);border-radius:10px}.tx-map>b{grid-column:1/-1}.tx-map label{display:flex;flex-direction:column;gap:5px;font-size:12px}.tx-config [data-tx-mapeamento]>p{margin:10px 0 0}@media(max-width:650px){.tx-config .grid2{grid-template-columns:1fr}}
 </style>
+<style id="v250">.mainw{min-width:0;display:flex;flex-direction:column}.mainw>.main{flex:1}.topou{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px clamp(16px,3vw,36px) 0}.ola{font-size:14px;min-width:0}.ola span{color:var(--muted)}
+.tou-m{position:relative;flex:none}.tou-av{all:unset;box-sizing:border-box;width:40px;height:40px;border-radius:50%;overflow:hidden;cursor:pointer;background:var(--accent-soft);color:var(--accent);font-weight:700;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}.tou-av:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.tou-av img{width:100%;height:100%;object-fit:cover;display:block}
+.tou-p{position:absolute;right:0;top:calc(100% + 6px);min-width:220px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;z-index:60;box-shadow:0 10px 30px rgba(0,0,0,.18)}.tou-p[hidden]{display:none}.tou-q{display:flex;flex-direction:column;font-size:13px;overflow-wrap:anywhere}.tou-f{position:relative;overflow:hidden;text-align:center;cursor:pointer}.tou-f input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.fase-l{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px}.luz{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600}.kpi .luz{display:flex;margin-top:3px}.luz i{width:10px;height:10px;border-radius:50%;flex:none}.luz-ruim{color:var(--bad)}.luz-ruim i{background:var(--bad);box-shadow:0 0 0 3px color-mix(in srgb,var(--bad) 25%,transparent)}.luz-ok{color:var(--good)}.luz-ok i{background:var(--good)}.luz-acima{color:var(--accent)}.luz-acima i{background:var(--accent);box-shadow:0 0 8px 2px color-mix(in srgb,var(--accent) 60%,transparent)}
+@media (max-width:640px){.ola span{display:none}}@media print{.topou{display:none}}</style>
 <style id="v175">.pf-num{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.pf-num input{max-width:220px}.pf-ns{display:inline-flex;gap:6px;align-items:center;font-size:14px}
 .pf-meses{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.pf-meses label{font-size:13px;text-transform:capitalize}
 .pf-lista{display:flex;flex-direction:column;gap:10px}.pf-lr{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr)) 36px;gap:8px;align-items:end;padding:10px;border:1px solid rgba(0,0,0,.12);border-radius:10px}
@@ -1370,12 +1375,11 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
     <div class="foot">
       <button class="btn sm temaBtn" id="temaBtn" type="button"></button>
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
-      <span class="muted" id="who"></span>
-      <button class="btn sm" id="sair">Sair</button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.249 · 03/11/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.250 · 03/11/2026</span>
     </div>
   </aside>
-  <main class="main" id="main"></main>
+  <div class="mainw"><div class="topou" id="topoU"><div class="ola" id="olaTxt"></div><div class="tou-m"><button type="button" class="tou-av" id="fotoBtn" aria-haspopup="true" aria-expanded="false" aria-controls="fotoMenu" aria-label="Sua conta"></button>
+    <div class="tou-p" id="fotoMenu" hidden><div class="tou-q"><b id="whoNome"></b><span class="muted" id="who"></span></div><label class="btn sm tou-f" for="fotoArq">Trocar foto<input type="file" id="fotoArq" accept="image/jpeg,image/png,image/webp"></label><button class="btn sm" type="button" id="fotoTira">Tirar foto</button><button class="btn sm" type="button" id="sair">Sair</button></div></div></div><main class="main" id="main"></main></div>
 </div>
 
 <div id="modalRoot"></div><div id="modalRoot2"></div>
@@ -1655,6 +1659,24 @@ async function entrar(criar) {
 $('#loginForm').onsubmit = e => { e.preventDefault(); entrar(false); };
 $('#lCriar').onclick = () => entrar(true);
 $('#sair').onclick = () => sb.auth.signOut();
+/* v0.250 — Foto, menu da conta e saudação. A foto fica no local "avatares" (pasta do usuário) e o endereço, nos dados da conta. */
+const OLA_FRASES = ['Bora encontrar mais uma alavanca lucrativa hoje?', 'Qual número a gente move hoje?', 'Vamos ver onde o crescimento está escondido?', 'Bora transformar dado em decisão?', 'Uma boa decisão hoje paga a semana inteira.'];
+const olaPeriodo = (hr = new Date().getHours()) => hr < 5 ? 'Boa noite' : hr < 12 ? 'Bom dia' : hr < 18 ? 'Boa tarde' : 'Boa noite';
+function olaNome() { const md = (S.user && S.user.user_metadata) || {}, cru = (md.nome || md.full_name || md.name || String((S.user && S.user.email) || '').split('@')[0] || '').trim().split(/[\s._+-]+/)[0] || ''; return cru ? cru.charAt(0).toUpperCase() + cru.slice(1) : ''; }
+function topoAtualiza() { if (!S.user) return; const n = olaNome(), md = S.user.user_metadata || {}, h = new Date(), dia = Math.floor((h - new Date(h.getFullYear(), 0, 0)) / 864e5);
+  $('#olaTxt').innerHTML = `<b>${esc(olaPeriodo() + (n ? ', ' + n : ''))}.</b> <span>${esc(OLA_FRASES[dia % OLA_FRASES.length])}</span>`;
+  $('#who').textContent = S.user.email || ''; $('#whoNome').textContent = n;
+  $('#fotoBtn').innerHTML = md.foto_url ? `<img src="${esc(md.foto_url)}" alt="">` : `<span>${esc((n || '?').charAt(0))}</span>`; $('#fotoTira').hidden = !md.foto_url; }
+const fotoMenu = aberto => { $('#fotoMenu').hidden = !aberto; $('#fotoBtn').setAttribute('aria-expanded', aberto); };
+$('#fotoBtn').onclick = ev => { ev.stopPropagation(); fotoMenu($('#fotoMenu').hidden); };
+$('#fotoMenu').onclick = ev => ev.stopPropagation();
+document.addEventListener('click', () => fotoMenu(false)); document.addEventListener('keydown', ev => { if (ev.key === 'Escape') fotoMenu(false); });
+// reduz para 256 × 256, recortando o centro, para a foto ficar leve
+async function fotoReduz(arq) { const bm = await createImageBitmap(arq).catch(() => { throw new Error('Não consegui abrir essa foto. Tente outro arquivo.'); }), t = Math.min(bm.width, bm.height), cv = document.createElement('canvas'); cv.width = cv.height = 256; cv.getContext('2d').drawImage(bm, (bm.width - t) / 2, (bm.height - t) / 2, t, t, 0, 0, 256, 256); return new Promise(ok => cv.toBlob(ok, 'image/jpeg', .88)); }
+$('#fotoArq').onchange = ev => { const arq = ev.target.files[0]; ev.target.value = ''; if (!arq) return; act(async () => { if (!/^image\/(jpeg|png|webp)$/.test(arq.type)) throw new Error('Envie uma foto em JPG, PNG ou WebP.'); if (arq.size > 15728640) throw new Error('Foto grande demais. Envie uma de até 15 MB.');
+  const blob = await fotoReduz(arq), cam = S.user.id + '/foto.jpg', up = await sb.storage.from('avatares').upload(cam, blob, { upsert: true, contentType: 'image/jpeg' }); if (up.error) throw new Error('Não consegui enviar a foto: ' + up.error.message);
+  const url = sb.storage.from('avatares').getPublicUrl(cam).data.publicUrl + '?v=' + Date.now(), r = await sb.auth.updateUser({ data: { foto_url: url } }); if (r.error) throw new Error(r.error.message); S.user = r.data.user; topoAtualiza(); fotoMenu(false); toast('Foto atualizada.'); }); };
+$('#fotoTira').onclick = () => act(async () => { await sb.storage.from('avatares').remove([S.user.id + '/foto.jpg']); const r = await sb.auth.updateUser({ data: { foto_url: null } }); if (r.error) throw new Error(r.error.message); S.user = r.data.user; topoAtualiza(); fotoMenu(false); toast('Foto retirada.'); });
 /* v0.102: modo claro ou escuro, guardado neste navegador */
 const SOL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
 const LUA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
@@ -1795,7 +1817,7 @@ async function boot() {
   if (!S.user) { $('#app').classList.add('hide'); $('#login').classList.remove('hide'); return; }
   if (bootando) return; bootando = true;
   $('#login').classList.add('hide'); $('#app').classList.remove('hide');
-  $('#who').textContent = S.user.email;
+  topoAtualiza();
   await act(async () => {
     try { await sb.rpc('aceitar_convites'); } catch (e) { /* ainda sem convites */ }
     const wss = await q(sb.from('workspaces').select('*').order('nome'));
@@ -1938,11 +1960,27 @@ function linhasMulti(rotulos, series) {
 const fU = n => 'R$ ' + (n < 10 ? n.toFixed(1) : Math.round(n)).toString().replace('.', ',');
 
 /* ---------- Marketing: dashboard geral (todas as campanhas) ---------- */
+/* ================= v0.250 — Fase da campanha e luzinha de meta × planejado =================
+   Em captação ou aquecimento ainda não há venda: a tela mostra leads, investimento e CPL. ROAS, CAC e receita aparecem quando as vendas começam.
+   A luzinha compara o realizado com o planejado até hoje: volumes pelo ritmo do período; taxas e custos pelo valor. */
+function campFase(c, vendas, h = hoje()) { const fs = (c && c.fases) || {}, cr = c && c.data_carrinho_abre;
+  if (!c) return { k: 'vendas', rot: 'Em vendas', antes: false }; if (c.status === 'finalizada') return { k: 'fim', rot: 'Finalizada', antes: false };
+  if (Number(vendas) > 0 || (cr && cr <= h) || (fs.conversao && fs.conversao.ini && fs.conversao.ini <= h) || (c.modelo === 'perpetuo' && !cr)) return { k: 'vendas', rot: 'Em vendas', antes: false };
+  if (fs.aquecimento && fs.aquecimento.ini && fs.aquecimento.ini <= h) return { k: 'aquecimento', rot: 'Aquecimento', antes: true };
+  return { k: 'captacao', rot: 'Captação', antes: true }; }
+const campFaseHtml = f => `<div class="fase-l" id="campFaseL"><span class="pill info">Fase: ${esc(f.rot)}</span>${f.antes ? '<span class="muted">Ainda sem vendas: acompanhe leads, investimento e custo por lead. ROAS, CAC e receita aparecem quando as vendas começarem.</span>' : ''}</div>`;
+// quanto do período já passou (0 a 1); sem datas, conta o valor inteiro
+function campRitmo(ini, fim, h = hoje()) { if (!ini) return 1; if (h < ini) return 0; if (!fim || h >= fim) return 1; return (Math.round((new Date(h) - new Date(ini)) / 864e5) + 1) / (Math.round((new Date(fim) - new Date(ini)) / 864e5) + 1); }
+// ruim = pior que o planejado; ok = no planejado (até 5% de diferença); acima = melhor, a caminho do cenário ótimo. teto: passar é ruim e ficar abaixo não é mérito (investimento)
+function metaLuz(real, meta, op = {}) { const m = Number(meta), fr = op.frac == null ? 1 : op.frac; if (!m || real == null || !isFinite(real) || !fr) return null; const alvo = m * fr;
+  const r = op.menor ? (Number(real) > 0 ? alvo / Number(real) : null) : Number(real) / alvo; if (r == null) return null;
+  if (r >= 1.05 && !op.teto) return { k: 'acima', txt: op.menor ? 'Melhor que o planejado' : 'Acima do planejado' }; if (r >= .95) return { k: 'ok', txt: 'No planejado' }; return { k: 'ruim', txt: op.menor ? 'Pior que o planejado' : 'Abaixo do planejado' }; }
+const luzHtml = l => l ? `<span class="luz luz-${l.k}"><i></i>${esc(l.txt)}</span>` : '';
 async function vMktDash(m) {
   const w = S.ws, h = hoje(), A = S.mg = S.mg || { ini: diaMais(h, -89), fim: h, camp: '', funil: '', tab: 'visao', gran: 'campanha', cv: 'ret', sel: null };
   { const P0 = perGlobal(); A.ini = P0.ini; A.fim = P0.fim; } // v0.211: período padrão
   if (A.tab !== 'funil') A.tab = 'visao';
-  const camps = await q(sb.from('campanhas').select('id,nome').eq('workspace_id', w).order('nome'));
+  const camps = await q(sb.from('campanhas').select('id,nome,modelo,status,fases,data_carrinho_abre').eq('workspace_id', w).order('nome'));
   let R = null, C = null, erro = '';
   try {
     R = await q(sb.rpc('funil_analise', { p_ws: w, p_ini: A.ini, p_fim: A.fim, p_campanha: nul(A.camp), p_funil: nul(A.funil) }));
@@ -1961,7 +1999,8 @@ async function vMktDash(m) {
   const abrir = () => body.querySelectorAll('[data-camp]').forEach(r => r.onclick = () => { if (!r.dataset.camp) { toast('Leads sem campanha não têm página própria.'); return; } S.campSel = r.dataset.camp; S.campTab = 'dash'; S.view = 'mkt-camp'; render(); });
   const rot = c => A.gran === 'mes' ? mesFmt(c.coorte) : 'Sem. ' + dd(c.coorte).slice(0, 5);
   const graf = A.gran !== 'campanha' && (C || []).length > 1 ? `<div class="cols"><div class="panel"><h2>Leads por ${A.gran === 'mes' ? 'mês' : 'semana'} de entrada</h2>${linhas(C.map(rot), null, C.map(c => c.leads), v => String(Math.round(v)), true)}</div><div class="panel"><h2>Investimento por ${A.gran === 'mes' ? 'mês' : 'semana'}</h2>${linhas(C.map(rot), null, C.map(c => Number(c.custo)), v => 'R$ ' + (v >= 1000 ? Math.round(v / 1000) + 'k' : Math.round(v)), true)}</div></div>` : '';
-  body.innerHTML = `<div class="kpis">${kpi('Leads', num(P.leads), num(P.alunos) + ' viraram alunos')}${kpi('Investido', brl(P.custo || 0), 'anúncios no período')}${kpi('CPL', fB(cpl), 'investimento ÷ leads')}${kpi('Clientes', num(P.clientes), fP(div(P.clientes, P.leads)) + ' dos leads')}${kpi('CAC', fB(P.cac), 'investimento ÷ clientes')}${kpi('Receita', brl(P.receita || 0), 'vendas aprovadas até hoje')}${kpi('ROAS', P.roas == null ? '—' : fX(P.roas), 'receita ÷ investimento')}${kpi('ROI', P.roi == null ? '—' : fP(P.roi), '(receita − custo) ÷ custo')}${kpi('LTV', fB(P.ltv), 'receita por cliente')}${kpi('Churn', fP(P.churn), 'alunos que saíram')}</div>
+  const faseG = A.camp ? campFase(camps.find(x => x.id === A.camp), P.clientes) : null, tkt = Number(P.vendas) > 0 ? Number(P.receita) / Number(P.vendas) : P.ltv;
+  body.innerHTML = `${faseG ? campFaseHtml(faseG) : ''}<div class="kpis">${kpi('Leads', num(P.leads), faseG && faseG.antes ? '' : num(P.alunos) + ' viraram alunos')}${kpi('Investido', brl(P.custo || 0), 'anúncios no período')}${kpi('CPL', fB(cpl), 'investimento ÷ leads')}${faseG && faseG.antes ? '' : `${kpi('Clientes', num(P.clientes), fP(div(P.clientes, P.leads)) + ' dos leads')}${kpi('CAC', fB(P.cac), 'investimento ÷ clientes')}${kpi('Receita', brl(P.receita || 0), 'vendas aprovadas até hoje')}${kpi('ROAS', P.roas == null ? '—' : fX(P.roas), 'receita ÷ investimento')}${kpi('Ticket médio', fB(tkt), 'receita ÷ vendas')}${kpi('Churn', fP(P.churn), Number(P.alunos) > 0 ? num(P.saiu) + ' saíram de ' + num(P.alunos) + ' alunos · ' + num(P.ativos) + ' ativos' : 'alunos que saíram')}`}</div>
   ${graf}<div id="mgCoh" style="display:flex;flex-direction:column;gap:16px"></div>`;
   corpoCohorts($('#mgCoh'), C, A);
   mktContexto(body, A).catch(e => console.warn('contexto v0.155', e));
@@ -2001,22 +2040,23 @@ async function vMktDashCampanha(m, fixo) {
   const ML = await q(sb.rpc('campanha_meta_leads', { p_campanha: C.campanha_id, p_hoje: hoje() })).catch(() => null);
   const mlC = ML && CC ? (ML.canais || []).find(x => x.id === CC.campanha_canal_id) : null;
   const leadsK = ML && ML.modo === 'lancamento' ? (CC ? (mlC ? mlC.leads : null) : ML.leads_total) : null;
-  const cacOk = alvo.cac != null && alvo.meta_cac ? (Number(alvo.cac) <= Number(alvo.meta_cac) ? 'good' : 'bad') : null;
+  const cF = (await q(sb.from('campanhas').select('*').eq('id', C.campanha_id)))[0], faseC = campFase(cF, C.vendas), fsC = (cF && cF.fases) || {};
+  const frL = cF && cF.modelo === 'lancamento' ? campRitmo(cF.data_inicio, cF.data_fim) : 1, frLd = fsC.aquisicao && fsC.aquisicao.ini ? campRitmo(fsC.aquisicao.ini, fsC.aquisicao.fim || (cF && cF.data_fim)) : frL, frVd = cF && cF.data_carrinho_abre ? campRitmo(cF.data_carrinho_abre, cF.data_carrinho_fecha || cF.data_fim) : frL;
   m.innerHTML = `${fixo ? '' : '<div class="head"><h1>Dashboard de campanhas</h1><div class="acts"><button class="btn" onclick="render()">Atualizar</button></div></div>'}
   <div class="filters">
     ${fixo ? '' : `<label>Campanha<select id="selC">${opts(camp, 'campanha_id', 'nome', S.mCamp)}</select></label>`}
     <label>Canal<select id="selK"><option value="">Todos os canais</option>${opts(canais, 'campanha_canal_id', 'canal', S.mCanal)}</select></label>
     <label>Custos<select id="selA"><option value="">Por dia</option><option value="1"${S.mAcum ? ' selected' : ''}>Acumulado</option></select></label>
   </div>
-  <div class="kpis">
-    ${leadsK != null ? kpi('Leads', num(leadsK), (alvo.meta_leads ? 'meta ' + num(alvo.meta_leads) + ' (' + pct(leadsK, alvo.meta_leads) + '%) · ' : '') + num(alvo.leads) + ' novos na base') : kpi('Leads', num(alvo.leads), alvo.meta_leads ? 'meta ' + num(alvo.meta_leads) + ' (' + pct(alvo.leads, alvo.meta_leads) + '%)' : num(alvo.qualificados) + ' qualificados')}
+  ${campFaseHtml(faseC)}<div class="kpis">
+    ${leadsK != null ? kpi('Leads', num(leadsK), (alvo.meta_leads ? 'meta ' + num(alvo.meta_leads) + ' (' + pct(leadsK, alvo.meta_leads) + '%) · ' : '') + num(alvo.leads) + ' novos na base' + luzHtml(metaLuz(leadsK, alvo.meta_leads, { frac: frLd }))) : kpi('Leads', num(alvo.leads), (alvo.meta_leads ? 'meta ' + num(alvo.meta_leads) + ' (' + pct(alvo.leads, alvo.meta_leads) + '%)' : num(alvo.qualificados) + ' qualificados') + luzHtml(metaLuz(alvo.leads, alvo.meta_leads, { frac: frLd })))}
     ${kpi('Investimento', brl(alvo.investimento), orc ? 'orçamento ' + brl(orc) : 'contas a pagar da campanha')}
     ${kpi('Custo por lead', fB(alvo.cpl), leadsK != null ? 'investimento ÷ leads novos' : 'investimento ÷ leads')}
-    ${kpi('Vendas', num(alvo.vendas), alvo.meta_vendas ? 'meta ' + num(alvo.meta_vendas) + ' (' + pct(alvo.vendas, alvo.meta_vendas) + '%)' : num(alvo.clientes) + ' clientes')}
-    ${kpi('CAC', fB(alvo.cac), alvo.meta_cac ? 'meta ' + brl(alvo.meta_cac) + (cacOk === 'good' ? ' · dentro da meta' : cacOk === 'bad' ? ' · acima da meta' : '') : 'investimento ÷ clientes')}
-    ${kpi('Receita bruta', brl(alvo.receita_bruta), alvo.meta_receita ? 'meta ' + brl(alvo.meta_receita) : '')}
+    ${faseC.antes ? '' : `${kpi('Vendas', num(alvo.vendas), (alvo.meta_vendas ? 'meta ' + num(alvo.meta_vendas) + ' (' + pct(alvo.vendas, alvo.meta_vendas) + '%)' : num(alvo.clientes) + ' clientes') + luzHtml(metaLuz(Number(alvo.vendas), alvo.meta_vendas, { frac: frVd })))}
+    ${kpi('CAC', fB(alvo.cac), (alvo.meta_cac ? 'meta ' + brl(alvo.meta_cac) : 'investimento ÷ clientes') + luzHtml(metaLuz(alvo.cac == null ? null : Number(alvo.cac), alvo.meta_cac, { menor: true })))}
+    ${kpi('Receita bruta', brl(alvo.receita_bruta), (alvo.meta_receita ? 'meta ' + brl(alvo.meta_receita) : '') + luzHtml(metaLuz(Number(alvo.receita_bruta), alvo.meta_receita, { frac: frVd })))}
     ${kpi('ROAS', fX(roas), 'receita ÷ investimento')}
-    ${kpi('Lead → venda', fP(div(alvo.vendas, alvo.leads)), 'vendas ÷ leads')}
+    ${kpi('Lead → venda', fP(div(alvo.vendas, alvo.leads)), 'vendas ÷ leads')}`}
   </div>
   <div class="ml-grid" id="mlGrid"><div class="panel" id="cuInv"></div><div class="panel" id="cuCpl"></div></div>
   <div class="panel"><h2>Por canal: vendas, investimento e custos</h2><div class="tw"><table><thead><tr><th>Canal</th><th>Vendas</th><th>Investimento</th><th class="n">CPL</th><th class="n">CAC</th><th class="n">Receita</th></tr></thead><tbody>
@@ -2619,19 +2659,20 @@ async function tcResumo(el, c, r) {
   const lc = {}; pes.forEach(x => { lc[x.utm_campaign] = (lc[x.utm_campaign] || 0) + 1; });
   const leads = Number(r.leads || 0), vendas = Number(r.vendas || 0), taxa = r.taxa_lead_venda == null ? null : Number(r.taxa_lead_venda);
   const naoComecou = c.data_inicio && c.data_inicio > hoje();
-  const linhaMeta = (nome, real, meta, fmt, menorMelhor) => { const ok = meta == null || meta === '' || Number(meta) === 0 || real == null ? null : (menorMelhor ? real <= Number(meta) : real >= Number(meta)); return `<tr><td>${nome}</td><td class="n">${real == null ? '—' : fmt(real)}</td><td class="n">${meta ? fmt(Number(meta)) : '—'}</td><td>${ok == null ? '' : naoComecou && !ok ? `<span class="pill info">começa em ${dd(c.data_inicio)}</span>` : semPilula({ k: ok ? 'fav' : (!c.data_fim || c.data_fim >= hoje() ? 'aten' : 'desf'), txt: ok ? (menorMelhor ? 'dentro da meta' : 'meta atingida') : (menorMelhor ? 'acima da meta' : 'abaixo da meta') + (!c.data_fim || c.data_fim >= hoje() ? ' (em andamento)' : '') })}</td></tr>`; };
+  const fase = campFase(c, vendas), fsR = c.fases || {}, frL = c.modelo === 'lancamento' ? campRitmo(c.data_inicio, c.data_fim) : 1, frLd = fsR.aquisicao && fsR.aquisicao.ini ? campRitmo(fsR.aquisicao.ini, fsR.aquisicao.fim || c.data_fim) : frL, frVd = c.data_carrinho_abre ? campRitmo(c.data_carrinho_abre, c.data_carrinho_fecha || c.data_fim) : frL;
+  const linhaMeta = (nome, real, meta, fmt, op = {}) => { const tem = meta != null && meta !== '' && Number(meta) !== 0 && real != null, l = tem ? metaLuz(real, meta, op) : null; return `<tr data-lm="${esc(nome)}"><td>${nome}</td><td class="n">${real == null ? '—' : fmt(real)}</td><td class="n">${meta ? fmt(Number(meta)) : '—'}</td><td>${l ? luzHtml(l) : tem && op.frac === 0 ? '<span class="muted">ainda não começou</span>' : ''}</td></tr>`; };
   const cCanal = row => [{ k: 'canal', l: 'Canal', t: 'select', req: 1, novo: 'canais', opts: sel(cad, 'codigo', 'nome') }, { k: 'utm_campaign', l: 'utm_campaign (única)', full: 1, ph: 'Automática', hint: 'Deixe vazia: o sistema cria a partir da campanha e do canal. É por ela que cada lead é ligado à campanha e ao canal.' },
     { k: 'orcamento', l: 'Orçamento (R$)', t: 'number', step: '0.01' }, { k: 'meta_leads', l: 'Meta de leads do canal', t: 'number' }, { k: 'meta_cpl', l: 'Meta de CPL do canal (R$)', t: 'number', step: '0.01' }, { k: 'meta_cac', l: 'Meta de CAC (R$)', t: 'number', step: '0.01' }, { k: 'percentual_meta_leads', l: '% da meta de leads', t: 'number', step: '0.01' }, { k: 'meta_vendas', l: 'Meta de vendas', t: 'number' },
     ...(temTemp ? [{ k: 'temperatura', l: 'Público', t: 'select', opts: [['', 'Sem classificação'], ['frio', 'Frio (ainda não conhece)'], ['quente', 'Quente (já conhece)']], hint: 'Meta Ads frio e quente viram dois canais, cada um com a sua utm_campaign. Sem classificação o Growths não adivinha.' }] : []), ...EXC.campos];
-  el.innerHTML = `<div class="kpis">${kpi('Leads', num(leads), c.meta_leads ? 'meta ' + num(c.meta_leads) : '')}${kpi('Vendas', num(vendas), c.meta_vendas ? 'meta ' + num(c.meta_vendas) : '')}${kpi('Receita bruta', brl(r.receita_bruta || 0), c.meta_receita ? 'meta ' + brl(c.meta_receita) : '')}${kpi('Investido', brl(r.investimento || 0), c.orcamento_total ? 'orçamento ' + brl(c.orcamento_total) : '')}${kpi('CAC', r.cac != null ? brl(r.cac) : '—', c.meta_cac ? 'meta ' + brl(c.meta_cac) : '')}${kpi('ROAS', r.roas != null ? fX(Number(r.roas)) : '—', 'receita ÷ investimento')}</div>
+  el.innerHTML = `${campFaseHtml(fase)}<div class="kpis">${kpi('Leads', num(leads), c.meta_leads ? 'meta ' + num(c.meta_leads) : '')}${kpi('Investido', brl(r.investimento || 0), c.orcamento_total ? 'orçamento ' + brl(c.orcamento_total) : '')}${fase.antes ? kpi('CPL', leads && Number(r.investimento) > 0 ? brl(Number(r.investimento) / leads) : '—', c.meta_cpl ? 'meta ' + brl(c.meta_cpl) : '') : `${kpi('Vendas', num(vendas), c.meta_vendas ? 'meta ' + num(c.meta_vendas) : '')}${kpi('Receita bruta', brl(r.receita_bruta || 0), c.meta_receita ? 'meta ' + brl(c.meta_receita) : '')}${kpi('CAC', r.cac != null ? brl(r.cac) : '—', c.meta_cac ? 'meta ' + brl(c.meta_cac) : '')}${kpi('ROAS', r.roas != null ? fX(Number(r.roas)) : '—', 'receita ÷ investimento')}`}</div>
   <div class="cols"><div class="panel"><h2>Planejamento</h2><div class="tw"><table><tbody>
     <tr><td>Modelo</td><td>${pillModelo(c)} <small class="muted">${c.modelo === 'perpetuo' ? 'sem data de fim; acompanhe por período' : 'começo, meio e fim'}</small></td></tr>
     <tr><td>Status</td><td>${pillCamp(c)}</td></tr>${c.tipo_midia ? `<tr><td>Mídia</td><td>${{ hibrida: 'Híbrida (paga e orgânica)', paga: 'Só paga', organica: 'Só orgânica' }[c.tipo_midia] || esc(c.tipo_midia)}</td></tr>` : ''}<tr><td>Período</td><td>${periodoCamp(c)}</td></tr>
     ${c.modelo === 'lancamento' || c.data_carrinho_abre ? `<tr><td>Carrinho</td><td>${c.data_carrinho_abre ? dd(c.data_carrinho_abre) : '—'} a ${c.data_carrinho_fecha ? dd(c.data_carrinho_fecha) : '—'}</td></tr>` : ''}
     <tr><td>Orçamento total</td><td>${brl0(c.orcamento_total)}</td></tr></tbody></table></div>${c.observacoes ? `<p>${esc(c.observacoes)}</p>` : '<p class="muted">Sem observações. Use Editar campanha para registrar a estratégia.</p>'}</div>
   <div class="panel"><h2>Meta e realizado</h2><div class="tw"><table><thead><tr><th></th><th class="n">Realizado</th><th class="n">Meta</th><th></th></tr></thead><tbody>
-    ${linhaMeta('Leads', leads, c.meta_leads, num, false)}${linhaMeta('Vendas', vendas, c.meta_vendas, num, false)}${linhaMeta('Receita bruta', Number(r.receita_bruta || 0), c.meta_receita, brl, false)}
-    ${linhaMeta('Conversão lead → venda', taxa, c.meta_taxa_lead_venda, v => v.toFixed(2).replace('.', ',') + '%', false)}${linhaMeta('CPL (custo por lead)', leads && r.investimento != null ? Number(r.investimento) / leads : null, c.meta_cpl, brl, true)}${linhaMeta('CAC', r.cac != null ? Number(r.cac) : null, c.meta_cac, brl, true)}${linhaMeta('Investimento', Number(r.investimento || 0), c.orcamento_total, brl, true)}</tbody></table></div></div></div>
+    ${linhaMeta('Leads', leads, c.meta_leads, num, { frac: frLd })}${linhaMeta('Vendas', vendas, c.meta_vendas, num, { frac: frVd })}${linhaMeta('Receita bruta', Number(r.receita_bruta || 0), c.meta_receita, brl, { frac: frVd })}
+    ${fase.antes ? '' : linhaMeta('Conversão lead → venda', taxa, c.meta_taxa_lead_venda, v => v.toFixed(2).replace('.', ',') + '%')}${linhaMeta('CPL (custo por lead)', leads && r.investimento != null ? Number(r.investimento) / leads : null, c.meta_cpl, brl, { menor: true })}${fase.antes ? '' : linhaMeta('CAC', r.cac != null ? Number(r.cac) : null, c.meta_cac, brl, { menor: true })}${linhaMeta('Investimento', Number(r.investimento || 0), c.orcamento_total, brl, { menor: true, teto: true, frac: frL })}</tbody></table></div></div></div>
   <div id="campHist"></div>
   <div class="panel"><div class="head"><h2>Canais</h2><div class="acts"><button class="btn" id="novoCanal">Novo canal</button></div></div><div class="tw"><table><thead><tr><th>Canal</th><th>utm_campaign</th><th class="n">Orçamento</th><th>Leads (meta)</th><th class="n">CPL</th><th class="n">Meta de CPL</th><th></th></tr></thead><tbody>
     ${canais.map(x => `<tr><td>${esc(x.canal)}${x.tipo ? ' <span class="pill ' + (x.tipo === 'pago' ? 'info' : 'good') + '">' + (x.tipo === 'pago' ? 'paga' : 'orgânica') + '</span>' : ''}${x.funil_id && EXC.funis.length ? '<br><span class="muted">' + esc((EXC.funis.find(f => f.id === x.funil_id) || {}).nome || '') + '</span>' : ''}${x.temperatura ? ' <span class="pill neutral">' + esc(TEMP[x.temperatura]) + '</span>' : ''}</td><td class="mono">${esc(x.utm_campaign)}</td><td class="n">${brl0(x.orcamento)}</td><td>${bar(CR[x.id] ? Number(CR[x.id].leads) : (lc[x.utm_campaign] || 0), x.meta_leads || 0)}</td><td class="n">${CR[x.id] && CR[x.id].cpl != null ? `<span class="pill ${x.meta_cpl ? (Number(CR[x.id].cpl) <= Number(x.meta_cpl) ? 'good' : 'bad') : 'neutral'}">${brl(CR[x.id].cpl)}</span>` : '—'}</td><td class="n">${x.meta_cpl ? brl(x.meta_cpl) : '—'}</td><td><button class="btn sm" data-ek="${x.id}">Editar</button></td></tr>`).join('') || '<tr><td colspan="7" class="muted">Nenhum canal. Cada canal tem a sua utm_campaign, que liga leads e vendas a esta campanha.</td></tr>'}</tbody></table></div></div>`;
@@ -8883,7 +8924,7 @@ function arvMapa(vk, el) {
       'Ponto de equilíbrio': ['loc.co.eq', L], [metaRot]: ['loc.co.eq', { ...L, alvo: true }], 'Imposto no equilíbrio': ['loc.co.imposto', L], 'A receber no mês': ['loc.co.receber', L] }; }
   if (vk === 'mkt-dash' && S.mg) { const P = { ini: S.mg.ini, fim: S.mg.fim, ...(S.mg.camp ? { campanha: S.mg.camp } : {}) };
     return { 'Leads': ['crm.pessoas', { ...P, filtro: 'leads_periodo' }], 'Investido': ['mkt.ads', { ...P, campo: 'custo' }], 'CPL': ['mkt.cpl', P], 'Clientes': ['mkt.clientes', { ...P, coorte: true }],
-      'CAC': ['mkt.cac', P], 'Receita': ['ven.soma', { ...P, campo: 'liquido', coorte: true }], 'ROAS': ['mkt.roas', P], 'ROI': ['mkt.roi', P], 'LTV': ['mkt.ltv', P], 'Churn': ['mkt.churn', P] }; }
+      'CAC': ['mkt.cac', P], 'Receita': ['ven.soma', { ...P, campo: 'liquido', coorte: true }], 'ROAS': ['mkt.roas', P], 'Churn': ['mkt.churn', P] }; }
   if (vk === 'mkt-trafego') { const ate = S.tAte || h, P = { ini: S.tDe || diaMais(ate, -13), fim: ate, ...(S.tCamp ? { campanha: S.tCamp } : {}), ...(S.tCanal ? { plataforma: S.tCanal } : {}) };
     return { 'Investimento': ['mkt.ads', { ...P, campo: 'custo' }], 'Impressões': ['mkt.ads', { ...P, campo: 'impressoes' }], 'Cliques': ['mkt.ads', { ...P, campo: 'cliques' }], 'CTR médio': ['mkt.ctr', P],
       'CPC': ['mkt.cpc', P], 'Connect rate': ['mkt.connect', P], 'Leads': ['mkt.ads', { ...P, campo: 'leads' }], 'CPL médio': ['mkt.trf_cpl', P], 'Vendas': ['mkt.ads', { ...P, campo: 'vendas' }], 'CAC': ['mkt.trf_cac', P], 'ROAS': ['mkt.trf_roas', P] }; }
@@ -8987,7 +9028,7 @@ function arvColunas(vk) {
   if (vk === 'mkt-dash' && S.mg) { const B = { ini: S.mg.ini, fim: S.mg.fim, ...(S.mg.camp ? { campanha: S.mg.camp } : {}) };
     return [{ linha: 'tr[data-arvp], tr[data-camp]', par: r => r.dataset.arvp ? { ...B, ...JSON.parse(r.dataset.arvp) } : r.dataset.camp ? { ...B, campanha: r.dataset.camp } : null,
       cols: { 'Leads': ['crm.pessoas', { filtro: 'leads_periodo' }], 'Clientes': ['mkt.clientes', { coorte: true }], 'Custo': ['mkt.ads', { campo: 'custo' }], 'CPL': ['mkt.cpl', {}], 'CAC': ['mkt.cac', {}],
-        'Receita': ['ven.soma', { campo: 'liquido', coorte: true }], 'LTV': ['mkt.ltv', {}], 'ROAS': ['mkt.roas', {}], 'ROI': ['mkt.roi', {}], 'Alunos': ['mkt.alunos', {}], 'Churn': ['mkt.churn', {}] } }]; }
+        'Receita': ['ven.soma', { campo: 'liquido', coorte: true }], 'ROAS': ['mkt.roas', {}], 'Alunos': ['mkt.alunos', {}], 'Churn': ['mkt.churn', {}] } }]; }
   return [];
 }
 function arvLigaCelulas(el, vk) {
@@ -14219,9 +14260,9 @@ async function abrirWizard(id = null, passo = 1) {
       if (!wzO) return; const pr = wzO.rows.find(r => r.papel === 'principal');
       wzO.rows.forEach(r => { if (!(r.nome || '').trim()) throw new Error('Dê um nome para cada oferta.'); if (!r.produto_id) throw new Error('Escolha o produto de "' + r.nome + '".'); if (r.preco == null || !(Number(r.preco) >= 0)) throw new Error('Informe o preço de "' + r.nome + '".'); });
       for (const id of wzO.tirar) await q(sb.from('campanha_ofertas').delete().eq('id', id)); wzO.tirar = [];
-      const grava = async (r, i) => { const x = { papel: r.papel, produto_id: r.produto_id, nome: r.nome.trim(), preco: Number(r.preco), ordem: i, pai_id: r.papel === 'principal' ? null : r.papel === 'order_bump' ? pr.id : (r.pai_id || (r.papel === 'downsell' ? pr.id : null)), condicao: r.papel === 'downsell' ? 'recusou' : (r.papel === 'order_bump' || r.papel === 'principal' || !r.pai_id) ? 'sempre' : (r.condicao || 'sempre') };
+      const grava = async (r, i) => { const x = { papel: r.papel, produto_id: r.produto_id, nome: r.nome.trim(), preco: Number(r.preco), ordem: i, pai_id: r.papel === 'principal' ? null : r.papel === 'order_bump' ? pr.id : r.papel === 'downsell' ? (r.pai_id && r.pai_id !== pr.id ? r.pai_id : ((wzO.rows.find(y => y.papel === 'upsell') || pr).id)) : (r.pai_id || null), condicao: r.papel === 'downsell' ? 'recusou' : (r.papel === 'order_bump' || r.papel === 'principal' || !r.pai_id) ? 'sempre' : (r.condicao || 'sempre') };
         if (r.id) await q(sb.from('campanha_ofertas').update(x).eq('id', r.id)); else { r.id = crypto.randomUUID(); await q(sb.from('campanha_ofertas').insert({ ...x, id: r.id, workspace_id: w, campanha_id: c.id })); } };
-      await grava(pr, 0); for (const [i, r] of wzO.rows.entries()) if (r !== pr) await grava(r, i);
+      await grava(pr, 0); for (const [i, r] of wzO.rows.entries()) if (r !== pr && r.papel !== 'downsell') await grava(r, i); for (const [i, r] of wzO.rows.entries()) if (r.papel === 'downsell') await grava(r, i);
     } else if (passo === 3) {
       if (!f.querySelector('#wzUsaDatas').checked) { const fz = { ...(c.fases || {}) }; ['aquisicao', 'aquecimento', ...LANC_EXTRAS.map(x => x[0])].forEach(k => delete fz[k]); const v = { fases: fz, data_carrinho_abre: null, data_carrinho_fecha: null }; await q(sb.from('campanhas').update(v).eq('id', c.id)); c = { ...c, ...v }; return; }
       const fz = { ...(c.fases || {}) }; [['aquisicao', 'Aquisição'], ['aquecimento', 'Aquecimento'], ...LANC_EXTRAS].forEach(([k, l]) => { const ck = f.querySelector(`[data-wzex="${k}"]`), usa = !ck || ck.checked, a = usa ? val('fase_' + k + '_ini') : null, b = usa ? val('fase_' + k + '_fim') : null;
@@ -16091,7 +16132,7 @@ function corpoCohorts(el, C, A) {
   const L = C || [], jan = [['c7', 7], ['c14', 14], ['c30', 30], ['c60', 60], ['c90', 90]], ret = [['r30', 30], ['r60', 60], ['r90', 90]];
   A.cv = A.cv || 'conv';
   const ctrl = `<div class="filters"><label>Agrupar por<select id="afGran"><option value="semana"${A.gran === 'semana' ? ' selected' : ''}>Semana de entrada</option><option value="mes"${A.gran === 'mes' ? ' selected' : ''}>Mês de entrada</option><option value="campanha"${A.gran === 'campanha' ? ' selected' : ''}>Campanha</option></select></label></div>
-  <div class="tabs">${[['conv', 'Conversão'], ['ret', 'Retorno (ROI, LTV, CAC)'], ['pos', 'Pós-compra (churn, retenção)']].map(([k, l]) => `<button data-cv="${k}" class="${A.cv === k ? 'on' : ''}">${l}</button>`).join('')}</div>`;
+  <div class="tabs">${[['conv', 'Conversão'], ['ret', 'Retorno (CAC e ROAS)'], ['pos', 'Pós-compra (churn, retenção)']].map(([k, l]) => `<button data-cv="${k}" class="${A.cv === k ? 'on' : ''}">${l}</button>`).join('')}</div>`;
   const ligar = () => { $('#afGran').onchange = e => { A.gran = e.target.value; render(); }; el.querySelectorAll('[data-cv]').forEach(b => b.onclick = () => { A.cv = b.dataset.cv; render(); }); el.querySelectorAll('[data-camp]').forEach(r => r.onclick = () => { if (!r.dataset.camp) { toast('Leads sem campanha não têm funil próprio.'); return; } A.camp = r.dataset.camp; A.tab = 'funil'; A.sel = null; render(); }); };
   if (!L.length) { el.innerHTML = ctrl + '<div class="panel">Nenhum lead neste período e campanha.</div>'; ligar(); return; }
   const porCamp = A.gran === 'campanha';
@@ -16104,7 +16145,6 @@ function corpoCohorts(el, C, A) {
   const deriv = t => ({ ...t, ltv: t.clientes ? t.receita / t.clientes : null, cac: t.clientes && t.custo ? t.custo / t.clientes : null, cpl: t.leads && t.custo ? t.custo / t.leads : null, roas: t.custo ? t.receita / t.custo : null, roi: t.custo ? (t.receita - t.custo) / t.custo : null, ltv_cac: t.clientes && t.custo ? (t.receita / t.clientes) / (t.custo / t.clientes) : null, churn: t.alunos ? t.saiu / t.alunos : null, retencao: t.alunos ? t.ativos / t.alunos : null });
   const T = deriv(tot);
   const cel = (v, f) => `<td class="n">${v == null ? '—' : f(v)}</td>`;
-  const roiCel = v => v == null ? '<td class="n">—</td>' : `<td class="n"><span class="pill ${v >= 0 ? 'good' : 'bad'}">${(v * 100).toFixed(0)}%</span></td>`;
   let cab = '', lin = null, rod = null, nota = '';
   if (A.cv === 'conv') {
     const mxJ = Object.fromEntries(jan.map(([k]) => [k, Math.max(0, ...L.map(c => div(c[k], c.leads) || 0))]));
@@ -16113,10 +16153,10 @@ function corpoCohorts(el, C, A) {
     rod = `<tr style="font-weight:600"><td>Total</td><td class="n">${num(tot.leads)}</td><td class="n">${fP(div(tot.qualificados, tot.leads))}</td><td class="n">${fP(div(tot.pesquisa, tot.leads))}</td>${jan.map(([k]) => `<td class="n">${fP(div(tot[k], tot.leads))}</td>`).join('')}<td class="n">${num(tot.clientes)} <span class="muted">(${fP(div(tot.clientes, tot.leads))})</span></td><td class="n">${brl(tot.receita)}</td><td class="n">${tot.leads ? brl(tot.receita / tot.leads) : '—'}</td></tr>`;
     nota = 'Cada linha é uma coorte: os leads que entraram naquela semana, mês ou campanha. As colunas de 7 a 90 dias mostram quantos por cento dos leads compraram até aquele prazo depois de entrar. Em itálico, a janela ainda está aberta e o número vai subir.';
   } else if (A.cv === 'ret') {
-    cab = `<th>Coorte</th><th class="n">Leads</th><th class="n">Clientes</th><th class="n">Custo</th><th class="n">CPL</th><th class="n">CAC</th><th class="n">Receita</th><th class="n">LTV</th><th class="n">LTV ÷ CAC</th><th class="n">ROAS</th><th class="n">ROI</th>`;
-    const l = (c, b) => `<tr${b ? '' : camp(c)}${b ? ' style="font-weight:600"' : ''}><td style="white-space:nowrap"><b>${b ? 'Total' : esc(rot(c))}</b></td><td class="n">${num(c.leads)}</td><td class="n">${num(c.clientes)}</td><td class="n">${c.custo ? brl(c.custo) : '—'}</td>${cel(c.cpl, brl)}${cel(c.cac, brl)}<td class="n">${brl(c.receita)}</td>${cel(c.ltv, brl)}${cel(c.ltv_cac, v => semFmt(v, 'razao'))}${cel(c.roas, fX)}${roiCel(c.roi)}</tr>`;
+    cab = `<th>Coorte</th><th class="n">Leads</th><th class="n">Clientes</th><th class="n">Custo</th><th class="n">CPL</th><th class="n">CAC</th><th class="n">Receita</th><th class="n">Receita por cliente</th><th class="n">ROAS</th>`;
+    const l = (c, b) => `<tr${b ? '' : camp(c)}${b ? ' style="font-weight:600"' : ''}><td style="white-space:nowrap"><b>${b ? 'Total' : esc(rot(c))}</b></td><td class="n">${num(c.leads)}</td><td class="n">${num(c.clientes)}</td><td class="n">${c.custo ? brl(c.custo) : '—'}</td>${cel(c.cpl, brl)}${cel(c.cac, brl)}<td class="n">${brl(c.receita)}</td>${cel(c.ltv, brl)}${cel(c.roas, fX)}</tr>`;
     lin = c => l(c, false); rod = l(T, true);
-    nota = 'Custo = gasto dos anúncios nas datas da coorte (dentro do período) ou da campanha. Receita = vendas aprovadas dessas pessoas até hoje, então o ROI de coortes novas ainda vai subir. LTV = receita ÷ clientes. ROI = (receita − custo) ÷ custo. Sem custo registrado, CAC, ROAS e ROI ficam em branco.';
+    nota = 'Custo = gasto dos anúncios nas datas da coorte (dentro do período) ou da campanha. Receita = vendas aprovadas dessas pessoas até hoje, então o ROAS de coortes novas ainda vai subir. Receita por cliente = receita ÷ clientes. ROAS = receita ÷ custo. Sem custo registrado, CAC e ROAS ficam em branco.';
   } else {
     cab = `<th>Coorte</th><th class="n">Clientes</th><th class="n">Alunos</th><th class="n">Ativos</th><th class="n">Saíram</th><th class="n">Churn</th><th class="n">Retenção</th><th class="n">30 dias</th><th class="n">60 dias</th><th class="n">90 dias</th><th class="n">Ascensão</th><th class="n">Recompra</th>`;
     const rc = (c, k) => { const b = c[k + '_base'], v = div(c[k + '_ok'], b); return `<td class="n" title="${num(c[k + '_ok'])} de ${num(b)} alunos que entraram há pelo menos ${k.slice(1)} dias">${b ? fP(v) : '—'}</td>`; };
@@ -22551,7 +22591,7 @@ function semCtxKpi(m, rot, html) {
 }
 /* Dashboard financeiro: receitas, despesas e resultado contra o período anterior + frase */
 /* async function finContexto(m, PER, h) { → v0.157 (g157.js) */
-/* Dashboard de marketing: leads, investimento e CPL contra o período anterior. Clientes, CAC, receita, ROAS, ROI e LTV seguem os leads até hoje:
+/* Dashboard de marketing: leads, investimento e CPL contra o período anterior. Clientes, CAC, receita, ROAS e ticket médio seguem os leads até hoje:
    o período anterior teve mais tempo para converter, então não são comparados (a comparação enganaria). */
 async function mktContexto(body, A) {
   const PA = semPerAnt(A.ini, A.fim);
@@ -22561,7 +22601,7 @@ async function mktContexto(body, A) {
   semCtxKpi(body, 'Leads', vL.html); semCtxKpi(body, 'Investido', vI.html); semCtxKpi(body, 'CPL', vC.html);
   const kp = body.querySelector('.kpis'); if (!kp) return;
   const p = document.createElement('p'); p.className = 'gc-lead sem-recado';
-  p.innerHTML = `Entraram <b>${num(P0.leads || 0)}</b> leads (${vL.html.replace(/ <span class="muted">vs\..*$/, '')}) com CPL de <b>${semFmt(cpl(P0), 'brl')}</b> (${vC.html.replace(/ <span class="muted">vs\..*$/, '')}) contra ${esc(PA.rot)}. Clientes, CAC, receita, ROAS, ROI e LTV acompanham os leads até hoje e não são comparados com o período anterior, que teve mais tempo para converter.`;
+  p.innerHTML = `Entraram <b>${num(P0.leads || 0)}</b> leads (${vL.html.replace(/ <span class="muted">vs\..*$/, '')}) com CPL de <b>${semFmt(cpl(P0), 'brl')}</b> (${vC.html.replace(/ <span class="muted">vs\..*$/, '')}) contra ${esc(PA.rot)}. Clientes, CAC, receita, ROAS e ticket médio acompanham os leads até hoje e não são comparados com o período anterior, que teve mais tempo para converter.`;
   kp.before(p);
 }
 

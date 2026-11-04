@@ -1,3 +1,10 @@
+## v0.250
+- **Fase:** Finalizada pelo status. Em vendas quando há venda, o carrinho abriu, a fase de conversão começou ou é perpétuo sem data de carrinho. Aquecimento depois do início dele. Nos outros casos, Captação.
+- **ROAS** é receita ÷ investimento. **CAC** é investimento ÷ clientes. **Ticket médio** é receita ÷ vendas.
+- **ROI** não aparece no marketing; fica nos números do negócio.
+- **Luzinha:** volumes comparam com a meta × parte do período que já passou (leads pela aquisição, vendas e receita pelo carrinho, quando têm data). Custos e taxas comparam com o valor. Até 5% de diferença é "no planejado". Investimento acima do orçamento é vermelho; abaixo não ganha destaque. Antes de o período começar, não acende.
+- **Definição única de ROAS e receita sem o churn:** pendentes. Hoje a tela da campanha usa receita bruta e contas a pagar mais custos lançados; o Dashboard usa receita líquida e custo de anúncios.
+
 ## v0.249
 - **Oferta no assistente:** a principal é obrigatória e define o ticket dos cenários. Order bump parte da principal; downsell parte da principal com a condição "recusou"; as outras mantêm a etapa anterior que já tinham na aba Ofertas.
 - **Vendas por oferta:** seguem a regra da aba Ofertas: são as vendas aprovadas (e contratos) do produto da oferta, dentro da campanha. Por isso cada oferta precisa de um produto próprio.

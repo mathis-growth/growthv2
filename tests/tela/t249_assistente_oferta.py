@@ -60,7 +60,7 @@ with sync_playwright() as p:
     of = ev(pg, "__D.campanha_ofertas"); pr = [x for x in of if x['papel'] == 'principal'][0]
     chk(len(of) == 4 and pr['pai_id'] is None, 'grava a principal e as outras na esteira da campanha', of)
     chk([x for x in of if x['papel'] == 'order_bump'][0]['pai_id'] == pr['id'], 'order bump parte da oferta principal')
-    dw = [x for x in of if x['papel'] == 'downsell'][0]; chk(dw['pai_id'] == pr['id'] and dw['condicao'] == 'recusou', 'downsell parte de uma recusa', dw)
+    dw = [x for x in of if x['papel'] == 'downsell'][0]; chk(dw['pai_id'] == [x for x in of if x['papel'] == 'upsell'][0]['id'] and dw['condicao'] == 'recusou', 'downsell parte da recusa do upsell', dw)
     # ---- datas ----
     chk(ev(pg, "document.querySelector('#wzUsaDatas').checked"), 'lançamento já abre com as datas ligadas')
     chk(ev(pg, "[...document.querySelectorAll('.wzb input[type=date]')].filter(i => i.offsetParent).map(i => i.name).join()") == 'fase_aquisicao_ini,fase_aquisicao_fim,fase_aquecimento_ini,fase_aquecimento_fim,data_carrinho_abre,data_carrinho_fecha', 'aquisição, aquecimento e carrinho à vista')
