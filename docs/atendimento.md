@@ -9,6 +9,7 @@ Entrega v0.175, preparada em 30/10/2026 sobre a v0.174. Código e testes locais;
 - Histórico em três colunas, notas internas, responsável, aberta/aguardando/resolvida e rascunhos em memória por conversa.
 - Vincular uma conversa individual a uma pessoa existente ou criar um lead; abrir a ficha atualizada da v0.174 (documento, linha do tempo, oportunidades, contratos, jornada e campos extras).
 - WhatsApp Evolution 2.3.7: configuração de URL/Key em Integrações, criação de instância própria do Growths, QR Code, status, busca de conversas e grupos, importação paginada do histórico, envio e recebimento.
+- Grupos Evolution: atualizar nomes consulta somente os grupos salvos sem nome, em lotes de oito. A lista completa é consultada separadamente para descobrir grupos novos; o worker repete essa busca a cada seis horas por chip. Comunidades são marcadas como contêineres e não podem receber disparos.
 - WhatsApp oficial e Instagram pela Zernio: contas do perfil já conectado ao workspace, sincronização paginada, envio de respostas, webhooks assinados e eventos de entrega/leitura.
 - Assinatura aplicada pelo servidor a partir de `equipe.nome`, ligada ao usuário autenticado. No WhatsApp: `*Nome:* mensagem`. Se faltar nome, o envio é recusado até corrigir o cadastro da equipe.
 - Anexos até 8 MB: imagens JPEG/PNG/WebP, MP4, áudio e PDF. Arquivos recebidos são copiados para Storage privado; falhas ficam visíveis como anexo pendente e podem ser recuperadas. Não há transcrição nem gravação de áudio no navegador nesta etapa.
