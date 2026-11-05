@@ -1,3 +1,8 @@
+## v0.265 — Editar mensagem de disparo pendente (05/11/2026)
+
+- Permite alterar o texto de campanhas agendadas ou em andamento somente para destinatários ainda na fila. O envio já em processamento e os já concluídos mantêm a mensagem original.
+- Banco: `20270118100000_atendimento_disparos_edicao.sql`.
+
 ## v0.264 — Remover assinatura do atendente nos disparos (05/11/2026)
 
 - As mensagens de campanhas para grupos e contatos deixam de incluir o nome do atendente no texto enviado. A autoria permanece registrada no histórico interno.

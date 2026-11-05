@@ -593,7 +593,7 @@ async function processarDisparosGrupos(){
       if(!['agendado','em_andamento'].includes(campaign.status))throw Error('Campanha pausada ou cancelada; os envios aguardam revisão.');
       if(cv.canal_id!==ch.id||ch.provedor!=='evolution'||ch.canal!=='whatsapp')throw Error('O destinatário não corresponde a uma instância Evolution deste workspace.');
       if(!ch.ativo||ch.status!=='conectado')throw Error('Este chip está desconectado; campanha pausada para segurança.');
-      const signed=String(campaign.texto||'');
+      const signed=String(job.texto??'');
       const pending=await q(db.from('atd_mensagens').upsert({workspace_id:job.workspace_id,conversa_id:cv.id,requisicao_id:job.id,direcao:'enviada',texto:signed,autor_id:campaign.autor_id,autor_nome:campaign.autor_nome,status:'enviando',anexos:campaign.midia_path?[{path:campaign.midia_path,nome:campaign.midia_nome,mime:campaign.midia_mime}]:[]},{onConflict:'workspace_id,requisicao_id',ignoreDuplicates:true}).select().single());
       messageId=pending?.id||null;if(!messageId)throw Error('O envio já existe; confira o histórico da conversa.');
       const attachment=campaign.midia_path?{url:(await q(db.storage.from('atendimento').createSignedUrl(campaign.midia_path,300))).signedUrl,nome:campaign.midia_nome,mime:campaign.midia_mime}:undefined;
@@ -665,10 +665,17 @@ async function handle(req: Request, b: any) {
   }
   if (b.action === 'contexto') return json(ctx);
   if(b.action==='disparos-grupos-list'){
-    const rows=await q(db.from('atd_disparos_grupos').select('id,nome,status,iniciar_em,intervalo_segundos,total,criado_em').eq('workspace_id',ws).order('criado_em',{ascending:false}).limit(50));
+    const rows=await q(db.from('atd_disparos_grupos').select('id,nome,texto,status,iniciar_em,intervalo_segundos,total,criado_em').eq('workspace_id',ws).order('criado_em',{ascending:false}).limit(50));
     const items=rows.length?await q(db.from('atd_disparos_grupos_itens').select('campanha_id,status,erro').eq('workspace_id',ws).in('campanha_id',rows.map((x:any)=>x.id))):[];
-    for(const row of rows){const own=items.filter((i:any)=>i.campanha_id===row.id);row.enviados=own.filter((i:any)=>i.status==='enviado').length;row.falhas=own.filter((i:any)=>['erro','incerto'].includes(i.status)).length;row.erro=own.find((i:any)=>i.erro)?.erro||null;}
+    for(const row of rows){const own=items.filter((i:any)=>i.campanha_id===row.id);row.enviados=own.filter((i:any)=>i.status==='enviado').length;row.falhas=own.filter((i:any)=>['erro','incerto'].includes(i.status)).length;row.pendentes=own.filter((i:any)=>i.status==='agendado').length;row.erro=own.find((i:any)=>i.erro)?.erro||null;}
     return json({campanhas:rows});
+  }
+  if(b.action==='disparos-grupos-edit'){
+    if(!ctx.editar)throw Error('Sem permissão para editar disparos.');
+    const id=String(b.campanha_id||''),texto=String(b.texto??'');
+    if(!/^[0-9a-f-]{36}$/i.test(id)||texto.length>4000)throw Error('Campanha ou mensagem inválida.');
+    const atualizados=await q(db.rpc('atd_grupo_disparo_editar_mensagem',{p_workspace:ws,p_campanha:id,p_texto:texto}));
+    return json({ok:true,atualizados:Number(atualizados)||0});
   }
   if(b.action==='disparos-segmentos-list'){
     const segmentos=await q(db.from('atd_disparos_segmentos').select('id,nome,conversas,criado_em').eq('workspace_id',ws).order('nome'));
@@ -705,7 +712,7 @@ async function handle(req: Request, b: any) {
     const campaign=await q(db.from('atd_disparos_grupos').insert({workspace_id:ws,nome,texto,iniciar_em:iniciar.toISOString(),intervalo_segundos:intervalo,status:'agendado',total:groupRows.length,autor_id:user.id,autor_nome:ctx.nome}).select('id').single());
     try{
     if(media){const ext=media.mime==='video/mp4'?'mp4':media.mime==='image/png'?'png':media.mime==='image/webp'?'webp':'jpg',path=ws+'/disparos-grupos/'+campaign.id+'/midia.'+ext;await q(db.storage.from('atendimento').upload(path,media.bytes,{contentType:media.mime,upsert:true}));await q(db.from('atd_disparos_grupos').update({midia_path:path,midia_nome:media.nome,midia_mime:media.mime}).eq('id',campaign.id).eq('workspace_id',ws));}
-    const items=groupRows.map((g:any,index:number)=>({workspace_id:ws,campanha_id:campaign.id,conversa_id:g.id,canal_id:g.canal_id,posicao:index,enviar_em:new Date(iniciar.getTime()+index*intervalo*1000).toISOString(),status:'agendado'}));
+    const items=groupRows.map((g:any,index:number)=>({workspace_id:ws,campanha_id:campaign.id,conversa_id:g.id,canal_id:g.canal_id,texto,posicao:index,enviar_em:new Date(iniciar.getTime()+index*intervalo*1000).toISOString(),status:'agendado'}));
     await q(db.from('atd_disparos_grupos_itens').insert(items));
     }catch(e){await q(db.from('atd_disparos_grupos').delete().eq('id',campaign.id).eq('workspace_id',ws));throw e;}
     return json({ok:true,id:campaign.id,total:groupRows.length});
