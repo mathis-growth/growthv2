@@ -1,3 +1,7 @@
+## v0.264 — Remover assinatura do atendente nos disparos (05/11/2026)
+
+- As mensagens de campanhas para grupos e contatos deixam de incluir o nome do atendente no texto enviado. A autoria permanece registrada no histórico interno.
+
 ## v0.263 — Layout de conversas e segmentos de disparo (05/11/2026)
 
 - Permite recolher a sidebar de Conversas e distribui melhor a tela em resoluções menores.

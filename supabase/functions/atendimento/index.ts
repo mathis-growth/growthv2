@@ -593,7 +593,7 @@ async function processarDisparosGrupos(){
       if(!['agendado','em_andamento'].includes(campaign.status))throw Error('Campanha pausada ou cancelada; os envios aguardam revisão.');
       if(cv.canal_id!==ch.id||ch.provedor!=='evolution'||ch.canal!=='whatsapp')throw Error('O destinatário não corresponde a uma instância Evolution deste workspace.');
       if(!ch.ativo||ch.status!=='conectado')throw Error('Este chip está desconectado; campanha pausada para segurança.');
-      const signed=campaign.autor_nome?(campaign.texto?'*'+campaign.autor_nome.replace(/[\r\n*_`~]/g,'').trim()+':* '+campaign.texto:'*'+campaign.autor_nome.replace(/[\r\n*_`~]/g,'').trim()+':*'):String(campaign.texto||'');
+      const signed=String(campaign.texto||'');
       const pending=await q(db.from('atd_mensagens').upsert({workspace_id:job.workspace_id,conversa_id:cv.id,requisicao_id:job.id,direcao:'enviada',texto:signed,autor_id:campaign.autor_id,autor_nome:campaign.autor_nome,status:'enviando',anexos:campaign.midia_path?[{path:campaign.midia_path,nome:campaign.midia_nome,mime:campaign.midia_mime}]:[]},{onConflict:'workspace_id,requisicao_id',ignoreDuplicates:true}).select().single());
       messageId=pending?.id||null;if(!messageId)throw Error('O envio já existe; confira o histórico da conversa.');
       const attachment=campaign.midia_path?{url:(await q(db.storage.from('atendimento').createSignedUrl(campaign.midia_path,300))).signedUrl,nome:campaign.midia_nome,mime:campaign.midia_mime}:undefined;
