@@ -1,3 +1,8 @@
+## v0.267 — Barra compacta para Conversas (05/11/2026)
+
+- Busca e filtros de conversas ficam numa barra horizontal acima da lista; o painel do chat ganha altura útil.
+- Compacta o cabeçalho da tela e evita botões de retorno duplicados durante renderizações concorrentes.
+
 ## v0.265 — Editar mensagem de disparo pendente (05/11/2026)
 
 - Permite alterar o texto de campanhas agendadas ou em andamento somente para destinatários ainda na fila. O envio já em processamento e os já concluídos mantêm a mensagem original.
