@@ -591,7 +591,7 @@ async function processarDisparosGrupos(){
         channel(job.canal_id,job.workspace_id)
       ]);
       if(!['agendado','em_andamento'].includes(campaign.status))throw Error('Campanha pausada ou cancelada; os envios aguardam revisão.');
-      if(!cv.grupo||cv.canal_id!==ch.id||ch.provedor!=='evolution'||ch.canal!=='whatsapp')throw Error('O grupo não corresponde a uma instância Evolution deste workspace.');
+      if(cv.canal_id!==ch.id||ch.provedor!=='evolution'||ch.canal!=='whatsapp')throw Error('O destinatário não corresponde a uma instância Evolution deste workspace.');
       if(!ch.ativo||ch.status!=='conectado')throw Error('Este chip está desconectado; campanha pausada para segurança.');
       const signed=campaign.autor_nome?(campaign.texto?'*'+campaign.autor_nome.replace(/[\r\n*_`~]/g,'').trim()+':* '+campaign.texto:'*'+campaign.autor_nome.replace(/[\r\n*_`~]/g,'').trim()+':*'):String(campaign.texto||'');
       const pending=await q(db.from('atd_mensagens').upsert({workspace_id:job.workspace_id,conversa_id:cv.id,requisicao_id:job.id,direcao:'enviada',texto:signed,autor_id:campaign.autor_id,autor_nome:campaign.autor_nome,status:'enviando',anexos:campaign.midia_path?[{path:campaign.midia_path,nome:campaign.midia_nome,mime:campaign.midia_mime}]:[]},{onConflict:'workspace_id,requisicao_id',ignoreDuplicates:true}).select().single());
@@ -644,7 +644,7 @@ async function handle(req: Request, b: any) {
   const { data: { user }, error } = await userDb.auth.getUser();
   if (error || !user) return json({ erro: 'Faça login novamente.' },401);
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
-  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo','disparos-grupos-list','grupos-busca-status'];
+  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo','disparos-grupos-list','disparos-segmentos-list','grupos-busca-status'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
   const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete','templates-mapping-save','canal-salvar','qr-share-create'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
@@ -670,6 +670,24 @@ async function handle(req: Request, b: any) {
     for(const row of rows){const own=items.filter((i:any)=>i.campanha_id===row.id);row.enviados=own.filter((i:any)=>i.status==='enviado').length;row.falhas=own.filter((i:any)=>['erro','incerto'].includes(i.status)).length;row.erro=own.find((i:any)=>i.erro)?.erro||null;}
     return json({campanhas:rows});
   }
+  if(b.action==='disparos-segmentos-list'){
+    const segmentos=await q(db.from('atd_disparos_segmentos').select('id,nome,conversas,criado_em').eq('workspace_id',ws).order('nome'));
+    return json({segmentos});
+  }
+  if(b.action==='disparos-segmento-save'){
+    if(!ctx.editar)throw Error('Sem permissão para salvar segmentos.');
+    const nome=String(b.nome||'').trim().slice(0,100),ids=Array.isArray(b.conversas)?[...new Set(b.conversas.map(String))]:[];
+    if(!nome||!ids.length||ids.length>500||ids.some((id:string)=>!/^[0-9a-f-]{36}$/i.test(id)))throw Error('Informe um nome e selecione de 1 a 500 destinatários.');
+    const recipients=await q(db.from('atd_conversas').select('id,canal_id,grupo,grupo_tipo').eq('workspace_id',ws).in('id',ids));
+    if(recipients.length!==ids.length||recipients.some((x:any)=>x.grupo_tipo==='comunidade'))throw Error('O segmento contém destinatários indisponíveis ou uma comunidade.');
+    const channelIds=[...new Set(recipients.map((x:any)=>x.canal_id))],sourceChannels=await q(db.from('atd_canais').select('id,provedor,canal').eq('workspace_id',ws).in('id',channelIds));
+    if(sourceChannels.length!==channelIds.length||sourceChannels.some((x:any)=>x.provedor!=='evolution'||x.canal!=='whatsapp'))throw Error('Os segmentos aceitam apenas conversas WhatsApp da Evolution.');
+    const segmento=await q(db.from('atd_disparos_segmentos').insert({workspace_id:ws,nome,conversas:ids,criado_por:user.id}).select('id,nome,conversas,criado_em').single());return json({segmento});
+  }
+  if(b.action==='disparos-segmento-delete'){
+    if(!ctx.editar)throw Error('Sem permissão para remover segmentos.');const id=String(b.id||'');if(!/^[0-9a-f-]{36}$/i.test(id))throw Error('Segmento inválido.');
+    const rows=await q(db.from('atd_disparos_segmentos').delete().eq('workspace_id',ws).eq('id',id).select('id'));if(!rows.length)throw Error('Segmento não encontrado.');return json({ok:true});
+  }
   if(b.action==='disparos-grupos-create'){
     if(!ctx.editar)throw Error('Sem permissão para criar disparos.');if(!ctx.nome)throw Error('Cadastre seu nome na equipe antes de agendar.');
     const nome=String(b.nome||'').trim().slice(0,100),texto=String(b.texto||'').trim(),iniciar=new Date(b.iniciar_em),intervalo=Number(b.intervalo_segundos),canalIds=Array.isArray(b.canal_ids)?[...new Set(b.canal_ids.map(String))]:[],grupos=Array.isArray(b.grupos)?b.grupos:[];
@@ -679,8 +697,8 @@ async function handle(req: Request, b: any) {
     const channels=await q(db.from('atd_canais').select('*').eq('workspace_id',ws).eq('provedor','evolution').eq('canal','whatsapp').eq('ativo',true).in('id',canalIds));
     if(channels.length!==canalIds.length||channels.some((c:any)=>c.status!=='conectado'))throw Error('Selecione apenas chips Evolution conectados deste workspace.');
     const groupIds=[...new Set(grupos.map((g:any)=>String(g.conversa_id||'')))];if(groupIds.length!==grupos.length)throw Error('Há grupos duplicados na seleção.');
-    const groupRows=await q(db.from('atd_conversas').select('id,canal_id,grupo,grupo_tipo').eq('workspace_id',ws).eq('grupo',true).in('id',groupIds));
-    if(groupRows.length!==groupIds.length||groupRows.some((g:any)=>!canalIds.includes(g.canal_id)||String(grupos.find((x:any)=>x.conversa_id===g.id)?.canal_id)!==g.canal_id))throw Error('Um ou mais grupos não correspondem aos chips selecionados.');
+    const groupRows=await q(db.from('atd_conversas').select('id,canal_id,grupo,grupo_tipo').eq('workspace_id',ws).in('id',groupIds));
+    if(groupRows.length!==groupIds.length||groupRows.some((g:any)=>!canalIds.includes(g.canal_id)||String(grupos.find((x:any)=>x.conversa_id===g.id)?.canal_id)!==g.canal_id))throw Error('Um ou mais destinatários não correspondem aos chips selecionados.');
     if(groupRows.some((g:any)=>g.grupo_tipo==='comunidade'))throw Error('A comunidade é um contêiner. Selecione os grupos ou avisos vinculados para enviar.');
     let media:any=null;
     if(b.midia){const mime=String(b.midia.mime||'').toLowerCase().split(';')[0];if(!['image/jpeg','image/png','image/webp','video/mp4'].includes(mime))throw Error('Use imagem JPG, PNG ou WebP, ou vídeo MP4.');const bytes=base64Bytes(String(b.midia.base64||''));if(!bytes.length||bytes.length>MAX_MEDIA)throw Error('A mídia deve ter até 8 MB.');media={bytes,mime,nome:String(b.midia.nome||'midia').replace(/[\\/\r\n]/g,'_').slice(0,150)};}

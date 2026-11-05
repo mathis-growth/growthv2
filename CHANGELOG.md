@@ -1,3 +1,11 @@
+## v0.263 — Layout de conversas e segmentos de disparo (05/11/2026)
+
+- Permite recolher a sidebar de Conversas e distribui melhor a tela em resoluções menores.
+- Atualiza a lista e o histórico incrementalmente para reduzir piscadas durante a sincronização.
+- Dispara para múltiplos grupos e contatos Evolution, com filtro de comunidades, distinção de avisos e mínimo de membros.
+- Salva seleções como segmentos reutilizáveis.
+- Banco: `20270117100000_atendimento_disparos_segmentos.sql`.
+
 ## v0.262 — Histórico no passo Canais, menos repetição e subject dos grupos pendentes (04/11/2026)
 - **Passo Canais:** embaixo das metas, a porcentagem de investimento, leads e vendas de cada canal na última campanha e a média das campanhas escolhidas.
 - **Planejamento:** saiu a parte que repetia o funil e os números por dia. Editar as etapas fica na aba Etapas da estratégia.
