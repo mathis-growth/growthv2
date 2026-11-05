@@ -1,12 +1,19 @@
-## v0.262 — Buscar e salvar o subject dos grupos pendentes (04/11/2026)
+## v0.262 — Histórico no passo Canais, menos repetição e subject dos grupos pendentes (04/11/2026)
+- **Passo Canais:** embaixo das metas, a porcentagem de investimento, leads e vendas de cada canal na última campanha e a média das campanhas escolhidas.
+- **Planejamento:** saiu a parte que repetia o funil e os números por dia. Editar as etapas fica na aba Etapas da estratégia.
 - A atualização consulta `atd_conversas` diretamente por nomes terminados em `@g.us` antes de paginar.
 - Para cada linha pendente, chama `findGroupInfos` com o `externo_id` como `groupJid` e salva o `subject` em `nome`.
 - A paginação avança pelo JID do último item consultado; a tela informa os JIDs consultados e quantos nomes foram recuperados.
+- Banco: `20270116100000_v0262_canais_historico.sql`. Testes: banco `v0262_canais_historico.sql` (OK); tela `t262` (0 falhas).
 - Edge única atualizada: `docs/edge-atendimento-v0214-index-unico.ts`. Sem migration adicional.
 
-## v0.261 — Imagem e membros dos grupos no Atendimento (04/11/2026)
+## v0.261 — Bruto de anúncios e imagem e membros dos grupos no Atendimento (04/11/2026)
+- **Tabelas brutas:** `meta_ads_bruto`, `google_ads_bruto` e `youtube_ads_bruto`, uma linha por anúncio e dia, com tudo o que a API devolve. Campanhas de vídeo do Google vão para a do YouTube.
+- **Campos:** a sincronização pede mais campos. Se a plataforma recusar, volta aos de sempre e registra o aviso.
+- **Sem mudança nos números:** `ads_externo_dia` e o tratamento atual continuam iguais.
 - A Edge salva a foto do grupo no armazenamento privado e persiste o total de membros retornado pela Evolution.
 - A imagem e o total ficam visíveis na lista e no cabeçalho do Chat, além dos grupos de Disparos.
+- Banco: `20270115100000_v0261_ads_bruto.sql`. Testes: banco `v0261_ads_bruto.sql` (OK); `tests/edge/ads_bruto_test.mjs` (OK). Falta testar com uma conta conectada.
 - Banco: `20270111100000_atendimento_grupos_imagem_membros.sql`. Edge única: `docs/edge-atendimento-v0213-index-unico.ts`.
 
 ## v0.260 — Dashboard único da campanha (04/11/2026)
