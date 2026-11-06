@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Growths</title>
-<link rel="stylesheet" href="assets/atendimento.css?v=0213">
+<link rel="stylesheet" href="assets/atendimento.css?v=0214">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1388,7 +1388,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
     <div class="foot">
       <button class="btn sm temaBtn" id="temaBtn" type="button"></button>
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.268 · 05/11/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.269 · 06/11/2026</span>
     </div>
   </aside>
   <div class="mainw"><div class="topou" id="topoU"><div class="ola" id="olaTxt"></div><div class="tou-m"><button type="button" class="tou-av" id="fotoBtn" aria-haspopup="true" aria-expanded="false" aria-controls="fotoMenu" aria-label="Sua conta"></button>
@@ -12953,7 +12953,7 @@ const PAC_SEMPRE = ['cad-equipe', 'cad-funcoes', 'cockpit'];
 /* v0.108: telas que saíram do menu (aposentadas ou que viraram aba de outra) */
 const TELAS_FORA_DO_MENU = ['gro-lucro', 'gro-analise', 'gro-cenarios', 'ho-cohort', 'ho-ascensao'];
 const PAC_SEM_BANCO = '<div class="panel" style="border-left:4px solid var(--warn)"><b>Os pacotes de acesso ainda não estão no banco.</b> <span class="muted">Execute supabase/migrations/20261010230000_pacotes_acesso.sql no SQL Editor do Supabase (depois da migração de segurança) e recarregue.</span></div>';
-const telaLiberada = k => ehCasaV(k) || !S.acesso || S.acesso.has(k) || (k === 'ho-retencao' && (S.acesso.has('ho-cohort') || S.acesso.has('ho-ascensao'))) || (k === 'ho-cg' && S.acesso.has('crm-alunos')) || (k === 'mkt-estrategias' && (S.acesso.has('mkt-camp') || S.acesso.has('cad-funis'))) || (k === 'gro-cenarios' && S.acesso.has('gro-modelo')) || PAC_SEMPRE.includes(k) || TELAS_INT.includes(k);
+const telaLiberada = k => ehCasaV(k) || !S.acesso || S.acesso.has(k) || (k === 'atd-contatos' && (S.acesso.has('atd-conversas') || S.acesso.has('atd-transmissao'))) || (k === 'ho-retencao' && (S.acesso.has('ho-cohort') || S.acesso.has('ho-ascensao'))) || (k === 'ho-cg' && S.acesso.has('crm-alunos')) || (k === 'mkt-estrategias' && (S.acesso.has('mkt-camp') || S.acesso.has('cad-funis'))) || (k === 'gro-cenarios' && S.acesso.has('gro-modelo')) || PAC_SEMPRE.includes(k) || TELAS_INT.includes(k);
 async function carregaAcesso() {
   S.acesso = null; S.acessoInfo = null;
   try { const a = await q(sb.rpc('acesso_workspace', { p_ws: S.ws })); S.acessoInfo = a || null; S.acesso = a && Array.isArray(a.telas) ? new Set(a.telas) : null; }
@@ -24346,7 +24346,7 @@ function modalSubtemas(t, D) {
 }
 
 </script>
-<script src="assets/atendimento.js?v=0216"></script>
+<script src="assets/atendimento.js?v=0217"></script>
 <script>
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
 if (PQ_TOKEN) vPesquisaPublica(PQ_TOKEN);

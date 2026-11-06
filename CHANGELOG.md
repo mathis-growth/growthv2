@@ -1,3 +1,10 @@
+## v0.269 — Contatos para Atendimento e Transmissão (06/11/2026)
+
+- Adiciona em Atendimento uma base de contatos compartilhada com Leads e Clientes, com busca, filtros, importação CSV e gestão de tags em lote.
+- Contatos importados podem ser classificados como leads ou compradores; duplicados por e-mail ou telefone são ignorados.
+- A Transmissão passa a filtrar e segmentar contatos pelas tags cadastradas.
+- Sem migration ou Edge: reutiliza `pessoas.tags` e a base existente; o acesso segue a permissão de Atendimento.
+
 ## v0.268 — Transmissão segmentada de templates (05/11/2026)
 
 - Adiciona em Atendimento a aba Transmissão para segmentar leads e clientes, selecionar templates aprovados de uma conta WhatsApp oficial e enviar em sequência.
