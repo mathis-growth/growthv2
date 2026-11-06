@@ -1,3 +1,8 @@
+## v0.270 — Rolagem interna em Conversas (06/11/2026)
+
+- Mantém a tela de Conversas dentro da altura útil do viewport, descontando o cabeçalho global.
+- A rolagem da lista lateral e do histórico acontece em seus próprios painéis, sem deslocar a página inteira.
+
 ## v0.269 — Contatos para Atendimento e Transmissão (06/11/2026)
 
 - Adiciona em Atendimento uma base de contatos compartilhada com Leads e Clientes, com busca, filtros, importação CSV e gestão de tags em lote.

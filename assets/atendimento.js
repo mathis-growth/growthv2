@@ -61,6 +61,7 @@
   async function vAtendimento(m) {
     stop(); const token=++A.token;
     m.classList.add('atd-conversas-page');
+    document.querySelector('.shell')?.classList.add('atd-shell-fixed');
     if(A.ws!==S.ws) { A.sel=null; A.lista=[]; A.drafts.clear(); A.page=0; A.canal=''; }
     A.ws=S.ws; const ws=A.ws;
     m.innerHTML='<div class="head"><div><h1>Atendimento</h1><span class="muted">Uma conversa, todo o contexto do cliente.</span></div><button class="btn" id="atdCanais">Canais e conexões</button></div><div id="atdRoot" class="panel">Carregando conversas…</div>';
