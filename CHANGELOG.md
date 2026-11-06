@@ -1,3 +1,8 @@
+## v0.268 — Transmissão segmentada de templates (05/11/2026)
+
+- Adiciona em Atendimento a aba Transmissão para segmentar leads e clientes, selecionar templates aprovados de uma conta WhatsApp oficial e enviar em sequência.
+- Variáveis de template podem ser vinculadas a campos do contato, inclusive campos personalizados; cada mensagem fica registrada na conversa vinculada ao Lead/Aluno.
+
 ## v0.267 — Barra compacta para Conversas (05/11/2026)
 
 - Busca e filtros de conversas ficam numa barra horizontal acima da lista; o painel do chat ganha altura útil.
