@@ -1,3 +1,6 @@
+## v0.263
+- **Passo preenchido:** 1 nome, produto e início; 2 alguma oferta; 3 datas das fases ou do carrinho; 4 referência escolhida; 5 orçamento e meta de leads; 6 algum canal; 7 vendedor ou link de checkout; 8 pesquisa ou mensagem de cadastro; 9 algum link gerado.
+
 ## v0.262
 - **Histórico por canal:** porcentagem de cada canal no total da campanha: investimento, leads e vendas aprovadas. A venda conta para o canal pelo qual a pessoa entrou na campanha. Usa as campanhas do passo Histórico e referências; sem nenhuma finalizada, os últimos lançamentos do workspace, com aviso.
 - **Média:** média simples das porcentagens de cada campanha.

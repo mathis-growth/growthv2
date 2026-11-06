@@ -15,7 +15,7 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.262 · 04/11/2026 (`index.html` + `assets/atendimento.*`) |
+| **Versão da tela** | 0.263 · 06/11/2026 (`index.html` + `assets/atendimento.*`) |
 | **Atendimento (0.175)** | Código preparado; falta aplicar `supabase/migrations/20261030021541_central_atendimento.sql`, publicar a função `atendimento`, configurar canais e liberar as telas nos pacotes. [Guia](docs/atendimento.md). |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | conferido em 31/10/2026: tem tudo até a **v0.189**, inclusive as narrativas (v0.157, 39 modelos), o Growth's Content simplificado (v0.159), os subtemas (v0.160), o Customer Growth (v0.163), o Atendimento e o Diagnóstico 360° (v0.177) |
 | **Falta aplicar no banco** | `supabase/RODAR_v0.197_pesquisa_modelos.sql` (modelos de pesquisa fora da lista) e `supabase/RODAR_v0.198_plano_anual.sql` (meta do ano, com impostos e custos variáveis da v0.199) `supabase/RODAR_v0.205_go_to_market.sql` (pacote Go-to-Market e custos de marketing) `supabase/RODAR_v0.206_historico_vendas.sql` (histórico de vendas) `supabase/RODAR_v0.208_vendas_periodo.sql` (dashboard de vendas) e `supabase/RODAR_v0.209_financeiro_simplificado.sql` (Financeiro simplificado) |
@@ -32,6 +32,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.263 | 06/11/2026 | **Editar continua de onde parou**: passos preenchidos marcados e clicáveis, sem perder o que foi digitado. | — |
 | 0.262 | 04/11/2026 | **Histórico no passo Canais**: porcentagem de cada canal na última campanha e na média; Planejamento sem repetição. | `20270116100000_v0262_canais_historico.sql` |
 | 0.261 | 04/11/2026 | **Bruto de anúncios**: tabelas de Meta, Google Ads e YouTube Ads com tudo o que a API devolve. | `20270115100000_v0261_ads_bruto.sql` |
 | 0.260 | 04/11/2026 | **Dashboard único da campanha**: lançamento sem abas, filtros que mudam os gráficos, comparação com outra campanha e meta por canal. | — |

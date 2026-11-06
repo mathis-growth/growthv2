@@ -365,6 +365,7 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .wz .wzp{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px}.wz .wzp .wn{font-weight:inherit}
 .wz .wzp div{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--muted);font-weight:600}
 .wz .wzp div i{height:5px;border-radius:9px;background:var(--line)}
+.wz .wzp div.vai{cursor:pointer}.wz .wzp div.vai:hover span{color:var(--accent)}.wz .wz-resumo{display:block;margin-top:8px}
 .wz .wzp div.ok{color:var(--good)} .wz .wzp div.ok i{background:var(--good);box-shadow:0 0 10px rgba(47,245,143,.45)}
 .wz .wzp div.at{color:var(--ink)} .wz .wzp div.at i{background:var(--grad);box-shadow:0 0 12px var(--brilho)}
 .wz .wzb{padding:20px 24px;display:flex;flex-direction:column;gap:14px}
@@ -1383,7 +1384,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
     <div class="foot">
       <button class="btn sm temaBtn" id="temaBtn" type="button"></button>
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.262 · 04/11/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.263 · 06/11/2026</span>
     </div>
   </aside>
   <div class="mainw"><div class="topou" id="topoU"><div class="ola" id="olaTxt"></div><div class="tou-m"><button type="button" class="tou-av" id="fotoBtn" aria-haspopup="true" aria-expanded="false" aria-controls="fotoMenu" aria-label="Sua conta"></button>
@@ -2633,7 +2634,7 @@ async function tcVisao(el, c, r, x4) {
   else if (etapas.length) { const h0 = hoje(), fim0 = c.data_fim && c.data_fim < h0 ? diaMais(c.data_fim, 60) : h0; serie = await q(sb.rpc('campanha_etapas_dia', { p_campanha: id, p_ini: c.data_inicio, p_fim: fim0 < h0 ? fim0 : h0 })).catch(ign); }
   const NM = { meta_ads: 'Meta Ads', google_ads: 'Google Ads', tiktok_ads: 'TikTok Ads', youtube_ads: 'YouTube Ads', organico: 'Orgânico', email: 'E-mail', whatsapp: 'WhatsApp', instagram: 'Instagram', comercial: 'Comercial' };
   const H = { hoje: hoje(), dia: s => new Date(s).toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' }), canalNome: k => k ? (NM[k] || String(k)) : '', taxaPadrao: plat[0] ? (Number(plat[0].taxa_percentual) || 0) / 100 : 0,
-    editar: p_ => abrirWizard(id, p_ || 1),
+    editar: p_ => abrirWizard(id, p_ || null),
     produto: x4 && x4.p ? x4.p.nome : null, urlLink: u_ => esc(montaUrlOrganica(u_, id)),
     estrategia: x4 && x4.funis ? (x4.funis.find(f_ => f_.id === c.funil_id) || {}).nome : null,
     salvaValor: async (e_, d_, v_) => { if (v_ == null) await q(sb.from('campanha_etapa_valores').delete().eq('campanha_etapa_id', e_).eq('data', d_)); else { if (!(v_ >= 0)) throw new Error('Use um número positivo.'); await q(sb.from('campanha_etapa_valores').upsert({ workspace_id: c.workspace_id, campanha_etapa_id: e_, data: d_, valor: v_, origem: 'manual', atualizado_em: new Date().toISOString() }, { onConflict: 'campanha_etapa_id,data' })); } toast('Salvo'); },
@@ -15136,7 +15137,7 @@ const comLink = (url, cod, camp) => { if (!url) return ''; const s = url.include
 function comPrev(C, rows, itens, tx, metaT) { const r = {}, tot = itens.reduce((a, x) => a + Number(x.meta_vendas || 0), 0), den = Math.max(Number(metaT) || 0, tot) || 1;
   CEN_TIPOS.forEach(([t]) => { const s = C[t], fat = cenTotal(s, rows, C, t) || 0, taxa = fat * tx.taxa, imposto = fat * tx.imp, liq = fat - taxa - imposto, comissao = itens.reduce((a, x) => a + Number(x.comissao_pct || 0) / 100 * (Number(x.meta_vendas || 0) / den) * (x.base === 'bruto' ? fat : liq), 0), inv = Number(s.I || 0); r[t] = { fat, taxa, imposto, comissao, sobra: liq - comissao, inv, resultado: liq - comissao - inv }; }); return r; }
 const WZ_ETAPAS = [[1, 'O básico'], [2, 'Oferta'], [3, 'Datas das etapas'], [4, 'Histórico e referências'], [5, 'Orçamento e cenários'], [6, 'Canais'], [7, 'Comercial'], [8, 'Pesquisa'], [9, 'Links e tracks']];
-async function abrirWizard(id = null, passo = 1) {
+async function abrirWizard(id = null, passo = null) {
   const w = S.ws, root = $('#modalRoot');
   const [prods, funis, cad, canaisTx] = await Promise.all([
     q(sb.from('produtos').select('id,nome,preco').eq('workspace_id', w).order('nome')),
@@ -15146,11 +15147,16 @@ async function abrirWizard(id = null, passo = 1) {
   const tmOk = await temColuna('campanhas', 'tipo_midia'), pjAuto = await temColuna('campanhas', 'projeto_auto'), pctVOk = await temColuna('campanha_canais', 'percentual_meta_vendas'), ofMetaOk = await temColuna('campanha_ofertas', 'meta_vendas');
   let c = id ? (await q(sb.from('campanhas').select('*').eq('id', id)))[0] : null;
   let canais = id ? await q(sb.from('campanha_canais').select('*').eq('campanha_id', id)) : [];
+  const feito = new Set(); let sujo = false;
+  if (c) { const ex_ = c.extras || {}, fs_ = c.fases || {}, [nOf, nVd, nLk] = await Promise.all([q(sb.from('campanha_ofertas').select('id').eq('campanha_id', c.id)).catch(() => []), q(sb.from('campanha_vendedores').select('id').eq('campanha_id', c.id)).catch(() => []), q(sb.from('campanha_links_organicos').select('id').eq('campanha_id', c.id)).catch(() => [])]);
+    [[1, !!(c.nome && c.produto_id && c.data_inicio)], [2, nOf.length > 0], [3, !!(c.data_carrinho_abre || Object.keys(fs_).length)], [4, !!ex_.referencia_planejamento], [5, !!(c.orcamento_total && (c.meta_leads || c.meta_leads_mes))], [6, canais.length > 0], [7, nVd.length > 0 || !!ex_.checkout_url], [8, !!(ex_.pesquisa || ex_.pesquisa_id || ex_.mensagem_cadastro)], [9, nLk.length > 0]].forEach(([n_, ok_]) => { if (ok_) feito.add(n_); }); }
+  if (passo == null) passo = c ? ((WZ_ETAPAS.find(([n_]) => !feito.has(n_)) || [1])[0]) : 1;
   const fecha = () => { root.innerHTML = ''; document.removeEventListener('keydown', tecla); };
+  const sair = () => { if (sujo && !confirm('Você mudou este passo e ainda não salvou. Sair mesmo assim? Use Terminar depois para salvar e sair.')) return; fecha(); };
   const abreCampanha = () => { fecha(); S.view = 'mkt-camp'; S.tabMkt = 'campanhas'; S.campSel = c.id; S.campTab = 'visao'; render(); };
-  const tecla = e => { if (e.key === 'Escape') fecha(); };
+  const tecla = e => { if (e.key === 'Escape') sair(); };
   document.addEventListener('keydown', tecla);
-  const opt = (l, v, cur) => l.map(([k, t]) => `<option value="${esc(k)}"${String(cur ?? '') === String(k) ? ' selected' : ''}>${esc(t)}</option>`).join('');
+  const opt = (l, cur) => l.map(([k, t]) => `<option value="${esc(k)}"${String(cur ?? '') === String(k) ? ' selected' : ''}>${esc(t)}</option>`).join(''); // valor salvo vem marcado
   const dias = () => { if (!c || !c.data_inicio) return 30; if (c.modelo === 'perpetuo' || !c.data_fim) return 30; return Math.max(1, Math.round((new Date(c.data_fim) - new Date(c.data_inicio)) / 864e5) + 1); };
   const pago = cod => String(cod).endsWith('_ads');
   const metaL = () => Number((c.modelo === 'perpetuo' ? c.meta_leads_mes : c.meta_leads) || 0), metaV = () => { const cn = (c.extras || {}).cenarios || {}; return Number((c.modelo === 'perpetuo' ? cn.meta_total ?? (cn.base || {}).V : c.meta_vendas) || 0); };
@@ -15175,7 +15181,8 @@ async function abrirWizard(id = null, passo = 1) {
     else { const [pl, im] = await Promise.all([q(sb.from('plataformas_venda').select('taxa_percentual').eq('workspace_id', w).limit(1)).catch(() => []), q(sb.from('impostos_config').select('aliquota_percentual').eq('workspace_id', w).eq('ativo', true)).catch(() => [])]); tx = { taxa: Number((pl[0] || {}).taxa_percentual || 0) / 100, imp: im.reduce((a, x) => a + Number(x.aliquota_percentual || 0), 0) / 100, fonte: 'cadastro da plataforma e dos impostos' }; }
     wzV = { itens: ja.concat(ja.length ? [] : cand).map(novo_), outros: (r.outros || []).concat(ja.length ? cand : []).map(novo_), checkout: (c.extras || {}).checkout_url || '', tx }; };
   const tela = () => {
-    const passos = WZ_ETAPAS.map(([n, t]) => `<div data-wn="${n}" class="${n < passo ? 'ok' : n === passo ? 'at' : ''}"><i></i><span><b class="wn">${n}</b>. ${t}${n < passo ? ' ✓' : ''}</span></div>`).join('');
+    sujo = false;
+    const okN = n => c ? feito.has(n) : n < passo, passos = WZ_ETAPAS.map(([n, t]) => `<div data-wn="${n}" class="${n === passo ? 'at' : okN(n) ? 'ok' : ''}${c ? ' vai' : ''}"${c ? ` role="button" tabindex="0" title="${okN(n) ? 'Ver ou mudar' : 'Preencher'} ${t}"` : ''}><i></i><span><b class="wn">${n}</b>. ${t}${okN(n) ? ' ✓' : ''}</span></div>`).join('');
     let corpo = '';
     if (passo === 1) {
       const mo = c ? c.modelo : 'lancamento';
@@ -15221,17 +15228,19 @@ async function abrirWizard(id = null, passo = 1) {
     if (passo === 9) corpo = `<p class="lead">Gere os links que vão ligar leads e vendas a esta campanha: bio, posts, mensagens e páginas. Os links de cada vendedor ficam no passo Comercial.</p><div class="filters" style="margin:8px 0"><label>Nome do link<input id="wzLkNome" maxlength="160" placeholder="Ex.: Bio do Instagram"></label><label style="flex:1 1 320px">Endereço de destino<input id="wzLkUrl" type="url" placeholder="https://…"></label><button type="button" class="btn" id="wzLkAdd">＋ Gerar link</button></div><div id="wzLinks"></div>`;
     if (passo === 8) { if (!wzCpq) { corpo = '<p class="lead">Carregando as pesquisas…</p>'; cpqDados().then(d => { wzCpq = d; tela(); }).catch(e => toast(e.message || String(e), true)); }
       else corpo = '<p class="lead">Se a campanha vai ter pesquisa, escolha qual e onde ela entra. Dá para mudar depois, em Editar campanha.</p>' + cpqCampos(cpqCfg(c), wzCpq.pesqs, wzCpq.etapas) + txMarkup(c?.extras?.mensagem_cadastro, canaisTx, 'cadastro'); }
-    root.innerHTML = `<div class="ov"><div class="modal wz${passo === 4 || passo === 6 || passo === 7 ? ' wzl' : ''}" role="dialog" aria-label="Nova campanha"><div class="wzh"><h2>${c && passo > 1 ? esc(c.nome) : 'Nova campanha'}</h2><div class="wzp">${passos}</div></div>
+    root.innerHTML = `<div class="ov"><div class="modal wz${passo === 4 || passo === 6 || passo === 7 ? ' wzl' : ''}" role="dialog" aria-label="Nova campanha"><div class="wzh"><h2>${c && passo > 1 ? esc(c.nome) : 'Nova campanha'}</h2><div class="wzp">${passos}</div>${c ? `<small class="muted wz-resumo">${feito.size} de ${WZ_ETAPAS.length} passos preenchidos. Clique em qualquer passo para ver o que já está lá ou mudar.</small>` : ''}</div>
       <form><div class="wzb">${corpo}</div><div class="wzf">${passo > 1 ? '<button type="button" class="btn" data-w="volta">Voltar</button>' : '<button type="button" class="btn" data-w="x">Cancelar</button>'}<span class="sp"></span>
       ${c ? '<span class="salvo">✓ Rascunho salvo</span>' : ''}${c ? '<button type="button" class="btn" data-w="depois">Terminar depois</button>' : ''}<button type="submit" class="btn pri">${passo < 9 ? 'Salvar e continuar' : 'Concluir e abrir a campanha'}</button></div></form></div></div>`;
     const f = root.querySelector('form');
-    root.querySelector('.ov').onmousedown = e => { if (e.target.classList.contains('ov')) fecha(); };
+    root.querySelector('.ov').onmousedown = e => { if (e.target.classList.contains('ov')) sair(); };
+    f.addEventListener('input', () => { sujo = true; }); f.addEventListener('change', () => { sujo = true; });
+    if (c) root.querySelectorAll('[data-wn]').forEach(el => { const vai = () => { const n_ = +el.dataset.wn; if (n_ === passo) return; if (sujo && !confirm('Você mudou este passo e ainda não salvou. Ir para outro passo sem salvar?')) return; passo = n_; tela(); }; el.onclick = vai; el.onkeydown = ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); vai(); } }; });
     root.querySelectorAll('[data-w]').forEach(b => b.onclick = () => act(async () => {
-      const a = b.dataset.w; if (a === 'x') return fecha();
+      const a = b.dataset.w; if (a === 'x') return sair();
       if (a === 'volta') { passo--; return tela(); }
-      if (a === 'depois') { await salvar(f); abreCampanha(); }
+      if (a === 'depois') { await salvar(f); sujo = false; abreCampanha(); }
     }));
-    f.onsubmit = e => { e.preventDefault(); act(async () => { const btn = f.querySelector('.pri'); btn.disabled = true; try { await salvar(f); } finally { btn.disabled = false; } if (passo < 9) { passo++; tela(); } else abreCampanha(); }); };
+    f.onsubmit = e => { e.preventDefault(); act(async () => { const btn = f.querySelector('.pri'); btn.disabled = true; try { await salvar(f); } finally { btn.disabled = false; } feito.add(passo); sujo = false; if (passo < 9) { passo++; tela(); } else abreCampanha(); }); };
     if (passo === 7 && wzV) { const url_ = x => comLink(wzV.checkout, x.codigo, c.id);
       // só os números recalculam ao digitar: a tabela não se redesenha, e o clique seguinte não se perde
       const res = () => { const mt = metaV(), tot = wzV.itens.reduce((a, x) => a + Number(x.meta_vendas || 0), 0), Cz = cenInicial(c, prods, wzO.rows), P_ = comPrev(Cz, wzO.rows, wzV.itens, wzV.tx, mt), t_ = $('#comTot');
