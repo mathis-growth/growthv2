@@ -5,15 +5,63 @@
 - Sem mudança no banco. Testes: tela `t263` (0 falhas).
 
 ## v0.262 — Histórico no passo Canais e menos repetição (04/11/2026)
+
+## v0.270 — Rolagem interna em Conversas (06/11/2026)
+
+- Mantém a tela de Conversas dentro da altura útil do viewport, descontando o cabeçalho global.
+- A rolagem da lista lateral e do histórico acontece em seus próprios painéis, sem deslocar a página inteira.
+
+## v0.269 — Contatos para Atendimento e Transmissão (06/11/2026)
+
+- Adiciona em Atendimento uma base de contatos compartilhada com Leads e Clientes, com busca, filtros, importação CSV e gestão de tags em lote.
+- Contatos importados podem ser classificados como leads ou compradores; duplicados por e-mail ou telefone são ignorados.
+- A Transmissão passa a filtrar e segmentar contatos pelas tags cadastradas.
+- Sem migration ou Edge: reutiliza `pessoas.tags` e a base existente; o acesso segue a permissão de Atendimento.
+
+## v0.268 — Transmissão segmentada de templates (05/11/2026)
+
+- Adiciona em Atendimento a aba Transmissão para segmentar leads e clientes, selecionar templates aprovados de uma conta WhatsApp oficial e enviar em sequência.
+- Variáveis de template podem ser vinculadas a campos do contato, inclusive campos personalizados; cada mensagem fica registrada na conversa vinculada ao Lead/Aluno.
+
+## v0.267 — Barra compacta para Conversas (05/11/2026)
+
+- Busca e filtros de conversas ficam numa barra horizontal acima da lista; o painel do chat ganha altura útil.
+- Compacta o cabeçalho da tela e evita botões de retorno duplicados durante renderizações concorrentes.
+
+## v0.265 — Editar mensagem de disparo pendente (05/11/2026)
+
+- Permite alterar o texto de campanhas agendadas ou em andamento somente para destinatários ainda na fila. O envio já em processamento e os já concluídos mantêm a mensagem original.
+- Banco: `20270118100000_atendimento_disparos_edicao.sql`.
+
+## v0.264 — Remover assinatura do atendente nos disparos (05/11/2026)
+
+- As mensagens de campanhas para grupos e contatos deixam de incluir o nome do atendente no texto enviado. A autoria permanece registrada no histórico interno.
+
+## v0.263 — Layout de conversas e segmentos de disparo (05/11/2026)
+
+- Permite recolher a sidebar de Conversas e distribui melhor a tela em resoluções menores.
+- Atualiza a lista e o histórico incrementalmente para reduzir piscadas durante a sincronização.
+- Dispara para múltiplos grupos e contatos Evolution, com filtro de comunidades, distinção de avisos e mínimo de membros.
+- Salva seleções como segmentos reutilizáveis.
+- Banco: `20270117100000_atendimento_disparos_segmentos.sql`.
+
+## v0.262 — Histórico no passo Canais, menos repetição e subject dos grupos pendentes (04/11/2026)
 - **Passo Canais:** embaixo das metas, a porcentagem de investimento, leads e vendas de cada canal na última campanha e a média das campanhas escolhidas.
 - **Planejamento:** saiu a parte que repetia o funil e os números por dia. Editar as etapas fica na aba Etapas da estratégia.
+- A atualização consulta `atd_conversas` diretamente por nomes terminados em `@g.us` antes de paginar.
+- Para cada linha pendente, chama `findGroupInfos` com o `externo_id` como `groupJid` e salva o `subject` em `nome`.
+- A paginação avança pelo JID do último item consultado; a tela informa os JIDs consultados e quantos nomes foram recuperados.
 - Banco: `20270116100000_v0262_canais_historico.sql`. Testes: banco `v0262_canais_historico.sql` (OK); tela `t262` (0 falhas).
+- Edge única atualizada: `docs/edge-atendimento-v0214-index-unico.ts`. Sem migration adicional.
 
-## v0.261 — Bruto de Meta, Google Ads e YouTube Ads (04/11/2026)
+## v0.261 — Bruto de anúncios e imagem e membros dos grupos no Atendimento (04/11/2026)
 - **Tabelas brutas:** `meta_ads_bruto`, `google_ads_bruto` e `youtube_ads_bruto`, uma linha por anúncio e dia, com tudo o que a API devolve. Campanhas de vídeo do Google vão para a do YouTube.
 - **Campos:** a sincronização pede mais campos. Se a plataforma recusar, volta aos de sempre e registra o aviso.
 - **Sem mudança nos números:** `ads_externo_dia` e o tratamento atual continuam iguais.
+- A Edge salva a foto do grupo no armazenamento privado e persiste o total de membros retornado pela Evolution.
+- A imagem e o total ficam visíveis na lista e no cabeçalho do Chat, além dos grupos de Disparos.
 - Banco: `20270115100000_v0261_ads_bruto.sql`. Testes: banco `v0261_ads_bruto.sql` (OK); `tests/edge/ads_bruto_test.mjs` (OK). Falta testar com uma conta conectada.
+- Banco: `20270111100000_atendimento_grupos_imagem_membros.sql`. Edge única: `docs/edge-atendimento-v0213-index-unico.ts`.
 
 ## v0.260 — Dashboard único da campanha (04/11/2026)
 - **Lançamento sem abas:** Planejamento mostra tudo o que foi planejado, dividido em abas. Dashboard mostra realizado contra planejado. Mídia paga, Leads e Funil de leads ficam na Captação; Vídeos no Aquecimento, e VSL na Captação; Vendas no Carrinho; Fechamento no Pós-venda. Perpétuo continua com as abas.
@@ -61,11 +109,6 @@
 - **Vendedor:** o `sck` do link liga a venda ao vendedor e à campanha (v0.254).
 - **Nada se perde:** produto sem ligação, venda em outra moeda ou comprador sem contato ficam a revisar. Documento, endereço e dados de pagamento do comprador não são guardados.
 - Banco: `20270110100000_v0255_webhook_hotmart.sql`. Testes: banco `v0255_webhook_hotmart.sql` (OK); tela `t255` (0 falhas). Falta testar com um envio real da Hotmart.
-
-## v0.259 — Imagem e membros dos grupos no Atendimento (04/11/2026)
-- A Edge salva a foto do grupo no armazenamento privado e persiste o total de membros retornado pela Evolution.
-- A imagem e o total ficam visíveis na lista e no cabeçalho do Chat, além dos grupos de Disparos.
-- Banco: `20270111100000_atendimento_grupos_imagem_membros.sql`. Edge única: `docs/edge-atendimento-v0213-index-unico.ts`.
 
 ## v0.254 — Comercial da campanha (04/11/2026)
 - **Assistente:** novo passo 7, Comercial; Pesquisa vira o passo 8. Traz os vendedores cadastrados nas ofertas e nos produtos da campanha, e dá para adicionar outros ou cadastrar na hora.

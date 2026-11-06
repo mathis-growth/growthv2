@@ -591,9 +591,9 @@ async function processarDisparosGrupos(){
         channel(job.canal_id,job.workspace_id)
       ]);
       if(!['agendado','em_andamento'].includes(campaign.status))throw Error('Campanha pausada ou cancelada; os envios aguardam revisão.');
-      if(!cv.grupo||cv.canal_id!==ch.id||ch.provedor!=='evolution'||ch.canal!=='whatsapp')throw Error('O grupo não corresponde a uma instância Evolution deste workspace.');
+      if(cv.canal_id!==ch.id||ch.provedor!=='evolution'||ch.canal!=='whatsapp')throw Error('O destinatário não corresponde a uma instância Evolution deste workspace.');
       if(!ch.ativo||ch.status!=='conectado')throw Error('Este chip está desconectado; campanha pausada para segurança.');
-      const signed=campaign.autor_nome?(campaign.texto?'*'+campaign.autor_nome.replace(/[\r\n*_`~]/g,'').trim()+':* '+campaign.texto:'*'+campaign.autor_nome.replace(/[\r\n*_`~]/g,'').trim()+':*'):String(campaign.texto||'');
+      const signed=String(job.texto??'');
       const pending=await q(db.from('atd_mensagens').upsert({workspace_id:job.workspace_id,conversa_id:cv.id,requisicao_id:job.id,direcao:'enviada',texto:signed,autor_id:campaign.autor_id,autor_nome:campaign.autor_nome,status:'enviando',anexos:campaign.midia_path?[{path:campaign.midia_path,nome:campaign.midia_nome,mime:campaign.midia_mime}]:[]},{onConflict:'workspace_id,requisicao_id',ignoreDuplicates:true}).select().single());
       messageId=pending?.id||null;if(!messageId)throw Error('O envio já existe; confira o histórico da conversa.');
       const attachment=campaign.midia_path?{url:(await q(db.storage.from('atendimento').createSignedUrl(campaign.midia_path,300))).signedUrl,nome:campaign.midia_nome,mime:campaign.midia_mime}:undefined;
@@ -644,7 +644,7 @@ async function handle(req: Request, b: any) {
   const { data: { user }, error } = await userDb.auth.getUser();
   if (error || !user) return json({ erro: 'Faça login novamente.' },401);
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
-  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo','disparos-grupos-list','grupos-busca-status'];
+  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo','disparos-grupos-list','disparos-segmentos-list','grupos-busca-status'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
   const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete','templates-mapping-save','canal-salvar','qr-share-create'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
@@ -665,10 +665,35 @@ async function handle(req: Request, b: any) {
   }
   if (b.action === 'contexto') return json(ctx);
   if(b.action==='disparos-grupos-list'){
-    const rows=await q(db.from('atd_disparos_grupos').select('id,nome,status,iniciar_em,intervalo_segundos,total,criado_em').eq('workspace_id',ws).order('criado_em',{ascending:false}).limit(50));
+    const rows=await q(db.from('atd_disparos_grupos').select('id,nome,texto,status,iniciar_em,intervalo_segundos,total,criado_em').eq('workspace_id',ws).order('criado_em',{ascending:false}).limit(50));
     const items=rows.length?await q(db.from('atd_disparos_grupos_itens').select('campanha_id,status,erro').eq('workspace_id',ws).in('campanha_id',rows.map((x:any)=>x.id))):[];
-    for(const row of rows){const own=items.filter((i:any)=>i.campanha_id===row.id);row.enviados=own.filter((i:any)=>i.status==='enviado').length;row.falhas=own.filter((i:any)=>['erro','incerto'].includes(i.status)).length;row.erro=own.find((i:any)=>i.erro)?.erro||null;}
+    for(const row of rows){const own=items.filter((i:any)=>i.campanha_id===row.id);row.enviados=own.filter((i:any)=>i.status==='enviado').length;row.falhas=own.filter((i:any)=>['erro','incerto'].includes(i.status)).length;row.pendentes=own.filter((i:any)=>i.status==='agendado').length;row.erro=own.find((i:any)=>i.erro)?.erro||null;}
     return json({campanhas:rows});
+  }
+  if(b.action==='disparos-grupos-edit'){
+    if(!ctx.editar)throw Error('Sem permissão para editar disparos.');
+    const id=String(b.campanha_id||''),texto=String(b.texto??'');
+    if(!/^[0-9a-f-]{36}$/i.test(id)||texto.length>4000)throw Error('Campanha ou mensagem inválida.');
+    const atualizados=await q(db.rpc('atd_grupo_disparo_editar_mensagem',{p_workspace:ws,p_campanha:id,p_texto:texto}));
+    return json({ok:true,atualizados:Number(atualizados)||0});
+  }
+  if(b.action==='disparos-segmentos-list'){
+    const segmentos=await q(db.from('atd_disparos_segmentos').select('id,nome,conversas,criado_em').eq('workspace_id',ws).order('nome'));
+    return json({segmentos});
+  }
+  if(b.action==='disparos-segmento-save'){
+    if(!ctx.editar)throw Error('Sem permissão para salvar segmentos.');
+    const nome=String(b.nome||'').trim().slice(0,100),ids=Array.isArray(b.conversas)?[...new Set(b.conversas.map(String))]:[];
+    if(!nome||!ids.length||ids.length>500||ids.some((id:string)=>!/^[0-9a-f-]{36}$/i.test(id)))throw Error('Informe um nome e selecione de 1 a 500 destinatários.');
+    const recipients=await q(db.from('atd_conversas').select('id,canal_id,grupo,grupo_tipo').eq('workspace_id',ws).in('id',ids));
+    if(recipients.length!==ids.length||recipients.some((x:any)=>x.grupo_tipo==='comunidade'))throw Error('O segmento contém destinatários indisponíveis ou uma comunidade.');
+    const channelIds=[...new Set(recipients.map((x:any)=>x.canal_id))],sourceChannels=await q(db.from('atd_canais').select('id,provedor,canal').eq('workspace_id',ws).in('id',channelIds));
+    if(sourceChannels.length!==channelIds.length||sourceChannels.some((x:any)=>x.provedor!=='evolution'||x.canal!=='whatsapp'))throw Error('Os segmentos aceitam apenas conversas WhatsApp da Evolution.');
+    const segmento=await q(db.from('atd_disparos_segmentos').insert({workspace_id:ws,nome,conversas:ids,criado_por:user.id}).select('id,nome,conversas,criado_em').single());return json({segmento});
+  }
+  if(b.action==='disparos-segmento-delete'){
+    if(!ctx.editar)throw Error('Sem permissão para remover segmentos.');const id=String(b.id||'');if(!/^[0-9a-f-]{36}$/i.test(id))throw Error('Segmento inválido.');
+    const rows=await q(db.from('atd_disparos_segmentos').delete().eq('workspace_id',ws).eq('id',id).select('id'));if(!rows.length)throw Error('Segmento não encontrado.');return json({ok:true});
   }
   if(b.action==='disparos-grupos-create'){
     if(!ctx.editar)throw Error('Sem permissão para criar disparos.');if(!ctx.nome)throw Error('Cadastre seu nome na equipe antes de agendar.');
@@ -679,15 +704,15 @@ async function handle(req: Request, b: any) {
     const channels=await q(db.from('atd_canais').select('*').eq('workspace_id',ws).eq('provedor','evolution').eq('canal','whatsapp').eq('ativo',true).in('id',canalIds));
     if(channels.length!==canalIds.length||channels.some((c:any)=>c.status!=='conectado'))throw Error('Selecione apenas chips Evolution conectados deste workspace.');
     const groupIds=[...new Set(grupos.map((g:any)=>String(g.conversa_id||'')))];if(groupIds.length!==grupos.length)throw Error('Há grupos duplicados na seleção.');
-    const groupRows=await q(db.from('atd_conversas').select('id,canal_id,grupo,grupo_tipo').eq('workspace_id',ws).eq('grupo',true).in('id',groupIds));
-    if(groupRows.length!==groupIds.length||groupRows.some((g:any)=>!canalIds.includes(g.canal_id)||String(grupos.find((x:any)=>x.conversa_id===g.id)?.canal_id)!==g.canal_id))throw Error('Um ou mais grupos não correspondem aos chips selecionados.');
+    const groupRows=await q(db.from('atd_conversas').select('id,canal_id,grupo,grupo_tipo').eq('workspace_id',ws).in('id',groupIds));
+    if(groupRows.length!==groupIds.length||groupRows.some((g:any)=>!canalIds.includes(g.canal_id)||String(grupos.find((x:any)=>x.conversa_id===g.id)?.canal_id)!==g.canal_id))throw Error('Um ou mais destinatários não correspondem aos chips selecionados.');
     if(groupRows.some((g:any)=>g.grupo_tipo==='comunidade'))throw Error('A comunidade é um contêiner. Selecione os grupos ou avisos vinculados para enviar.');
     let media:any=null;
     if(b.midia){const mime=String(b.midia.mime||'').toLowerCase().split(';')[0];if(!['image/jpeg','image/png','image/webp','video/mp4'].includes(mime))throw Error('Use imagem JPG, PNG ou WebP, ou vídeo MP4.');const bytes=base64Bytes(String(b.midia.base64||''));if(!bytes.length||bytes.length>MAX_MEDIA)throw Error('A mídia deve ter até 8 MB.');media={bytes,mime,nome:String(b.midia.nome||'midia').replace(/[\\/\r\n]/g,'_').slice(0,150)};}
     const campaign=await q(db.from('atd_disparos_grupos').insert({workspace_id:ws,nome,texto,iniciar_em:iniciar.toISOString(),intervalo_segundos:intervalo,status:'agendado',total:groupRows.length,autor_id:user.id,autor_nome:ctx.nome}).select('id').single());
     try{
     if(media){const ext=media.mime==='video/mp4'?'mp4':media.mime==='image/png'?'png':media.mime==='image/webp'?'webp':'jpg',path=ws+'/disparos-grupos/'+campaign.id+'/midia.'+ext;await q(db.storage.from('atendimento').upload(path,media.bytes,{contentType:media.mime,upsert:true}));await q(db.from('atd_disparos_grupos').update({midia_path:path,midia_nome:media.nome,midia_mime:media.mime}).eq('id',campaign.id).eq('workspace_id',ws));}
-    const items=groupRows.map((g:any,index:number)=>({workspace_id:ws,campanha_id:campaign.id,conversa_id:g.id,canal_id:g.canal_id,posicao:index,enviar_em:new Date(iniciar.getTime()+index*intervalo*1000).toISOString(),status:'agendado'}));
+    const items=groupRows.map((g:any,index:number)=>({workspace_id:ws,campanha_id:campaign.id,conversa_id:g.id,canal_id:g.canal_id,texto,posicao:index,enviar_em:new Date(iniciar.getTime()+index*intervalo*1000).toISOString(),status:'agendado'}));
     await q(db.from('atd_disparos_grupos_itens').insert(items));
     }catch(e){await q(db.from('atd_disparos_grupos').delete().eq('id',campaign.id).eq('workspace_id',ws));throw e;}
     return json({ok:true,id:campaign.id,total:groupRows.length});
@@ -1454,13 +1479,13 @@ async function refreshAvatar(ch:any,cv:any,cfg:any,url=''):Promise<boolean>{
     .eq('id',cv.id).eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id));
   return true;
 }
-async function resolveGroupName(ch:any,cv:any,original:any,cfg:any):
+async function resolveGroupName(ch:any,cv:any,original:any,cfg:any,forceLookup=false):
   Promise<{named:boolean,detailsOk:boolean,failure?:string,meta:any,members:number|null}>{
   const jid=String(cv.externo_id||'');
   if(!isJid(jid)||!jid.endsWith('@g.us'))return {named:false,detailsOk:false,meta:original||{},members:null};
   let meta=original||{},name=groupName(meta),detailsOk=Boolean(name);
   let failure:string|undefined;
-  if(!name||!cv.avatar_path||cv.grupo_membros==null){
+  if(forceLookup||!name||!cv.avatar_path||cv.grupo_membros==null){
     try{
       // Corrigido v0.190: a rota é GET e groupJid pertence à query, não ao corpo POST.
       const params=new URLSearchParams({groupJid:jid});
@@ -1568,21 +1593,33 @@ async function syncConversations(ch:any,cursor?:string,mode='all'){
     }
     // A recuperação deve funcionar mesmo que fetchAllGroups falhe: usar grupos
     // do banco, sem depender de um novo evento do WhatsApp.
-    const groups=await q(db.from('atd_conversas')
+    let groupQuery=db.from('atd_conversas')
       .select('id,externo_id,nome,avatar_path,avatar_atualizado_em,grupo_membros')
-      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',true)
-      .order('externo_id',{ascending:true}).limit(mode==='grupos_sem_nome'?2500:150));
+      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',true);
+    // Para recuperar nomes, primeiro restringe no banco às linhas cujo nome
+    // ainda é um JID. Só depois aplica o cursor; assim nomes válidos à frente
+    // na tabela não escondem grupos pendentes.
+    const cursorJid=mode==='grupos_sem_nome'&&String(cursor||'').startsWith('g:')
+      ?decodeURIComponent(String(cursor).slice(2)):'';
+    if(mode==='grupos_sem_nome'){
+      groupQuery=groupQuery.like('nome','%@g.us');
+      if(cursorJid)groupQuery=groupQuery.gt('externo_id',cursorJid);
+    }
+    const groups=await q(groupQuery.order('externo_id',{ascending:true})
+      .limit(mode==='grupos_sem_nome'?2500:150));
     const needsMetadata=(g:any)=>groupNameMissing(g)||!g.avatar_path||g.grupo_membros==null;
     const initialMissing=groups.filter(groupNameMissing).length;
     const offset=/^g:(\d+)$/.test(String(cursor||''))?Number(String(cursor).split(':')[1]):0;
-    const start=Math.min(Number.isFinite(offset)?offset:0,Math.max(0,groups.length-1));
-    const page=groups.slice(start,start+8);
-    const subset=mode==='grupos_sem_nome'?page.filter(needsMetadata):page;
+    const start=mode==='grupos_sem_nome'?0:Math.min(Number.isFinite(offset)?offset:0,Math.max(0,groups.length-1));
+    const page=mode==='grupos_sem_nome'?groups.slice(0,8):groups.slice(start,start+8);
+    const subset=mode==='grupos_sem_nome'?page.filter((g:any)=>groupNameMissing(g)&&isJid(String(g.nome||''))&&String(g.nome).endsWith('@g.us')):page;
     let named=0,photos=0,details=0;
     for(let i=0;i<subset.length;i+=4){
-      const resolver=enrichGroup;
+      const resolver=mode==='grupos_sem_nome'?resolveGroupName:enrichGroup;
       const results=await Promise.allSettled(subset.slice(i,i+4).map((g:any)=>
-        resolver(ch,g,byJid.get(g.externo_id)||{},cfg)));
+        mode==='grupos_sem_nome'
+          ? resolveGroupName(ch,g,byJid.get(g.externo_id)||{},cfg,true)
+          : resolver(ch,g,byJid.get(g.externo_id)||{},cfg)));
       for(const result of results){
         if(result.status!=='fulfilled'){warnings.push('Detalhes do grupo: falha de consulta');continue;}
         if(result.value.named)named++;
@@ -1592,25 +1629,32 @@ async function syncConversations(ch:any,cursor?:string,mode='all'){
       }
     }
     // Buscar fotos também dos contatos recentes, independentemente dos grupos.
-    const contacts=await q(db.from('atd_conversas')
-      .select('id,externo_id,avatar_atualizado_em')
-      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',false)
-      .order('ultima_em',{ascending:false,nullsFirst:false}).limit(4));
-    const cp=await Promise.allSettled(contacts.filter((cv:any)=>isJid(cv.externo_id))
-      .map((cv:any)=>refreshAvatar(ch,cv,cfg)));
-    photos+=cp.filter(x=>x.status==='fulfilled'&&x.value===true).length;
-    const current=await q(db.from('atd_conversas').select('id,externo_id,nome,avatar_path,grupo_membros')
-      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',true).limit(mode==='grupos_sem_nome'?2500:150));
+    if(mode!=='grupos_sem_nome'){
+      const contacts=await q(db.from('atd_conversas')
+        .select('id,externo_id,avatar_atualizado_em')
+        .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',false)
+        .order('ultima_em',{ascending:false,nullsFirst:false}).limit(4));
+      const cp=await Promise.allSettled(contacts.filter((cv:any)=>isJid(cv.externo_id))
+        .map((cv:any)=>refreshAvatar(ch,cv,cfg)));
+      photos+=cp.filter(x=>x.status==='fulfilled'&&x.value===true).length;
+    }
+    let remainingQuery=db.from('atd_conversas').select('id,externo_id,nome,avatar_path,grupo_membros')
+      .eq('workspace_id',ch.workspace_id).eq('canal_id',ch.id).eq('grupo',true);
+    if(mode==='grupos_sem_nome')remainingQuery=remainingQuery.like('nome','%@g.us');
+    const current=await q(remainingQuery.limit(mode==='grupos_sem_nome'?2500:150));
     const remaining=current.filter(groupNameMissing).length;
     const remainingMetadata=current.filter(needsMetadata).length;
-    const next=start+page.length<groups.length?'g:'+(start+page.length):null;
+    const next=mode==='grupos_sem_nome'
+      ?groups.length>page.length&&page.length?'g:'+encodeURIComponent(String(page[page.length-1].externo_id)):null
+      :start+page.length<groups.length?'g:'+(start+page.length):null;
     if(!chatRows.length&&!groupRows.length&&!groups.length)
       warnings.push('Nenhuma conversa/grupo disponível; verifique a conexão Evolution.');
     return {
       total:byJid.size,cursor:next,grupos_no_banco:groups.length,
-      nomes_atualizados:Math.max(0,initialMissing-remaining),
+      nomes_atualizados:mode==='grupos_sem_nome'?named:Math.max(0,initialMissing-remaining),
       detalhes_confirmados:details,fotos_salvas:photos,
-      grupos_sem_nome:remaining,grupos_sem_metadados:remainingMetadata,grupos_consultados:subset.length,
+      grupos_sem_nome:remaining,grupos_sem_metadados:remainingMetadata,
+      grupos_consultados:subset.length,grupos_consultados_sem_nome:subset.length,
       avisos:[...new Set(warnings)].slice(0,4)
     };
   }
