@@ -1,3 +1,8 @@
+## v0.272
+- **Gerar conteúdo:** usa a estrutura escolhida (etapas e orientação), o nível de consciência, o título, a descrição, o formato, o tema, o produto e a ficha aprovada do cliente. Não inventa dado nem fala: marca [preencher]. O texto volta para a tela; gravar depende de salvar. Cada geração fica em `ia_uso`.
+- **Roteiro aprovado:** mudar o texto pela tela do conteúdo tira a aprovação, como na Produção.
+- **Lista de estruturas:** primeiro as do formato do conteúdo; as escolhidas pelo cliente aparecem com ★.
+
 ## v0.271
 - **Passo preenchido:** 1 nome, produto e início; 2 alguma oferta; 3 datas das fases ou do carrinho; 4 referência escolhida; 5 orçamento e meta de leads; 6 algum canal; 7 vendedor ou link de checkout; 8 pesquisa ou mensagem de cadastro; 9 algum link gerado.
 

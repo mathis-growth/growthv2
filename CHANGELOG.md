@@ -1,3 +1,9 @@
+## v0.272 — Conteúdo em destaque e geração pela estrutura de copy (06/11/2026)
+- **Tela do conteúdo:** título, descrição e ângulo e o conteúdo inteiro no centro. Os outros campos ficam num painel ao lado, que passa para a esquerda ou a direita, fecha e reabre. A escolha fica guardada no navegador.
+- **Gerar conteúdo:** escolher a estrutura de copy e o nível de consciência e gerar pela Claude. O texto só é gravado ao salvar. Também na Produção, no roteiro.
+- **Biblioteca:** entram as 5 estruturas de Reel e as 8 de carrossel das skills da Rebecka, com as etapas e o erro comum de cada uma.
+- Banco: `20270119100000_v0272_estruturas_e_roteiro.sql`. Função `content-roteiro`. Testes: tela `t272` (0 falhas).
+
 ## v0.271 — Editar campanha continua de onde parou (06/11/2026)
 - **Assistente:** ao editar, abre no primeiro passo que falta e marca os passos já preenchidos. Clicar em qualquer passo abre o que já está lá, sem passar pelos outros.
 - **Correção:** o passo 1 abria com Modelo, Produto, Estratégia e Tipo de mídia sem o valor salvo. Ao salvar sem perceber, a estratégia era apagada e o modelo voltava a lançamento.

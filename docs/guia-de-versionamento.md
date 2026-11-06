@@ -1,3 +1,9 @@
+## v0.272
+- Migração `20270119100000_v0272_estruturas_e_roteiro.sql`: colunas `conteudos.estrutura_id` e `conteudos.nivel_consciencia`; 13 estruturas na biblioteca (ordem 201 a 218).
+- Função nova: `supabase/functions/content-roteiro`.
+- index.html: `ctDocLayout`, `ctGeradorHtml`, `ctGeradorLiga` e `ctEstruturas`; o formulário do conteúdo e o roteiro da Produção usam o gerador. Rótulo da tela para 0.272.
+- Teste novo: tela `t272_conteudo_gerador.py`.
+
 ## v0.271
 - index.html: `abrirWizard` calcula os passos preenchidos (`feito`), abre no primeiro que falta, deixa os passos clicáveis e confirma antes de descartar mudanças (`sair`). Rótulo da tela para 0.271 (0.263 a 0.270 eram do Atendimento). Sem migração.
 

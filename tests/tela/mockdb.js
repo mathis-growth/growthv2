@@ -24,7 +24,7 @@ function from(t) {
     return { data: out, error: null };
   };
   const p = new Proxy(function () {}, { get(_, k) {
-    if (k === 'then') return (res, rej) => { try { res(run()); } catch (e) { rej(e); } };
+    if (k === 'then') return (res, rej) => { try { const v = run(); return Promise.resolve(res ? res(v) : v); } catch (e) { if (rej) return Promise.resolve(rej(e)); return Promise.reject(e); } };
     if (k === 'catch') return fn => Promise.resolve(run());
     return (...a) => { window.__calls.push([t, k, a[0]]);
       if (k === 'select') { if (st.op === 'select') st.sel = a[0]; }

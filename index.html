@@ -370,6 +370,18 @@ tr:hover .arvc{text-decoration-color:rgba(var(--accent-rgb),.65)!important}
 .wz .wzp{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px}.wz .wzp .wn{font-weight:inherit}
 .wz .wzp div{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--muted);font-weight:600}
 .wz .wzp div i{height:5px;border-radius:9px;background:var(--line)}
+.modal.ct-doc-m{max-width:min(1240px,96vw)!important;width:min(1240px,96vw)}
+.ctd{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start;position:relative}
+.ctd.esq{grid-template-columns:340px minmax(0,1fr)}.ctd.esq .ctd-side{order:-1}
+.ctd.fechado{grid-template-columns:minmax(0,1fr)}.ctd.fechado .ctd-side{display:none}
+.ctd-abre{display:none;position:absolute;top:-6px;right:0}.ctd.esq .ctd-abre{right:auto;left:0}.ctd.fechado .ctd-abre{display:inline-flex}.ctd.fechado.esq .ctd-main{padding-top:30px}
+.ctd-main{display:flex;flex-direction:column;gap:12px;min-width:0}.ctd-main textarea[name=roteiro]{min-height:46vh;font-size:15px;line-height:1.6}
+.ctd-rot{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--surface-2,transparent);display:flex;flex-direction:column;gap:8px}.ctd-rh{display:flex;gap:8px;align-items:center}
+.ct-ger{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}.ct-ger label{flex:1 1 200px;min-width:0}.ct-ger small{flex-basis:100%}
+.ctd-side{border:1px solid var(--line);border-radius:12px;padding:10px;max-height:72vh;overflow:auto;position:sticky;top:0;background:var(--surface)}
+.ctd-bar{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap}.ctd-bar span{display:flex;gap:6px}
+.ctd-side .grid2{grid-template-columns:1fr!important}.ctd .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:860px){.ctd,.ctd.esq{grid-template-columns:1fr}.ctd-side{position:static;max-height:none}}
 .wz .wzp div.vai{cursor:pointer}.wz .wzp div.vai:hover span{color:var(--accent)}.wz .wz-resumo{display:block;margin-top:8px}
 .wz .wzp div.ok{color:var(--good)} .wz .wzp div.ok i{background:var(--good);box-shadow:0 0 10px rgba(47,245,143,.45)}
 .wz .wzp div.at{color:var(--ink)} .wz .wzp div.at i{background:var(--grad);box-shadow:0 0 12px var(--brilho)}
@@ -1389,7 +1401,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
     <div class="foot">
       <button class="btn sm temaBtn" id="temaBtn" type="button"></button>
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.271 · 06/11/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.272 · 06/11/2026</span>
     </div>
   </aside>
   <div class="mainw"><div class="topou" id="topoU"><div class="ola" id="olaTxt"></div><div class="tou-m"><button type="button" class="tou-av" id="fotoBtn" aria-haspopup="true" aria-expanded="false" aria-controls="fotoMenu" aria-label="Sua conta"></button>
@@ -21613,11 +21625,14 @@ function modalConteudo(row, D, pre) {
       Object.assign(v, lerCampos([...NOTAS_I, ...NOTAS_P].map(k => ({ k, t: 'number' })), form));
       for (const k of [...NOTAS_I, ...NOTAS_P]) if (v[k] != null && (!Number.isInteger(v[k]) || v[k] < 1 || v[k] > 10)) throw new Error('As notas são números inteiros de 1 a 10.');
     }
+    if (form.elements.roteiro) { v.roteiro = form.elements.roteiro.value; if (row && row.roteiro_aprovado_em && (v.roteiro || '') !== (row.roteiro || '')) { v.roteiro_aprovado_em = null; v.roteiro_aprovado_por = null; }
+      v.estrutura_id = form.elements.estrutura_id.value || null; v.nivel_consciencia = form.elements.nivel_consciencia.value || null; }
     let id = row && row.id;
     if (id) await q(sb.from('conteudos').update(v).eq('id', id));
     else id = one(await q(sb.from('conteudos').insert({ ...v, workspace_id: S.ws }).select('id').single())).id;
     await sincPubs(id, v);
   }, 'Salvar', true);
+  ctDocLayout(f, r, D);
   const tot = () => { const n = MQ_SCORE.map(k => f.querySelector(`input[name=${k}]:checked`)).filter(Boolean).map(x => Number(x.value)); if ($('#mqTot')) $('#mqTot').textContent = n.length === 6 ? `${n.reduce((a, b) => a + b, 0)} / 30` : `${n.length} de 6 notas`; };
   if (sc) {
     f.querySelectorAll('.mq-1a5 input').forEach(x => x.onchange = tot); tot();
@@ -23076,6 +23091,56 @@ const EST_FMT = [['reels', 'Reels'], ['carrossel', 'Carrossel'], ['post', 'Post'
 const EST_FMT_N = Object.fromEntries(EST_FMT);
 
 /* ----- Configurações → Growth's Content (interno) → Estruturas de roteiro e copy ----- */
+/* v0.272: escolher a estrutura de copy e gerar o conteúdo em cima dela (função content-roteiro) */
+const CT_FMT_EST = { video: 'video', reels: 'reels', carrossel: 'carrossel', imagem: 'post', story: 'stories', artigo: 'email', newsletter: 'email', live: 'video' };
+const CT_NIVEIS = [['', 'Sem definir'], ['inconsciente', 'Inconsciente'], ['problema', 'Consciente do problema'], ['solucao', 'Consciente da solução'], ['produto', 'Consciente do produto'], ['total', 'Totalmente consciente']];
+let CT_EST_CACHE = null;
+async function ctEstruturas() { if (!CT_EST_CACHE || CT_EST_CACHE.ws !== S.ws) CT_EST_CACHE = { ws: S.ws, L: (await q(sb.rpc('content_estruturas_opcoes', { p_ws: S.ws })).catch(() => [])) || [] }; return CT_EST_CACHE.L; }
+const ctGeradorHtml = (px, estId, nivel) => `<div class="ct-ger"><label>Estrutura de copy<select id="${px}Est"><option value="">Carregando…</option></select></label><label>Nível de consciência<select id="${px}Niv">${CT_NIVEIS.map(([k, l]) => `<option value="${k}"${(nivel || '') === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label><button type="button" class="btn pri" id="${px}Ger">Gerar conteúdo</button><small class="muted" id="${px}Pq"></small></div>`;
+async function ctGeradorLiga(root, px, estId, formato, dados, area, aoGerar) {
+  const s = root.querySelector('#' + px + 'Est'), pq = root.querySelector('#' + px + 'Pq'); if (!s) return;
+  const L = await ctEstruturas(), fm = () => CT_FMT_EST[typeof formato === 'function' ? formato() : formato] || '';
+  const monta = () => { const f_ = fm(), cab = L.filter(x => !f_ || (x.formatos || []).includes(f_)), out = L.filter(x => f_ && !(x.formatos || []).includes(f_)), atual = s.value || estId || '';
+    const op = x => `<option value="${x.id}"${x.id === atual ? ' selected' : ''}>${esc(x.nome)}${(x.escolhidas || []).length ? ' ★' : ''}</option>`;
+    s.innerHTML = L.length ? `<option value="">Escolha a estrutura…</option>${cab.length ? `<optgroup label="Para este formato">${cab.map(op).join('')}</optgroup>` : ''}${out.length ? `<optgroup label="Outros formatos">${out.map(op).join('')}</optgroup>` : ''}` : '<option value="">Nenhuma estrutura cadastrada</option>';
+    const x = L.find(y => y.id === s.value); pq.textContent = x ? x.para_que || '' : ''; };
+  monta(); s.onchange = () => { const x = L.find(y => y.id === s.value); pq.textContent = x ? x.para_que || '' : ''; };
+  root.__ctMonta = monta;
+  root.querySelector('#' + px + 'Ger').onclick = () => act(async () => {
+    if (!s.value) throw new Error('Escolha a estrutura de copy.');
+    if (area.value.trim() && !confirm('Já existe um conteúdo escrito. Gerar um novo no lugar dele?')) return;
+    const b = root.querySelector('#' + px + 'Ger'); b.disabled = true; const t0 = b.textContent; b.textContent = 'Gerando…';
+    try { const { data, error } = await sb.functions.invoke('content-roteiro', { body: { workspace_id: S.ws, estrutura_id: s.value, nivel: root.querySelector('#' + px + 'Niv').value, ...dados() } });
+      if (error || !data || data.erro) throw new Error((data && data.erro) || (error && error.message) || 'A geração falhou.');
+      area.value = data.texto || ''; area.dispatchEvent(new Event('input', { bubbles: true })); if (aoGerar) aoGerar(s.value, root.querySelector('#' + px + 'Niv').value); toast('Conteúdo gerado. Revise e salve.'); }
+    finally { b.disabled = false; b.textContent = t0; } });
+}
+/* v0.272: tela do conteúdo com o texto em destaque e os outros campos num painel que muda de lado, fecha e reabre */
+const CT_PAINEL_K = 'growths_ct_painel';
+const ctPainelPref = () => { try { return JSON.parse(localStorage.getItem(CT_PAINEL_K) || '{}'); } catch (_) { return {}; } };
+const ctPainelSalva = p => { try { localStorage.setItem(CT_PAINEL_K, JSON.stringify(p)); } catch (_) {} };
+function ctDocLayout(f, r, D) {
+  const md = f.closest('.modal'); if (!md) return; md.classList.add('ct-doc-m'); md.style.maxWidth = '';
+  const grid = f.querySelector(':scope > .grid2'); if (!grid) return;
+  const P = { lado: 'direita', aberto: true, ...ctPainelPref() };
+  const box = document.createElement('div'); box.className = 'ctd';
+  box.innerHTML = `<div class="ctd-main"></div><aside class="ctd-side" aria-label="Detalhes do conteúdo"><div class="ctd-bar"><b>Detalhes</b><span><button type="button" class="btn sm" data-ctd="lado"></button><button type="button" class="btn sm" data-ctd="fecha" aria-label="Fechar o painel">Fechar</button></span></div><div class="ctd-campos"></div></aside><button type="button" class="btn sm ctd-abre" data-ctd="abre">Detalhes ›</button>`;
+  grid.before(box);
+  const main = box.querySelector('.ctd-main'), lbl = n => { const x = f.elements[n]; return x ? x.closest('label') : null; };
+  ['titulo', 'descricao'].forEach(n => { const l = lbl(n); if (l) main.appendChild(l); });
+  const dl = lbl('descricao'); if (dl) { const ta = dl.querySelector('textarea'); if (ta) ta.rows = 4; }
+  const ro = document.createElement('div'); ro.className = 'ctd-rot';
+  ro.innerHTML = `<div class="ctd-rh"><b>Conteúdo</b>${r.roteiro_aprovado_em ? '<span class="pill sem-p sem-p-fav">✓ aprovado</span>' : ''}</div>${ctGeradorHtml('ctd', r.estrutura_id, r.nivel_consciencia)}<label class="ctd-tx"><span class="sr">Conteúdo</span><textarea name="roteiro" rows="20" placeholder="Escreva aqui ou gere a partir de uma estrutura de copy.">${esc(r.roteiro || '')}</textarea></label>${r.roteiro_aprovado_em ? '<small class="muted">Mudar o texto tira a aprovação do roteiro.</small>' : ''}<input type="hidden" name="estrutura_id" value="${esc(r.estrutura_id || '')}"><input type="hidden" name="nivel_consciencia" value="${esc(r.nivel_consciencia || '')}">`;
+  main.appendChild(ro);
+  box.querySelector('.ctd-campos').appendChild(grid);
+  const aplica = () => { box.classList.toggle('esq', P.lado === 'esquerda'); box.classList.toggle('fechado', !P.aberto); box.querySelector('[data-ctd="lado"]').textContent = P.lado === 'esquerda' ? 'Passar para a direita' : 'Passar para a esquerda'; box.querySelector('[data-ctd="abre"]').textContent = P.lado === 'esquerda' ? '‹ Detalhes' : 'Detalhes ›'; ctPainelSalva(P); };
+  box.querySelectorAll('[data-ctd]').forEach(b => b.onclick = () => { const a = b.dataset.ctd; if (a === 'lado') P.lado = P.lado === 'esquerda' ? 'direita' : 'esquerda'; if (a === 'fecha') P.aberto = false; if (a === 'abre') P.aberto = true; aplica(); });
+  aplica();
+  const nome = (id, L) => ((L || []).find(x => x.id === id) || {}).nome || '';
+  ctGeradorLiga(f, 'ctd', r.estrutura_id, () => (f.elements.formato || {}).value || r.formato, () => ({ conteudo_id: r.id || null, conteudo: { titulo: (f.elements.titulo || {}).value || '', descricao: (f.elements.descricao || {}).value || '', formato: (FORM_N[(f.elements.formato || {}).value] || (f.elements.formato || {}).value || ''), tema: (D.T[(f.elements.tema_id || {}).value] || {}).nome || '', subtema: (D.T[(f.elements.subtema_id || {}).value] || {}).nome || '', produto: nome((f.elements.produto_id || {}).value, D.produtos) } }),
+    f.elements.roteiro, (est, niv) => { f.elements.estrutura_id.value = est; f.elements.nivel_consciencia.value = niv; });
+  if (f.elements.formato) f.elements.formato.addEventListener('change', () => { if (f.__ctMonta) f.__ctMonta(); });
+}
 async function vEstruturas(m) {
   const L = await q(sb.from('content_estruturas').select('*').order('ordem').order('nome'));
   m.innerHTML = `<div class="head"><div><h1>Estruturas de roteiro e copy</h1><span class="muted">Biblioteca interna da Mathisa. O cliente vê só o <b>nome</b> e o <b>para que serve</b> e escolhe quais usar em cada formato. As etapas e as instruções ficam só com a equipe e guiam a IA.</span></div>
@@ -24200,7 +24265,7 @@ async function ctPeca(el, D, C, c) {
     <div class="cols"><div class="panel"><h2>Roteiro ${roteiroOk ? '<span class="pill sem-p sem-p-fav">✓ aprovado</span>' : ''}</h2>
         ${roteiroOk ? `<p class="muted">Aprovado por ${esc(c.roteiro_aprovado_por || '')} em ${ctQuando(c.roteiro_aprovado_em)}. Mudar o texto tira a aprovação.</p>` : '<p class="muted">Aprove o roteiro antes de produzir a peça.</p>'}
         <textarea id="ctRot" rows="14"${pode && !pecaOk ? '' : ' disabled'}>${esc(c.roteiro || '')}</textarea>
-        ${pode && !pecaOk ? `<div class="acts"><button class="btn" id="ctRotSalva">Salvar</button>${roteiroOk ? '' : '<button class="btn pri" id="ctRotOk">Aprovar roteiro</button>'}</div>` : ''}${pecaOk ? '' : `<div class="acts">${CT_BTN_IA('Escrever o roteiro pela Claude')}</div>`}</div>
+        ${pode && !pecaOk ? `<div class="acts"><button class="btn" id="ctRotSalva">Salvar</button>${roteiroOk ? '' : '<button class="btn pri" id="ctRotOk">Aprovar roteiro</button>'}</div>` : ''}${pecaOk || !pode ? '' : ctGeradorHtml('ctp', c.estrutura_id, c.nivel_consciencia)}</div>
       <div class="panel"><h2>${video ? 'Vídeo' : 'Arte'} ${pecaOk ? '<span class="pill sem-p sem-p-fav">✓ aprovada</span>' : ''}</h2>
         ${!roteiroOk ? '<div class="empty">A peça é produzida depois que o roteiro for aprovado.</div>' : `
         ${video ? `<label>Vídeo bruto (link na pasta do cliente)<input id="ctBruto" value="${esc(c.video_bruto_url || '')}" placeholder="https://drive.google.com/…"${dis}></label><div class="acts">${ctLink(c.video_bruto_url)}${pode ? '<button class="btn sm" id="ctBrutoS">Salvar link</button>' : ''}</div>
@@ -24213,6 +24278,8 @@ async function ctPeca(el, D, C, c) {
       </div></div>`;
   el.querySelector('#ctVolta').onclick = () => { C.peca = null; render(); };
   el.querySelector('#ctEdit').onclick = () => modalConteudo(c, D);
+  if (el.querySelector('#ctpEst')) ctGeradorLiga(el, 'ctp', c.estrutura_id, c.formato, () => ({ conteudo_id: c.id, conteudo: { titulo: c.titulo, descricao: c.descricao || '', formato: FORM_N[c.formato] || c.formato || '', tema: (D.T[c.tema_id] || {}).nome || '', subtema: (D.T[c.subtema_id] || {}).nome || '', produto: ((D.produtos || []).find(p => p.id === c.produto_id) || {}).nome || '' } }),
+    el.querySelector('#ctRot'), (est, niv) => act(async () => { await q(sb.from('conteudos').update({ estrutura_id: est, nivel_consciencia: niv || null }).eq('id', c.id)); c.estrutura_id = est; c.nivel_consciencia = niv || null; }));
   if (!pode) return;
   const up = (o, msg) => act(async () => { await q(sb.from('conteudos').update(o).eq('id', c.id)); toast(msg); render(); });
   const rot = () => el.querySelector('#ctRot').value;
