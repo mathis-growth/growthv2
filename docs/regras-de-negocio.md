@@ -1,4 +1,4 @@
-## v0.263
+## v0.271
 - **Passo preenchido:** 1 nome, produto e início; 2 alguma oferta; 3 datas das fases ou do carrinho; 4 referência escolhida; 5 orçamento e meta de leads; 6 algum canal; 7 vendedor ou link de checkout; 8 pesquisa ou mensagem de cadastro; 9 algum link gerado.
 
 ## v0.262
