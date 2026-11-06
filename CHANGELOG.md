@@ -1,8 +1,8 @@
-## v0.263 — Editar campanha continua de onde parou (06/11/2026)
+## v0.271 — Editar campanha continua de onde parou (06/11/2026)
 - **Assistente:** ao editar, abre no primeiro passo que falta e marca os passos já preenchidos. Clicar em qualquer passo abre o que já está lá, sem passar pelos outros.
 - **Correção:** o passo 1 abria com Modelo, Produto, Estratégia e Tipo de mídia sem o valor salvo. Ao salvar sem perceber, a estratégia era apagada e o modelo voltava a lançamento.
 - **Sem perder o que foi digitado:** fechar, clicar fora ou trocar de passo com mudanças não salvas pede confirmação. Terminar depois salva e sai.
-- Sem mudança no banco. Testes: tela `t263` (0 falhas).
+- Sem mudança no banco. Testes: tela `t263_editar_continua` (0 falhas). Numerada 0.271 porque 0.263 a 0.270 já eram do Atendimento.
 
 ## v0.262 — Histórico no passo Canais e menos repetição (04/11/2026)
 

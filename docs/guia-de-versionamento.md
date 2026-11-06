@@ -1,5 +1,5 @@
-## v0.263
-- index.html: `abrirWizard` calcula os passos preenchidos (`feito`), abre no primeiro que falta, deixa os passos clicáveis e confirma antes de descartar mudanças (`sair`). Rótulo da tela para 0.263. Sem migração.
+## v0.271
+- index.html: `abrirWizard` calcula os passos preenchidos (`feito`), abre no primeiro que falta, deixa os passos clicáveis e confirma antes de descartar mudanças (`sair`). Rótulo da tela para 0.271 (0.263 a 0.270 eram do Atendimento). Sem migração.
 
 ## v0.262
 - Migração `20270116100000_v0262_canais_historico.sql`: função `campanhas_canais_historico`.
