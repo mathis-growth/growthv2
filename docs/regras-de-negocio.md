@@ -1,3 +1,15 @@
+## v0.273
+- **LTV de contribuição:** receita líquida menos o custo de entrega do produto, por cliente, mês a mês desde a 1ª compra. No mês k só entra quem já completou k+1 meses (censura). LTV = soma até a janela, dividindo cada mês por (1 + taxa ao mês)^k.
+- **Base:** clientes cuja 1ª compra foi nos últimos 24 meses (configurável). Produto de entrada = o da 1ª compra.
+- **Partes:** 1ª compra (pedido 1); renovação (produto recorrente que a pessoa já tinha comprado); ascensão (o resto); projeção (o que veio do planejado ou da renovação projetada).
+- **Pouco histórico:** peso do real = clientes no mês ÷ mínimo de clientes (padrão 30). O resto vem do LTV planejado do produto (1ª compra no mês 0, o resto espalhado nos outros meses) ou, em recorrente, do mesmo mês do ciclo anterior × taxa de renovação (observada em quem já viveu dois ciclos, misturada com a planejada).
+- **Janela:** 12 meses; assinatura anual 36 e semestral 24, salvo a do produto.
+- **Taxa:** Selic do dia (série 432 do Banco Central) convertida para mês; taxa própria se escolhida; 12% ao ano se ainda não houver Selic guardada.
+- **Teto:** CAC total máximo = LTV ÷ meta de LTV/CAC (padrão 1,8, que equivale a 20% de margem com 30% de segurança). CAC de mídia máximo = CAC total máximo − custo fixo de aquisição por cliente do período (equipe, ferramentas, comissões, outros). 0 a 0 = LTV/CAC 1. ROAS mínimo = ticket médio bruto da 1ª compra ÷ CAC de mídia.
+- **CAC atual:** mesma regra do cockpit (custos de aquisição ÷ clientes novos do período). Por produto: custo das campanhas do produto + parte do custo sem produto, pela proporção de clientes novos.
+- **Faixas do LTV/CAC:** < 1 prejuízo; 1 a 1,5 sem lucro; até a meta apertado; até 3 saudável; acima de 3 folga para escalar.
+- **Empresa:** média dos produtos pesada pelo número de clientes de cada um.
+
 ## v0.272
 - **Gerar conteúdo:** usa a estrutura escolhida (etapas e orientação), o nível de consciência, o título, a descrição, o formato, o tema, o produto e a ficha aprovada do cliente. Não inventa dado nem fala: marca [preencher]. O texto volta para a tela; gravar depende de salvar. Cada geração fica em `ia_uso`.
 - **Roteiro aprovado:** mudar o texto pela tela do conteúdo tira a aprovação, como na Produção.

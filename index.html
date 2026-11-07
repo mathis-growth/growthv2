@@ -1307,6 +1307,18 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
 <style id="v164">/* v0.164 — Cockpit: um painel por área, com números e um gráfico, clicável */
 :root{--ck-s1:#3b82f6;--ck-s2:#d97706;--ck-borda:rgba(148,163,184,.45)}
 :root[data-theme="light"]{--ck-s1:#1d4ed8;--ck-s2:#d97706;--ck-borda:#c3cfe2}
+.tc-quadro{background:var(--panel,var(--surface,#fff));border:2px solid var(--ck-borda);border-radius:14px;box-shadow:0 2px 4px rgba(15,23,42,.06),0 10px 24px rgba(15,23,42,.08);padding:14px 16px;margin:0 0 18px}
+.tc-quadro>.head{margin-bottom:10px}.tc-quadro h2{margin:0 0 2px;font-size:16px}
+.tc-ks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tc-k{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 3px rgba(15,23,42,.06);min-width:0}
+.tc-k .l{font-size:12px;color:var(--muted)}.tc-k .v{font-size:20px;font-weight:700;display:flex;gap:6px;align-items:center;flex-wrap:wrap}.tc-k .s{font-size:12px;color:var(--muted)}
+.tc-ks-m{margin-bottom:12px}
+.tc-link{background:none;border:0;padding:0;font:inherit;color:var(--accent);font-weight:inherit;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+.tc-link:hover,.tc-link:focus-visible{text-decoration-style:solid;outline:none}
+.tc-av{margin:10px 0 0;padding:8px 12px 8px 28px;border:1px solid var(--warn);border-radius:10px;background:var(--warn-soft);font-size:13px}
+.tc-nota{margin:10px 0 0;font-size:12.5px}.tc-t td,.tc-t th{white-space:nowrap}
+.tc-como{margin-top:10px;font-size:13px}.tc-como summary{cursor:pointer;color:var(--accent);font-weight:600}
+.modal .ck-g{margin-top:12px}
 .ck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:20px;align-items:stretch}
 .ck-card{cursor:pointer;display:flex;flex-direction:column;background:var(--panel,var(--surface,#fff));border:2px solid var(--ck-borda);border-radius:14px;box-shadow:0 2px 8px rgba(15,23,42,.06);overflow:hidden;transition:border-color .15s,box-shadow .15s,transform .15s}
 .ck-card:hover,.ck-card:focus-visible{border-color:var(--accent);box-shadow:0 8px 22px rgba(var(--accent-rgb),.16);transform:translateY(-1px);outline:none}
@@ -1401,7 +1413,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
     <div class="foot">
       <button class="btn sm temaBtn" id="temaBtn" type="button"></button>
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.272 · 06/11/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.273 · 06/11/2026</span>
     </div>
   </aside>
   <div class="mainw"><div class="topou" id="topoU"><div class="ola" id="olaTxt"></div><div class="tou-m"><button type="button" class="tou-av" id="fotoBtn" aria-haspopup="true" aria-expanded="false" aria-controls="fotoMenu" aria-label="Sua conta"></button>
@@ -2678,6 +2690,10 @@ async function tcVisao(el, c, r, x4) {
   H.est = S.ceEst[id]; H.guarda = o => { S.ceEst[id] = o; };
   H.legado = k => { const h = $('#ceLeg'); if (!h) return; h.innerHTML = ''; if (k && LEG[k]) Promise.resolve(LEG[k](h, c, r, x4)).catch(e => { h.innerHTML = `<div class="panel"><b>Não foi possível carregar esta parte.</b> <span class="muted">${esc(e.message || String(e))}</span></div>`; }); };
   el.innerHTML = '<div id="ceHost"></div><div id="ceLeg" style="display:flex;flex-direction:column;gap:16px;margin-top:12px"></div>';
+  // v0.273: teto de CAC do produto da campanha (o mesmo do cockpit)
+  H.teto = c.produto_id ? q(sb.rpc('cac_teto', { p_ws: c.workspace_id, p_ini: c.data_inicio || diaMais(hoje(), -89), p_fim: hoje(), p_hoje: hoje(), p_hist: 0 }))
+    .then(T_ => ({ T: T_, R: (T_.produtos || []).find(p_ => p_.produto_id === c.produto_id) || null }), () => null) : null;
+  H.tetoHtml = (t_, at_) => tcCampanhaHtml(t_, at_);
   window.CampEtapas($('#ceHost'), c, { canais, anuncios, ofertas, trafego, leads, vendas, grupo, comissoes, aulas, outras, etapas, blocos, serie, copia, fontes, campanhas: cmps, links, vendedores: (comer || {}).vendedores || [] }, H);
 }
 /*CE-INI*/
@@ -3223,6 +3239,7 @@ function vGeral() {
   const melhor = ads.slice().sort((p, q) => p.cpl - q.cpl)[0], pior = ads.slice().sort((p, q) => q.cpl - p.cpl)[0];
   const notas = melhor ? [`Anúncio com menor CPL: <b>${melhor.x.nome}</b>, ${fBrl2(melhor.cpl)}.`, `Anúncio com maior CPL: <b>${pior.x.nome}</b>, ${fBrl2(pior.cpl)}.`] : ['Ainda não há anúncios com custo e leads para comparar.'];
   if (T.vendas) { const r = ads.filter(x => x.vd).sort((p, q) => q.roas - p.roas)[0]; if (r) notas.push(`Anúncio com melhor ROAS: <b>${r.x.nome}</b>, ${fX(r.roas)}.`); const et = etapasAtivas().filter(e => vendasEt(e.k).length).sort((p, q) => totais(vendasEt(q.k)).fat - totais(vendasEt(p.k)).fat)[0]; if (et) notas.push(`Etapa que mais faturou: <b>${et.nome}</b>, ${fBrl(totais(vendasEt(et.k)).fat)}.`); }
+  S.tetoAt = { cac, roas };
   return `<div class="cab"><div><h2>Dashboard</h2><p class="muted peq">Realizado e planejado, todas as etapas somadas, até ${dm(S.hoje)}.</p></div></div>
   <div class="kpis">
     ${kpi('Faturamento', fBrl(T.fat), `${metaTx(fBrl, META.fatTotal)}${T.sai ? ` · ${fN(SF().filter(s => ate(s.dia)).length)} ${SF().filter(s => ate(s.dia)).length === 1 ? 'pessoa saiu' : 'pessoas saíram'} (−${fBrl(T.sai)})` : ''}`, T.fat ? luz(T.fat, META.fatTotal) : '', 'geral:fat', spk(dV.map(fatAte)))}
@@ -3238,6 +3255,7 @@ function vGeral() {
     ${kpi('CAC de mídia', cac ? fBrl2(cac) : '—', `investimento ÷ vendas · ${metaTx(fBrl2, META.cac)}`, cac ? luz(cac, META.cac, { menor: 1 }) : '', 'geral:canais')}
     ${kpi('Ticket médio', T.ticket ? fBrl(T.ticket) : '—', 'valor das vendas ÷ vendas', '', 'geral:fat')}
   </div></details>
+  ${H.teto ? '<section class="caixa" id="ceTeto"><h3>Teto de CAC do produto</h3><p class="muted peq">Calculando…</p></section>' : ''}
   
   ${grafico('Faturamento e investimento acumulados', 'quando a linha do faturamento passa a do investimento, o ROAS passa de 1x', ds.map(dm), [{ nome: 'Faturamento', cor: '--accent', vals: ds.map(d => d <= lim ? fatAte(d) : null) }, { nome: 'Investimento', cor: '--serie2', vals: ds.map(d => d <= lim ? acumInv[d] : null) }], fBrl)}
   ${grafico('Faturamento e receita líquida acumulados', 'até o dia, sem as vendas de quem saiu', ds.map(dm), [{ nome: 'Faturamento', cor: '--accent', vals: ds.map(d => d <= lim ? fatAte(d) : null) }, { nome: 'Receita líquida', cor: '--serie2', vals: ds.map(d => d <= lim ? liqAte(d) : null) }], fBrl)}
@@ -3507,6 +3525,7 @@ function render() {
   else h = { plan: vPlan, geral: vGeral, cap: vCap, aq: vAq, car: () => painelVendas('car', ['principal', 'bump', 'upsell']), rea: () => painelVendas('rea', ['principal', 'bump', 'upsell']), dow: () => painelVendas('dow', ['down']), pos: vPos, gm: vGm }[S.etapa]();
   const fx = $('#filtros'); if (fx) fx.innerHTML = S.etapa === 'gm' || S.etapa === 'plan' || (S.sub[S.etapa] && !D) ? '' : barraFiltros(); const sm = $('#sub'); if (sm) sm.innerHTML = subMenu(); $('#painel').innerHTML = h;
   if (S.etapa === 'gm' && !D) gmAtualiza(); else desenha();
+  if (S.etapa === 'geral' && !D && H.teto) H.teto.then(t => { const x = $('#ceTeto'); if (x) x.innerHTML = H.tetoHtml(t, S.tetoAt || {}); });
   const lg = !D && String(S.sub[S.etapa] || '').startsWith('leg:') ? S.sub[S.etapa].slice(4) : null; if (lg !== S.legAt) { S.legAt = lg; H.legado(lg); }
   H.guarda({ planAba: S.planAba, etapa: S.etapa, sub: S.sub, per: S.per, canal: S.canal, an: S.an, pub: S.pub, qual: S.qual, cmp: S.cmp });
 }
@@ -4971,7 +4990,9 @@ async function vCockpit(m) {
   m.innerHTML = `<div class="head"><div><h1>Cockpit</h1><span class="muted">Um resumo de cada área (${esc(Pd.rot)}). Clique num painel para ver tudo em detalhe.</span></div>
 </div>${perPadrao(D0)}
     ${abasHtml('ck', [{ k: 'areas', rot: 'Áreas' }, { k: 'metas', rot: 'Metas do período', n: ckMetasAlerta(MP), cor: 'warn', dica: 'Metas em atenção ou em risco' },
-      { k: 'riscos', rot: 'Riscos e oportunidades', n: RP ? (RP.abertos || []).filter(r => r.tipo !== 'oportunidade').length : 0, cor: 'bad', dica: 'Riscos em aberto' }], 'areas')}
+      { k: 'riscos', rot: 'Riscos e oportunidades', n: RP ? (RP.abertos || []).filter(r => r.tipo !== 'oportunidade').length : 0, cor: 'bad', dica: 'Riscos em aberto' },
+      ...(quer('geral') || quer('mkt') ? [{ k: 'teto', rot: 'Teto de CAC', dica: 'Quanto você pode pagar por cliente, pelo LTV' }] : [])], 'areas')}
+    ${quer('geral') || quer('mkt') ? '<div class="ck-aba-c" data-aba-de="ck" data-aba-p="teto"><div id="tcBox"><div class="panel empty">Calculando o teto de CAC…</div></div></div>' : ''}
     <div class="ck-aba-c" data-aba-de="ck" data-aba-p="metas">${ckMetasHtml(MP, D0) || '<div class="panel empty">As metas aparecem aqui quando houver meta no Planejamento anual.</div>'}</div>
     <div class="ck-aba-c" data-aba-de="ck" data-aba-p="riscos">${ckRiscosHtml(RP) || '<div class="panel empty">Os riscos aparecem aqui depois da primeira conferência.</div>'}</div>
     <div data-aba-de="ck" data-aba-p="areas">${AREAS.length ? `<div class="ck-grid">${AREAS.map(a => `<section class="ck-card ck-${a.k}" data-ckv="${a.tela}" role="link" tabindex="0" aria-label="Abrir ${esc(a.t)}">
@@ -4980,6 +5001,10 @@ async function vCockpit(m) {
     <div id="ckTip" class="ck-tip" role="tooltip" hidden></div>`;
   perLiga(m, D0, () => render());
   abasLiga(m, 'ck', 'areas'); // v0.222
+  if (quer('geral') || quer('mkt')) { // v0.273: teto de CAC carrega quando a aba abre
+    const tcVai = () => { if ((S.abas || {}).ck === 'teto') tcCarrega(m, Pd); };
+    tcVai(); const tb = m.querySelector('[data-abas="ck"] [data-aba-k="teto"]'); if (tb) tb.addEventListener('click', tcVai);
+  }
   ckMetasLiga(m, MP);
   ckRiscosLiga(m, RP);
   ckSaudeLiga(m, MP, RP); // v0.216
@@ -4993,6 +5018,157 @@ async function vCockpit(m) {
   const abre = el => { const v = el.dataset.ckv; if (v === 'ho-cg') { S.cg = S.cg || { aba: 'evolucao', produto: '', ini: diaMais(hoje(), -89), fim: hoje() }; S.cg.aba = 'indicadores'; }
     S.view = v; abreMenu(v); render(); };
   m.querySelectorAll('[data-ckv]').forEach(el => { el.onclick = () => abre(el); el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abre(el); } }; });
+}
+
+/* ================= v0.273 — Teto de CAC pelo LTV (cockpit, campanha e calculadora) =================
+   Os números vêm de cac_teto (banco): LTV de contribuição com censura e desconto pela Selic (ou taxa própria),
+   misturado com o LTV planejado do produto quando há pouco histórico; teto = LTV ÷ meta de LTV/CAC (padrão 1,8). */
+const TC_FONTE = { real: ['good', 'Real', 'Só dados do sistema, com clientes suficientes em todos os meses.'], misto: ['warn', 'Misto', 'Dados reais nos meses que já passaram; o resto vem do planejado ou da renovação histórica.'],
+  planejado: ['info', 'Planejado', 'Ainda sem clientes: vale o LTV planejado do produto.'], sem_dados: ['neutral', 'Sem dados', 'Sem clientes e sem LTV planejado.'] };
+const tcN = (v, c = 2) => v == null || !isFinite(Number(v)) ? '—' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: c, maximumFractionDigits: c });
+const tcX = v => v == null || !isFinite(Number(v)) ? '—' : tcN(v, 2) + 'x';
+const tcMeses = v => v == null ? '—' : Number(v) === 0 ? 'na 1ª compra' : 'em ' + v + (Number(v) === 1 ? ' mês' : ' meses');
+function tcFaixa(r, meta) {
+  if (r == null || !isFinite(Number(r))) return null; const x = Number(r), m = Number(meta || 1.8);
+  return x < 1 ? ['bad', 'Prejuízo'] : x < 1.5 ? ['warn', 'Sem lucro'] : x < m ? ['warn', 'Apertado'] : x < 3 ? ['good', 'Saudável'] : ['info', 'Folga para escalar'];
+}
+const tcPill = f => f ? `<span class="pill ${f[0]}">${f[1]}</span>` : '';
+const tcData = d => { if (!d) return '—'; const s = String(d).slice(0, 10).split('-'); return s[2] + '/' + s[1] + '/' + s[0]; };
+function tcTaxaTxt(tx) {
+  if (!tx) return '—'; const aa = tcN(tx.aa, 2) + '% ao ano', am = tcN(Number(tx.am) * 100, 2) + '% ao mês';
+  return tx.fonte === 'propria' ? 'Taxa de desconto própria: ' + aa + ' (' + am + ')' : tx.fonte === 'selic' ? 'Desconto pela Selic de ' + tcData(tx.dia) + ': ' + aa + ' (' + am + ')' : 'Selic ainda não buscada: desconto de 12% ao ano (' + am + ')';
+}
+const tcK = (l, v, s) => `<div class="tc-k"><span class="l">${l}</span><span class="v">${v}</span>${s ? `<span class="s">${s}</span>` : ''}</div>`;
+function tcAvisos(R) {
+  const a = [];
+  if (R.incompleto) a.push('Faltam dados de alguns meses e não há LTV planejado: o LTV pode estar abaixo do real. Preencha o LTV planejado do produto.');
+  if (R.teto && R.teto.inviavel) a.push('O custo fixo de aquisição por cliente já passa do CAC máximo: mesmo sem mídia, a meta de LTV/CAC não fecha.');
+  if (R.cac && !Number(R.cac.novos)) a.push('Sem clientes novos no período: não dá para calcular o CAC atual nem o custo fixo por cliente.');
+  return a.length ? `<ul class="tc-av">${a.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
+}
+function tcHtml(T, Pd) {
+  const G = T.geral || {}, C = G.cac || {}, X = G.teto || {}, cf = T.config || {}, P = T.produtos || [];
+  const f = TC_FONTE[G.fonte] || TC_FONTE.sem_dados, fx = tcFaixa(G.ltv_cac, G.meta);
+  const linha = R => { const c = R.cac || {}, t = R.teto || {}, fo = TC_FONTE[R.fonte] || TC_FONTE.sem_dados, k = R.produto_id || '-';
+    return `<tr><td>${esc(R.nome)}${R.meta_propria ? ` <span class="muted">· meta ${tcX(R.meta)}</span>` : ''}</td><td><span class="pill ${fo[0]}" title="${esc(fo[2])}">${fo[1]}</span>${R.incompleto ? ' <span class="pill warn" title="Há meses sem dado e sem plano">incompleto</span>' : ''}</td>
+      <td class="n">${num(R.clientes)}</td><td class="n"><button type="button" class="tc-link" data-tc-ltv="${esc(k)}" title="Ver o LTV mês a mês">${brl(R.ltv)}</button></td>
+      <td class="n">${tcX(R.ltv_cac)} ${tcPill(tcFaixa(R.ltv_cac, R.meta))}</td><td class="n">${brl(c.cac_total)}</td><td class="n"><b>${brl(t.cac_total_max)}</b></td>
+      <td class="n">${brl(c.cac_midia)}</td><td class="n"><b>${brl(t.cac_midia_max)}</b></td><td class="n">${brl(t.cac_midia_eq)}</td><td class="n">${tcX(c.roas)}</td><td class="n"><b>${tcX(t.roas_min)}</b></td><td class="n">${tcMeses(R.payback_meses)}</td></tr>`; };
+  return `<section class="tc-quadro">
+    <div class="head"><div><h2>Teto de CAC da empresa</h2><span class="muted">CAC atual: ${esc(Pd.rot)}. LTV: clientes que entraram nos últimos ${num(cf.base_meses)} meses, somando o lucro de ${num(cf.janela)} meses, trazido a valor presente. ${esc(tcTaxaTxt(T.taxa))}.</span></div>
+      <div class="acts"><button type="button" class="btn" data-tc-cfg>Configurar</button></div></div>
+    <div class="tc-ks">
+      ${tcK('LTV por cliente', `<button type="button" class="tc-link" data-tc-ltv="*" title="Ver o LTV mês a mês">${brl(G.ltv)}</button>`, `<span class="pill ${f[0]}" title="${esc(f[2])}">${f[1]}</span> ${num(G.clientes)} clientes`)}
+      ${tcK('LTV/CAC', tcX(G.ltv_cac) + ' ' + tcPill(fx), 'meta ' + tcX(G.meta))}
+      ${tcK('CAC total', brl(C.cac_total), 'máximo <b>' + brl(X.cac_total_max) + '</b> · equilíbrio ' + brl(X.cac_total_eq))}
+      ${tcK('CAC de mídia', brl(C.cac_midia), 'máximo <b>' + brl(X.cac_midia_max) + '</b> · equilíbrio ' + brl(X.cac_midia_eq))}
+      ${tcK('ROAS da 1ª compra', tcX(C.roas), 'mínimo <b>' + tcX(X.roas_min) + '</b> · equilíbrio ' + tcX(X.roas_eq))}
+      ${tcK('Payback do CAC', tcMeses(G.payback_meses), 'o lucro do cliente paga o CAC total')}
+    </div>
+    ${tcAvisos(G)}
+    <p class="muted tc-nota">Custo fixo de aquisição por cliente (equipe, ferramentas, comissões): <b>${brl(C.fixo_cliente)}</b>. Ele sai do CAC máximo para chegar ao de mídia. O ROAS mínimo usa o ticket médio da 1ª compra (${brl(X.ticket1)}), que é o que o gerenciador de anúncios enxerga.</p>
+  </section>
+  <section class="tc-quadro">
+    <div class="head"><div><h2>Por produto de entrada</h2><span class="muted">O LTV de cada produto é o de quem entrou por ele. Clique no LTV para ver como ele mudou mês a mês e ajustar a meta e o planejado do produto.</span></div></div>
+    ${P.length ? `<div class="tw"><table class="tc-t"><thead><tr><th>Produto</th><th>Fonte</th><th class="n">Clientes</th><th class="n">LTV</th><th class="n">LTV/CAC</th><th class="n">CAC total</th><th class="n">CAC total máx.</th><th class="n">CAC mídia</th><th class="n">CAC mídia máx.</th><th class="n">Mídia no 0 a 0</th><th class="n">ROAS</th><th class="n">ROAS mín.</th><th class="n">Payback</th></tr></thead>
+      <tbody>${P.map(linha).join('')}</tbody></table></div>` : '<div class="empty">Nenhum produto com clientes ou com LTV planejado ainda.</div>'}
+    <details class="tc-como"><summary>Como ler</summary><ul>
+      <li><b>LTV</b>: quanto cada cliente deixa de lucro (receita líquida menos o custo de entrega do produto) desde a 1ª compra até o fim da janela, considerando a chance de ele seguir comprando. Quem entrou há pouco só conta nos meses que já viveu.</li>
+      <li><b>Mídia no 0 a 0</b>: o CAC de mídia que deixa o cliente no empate (LTV/CAC = 1). Acima disso, cada cliente dá prejuízo.</li>
+      <li><b>CAC máximo</b>: LTV ÷ meta de LTV/CAC. A meta de 1,8 equivale a 20% de margem com 30% de margem de segurança.</li>
+      <li><b>Faixas do LTV/CAC</b>: abaixo de 1, prejuízo; de 1 a 1,5, sem lucro; até a meta, apertado; até 3, saudável; acima de 3, há folga para investir mais.</li>
+      <li><b>Fonte</b>: real (só dados), misto (dados + planejado ou renovação histórica), planejado (produto sem clientes).</li></ul></details>
+  </section>`;
+}
+function tcDicas(root) {
+  const tip = $('#ckTip'); if (!tip) return;
+  root.querySelectorAll('[data-dica]').forEach(el => {
+    el.addEventListener('mousemove', e => { tip.textContent = el.dataset.dica; tip.hidden = false; tip.style.zIndex = 10000;
+      tip.style.left = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 8) + 'px'; tip.style.top = Math.min(e.clientY + 14, window.innerHeight - tip.offsetHeight - 8) + 'px'; });
+    el.addEventListener('mouseleave', () => { tip.hidden = true; });
+  });
+}
+const tcLinha = (T, k) => k === '*' ? T.geral : (T.produtos || []).find(p => (p.produto_id || '-') === k);
+function tcAbre(T, k) {
+  const R = tcLinha(T, k); if (!R) return;
+  const H = (T.historico || []).map(h => ({ mes: h.mes, v: k === '*' ? (h.geral || {}).ltv : ((h.produtos || {})[k] || {}).ltv }));
+  const comV = H.filter(h => h.v != null), rots = H.map(h => CK_MES[Number(h.mes.slice(5, 7)) - 1] + '/' + h.mes.slice(2, 4));
+  const ini = comV[0], fim = comV[comV.length - 1], varPct = ini && fim && Number(ini.v) > 0 ? (Number(fim.v) / Number(ini.v) - 1) : null;
+  const ac = Array.isArray(R.acumulado) ? R.acumulado : [], cacT = (R.cac || {}).cac_total, pt = R.partes || {};
+  const fo = TC_FONTE[R.fonte] || TC_FONTE.sem_dados, ex = k !== '*' && k !== '-';
+  const body = `<div class="tc-ks tc-ks-m">${tcK('LTV hoje', brl(R.ltv), `<span class="pill ${fo[0]}">${fo[1]}</span> ${num(R.clientes)} clientes`)}${tcK('Janela', num(R.janela) + ' meses', R.meses_credito != null ? num(R.meses_credito) + ' com clientes suficientes' : '')}
+      ${tcK('Variação no período', varPct == null ? '—' : (varPct >= 0 ? '+' : '') + tcN(varPct * 100, 1) + '%', ini && fim ? brl(ini.v) + ' → ' + brl(fim.v) : '')}${tcK('CAC total máximo', brl((R.teto || {}).cac_total_max), 'meta ' + tcX(R.meta))}</div>
+    <div class="ck-g"><div class="ck-gt">LTV estimado no fim de cada mês</div>${comV.length ? ckColunas(rots, [{ nome: 'LTV', cor: 'var(--ck-s1)', vals: H.map(h => h.v == null ? 0 : Number(h.v)) }], brl, ckDinheiroCurto) : '<div class="ck-vazio">Sem histórico ainda.</div>'}
+      <div class="ck-gn">Cada mês mostra o LTV calculado com o que se sabia naquela data e com a taxa de desconto do dia. Queda seguida indica clientes comprando menos depois da 1ª compra.</div></div>
+    <div class="ck-g"><div class="ck-gt">Lucro acumulado por cliente desde a 1ª compra</div>${ac.length ? ckColunas(ac.map((_, i) => 'm' + i), [{ nome: 'Acumulado', cor: 'var(--ck-s2)', vals: ac.map(Number) }], brl, ckDinheiroCurto) : '<div class="ck-vazio">Sem dados.</div>'}
+      <div class="ck-gn">${cacT != null ? 'O CAC total atual (' + brl(cacT) + ') se paga ' + tcMeses(R.payback_meses) + '.' : 'Sem CAC no período para comparar.'}</div></div>
+    <div class="ck-g"><div class="ck-gt">De onde vem o LTV</div>${ckBarras([{ rot: '1ª compra', v: pt.primeira, cor: 'var(--ck-s1)' }, { rot: 'Ascensão (outros produtos)', v: pt.ascensao, cor: 'var(--ck-s1)' }, { rot: 'Renovação', v: pt.renovacao, cor: 'var(--ck-s1)' }, { rot: 'Projeção (planejado ou renovação histórica)', v: pt.projetado, cor: 'var(--ck-s2)' }], brl)}
+      ${R.renovacao ? `<div class="ck-gn">Renovação usada: <b>${R.renovacao.taxa == null ? '—' : tcN(Number(R.renovacao.taxa) * 100, 1) + '%'}</b> por ciclo${R.renovacao.observada != null ? ' (observada: ' + tcN(Number(R.renovacao.observada) * 100, 1) + '% em ' + num(R.renovacao.clientes) + ' clientes)' : ' (ainda sem cliente com dois ciclos: vale a renovação planejada)'}.</div>` : ''}</div>
+    ${tcAvisos(R)}
+    ${ex ? `<h3 style="margin:14px 0 6px">Ajustes deste produto</h3><div class="grid2">
+      <label>Meta de LTV/CAC<input name="ltv_meta" type="number" step="0.1" min="1" max="20" value="${R.meta_propria ? esc(R.meta) : ''}" placeholder="${esc(tcN((T.config || {}).meta, 1))} (da empresa)"></label>
+      <label>Janela do LTV (meses)<input name="ltv_janela" type="number" step="1" min="1" max="60" value="${esc(R.janela)}"></label>
+      <label>LTV planejado (R$ de lucro na janela)<input name="ltv_planejado" type="number" step="0.01" min="0" value="${R.plano == null ? '' : esc(R.plano)}" placeholder="Para produto novo ou com pouco histórico"></label>
+      ${R.recorrente ? '<label>Renovação planejada por ciclo (%)<input name="ltv_renovacao_pct" type="number" step="0.1" min="0" max="100" value="" placeholder="Usada até ter histórico"></label>' : ''}</div>
+      <p class="muted">Vazio volta ao padrão. Com histórico suficiente, o sistema usa só os dados reais.</p>` : ''}`;
+  const form = modal('LTV · ' + (k === '*' ? 'Empresa' : R.nome), body, ex ? async d => {
+    const cur = one(await q(sb.from('produtos').select('extras').eq('id', k))) || {}, e = { ...(cur.extras || {}) };
+    for (const c of ['ltv_meta', 'ltv_janela', 'ltv_planejado', 'ltv_renovacao_pct']) {
+      if (!(c in d)) continue; const v = String(d[c] || '').trim().replace(',', '.');
+      if (v === '') delete e[c]; else if (!isFinite(Number(v)) || Number(v) < 0) throw new Error('Confira os valores dos ajustes.'); else e[c] = Number(v);
+    }
+    if (e.ltv_meta != null && e.ltv_meta < 1) throw new Error('A meta de LTV/CAC precisa ser pelo menos 1.');
+    if (e.ltv_janela != null) e.ltv_janela = Math.max(1, Math.min(60, Math.round(e.ltv_janela)));
+    await q(sb.from('produtos').update({ extras: e }).eq('id', k)); toast('Ajustes do produto salvos');
+  } : null, 'Salvar', true);
+  if (ex && R.recorrente) { const i = form.querySelector('[name=ltv_renovacao_pct]'); q(sb.from('produtos').select('extras').eq('id', k)).then(r => { const e = ((one(r) || {}).extras || {}); if (i && e.ltv_renovacao_pct != null) i.value = e.ltv_renovacao_pct; }, () => {}); }
+  tcDicas(form);
+}
+async function tcConfig(T) {
+  const c = one(await q(sb.from('ltv_config').select('*').eq('workspace_id', S.ws))) || {}, tx = T.taxa || {};
+  const form = modal('Teto de CAC · configurar', `<p class="muted" style="margin-top:0">${esc(tcTaxaTxt(tx))}${tx.selic_aa != null && tx.fonte !== 'selic' ? ' · Selic guardada: ' + tcN(tx.selic_aa, 2) + '% em ' + tcData(tx.selic_dia) : ''}</p>
+    <div class="grid2">
+      <label>Taxa de desconto<select name="taxa_modo"><option value="selic"${(c.taxa_modo || 'selic') === 'selic' ? ' selected' : ''}>Selic automática (atualiza todo dia)</option><option value="propria"${c.taxa_modo === 'propria' ? ' selected' : ''}>Taxa própria</option></select></label>
+      <label>Taxa própria (% ao ano)<input name="taxa_propria_aa" type="number" step="0.01" min="0" max="99" value="${esc(c.taxa_propria_aa ?? '')}" placeholder="Ex.: Selic + 3"></label>
+      <label>Meta de LTV/CAC da empresa<input name="meta_ltv_cac" type="number" step="0.1" min="1" max="20" value="${esc(c.meta_ltv_cac ?? 1.8)}"></label>
+      <label>Janela do LTV (meses)<input name="janela_meses" type="number" step="1" min="1" max="60" value="${esc(c.janela_meses ?? 12)}"></label>
+      <label>Clientes para o dado contar como real<input name="min_clientes" type="number" step="1" min="1" max="10000" value="${esc(c.min_clientes ?? 30)}"></label>
+      <label>Base: clientes que entraram nos últimos (meses)<input name="base_meses" type="number" step="1" min="3" max="120" value="${esc(c.base_meses ?? 24)}"></label>
+    </div>
+    <p class="muted">A meta de 1,8 vem da regra de 20% de margem com 30% de segurança. Assinatura anual usa janela de 36 meses e semestral de 24, a não ser que o produto tenha a sua.</p>
+    <button type="button" class="btn" data-tc-selic>Buscar a Selic agora</button> <span class="muted" data-tc-selic-st></span>`, async d => {
+    const n = (k, min, max) => { const v = Number(String(d[k] || '').replace(',', '.')); if (!isFinite(v) || v < min || v > max) throw new Error('Confira o campo ' + k.replace(/_/g, ' ') + '.'); return v; };
+    if (d.taxa_modo === 'propria' && String(d.taxa_propria_aa || '').trim() === '') throw new Error('Informe a taxa própria ou escolha a Selic automática.');
+    const row = { workspace_id: S.ws, taxa_modo: d.taxa_modo === 'propria' ? 'propria' : 'selic', taxa_propria_aa: String(d.taxa_propria_aa || '').trim() === '' ? null : n('taxa_propria_aa', 0, 99.99),
+      meta_ltv_cac: n('meta_ltv_cac', 1, 20), janela_meses: Math.round(n('janela_meses', 1, 60)), min_clientes: Math.round(n('min_clientes', 1, 10000)), base_meses: Math.round(n('base_meses', 3, 120)), atualizado_em: new Date().toISOString() };
+    await q(sb.from('ltv_config').upsert(row, { onConflict: 'workspace_id' })); toast('Configuração do teto de CAC salva');
+  });
+  const b = form.querySelector('[data-tc-selic]'), st = form.querySelector('[data-tc-selic-st]');
+  b.onclick = async () => { b.disabled = true; st.textContent = 'Pedindo ao Banco Central…';
+    try { await q(sb.rpc('selic_pedir', {})); let n = 0; for (let i = 0; i < 6 && !n; i++) { await new Promise(r => setTimeout(r, 2500)); n = await q(sb.rpc('selic_ler', {})); }
+      st.textContent = n ? 'Selic atualizada (' + n + ' dias). Salve ou feche para recalcular.' : 'O Banco Central não respondeu agora. A rotina diária tenta de novo.'; }
+    catch (e) { st.textContent = 'Não deu: ' + (e.message || e); } b.disabled = false; };
+}
+function tcCampanhaHtml(t, at) {
+  if (!t || !t.R || t.R.ltv == null) return '<h3>Teto de CAC do produto</h3><p class="muted peq">' + (t ? 'O produto desta campanha ainda não tem LTV (sem clientes e sem LTV planejado). Preencha o LTV planejado em Cockpit → Teto de CAC.' : 'Não deu para calcular o teto agora.') + '</p>';
+  const R = t.R, X = R.teto || {}, fo = TC_FONTE[R.fonte] || TC_FONTE.sem_dados;
+  const luzT = (v, lim, menor) => v == null || lim == null || !isFinite(v) ? '' : (menor ? v <= lim : v >= lim) ? '<span class="luz luz-acima"><i></i>Dentro do teto</span>' : '<span class="luz luz-ruim"><i></i>Fora do teto</span>';
+  const k = (n, v, sub, luz) => `<div class="kpi"><div class="r"><span>${n}</span></div><div class="v">${v}</div><div class="s">${sub}</div>${luz || ''}</div>`;
+  return `<h3>Teto de CAC do produto · ${esc(R.nome)}</h3><div class="kpis">
+    ${k('CAC de mídia da campanha', at.cac ? brl(at.cac) : '—', 'máximo <b>' + brl(X.cac_midia_max) + '</b> · 0 a 0 ' + brl(X.cac_midia_eq), luzT(at.cac, X.cac_midia_max, 1))}
+    ${k('ROAS da campanha', at.roas ? tcX(at.roas) : '—', 'mínimo <b>' + tcX(X.roas_min) + '</b> · 0 a 0 ' + tcX(X.roas_eq), luzT(at.roas, X.roas_min))}
+    ${k('LTV do produto', brl(R.ltv), fo[1] + ' · ' + num(R.clientes) + ' clientes · meta LTV/CAC ' + tcX(R.meta))}
+    ${k('CAC total máximo', brl(X.cac_total_max), 'inclui equipe e ferramentas (' + brl((R.cac || {}).fixo_cliente) + ' por cliente)')}</div>
+    <p class="muted peq">O teto vem do LTV de quem entrou por este produto (Cockpit → Teto de CAC). O ROAS da campanha conta order bump e upsell; o mínimo usa o ticket da 1ª compra.</p>`;
+}
+async function tcCarrega(m, Pd) {
+  const box = m.querySelector('#tcBox'); if (!box || box.dataset.ok) return; box.dataset.ok = '1';
+  try {
+    const T = await q(sb.rpc('cac_teto', { p_ws: S.ws, p_ini: Pd.ini, p_fim: Pd.fim, p_hoje: hoje(), p_hist: 12 }));
+    box.innerHTML = tcHtml(T, Pd);
+    box.querySelectorAll('[data-tc-ltv]').forEach(b => { b.onclick = () => tcAbre(T, b.dataset.tcLtv); });
+    const cf = box.querySelector('[data-tc-cfg]'); if (cf) cf.onclick = () => tcConfig(T).catch(e => toast(e.message || String(e), true));
+  } catch (e) { box.dataset.ok = ''; box.innerHTML = `<div class="panel empty">Não deu para calcular o teto de CAC: ${esc(e.message || String(e))}${/cac_teto|function/.test(String(e.message)) ? ' (falta aplicar a migração da v0.273 no banco)' : ''}.</div>`; }
 }
 
 /* ================= FINANCEIRO ================= */
@@ -14166,7 +14342,7 @@ async function vCalcCampanha(m) {
   if (!C.pend) C.pend = {};
   if (C.ws !== w) { C.ws = w; C.camp = ''; C.P = ccPadrao(); C.calcId = ''; C.pend = {}; }
   const [camps, calcs, canais, dre] = await Promise.all([
-    q(sb.from('campanhas').select('id,nome,orcamento_total,meta_leads,meta_vendas,meta_cac,meta_cpl,meta_receita,meta_taxa_lead_venda').eq('workspace_id', w).order('nome')),
+    q(sb.from('campanhas').select('id,nome,produto_id,orcamento_total,meta_leads,meta_vendas,meta_cac,meta_cpl,meta_receita,meta_taxa_lead_venda').eq('workspace_id', w).order('nome')),
     q(sb.from('campanha_calculos').select('id,nome,campanha_id,premissas,atualizado_em').eq('workspace_id', w).order('atualizado_em', { ascending: false })),
     q(sb.from('canais').select('codigo,nome').eq('workspace_id', w).eq('ativo', true)).catch(() => []),
     q(sb.from('v_dre_mensal').select('mes,tipo,valor').eq('workspace_id', w).eq('tipo', 'despesa').limit(1000)).catch(() => [])]);
@@ -14202,6 +14378,18 @@ async function vCalcCampanha(m) {
       <div class="acts"><button class="btn sm" id="ccAddCanal">+ Adicionar canal</button><button class="btn sm" id="ccUsaCanais">Usar a soma dos canais no funil</button></div></div>
     <div id="ccOfertas"></div>
   </div><div id="ccOut" style="display:flex;flex-direction:column;gap:16px;position:sticky;top:12px"></div></div>`;
+  let teto = null; // v0.273: teto pelo LTV do produto da campanha
+  const tetoBox = (o, k) => {
+    if (!camp || !camp.produto_id) return '';
+    if (!teto) return '<div class="tc-quadro"><h3 style="margin:0">Teto pelo LTV do produto</h3><span class="muted">Calculando…</span></div>';
+    if (!teto.R || teto.R.ltv == null) return '<div class="tc-quadro"><h3 style="margin:0">Teto pelo LTV do produto</h3><span class="muted">O produto desta campanha ainda não tem LTV (sem clientes e sem LTV planejado). Preencha o LTV planejado em Cockpit → Teto de CAC.</span></div>';
+    const R = teto.R, X = R.teto || {}, fora = o.cac != null && X.cac_midia_max != null && o.cac > Number(X.cac_midia_max);
+    return `<div class="tc-quadro"><h3 style="margin:0 0 6px">Teto pelo LTV · ${esc(R.nome)}</h3>
+      <div class="kpis" style="grid-template-columns:repeat(2,1fr)">${k('CAC de mídia máximo', ccBrl(X.cac_midia_max), '0 a 0 ' + ccBrl(X.cac_midia_eq))}${k('ROAS mínimo (1ª compra)', ccX(X.roas_min), '0 a 0 ' + ccX(X.roas_eq))}
+        ${k('LTV do produto', ccBrl(R.ltv), (TC_FONTE[R.fonte] || TC_FONTE.sem_dados)[1] + ' · meta LTV/CAC ' + tcX(R.meta))}${k('CAC de mídia planejado', ccBrl(o.cac), o.cac == null ? '' : fora ? '<span class="pill bad">acima do teto do LTV</span>' : '<span class="pill good">dentro do teto do LTV</span>')}</div>
+      <div class="muted" style="margin-top:6px">O teto conta tudo o que o cliente deixa depois da 1ª compra (ascensão e renovação). A margem acima olha só esta campanha.</div>
+      ${ccPos(Number(X.cac_midia_max)) ? '<div class="acts"><button class="btn sm" type="button" id="ccUsaTeto">Usar o teto do LTV no CAC (ajusta o CPL)</button></div>' : ''}</div>`;
+  };
   const saidaHtml = () => {
     const o = ccSaida(C.P), cor = o.margem == null ? 'neutral' : o.margem >= o.mAlvo ? 'good' : o.margem >= 0 ? 'warn' : 'bad', dig = s => s == null ? '<span class="muted">preencha ticket, conversão, CPL e leads</span>' : s;
     const k = (l, v, s) => `<div class="kpi"><span class="l">${l}</span><span class="v">${v}</span><span class="s">${s || ''}</span></div>`;
@@ -14220,7 +14408,7 @@ async function vCalcCampanha(m) {
       <div class="panel"><h3 style="margin:0">Para onde vai cada real</h3><div class="tw"><table><tbody>
         <tr><td>Receita prevista</td><td class="n">${ccBrl(o.R)}</td></tr><tr><td>(−) Impostos, taxas, comissão e entrega</td><td class="n">${ccBrl(o.R != null && o.mc != null ? o.R - o.V * o.mc : null)}</td></tr>
         <tr><td>(−) Investimento em mídia</td><td class="n">${ccBrl(o.M)}</td></tr><tr><td>(−) Outros custos da campanha</td><td class="n">${ccBrl(o.extras)}</td></tr><tr><td>(−) Despesa da empresa a cobrir</td><td class="n">${ccBrl(o.D)}</td></tr>
-        <tr class="tot"><td>Resultado</td><td class="n">${ccBrl(o.lucro)}</td></tr></tbody></table></div></div>`;
+        <tr class="tot"><td>Resultado</td><td class="n">${ccBrl(o.lucro)}</td></tr></tbody></table></div></div>${tetoBox(o, k)}`;
   };
   const atualiza = quem => {
     const o = ccSaida(C.P);
@@ -14248,6 +14436,8 @@ async function vCalcCampanha(m) {
   m.querySelectorAll('#ccLig [data-cc], .panel [data-cc]').forEach(i => { i.value = ''; });
   const setSimples = () => m.querySelectorAll('[data-cc]').forEach(i => { if (!['ticket', 'conv', 'cpl', 'leads', 'cac', 'vendas', 'receita', 'midia', 'roas'].includes(i.dataset.cc)) i.value = C.P[i.dataset.cc] ?? ''; });
   setSimples(); desenhaListas(); await desenhaOfertas();
+  if (camp && camp.produto_id) q(sb.rpc('cac_teto', { p_ws: w, p_ini: diaMais(hoje(), -89), p_fim: hoje(), p_hoje: hoje(), p_hist: 0 }))
+    .then(T => { teto = { R: (T.produtos || []).find(p => p.produto_id === camp.produto_id) || null }; atualiza(null); }, () => { teto = { R: null }; atualiza(null); });
   m.oninput = e => {
     const i = e.target.closest('[data-cc]');
     if (i) { const val = ccNum(i.value); const k = i.dataset.cc;
@@ -14257,7 +14447,8 @@ async function vCalcCampanha(m) {
     const ci = e.target.closest('[data-ci]'); if (ci) { const [lst, idx, campo] = ci.dataset.ci.split(':'), alvo = C.P[lst][Number(idx)]; alvo[campo] = ['nome', 'tipo', 'canal'].includes(campo) ? ci.value : ccNum(ci.value); atualiza(ci); }
   };
   m.onchange = e => { const ci = e.target.closest('select[data-ci]'); if (ci) { const [lst, idx, campo] = ci.dataset.ci.split(':'); C.P[lst][Number(idx)][campo] = ci.value; atualiza(ci); } };
-  m.onclick = e => { const rm = e.target.closest('[data-rm]'); if (rm) { const [lst, idx] = rm.dataset.rm.split(':'); C.P[lst].splice(Number(idx), 1); desenhaListas(); } };
+  m.onclick = e => { if (e.target.id === 'ccUsaTeto' && teto && teto.R) { const r = ccEdita(C.P, 'cac', Number(teto.R.teto.cac_midia_max)); if (r.dica) { toast(r.dica, true); return; } C.P = r.P; C.hint = ''; atualiza(null); toast('CPL ajustado para o CAC caber no teto do LTV'); return; }
+    const rm = e.target.closest('[data-rm]'); if (rm) { const [lst, idx] = rm.dataset.rm.split(':'); C.P[lst].splice(Number(idx), 1); desenhaListas(); } };
   $('#ccAddCusto').onclick = () => { C.P.custos.push({ nome: '', tipo: 'fixo', valor: null }); desenhaListas(); };
   $('#ccAddCanal').onclick = () => { C.P.canais.push({ canal: '', leads: null, cpl: null }); desenhaListas(); };
   $('#ccUsaCanais').onclick = () => { const cs = C.P.canais.filter(x => ccPos(ccNum(x.leads))); if (!cs.length) { toast('Preencha a meta de leads de pelo menos um canal.', true); return; }

@@ -1,3 +1,9 @@
+## v0.273
+- Migração `20270120100000_v0273_teto_cac_ltv.sql`: tabelas `selic_diaria` e `ltv_config`; funções `ltv_taxa`, `cac_teto`, `selic_pedir`, `selic_ler`; rotinas `growths-selic-pedir` e `growths-selic-ler` (pg_cron + pg_net, 11h e 11h05 UTC).
+- Por produto, em `produtos.extras`: `ltv_meta`, `ltv_janela`, `ltv_planejado`, `ltv_renovacao_pct`.
+- index.html: `tcHtml`, `tcAbre`, `tcConfig`, `tcCarrega`, `tcCampanhaHtml`; aba `teto` no `vCockpit`; `H.teto` no dashboard da campanha; `tetoBox` na `vCalcCampanha`. Rótulo da tela para 0.273.
+- Testes novos: banco `v0273_teto_cac.sql`; tela `t273_teto_cac.py` (com `t273_teto.json`, gerado pelo banco de teste).
+
 ## v0.272
 - Migração `20270119100000_v0272_estruturas_e_roteiro.sql`: colunas `conteudos.estrutura_id` e `conteudos.nivel_consciencia`; 13 estruturas na biblioteca (ordem 201 a 218).
 - Função nova: `supabase/functions/content-roteiro`.

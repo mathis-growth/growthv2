@@ -1,3 +1,7 @@
+## v0.273
+1. Rodar `supabase/migrations/20270120100000_v0273_teto_cac_ltv.sql`. Cria as rotinas diárias da Selic se o pg_cron estiver ligado (precisa também do pg_net, que o Atendimento já usa).
+2. Para buscar a Selic na hora: `select selic_pedir();` e, uns segundos depois, `select selic_ler();` (ou o botão "Buscar a Selic agora" em Cockpit → Teto de CAC → Configurar).
+
 ## v0.245
 1. Rodar `supabase/RODAR_v0.245_resposta_formulario_aviso.sql` (depois do RODAR_v0.244).
 2. O WhatsApp usa a mesma função `avisos` e o mesmo modelo `aviso_growths` da v0.244: nada novo para publicar além do que já estava pendente.

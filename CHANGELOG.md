@@ -1,3 +1,12 @@
+## v0.273 — Teto de CAC pelo LTV (06/11/2026)
+- **Cockpit → Teto de CAC:** quanto dá para pagar por cliente. Mostra LTV, LTV/CAC com faixa, CAC total e de mídia (atual, máximo e 0 a 0), ROAS da 1ª compra (atual, mínimo e 0 a 0) e payback, da empresa e por produto de entrada.
+- **LTV pela aula do MBA:** soma mês a mês do lucro médio por cliente desde a 1ª compra, contando cada cliente só nos meses que já viveu (censura), trazida a valor presente. Separa 1ª compra, ascensão, renovação e projeção.
+- **Selic automática:** busca a meta Selic no Banco Central todo dia; dá para trocar por uma taxa própria.
+- **Pouco histórico:** mistura o real com o LTV planejado do produto; assinatura projeta a renovação pela taxa histórica (ou a planejada). A fonte aparece como real, misto ou planejado.
+- **Clique no LTV:** abre o LTV estimado no fim de cada mês (últimos 12), o lucro acumulado por cliente e os ajustes do produto (meta, janela, LTV planejado, renovação).
+- **Campanha e calculadora:** o dashboard da campanha compara o CAC de mídia e o ROAS com o teto do produto; a calculadora mostra o teto e ajusta o CPL para caber nele.
+- Banco: `20270120100000_v0273_teto_cac_ltv.sql`. Testes: banco `v0273_teto_cac.sql` (inclui o exemplo da aula: LTV 240), tela `t273_teto_cac` (0 falhas).
+
 ## v0.272 — Conteúdo em destaque e geração pela estrutura de copy (06/11/2026)
 - **Tela do conteúdo:** título, descrição e ângulo e o conteúdo inteiro no centro. Os outros campos ficam num painel ao lado, que passa para a esquerda ou a direita, fecha e reabre. A escolha fica guardada no navegador.
 - **Gerar conteúdo:** escolher a estrutura de copy e o nível de consciência e gerar pela Claude. O texto só é gravado ao salvar. Também na Produção, no roteiro.

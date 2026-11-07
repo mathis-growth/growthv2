@@ -15,7 +15,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 06/11/2026, versão 0.272 (conteúdo em destaque e geração pela estrutura de copy).
+**Última atualização:** 06/11/2026, versão 0.273 (teto de CAC pelo LTV).
 
 **v0.245 · Resposta à vista.** Quando alguém responde um formulário (lead, cliente ou diagnóstico), a equipe fica sabendo na hora: faixa verde, Meus avisos e WhatsApp, com a pontuação da qualificação.
 
