@@ -1,3 +1,8 @@
+## v0.274
+- Migração `20270121100000_v0274_teto_turma.sql`: `cac_teto(p_ws, p_ini, p_fim, p_hoje, p_hist, p_f jsonb)`; a assinatura antiga é removida antes.
+- index.html: `tcPinta` e filtros `S.tcF` no teto; `corpo.geral` do cockpit com MRR, ARR, NRR, penetração e NSM (carrega `growth_metricas` também para o Geral); `ctFaixas`, `ctFaixa`, `ctNotaSel` e `C.nota` no conteúdo. Rótulo da tela para 0.274.
+- Testes novos: banco `v0274_teto_turma.sql`; tela `t274_filtros_metricas.py`.
+
 ## v0.273
 - Migração `20270120100000_v0273_teto_cac_ltv.sql`: tabelas `selic_diaria` e `ltv_config`; funções `ltv_taxa`, `cac_teto`, `selic_pedir`, `selic_ler`; rotinas `growths-selic-pedir` e `growths-selic-ler` (pg_cron + pg_net, 11h e 11h05 UTC).
 - Por produto, em `produtos.extras`: `ltv_meta`, `ltv_janela`, `ltv_planejado`, `ltv_renovacao_pct`.

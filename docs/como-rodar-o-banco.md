@@ -1,3 +1,6 @@
+## v0.274
+Rodar `supabase/migrations/20270121100000_v0274_teto_turma.sql` (troca a função `cac_teto`; depois da v0.273).
+
 ## v0.273
 1. Rodar `supabase/migrations/20270120100000_v0273_teto_cac_ltv.sql`. Cria as rotinas diárias da Selic se o pg_cron estiver ligado (precisa também do pg_net, que o Atendimento já usa).
 2. Para buscar a Selic na hora: `select selic_pedir();` e, uns segundos depois, `select selic_ler();` (ou o botão "Buscar a Selic agora" em Cockpit → Teto de CAC → Configurar).

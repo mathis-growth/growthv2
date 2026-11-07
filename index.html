@@ -1308,7 +1308,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
 :root{--ck-s1:#3b82f6;--ck-s2:#d97706;--ck-borda:rgba(148,163,184,.45)}
 :root[data-theme="light"]{--ck-s1:#1d4ed8;--ck-s2:#d97706;--ck-borda:#c3cfe2}
 .tc-quadro{background:var(--panel,var(--surface,#fff));border:2px solid var(--ck-borda);border-radius:14px;box-shadow:0 2px 4px rgba(15,23,42,.06),0 10px 24px rgba(15,23,42,.08);padding:14px 16px;margin:0 0 18px}
-.tc-quadro>.head{margin-bottom:10px}.tc-quadro h2{margin:0 0 2px;font-size:16px}
+.tc-filtros{margin:0 0 14px;align-items:end}.tc-quadro>.head{margin-bottom:10px}.tc-quadro h2{margin:0 0 2px;font-size:16px}
 .tc-ks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .tc-k{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 3px rgba(15,23,42,.06);min-width:0}
 .tc-k .l{font-size:12px;color:var(--muted)}.tc-k .v{font-size:20px;font-weight:700;display:flex;gap:6px;align-items:center;flex-wrap:wrap}.tc-k .s{font-size:12px;color:var(--muted)}
@@ -1332,7 +1332,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
 .ck-ir{font-size:11.5px;font-weight:600;color:var(--accent);white-space:nowrap}
 .ck-b{padding:10px 14px 12px;display:flex;flex-direction:column;gap:10px;flex:1}
 .ck-geral .ck-b{flex-direction:row;align-items:center;gap:18px}
-.ck-geral .ck-b>.ck-is{flex:2.2;grid-template-columns:repeat(5,minmax(0,1fr))}
+.ck-geral .ck-b>.ck-is{flex:2.2;grid-template-columns:repeat(5,minmax(0,1fr))}.ck-geral .ck-is>.ck-i:nth-child(5n+1){padding-left:0;border-left:0}
 .ck-geral .ck-i{overflow:hidden}
 .ck-geral .ck-b>.ck-g{flex:1;border-top:0;border-left:1px dashed var(--line);padding:0 0 0 16px;margin:0}
 .ck-is{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));row-gap:8px}
@@ -1413,7 +1413,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
     <div class="foot">
       <button class="btn sm temaBtn" id="temaBtn" type="button"></button>
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.273 · 06/11/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.274 · 06/11/2026</span>
     </div>
   </aside>
   <div class="mainw"><div class="topou" id="topoU"><div class="ola" id="olaTxt"></div><div class="tou-m"><button type="button" class="tou-av" id="fotoBtn" aria-haspopup="true" aria-expanded="false" aria-controls="fotoMenu" aria-label="Sua conta"></button>
@@ -4918,9 +4918,9 @@ async function vCockpit(m) {
     quer('geral') ? pega(q(sb.from('v_dre_mensal').select('mes,tipo,valor').eq('workspace_id', w).gte('mes', mes6).limit(5000))) : null,
     quer('prj') ? pega(q(sb.from('projetos').select('id,status').eq('workspace_id', w))) : null,
     quer('prj') ? pega(q(sb.from('projeto_atividades').select('id,status,prazo,concluida_em,pai_id').eq('workspace_id', w).limit(20000))) : null,
-    quer('gro') ? pega(q(sb.from('growth_metricas').select('*').eq('workspace_id', w).eq('tipo', 'north_star'))) : null,
+    quer('gro') || quer('geral') ? pega(q(sb.from('growth_metricas').select('*').eq('workspace_id', w).eq('tipo', 'north_star'))) : null,
     quer('gro') ? pega(q(sb.from('growth_experimentos').select('id,etapa,resultado,concluido_em').eq('workspace_id', w).limit(5000))) : null,
-    quer('gro') ? pega(q(sb.rpc('growth_metricas_auto', { p_ws: w, p_ini: Pd.ini, p_fim: Pd.fim }))) : null,
+    quer('gro') || quer('geral') ? pega(q(sb.rpc('growth_metricas_auto', { p_ws: w, p_ini: Pd.ini, p_fim: Pd.fim }))) : null,
     quer('geral') || quer('ven') ? pega(q(sb.rpc('metas_painel', { p_ws: w, p_ini: D0.ini, p_fim: D0.fim, p_hoje: h }))) : null, // v0.213: meta de faturamento
     quer('geral') ? pega(q(sb.rpc('riscos_painel', { p_ws: w, p_hoje: h, p_forcar: false }))) : null // v0.215: riscos
   ]);
@@ -4934,11 +4934,19 @@ async function vCockpit(m) {
   const corpo = {
     geral: () => {
       if (!P) return semDado;
+      const PN = G.penetracao || {}, ns = (GM || [])[0], nsVal = ns ? (ns.fonte === 'auto' ? (GA || {})[ns.chave_auto] : ns.valor_manual) : null;
+      const nsV = !ns ? 'a definir' : nsVal == null ? '—' : ns.unidade === 'brl' ? dinheiro(nsVal) : ns.unidade === 'pct' ? semNum(Number(nsVal), 1) + '%' : ns.unidade === 'x' ? semNum(Number(nsVal), 2) + 'x' : semNum(Number(nsVal), Number(nsVal) % 1 ? 1 : 0);
+      const nsS = !ns ? 'defina no Growth Model' : esc(ns.nome) + (Number(ns.meta) ? ' · meta ' + semNum(Number(ns.meta), Number(ns.meta) % 1 ? 1 : 0) : '');
       const meses = [...new Set((DRE || []).map(r => String(r.mes).slice(0, 7)))].sort();
       const soma = (mm, t) => (DRE || []).filter(r => String(r.mes).slice(0, 7) === mm && r.tipo === t).reduce((s, r) => s + Number(r.valor || 0), 0);
       const rec = meses.map(mm => soma(mm, 'receita')), luc = meses.map((mm, i) => rec[i] - soma(mm, 'deducao') - soma(mm, 'custo') - soma(mm, 'despesa'));
       return `<div class="ck-is">${[ind('Saldo em caixa', dinheiro(CX.saldo), '', neg(CX.saldo) && 'neg'), ind('Receita', dinheiro(RS.receita), Pd.rot), ind('Vendas', num(VE.aprovadas), dinheiro(VE.bruto) + ' faturados'),
-        ind('Margem', pct(RS.margem), 'lucro ÷ receita', neg(RS.margem) && 'neg'), ind('Lucro', dinheiro(RS.lucro), Pd.rot, neg(RS.lucro) && 'neg')].join('')}</div>` +
+        ind('Margem', pct(RS.margem), 'lucro ÷ receita', neg(RS.margem) && 'neg'), ind('Lucro', dinheiro(RS.lucro), Pd.rot, neg(RS.lucro) && 'neg'),
+        // v0.274: métricas de negócio
+        ind('MRR', dinheiro(RC.mrr), 'recorrente por mês, hoje'), ind('ARR', dinheiro(RC.arr), 'MRR × 12'),
+        ind('NRR', RC.nrr == null ? '—' : pct(RC.nrr), RC.nrr == null ? 'precisa de 12 meses de recorrência' : 'receita retida em 12 meses', RC.nrr != null && Number(RC.nrr) < 1 && 'atn'),
+        ind('Penetração', PN.mercado > 0 ? pct(PN.pct) : '—', PN.mercado > 0 ? 'do mercado: ' + num(PN.ativos) + ' de ' + num(PN.mercado) + (PN.rotulo ? ' ' + esc(PN.rotulo) : '') : 'informe o mercado no Planejamento'),
+        ind('North Star', nsV, nsS)].join('')}</div>` +
         graf(porMes ? 'Receita e lucro por mês, ' + h.slice(0, 4) : 'Receita e lucro nos últimos 6 meses', meses.length ? ckColunas(meses.map(mm => CK_MES[Number(mm.slice(5, 7)) - 1]), [{ nome: 'Receita', cor: S1, vals: rec }, { nome: 'Lucro', cor: S2, vals: luc }], dinheiro, ckDinheiroCurto, 340, 92) : semDado);
     },
     mkt: () => P ? `<div class="ck-is">${[ind('Campanhas ativas', camps ? num(camps.filter(c => c.status === 'ativa').length) : '—', camps ? num(camps.filter(c => c.status === 'planejada').length) + ' planejadas' : ''),
@@ -5047,18 +5055,24 @@ function tcAvisos(R) {
   return a.length ? `<ul class="tc-av">${a.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
 }
 function tcHtml(T, Pd) {
-  const G = T.geral || {}, C = G.cac || {}, X = G.teto || {}, cf = T.config || {}, P = T.produtos || [];
+  const F = S.tcF = S.tcF || { produto: '', ini: '', fim: '' }, cf = T.config || {}, Ptodos = T.produtos || [];
+  const Psel = F.produto ? Ptodos.find(x => (x.produto_id || '-') === F.produto) : null; if (F.produto && !Psel) F.produto = '';
+  const G = Psel || T.geral || {}, C = G.cac || {}, X = G.teto || {}, P = Psel ? [Psel] : Ptodos, kG = Psel ? F.produto : '*', fl = T.filtro || {};
+  const turmaTx = fl.entrada_ini || fl.entrada_fim ? 'clientes com 1ª compra ' + (fl.entrada_ini ? 'de ' + tcData(fl.entrada_ini) + ' ' : '') + (fl.entrada_fim ? 'até ' + tcData(fl.entrada_fim) : 'até hoje') : 'clientes que entraram nos últimos ' + num(cf.base_meses) + ' meses';
+  const filtros = `<div class="filters tc-filtros"><label>Produto<select data-tc-prod><option value="">Todos (empresa)</option>${Ptodos.map(x => `<option value="${esc(x.produto_id || '-')}"${(x.produto_id || '-') === F.produto ? ' selected' : ''}>${esc(x.nome)}</option>`).join('')}</select></label>
+    <label>Turma: 1ª compra de<input type="date" data-tc-ini value="${esc(F.ini)}"></label><label>até<input type="date" data-tc-fim value="${esc(F.fim)}"></label>
+    <button type="button" class="btn sm" data-tc-turma>Aplicar turma</button>${fl.entrada_ini || fl.entrada_fim ? '<button type="button" class="btn sm" data-tc-limpa>Limpar turma</button>' : ''}</div>`;
   const f = TC_FONTE[G.fonte] || TC_FONTE.sem_dados, fx = tcFaixa(G.ltv_cac, G.meta);
   const linha = R => { const c = R.cac || {}, t = R.teto || {}, fo = TC_FONTE[R.fonte] || TC_FONTE.sem_dados, k = R.produto_id || '-';
     return `<tr><td>${esc(R.nome)}${R.meta_propria ? ` <span class="muted">· meta ${tcX(R.meta)}</span>` : ''}</td><td><span class="pill ${fo[0]}" title="${esc(fo[2])}">${fo[1]}</span>${R.incompleto ? ' <span class="pill warn" title="Há meses sem dado e sem plano">incompleto</span>' : ''}</td>
       <td class="n">${num(R.clientes)}</td><td class="n"><button type="button" class="tc-link" data-tc-ltv="${esc(k)}" title="Ver o LTV mês a mês">${brl(R.ltv)}</button></td>
       <td class="n">${tcX(R.ltv_cac)} ${tcPill(tcFaixa(R.ltv_cac, R.meta))}</td><td class="n">${brl(c.cac_total)}</td><td class="n"><b>${brl(t.cac_total_max)}</b></td>
       <td class="n">${brl(c.cac_midia)}</td><td class="n"><b>${brl(t.cac_midia_max)}</b></td><td class="n">${brl(t.cac_midia_eq)}</td><td class="n">${tcX(c.roas)}</td><td class="n"><b>${tcX(t.roas_min)}</b></td><td class="n">${tcMeses(R.payback_meses)}</td></tr>`; };
-  return `<section class="tc-quadro">
-    <div class="head"><div><h2>Teto de CAC da empresa</h2><span class="muted">CAC atual: ${esc(Pd.rot)}. LTV: clientes que entraram nos últimos ${num(cf.base_meses)} meses, somando o lucro de ${num(cf.janela)} meses, trazido a valor presente. ${esc(tcTaxaTxt(T.taxa))}.</span></div>
+  return `${filtros}<section class="tc-quadro">
+    <div class="head"><div><h2>Teto de CAC ${Psel ? '· ' + esc(Psel.nome) : 'da empresa'}</h2><span class="muted">CAC atual: ${esc(Pd.rot)}. LTV: ${esc(turmaTx)}, somando o lucro de ${num(G.janela || cf.janela)} meses, trazido a valor presente. ${esc(tcTaxaTxt(T.taxa))}.</span></div>
       <div class="acts"><button type="button" class="btn" data-tc-cfg>Configurar</button></div></div>
     <div class="tc-ks">
-      ${tcK('LTV por cliente', `<button type="button" class="tc-link" data-tc-ltv="*" title="Ver o LTV mês a mês">${brl(G.ltv)}</button>`, `<span class="pill ${f[0]}" title="${esc(f[2])}">${f[1]}</span> ${num(G.clientes)} clientes`)}
+      ${tcK('LTV por cliente', `<button type="button" class="tc-link" data-tc-ltv="${esc(kG)}" title="Ver o LTV mês a mês">${brl(G.ltv)}</button>`, `<span class="pill ${f[0]}" title="${esc(f[2])}">${f[1]}</span> ${num(G.clientes)} clientes`)}
       ${tcK('LTV/CAC', tcX(G.ltv_cac) + ' ' + tcPill(fx), 'meta ' + tcX(G.meta))}
       ${tcK('CAC total', brl(C.cac_total), 'máximo <b>' + brl(X.cac_total_max) + '</b> · equilíbrio ' + brl(X.cac_total_eq))}
       ${tcK('CAC de mídia', brl(C.cac_midia), 'máximo <b>' + brl(X.cac_midia_max) + '</b> · equilíbrio ' + brl(X.cac_midia_eq))}
@@ -5069,7 +5083,7 @@ function tcHtml(T, Pd) {
     <p class="muted tc-nota">Custo fixo de aquisição por cliente (equipe, ferramentas, comissões): <b>${brl(C.fixo_cliente)}</b>. Ele sai do CAC máximo para chegar ao de mídia. O ROAS mínimo usa o ticket médio da 1ª compra (${brl(X.ticket1)}), que é o que o gerenciador de anúncios enxerga.</p>
   </section>
   <section class="tc-quadro">
-    <div class="head"><div><h2>Por produto de entrada</h2><span class="muted">O LTV de cada produto é o de quem entrou por ele. Clique no LTV para ver como ele mudou mês a mês e ajustar a meta e o planejado do produto.</span></div></div>
+    <div class="head"><div><h2>${Psel ? 'Produto escolhido' : 'Por produto de entrada'}</h2><span class="muted">O LTV de cada produto é o de quem entrou por ele. Clique no LTV para ver como ele mudou mês a mês e ajustar a meta e o planejado do produto.</span></div></div>
     ${P.length ? `<div class="tw"><table class="tc-t"><thead><tr><th>Produto</th><th>Fonte</th><th class="n">Clientes</th><th class="n">LTV</th><th class="n">LTV/CAC</th><th class="n">CAC total</th><th class="n">CAC total máx.</th><th class="n">CAC mídia</th><th class="n">CAC mídia máx.</th><th class="n">Mídia no 0 a 0</th><th class="n">ROAS</th><th class="n">ROAS mín.</th><th class="n">Payback</th></tr></thead>
       <tbody>${P.map(linha).join('')}</tbody></table></div>` : '<div class="empty">Nenhum produto com clientes ou com LTV planejado ainda.</div>'}
     <details class="tc-como"><summary>Como ler</summary><ul>
@@ -5161,13 +5175,22 @@ function tcCampanhaHtml(t, at) {
     ${k('CAC total máximo', brl(X.cac_total_max), 'inclui equipe e ferramentas (' + brl((R.cac || {}).fixo_cliente) + ' por cliente)')}</div>
     <p class="muted peq">O teto vem do LTV de quem entrou por este produto (Cockpit → Teto de CAC). O ROAS da campanha conta order bump e upsell; o mínimo usa o ticket da 1ª compra.</p>`;
 }
+function tcPinta(box, T, Pd, m) {
+  box.innerHTML = tcHtml(T, Pd);
+  box.querySelectorAll('[data-tc-ltv]').forEach(b => { b.onclick = () => tcAbre(T, b.dataset.tcLtv); });
+  const cf = box.querySelector('[data-tc-cfg]'); if (cf) cf.onclick = () => tcConfig(T).catch(e => toast(e.message || String(e), true));
+  const F = S.tcF, pr = box.querySelector('[data-tc-prod]'); if (pr) pr.onchange = () => { F.produto = pr.value; tcPinta(box, T, Pd, m); };
+  const vai = () => { box.dataset.ok = ''; box.innerHTML = '<div class="panel empty">Calculando o teto de CAC…</div>'; tcCarrega(m, Pd); };
+  const ap = box.querySelector('[data-tc-turma]'); if (ap) ap.onclick = () => { const i = box.querySelector('[data-tc-ini]').value, f = box.querySelector('[data-tc-fim]').value;
+    if (!i && !f) { toast('Escolha pelo menos uma das datas da turma.', true); return; } if (i && f && f < i) { toast('A data final da turma é antes da inicial.', true); return; } F.ini = i; F.fim = f; vai(); };
+  const lp = box.querySelector('[data-tc-limpa]'); if (lp) lp.onclick = () => { F.ini = ''; F.fim = ''; vai(); };
+}
 async function tcCarrega(m, Pd) {
   const box = m.querySelector('#tcBox'); if (!box || box.dataset.ok) return; box.dataset.ok = '1';
   try {
-    const T = await q(sb.rpc('cac_teto', { p_ws: S.ws, p_ini: Pd.ini, p_fim: Pd.fim, p_hoje: hoje(), p_hist: 12 }));
-    box.innerHTML = tcHtml(T, Pd);
-    box.querySelectorAll('[data-tc-ltv]').forEach(b => { b.onclick = () => tcAbre(T, b.dataset.tcLtv); });
-    const cf = box.querySelector('[data-tc-cfg]'); if (cf) cf.onclick = () => tcConfig(T).catch(e => toast(e.message || String(e), true));
+    const F = S.tcF = S.tcF || { produto: '', ini: '', fim: '' }, pf = {}; if (F.ini) pf.entrada_ini = F.ini; if (F.fim) pf.entrada_fim = F.fim;
+    const T = await q(sb.rpc('cac_teto', { p_ws: S.ws, p_ini: Pd.ini, p_fim: Pd.fim, p_hoje: hoje(), p_hist: 12, p_f: pf }));
+    tcPinta(box, T, Pd, m);
   } catch (e) { box.dataset.ok = ''; box.innerHTML = `<div class="panel empty">Não deu para calcular o teto de CAC: ${esc(e.message || String(e))}${/cac_teto|function/.test(String(e.message)) ? ' (falta aplicar a migração da v0.273 no banco)' : ''}.</div>`; }
 }
 
@@ -21837,8 +21860,13 @@ function modalConteudo(row, D, pre) {
 }
 
 /* ----- Kanban ----- */
+/* v0.274: faixa da nota do conteúdo. Score (6 a 30): alta 24+, média 18 a 23, baixa até 17. Média (1 a 5): alta 4+, média 3 a 3,9, baixa abaixo de 3. */
+const ctFaixas = D => ehScore(D) ? [['alta', 'Alta (24 a 30)'], ['media', 'Média (18 a 23)'], ['baixa', 'Baixa (até 17)'], ['sem', 'Sem score']] : [['alta', 'Alta (4 ou mais)'], ['media', 'Média (3 a 3,9)'], ['baixa', 'Baixa (abaixo de 3)'], ['sem', 'Sem nota']];
+const ctFaixa = (c, D) => { const n = notaCt(c, D); if (n == null || !isFinite(Number(n))) return 'sem'; const v = Number(n), [a, m] = ehScore(D) ? [24, 18] : [4, 3]; return v >= a ? 'alta' : v >= m ? 'media' : 'baixa'; };
+const ctNotaSel = (D, C) => `<div class="filters"><label>${ehScore(D) ? 'Score' : 'Nota'}<select data-ct-nota><option value="">Todas</option>${ctFaixas(D).map(([k, l]) => `<option value="${k}"${C.nota === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label></div>`;
+const ctNotaLiga = (el, C) => { const x = el.querySelector('[data-ct-nota]'); if (x) x.onchange = () => { C.nota = x.value; render(); }; };
 function mqFiltra(D, C) {
-  return D.cont.filter(c => (!C.tema || c.tema_id === C.tema) && (!C.sub || (D.T[C.sub] || {}).tema_pai_id !== C.tema || c.subtema_id === C.sub) && (!C.canal || (c.canais || []).includes(C.canal)) && (!C.formato || c.formato === C.formato)
+  return D.cont.filter(c => (!C.nota || ctFaixa(c, D) === C.nota) && (!C.tema || c.tema_id === C.tema) && (!C.sub || (D.T[C.sub] || {}).tema_pai_id !== C.tema || c.subtema_id === C.sub) && (!C.canal || (c.canais || []).includes(C.canal)) && (!C.formato || c.formato === C.formato)
     && (!C.terr || (terrDe(c, D) || {}).id === C.terr) && (!C.fmt || c.formato_id === C.fmt) && (!C.dest || (C.dest === '-' ? !c.destino : c.destino === C.dest)) && (!C.tag || (c.tags || []).includes(C.tag)));
 }
 function mqCard(c, D) {
@@ -21864,12 +21892,13 @@ function mqFiltrosHtml(D, C, comMidia = true) {
     ${tags.length ? `<label>Etiqueta<select id="cfG"><option value="">Todas</option>${tags.map(t => `<option${C.tag === t ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select></label>` : ''}
     <label>Canal<select id="cfC"><option value="">Todos</option>${CANAIS_C.map(([k, l]) => `<option value="${k}"${C.canal === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
     ${comMidia ? `<label>Tipo de mídia<select id="cfF"><option value="">Todos</option>${FORM_C.map(([k, l]) => `<option value="${k}"${C.formato === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>` : ''}
-    ${C.terr || C.tema || C.fmt || C.dest || C.tag || C.canal || C.formato ? '<button class="btn sm" id="cfLimpa" type="button">Limpar filtros</button>' : ''}</div>`;
+    <label>${ehScore(D) ? 'Score' : 'Nota'}<select id="cfN"><option value="">Todas</option>${ctFaixas(D).map(([k, l]) => `<option value="${k}"${C.nota === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+    ${C.terr || C.tema || C.fmt || C.dest || C.tag || C.canal || C.formato || C.nota ? '<button class="btn sm" id="cfLimpa" type="button">Limpar filtros</button>' : ''}</div>`;
 }
 function mqLigaFiltros(el, C) {
   const liga = (id, k) => { const x = el.querySelector('#' + id); if (x) x.onchange = e => { C[k] = e.target.value; render(); }; };
-  liga('cfTe', 'terr'); liga('cfT', 'tema'); liga('cfS', 'sub'); liga('cfFm', 'fmt'); liga('cfD', 'dest'); liga('cfG', 'tag'); liga('cfC', 'canal'); liga('cfF', 'formato');
-  const lp = el.querySelector('#cfLimpa'); if (lp) lp.onclick = () => { Object.assign(C, { terr: '', tema: '', sub: '', fmt: '', dest: '', tag: '', canal: '', formato: '' }); render(); };
+  liga('cfTe', 'terr'); liga('cfT', 'tema'); liga('cfS', 'sub'); liga('cfFm', 'fmt'); liga('cfD', 'dest'); liga('cfG', 'tag'); liga('cfC', 'canal'); liga('cfF', 'formato'); liga('cfN', 'nota');
+  const lp = el.querySelector('#cfLimpa'); if (lp) lp.onclick = () => { Object.assign(C, { terr: '', tema: '', sub: '', fmt: '', dest: '', tag: '', canal: '', formato: '', nota: '' }); render(); };
 }
 function tabKanban(el, D, C) {
   const lim = diaMais(hoje(), -29), L = mqFiltra(D, C), sc = ehScore(D);
@@ -21901,7 +21930,7 @@ function tabKanban(el, D, C) {
 function tabPrior(el, D, C) {
   if (!ehScore(D)) return tabPriorNotas(el, D, C);
   const dests = [...new Set([...D.cfg.destinos, ...D.cont.map(c => c.destino).filter(Boolean)])];
-  const base = D.cont.filter(c => ['ideia', 'pauta'].includes(c.status) && (!C.destP || (C.destP === '-' ? !c.destino : c.destino === C.destP)));
+  const base = D.cont.filter(c => ['ideia', 'pauta'].includes(c.status) && (!C.destP || (C.destP === '-' ? !c.destino : c.destino === C.destP)) && (!C.nota || ctFaixa(c, D) === C.nota));
   const val = base.filter(c => c.validado).sort(ordemScore), res = base.filter(c => !c.validado && c.score_total != null).sort(ordemScore), sem = base.filter(c => !c.validado && c.score_total == null);
   const andamento = D.cont.filter(c => ['producao', 'pronto'].includes(c.status)).length, meta = D.cfg.meta;
   const linha = (c, i) => { const l = terrDe(c, D), t = D.T[c.tema_id]; return `<tr><td class="n">${i + 1}</td><td><label class="mq-tg" title="VALIDAR"><input type="checkbox" data-val="${c.id}"${c.validado ? ' checked' : ''}><span>☑</span></label></td><td><b>${esc(c.titulo)}</b>${c.palavra_chave ? `<br><small class="muted">${esc(c.palavra_chave)}</small>` : ''}</td><td>${pillTerr(l)}${t ? `<br><small class="muted">${esc(t.nome)}</small>` : ''}</td><td>${pillFmt(D.F[c.formato_id])}</td><td>${pillDest(c.destino) || '<span class="muted">—</span>'}</td><td>${pillClass(c.classificacao)}</td><td>${scoreBar(c.score_total)}</td><td class="n" title="Potencial de impacto">${c.s3 ?? '—'}</td><td><button class="btn sm" data-edit="${c.id}">Abrir</button>${c.validado && c.status === 'ideia' ? ` <button class="btn sm" data-ac="${c.id}" data-p="pauta">Aprovar pauta</button>` : c.validado && c.status === 'pauta' ? ` <button class="btn sm" data-ac="${c.id}" data-p="producao">Produzir</button>` : ''}</td></tr>`; };
@@ -21909,11 +21938,12 @@ function tabPrior(el, D, C) {
   el.innerHTML = `<div class="kpis">${kpi('Validadas', num(val.length), 'escolhidas, ainda não produzidas')}${kpi('Meta da semana', meta ? num(meta) : '—', meta ? 'conteúdos por semana' : 'defina em Linha editorial')}${kpi('Em produção ou prontos', num(andamento), 'já ocupam a semana')}${kpi('Reservas com score', num(res.length), 'sem validar')}${kpi('Sem score', num(sem.length), 'faltam notas')}</div>
   <div class="panel"><b>Como o ranking funciona.</b> <span class="muted">Score = soma dos 6 critérios (1 a 5): ${D.cfg.score.map((c, i) => `${i + 1}. ${esc(c)}`).join(' · ')}. Empate: maior potencial de impacto, depois evidência mais robusta. O VALIDAR é a sua escolha e o ranking nunca o desfaz: ele só ordena dentro das escolhas e mostra as reservas.</span></div>
   ${dests.length ? `<div class="tabs mq-subtabs">${[['', 'Todos os destinos'], ...dests.map(d => [d, d]), ['-', 'Sem destino']].map(([k, l]) => `<button data-dp="${esc(k)}" class="${C.destP === k ? 'on' : ''}">${esc(l)}</button>`).join('')}</div>` : ''}
+  ${ctNotaSel(D, C)}
   <div class="panel"><h2>Quadro de validação: pautas validadas, do maior para o menor score</h2>${tabela(val, 'Nenhuma pauta validada. Marque ☑ nas que você quer produzir.')}</div>
   <div class="panel"><h2>Reservas, do maior para o menor score</h2>${tabela(res, 'Nenhuma reserva com score.')}</div>
   ${sem.length ? `<div class="panel"><h2>Sem score ainda</h2>${tabela(sem, '')}</div>` : ''}`;
   const por = id => D.cont.find(x => x.id === id);
-  el.querySelectorAll('[data-dp]').forEach(b => b.onclick = () => { C.destP = b.dataset.dp; render(); });
+  el.querySelectorAll('[data-dp]').forEach(b => b.onclick = () => { C.destP = b.dataset.dp; render(); }); ctNotaLiga(el, C);
   el.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => modalConteudo(por(b.dataset.edit), D));
   el.querySelectorAll('[data-ac]').forEach(b => b.onclick = () => moverConteudo(por(b.dataset.ac), b.dataset.p, D));
   el.querySelectorAll('[data-val]').forEach(x => x.onchange = () => act(async () => { await q(sb.from('conteudos').update({ validado: x.checked }).eq('id', x.dataset.val)); toast(x.checked ? 'Pauta validada' : 'Validação retirada'); render(); }));
@@ -24416,13 +24446,13 @@ async function tabIdentidade(el, D, C) {
 
 /* ---------- 3. Ideias: aprovar ou descartar ---------- */
 function tabIdeias(el, D, C) {
-  const L = D.cont.filter(c => c.status === 'ideia').sort((a, b) => (Number(notaCt(b, D)) || 0) - (Number(notaCt(a, D)) || 0));
+  const L = D.cont.filter(c => c.status === 'ideia' && (!C.nota || ctFaixa(c, D) === C.nota)).sort((a, b) => (Number(notaCt(b, D)) || 0) - (Number(notaCt(a, D)) || 0));
   el.innerHTML = ctVozHtml() + `<div class="panel ct-intro"><p><b>Como funciona:</b> aprove a ideia e ela vai para a Produção, onde o roteiro é escrito e aprovado antes de qualquer arte ou vídeo. Aprovar pede o tema, o formato e a data de publicação: a ideia entra no Kanban e no calendário. Descartar arquiva (dá para ver na Produção, em Mostrar arquivados).</p></div>
     <div class="acts"><button class="btn pri" id="ctNova">Nova ideia</button>${CT_BTN_IA('Sugerir ideias pela Claude')}</div>
-    <div class="panel"><h2>No baú, esperando aprovação · ${L.length}</h2>${L.length ? `<div class="ct-ideias">${L.map(c => `<div class="ct-ideia" data-id="${c.id}"><div><b>${esc(c.titulo)}</b><br><span class="muted">${esc(FORM_N[c.formato] || c.formato || '')}${c.tema_id && D.T[c.tema_id] ? ' · ' + esc(D.T[c.tema_id].nome) : ''}${c.objetivo ? ' · ' + esc(c.objetivo) : ''}${notaCt(c, D) != null ? ' · nota ' + String(Math.round(Number(notaCt(c, D)) * 10) / 10).replace('.', ',') : ''}</span>${c.hook ? `<br><span>${esc(c.hook)}</span>` : ''}</div>
+    ${ctNotaSel(D, C)}<div class="panel"><h2>No baú, esperando aprovação · ${L.length}</h2>${L.length ? `<div class="ct-ideias">${L.map(c => `<div class="ct-ideia" data-id="${c.id}"><div><b>${esc(c.titulo)}</b><br><span class="muted">${esc(FORM_N[c.formato] || c.formato || '')}${c.tema_id && D.T[c.tema_id] ? ' · ' + esc(D.T[c.tema_id].nome) : ''}${c.objetivo ? ' · ' + esc(c.objetivo) : ''}${notaCt(c, D) != null ? ' · nota ' + String(Math.round(Number(notaCt(c, D)) * 10) / 10).replace('.', ',') : ''}</span>${c.hook ? `<br><span>${esc(c.hook)}</span>` : ''}</div>
       <div class="acts"><button class="btn sm" data-ver>Abrir</button><button class="btn sm" data-desc>Descartar</button><button class="btn sm pri" data-ok>Aprovar</button></div></div>`).join('')}</div>` : '<div class="empty">Nenhuma ideia esperando avaliação.</div>'}</div>`;
   el.querySelector('#ctNova').onclick = () => modalConteudo(null, D, { status: 'ideia' });
-  ctVozLiga(el); // v0.240
+  ctVozLiga(el); ctNotaLiga(el, C); // v0.240; v0.274 filtro por nota
   el.querySelectorAll('.ct-ideia').forEach(r => {
     const c = D.cont.find(x => x.id === r.dataset.id);
     r.querySelector('[data-ver]').onclick = () => modalConteudo(c, D);

@@ -1,3 +1,9 @@
+## v0.274 — Filtros no teto de CAC, métricas de negócio no cockpit e nota no conteúdo (06/11/2026)
+- **Teto de CAC:** escolher um produto troca o quadro inteiro para ele. Filtro de turma: LTV só de quem fez a 1ª compra entre duas datas (ex.: a turma de um lançamento), também no mês a mês.
+- **Cockpit, Geral:** MRR, ARR, NRR, penetração de mercado e o lugar da North Star ("a definir" até ser criada no Growth Model).
+- **Conteúdo:** filtro por faixa de nota (score) no Kanban, na Priorização e nas Ideias: alta, média, baixa e sem nota.
+- Banco: `20270121100000_v0274_teto_turma.sql` (`cac_teto` ganha `p_f`). Testes: banco `v0274_teto_turma.sql`, tela `t274_filtros_metricas` (0 falhas).
+
 ## v0.273 — Teto de CAC pelo LTV (06/11/2026)
 - **Cockpit → Teto de CAC:** quanto dá para pagar por cliente. Mostra LTV, LTV/CAC com faixa, CAC total e de mídia (atual, máximo e 0 a 0), ROAS da 1ª compra (atual, mínimo e 0 a 0) e payback, da empresa e por produto de entrada.
 - **LTV pela aula do MBA:** soma mês a mês do lucro médio por cliente desde a 1ª compra, contando cada cliente só nos meses que já viveu (censura), trazida a valor presente. Separa 1ª compra, ascensão, renovação e projeção.

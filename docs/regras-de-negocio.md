@@ -1,3 +1,9 @@
+## v0.274
+- **Turma do teto:** com datas, o LTV usa só clientes com 1ª compra entre elas (no lugar dos últimos N meses), e o ticket da 1ª compra também. No mês a mês, a turma só conta a partir de quando entrou.
+- **Produto no teto:** filtro da tela; os números são os mesmos da linha do produto.
+- **Nota do conteúdo:** score (6 a 30): alta 24+, média 18 a 23, baixa até 17. Média das notas (1 a 5): alta 4+, média 3 a 3,9, baixa abaixo de 3. Sem nota é uma faixa à parte.
+- **Cockpit Geral:** MRR, ARR e NRR vêm de `painel_gerencial` (contratos recorrentes); penetração = clientes ativos ÷ mercado do plano; North Star = a métrica `north_star` do Growth Model.
+
 ## v0.273
 - **LTV de contribuição:** receita líquida menos o custo de entrega do produto, por cliente, mês a mês desde a 1ª compra. No mês k só entra quem já completou k+1 meses (censura). LTV = soma até a janela, dividindo cada mês por (1 + taxa ao mês)^k.
 - **Base:** clientes cuja 1ª compra foi nos últimos 24 meses (configurável). Produto de entrada = o da 1ª compra.
