@@ -1,3 +1,9 @@
+## v0.280 — Mídia, botões e pausas nas Automações (07/11/2026)
+
+- As ações de fluxo agora aceitam imagens, vídeos MP4 e documentos por upload ou URL HTTPS; o arquivo fica guardado no histórico da conversa.
+- Novo bloco interativo com respostas rápidas e links externos, com validação por canal e provedor.
+- O bloco de espera aceita segundos, minutos, horas e dias e continua usando o agendador da Edge.
+
 ## v0.279 — Domínio por workspace e editor visual de e-mail (07/11/2026)
 
 - Cada workspace configura seu domínio e endereço remetente. A Edge gera e lista somente os DNSs vinculados ao workspace, consulta status e solicita nova verificação no Resend.

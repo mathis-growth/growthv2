@@ -111,12 +111,24 @@ export async function evolution(cfg: any, path: string, method = 'GET', body?: u
   return request(u.toString().replace(/\/$/, '') + path, cfg.evolution_key, method, body, true, timeoutMs);
 }
 export const providers: Record<string, {
-  send: (cfg: any, channel: any, conversation: any, text: string, attachment?: any) => Promise<string>;
+  send: (cfg: any, channel: any, conversation: any, text: string, attachment?: any, interactive?: any) => Promise<string>;
 }> = {
   evolution: {
-    async send(cfg, ch, cv, text, attachment) {
+    async send(cfg, ch, cv, text, attachment, interactive) {
       const inst = encodeURIComponent(ch.externo_id);
       const type = attachment?.mime?.split(';')[0] || '';
+      if (interactive?.buttons?.length) {
+        if (ch.canal !== 'whatsapp') throw new Error('Botões ainda não são compatíveis com este canal Evolution.');
+        const buttons = interactive.buttons.map((b:any) => b.kind === 'url'
+          ? { type: 'url', displayText: b.title, url: b.value }
+          : { type: 'reply', displayText: b.title, id: b.value || b.title });
+        const r = await evolution(cfg, '/message/sendButtons/' + inst, 'POST', {
+          number: cv.externo_id, title: interactive.title || 'Mensagem', description: text,
+          footer: interactive.footer || ' ', buttons
+        });
+        if (!r.key?.id) throw new Error('O provedor não confirmou o identificador da mensagem.');
+        return r.key.id;
+      }
       // Gravações usam a rota de áudio da Evolution (conversão do provedor).
       // Arquivos de áudio não gravados seguem como mídia normal (sem forçar PTT).
       const voice = attachment?.gravado && type.startsWith('audio/') && !text;
@@ -132,7 +144,7 @@ export const providers: Record<string, {
     },
   },
   zernio: {
-    async send(cfg, ch, cv, text, attachment) {
+    async send(cfg, ch, cv, text, attachment, interactive) {
       // Zernio usa attachmentUrl/attachmentType, não attachments[] no envio.
       // Faz upload no próprio provedor, sem disponibilizar permanentemente nosso bucket privado.
       let mediaFields: Record<string,unknown> = {};
@@ -149,17 +161,22 @@ export const providers: Record<string, {
         if(!uploaded.ok)throw new ProviderError(uploaded.status,String(result.code||'UPLOAD_FAILED').replace(/[^A-Z_]/gi,'').slice(0,48));
         const target = new URL(String(result.url||''));
         if(target.protocol!=='https:')throw new Error('A Zernio não confirmou uma URL segura para o arquivo.');
-        const type = attachment.mime.split('/')[0];
+        const type = attachment.mime.split('/')[0],attachmentType=['image','video','audio'].includes(type)?type:'file';
         mediaFields = {
           attachmentUrl:target.toString(),
-          attachmentType:['image','video','audio'].includes(type) ? type : 'file',
-          ...(type==='application' ? {attachmentName:safeName} : {}),
+          attachmentType,
+          ...(attachmentType==='file' ? {attachmentName:safeName} : {}),
           // PTT nativo exige OGG/Opus mono; outros áudios são enviados como arquivo de áudio.
           ...(ch.canal==='whatsapp' && attachment.gravado && /^(audio\/ogg)/.test(attachment.mime) ? {voiceNote:true} : {}),
         };
       }
+      const buttons = Array.isArray(interactive?.buttons) ? interactive.buttons : [];
+      const formatted = buttons.length ? buttons.map((b:any) => b.kind === 'url'
+        ? { type:'url', title:b.title, url:b.value }
+        : { type:'postback', title:b.title, payload:b.value||b.title }) : [];
+      if(buttons.length>3)throw new Error('O canal permite até 3 botões por mensagem.');
       const r = await zernio(cfg.key, '/inbox/conversations/' + encodeURIComponent(cv.externo_id) + '/messages', 'POST', {
-        accountId:ch.externo_id,message:text||'',...mediaFields
+        accountId:ch.externo_id,message:text||'',...mediaFields,...(formatted.length?{buttons:formatted}:{})
       });
       const id = r.data?.messageId || r.messageId;
       if (!id) throw new Error('O provedor não confirmou o identificador da mensagem.');
@@ -265,24 +282,45 @@ async function executarFluxo(ch:any,cv:any,flow:any,run:any,estado:any) {
     const next=aresta(graph,node.id,'seguir');
     if(node.tipo==='espera'){
       if(!next)break;
-      const count=Math.max(1,Math.min(365,Number(node.data?.quantidade)||1)),unit=node.data?.unidade||'minutos';
-      const ms=count*(unit==='dias'?86400000:unit==='horas'?3600000:60000),retomarEm=new Date(Date.now()+ms).toISOString();
+      const unit=node.data?.unidade||'minutos',max=unit==='segundos'?86400:unit==='minutos'?525600:unit==='horas'?8760:365;
+      const count=Math.max(1,Math.min(max,Number(node.data?.quantidade)||1));
+      const ms=count*(unit==='dias'?86400000:unit==='horas'?3600000:unit==='minutos'?60000:1000),retomarEm=new Date(Date.now()+ms).toISOString();
       snapshot.no_id=next;
       await q(db.from('atd_automacao_execucoes').update({status:'aguardando',retomar_em:retomarEm,estado:snapshot,erro:null}).eq('id',run.id).eq('status','processando'));
       return 'aguardando';
     }
-    if(node.tipo==='mensagem'){
+    if(node.tipo==='mensagem'||node.tipo==='botoes'){
       const text=String(node.data?.texto||'').replace(/\{\{nome\}\}/gi,cv.nome||'').replace(/\{\{produto\}\}/gi,p.produto||'').replace(/\{\{campanha\}\}/gi,p.campanha||'').trim();
-      if(!text)throw new Error('Uma ação de mensagem está vazia.');
+      const mediaUrl=String(node.data?.media_url||'').trim(),mediaType=String(node.data?.media_type||'').trim();
+      const rawButtons=Array.isArray(node.data?.buttons)?node.data.buttons:[];
+      const buttons=rawButtons.filter((b:any)=>String(b?.title||'').trim()).map((b:any)=>({kind:b.kind==='url'?'url':'reply',title:String(b.title).trim().slice(0,20),value:String(b.value||'').trim()}));
+      if(!text&&!mediaUrl&&!buttons.length)throw new Error('A ação está vazia. Adicione texto, mídia ou botões.');
       if(!ch.ativo||ch.status!=='conectado')throw new Error('Canal desconectado durante a execução do fluxo.');
+      if(node.tipo==='botoes'&&(!text||!buttons.length))throw new Error('A ação de botões precisa de uma mensagem e pelo menos um botão.');
+      if(node.tipo==='botoes'&&(buttons.length>3||buttons.filter((b:any)=>b.kind==='url').length>1||buttons.some((b:any)=>b.kind==='url')&&buttons.length>1))throw new Error('Use até 3 respostas rápidas ou um único botão de link.');
+      if(node.tipo==='botoes'&&buttons.some((b:any)=>b.kind==='url'&&!/^https:\/\//i.test(b.value)))throw new Error('O botão de link precisa de uma URL HTTPS.');
+      if(node.tipo==='botoes'&&ch.canal==='instagram'&&ch.provedor!=='zernio')throw new Error('Botões no Instagram exigem conexão Zernio.');
+      if(mediaUrl&&(!/^https:\/\//i.test(mediaUrl)||!['imagem','documento','video'].includes(mediaType)))throw new Error('Configure uma URL HTTPS e o tipo de mídia.');
+      let attachment:any=null;
+      if(mediaUrl){
+        const downloaded=await downloadPublicMedia(mediaUrl),bytes=downloaded.bytes,responseMime=downloaded.mime;
+        if(responseMime.startsWith('image/')&&bytes.length>5*1024*1024)throw new Error('Imagens devem ter até 5 MB para manter compatibilidade com WhatsApp oficial.');
+        const allowed=mediaType==='imagem'?/^image\/(jpeg|png|webp|gif)$/.test(responseMime):mediaType==='video'?responseMime==='video/mp4':/^(application\/(pdf|msword|vnd\.(openxmlformats-officedocument\.(wordprocessingml\.document|spreadsheetml\.sheet|presentationml\.presentation)|ms-excel|ms-powerpoint))|text\/(plain|csv))$/.test(responseMime);
+        if(!allowed)throw new Error('O formato do arquivo não corresponde ao tipo selecionado.');
+        const nome=String(node.data?.media_nome||'arquivo').replace(/[\\/\r\n]/g,'_').slice(0,150),path=`${ch.workspace_id}/${run.id}/${node.id}`;
+        await q(db.storage.from('atendimento').upload(path,bytes,{contentType:responseMime,upsert:true}));
+        attachment={path,nome,mime:responseMime,tamanho:bytes.length};
+      }
+      const registroTexto=[text,...buttons.map((b:any,i:number)=>`${i+1}. ${b.title}${b.kind==='url'?` → ${b.value}`:''}`)].filter(Boolean).join('\n');
       const pending=await q(db.from('atd_mensagens').insert({workspace_id:ch.workspace_id,conversa_id:cv.id,
-        requisicao_id:snapshot.enviadas.length?null:run.id,direcao:'enviada',texto:text,autor_nome:'Automação · '+flow.nome,status:'enviando'}).select('id').single());
+        requisicao_id:snapshot.enviadas.length?null:run.id,direcao:'enviada',texto:registroTexto,autor_nome:'Automação · '+flow.nome,status:'enviando',anexos:attachment?[attachment]:[]}).select('id').single());
       if(!run.mensagem_id){await q(db.from('atd_automacao_execucoes').update({mensagem_id:pending.id}).eq('id',run.id));run.mensagem_id=pending.id;}
       let attempted=false;
       try{
         const cfg=ch.provedor==='evolution'?await secret(ch.workspace_id):{key:zp()};
+        if(attachment){const signed=await q(db.storage.from('atendimento').createSignedUrl(attachment.path,300));attachment={...attachment,url:signed.signedUrl,bytes};}
         attempted=true;
-        const external=await adapter.send(cfg,ch,cv,text);
+        const external=await adapter.send(cfg,ch,cv,text,attachment,node.tipo==='botoes'?{buttons,title:text,footer:String(node.data?.footer||'').slice(0,60)}:undefined);
         await q(db.rpc('atd_confirmar_envio',{p_mensagem:pending.id,p_externo:external}));
       }catch(e){
         const known=!attempted||(e instanceof ProviderError&&e.status<500&&e.status!==408);
@@ -317,7 +355,7 @@ async function executarAutomacoes(ch:any,conversaId:string,mensagem:any) {
     catch(e){const message=String((e as Error).message||'Falha no fluxo').slice(0,220),state=(e as any).fluxoIncerto?'incerto':'erro';await q(db.from('atd_automacao_execucoes').update({status:state,retomar_em:null,erro:message}).eq('id',run.id).eq('status','processando'));console.error('atd automacao falhou',flow.id,state);}
   }
 }
-async function mediaBytes(url: string) {
+async function downloadPublicMedia(url: string) {
   const u = new URL(url); urlPublica(u.origin);
   await publicHost(u.hostname);
   const r = await fetch(url, { redirect: 'error', signal: AbortSignal.timeout(15000) });
@@ -325,8 +363,9 @@ async function mediaBytes(url: string) {
   const reader = r.body!.getReader(); const chunks: Uint8Array[] = []; let size = 0;
   while (true) { const v = await reader.read(); if (v.done) break; size += v.value.length; if (size > MAX_MEDIA) { await reader.cancel(); throw new Error('Mídia acima de 8 MB.'); } chunks.push(v.value); }
   const bytes = new Uint8Array(size); let offset = 0; for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
-  return bytes;
+  return {bytes,mime:String(r.headers.get('content-type')||'application/octet-stream').split(';')[0].toLowerCase()};
 }
+async function mediaBytes(url: string) { return (await downloadPublicMedia(url)).bytes; }
 function base64Bytes(s: string) {
   if (s.length > Math.ceil(MAX_MEDIA * 4 / 3) + 100) throw new Error('Arquivo acima de 8 MB.');
   const binary = atob(s.replace(/^data:[^,]+,/, '')); return Uint8Array.from(binary, c => c.charCodeAt(0));
@@ -912,14 +951,27 @@ async function handle(req: Request, b: any) {
       throw Error('O canvas precisa ter até 60 blocos e 120 ligações.');
     const nodeIds=new Set<string>();
     for(const node of fluxo.nodes){
-      if(!node||!/^[0-9a-f-]{36}$/i.test(String(node.id||''))||nodeIds.has(node.id)||!['gatilho','mensagem','condicao','espera','fim'].includes(node.tipo))throw Error('Bloco inválido no canvas.');
+      if(!node||!/^[0-9a-f-]{36}$/i.test(String(node.id||''))||nodeIds.has(node.id)||!['gatilho','mensagem','botoes','condicao','espera','fim'].includes(node.tipo))throw Error('Bloco inválido no canvas.');
       nodeIds.add(node.id);
       const x=Number(node.x),y=Number(node.y);if(!Number.isFinite(x)||!Number.isFinite(y)||x<0||y<0||x>50000||y>50000)throw Error('Posição de bloco inválida.');
-      if(node.tipo==='mensagem'&&(!String(node.data?.texto||'').trim()||String(node.data.texto).length>4000))throw Error('Toda ação de mensagem precisa de um texto de até 4.000 caracteres.');
+      if(node.tipo==='mensagem'){
+        const text=String(node.data?.texto||'').trim(),url=String(node.data?.media_url||'').trim(),mediaType=String(node.data?.media_type||'');
+        if(text.length>4000||(!text&&!url))throw Error('A ação precisa de texto ou mídia e aceita até 4.000 caracteres.');
+        if(url&&(!/^https:\/\//i.test(url)||url.length>2000||!['imagem','video','documento'].includes(mediaType)))throw Error('URL ou tipo de mídia inválido na ação.');
+      }
+      if(node.tipo==='botoes'){
+        const text=String(node.data?.texto||'').trim(),buttons=Array.isArray(node.data?.buttons)?node.data.buttons.filter((x:any)=>String(x?.title||'').trim()):[];
+        if(!text||text.length>1024||!buttons.length||buttons.length>3)throw Error('A ação de botões precisa de texto e de 1 a 3 botões.');
+        if(buttons.some((x:any)=>!['reply','url'].includes(x.kind)||String(x.title).trim().length>20||String(x.value||'').length>500))throw Error('Os botões contêm valores inválidos.');
+        if(buttons.some((x:any)=>x.kind==='url'&&!/^https:\/\//i.test(String(x.value||'')))||buttons.some((x:any)=>x.kind==='url')&&buttons.length>1)throw Error('Use respostas rápidas ou apenas um botão com link HTTPS.');
+      }
       if(node.tipo==='condicao'&&!String(node.data?.valor||'').trim())throw Error('Informe o trecho de mensagem na condição.');
-      if(node.tipo==='espera'&&(!Number.isFinite(Number(node.data?.quantidade))||Number(node.data.quantidade)<1||Number(node.data.quantidade)>365||!['minutos','horas','dias'].includes(node.data?.unidade)))throw Error('Tempo de espera inválido (1 a 365 minutos, horas ou dias).');
+      if(node.tipo==='espera'){
+        const unit=String(node.data?.unidade||''),max=unit==='segundos'?86400:unit==='minutos'?525600:unit==='horas'?8760:unit==='dias'?365:0;
+        if(!Number.isFinite(Number(node.data?.quantidade))||Number(node.data.quantidade)<1||Number(node.data.quantidade)>max)throw Error('Tempo de espera inválido. Confira o limite da unidade selecionada.');
+      }
     }
-    if(!fluxo.nodes.some((n:any)=>n.tipo==='gatilho')||!fluxo.nodes.some((n:any)=>n.tipo==='mensagem'))throw Error('O canvas precisa conter um gatilho e ao menos uma ação de mensagem.');
+    if(!fluxo.nodes.some((n:any)=>n.tipo==='gatilho')||!fluxo.nodes.some((n:any)=>['mensagem','botoes'].includes(n.tipo)))throw Error('O canvas precisa conter um gatilho e ao menos uma ação de mensagem.');
     for(const edge of fluxo.edges)if(!nodeIds.has(edge.origem)||!nodeIds.has(edge.destino)||edge.origem===edge.destino||!['seguir','sim','nao'].includes(edge.saida))throw Error('Ligação inválida no canvas.');
     let canais:any[]=[];
     if(canalId){
