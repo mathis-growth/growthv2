@@ -1,3 +1,10 @@
+## v0.281 — Automações de e-mail em canvas (07/11/2026)
+
+- Cria fluxos visuais de e-mail com gatilho, mensagem HTML, condições, esperas e encerramento.
+- Permite selecionar o fluxo nas configurações de campanha, formulário/diagnóstico e produto; cadastro, resposta ou venda aprovada iniciam a execução.
+- Registra cada envio no histórico do lead/aluno e mantém execuções e esperas na fila do agendador de Atendimento.
+- Requer aplicar `20270125100000_atendimento_automacoes_email_canvas.sql` e publicar a Edge atualizada de Atendimento.
+
 ## v0.280 — Mídia, botões e pausas nas Automações (07/11/2026)
 
 - As ações de fluxo agora aceitam imagens, vídeos MP4 e documentos por upload ou URL HTTPS; o arquivo fica guardado no histórico da conversa.

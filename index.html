@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Growths</title>
-<link rel="stylesheet" href="assets/atendimento.css?v=0220">
+<link rel="stylesheet" href="assets/atendimento.css?v=0221">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1419,7 +1419,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
     <div class="foot">
       <button class="btn sm temaBtn" id="temaBtn" type="button"></button>
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.280 · 07/11/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.281 · 07/11/2026</span>
     </div>
   </aside>
   <div class="mainw"><div class="topou" id="topoU"><div class="ola" id="olaTxt"></div><div class="tou-m"><button type="button" class="tou-av" id="fotoBtn" aria-haspopup="true" aria-expanded="false" aria-controls="fotoMenu" aria-label="Sua conta"></button>
@@ -2583,6 +2583,20 @@ function txSalvarExtras(extras, key, config) {
   if (config) next[key] = config; else delete next[key];
   return next;
 }
+async function emailAutomacaoMarkup(evento, atual) {
+  const rotulo={cadastro:'Entrada de lead da campanha',pesquisa:'Resposta de formulário ou diagnóstico',venda:'Venda aprovada do produto'}[evento]||'Evento';
+  try {
+    const rows=await q(sb.from('atd_email_automacoes').select('id,nome,ativo').eq('workspace_id',S.ws).eq('evento',evento).order('nome').limit(100));
+    const choices=rows.filter(x=>x.ativo||x.id===atual);
+    return `<fieldset class="tx-config atd-email-flow-config"><legend>Automação de e-mail · ${rotulo}</legend><label>Fluxo do canvas<select data-email-automation="${evento}"><option value="">Não enviar e-mail automaticamente</option>${choices.map(x=>`<option value="${esc(x.id)}"${x.id===atual?' selected':''}>${esc(x.nome)}${x.ativo?'':' · pausada'}</option>`).join('')}</select></label><small class="muted">Selecione um fluxo ativo em Atendimento → Automações → E-mail. Os envios e resultados ficam no histórico do contato.</small></fieldset>`;
+  } catch {
+    return `<fieldset class="tx-config atd-email-flow-config"><legend>Automação de e-mail · ${rotulo}</legend><p class="muted">Crie e ative o canvas em Atendimento → Automações → E-mail e aplique a migration <code>20270125100000_atendimento_automacoes_email_canvas.sql</code>.</p></fieldset>`;
+  }
+}
+function emailAutomacaoSalvarExtras(extras,key,form,atual) {
+  const select=form?.querySelector('[data-email-automation]');if(!select)return {...(extras||{})};
+  const next={...(extras||{})};if(select.value)next[key]=select.value;else delete next[key];return next;
+}
 async function formCampanha(row, pre = {}) {
   if (row && row.id) return abrirWizard(row.id);
   const w = S.ws;
@@ -2609,6 +2623,7 @@ async function formCampanha(row, pre = {}) {
       { k: 'projeto_modelo_id', l: 'Modelo do projeto', t: 'select', opts: sel(pjMods, 'id', x => x.nome + (x.padrao_campanha ? ' (padrão)' : '')), def: (pjMods.find(x => x.padrao_campanha) || {}).id || '', hint: 'As atividades do modelo e as dos blocos da estratégia entram no projeto.' }] : [])];
   let salvo = null;
   let txConfig = () => null;
+  let emailFlowConfig = () => row?.extras?.email_automacao_cadastro_id || '';
   const pr = abrirForm(row ? 'Editar campanha' : 'Nova campanha', 'campanhas', campos, row, {
     ok: row ? 'Campanha salva' : 'Campanha criada',
     depois: async () => { if (!row && pre.abrir && salvo) { S.campSel = salvo.id; S.campTab = 'etapas'; S.view = 'mkt-camp'; S.estSel = null; }
@@ -2619,13 +2634,15 @@ async function formCampanha(row, pre = {}) {
       if (v.modelo === 'perpetuo') v.data_fim = null;
       else if (!v.data_fim) throw new Error('Informe a data de fim do lançamento. Para uma campanha sem fim, escolha o modelo Perpétuo.');
       if (v.data_fim && v.data_inicio && v.data_fim < v.data_inicio) throw new Error('O fim não pode ser antes do início.');
-      v.extras = txSalvarExtras(row?.extras, 'mensagem_cadastro', txConfig());
+      v.extras = emailAutomacaoSalvarExtras(txSalvarExtras(row?.extras, 'mensagem_cadastro', txConfig()),'email_automacao_cadastro_id',pr,emailFlowConfig());
       return v;
     }
   });
   pr.querySelector('.acts').insertAdjacentHTML('beforebegin', txMarkup(row?.extras?.mensagem_cadastro, canaisTx, 'cadastro'));
   const txSubmit = pr.querySelector('.pri'); txSubmit.disabled = true;
-  txConfig = await txLiga(pr, row?.extras?.mensagem_cadastro, canaisTx, 'cadastro');
+  const txPromise=txLiga(pr, row?.extras?.mensagem_cadastro, canaisTx, 'cadastro'),emailMarkup=await emailAutomacaoMarkup('cadastro',row?.extras?.email_automacao_cadastro_id);
+  pr.querySelector('.acts').insertAdjacentHTML('beforebegin',emailMarkup);emailFlowConfig=()=>{const s=pr.querySelector('[data-email-automation]');return s?s.value:row?.extras?.email_automacao_cadastro_id||'';};
+  txConfig = await txPromise;
   txSubmit.disabled = false;
   campFormCompacto();
   return pr;
@@ -6701,16 +6718,19 @@ async function renderCad(el, key) {
     ${rows.length ? rows.map(r => `<tr>${E.cols.map(c => `<td${c[2] ? ' class="n"' : ''}>${c[1](r, ctx)}</td>`).join('')}<td><button class="btn sm" data-edit="${r.id}">${E.transacional ? 'Editar / WhatsApp' : 'Editar'}</button></td></tr>`).join('') : `<tr><td colspan="${E.cols.length + 1}" class="empty">Nada cadastrado ainda.</td></tr>`}</tbody></table></div>`;
   const abrir = async row => {
     const canaisTx = E.transacional ? await txCanais() : [];
-    let txConfig = () => null;
+    let txConfig = () => null;const emailKey=key==='produtos'?'email_automacao_venda_id':null;
+    let emailFlowConfig=()=>row?.extras?.[emailKey]||'';
     const form = abrirForm((row ? 'Editar ' : 'Novo(a) ') + E.um, E.tabela, E.campos(ctx, row), row, { antes: async (v, r) => {
       if (E.antes) v = await E.antes(v, r);
-      if (E.transacional) v.extras = txSalvarExtras(r?.extras, E.transacional.key, txConfig());
+      if (E.transacional) {v.extras = txSalvarExtras(r?.extras, E.transacional.key, txConfig());if(emailKey)v.extras=emailAutomacaoSalvarExtras(v.extras,emailKey,form,emailFlowConfig());}
       return v;
     }, ...(E.depois ? { depois: async () => { await provisionaAuto(true); } } : {}) });
     if (E.transacional) {
       form.querySelector('.acts').insertAdjacentHTML('beforebegin', txMarkup(row?.extras?.[E.transacional.key], canaisTx, E.transacional.event));
       const submit = form.querySelector('.pri'); submit.disabled = true;
-      txLiga(form, row?.extras?.[E.transacional.key], canaisTx, E.transacional.event).then(get => { txConfig = get; }).catch(e => { txConfig = () => row?.extras?.[E.transacional.key] || null; toast(e.message || String(e), true); }).finally(() => { submit.disabled = false; });
+      const txPromise=txLiga(form, row?.extras?.[E.transacional.key], canaisTx, E.transacional.event);
+      if(emailKey){const markup=await emailAutomacaoMarkup('venda',row?.extras?.[emailKey]);form.querySelector('.acts').insertAdjacentHTML('beforebegin',markup);emailFlowConfig=()=>{const s=form.querySelector('[data-email-automation]');return s?s.value:row?.extras?.[emailKey]||'';};}
+      try{txConfig=await txPromise;}catch(e){txConfig=()=>row?.extras?.[E.transacional.key]||null;toast(e.message||String(e),true);}finally{submit.disabled=false;}
     }
     return form;
   };
@@ -15515,7 +15535,7 @@ async function abrirWizard(id = null, passo = null) {
     if (passo === 8 && wzCpq) {
       cpqLiga(f);
       const submit = f.querySelector('.pri'); submit.disabled = true;
-      txLiga(f, c?.extras?.mensagem_cadastro, canaisTx, 'cadastro').then(get => { txConfig = get; }).catch(err => { txConfig = () => c?.extras?.mensagem_cadastro || null; toast(err.message || String(err), true); }).finally(() => { submit.disabled = false; });
+      Promise.all([txLiga(f, c?.extras?.mensagem_cadastro, canaisTx, 'cadastro'),emailAutomacaoMarkup('cadastro',c?.extras?.email_automacao_cadastro_id)]).then(([get,markup])=>{txConfig=get;if(f.isConnected&&passo===8)f.querySelector('.wzb').insertAdjacentHTML('beforeend',markup);}).catch(err => { txConfig = () => c?.extras?.mensagem_cadastro || null; toast(err.message || String(err), true); }).finally(() => { submit.disabled = false; });
     }
     if (passo === 1) { ligarNovo(f); const fe = f.querySelector('[name=funil_id]');
       const prevEt = async () => { const box = $('#wzEt'), id_ = fe.value; if (!box) return; if (!id_ || id_ === '__nova_est__') { box.innerHTML = ''; return; }
@@ -15695,7 +15715,7 @@ async function abrirWizard(id = null, passo = null) {
       await q(sb.from('campanhas').update({ extras: ex }).eq('id', c.id)); c = { ...c, extras: ex };
     } else if (passo === 8) {
       if (f.querySelector('[data-cpq]')) await cpqSalva(f, c);
-      const extras = txSalvarExtras(c.extras, 'mensagem_cadastro', txConfig());
+      const extras = emailAutomacaoSalvarExtras(txSalvarExtras(c.extras, 'mensagem_cadastro', txConfig()),'email_automacao_cadastro_id',f,c?.extras?.email_automacao_cadastro_id);
       await q(sb.from('campanhas').update({ extras }).eq('id', c.id)); c.extras = extras;
     }
   };
@@ -20930,14 +20950,17 @@ async function modalPesquisa(row, pre) {
     { k: 'aceita_link_aberto', l: 'Aceitar também o link aberto (qualquer pessoa com o link responde, ligando por e-mail)', t: 'check', hint: 'Use na página de obrigado. Sem ele, só quem recebeu o link único responde.' }, { k: 'ativa', l: 'Ativa', t: 'check', def: false }];
   if (pre && !row) campos.forEach(c => { if (c.k && pre[c.k] !== undefined) c.def = pre[c.k]; });
   let txConfig = () => null;
+  let emailFlowConfig=()=>row?.extras?.email_automacao_pesquisa_id||'';
   const f = abrirForm(row ? 'Editar pesquisa' : 'Nova pesquisa', 'pesquisas', campos, row, { antes: v => { if (temVis) { v.visual = { ...((row && row.visual) || {}), titulo: String(v.titulo_publico || '').trim().slice(0, 160) }; if (!v.visual.titulo) delete v.visual.titulo; } delete v.titulo_publico; if (pubOk && v.tipo === 'diagnostico') v.publico = 'cliente'; if (v.gatilho === 'etapa' && !v.gatilho_etapa) throw new Error('Escolha a etapa do funil.'); if (v.gatilho !== 'etapa') v.gatilho_etapa = null;
     if (cgA) { if (v.gatilho === 'etapa_aluno' && !v.etapa_aluno_id) throw new Error('Escolha a etapa da jornada do aluno.'); if (v.gatilho !== 'etapa_aluno') v.etapa_aluno_id = null; if (!['entrada_aluno', 'etapa_aluno', 'checkin'].includes(v.gatilho)) v.produto_id = null; }
     if (cgC) { if (v.gatilho === 'checkin') { v.checkin_dias = Number(v.checkin_dias); if (!(v.checkin_dias >= 1 && v.checkin_dias <= 365)) throw new Error('Diga a cada quantos dias vai o check-in (de 1 a 365).'); v.checkin_max = v.checkin_max ? Number(v.checkin_max) : null; } else { v.checkin_dias = null; v.checkin_max = null; } }
-    v.extras = txSalvarExtras(row?.extras, 'mensagem_resposta', txConfig());
+    v.extras = emailAutomacaoSalvarExtras(txSalvarExtras(row?.extras, 'mensagem_resposta', txConfig()),'email_automacao_pesquisa_id',f,emailFlowConfig());
     return v; }, ok: 'Pesquisa salva' });
   f.querySelector('.acts').insertAdjacentHTML('beforebegin', txMarkup(row?.extras?.mensagem_resposta, canaisTx, 'pesquisa'));
   const txSubmit = f.querySelector('.pri'); txSubmit.disabled = true;
-  txConfig = await txLiga(f, row?.extras?.mensagem_resposta, canaisTx, 'pesquisa'); txSubmit.disabled = false;
+  const txPromise=txLiga(f, row?.extras?.mensagem_resposta, canaisTx, 'pesquisa'),emailMarkup=await emailAutomacaoMarkup('pesquisa',row?.extras?.email_automacao_pesquisa_id);
+  f.querySelector('.acts').insertAdjacentHTML('beforebegin',emailMarkup);emailFlowConfig=()=>{const s=f.querySelector('[data-email-automation]');return s?s.value:row?.extras?.email_automacao_pesquisa_id||'';};
+  try{txConfig=await txPromise;}finally{txSubmit.disabled=false;}
   if (row) botaoExcluir(f, 'pesquisas', row.id, 'Pesquisa excluída');
 }
 async function vPesquisaDet(m) {
@@ -24719,7 +24742,7 @@ function modalSubtemas(t, D) {
 }
 
 </script>
-<script src="assets/atendimento.js?v=0222"></script>
+<script src="assets/atendimento.js?v=0223"></script>
 <script>
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
 if (PQ_TOKEN) vPesquisaPublica(PQ_TOKEN);
