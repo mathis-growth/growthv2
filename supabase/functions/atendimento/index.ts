@@ -639,16 +639,89 @@ async function qrSharePublico(b:any){
     throw e;
   }
 }
+function emailFiltroAplica(p:any,f:any){if(f?.tipo&&p.status_funil!==f.tipo)return false;if(f?.qualificacao&&p.qualificacao!==f.qualificacao)return false;if(f?.campanha_id&&p.campanha_id!==f.campanha_id)return false;if(f?.tag&&!(Array.isArray(p.tags)?p.tags:[]).includes(f.tag))return false;return true;}
+function htmlSeguro(v:string){return v.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));}
+function emailPersonalizar(s:string,p:any){const n=String(p.nome||'').trim(),map:Record<string,string>={nome:n,primeiro_nome:n.split(/\s+/)[0]||'',email:String(p.email||'')};return s.replace(/\{\{\s*(nome|primeiro_nome|email)\s*\}\}/gi,(_m,k)=>htmlSeguro(map[String(k).toLowerCase()]||''));}
+function emailSanitizar(html:string){return html.replace(/<\s*(script|iframe|object|embed|form)\b[^>]*>[\s\S]*?<\s*\/\s*\1\s*>/gi,'').replace(/\s+on[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi,'').replace(/(href|src)\s*=\s*(["'])\s*javascript:[\s\S]*?\2/gi,'$1="#"');}
+async function resendDomains(path:string,method='GET',body?:any){const key=Deno.env.get('RESEND_API_KEY')||'';if(!key)throw new Error('Configure RESEND_API_KEY nas secrets da Edge.');const r=await fetch('https://api.resend.com/domains'+path,{method,headers:{Authorization:'Bearer '+key,'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(String(data.message||data.name||'Não foi possível consultar o Resend.').slice(0,220));return data;}
+async function processarEmails(req:Request){
+  const cfg=await q(db.from('sistema_config').select('valor').eq('chave','atd_agenda_token').maybeSingle()),expected=String(cfg?.valor||'');
+  if(!expected||!await segredoIgual(req.headers.get('x-atd-agenda-token')||'',expected))return json({erro:'Agendador não autorizado.'},401);
+  const key=Deno.env.get('RESEND_API_KEY')||'';if(!key)return json({erro:'Configure RESEND_API_KEY nas secrets da Edge.'},500);
+  const due=await q(db.from('atd_email_envios').select('campanha_id').eq('status','pendente').lte('enviar_em',new Date().toISOString()).order('enviar_em').limit(1000)),ids=[...new Set(due.map((x:any)=>x.campanha_id))];let interval=10;
+  if(ids.length){const configs=await q(db.from('atd_email_campanhas').select('intervalo_segundos').in('id',ids));if(configs.length)interval=Math.max(1,Math.min(...configs.map((c:any)=>Number(c.intervalo_segundos)||10)));}
+  const jobs=await q(db.rpc('atd_email_reservar',{p_limite:Math.max(1,Math.min(20,Math.floor(25/interval)))}));let enviados=0,ignorados=0,erros=0,incertos=0;
+  for(let i=0;i<jobs.length;i++){const job=jobs[i];let attempted=false,waitInterval=interval;try{
+    const campaign=await q(db.from('atd_email_campanhas').select('status,intervalo_segundos').eq('id',job.campanha_id).eq('workspace_id',job.workspace_id).single());
+    waitInterval=Math.max(1,Math.min(30,Number(campaign.intervalo_segundos)||interval));
+    if(campaign.status==='cancelada'){await q(db.from('atd_email_envios').update({status:'cancelado',atualizado_em:new Date().toISOString()}).eq('id',job.id).eq('status','processando'));continue;}
+    const sender=await q(db.from('atd_email_config').select('dominio,resend_domain_id,email_remetente,status_dominio').eq('workspace_id',job.workspace_id).single());if(sender.status_dominio!=='verified')throw new Error('O domínio de envio deste workspace ainda não foi verificado no Resend.');
+    const p=await q(db.from('pessoas').select('id,nome,email,status_funil,qualificacao,campanha_id,tags').eq('id',job.pessoa_id).eq('workspace_id',job.workspace_id).single());
+    if(!emailFiltroAplica(p,job.condicao)){await q(db.from('atd_email_envios').update({status:'ignorado',atualizado_em:new Date().toISOString(),erro:'Contato deixou de atender aos filtros da transmissão.'}).eq('id',job.id).eq('status','processando'));ignorados++;continue;}
+    const to=String(p.email||'').trim().toLowerCase();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to))throw new Error('O contato está sem um e-mail válido.');
+    attempted=true;const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify({from:sender.email_remetente,to,subject:emailPersonalizar(job.assunto,p),html:emailPersonalizar(job.corpo_html,p),tags:[{name:'growth_workspace',value:String(job.workspace_id).slice(0,50)},{name:'growth_campaign',value:String(job.campanha_id).slice(0,50)}]})});
+    const payload=await response.json().catch(()=>({}));if(!response.ok)throw Object.assign(new Error(String(payload.message||payload.error||'O Resend recusou o envio.').slice(0,220)),{status:response.status});const external=String(payload.id||'');if(!external)throw new Error('O Resend não confirmou o identificador do e-mail.');
+    await q(db.from('atd_email_envios').update({status:'enviado',email:to,externo_id:external,enviado_em:new Date().toISOString(),atualizado_em:new Date().toISOString(),erro:null}).eq('id',job.id).eq('status','processando'));enviados++;
+  }catch(e){const status=Number((e as any).status||0),known=!attempted||(status>0&&status<500&&status!==408),state=known?'erro':'incerto';await q(db.from('atd_email_envios').update({status:state,atualizado_em:new Date().toISOString(),erro:known?String((e as Error).message||'Falha no envio.').slice(0,220):'Envio sem confirmação. Confira o Resend antes de reenviar.'}).eq('id',job.id).eq('status','processando'));if(known)erros++;else incertos++;}
+    if(i<jobs.length-1)await new Promise(resolve=>setTimeout(resolve,waitInterval*1000));
+  }
+  const campaigns=await q(db.from('atd_email_campanhas').select('id,status').in('status',['agendada','em_execucao']).limit(100));for(const c of campaigns){const left=await q(db.from('atd_email_envios').select('id',{count:'exact',head:true}).eq('campanha_id',c.id).in('status',['pendente','processando']));if((left.count||0)===0)await q(db.from('atd_email_campanhas').update({status:'concluida',atualizado_em:new Date().toISOString()}).eq('id',c.id).in('status',['agendada','em_execucao']));else if(enviados)await q(db.from('atd_email_campanhas').update({status:'em_execucao',atualizado_em:new Date().toISOString()}).eq('id',c.id).eq('status','agendada'));}
+  return json({reservados:jobs.length,enviados,ignorados,erros,incertos});
+}
 async function handle(req: Request, b: any) {
   const userDb = createClient(URL_SB, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: req.headers.get('authorization') || '' } }, auth: { persistSession:false } });
   const { data: { user }, error } = await userDb.auth.getUser();
   if (error || !user) return json({ erro: 'Faça login novamente.' },401);
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
-  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo','disparos-grupos-list','disparos-segmentos-list','grupos-busca-status'];
+  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo','disparos-grupos-list','disparos-segmentos-list','grupos-busca-status','email-transmissao-list','email-dominios-list','email-dominio-get'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
-  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete','templates-mapping-save','canal-salvar','qr-share-create'];
+  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete','templates-mapping-save','canal-salvar','qr-share-create','email-dominio-create','email-dominio-verify','email-dominio-remetente-save'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
   const ws = b.workspace_id;
+  if(b.action==='email-dominios-list'){
+    const config=await q(db.from('atd_email_config').select('dominio,resend_domain_id,email_remetente,status_dominio').eq('workspace_id',ws).maybeSingle());if(!config)return json({data:[]});
+    const detail=await resendDomains('/'+encodeURIComponent(config.resend_domain_id));detail.email_remetente=config.email_remetente;await q(db.from('atd_email_config').update({status_dominio:String(detail.status||config.status_dominio),atualizado_em:new Date().toISOString()}).eq('workspace_id',ws));return json({data:[detail]});
+  }
+  if(b.action==='email-dominio-get'){const id=String(b.id||'').replace(/[^a-zA-Z0-9_-]/g,'');const config=await q(db.from('atd_email_config').select('resend_domain_id,email_remetente').eq('workspace_id',ws).single());if(!id||id!==config.resend_domain_id)throw new Error('Este domínio não pertence ao workspace atual.');const detail=await resendDomains('/'+encodeURIComponent(id));detail.email_remetente=config.email_remetente;return json(detail);}
+  if(b.action==='email-dominio-create'){
+    const name=String(b.domain||'').trim().toLowerCase().replace(/^https?:\/\//,'').replace(/\/$/,'');if(!/^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(name))throw new Error('Informe um domínio válido, sem protocolo ou caminho.');
+    const from=String(b.from_email||'').trim().toLowerCase();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(from)||!from.endsWith('@'+name))throw new Error('Informe o e-mail remetente usando exatamente o domínio do cliente.');
+    const list=await resendDomains(''),existing=(list.data||[]).find((d:any)=>String(d.name).toLowerCase()===name);let detail:any;
+    if(existing){const owner=await q(db.from('atd_email_config').select('workspace_id').eq('resend_domain_id',existing.id).maybeSingle());if(owner&&owner.workspace_id!==ws)throw new Error('Este domínio já está vinculado a outro workspace.');detail=await resendDomains('/'+encodeURIComponent(existing.id));}
+    else detail=await resendDomains('', 'POST',{name,region:'sa-east-1',capabilities:{sending:'enabled',receiving:'disabled'}});
+    await q(db.from('atd_email_config').upsert({workspace_id:ws,dominio:name,resend_domain_id:detail.id,email_remetente:from,status_dominio:String(detail.status||'not_started'),atualizado_em:new Date().toISOString()},{onConflict:'workspace_id'}));return json(detail);
+  }
+  if(b.action==='email-dominio-verify'){const id=String(b.id||'').replace(/[^a-zA-Z0-9_-]/g,'');const config=await q(db.from('atd_email_config').select('resend_domain_id,email_remetente').eq('workspace_id',ws).single());if(!id||id!==config.resend_domain_id)throw new Error('Este domínio não pertence ao workspace atual.');await resendDomains('/'+encodeURIComponent(id)+'/verify','POST',{});const detail=await resendDomains('/'+encodeURIComponent(id));await q(db.from('atd_email_config').update({status_dominio:String(detail.status||'not_started'),atualizado_em:new Date().toISOString()}).eq('workspace_id',ws));detail.email_remetente=config.email_remetente;return json(detail);}
+  if(b.action==='email-dominio-remetente-save'){const config=await q(db.from('atd_email_config').select('dominio').eq('workspace_id',ws).single()),from=String(b.from_email||'').trim().toLowerCase();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(from)||!from.endsWith('@'+config.dominio))throw new Error('Use um endereço dentro do domínio autenticado deste workspace.');await q(db.from('atd_email_config').update({email_remetente:from,atualizado_em:new Date().toISOString()}).eq('workspace_id',ws));return json({ok:true,email_remetente:from});}
+  if(b.action==='email-transmissao-list'){
+    const campanhas=await q(db.from('atd_email_campanhas').select('id,nome,inicio_em,fuso,intervalo_segundos,status,filtros,criado_em').eq('workspace_id',ws).order('criado_em',{ascending:false}).limit(30));
+    const ids=campanhas.map((c:any)=>c.id);const envios=ids.length?await q(db.from('atd_email_envios').select('id,campanha_id,pessoa_id,etapa,enviar_em,email,assunto,status,erro,enviado_em').eq('workspace_id',ws).in('campanha_id',ids).order('enviar_em').limit(3000)):[];
+    return json({campanhas,envios});
+  }
+  if(b.action==='email-transmissao-create'){
+    if(!ctx.editar)return json({erro:'Sem permissão para criar transmissão.'},403);
+    if(!Deno.env.get('RESEND_API_KEY'))throw new Error('Configure RESEND_API_KEY nas secrets da Edge.');
+    const sender=await q(db.from('atd_email_config').select('dominio,email_remetente,status_dominio').eq('workspace_id',ws).single());if(sender.status_dominio!=='verified')throw new Error('Cadastre e verifique o domínio do workspace em Atendimento → Transmissão → Domínio e DNS.');
+    const ids=[...new Set((Array.isArray(b.pessoa_ids)?b.pessoa_ids:[]).map((x:any)=>String(x)).filter(Boolean))];if(!ids.length||ids.length>500)throw new Error('Selecione entre 1 e 500 contatos.');
+    const start=new Date(String(b.inicio_em||''));if(!Number.isFinite(start.getTime()))throw new Error('Informe uma data e horário válidos.');
+    const interval=Number(b.intervalo_segundos);if(!Number.isInteger(interval)||interval<1||interval>30)throw new Error('O intervalo deve ser de 1 a 30 segundos.');
+    const f=b.filtros&&typeof b.filtros==='object'?b.filtros:{};const allowed={tipo:['','lead','cliente'],qualificacao:['','qualificado','pendente','nao_qualificado']};
+    if(!allowed.tipo.includes(String(f.tipo||''))||!allowed.qualificacao.includes(String(f.qualificacao||'')))throw new Error('Filtro de tipo ou qualificação inválido.');
+    const contacts=await q(db.from('pessoas').select('id,nome,email,status_funil,qualificacao,campanha_id,tags').eq('workspace_id',ws).in('id',ids));const eligible=contacts.filter((p:any)=>emailFiltroAplica(p,f)&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(p.email||'')));
+    if(!eligible.length)throw new Error('Nenhum contato selecionado tem e-mail válido e atende aos filtros.');
+    const steps=Array.isArray(b.etapas)?b.etapas:[];if(!steps.length||steps.length>10)throw new Error('Configure de 1 a 10 e-mails na sequência.');
+    const clean=steps.map((s:any,i:number)=>{const subject=String(s.assunto||'').trim(),html=emailSanitizar(String(s.html||'').trim()),delay=Number(s.atraso_minutos||0);if(!subject||subject.length>180||!html||html.length>100000)throw new Error(`Confira o assunto e o conteúdo do e-mail ${i+1}.`);if(!Number.isInteger(delay)||delay<0||delay>525600)throw new Error(`O intervalo antes do e-mail ${i+1} deve ficar entre 0 e 525600 minutos.`);return{assunto:subject,html,atraso_minutos:delay};});
+    const campaign=await q(db.from('atd_email_campanhas').insert({workspace_id:ws,nome:String(b.nome||'Transmissão de e-mail').trim().slice(0,160)||'Transmissão de e-mail',inicio_em:start.toISOString(),fuso:'America/Sao_Paulo',intervalo_segundos:interval,filtros:f,status:'agendada',criado_por:user.id}).select('id').single());
+    let rows:any[]=[],cumulative=0;for(let step=0;step<clean.length;step++){cumulative+=clean[step].atraso_minutos;for(let i=0;i<eligible.length;i++){const p=eligible[i];rows.push({workspace_id:ws,campanha_id:campaign.id,pessoa_id:p.id,etapa:step+1,enviar_em:new Date(start.getTime()+cumulative*60000+i*interval*1000).toISOString(),email:p.email,assunto:clean[step].assunto,corpo_html:clean[step].html,atraso_minutos:clean[step].atraso_minutos,condicao:f,status:'pendente'});}}
+    for(let i=0;i<rows.length;i+=500)await q(db.from('atd_email_envios').insert(rows.slice(i,i+500)));
+    return json({id:campaign.id,contatos:eligible.length,etapas:clean.length,envios:rows.length});
+  }
+  if(b.action==='email-transmissao-cancel'){
+    const id=String(b.id||'');if(!id)throw new Error('Transmissão inválida.');
+    await q(db.from('atd_email_envios').update({status:'cancelado',atualizado_em:new Date().toISOString()}).eq('workspace_id',ws).eq('campanha_id',id).eq('status','pendente'));
+    await q(db.from('atd_email_campanhas').update({status:'cancelada',atualizado_em:new Date().toISOString()}).eq('workspace_id',ws).eq('id',id).in('status',['agendada','em_execucao']));
+    return json({ok:true});
+  }
   if(b.action==='qr-share-create'){
     const ch=await channel(String(b.canal_id||''),ws);
     if(ch.provedor!=='evolution'||ch.canal!=='whatsapp'||!ch.ativo)throw Error('Selecione uma conexão ativa da Evolution.');
@@ -1721,6 +1794,7 @@ Deno.serve(async req => {
     if(b.action==='qr-share-view')return await qrSharePublico(b);
     if(b.action==='processar-grupos-periodico')return await processarGruposPeriodicos(req);
     if(b.action==='processar-agendamentos')return await processarAgendamentos(req);
+    if(b.action==='processar-emails')return await processarEmails(req);
     return await handle(req,b);
   } catch(e) {
     // Sem logs de payload, URL com token ou chaves. Mensagens conhecidas são seguras.

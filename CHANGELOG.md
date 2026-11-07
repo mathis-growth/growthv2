@@ -1,3 +1,25 @@
+## v0.279 — Domínio por workspace e editor visual de e-mail (07/11/2026)
+
+- Cada workspace configura seu domínio e endereço remetente. A Edge gera e lista somente os DNSs vinculados ao workspace, consulta status e solicita nova verificação no Resend.
+- O editor visual permite inserir imagens por URL ou upload e botões com link. Uploads ficam em bucket público com escrita limitada ao workspace e até 5 MB.
+- O envio agora usa o remetente verificado do workspace; a chave Resend permanece apenas como secret da Edge.
+
+## v0.278 — Imagens e botões na Transmissão de E-mail (07/11/2026)
+
+- Adiciona editor visual para compor e-mails, inserir CTA com link HTTPS, adicionar imagem por URL ou enviar arquivo de imagem ao Storage do workspace.
+- Cria o bucket público `email-assets` com upload restrito por workspace, permissão de edição e limite de 5 MB por imagem.
+- Filtra conteúdo ativo perigoso antes de enfileirar o HTML do e-mail.
+
+## v0.277 — Transmissão de e-mail no Atendimento (07/11/2026)
+
+- Adiciona campanhas de e-mail segmentadas por tipo, qualificação, campanha e tags, com até 10 etapas, data/hora inicial, intervalos e variáveis do contato.
+- Cria fila persistente processada pelo agendador do Atendimento usando Resend; cada etapa registra status e erros no histórico da pessoa e permite cancelar envios pendentes.
+- Requer `RESEND_API_KEY` e `EMAIL_MARKETING_FROM` (ou o remetente já configurado em `AVISOS_EMAIL_DE`) nas secrets da Edge.
+
+## v0.276 — Visibilidade dos campos na Transmissão (07/11/2026)
+
+- Aumenta o contraste das opções de campos de contato usadas nas variáveis de template e limita a largura do seletor para manter a lista legível.
+
 ## v0.275 — Colunas livres, prioridade pelo score, busca e ordem no conteúdo (06/11/2026)
 - **Colunas livres por etapa:** botão "Colunas" no Baú e na Produção. Dentro de cada etapa (Ideias, Pautas, Em produção…) você cria, renomeia, ordena e apaga as suas colunas, sem programação. Ex.: "Ideias aprovadas" dentro de Ideias.
 - **Baú de ideias:** as ideias aparecem separadas por coluna; cada ideia escolhe a coluna (sem precisar de data). "Mandar para a produção" pede tema, formato e data.
