@@ -20,8 +20,8 @@ SEED = {
     'cac': {'cac_total': 400, 'novos': 2}, 'fluxo': {}},
   'rpc:cac_teto': T,
   'conteudo_linhas': ws([]), 'conteudo_temas': ws([dict(id='t1', nome='Negócios', prioridade=1, ativo=True)]), 'conteudo_metas_semanais': ws([]), 'conteudo_publicacoes': ws([]), 'conteudo_config': ws([]), 'equipe': ws([]),
-  'conteudos': ws([dict(id='a', titulo='Ideia forte', status='ideia', ideia_media=4.5, formato='reels', tema_id='t1', canais=[], tags=[], criado_em='2026-11-01'),
-                   dict(id='b', titulo='Ideia média', status='ideia', ideia_media=3.2, formato='reels', tema_id='t1', canais=[], tags=[], criado_em='2026-11-02'),
+  'conteudos': ws([dict(id='a', titulo='Ideia forte', status='ideia', ideia_media=8.5, formato='reels', tema_id='t1', canais=[], tags=[], criado_em='2026-11-01'),
+                   dict(id='b', titulo='Ideia média', status='ideia', ideia_media=6.2, formato='reels', tema_id='t1', canais=[], tags=[], criado_em='2026-11-02'),
                    dict(id='c', titulo='Ideia sem nota', status='ideia', formato='reels', tema_id='t1', canais=[], tags=[], criado_em='2026-11-03')]),
   'content_versoes': ws([]), 'content_produtos': ws([]), 'conteudo_conta_dia': ws([]), 'conteudo_fechamentos': ws([]), 'conteudo_formatos': ws([]), 'conteudo_linha_propostas': ws([]), 'conteudo_personas': ws([]),
 }
@@ -68,7 +68,7 @@ with sync_playwright() as p:
       const k = document.createElement('div'); document.body.append(k); tabKanban(k, D, { nota: 'sem' }); const kb = !!k.querySelector('#cfN'); k.remove();
       return { alta: f('alta'), media: f('media'), sem: f('sem'), ideias, sel, kb }; }""")
     chk(r['alta'] == ['Ideia forte'] and r['media'] == ['Ideia média'] and r['sem'] == ['Ideia sem nota'], 'faixas de nota', r)
-    chk(r['ideias'] == ['Ideia forte'] and r['sel'][:2] == ['Todas', 'Alta (4 ou mais)'] and r['kb'], 'filtro de nota nas ideias e no kanban', r)
+    chk(r['ideias'] == ['Ideia forte'] and r['sel'][:2] == ['Todas', 'Alta (8 a 10)'] and r['kb'], 'filtro de nota nas ideias e no kanban', r)
     pg.set_viewport_size({'width': 390, 'height': 800}); pg.evaluate("S.view = 'cockpit'; render();"); pg.wait_for_timeout(1000)
     chk(pg.evaluate("document.documentElement.scrollWidth <= innerWidth + 1"), 'cabe no celular')
     chk(not errs, 'sem erro de script', errs)

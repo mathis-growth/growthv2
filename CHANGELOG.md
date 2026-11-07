@@ -1,3 +1,12 @@
+## v0.275 — Colunas livres, prioridade pelo score, busca e ordem no conteúdo (06/11/2026)
+- **Colunas livres por etapa:** botão "Colunas" no Baú e na Produção. Dentro de cada etapa (Ideias, Pautas, Em produção…) você cria, renomeia, ordena e apaga as suas colunas, sem programação. Ex.: "Ideias aprovadas" dentro de Ideias.
+- **Baú de ideias:** as ideias aparecem separadas por coluna; cada ideia escolhe a coluna (sem precisar de data). "Mandar para a produção" pede tema, formato e data.
+- **Produção:** levar uma ideia para qualquer etapa da produção (arrastando ou pelo "Mover para") abre a janela que pede a data; sem data, não entra.
+- **Prioridade no cartão:** a nota aparece logo no topo, colorida (alta verde, média amarela, baixa vermelha), e o cartão ganha a borda da mesma cor. Com score, sai a "Prioridade" do tema, para não confundir.
+- **Correção:** o score (6 a 30) agora vale em qualquer método; antes, no método simples, o filtro e o cartão procuravam a média de 1 a 10, que as ideias não têm, e o "Sem nota" não funcionava.
+- **Busca por texto e por voz** (título, descrição, gancho, palavra-chave e etiquetas, sem ligar para acento) e **ordem** (maior ou menor nota primeiro, mais recentes, mais antigas) no Baú, na Produção e na Priorização.
+- Banco: `20270122100000_v0275_conteudo_colunas.sql`. Testes: banco `v0275_conteudo_colunas.sql`, tela `t275_ideias_colunas` (0 falhas).
+
 ## v0.274 — Filtros no teto de CAC, métricas de negócio no cockpit e nota no conteúdo (06/11/2026)
 - **Teto de CAC:** escolher um produto troca o quadro inteiro para ele. Filtro de turma: LTV só de quem fez a 1ª compra entre duas datas (ex.: a turma de um lançamento), também no mês a mês.
 - **Cockpit, Geral:** MRR, ARR, NRR, penetração de mercado e o lugar da North Star ("a definir" até ser criada no Growth Model).

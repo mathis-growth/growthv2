@@ -1,3 +1,6 @@
+## v0.275
+Rodar `supabase/migrations/20270122100000_v0275_conteudo_colunas.sql` (aditiva).
+
 ## v0.274
 Rodar `supabase/migrations/20270121100000_v0274_teto_turma.sql` (troca a função `cac_teto`; depois da v0.273).
 

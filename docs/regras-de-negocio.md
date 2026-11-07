@@ -1,7 +1,13 @@
+## v0.275
+- **Colunas livres:** pertencem a uma etapa. O conteúdo só fica numa coluna da etapa em que está; ao mudar de etapa sem escolher coluna, vai para a etapa sem coluna. Apagar a coluna devolve os cartões para a etapa. Nome não se repete na mesma etapa.
+- **Ir para a produção:** sair de Ideias para qualquer outra etapa (menos arquivar) pede tema, formato e data de publicação.
+- **Nota que vale:** o score (soma dos 6 critérios, 6 a 30) sempre que existir; senão, a média das 5 notas (1 a 10). Faixas do score: alta 24+, média 18 a 23, baixa até 17. Da média: alta 8+, média 6 a 7,9, baixa abaixo de 6.
+- **Busca:** todas as palavras digitadas precisam aparecer no título, descrição, gancho, palavra-chave ou etiquetas; sem diferença de acento ou maiúscula.
+
 ## v0.274
 - **Turma do teto:** com datas, o LTV usa só clientes com 1ª compra entre elas (no lugar dos últimos N meses), e o ticket da 1ª compra também. No mês a mês, a turma só conta a partir de quando entrou.
 - **Produto no teto:** filtro da tela; os números são os mesmos da linha do produto.
-- **Nota do conteúdo:** score (6 a 30): alta 24+, média 18 a 23, baixa até 17. Média das notas (1 a 5): alta 4+, média 3 a 3,9, baixa abaixo de 3. Sem nota é uma faixa à parte.
+- **Nota do conteúdo:** score (6 a 30): alta 24+, média 18 a 23, baixa até 17. Média das notas (1 a 10): alta 8+, média 6 a 7,9, baixa abaixo de 6 (corrigido na v0.275). Sem nota é uma faixa à parte.
 - **Cockpit Geral:** MRR, ARR e NRR vêm de `painel_gerencial` (contratos recorrentes); penetração = clientes ativos ÷ mercado do plano; North Star = a métrica `north_star` do Growth Model.
 
 ## v0.273

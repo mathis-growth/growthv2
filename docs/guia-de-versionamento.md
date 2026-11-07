@@ -1,3 +1,8 @@
+## v0.275
+- Migração `20270122100000_v0275_conteudo_colunas.sql`: tabela `conteudo_colunas` (etapa, nome, ordem; RLS de Marketing), `conteudos.coluna_id` e gatilho `conteudo_coluna_valida` (coluna de outra etapa ou de outro workspace sai).
+- index.html: `notaCt`/`notaTxt` usam `score_total` sempre que existir; `ctUsaScore`, `ctFaixa` (média de 1 a 10), `ctNotaPill`, `CT_ORDENS`/`ctCmp`, `ctAcha`/`ctBuscaHtml`/`ctBuscaLiga` (busca por texto e voz); `ctColunasModal`; `tabKanban` monta as colunas livres; `tabIdeias` agrupa por coluna; `moverConteudo(c, etapa, D, coluna)` manda para `modalAprovaIdeia` quando a ideia sai de Ideias. `dadosConteudo` devolve `cols`. Rótulo da tela para 0.275.
+- Testes novos: banco `v0275_conteudo_colunas.sql`; tela `t275_ideias_colunas.py`. `t274` passa a usar a escala certa da média (1 a 10).
+
 ## v0.274
 - Migração `20270121100000_v0274_teto_turma.sql`: `cac_teto(p_ws, p_ini, p_fim, p_hoje, p_hist, p_f jsonb)`; a assinatura antiga é removida antes.
 - index.html: `tcPinta` e filtros `S.tcF` no teto; `corpo.geral` do cockpit com MRR, ARR, NRR, penetração e NSM (carrega `growth_metricas` também para o Geral); `ctFaixas`, `ctFaixa`, `ctNotaSel` e `C.nota` no conteúdo. Rótulo da tela para 0.274.

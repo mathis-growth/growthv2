@@ -1308,7 +1308,13 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
 :root{--ck-s1:#3b82f6;--ck-s2:#d97706;--ck-borda:rgba(148,163,184,.45)}
 :root[data-theme="light"]{--ck-s1:#1d4ed8;--ck-s2:#d97706;--ck-borda:#c3cfe2}
 .tc-quadro{background:var(--panel,var(--surface,#fff));border:2px solid var(--ck-borda);border-radius:14px;box-shadow:0 2px 4px rgba(15,23,42,.06),0 10px 24px rgba(15,23,42,.08);padding:14px 16px;margin:0 0 18px}
-.tc-filtros{margin:0 0 14px;align-items:end}.tc-quadro>.head{margin-bottom:10px}.tc-quadro h2{margin:0 0 2px;font-size:16px}
+.tc-filtros{margin:0 0 14px;align-items:end}
+.gcard.ct-pr-alta,.ct-ideia.ct-pr-alta{border-left:5px solid var(--good)}.gcard.ct-pr-media,.ct-ideia.ct-pr-media{border-left:5px solid var(--warn)}.gcard.ct-pr-baixa,.ct-ideia.ct-pr-baixa{border-left:5px solid var(--bad)}.gcard.ct-pr-sem,.ct-ideia.ct-pr-sem{border-left:5px solid var(--line)}
+.ct-np-l{margin:0 0 4px}.ct-np{font-weight:700}
+.ct-busca{min-width:240px;flex:1}.ct-busca-in{display:flex;gap:6px;align-items:center}.ct-busca-in input{flex:1;min-width:0}[data-ct-busca-voz].on{background:var(--bad-soft);color:var(--bad)}
+.colk.ct-livre{background:var(--accent-soft,rgba(59,130,246,.06));border:1px dashed var(--accent)}
+.ct-cols-et{border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:0 0 10px;box-shadow:0 1px 3px rgba(15,23,42,.06)}.ct-cols-et h3{margin:0 0 6px;font-size:14px}
+.ct-cols-l{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:4px 0}.ct-cols-l input{flex:1;min-width:160px}.tc-quadro>.head{margin-bottom:10px}.tc-quadro h2{margin:0 0 2px;font-size:16px}
 .tc-ks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .tc-k{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 3px rgba(15,23,42,.06);min-width:0}
 .tc-k .l{font-size:12px;color:var(--muted)}.tc-k .v{font-size:20px;font-weight:700;display:flex;gap:6px;align-items:center;flex-wrap:wrap}.tc-k .s{font-size:12px;color:var(--muted)}
@@ -1413,7 +1419,7 @@ details.gc-det>summary .muted{font-weight:400;font-size:12.5px}
     <div class="foot">
       <button class="btn sm temaBtn" id="temaBtn" type="button"></button>
       <button class="btn sm" id="sino" type="button">Meus avisos <span id="sinoN" class="pill bad" style="margin-left:4px"></span></button>
-      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.274 · 06/11/2026</span>
+      <span class="muted" id="versaoApp" style="font-size:11px">Versão 0.275 · 06/11/2026</span>
     </div>
   </aside>
   <div class="mainw"><div class="topou" id="topoU"><div class="ola" id="olaTxt"></div><div class="tou-m"><button type="button" class="tou-av" id="fotoBtn" aria-haspopup="true" aria-expanded="false" aria-controls="fotoMenu" aria-label="Sua conta"></button>
@@ -17375,9 +17381,10 @@ async function sincPubs(id, v) {
   if (!['agendado', 'publicado'].includes(v.status) || !(v.canais || []).length) return;
   await q(sb.from('conteudo_publicacoes').upsert(v.canais.map(c => ({ workspace_id: S.ws, conteudo_id: id, canal: c, data_publicacao: v.data_publicacao || null, status: v.status === 'publicado' ? 'publicada' : 'agendada' })), { onConflict: 'conteudo_id,canal' }));
 }
-async function moverConteudo(c, etapa, D) {
+async function moverConteudo(c, etapa, D, coluna = null) {
+  if (c.status === 'ideia' && !['ideia', 'arquivado'].includes(etapa)) return modalAprovaIdeia(c, D, coluna); // v0.275: ir para a produção pede tema, formato e data
   try {
-    await q(sb.from('conteudos').update({ status: etapa }).eq('id', c.id));
+    await q(sb.from('conteudos').update({ status: etapa, coluna_id: coluna || null }).eq('id', c.id));
     await sincPubs(c.id, { ...c, status: etapa });
     render();
   } catch (e) { toast(e.message || String(e), true); if (etapa !== 'arquivado') modalConteudo({ ...c, status: etapa }, D); }
@@ -21688,8 +21695,9 @@ const OBJ_C = ['Autoridade', 'Alcance', 'Relacionamento', 'Conversão', 'Educar 
 const MQ_SCORE = ['s1', 's2', 's3', 's4', 's5', 's6'];
 const ctOpc = p => p.then(r => (r.error ? [] : r.data || []), () => []);
 const ehScore = D => D.cfg.metodo === 'score6';
-const notaCt = (c, D) => ehScore(D) ? c.score_total : (c.status === 'ideia' ? c.ideia_media : (c.pauta_media ?? c.ideia_media));
-const notaTxt = (c, D) => { const n = notaCt(c, D); return n == null ? null : ehScore(D) ? `${n}/30` : notaC(n); };
+// v0.275: o score (6 a 30) vale sempre que existir, qualquer que seja o método; sem score, a média das notas (1 a 10)
+const notaCt = (c, D) => c.score_total != null ? c.score_total : ehScore(D) ? null : (c.status === 'ideia' ? c.ideia_media : (c.pauta_media ?? c.ideia_media));
+const notaTxt = (c, D) => { const n = notaCt(c, D); return n == null ? null : c.score_total != null ? `${n}/30` : notaC(n); };
 const terrDe = (c, D) => { const t = D.T[c.tema_id]; return t && t.linha_id ? D.L[t.linha_id] : null; };
 const listaTxt = a => (a || []).join(', ');
 const separa = (s, re) => String(s || '').split(re).map(x => x.trim()).filter(Boolean);
@@ -21703,7 +21711,7 @@ const ordemScore = (a, b) => (b.score_total ?? -1) - (a.score_total ?? -1) || (b
 
 async function dadosConteudo() {
   const w = S.ws;
-  const [linhas, temas, cont, metas, pubs, cfg, eq, conta, formatos, fech, personas, propostas, produtos, fichas] = await Promise.all([
+  const [linhas, temas, cont, metas, pubs, cfg, eq, conta, formatos, fech, personas, propostas, produtos, fichas, colunas] = await Promise.all([
     q(sb.from('conteudo_linhas').select('*').eq('workspace_id', w).order('ordem').order('nome')),
     q(sb.from('conteudo_temas').select('*').eq('workspace_id', w).order('prioridade').order('nome')),
     q(sb.from('conteudos').select('*').eq('workspace_id', w).order('criado_em')),
@@ -21717,13 +21725,14 @@ async function dadosConteudo() {
     ctOpc(sb.from('conteudo_personas').select('*').eq('workspace_id', w).order('criado_em')),
     ctOpc(sb.from('conteudo_linha_propostas').select('*').eq('workspace_id', w).order('criado_em', { ascending: false }).limit(20)),
     ctOpc(sb.from('content_produtos').select('*').eq('workspace_id', w).order('ordem').order('nome')),
-    ctOpc(sb.from('produtos').select('id,nome,preco,ativo').eq('workspace_id', w).order('nome'))
+    ctOpc(sb.from('produtos').select('id,nome,preco,ativo').eq('workspace_id', w).order('nome')),
+    ctOpc(sb.from('conteudo_colunas').select('*').eq('workspace_id', w).order('ordem').order('nome')) // v0.275
   ]);
   const c0 = cfg[0] || {};
   const C = { metodo: c0.metodo || 'simples', criterios: c0.criterios || CRIT_PADRAO, score: c0.criterios_score || ['Timing / pauta quente', 'Potencial estratégico', 'Potencial de impacto', 'Facilidade de execução', 'Robustez da evidência', 'Novidade / pouco explorado no Brasil'],
     destinos: c0.destinos || [], canaisAtivos: c0.canais_ativos || ['instagram'], canaisPorTag: c0.canais_por_tag || {}, meta: c0.meta_semanal, diaFech: c0.dia_fechamento || 6, tags: c0.tags || [], linha: c0.linha || {}, modelo: c0.modelo || '', tem: 'metodo' in c0 || formatos.length > 0 };
   const fmts = formatos.filter(f => f.grupo === 'formato'), quadros = formatos.filter(f => f.grupo === 'quadro');
-  return { produtos, prodCad: fichas, fichas: {}, PR: Object.fromEntries(produtos.map(p => [p.id, p])), linhas, temas: temas.filter(t => !t.tema_pai_id), subtemas: temas.filter(t => t.tema_pai_id), cont, metas, pubs, crit: C.criterios, cfg: C, eq, conta, formatos, fmts, quadros, fech, personas, propostas,
+  return { cols: colunas || [], produtos, prodCad: fichas, fichas: {}, PR: Object.fromEntries(produtos.map(p => [p.id, p])), linhas, temas: temas.filter(t => !t.tema_pai_id), subtemas: temas.filter(t => t.tema_pai_id), cont, metas, pubs, crit: C.criterios, cfg: C, eq, conta, formatos, fmts, quadros, fech, personas, propostas,
     T: Object.fromEntries(temas.map(t => [t.id, t])), L: Object.fromEntries(linhas.map(l => [l.id, l])), F: Object.fromEntries(formatos.map(f => [f.id, f])) };
 }
 function mqComeco(D) {
@@ -21861,30 +21870,59 @@ function modalConteudo(row, D, pre) {
 
 /* ----- Kanban ----- */
 /* v0.274: faixa da nota do conteúdo. Score (6 a 30): alta 24+, média 18 a 23, baixa até 17. Média (1 a 5): alta 4+, média 3 a 3,9, baixa abaixo de 3. */
-const ctFaixas = D => ehScore(D) ? [['alta', 'Alta (24 a 30)'], ['media', 'Média (18 a 23)'], ['baixa', 'Baixa (até 17)'], ['sem', 'Sem score']] : [['alta', 'Alta (4 ou mais)'], ['media', 'Média (3 a 3,9)'], ['baixa', 'Baixa (abaixo de 3)'], ['sem', 'Sem nota']];
-const ctFaixa = (c, D) => { const n = notaCt(c, D); if (n == null || !isFinite(Number(n))) return 'sem'; const v = Number(n), [a, m] = ehScore(D) ? [24, 18] : [4, 3]; return v >= a ? 'alta' : v >= m ? 'media' : 'baixa'; };
-const ctNotaSel = (D, C) => `<div class="filters"><label>${ehScore(D) ? 'Score' : 'Nota'}<select data-ct-nota><option value="">Todas</option>${ctFaixas(D).map(([k, l]) => `<option value="${k}"${C.nota === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label></div>`;
-const ctNotaLiga = (el, C) => { const x = el.querySelector('[data-ct-nota]'); if (x) x.onchange = () => { C.nota = x.value; render(); }; };
+const ctUsaScore = D => ehScore(D) || D.cont.some(c => c.score_total != null);
+const ctFaixas = D => ctUsaScore(D) ? [['alta', 'Alta (24 a 30)'], ['media', 'Média (18 a 23)'], ['baixa', 'Baixa (até 17)'], ['sem', 'Sem score']] : [['alta', 'Alta (8 a 10)'], ['media', 'Média (6 a 7,9)'], ['baixa', 'Baixa (abaixo de 6)'], ['sem', 'Sem nota']];
+const ctFaixa = (c, D) => { const n = notaCt(c, D); if (n == null || !isFinite(Number(n))) return 'sem'; const v = Number(n), [a, m] = c.score_total != null ? [24, 18] : [8, 6]; return v >= a ? 'alta' : v >= m ? 'media' : 'baixa'; };
+const CT_FX_COR = { alta: ['good', 'Alta'], media: ['warn', 'Média'], baixa: ['bad', 'Baixa'], sem: ['neutral', 'Sem nota'] };
+const ctNotaPill = (c, D) => { const f = ctFaixa(c, D), k = CT_FX_COR[f], n = notaTxt(c, D); return `<span class="pill ${k[0]} ct-np" title="Prioridade pela ${c.score_total != null ? 'soma do score' : 'nota'}">${f === 'sem' ? (ctUsaScore(D) ? 'Sem score' : 'Sem nota') : k[1] + ' · ' + esc(String(n))}</span>`; };
+// ordem dos cartões: padrão = maior nota primeiro
+const CT_ORDENS = [['nota_desc', 'Maior nota primeiro'], ['nota_asc', 'Menor nota primeiro'], ['recente', 'Mais recentes'], ['antiga', 'Mais antigas']];
+const ctCmp = (D, C, padrao) => { const o = C.ordem || 'nota_desc', nv = c => notaCt(c, D), cr = (a, b) => String(a.criado_em).localeCompare(String(b.criado_em));
+  if (o === 'nota_asc') return (a, b) => (nv(a) ?? 1e9) - (nv(b) ?? 1e9) || cr(a, b);
+  if (o === 'recente') return (a, b) => cr(b, a);
+  if (o === 'antiga') return cr;
+  return padrao || ((a, b) => (nv(b) ?? -1) - (nv(a) ?? -1) || cr(a, b)); };
+// busca por texto (sem acento, sem maiúscula) no título, descrição, gancho, palavra-chave e etiquetas
+const ctSemAc = t => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+const ctAcha = (c, b) => { const q = ctSemAc(b).trim(); if (!q) return true; const tx = ctSemAc([c.titulo, c.descricao, c.hook, c.palavra_chave, (c.tags || []).join(' ')].join(' ')); return q.split(/\s+/).every(p => tx.includes(p)); };
+const ctBuscaHtml = C => `<label class="ct-busca">Buscar<span class="ct-busca-in"><input type="search" data-ct-busca value="${esc(C.busca || '')}" placeholder="Palavra do título, gancho, etiqueta…" aria-label="Buscar ideias">${ctVozRec() ? '<button type="button" class="btn sm" data-ct-busca-voz title="Buscar falando" aria-label="Buscar falando">🎙</button>' : ''}</span></label>`;
+const ctOrdemHtml = C => `<label>Ordem<select data-ct-ordem>${CT_ORDENS.map(([k, l]) => `<option value="${k}"${(C.ordem || 'nota_desc') === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>`;
+function ctBuscaLiga(el, C) {
+  const i = el.querySelector('[data-ct-busca]'); if (!i) return; let t = null;
+  const vai = v => { C.busca = v; C.buscaFoco = true; render(); };
+  i.oninput = () => { clearTimeout(t); t = setTimeout(() => vai(i.value), 400); };
+  i.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); clearTimeout(t); vai(i.value); } };
+  if (C.buscaFoco) { C.buscaFoco = false; i.focus(); const n = i.value.length; try { i.setSelectionRange(n, n); } catch (e) {} }
+  const mic = el.querySelector('[data-ct-busca-voz]'), R = ctVozRec();
+  if (mic && R) mic.onclick = () => { const r = new R(); r.lang = 'pt-BR'; r.interimResults = false; r.maxAlternatives = 1; mic.classList.add('on'); mic.textContent = '…';
+    r.onresult = e => { const tx = (e.results[0][0].transcript || '').replace(/[.!?]$/, ''); i.value = tx; vai(tx); };
+    r.onerror = e => { toast(e.error === 'not-allowed' ? 'O navegador não liberou o microfone.' : 'Não consegui ouvir. Tente de novo.', true); };
+    r.onend = () => { mic.classList.remove('on'); mic.textContent = '🎙'; };
+    try { r.start(); } catch (e) { toast('Não consegui ligar o microfone.', true); } };
+  const o = el.querySelector('[data-ct-ordem]'); if (o) o.onchange = () => { C.ordem = o.value; render(); };
+}
+const ctNotaSel = (D, C) => `<div class="filters">${ctBuscaHtml(C)}<label>${ehScore(D) ? 'Score' : 'Nota'}<select data-ct-nota><option value="">Todas</option>${ctFaixas(D).map(([k, l]) => `<option value="${k}"${C.nota === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>${ctOrdemHtml(C)}</div>`;
+const ctNotaLiga = (el, C) => { const x = el.querySelector('[data-ct-nota]'); if (x) x.onchange = () => { C.nota = x.value; render(); }; ctBuscaLiga(el, C); };
 function mqFiltra(D, C) {
-  return D.cont.filter(c => (!C.nota || ctFaixa(c, D) === C.nota) && (!C.tema || c.tema_id === C.tema) && (!C.sub || (D.T[C.sub] || {}).tema_pai_id !== C.tema || c.subtema_id === C.sub) && (!C.canal || (c.canais || []).includes(C.canal)) && (!C.formato || c.formato === C.formato)
+  return D.cont.filter(c => (!C.nota || ctFaixa(c, D) === C.nota) && ctAcha(c, C.busca) && (!C.tema || c.tema_id === C.tema) && (!C.sub || (D.T[C.sub] || {}).tema_pai_id !== C.tema || c.subtema_id === C.sub) && (!C.canal || (c.canais || []).includes(C.canal)) && (!C.formato || c.formato === C.formato)
     && (!C.terr || (terrDe(c, D) || {}).id === C.terr) && (!C.fmt || c.formato_id === C.fmt) && (!C.dest || (C.dest === '-' ? !c.destino : c.destino === C.dest)) && (!C.tag || (c.tags || []).includes(C.tag)));
 }
 function mqCard(c, D) {
   const h = hoje(), t = D.T[c.tema_id], l = terrDe(c, D), n = notaTxt(c, D), atraso = c.prazo && c.prazo < h && ['pauta', 'producao'].includes(c.status), sc = ehScore(D);
   const dia = c.dia_semana ? DIAS_C[c.dia_semana - 1][1] : '';
-  return `<div class="card gcard${c.validado ? ' mq-val' : ''}" draggable="true" data-id="${c.id}">
-    <b>${c.validado ? '<span class="mq-check" title="Validada">☑</span> ' : ''}${esc(c.titulo)}</b>
-    <div class="ca">${sc ? pillTerr(l) : ''}${t ? `<span class="pill neutral" style="border-left:4px solid ${esc(t.cor)}">${esc(t.nome)}</span>${sc ? '' : `<span class="pill ${PRI_C[t.prioridade][0]}">${PRI_C[t.prioridade][1]}</span>`}` : (sc ? '' : '<span class="pill neutral">sem tema</span>')}${n != null ? `<span class="pill info" title="${sc ? 'Score total' : 'Média das 5 notas'}">${sc ? 'Score' : 'Nota'} ${n}</span>` : ehSimples(D) ? '' : '<span class="pill neutral">sem nota</span>'}${atraso ? '<span class="pill bad">atrasado</span>' : ''}</div>
+  return `<div class="card gcard ct-pr-${ctFaixa(c, D)}${c.validado ? ' mq-val' : ''}" draggable="true" data-id="${c.id}">
+    <div class="ca ct-np-l">${ctNotaPill(c, D)}</div><b>${c.validado ? '<span class="mq-check" title="Validada">☑</span> ' : ''}${esc(c.titulo)}</b>
+    <div class="ca">${sc ? pillTerr(l) : ''}${t ? `<span class="pill neutral" style="border-left:4px solid ${esc(t.cor)}">${esc(t.nome)}</span>${sc || ctUsaScore(D) ? '' : `<span class="pill ${PRI_C[t.prioridade][0]}">${PRI_C[t.prioridade][1]}</span>`}` : (sc ? '' : '<span class="pill neutral">sem tema</span>')}${atraso ? '<span class="pill bad">atrasado</span>' : ''}</div>
     <div class="ca">${pillFmt(D.F[c.formato_id])}${pillDest(c.destino)}<span class="pill neutral">${esc(FORM_N[c.formato] || c.formato)}</span>${(c.canais || []).map(x => `<span class="pill info">${esc(CANAL_N[x] || x)}</span>`).join('')}${c.origem === 'ia' ? '<span class="pill info" title="Veio da IA (ex.: ChatGPT do celular)">pela IA</span>' : ''}</div>
     ${(c.tags || []).length ? `<div class="ca">${c.tags.map(x => `<span class="chip">${esc(x)}</span>`).join('')}</div>` : ''}
     ${c.palavra_chave ? `<small class="muted">Palavra-chave: ${esc(c.palavra_chave)}</small>` : ''}
     ${c.data_publicacao ? `<small>Publica em ${dd(c.data_publicacao)}${dia ? ' (' + dia + ')' : ''}</small>` : c.prazo ? `<small>Prazo ${dd(c.prazo)}${dia ? ' · ' + dia : ''}</small>` : dia ? `<small>Dia: ${DIAS_C[c.dia_semana - 1][2]}</small>` : ''}
-    <div class="ca"><button class="btn sm" data-edit="${c.id}">Abrir</button>${c.status !== 'arquivado' ? `<button type="button" class="btn sm mv-arq" data-arq="${c.id}">Arquivar</button>` : ''}<select class="mv" data-mv="${c.id}" aria-label="Mover para"><option value="">Mover para…</option>${[...ETAPAS_C, ['arquivado', 'Arquivar']].filter(x => x[0] !== c.status).map(x => `<option value="${x[0]}">${x[1]}</option>`).join('')}</select></div></div>`;
+    <div class="ca"><button class="btn sm" data-edit="${c.id}">Abrir</button>${c.status !== 'arquivado' ? `<button type="button" class="btn sm mv-arq" data-arq="${c.id}">Arquivar</button>` : ''}<select class="mv" data-mv="${c.id}" aria-label="Mover para"><option value="">Mover para…</option>${[...ETAPAS_C, ['arquivado', 'Arquivar']].flatMap(x => [[x[0], x[1], ''], ...(D.cols || []).filter(k => k.etapa === x[0]).map(k => [x[0], '↳ ' + k.nome, k.id])]).filter(x => !(x[0] === c.status && x[2] === (c.coluna_id || ''))).map(x => `<option value="${x[0]}|${x[2]}">${esc(x[1])}</option>`).join('')}</select></div></div>`;
 }
 function mqFiltrosHtml(D, C, comMidia = true) {
   const tags = [...new Set([...(D.cfg.tags || []), ...D.cont.flatMap(x => x.tags || [])])].sort();
   const dests = [...new Set([...D.cfg.destinos, ...D.cont.map(c => c.destino).filter(Boolean)])];
-  return `<div class="filters">
+  return `<div class="filters">${ctBuscaHtml(C)}
     ${D.linhas.length ? `<label>Território<select id="cfTe"><option value="">Todos</option>${opts(D.linhas, 'id', 'nome', C.terr)}</select></label>` : ''}
     <label>${ehScore(D) ? 'Frente' : 'Tema'}<select id="cfT"><option value="">Todas</option>${opts(D.temas, 'id', 'nome', C.tema)}</select></label>${C.tema && subtemasDe(D, C.tema).length ? `<label>Subtema<select id="cfS"><option value="">Todos</option>${opts(subtemasDe(D, C.tema), 'id', 'nome', C.sub)}</select></label>` : ''}
     ${D.fmts.length ? `<label>Formato<select id="cfFm"><option value="">Todos</option>${opts(D.fmts, 'id', 'nome', C.fmt)}</select></label>` : ''}
@@ -21893,23 +21931,28 @@ function mqFiltrosHtml(D, C, comMidia = true) {
     <label>Canal<select id="cfC"><option value="">Todos</option>${CANAIS_C.map(([k, l]) => `<option value="${k}"${C.canal === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
     ${comMidia ? `<label>Tipo de mídia<select id="cfF"><option value="">Todos</option>${FORM_C.map(([k, l]) => `<option value="${k}"${C.formato === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>` : ''}
     <label>${ehScore(D) ? 'Score' : 'Nota'}<select id="cfN"><option value="">Todas</option>${ctFaixas(D).map(([k, l]) => `<option value="${k}"${C.nota === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
-    ${C.terr || C.tema || C.fmt || C.dest || C.tag || C.canal || C.formato || C.nota ? '<button class="btn sm" id="cfLimpa" type="button">Limpar filtros</button>' : ''}</div>`;
+    ${ctOrdemHtml(C)}
+    ${C.terr || C.tema || C.fmt || C.dest || C.tag || C.canal || C.formato || C.nota || C.busca ? '<button class="btn sm" id="cfLimpa" type="button">Limpar filtros</button>' : ''}</div>`;
 }
 function mqLigaFiltros(el, C) {
   const liga = (id, k) => { const x = el.querySelector('#' + id); if (x) x.onchange = e => { C[k] = e.target.value; render(); }; };
   liga('cfTe', 'terr'); liga('cfT', 'tema'); liga('cfS', 'sub'); liga('cfFm', 'fmt'); liga('cfD', 'dest'); liga('cfG', 'tag'); liga('cfC', 'canal'); liga('cfF', 'formato'); liga('cfN', 'nota');
-  const lp = el.querySelector('#cfLimpa'); if (lp) lp.onclick = () => { Object.assign(C, { terr: '', tema: '', sub: '', fmt: '', dest: '', tag: '', canal: '', formato: '', nota: '' }); render(); };
+  const lp = el.querySelector('#cfLimpa'); if (lp) lp.onclick = () => { Object.assign(C, { terr: '', tema: '', sub: '', fmt: '', dest: '', tag: '', canal: '', formato: '', nota: '', busca: '' }); render(); };
+  ctBuscaLiga(el, C);
 }
 function tabKanban(el, D, C) {
   const lim = diaMais(hoje(), -29), L = mqFiltra(D, C), sc = ehScore(D);
   const etapas = C.arq ? [...ETAPAS_C, ['arquivado', 'Arquivado', '']] : ETAPAS_C;
   const prio = c => (D.T[c.tema_id] || { prioridade: 9 }).prioridade;
-  const cmp = sc ? (a, b) => Number(b.validado) - Number(a.validado) || ordemScore(a, b) : (a, b) => (notaCt(b, D) ?? -1) - (notaCt(a, D) ?? -1) || prio(a) - prio(b) || String(a.criado_em).localeCompare(String(b.criado_em));
-  el.innerHTML = `${mqComeco(D)}<div class="acts"><button class="btn pri" id="cNovo">Nova ideia</button><button class="btn" id="cColar">Colar ideias</button><button class="btn" id="cVoz" title="Fale a ideia e ela vai para o Baú de ideias">🎙 Falar uma ideia</button><button class="btn" id="cIA" title="Fale a ideia no ChatGPT do celular e ela entra aqui">Ideias pelo ChatGPT</button></div>
+  const cmp = ctCmp(D, C, sc ? (a, b) => Number(b.validado) - Number(a.validado) || ordemScore(a, b) : (a, b) => (notaCt(b, D) ?? -1) - (notaCt(a, D) ?? -1) || prio(a) - prio(b) || String(a.criado_em).localeCompare(String(b.criado_em)));
+  const colsDe = k => (D.cols || []).filter(x => x.etapa === k), naCol = (c, k) => c.coluna_id && colsDe(k).some(x => x.id === c.coluna_id);
+  const colunas = etapas.flatMap(([k, nome, sub]) => [{ k, id: '', nome, sub: sc && k === 'pauta' ? 'validar para produzir' : (ehSimples(D) ? (CT_SUB_SIMPLES[k] ?? sub) : sub), X: L.filter(c => c.status === k && !naCol(c, k)) },
+    ...colsDe(k).map(x => ({ k, id: x.id, nome: x.nome, sub: 'em ' + nome, livre: true, X: L.filter(c => c.status === k && c.coluna_id === x.id) }))]);
+  el.innerHTML = `${mqComeco(D)}<div class="acts"><button class="btn pri" id="cNovo">Nova ideia</button><button class="btn" id="cCols" title="Crie colunas suas dentro de cada etapa">Colunas</button><button class="btn" id="cColar">Colar ideias</button><button class="btn" id="cVoz" title="Fale a ideia e ela vai para o Baú de ideias">🎙 Falar uma ideia</button><button class="btn" id="cIA" title="Fale a ideia no ChatGPT do celular e ela entra aqui">Ideias pelo ChatGPT</button></div>
   ${mqFiltrosHtml(D, C)}<div class="filters" style="margin-top:-8px"><label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="cfA" style="width:auto"${C.arq ? ' checked' : ''}> Mostrar arquivados</label></div>
   ${kbPainel(L, D).split('<!--kbcal-->')[0]}
   ${!D.temas.length && D.linhas.length ? '<div class="panel">Cadastre as frentes de cada território na aba <b>Linha editorial</b>. Depois as ideias ganham território, frente e etiquetas.</div>' : ''}
-  <div class="board mq-board" style="grid-auto-columns:minmax(250px,1fr)">${etapas.map(([k, nome, sub]) => { const X = L.filter(c => c.status === k).sort(cmp); return `<div class="colk" data-col="${k}"><h3><span>${nome} <small class="muted">${esc(sc && k === 'pauta' ? 'validar para produzir' : (ehSimples(D) ? (CT_SUB_SIMPLES[k] ?? sub) : sub))}</small></span><span class="mono">${X.length}</span></h3>${X.map(c => mqCard(c, D)).join('') || '<small class="muted">Vazio</small>'}</div>`; }).join('')}</div>`;
+  <div class="board mq-board" style="grid-auto-columns:minmax(250px,1fr)">${colunas.map(o => { const X = o.X.sort(cmp); return `<div class="colk${o.livre ? ' ct-livre' : ''}" data-col="${o.k}" data-sub="${o.id}"><h3><span>${esc(o.nome)} <small class="muted">${esc(o.sub || '')}</small></span><span class="mono">${X.length}</span></h3>${X.map(c => mqCard(c, D)).join('') || '<small class="muted">Vazio</small>'}</div>`; }).join('')}</div>`;
   { const bd = el.querySelector('.board'); if (bd) bd.insertAdjacentHTML('afterend', kbPainel(L, D).split('<!--kbcal-->')[1] || ''); } // v0.241: calendário depois do Kanban
   mqLigaComeco(el, C); mqLigaFiltros(el, C); kbLiga(el, C);
   const pre = {}; if (C.tema) pre.tema_id = C.tema; if (C.fmt) pre.formato_id = C.fmt; if (C.dest && C.dest !== '-') pre.destino = C.dest;
@@ -21920,18 +21963,19 @@ function tabKanban(el, D, C) {
   $('#cfA').onchange = e => { C.arq = e.target.checked; render(); };
   const por = id => D.cont.find(x => x.id === id);
   el.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => modalConteudo(por(b.dataset.edit), D));
-  el.querySelectorAll('[data-mv]').forEach(s => s.onchange = () => { if (s.value) moverConteudo(por(s.dataset.mv), s.value, D); });
+  el.querySelectorAll('[data-mv]').forEach(s => s.onchange = () => { if (s.value) { const [et, cl] = s.value.split('|'); moverConteudo(por(s.dataset.mv), et, D, cl || null); } });
   el.querySelectorAll('[data-arq]').forEach(b => b.onclick = () => moverConteudo(por(b.dataset.arq), 'arquivado', D)); // v0.242
+  $('#cCols').onclick = () => ctColunasModal(D);
   el.querySelectorAll('.gcard').forEach(c => c.ondragstart = ev => { ev.dataTransfer.setData('text/plain', c.dataset.id); });
-  el.querySelectorAll('.colk').forEach(col => { col.ondragover = ev => { ev.preventDefault(); col.classList.add('over'); }; col.ondragleave = () => col.classList.remove('over'); col.ondrop = ev => { ev.preventDefault(); col.classList.remove('over'); const c = por(ev.dataTransfer.getData('text/plain')); if (c && c.status !== col.dataset.col) moverConteudo(c, col.dataset.col, D); }; });
+  el.querySelectorAll('.colk').forEach(col => { col.ondragover = ev => { ev.preventDefault(); col.classList.add('over'); }; col.ondragleave = () => col.classList.remove('over'); col.ondrop = ev => { ev.preventDefault(); col.classList.remove('over'); const c = por(ev.dataTransfer.getData('text/plain')); if (c && (c.status !== col.dataset.col || (c.coluna_id || '') !== (col.dataset.sub || ''))) moverConteudo(c, col.dataset.col, D, col.dataset.sub || null); }; });
 }
 
 /* ----- Priorização ----- */
 function tabPrior(el, D, C) {
   if (!ehScore(D)) return tabPriorNotas(el, D, C);
   const dests = [...new Set([...D.cfg.destinos, ...D.cont.map(c => c.destino).filter(Boolean)])];
-  const base = D.cont.filter(c => ['ideia', 'pauta'].includes(c.status) && (!C.destP || (C.destP === '-' ? !c.destino : c.destino === C.destP)) && (!C.nota || ctFaixa(c, D) === C.nota));
-  const val = base.filter(c => c.validado).sort(ordemScore), res = base.filter(c => !c.validado && c.score_total != null).sort(ordemScore), sem = base.filter(c => !c.validado && c.score_total == null);
+  const base = D.cont.filter(c => ['ideia', 'pauta'].includes(c.status) && (!C.destP || (C.destP === '-' ? !c.destino : c.destino === C.destP)) && (!C.nota || ctFaixa(c, D) === C.nota) && ctAcha(c, C.busca));
+  const oP = ctCmp(D, C, ordemScore), val = base.filter(c => c.validado).sort(oP), res = base.filter(c => !c.validado && c.score_total != null).sort(oP), sem = base.filter(c => !c.validado && c.score_total == null);
   const andamento = D.cont.filter(c => ['producao', 'pronto'].includes(c.status)).length, meta = D.cfg.meta;
   const linha = (c, i) => { const l = terrDe(c, D), t = D.T[c.tema_id]; return `<tr><td class="n">${i + 1}</td><td><label class="mq-tg" title="VALIDAR"><input type="checkbox" data-val="${c.id}"${c.validado ? ' checked' : ''}><span>☑</span></label></td><td><b>${esc(c.titulo)}</b>${c.palavra_chave ? `<br><small class="muted">${esc(c.palavra_chave)}</small>` : ''}</td><td>${pillTerr(l)}${t ? `<br><small class="muted">${esc(t.nome)}</small>` : ''}</td><td>${pillFmt(D.F[c.formato_id])}</td><td>${pillDest(c.destino) || '<span class="muted">—</span>'}</td><td>${pillClass(c.classificacao)}</td><td>${scoreBar(c.score_total)}</td><td class="n" title="Potencial de impacto">${c.s3 ?? '—'}</td><td><button class="btn sm" data-edit="${c.id}">Abrir</button>${c.validado && c.status === 'ideia' ? ` <button class="btn sm" data-ac="${c.id}" data-p="pauta">Aprovar pauta</button>` : c.validado && c.status === 'pauta' ? ` <button class="btn sm" data-ac="${c.id}" data-p="producao">Produzir</button>` : ''}</td></tr>`; };
   const tabela = (L, vazio) => `<div class="tw"><table><thead><tr><th class="n">#</th><th>Validar</th><th>Pauta</th><th>Território</th><th>Formato</th><th>Destino</th><th>Classificação</th><th>Score</th><th class="n">Impacto</th><th></th></tr></thead><tbody>${L.map(linha).join('') || `<tr><td colspan="10" class="empty">${vazio}</td></tr>`}</tbody></table></div>`;
@@ -24446,17 +24490,22 @@ async function tabIdentidade(el, D, C) {
 
 /* ---------- 3. Ideias: aprovar ou descartar ---------- */
 function tabIdeias(el, D, C) {
-  const L = D.cont.filter(c => c.status === 'ideia' && (!C.nota || ctFaixa(c, D) === C.nota)).sort((a, b) => (Number(notaCt(b, D)) || 0) - (Number(notaCt(a, D)) || 0));
-  el.innerHTML = ctVozHtml() + `<div class="panel ct-intro"><p><b>Como funciona:</b> aprove a ideia e ela vai para a Produção, onde o roteiro é escrito e aprovado antes de qualquer arte ou vídeo. Aprovar pede o tema, o formato e a data de publicação: a ideia entra no Kanban e no calendário. Descartar arquiva (dá para ver na Produção, em Mostrar arquivados).</p></div>
-    <div class="acts"><button class="btn pri" id="ctNova">Nova ideia</button>${CT_BTN_IA('Sugerir ideias pela Claude')}</div>
-    ${ctNotaSel(D, C)}<div class="panel"><h2>No baú, esperando aprovação · ${L.length}</h2>${L.length ? `<div class="ct-ideias">${L.map(c => `<div class="ct-ideia" data-id="${c.id}"><div><b>${esc(c.titulo)}</b><br><span class="muted">${esc(FORM_N[c.formato] || c.formato || '')}${c.tema_id && D.T[c.tema_id] ? ' · ' + esc(D.T[c.tema_id].nome) : ''}${c.objetivo ? ' · ' + esc(c.objetivo) : ''}${notaCt(c, D) != null ? ' · nota ' + String(Math.round(Number(notaCt(c, D)) * 10) / 10).replace('.', ',') : ''}</span>${c.hook ? `<br><span>${esc(c.hook)}</span>` : ''}</div>
-      <div class="acts"><button class="btn sm" data-ver>Abrir</button><button class="btn sm" data-desc>Descartar</button><button class="btn sm pri" data-ok>Aprovar</button></div></div>`).join('')}</div>` : '<div class="empty">Nenhuma ideia esperando avaliação.</div>'}</div>`;
+  const L = D.cont.filter(c => c.status === 'ideia' && (!C.nota || ctFaixa(c, D) === C.nota) && ctAcha(c, C.busca)).sort(ctCmp(D, C));
+  const cI = (D.cols || []).filter(k => k.etapa === 'ideia'), naCol = c => c.coluna_id && cI.some(k => k.id === c.coluna_id);
+  const grupos = [{ id: '', nome: 'No baú, esperando avaliação', X: L.filter(c => !naCol(c)) }, ...cI.map(k => ({ id: k.id, nome: k.nome, X: L.filter(c => c.coluna_id === k.id) }))];
+  const cartao = c => `<div class="ct-ideia ct-pr-${ctFaixa(c, D)}" data-id="${c.id}"><div><div class="ca ct-np-l">${ctNotaPill(c, D)}</div><b>${esc(c.titulo)}</b><br><span class="muted">${esc(FORM_N[c.formato] || c.formato || '')}${c.tema_id && D.T[c.tema_id] ? ' · ' + esc(D.T[c.tema_id].nome) : ''}${c.objetivo ? ' · ' + esc(c.objetivo) : ''}</span>${c.hook ? `<br><span>${esc(c.hook)}</span>` : ''}</div>
+      <div class="acts">${cI.length ? `<select class="mv" data-col-id aria-label="Coluna da ideia"><option value=""${naCol(c) ? '' : ' selected'}>No baú</option>${cI.map(k => `<option value="${k.id}"${c.coluna_id === k.id ? ' selected' : ''}>${esc(k.nome)}</option>`).join('')}</select>` : ''}<button class="btn sm" data-ver>Abrir</button><button class="btn sm" data-desc>Descartar</button><button class="btn sm pri" data-ok>Mandar para a produção</button></div></div>`;
+  el.innerHTML = ctVozHtml() + `<div class="panel ct-intro"><p><b>Como funciona:</b> separe as ideias nas suas colunas (por exemplo, "Ideias aprovadas"), sem precisar de data. Quando for produzir, <b>Mandar para a produção</b> pede o tema, o formato e a data de publicação: a ideia entra no Kanban e no calendário. Descartar arquiva (dá para ver na Produção, em Mostrar arquivados).</p></div>
+    <div class="acts"><button class="btn pri" id="ctNova">Nova ideia</button><button class="btn" id="ctCols" title="Crie colunas suas dentro de cada etapa">Colunas</button>${CT_BTN_IA('Sugerir ideias pela Claude')}</div>
+    ${ctNotaSel(D, C)}${grupos.map(g => `<div class="panel" data-grupo="${g.id}"><h2>${esc(g.nome)} · ${g.X.length}</h2>${g.X.length ? `<div class="ct-ideias">${g.X.map(cartao).join('')}</div>` : `<div class="empty">${C.busca || C.nota ? 'Nenhuma ideia com esse filtro aqui.' : g.id ? 'Nenhuma ideia nesta coluna.' : 'Nenhuma ideia esperando avaliação.'}</div>`}</div>`).join('')}`;
   el.querySelector('#ctNova').onclick = () => modalConteudo(null, D, { status: 'ideia' });
+  el.querySelector('#ctCols').onclick = () => ctColunasModal(D);
   ctVozLiga(el); ctNotaLiga(el, C); // v0.240; v0.274 filtro por nota
   el.querySelectorAll('.ct-ideia').forEach(r => {
     const c = D.cont.find(x => x.id === r.dataset.id);
     r.querySelector('[data-ver]').onclick = () => modalConteudo(c, D);
     r.querySelector('[data-ok]').onclick = () => modalAprovaIdeia(c, D);
+    const sc = r.querySelector('[data-col-id]'); if (sc) sc.onchange = () => act(async () => { await q(sb.from('conteudos').update({ coluna_id: sc.value || null }).eq('id', c.id)); toast(sc.value ? 'Ideia movida para ' + ((D.cols.find(k => k.id === sc.value) || {}).nome || 'a coluna') : 'Ideia de volta ao baú'); render(); });
     r.querySelector('[data-desc]').onclick = () => act(async () => { await q(sb.from('conteudos').update({ status: 'arquivado' }).eq('id', c.id)); toast('Ideia descartada.'); render(); });
   });
 }
@@ -24576,10 +24625,36 @@ async function tabProducao160(el, D, C) {
   });
 }
 
+/* ---------- v0.275: colunas livres dentro de cada etapa ---------- */
+async function ctColunasModal(D) {
+  let cols = await q(sb.from('conteudo_colunas').select('*').eq('workspace_id', S.ws).order('ordem').order('nome')).catch(e => { toast(/conteudo_colunas/.test(String(e.message)) ? 'Falta aplicar a migração da v0.275 no banco.' : (e.message || String(e)), true); return null; });
+  if (!cols) return;
+  const n = k => D.cont.filter(c => c.coluna_id === k).length;
+  const corpo = () => `<p class="muted" style="margin:0 0 8px">As etapas continuam fixas, com as regras delas (para ir para a produção é preciso ter data). Dentro de cada etapa, crie as colunas que quiser. Apagar uma coluna devolve as ideias dela para a etapa.</p>
+    ${ETAPAS_C.map(([k, nome]) => { const L = cols.filter(x => x.etapa === k); return `<div class="ct-cols-et"><h3>${esc(nome)}</h3>${L.map((x, i) => `<div class="ct-cols-l" data-id="${x.id}"><input value="${esc(x.nome)}" maxlength="60" data-nome aria-label="Nome da coluna"><span class="muted">${n(x.id)} card(s)</span>
+      <button type="button" class="btn sm" data-sobe${i ? '' : ' disabled'} aria-label="Subir">↑</button><button type="button" class="btn sm" data-desce${i < L.length - 1 ? '' : ' disabled'} aria-label="Descer">↓</button><button type="button" class="btn sm" data-salva>Salvar nome</button><button type="button" class="btn sm bad" data-apaga aria-label="Apagar">✕</button></div>`).join('')}
+      <div class="ct-cols-l"><input placeholder="Nova coluna em ${esc(nome)}" maxlength="60" data-novo="${k}" aria-label="Nova coluna em ${esc(nome)}"><button type="button" class="btn sm" data-cria="${k}">+ Criar</button></div></div>`; }).join('')}`;
+  const f = modal('Colunas do Kanban', corpo(), null, 'Salvar', true);
+  const box = f.closest('.modal') || f;
+  const recarrega = async msg => { cols = await q(sb.from('conteudo_colunas').select('*').eq('workspace_id', S.ws).order('ordem').order('nome')); D.cols = cols; f.querySelector('.ct-cols-wrap').innerHTML = corpo(); liga(); if (msg) toast(msg); render(); };
+  f.insertAdjacentHTML('afterbegin', '<div class="ct-cols-wrap"></div>'); [...f.children].forEach(x => { if (!x.classList.contains('ct-cols-wrap') && !x.classList.contains('acts')) f.querySelector('.ct-cols-wrap').append(x); });
+  const liga = () => {
+    f.querySelectorAll('[data-cria]').forEach(b => b.onclick = () => act(async () => { const k = b.dataset.cria, i = f.querySelector(`[data-novo="${k}"]`), nome = i.value.trim();
+      if (!nome) throw new Error('Dê um nome à coluna.'); if (cols.some(x => x.etapa === k && x.nome.toLowerCase() === nome.toLowerCase())) throw new Error('Já existe uma coluna com esse nome nesta etapa.');
+      await q(sb.from('conteudo_colunas').insert({ workspace_id: S.ws, etapa: k, nome, ordem: cols.filter(x => x.etapa === k).reduce((a, x) => Math.max(a, x.ordem || 0), 0) + 1 })); await recarrega('Coluna criada'); }));
+    f.querySelectorAll('.ct-cols-l[data-id]').forEach(l => { const id = l.dataset.id, x = cols.find(y => y.id === id), irmas = cols.filter(y => y.etapa === x.etapa);
+      l.querySelector('[data-salva]').onclick = () => act(async () => { const nome = l.querySelector('[data-nome]').value.trim(); if (!nome) throw new Error('Dê um nome à coluna.'); await q(sb.from('conteudo_colunas').update({ nome }).eq('id', id)); await recarrega('Nome salvo'); });
+      l.querySelector('[data-apaga]').onclick = () => { if (!confirm(`Apagar a coluna "${x.nome}"? ${n(id) ? n(id) + ' card(s) voltam para a etapa.' : ''}`)) return; act(async () => { await q(sb.from('conteudo_colunas').delete().eq('id', id)); await recarrega('Coluna apagada'); }); };
+      const troca = d => act(async () => { const i = irmas.findIndex(y => y.id === id), o = irmas[i + d]; if (!o) return; const L = irmas.slice(); L[i] = o; L[i + d] = x;
+        for (let j = 0; j < L.length; j++) await q(sb.from('conteudo_colunas').update({ ordem: j + 1 }).eq('id', L[j].id)); await recarrega(); });
+      l.querySelector('[data-sobe]').onclick = () => troca(-1); l.querySelector('[data-desce]').onclick = () => troca(1); });
+  };
+  liga();
+}
 /* ---------- Ideias: aprovar pede tema, subtema, formato e data ---------- */
-function modalAprovaIdeia(c, D) {
+function modalAprovaIdeia(c, D, coluna = null) {
   const fmtOpts = D.fmts.filter(f => f.ativo || f.id === c.formato_id);
-  const f = modal('Aprovar ideia', `<p class="muted" style="margin:0 0 8px"><b>${esc(c.titulo)}</b><br>Com tema, formato e data, o conteúdo entra no Kanban e no calendário já segmentado para os relatórios.</p><div class="grid2">
+  const f = modal('Mandar para a produção', `<p class="muted" style="margin:0 0 8px"><b>${esc(c.titulo)}</b><br>Para entrar na produção, a ideia precisa de tema, formato e data de publicação: assim ela vai para o calendário já segmentada para os relatórios.</p><div class="grid2">
     <label>Linha e tema<select name="tema_id" required>${mqOptTemas(D, c.tema_id)}</select></label>
     <label>Subtema<select name="subtema_id">${mqOptSub(D, c.tema_id, c.subtema_id)}</select></label>
     ${fmtOpts.length ? `<label>Formato<select name="formato_id"><option value="">—</option>${fmtOpts.map(x => `<option value="${x.id}"${x.id === c.formato_id ? ' selected' : ''}>${esc(x.nome)}</option>`).join('')}</select></label>` : ''}
@@ -24589,12 +24664,12 @@ function modalAprovaIdeia(c, D) {
     if (!d.tema_id) throw new Error('Escolha o tema.');
     if (!d.data_publicacao) throw new Error('Informe a data de publicação: é ela que põe o conteúdo no calendário.');
     if (d.prazo && d.prazo > d.data_publicacao) throw new Error('O prazo de produção fica antes da data de publicação.');
-    const v = { tema_id: d.tema_id, subtema_id: d.subtema_id || null, formato: d.formato, prazo: d.prazo || null, data_publicacao: d.data_publicacao, status: 'pauta' };
+    const v = { tema_id: d.tema_id, subtema_id: d.subtema_id || null, formato: d.formato, prazo: d.prazo || null, data_publicacao: d.data_publicacao, status: 'pauta', coluna_id: coluna && (D.cols || []).some(k => k.id === coluna && k.etapa === 'pauta') ? coluna : null };
     if (fmtOpts.length) v.formato_id = d.formato_id || null;
     await q(sb.from('conteudos').update(v).eq('id', c.id));
     await sincPubs(c.id, { ...c, ...v });
-    toast('Ideia aprovada: está no Kanban em ' + dd(d.data_publicacao) + '.');
-  }, 'Aprovar');
+    toast('Na produção, com publicação em ' + dd(d.data_publicacao) + '.');
+  }, 'Mandar para a produção');
   mqLigaSub(f, D);
 }
 
