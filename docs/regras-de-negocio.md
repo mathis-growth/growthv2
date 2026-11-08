@@ -1,3 +1,6 @@
+## v0.285
+- **Copiar para a IA:** as referências do cliente vêm de Identidade visual e aparecem uma vez no fim, mesmo copiando vários conteúdos. Sem identidade cadastrada, copia só os conteúdos.
+
 ## v0.284
 - **Copiar para a IA:** copia só o que está preenchido. Na janela do conteúdo, copia o que está na tela (inclusive o que ainda não foi salvo) e não grava nada.
 

@@ -1,3 +1,9 @@
+## v0.285 — Copiar para a IA com as referências (07/11/2026)
+- **Referências e links:** a cópia traz a fonte da ideia, o link da copy, o link da mídia e o vídeo bruto de cada conteúdo.
+- **Referências do cliente:** de Identidade visual (referências aprovadas, o que nunca fazer, cores, fontes e pasta), uma vez no fim do texto.
+- **Painel Detalhes:** dentro do conteúdo, "Copiar tudo para a IA" fica no painel ao lado.
+- Sem mudança no banco. Teste: `t285_copiar_referencias.py` (0 falhas); t284 sem falhas.
+
 ## v0.284 — Copiar tudo para levar a uma IA (07/11/2026)
 - **Growth's Content:** botão "Copiar" em cada cartão; "Copiar tudo" na barra da seleção (vários conteúdos, separados por ---); "Copiar tudo para a IA" dentro do conteúdo aberto, com o que está na tela mesmo antes de salvar.
 - O texto sai organizado: título, etapa, tema, canais, data e os campos preenchidos (descrição, gancho, roteiro…), cada um com título. Campos vazios ficam de fora.

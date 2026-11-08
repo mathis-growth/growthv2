@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 07/11/2026, versão 0.284 (copiar tudo para levar a uma IA).
+**Última atualização:** 07/11/2026, versão 0.285 (copiar para a IA com as referências).
+
+**v0.285 · Copiar com as referências.** A cópia para a IA leva os links de cada conteúdo (fonte, copy, mídia, vídeo) e, no fim, as referências do cliente: posts que ele aprova, o que nunca fazer, cores e fontes. Dentro do conteúdo, o botão fica no painel Detalhes, ao lado.
 
 **v0.284 · Copiar para a IA.** No Growth's Content, "Copiar" no cartão, "Copiar tudo" na barra da seleção ou "Copiar tudo para a IA" dentro do conteúdo: o texto sai organizado (título, tema, canais, data, descrição, gancho, roteiro…), pronto para colar no ChatGPT, na Claude ou em outra IA.
 
@@ -297,6 +299,7 @@ O Growth's Content agora segue a ordem do trabalho, sem a configuração em 9 pa
 - **Baú de ideias:** aprovar ou descartar. **Aprovar ideia** leva para Pautas aprovadas sem pedir nada (v0.282). Tema, subtema, formato e data de publicação só são pedidos quando o conteúdo vai para Em produção: aí ele entra no calendário. Com o **microfone** (v0.240), você fala a ideia, o texto aparece na hora e ela entra no baú esperando aprovação; também dá para falar pelo Kanban da Produção.
 - **Kanban em lote** (v0.283): cada cartão tem uma caixinha para marcar; no topo da coluna, "Selecionar todos". Com cartões marcados aparece uma barra com a quantidade, "Mover para…" e "Limpar seleção". Arrastar qualquer marcado leva todos. Para Em produção, os sem tema ou data ficam e a tela diz quais. **Dois cliques** no cartão abrem o conteúdo.
 - **Copiar para a IA** (v0.284): "Copiar" em cada cartão; "Copiar tudo" na barra quando há cartões marcados (vários, separados por ---); "Copiar tudo para a IA" dentro do conteúdo aberto, com o que está na tela mesmo antes de salvar. Só os campos preenchidos entram.
+  - Com as referências (v0.285): "Referências e links" de cada conteúdo e "Referências do cliente" (de Identidade visual) uma vez no fim. Dentro do conteúdo, o botão fica no painel Detalhes.
 - **Produção:** o Kanban com o painel da semana, o calendário das próximas semanas e as colunas por etapa. Cada cartão diz se o roteiro ou a peça falta aprovar; o botão Roteiro e peça abre a aprovação: o roteiro é aprovado antes de qualquer arte ou vídeo, a arte ou o vídeo tem versões e pedidos de ajuste, e a aprovada vai para a data.
 - **Mais ferramentas:** as outras abas de antes (dashboard, semana, priorização, máquina, fechamento, persona, produtos, estruturas, canais).
 
@@ -707,6 +710,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **07/11 (v0.285):** Content: a cópia para a IA leva as referências; botão no painel Detalhes.
 - **07/11 (v0.284):** Content: copiar tudo de um ou vários conteúdos para levar a uma IA.
 - **07/11 (v0.283):** Content: selecionar vários e mover de uma vez, dois cliques para abrir, carregamento mais rápido.
 - **07/11 (v0.282):** Growth's Content: aprovar a ideia sem data; tema e data só na produção.

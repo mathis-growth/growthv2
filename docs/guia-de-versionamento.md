@@ -1,3 +1,7 @@
+## v0.285
+- `aplica285.py` sobre a v0.284: `CT_COPIA_REFS`, `ctTextoCliente`, `ctIdentPre` (busca `content_identidade` antes do clique, para o navegador deixar copiar); botão no `.ctd-side`.
+- Sem migração. Teste `t285_copiar_referencias.py` (14 verificações); t284 sem falhas.
+
 ## v0.284
 - `aplica284.py` sobre a v0.283: `ctTextoIA`, `ctCopiaTexto`, `ctCopiaVarios`, `CT_COPIA_CAMPOS`; botão `data-copia` no cartão, `data-selcopia` na barra, `data-copia-mdl` na janela do conteúdo.
 - Sem migração. Teste `t284_copiar_para_ia.py` (10 verificações).

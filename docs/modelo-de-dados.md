@@ -1,3 +1,6 @@
+## v0.285
+Sem mudança no banco (lê `content_identidade`).
+
 ## v0.284
 Sem mudança no banco.
 

@@ -1,3 +1,6 @@
+## Copiar com referências (v0.285)
+`t285_copiar_referencias.py`: 14 verificações, 0 falhas. Além das da v0.284: links do conteúdo em "Referências e links"; referências do cliente (aprovadas, nunca fazer, cores, fontes); com vários, as do cliente aparecem uma vez só; botão no painel Detalhes. Regressão: t284 sem falhas.
+
 ## Copiar tudo para a IA (v0.284)
 `t284_copiar_para_ia.py`: 10 verificações, 0 falhas. Copiar do cartão (título, etapa, tema, mídia, canais, data, etiquetas, descrição, gancho, roteiro; vazios de fora; aviso); Copiar tudo da barra (dois conteúdos separados por ---; aviso com a quantidade); Copiar tudo para a IA na janela, com texto ainda não salvo, sem gravar nada; sem erros de JavaScript. Regressão: t283 sem falhas.
 

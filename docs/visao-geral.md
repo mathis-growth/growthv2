@@ -1,3 +1,6 @@
+## v0.285
+**Copiar com as referências.** A cópia para a IA leva também os links do conteúdo e as referências do cliente; dentro do conteúdo, o botão fica no painel Detalhes.
+
 ## v0.284
 **Copiar para a IA.** No Growth's Content, um clique copia tudo de um conteúdo, ou de vários marcados, em texto organizado para colar numa IA.
 

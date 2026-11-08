@@ -1,3 +1,8 @@
+## v0.285 — Copiar para a IA com as referências, no painel ao lado
+**Pedido da Rebecka (07/11):** "Referências, essas coisas. E pode ser na telinha ali do lado."
+**Como ficou:** o texto copiado ganhou duas partes. **Referências e links** traz, de cada conteúdo, a fonte da ideia, o link da copy, o link da mídia e o vídeo bruto. **Referências do cliente** vem uma vez no fim, de Identidade visual: referências que o cliente aprova, o que nunca fazer, cores, fontes e pasta. Dentro do conteúdo, o botão "Copiar tudo para a IA" foi para o painel Detalhes, ao lado.
+**Fora, por enquanto (hipótese a confirmar):** a persona (questionário respondido) não entra, porque é um texto grande. Se quiser, entra numa próxima.
+
 ## v0.284 — Copiar tudo para levar a uma IA
 **Pedido da Rebecka (07/11):** "o botãozinho para eu clicar e já copiar tudo, se eu quiser copiar e levar para alguma IA".
 **Como ficou:** três lugares. No cartão, o botão "Copiar" copia aquele conteúdo. Na barra da seleção, "Copiar tudo" copia todos os marcados, separados por `---`. Dentro do conteúdo aberto, "Copiar tudo para a IA" copia o que está escrito na tela, mesmo antes de salvar.
