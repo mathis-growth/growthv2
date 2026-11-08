@@ -17401,8 +17401,9 @@ async function sincPubs(id, v) {
   if (!['agendado', 'publicado'].includes(v.status) || !(v.canais || []).length) return;
   await q(sb.from('conteudo_publicacoes').upsert(v.canais.map(c => ({ workspace_id: S.ws, conteudo_id: id, canal: c, data_publicacao: v.data_publicacao || null, status: v.status === 'publicado' ? 'publicada' : 'agendada' })), { onConflict: 'conteudo_id,canal' }));
 }
+const CT_PEDE_DATA = ['producao', 'pronto', 'agendado', 'publicado']; // v0.282: só a produção (e depois) pede tema e data
 async function moverConteudo(c, etapa, D, coluna = null) {
-  if (c.status === 'ideia' && !['ideia', 'arquivado'].includes(etapa)) return modalAprovaIdeia(c, D, coluna); // v0.275: ir para a produção pede tema, formato e data
+  if (['ideia', 'pauta'].includes(c.status) && CT_PEDE_DATA.includes(etapa) && (!c.tema_id || !c.data_publicacao)) return modalAprovaIdeia(c, D, coluna, etapa); // v0.282: aprovar a ideia não pede nada
   try {
     await q(sb.from('conteudos').update({ status: etapa, coluna_id: coluna || null }).eq('id', c.id));
     await sincPubs(c.id, { ...c, status: etapa });
@@ -24517,8 +24518,8 @@ function tabIdeias(el, D, C) {
   const cI = (D.cols || []).filter(k => k.etapa === 'ideia'), naCol = c => c.coluna_id && cI.some(k => k.id === c.coluna_id);
   const grupos = [{ id: '', nome: 'No baú, esperando avaliação', X: L.filter(c => !naCol(c)) }, ...cI.map(k => ({ id: k.id, nome: k.nome, X: L.filter(c => c.coluna_id === k.id) }))];
   const cartao = c => `<div class="ct-ideia ct-pr-${ctFaixa(c, D)}" data-id="${c.id}"><div><div class="ca ct-np-l">${ctNotaPill(c, D)}</div><b>${esc(c.titulo)}</b><br><span class="muted">${esc(FORM_N[c.formato] || c.formato || '')}${c.tema_id && D.T[c.tema_id] ? ' · ' + esc(D.T[c.tema_id].nome) : ''}${c.objetivo ? ' · ' + esc(c.objetivo) : ''}</span>${c.hook ? `<br><span>${esc(c.hook)}</span>` : ''}</div>
-      <div class="acts">${cI.length ? `<select class="mv" data-col-id aria-label="Coluna da ideia"><option value=""${naCol(c) ? '' : ' selected'}>No baú</option>${cI.map(k => `<option value="${k.id}"${c.coluna_id === k.id ? ' selected' : ''}>${esc(k.nome)}</option>`).join('')}</select>` : ''}<button class="btn sm" data-ver>Abrir</button><button class="btn sm" data-desc>Descartar</button><button class="btn sm pri" data-ok>Mandar para a produção</button></div></div>`;
-  el.innerHTML = ctVozHtml() + `<div class="panel ct-intro"><p><b>Como funciona:</b> separe as ideias nas suas colunas (por exemplo, "Ideias aprovadas"), sem precisar de data. Quando for produzir, <b>Mandar para a produção</b> pede o tema, o formato e a data de publicação: a ideia entra no Kanban e no calendário. Descartar arquiva (dá para ver na Produção, em Mostrar arquivados).</p></div>
+      <div class="acts">${cI.length ? `<select class="mv" data-col-id aria-label="Coluna da ideia"><option value=""${naCol(c) ? '' : ' selected'}>No baú</option>${cI.map(k => `<option value="${k.id}"${c.coluna_id === k.id ? ' selected' : ''}>${esc(k.nome)}</option>`).join('')}</select>` : ''}<button class="btn sm" data-ver>Abrir</button><button class="btn sm" data-desc>Descartar</button><button class="btn sm pri" data-ok title="Vai para Pautas aprovadas, sem pedir data">Aprovar ideia</button></div></div>`;
+  el.innerHTML = ctVozHtml() + `<div class="panel ct-intro"><p><b>Como funciona:</b> separe as ideias nas suas colunas, sem precisar de data. <b>Aprovar ideia</b> leva para Pautas aprovadas, também sem data nem tema. Só quando o conteúdo vai para <b>Em produção</b> o Growths pede o tema, o formato e a data de publicação: aí ele entra no calendário. Descartar arquiva (dá para ver na Produção, em Mostrar arquivados).</p></div>
     <div class="acts"><button class="btn pri" id="ctNova">Nova ideia</button><button class="btn" id="ctCols" title="Crie colunas suas dentro de cada etapa">Colunas</button>${CT_BTN_IA('Sugerir ideias pela Claude')}</div>
     ${ctNotaSel(D, C)}${grupos.map(g => `<div class="panel" data-grupo="${g.id}"><h2>${esc(g.nome)} · ${g.X.length}</h2>${g.X.length ? `<div class="ct-ideias">${g.X.map(cartao).join('')}</div>` : `<div class="empty">${C.busca || C.nota ? 'Nenhuma ideia com esse filtro aqui.' : g.id ? 'Nenhuma ideia nesta coluna.' : 'Nenhuma ideia esperando avaliação.'}</div>`}</div>`).join('')}`;
   el.querySelector('#ctNova').onclick = () => modalConteudo(null, D, { status: 'ideia' });
@@ -24527,7 +24528,7 @@ function tabIdeias(el, D, C) {
   el.querySelectorAll('.ct-ideia').forEach(r => {
     const c = D.cont.find(x => x.id === r.dataset.id);
     r.querySelector('[data-ver]').onclick = () => modalConteudo(c, D);
-    r.querySelector('[data-ok]').onclick = () => modalAprovaIdeia(c, D);
+    r.querySelector('[data-ok]').onclick = () => act(async () => { await moverConteudo(c, 'pauta', D); toast('Ideia aprovada: está em Pautas aprovadas.'); }); // v0.282: aprovar não pede nada
     const sc = r.querySelector('[data-col-id]'); if (sc) sc.onchange = () => act(async () => { await q(sb.from('conteudos').update({ coluna_id: sc.value || null }).eq('id', c.id)); toast(sc.value ? 'Ideia movida para ' + ((D.cols.find(k => k.id === sc.value) || {}).nome || 'a coluna') : 'Ideia de volta ao baú'); render(); });
     r.querySelector('[data-desc]').onclick = () => act(async () => { await q(sb.from('conteudos').update({ status: 'arquivado' }).eq('id', c.id)); toast('Ideia descartada.'); render(); });
   });
@@ -24675,9 +24676,9 @@ async function ctColunasModal(D) {
   liga();
 }
 /* ---------- Ideias: aprovar pede tema, subtema, formato e data ---------- */
-function modalAprovaIdeia(c, D, coluna = null) {
+function modalAprovaIdeia(c, D, coluna = null, etapa = 'producao') {
   const fmtOpts = D.fmts.filter(f => f.ativo || f.id === c.formato_id);
-  const f = modal('Mandar para a produção', `<p class="muted" style="margin:0 0 8px"><b>${esc(c.titulo)}</b><br>Para entrar na produção, a ideia precisa de tema, formato e data de publicação: assim ela vai para o calendário já segmentada para os relatórios.</p><div class="grid2">
+  const f = modal('Mandar para a produção', `<p class="muted" style="margin:0 0 8px"><b>${esc(c.titulo)}</b><br>Para entrar na produção, o conteúdo precisa de tema, formato e data de publicação: assim ele vai para o calendário já segmentado para os relatórios. Para só aprovar a ideia, arraste para Pautas aprovadas: lá não precisa de data.</p><div class="grid2">
     <label>Linha e tema<select name="tema_id" required>${mqOptTemas(D, c.tema_id)}</select></label>
     <label>Subtema<select name="subtema_id">${mqOptSub(D, c.tema_id, c.subtema_id)}</select></label>
     ${fmtOpts.length ? `<label>Formato<select name="formato_id"><option value="">—</option>${fmtOpts.map(x => `<option value="${x.id}"${x.id === c.formato_id ? ' selected' : ''}>${esc(x.nome)}</option>`).join('')}</select></label>` : ''}
@@ -24687,12 +24688,12 @@ function modalAprovaIdeia(c, D, coluna = null) {
     if (!d.tema_id) throw new Error('Escolha o tema.');
     if (!d.data_publicacao) throw new Error('Informe a data de publicação: é ela que põe o conteúdo no calendário.');
     if (d.prazo && d.prazo > d.data_publicacao) throw new Error('O prazo de produção fica antes da data de publicação.');
-    const v = { tema_id: d.tema_id, subtema_id: d.subtema_id || null, formato: d.formato, prazo: d.prazo || null, data_publicacao: d.data_publicacao, status: 'pauta', coluna_id: coluna && (D.cols || []).some(k => k.id === coluna && k.etapa === 'pauta') ? coluna : null };
+    const v = { tema_id: d.tema_id, subtema_id: d.subtema_id || null, formato: d.formato, prazo: d.prazo || null, data_publicacao: d.data_publicacao, status: etapa, coluna_id: coluna && (D.cols || []).some(k => k.id === coluna && k.etapa === etapa) ? coluna : null };
     if (fmtOpts.length) v.formato_id = d.formato_id || null;
     await q(sb.from('conteudos').update(v).eq('id', c.id));
     await sincPubs(c.id, { ...c, ...v });
-    toast('Na produção, com publicação em ' + dd(d.data_publicacao) + '.');
-  }, 'Mandar para a produção');
+    toast((etapa === 'producao' ? 'Na produção' : 'Movido') + ', com publicação em ' + dd(d.data_publicacao) + '.');
+  }, etapa === 'producao' ? 'Mandar para a produção' : 'Salvar e mover');
   mqLigaSub(f, D);
 }
 

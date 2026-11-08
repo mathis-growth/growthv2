@@ -1,3 +1,8 @@
+## v0.282 — Aprovar a ideia sem data (07/11/2026)
+- **Growth's Content:** levar a ideia para Pautas aprovadas não pede mais data nem tema. Só ao ir para Em produção o Growths pede o tema, o formato e a data de publicação; a janela "Mandar para a produção" agora coloca o conteúdo direto em Em produção.
+- **Baú de ideias:** o botão virou "Aprovar ideia" e leva para Pautas aprovadas sem perguntar nada.
+- Banco: `RODAR_v0.282_conteudo_aprovar_sem_data.sql` (método simples: tema e data passam a ser exigidos a partir de Em produção). Teste: `t282_aprovar_sem_data.py` (0 falhas).
+
 ## v0.281 — Automações de e-mail em canvas (07/11/2026)
 
 - Cria fluxos visuais de e-mail com gatilho, mensagem HTML, condições, esperas e encerramento.

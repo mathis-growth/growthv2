@@ -1,3 +1,6 @@
+## v0.282
+- **Conteúdo, método simples:** aprovar a ideia (Pautas aprovadas) não pede nada. Para ir a Em produção, o conteúdo precisa de tema, data de publicação e roteiro aprovado; sem tema ou data, o Growths abre "Mandar para a produção".
+
 ## v0.275
 - **Colunas livres:** pertencem a uma etapa. O conteúdo só fica numa coluna da etapa em que está; ao mudar de etapa sem escolher coluna, vai para a etapa sem coluna. Apagar a coluna devolve os cartões para a etapa. Nome não se repete na mesma etapa.
 - **Ir para a produção:** sair de Ideias para qualquer outra etapa (menos arquivar) pede tema, formato e data de publicação.

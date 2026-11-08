@@ -1,3 +1,9 @@
+## v0.282 — Aprovar a ideia sem data
+**Pedido da Rebecka (07/11):** "Quando eu mudo para ideia aprovada, ele não tem que me obrigar a colocar a data. De nada. Só quando for a produção."
+**O que encontrei (fato):** no método simples (o da Mathisa), o banco exigia tema e data já em Pautas aprovadas; a tela (v0.275) abria "Mandar para a produção" a cada ideia aprovada.
+**Como ficou:** ideia → Pautas aprovadas não pede nada. Tema e data de publicação só ao ir para Em produção (ou depois); se faltar, abre a janela "Mandar para a produção" e o conteúdo entra direto em Em produção. No Baú, o botão virou "Aprovar ideia". O roteiro aprovado continua exigido para produzir.
+**Métodos com notas e score:** não mudaram (continuam pedindo as notas para aprovar).
+
 ## v0.245 — Aviso de formulário respondido
 **Pedido da Rebecka (02/11):** "receber o alerta de que chegou um lead novo e de que ele respondeu o formulário, tudo isso", para mostrar num vídeo da tela do Growths.
 **O que encontrei (fato):** só existia o aviso de lead novo (v0.244). Resposta de cliente a pesquisa ou diagnóstico só ficava registrada no histórico do diagnóstico.

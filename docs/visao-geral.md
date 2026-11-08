@@ -1,3 +1,6 @@
+## v0.282
+**Aprovar sem data.** No Growth's Content, aprovar uma ideia não pede mais data nem tema. O Growths só pede isso quando o conteúdo vai para a produção.
+
 ## v0.245
 **Formulário respondido à vista.** Quando alguém responde um formulário (lead, cliente ou diagnóstico), a equipe recebe o aviso na faixa verde, em Meus avisos e por WhatsApp, com a pontuação da qualificação quando houver.
 

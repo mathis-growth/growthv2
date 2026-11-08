@@ -1,3 +1,8 @@
+## v0.282
+- `aplica282.py` sobre o `index.html` da v0.281: `moverConteudo` pede tema e data só para Em produção em diante (`CT_PEDE_DATA`); `modalAprovaIdeia` recebe a etapa de destino; botão do Baú "Aprovar ideia".
+- Migração `20270126100000_conteudo_aprovar_sem_data.sql` = `RODAR_v0.282_conteudo_aprovar_sem_data.sql`.
+- Teste `t282_aprovar_sem_data.py` (11 verificações).
+
 ## v0.275
 - Migração `20270122100000_v0275_conteudo_colunas.sql`: tabela `conteudo_colunas` (etapa, nome, ordem; RLS de Marketing), `conteudos.coluna_id` e gatilho `conteudo_coluna_valida` (coluna de outra etapa ou de outro workspace sai).
 - index.html: `notaCt`/`notaTxt` usam `score_total` sempre que existir; `ctUsaScore`, `ctFaixa` (média de 1 a 10), `ctNotaPill`, `CT_ORDENS`/`ctCmp`, `ctAcha`/`ctBuscaHtml`/`ctBuscaLiga` (busca por texto e voz); `ctColunasModal`; `tabKanban` monta as colunas livres; `tabIdeias` agrupa por coluna; `moverConteudo(c, etapa, D, coluna)` manda para `modalAprovaIdeia` quando a ideia sai de Ideias. `dadosConteudo` devolve `cols`. Rótulo da tela para 0.275.

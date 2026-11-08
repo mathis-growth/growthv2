@@ -1,3 +1,6 @@
+## v0.282
+- `conteudo_valida` (método simples): tema e data de publicação exigidos a partir de `producao` (antes: a partir de `pauta`). Sem coluna nova.
+
 ## v0.261
 - `meta_ads_bruto`, `google_ads_bruto`, `youtube_ads_bruto`: `conta_id`, `data`, `anuncio_ext`, `payload`; únicos por conta, anúncio e dia, e regravados quando a plataforma ajusta o número. Sem acesso direto para `anon` e `authenticated`.
 

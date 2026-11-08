@@ -1,3 +1,6 @@
+## Aprovar a ideia sem data (v0.282)
+`t282_aprovar_sem_data.py`: 11 verificações, 0 falhas. Banco: pauta sem tema/data aceita; produção sem tema/data recusada. Tela: ideia → Pautas aprovadas direto; arquivar sem janela; pauta com tema e data vai direto para Em produção; ideia e pauta sem data pedem a janela e entram em Em produção; botão "Aprovar ideia" no Baú; sem erros de JavaScript.
+
 ## Formulário respondido (v0.245)
 `t245_resposta_aviso.py`: 9 verificações, 0 falhas. Lead pelo link aberto gera os dois avisos; WhatsApp na fila; quem desligou não recebe; mensagem com pontuação e faixas; diagnóstico aponta para o diagnóstico; sem cadastro usa o e-mail; faixa verde; opção em Equipe; sem erros de JavaScript. Regressão: t244 sem falhas.
 
