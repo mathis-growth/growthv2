@@ -1,0 +1,50 @@
+.lead { font-size: 15px; color: var(--fg); margin-bottom: 12px }
+.stepper { list-style: none; padding: 0; margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 6px }
+.stepper button { font: 600 12.5px var(--f-ui); color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px 5px 5px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center }
+.stepper button span { display: inline-grid; place-items: center; min-width: 20px; height: 20px; border-radius: 999px; background: var(--surface-2); font: 600 11px var(--f-num) }
+.stepper .feito button { color: var(--fg) } .stepper .feito button span { background: var(--ok-soft); color: var(--ok) }
+.stepper .atual button { background: var(--accent); color: var(--surface); border-color: var(--accent) } .stepper .atual button span { background: var(--surface); color: var(--accent) }
+.cards2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; margin-bottom: 10px }
+.est { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: var(--surface) } .est.sel { border: 2px solid var(--accent) } .est.off { opacity: .72 }
+.est h3 { margin-top: 0 } .est dl, .lin { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; margin: 0 0 8px; font-size: 13px } .est dt, .lin dt { color: var(--muted) } .est dd, .lin dd { margin: 0 }
+.jorn { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; list-style: none; counter-reset: j } .jorn li { counter-increment: j; background: var(--surface-2); border-radius: 8px; padding: 4px 10px; font-size: 13px } .jorn li::before { content: counter(j) ". "; color: var(--muted); font-family: var(--f-num) }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 14px } .grid2 > * { min-width: 0 }
+.tag { display: inline-block; font-size: 11.5px; font-weight: 600; border-radius: 999px; padding: 1px 8px; background: var(--surface-2); color: var(--muted) }
+.tag.ok { background: var(--ok-soft); color: var(--ok) } .tag.warn { background: var(--warn-soft); color: var(--warn) } .tag.meta { background: var(--accent-soft); color: var(--accent) } .tag.hist { background: var(--surface-3); color: var(--fg) } .tag.prem { background: var(--warn-soft); color: var(--warn); border: 1px dashed var(--warn) } .tag.bad { background: var(--bad-soft); color: var(--bad) }
+input.falta { border-color: var(--bad); background: var(--bad-soft) }
+.ck { display: flex; gap: 8px; align-items: center; font-size: 13px; margin-bottom: 10px }
+tr.tot td { font-weight: 700; border-top: 2px solid var(--fg) } tr.forte td { font-weight: 600 } tr.grp td { background: var(--surface-2) }
+.diag { font-size: 14px }
+.rv { font: inherit; color: inherit; background: none; border: 0; border-bottom: 1px dotted var(--accent); padding: 0; cursor: pointer } .rv:hover { color: var(--accent) }
+.rastro { border: 2px solid var(--accent) } .rastro dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 13px; margin: 0 0 10px } .rastro dt { color: var(--muted) } .rastro dd { margin: 0 }
+.rodape { display: flex; gap: 8px; align-items: center; justify-content: flex-end; flex-wrap: wrap; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line) } .rodape .peq { margin-right: auto }
+.btn.pri { background: var(--accent); color: var(--surface) }
+.campos { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px }
+.campo { display: flex; flex-direction: column; gap: 3px; font-size: 12.5px; color: var(--muted) } .campo span { color: var(--fg) } .campo input[type=text] { font: 14px var(--f-ui); padding: 7px 9px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-2); color: var(--fg); min-width: 260px }
+.linha { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end }
+.bcdoc { max-width: 900px } .bcdoc h3 { border-top: 1px solid var(--line); padding-top: 10px; margin-top: 16px }
+.warn-t { color: var(--warn) }
+td input[type=number] { width: 90px }
+input[type=range] { width: min(380px, 70vw); vertical-align: middle }
+code { font: 12px var(--f-num) }
+@media (max-width: 600px) { .campo input[type=text] { min-width: 0 } .stepper button { font-size: 11.5px } }
+
+.q b .st { font: 600 12px var(--f-ui); letter-spacing: 0 } .hoje { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; max-width: none }
+td:first-child { white-space: normal; min-width: 170px } td .d { white-space: normal }
+
+table.rec td { vertical-align: top } table.rec tr.off td { color: var(--muted) } table.rec tr.off input.nome, table.rec tr.off select, table.rec tr.off .un { opacity: .55 }
+input.nome { font: 13px var(--f-ui); color: var(--fg); background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 5px 6px; width: 220px } input.nome:hover, input.nome:focus { border-color: var(--line); background: var(--surface-2) }
+.un { display: inline-flex; gap: 6px; align-items: center; white-space: nowrap }
+.x { font: 600 16px var(--f-ui); color: var(--muted); background: none; border: 0; cursor: pointer; padding: 2px 8px; border-radius: 6px } .x:hover { color: var(--bad); background: var(--bad-soft) }
+table.rec input[type=checkbox] { width: 18px; height: 18px; margin-top: 6px }
+
+.hist { margin-bottom: 14px } .hist .cards { margin-bottom: 4px }
+.st.meta { background: var(--accent-soft); color: var(--accent) }
+tr.faixa td { font-size: 11.5px; white-space: normal; color: var(--muted) }
+.hcol { background: var(--surface-2); color: var(--muted) }
+
+tr.sel td { background: var(--accent-soft) } .radio { display: inline-flex; gap: 6px; align-items: center; font-weight: 600 }
+.destaque { border: 2px solid var(--accent); margin-top: 14px }
+.statusc { margin-bottom: 14px } .chk { list-style: none; padding: 0; margin: 8px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 6px 16px; font-size: 13.5px } .chk li span[aria-hidden] { display: inline-block; width: 16px; font-weight: 700 } .chk li.ok span[aria-hidden] { color: var(--ok) } .chk li.no { color: var(--muted) } .chk .d { margin-left: 20px; color: var(--muted) }
+.c-ok { color: var(--ok); font-weight: 600 } .c-bad { color: var(--bad); font-weight: 600 } .c-meta { color: var(--accent); font-weight: 600 }
+table.gmc td input[type=number] { width: 80px }

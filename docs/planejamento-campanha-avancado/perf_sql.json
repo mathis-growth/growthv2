@@ -1,0 +1,5 @@
+{"ambiente":"Supabase de produção, só leitura (EXPLAIN ANALYZE), 08/11/2026 ~14h30",
+ "consultas":[
+  {"nome":"v_marketing_campanha (histórico de campanhas: leads, vendas, mídia, custos)","linhas":"30 campanhas; 19.582 pessoas; 829 vendas; 1.112 dias de anúncio","primeira_execucao_ms":718.2,"segunda_execucao_ms":11.9,"gargalo":"na primeira execução, 653 ms na leitura sequencial de pessoas (filtro campanha_id IS NOT NULL), dados frios no disco"},
+  {"nome":"Coorte de recompra por mês de entrada (30, 90 e 365 dias)","linhas":"829 vendas; 733 compradores; 82 com segunda compra","execucao_ms":3.4}
+ ]}

@@ -22,6 +22,8 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta; crédito na conta da API da Anthropic (a chave `ANTHROPIC_API_KEY` está cadastrada e funciona, mas as pesquisas de 25 e 26/10 voltaram com "credit balance is too low"); o app do Google já existe (segredos conferidos em 25/10/2026): [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
 
+**Em protótipo: Planejamento de campanha avançado** (fase 1, 08/11/2026) em `docs/planejamento-campanha-avancado/`: motor de cálculo com 67 testes e protótipo de 14 passos com dados fictícios. Fora do `index.html` e do banco até a aprovação da fase 2.
+
 **Em desenvolvimento (branch `fix/zernio-vinculo-por-cliente`):** v0.178 — vínculo de contas Zernio por cliente em Integrações, com opção de iniciar pelo Atendimento; requer migração, publicação da Edge Function e homologação. Não está na `main` nem publicado em produção.
 
 **Correção v0.180:** o OAuth de Instagram agora aparece no cartão Instagram original de Integrações, sem painéis duplicados. Branch `fix/instagram-cartao-existente`, sem novos requisitos de banco ou Edge Function.

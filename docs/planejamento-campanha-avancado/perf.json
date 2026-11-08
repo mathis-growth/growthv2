@@ -1,0 +1,49 @@
+{
+ "node": "v22.23.4",
+ "cpu": "Intel(R) Xeon(R) Processor @ 2.30GHz",
+ "nucleos": 2,
+ "resultados": [
+  {
+   "nome": "resultado() — uma verba",
+   "n": 2000,
+   "mediana": 0,
+   "p95": 0.01,
+   "max": 1.73
+  },
+  {
+   "nome": "caixa() — 1 ano dia a dia",
+   "n": 500,
+   "mediana": 0.02,
+   "p95": 0.12,
+   "max": 0.84
+  },
+  {
+   "nome": "limites() — econômico, caixa, capacidade, orçamento e meta",
+   "n": 50,
+   "mediana": 0.94,
+   "p95": 3.75,
+   "max": 6.3
+  },
+  {
+   "nome": "cenarios() — três cenários com limites",
+   "n": 20,
+   "mediana": 2.79,
+   "p95": 3.72,
+   "max": 3.72
+  },
+  {
+   "nome": "alterar uma premissa e recalcular tudo",
+   "n": 20,
+   "mediana": 3.46,
+   "p95": 4.86,
+   "max": 4.86
+  },
+  {
+   "nome": "testes automáticos (49)",
+   "n": 5,
+   "mediana": 8.16,
+   "p95": 8.34,
+   "max": 8.34
+  }
+ ]
+}
