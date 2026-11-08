@@ -151,6 +151,7 @@ Deno.serve(async (req: Request) => {
         const r = await db.from('frank_growth_integracoes').select('id,nome,token_prefix,escopos,ativo,criado_em,atualizado_em,ultimo_uso_em,rotacionado_em,revogado_em')
           .eq('agencia_workspace_id', agencyId).order('criado_em', { ascending: false });
         if (r.error) erroDb(r.error);
+        const workspaceOptions = await clientesDaAgencia(agencyId, true);
         const rows = r.data || [];
         const grants = rows.length ? await db.from('frank_growth_integracao_workspaces').select('integracao_id,workspace_id').in('integracao_id', rows.map((x: Obj) => x.id)) : { data: [], error: null };
         if (grants.error) erroDb(grants.error);
@@ -158,7 +159,8 @@ Deno.serve(async (req: Request) => {
         const ws = ids.length ? await db.from('workspaces').select('id,nome,agencia,inativo_em').in('id', ids) : { data: [], error: null };
         if (ws.error) erroDb(ws.error);
         const nomes = new Map((ws.data || []).map((x: Obj) => [x.id, { id: x.id, nome: x.nome, agencia: x.agencia, inativo: !!x.inativo_em }]));
-        return json({ ok: true, integracoes: rows.map((x: Obj) => ({ ...x, workspaces: (grants.data || []).filter((g: Obj) => g.integracao_id === x.id).map((g: Obj) => nomes.get(g.workspace_id)).filter(Boolean) })) });
+        return json({ ok: true, workspace_options: workspaceOptions.map(w => ({ id: w.id, nome: w.nome, agencia: !!w.agencia })),
+          integracoes: rows.map((x: Obj) => ({ ...x, workspaces: (grants.data || []).filter((g: Obj) => g.integracao_id === x.id).map((g: Obj) => nomes.get(g.workspace_id)).filter(Boolean) })) });
       }
       const id = texto(body.integracao_id, 80);
       if (id && !uuidValido(id)) throw new HttpErro(400, 'integracao_id inválido.');

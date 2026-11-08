@@ -7804,7 +7804,11 @@ function hmLiga(m, D) {
 }
 async function frankAdminChama(body) {
   const { data, error } = await sb.functions.invoke('frank-growth', { body });
-  if (error) throw new Error('Não consegui falar com a Edge Frank-Growth. Confira se ela foi publicada.');
+  if (error) {
+    let detalhe = data?.erro;
+    try { if (!detalhe && error.context?.clone) detalhe = (await error.context.clone().json())?.erro; } catch (_) { }
+    throw new Error(detalhe || error.message || 'Falha ao chamar a Edge Frank-Growth.');
+  }
   if (!data?.ok) throw new Error(data?.erro || 'A Edge Frank-Growth recusou a operação.');
   return data;
 }
@@ -7828,7 +7832,7 @@ function frankGestaoLiga(root, FG, agenciaWorkspaceId) {
   const chama = dados => frankAdminChama({ agencia_workspace_id: agenciaWorkspaceId, ...dados });
   const mostrarToken = (r, titulo) => setTimeout(() => frankTokenMostrar(r.token, titulo), 0);
   const integracoes = FG?.integracoes || [];
-  const workspaceChecks = escolhidos => frankWorkspacesChecks(S.workspaces || [], escolhidos);
+  const workspaceChecks = escolhidos => frankWorkspacesChecks(FG?.workspace_options || S.workspaces || [], escolhidos);
   root.querySelector('#frankNovo')?.addEventListener('click', () => {
     const f = modal('Criar usuário de sistema', `<p class="muted">Crie uma identidade para o Frank ou outro agente. Selecione somente os clientes que ele precisa acessar.</p><label>Nome do agente<input name="nome" required maxlength="100" placeholder="Frank · Gerencial Mathisa"></label><div style="margin:12px 0"><b>Workspaces liberados</b><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px;margin-top:7px;max-height:230px;overflow:auto">${workspaceChecks([])}</div></div>${frankEscoposHtml(['growth:consultar','campanha:criar'])}<p class="muted">A permissão de criar campanha também cria o projeto e as tarefas do modelo selecionado.</p>`, async (d, form) => {
       const escopos = []; if (form.querySelector('#fgScopeRead').checked) escopos.push('growth:consultar'); if (form.querySelector('#fgScopeCreate').checked) escopos.push('campanha:criar');
@@ -7870,7 +7874,9 @@ async function vIntegracoes(m) {
   let FG = null;
   if (S.interno && wsAgencia) {
     const r = await sb.functions.invoke('frank-growth', { body: { acao: 'integracoes_listar', agencia_workspace_id: wsAgencia.id } });
-    FG = r.error || !r.data?.ok ? { erro: 'A gestão de agentes exige perfil administrador da Mathisa e a Edge Frank-Growth publicada.' } : r.data;
+    let detalhe = r.data?.erro;
+    try { if (!detalhe && r.error?.context?.clone) detalhe = (await r.error.context.clone().json())?.erro; } catch (_) { }
+    FG = r.error || !r.data?.ok ? { erro: detalhe || r.error?.message || 'Não foi possível carregar as integrações do Frank.' } : r.data;
   }
   const R = Object.fromEntries(reg.map(r => [r.provedor, r]));
   const nomeCliente = (S.workspaces || []).find(w => w.id === S.ws)?.nome || 'cliente';
