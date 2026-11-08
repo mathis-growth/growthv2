@@ -7802,9 +7802,76 @@ function hmLiga(m, D) {
     if (sel('Repr')) sel('Repr').onclick = () => act(async () => { const r = await q(pvRpc.repr(k)); toast(num(r.resolvidos) + ' resolvido(s) · ' + num(r.restam) + ' ainda a revisar'); render(); });
   });
 }
+async function frankAdminChama(body) {
+  const { data, error } = await sb.functions.invoke('frank-growth', { body });
+  if (error) throw new Error('Não consegui falar com a Edge Frank-Growth. Confira se ela foi publicada.');
+  if (!data?.ok) throw new Error(data?.erro || 'A Edge Frank-Growth recusou a operação.');
+  return data;
+}
+function frankTokenMostrar(token, titulo) {
+  const f = modal(titulo, `<p><b>Copie e guarde este token agora.</b> Ele não poderá ser consultado novamente. ${'Se perder, rotacione para emitir outro.'}</p><label>Token de integração<textarea id="frankTokenNovo" rows="3" readonly spellcheck="false" class="mono">${esc(token)}</textarea></label><button type="button" class="btn pri" id="frankTokenCopiar">Copiar token</button>`, null, 'Fechar', true, '#modalRoot2');
+  f.querySelector('#frankTokenCopiar').onclick = () => iaCopia(token, 'Token copiado. Guarde-o no cofre de segredos do Frank na VPS.');
+}
+function frankWorkspacesChecks(ws, escolhidos = []) {
+  const ids = new Set(escolhidos);
+  const disponiveis = (ws || []).filter(x => x.agencia ? !x.inativo_em : !x.inativo_em && !x.casa_de);
+  return disponiveis.map(x => `<label style="display:flex;align-items:center;gap:8px;padding:7px 9px;border:1px solid var(--line);border-radius:8px"><input type="checkbox" name="frankWs" value="${esc(x.id)}"${ids.has(x.id) ? ' checked' : ''}><span>${esc(x.nome)}${x.agencia ? ' · Mathisa' : ''}</span></label>`).join('') || '<span class="muted">Nenhum workspace disponível.</span>';
+}
+const frankEscoposHtml = escopos => `<div class="grid2"><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fgScopeRead"${escopos.includes('growth:consultar') ? ' checked' : ''}> Consultar dados, estratégias e equipe</label><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fgScopeCreate"${escopos.includes('campanha:criar') ? ' checked' : ''}> Criar campanhas e distribuir tarefas</label></div>`;
+function frankGestaoHtml(FG) {
+  if (FG?.erro) return `<div class="panel"><h2>Agentes externos</h2><p class="muted">Usuários de integração do Frank e outros agentes, com acesso limitado por cliente.</p><div class="pill warn">${esc(FG.erro)}</div></div>`;
+  const lista = FG?.integracoes || [];
+  return `<div class="panel"><div class="head" style="margin:0 0 8px"><div><h2 style="margin:0">Agentes externos · Frank</h2><span class="muted">Cada agente tem uma identidade própria e só acessa os workspaces liberados aqui. O token aparece apenas na criação ou rotação.</span></div><button type="button" class="btn pri sm" id="frankNovo">Criar usuário de sistema</button></div>
+    ${lista.length ? `<div class="adgrid">${lista.map(x => `<article class="ad" style="padding:14px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px"><b>${esc(x.nome)}</b><span class="pill ${x.ativo ? 'good' : 'neutral'}">${x.ativo ? 'Ativo' : 'Revogado'}</span></div><small class="muted">Token: <code>${esc(x.token_prefix)}</code> · Criado ${dtt(x.criado_em)}${x.ultimo_uso_em ? ' · Usado ' + dtt(x.ultimo_uso_em) : ' · Ainda não usado'}</small><small>Permissões: ${esc((x.escopos || []).map(s => s === 'growth:consultar' ? 'consultar Growth' : 'criar campanhas').join(' · ') || 'nenhuma')}</small><small>Workspaces: ${esc((x.workspaces || []).map(w => w.nome + (w.inativo ? ' (inativo)' : '')).join(', ') || 'nenhum liberado')}</small><div class="acts"><button type="button" class="btn sm" data-frank-edit="${esc(x.id)}">Editar</button><button type="button" class="btn sm" data-frank-access="${esc(x.id)}">Acessos</button><button type="button" class="btn sm" data-frank-rotate="${esc(x.id)}">Rotacionar token</button>${x.ativo ? `<button type="button" class="btn sm" data-frank-revoke="${esc(x.id)}">Revogar</button>` : ''}</div></article>`).join('')}</div>` : '<div class="empty">Nenhum usuário de integração criado.</div>'}</div>`;
+}
+function frankGestaoLiga(root, FG) {
+  const chama = dados => frankAdminChama({ agencia_workspace_id: S.ws, ...dados });
+  const mostrarToken = (r, titulo) => setTimeout(() => frankTokenMostrar(r.token, titulo), 0);
+  const integracoes = FG?.integracoes || [];
+  const workspaceChecks = escolhidos => frankWorkspacesChecks(S.workspaces || [], escolhidos);
+  root.querySelector('#frankNovo')?.addEventListener('click', () => {
+    const f = modal('Criar usuário de sistema', `<p class="muted">Crie uma identidade para o Frank ou outro agente. Selecione somente os clientes que ele precisa acessar.</p><label>Nome do agente<input name="nome" required maxlength="100" placeholder="Frank · Gerencial Mathisa"></label><div style="margin:12px 0"><b>Workspaces liberados</b><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px;margin-top:7px;max-height:230px;overflow:auto">${workspaceChecks([])}</div></div>${frankEscoposHtml(['growth:consultar','campanha:criar'])}<p class="muted">A permissão de criar campanha também cria o projeto e as tarefas do modelo selecionado.</p>`, async (d, form) => {
+      const escopos = []; if (form.querySelector('#fgScopeRead').checked) escopos.push('growth:consultar'); if (form.querySelector('#fgScopeCreate').checked) escopos.push('campanha:criar');
+      const workspace_ids = [...form.querySelectorAll('[name=frankWs]:checked')].map(x => x.value);
+      const r = await chama({ acao: 'integracao_criar', nome: d.nome, escopos, workspace_ids });
+      toast('Usuário de sistema criado. Copie o token para a VPS.'); mostrarToken(r, 'Token novo · copie e guarde');
+    }, 'Criar usuário', true);
+  });
+  root.querySelectorAll('[data-frank-edit]').forEach(b => b.onclick = () => {
+    const x = integracoes.find(i => i.id === b.dataset.frankEdit); if (!x) return;
+    const f = modal('Editar integração · ' + x.nome, `<label>Nome do agente<input name="nome" required maxlength="100" value="${esc(x.nome)}"></label>${frankEscoposHtml(x.escopos || [])}<p class="muted">O token atual permanece válido. Use “Rotacionar token” para invalidá-lo.</p>`, async (d, form) => {
+      const escopos = []; if (form.querySelector('#fgScopeRead').checked) escopos.push('growth:consultar'); if (form.querySelector('#fgScopeCreate').checked) escopos.push('campanha:criar');
+      await chama({ acao: 'integracao_atualizar', integracao_id: x.id, nome: d.nome, escopos }); toast('Integração atualizada.');
+    }, 'Salvar', true);
+  });
+  root.querySelectorAll('[data-frank-access]').forEach(b => b.onclick = () => {
+    const x = integracoes.find(i => i.id === b.dataset.frankAccess); if (!x) return;
+    const ids = (x.workspaces || []).map(w => w.id);
+    modal('Workspaces liberados · ' + x.nome, `<p class="muted">Remover um workspace bloqueia imediatamente o acesso do agente àquele cliente.</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px;max-height:360px;overflow:auto">${workspaceChecks(ids)}</div>`, async (_d, form) => {
+      const workspace_ids = [...form.querySelectorAll('[name=frankWs]:checked')].map(el => el.value);
+      await chama({ acao: 'integracao_acessos_salvar', integracao_id: x.id, workspace_ids }); toast('Acessos atualizados.');
+    }, 'Salvar acessos', true);
+  });
+  root.querySelectorAll('[data-frank-rotate]').forEach(b => b.onclick = async () => {
+    const x = integracoes.find(i => i.id === b.dataset.frankRotate); if (!x || !confirm(`Rotacionar o token de ${x.nome}? O token atual para de funcionar imediatamente.`)) return;
+    try { const r = await chama({ acao: 'integracao_rotacionar', integracao_id: x.id }); mostrarToken(r, 'Token rotacionado · copie e guarde'); }
+    catch (e) { toast(e.message || 'Falha ao rotacionar o token.', true); }
+  });
+  root.querySelectorAll('[data-frank-revoke]').forEach(b => b.onclick = async () => {
+    const x = integracoes.find(i => i.id === b.dataset.frankRevoke); if (!x || !confirm(`Revogar ${x.nome}? Todas as chamadas dessa integração serão bloqueadas.`)) return;
+    try { await chama({ acao: 'integracao_revogar', integracao_id: x.id }); toast('Integração revogada.'); render(); }
+    catch (e) { toast(e.message || 'Falha ao revogar integração.', true); }
+  });
+}
 async function vIntegracoes(m) {
   cxRetorno();
   const [reg, CXD, HM] = await Promise.all([q(sb.from('integracoes').select('*').eq('workspace_id', S.ws)), cxDados(), hmDados()]);
+  const wsAtual = (S.workspaces || []).find(w => w.id === S.ws);
+  let FG = null;
+  if (S.interno && wsAtual?.agencia) {
+    const r = await sb.functions.invoke('frank-growth', { body: { acao: 'integracoes_listar', agencia_workspace_id: S.ws } });
+    FG = r.error || !r.data?.ok ? { erro: 'A gestão de agentes exige perfil administrador da Mathisa e a Edge Frank-Growth publicada.' } : r.data;
+  }
   const R = Object.fromEntries(reg.map(r => [r.provedor, r]));
   const nomeCliente = (S.workspaces || []).find(w => w.id === S.ws)?.nome || 'cliente';
   const chaveCliente = nomeCliente.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/[^a-z0-9_]+/g, '_').replace(/^_+|_+$/g, '') || 'cliente';
@@ -7812,6 +7879,7 @@ async function vIntegracoes(m) {
   m.innerHTML = `<div class="head"><h1>Integrações</h1></div>
   ${cxHtml(CXD)}
   ${hmHtml(HM)}
+  ${S.interno && wsAtual?.agencia ? frankGestaoHtml(FG) : ''}
   <div class="panel"><div class="head" style="margin:0 0 8px"><div><h2 style="margin:0">Entrada de Leads</h2><span class="muted">Scripts e webhooks para formulários e plataformas externas.</span></div></div><div class="adgrid"><article class="ad" style="padding:14px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b style="font-size:16px">WordPress · Elementor</b><span class="pill neutral">Script pronto</span></div><span class="muted">Preserva UTMs e identificadores de anúncios, afiliados e vídeo no redirecionamento após o envio, inclusive em formulários de popup. Identificador deste cliente: <code>${esc(chaveCliente)}</code>.</span><div><button type="button" class="btn pri sm" id="wpScriptOpen">Ver e copiar script</button></div></article><article class="ad" style="padding:14px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b style="font-size:16px">Webhook POST · ManyChat e outros</b><span class="pill neutral">JSON / formulário</span></div><span class="muted">Receba leads enviados por outra plataforma ou formulário via requisição POST. A Edge identifica contato, campanha e URL mesmo em payloads aninhados.</span><div><button type="button" class="btn pri sm" id="ldWebhookOpen">Configurar webhook</button></div></article></div></div>
   <div class="panel"><span>Abaixo, as outras ferramentas que alimentam o Growths. <b>Meta e Google já conectam sozinhos (acima);</b> para as demais, o status serve como controle e os dados entram por lançamento, planilha ou webhook. Nunca cole senha, token ou chave de API nestes campos. Segredos ficam guardados no servidor, fora do navegador.</span></div>
   ${Object.entries(CAT_INTEG).map(([cat, nome]) => { const L = CATALOGO.filter(c => c[1] === cat); return L.length ? `<div class="panel"><h2>${nome}</h2><div class="adgrid">${L.map(([p, , desc]) => { const r = R[p], st = ST_INTEG[r ? r.status : 'desconectado']; return `<div class="ad" style="padding:12px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(p)}</b><span class="pill ${st[0]}">${st[1]}</span></div><span class="muted">${esc(desc)}</span>${r && r.conta_externa ? `<small class="muted">Conta: ${esc(r.conta_externa)}</small>` : ''}${r && r.ultima_sincronizacao ? `<small class="muted">Última sincronização: ${dtt(r.ultima_sincronizacao)}</small>` : ''}<div><button class="btn sm" data-i="${esc(p)}">${r ? 'Editar' : 'Configurar'}</button></div></div>`; }).join('')}</div></div>` : ''; }).join('')}`;
@@ -7823,6 +7891,7 @@ async function vIntegracoes(m) {
       <label>Observação<textarea name="obs" rows="3">${esc(r.observacao || '')}</textarea></label>`,
       async d => { await q(sb.from('integracoes').upsert({ workspace_id: S.ws, provedor: p, categoria: cat, status: d.status, conta_externa: nul(d.conta), observacao: nul(d.obs) }, { onConflict: 'workspace_id,provedor' })); toast('Integração salva'); });
   };
+  if (S.interno && wsAtual?.agencia) frankGestaoLiga(m, FG);
   hmLiga(m, HM);
   m.querySelector('#wpScriptOpen').onclick = () => {
     const f = modal('Script WordPress · Elementor', `<p>Instale em <b>Elementor → Código personalizado</b>, com carregamento no rodapé do site. O código funciona com formulários embutidos e popups do Elementor.</p><p class="muted">O identificador <code>CLIENTE</code> já foi preenchido com o nome deste workspace: <b>${esc(nomeCliente)}</b> → <code>${esc(chaveCliente)}</code>. O script captura <code>utm_growth</code> e a URL completa de entrada, acrescentando ambos aos links da página e ao destino da ação <b>Redirect</b> do Elementor. O webhook grava a URL completa no histórico do lead para auditoria.</p><label>Script para copiar<textarea id="wpScriptText" rows="22" readonly spellcheck="false" class="mono">${esc(scriptWordPress)}</textarea></label><button type="button" class="btn pri" id="wpScriptCopy">Copiar script</button>`, null, null, true);
