@@ -1,3 +1,6 @@
+## Copiar tudo para a IA (v0.284)
+`t284_copiar_para_ia.py`: 10 verificações, 0 falhas. Copiar do cartão (título, etapa, tema, mídia, canais, data, etiquetas, descrição, gancho, roteiro; vazios de fora; aviso); Copiar tudo da barra (dois conteúdos separados por ---; aviso com a quantidade); Copiar tudo para a IA na janela, com texto ainda não salvo, sem gravar nada; sem erros de JavaScript. Regressão: t283 sem falhas.
+
 ## Selecionar vários, dois cliques e carregamento (v0.283)
 `t283_selecao_e_carregamento.py`: 15 verificações, 0 falhas, com 300 conteúdos de descrição longa. Trocar filtro, aba e voltar não baixa de novo; filtro responde em menos de 1 s; dois cliques abrem; Selecionar todos / Desmarcar todos; Limpar seleção; caixinha e Ctrl+clique; arrastar leva os 3; barra "Mover para…" leva os 2 com data e deixa o sem data, com a lista; recarrega depois de gravar e ao voltar de outra tela; sem erros de JavaScript. Regressão: t282 sem falhas.
 

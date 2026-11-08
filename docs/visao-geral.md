@@ -1,3 +1,6 @@
+## v0.284
+**Copiar para a IA.** No Growth's Content, um clique copia tudo de um conteúdo, ou de vários marcados, em texto organizado para colar numa IA.
+
 ## v0.283
 **Kanban mais rápido e em lote.** No Growth's Content dá para marcar vários cartões e arrastar todos de uma vez. Dois cliques abrem o cartão, e trocar de aba ou filtro ficou imediato.
 

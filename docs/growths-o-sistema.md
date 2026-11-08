@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 07/11/2026, versão 0.283 (selecionar vários, dois cliques e Content mais rápido).
+**Última atualização:** 07/11/2026, versão 0.284 (copiar tudo para levar a uma IA).
+
+**v0.284 · Copiar para a IA.** No Growth's Content, "Copiar" no cartão, "Copiar tudo" na barra da seleção ou "Copiar tudo para a IA" dentro do conteúdo: o texto sai organizado (título, tema, canais, data, descrição, gancho, roteiro…), pronto para colar no ChatGPT, na Claude ou em outra IA.
 
 **v0.283 · Kanban em lote.** No Growth's Content, marque vários cartões (caixinha, "Selecionar todos" ou Ctrl+clique) e arraste todos de uma vez, ou use "Mover para…" na barra. Dois cliques abrem o cartão. Trocar de aba, filtro ou busca ficou imediato: o Growths não baixa tudo de novo a cada clique.
 
@@ -294,6 +296,7 @@ O Growth's Content agora segue a ordem do trabalho, sem a configuração em 9 pa
 - **Identidade visual:** cores com o papel de cada uma, fontes, pasta com logos e fotos, referências, o que nunca fazer e os formatos usados, com uma prévia.
 - **Baú de ideias:** aprovar ou descartar. **Aprovar ideia** leva para Pautas aprovadas sem pedir nada (v0.282). Tema, subtema, formato e data de publicação só são pedidos quando o conteúdo vai para Em produção: aí ele entra no calendário. Com o **microfone** (v0.240), você fala a ideia, o texto aparece na hora e ela entra no baú esperando aprovação; também dá para falar pelo Kanban da Produção.
 - **Kanban em lote** (v0.283): cada cartão tem uma caixinha para marcar; no topo da coluna, "Selecionar todos". Com cartões marcados aparece uma barra com a quantidade, "Mover para…" e "Limpar seleção". Arrastar qualquer marcado leva todos. Para Em produção, os sem tema ou data ficam e a tela diz quais. **Dois cliques** no cartão abrem o conteúdo.
+- **Copiar para a IA** (v0.284): "Copiar" em cada cartão; "Copiar tudo" na barra quando há cartões marcados (vários, separados por ---); "Copiar tudo para a IA" dentro do conteúdo aberto, com o que está na tela mesmo antes de salvar. Só os campos preenchidos entram.
 - **Produção:** o Kanban com o painel da semana, o calendário das próximas semanas e as colunas por etapa. Cada cartão diz se o roteiro ou a peça falta aprovar; o botão Roteiro e peça abre a aprovação: o roteiro é aprovado antes de qualquer arte ou vídeo, a arte ou o vídeo tem versões e pedidos de ajuste, e a aprovada vai para a data.
 - **Mais ferramentas:** as outras abas de antes (dashboard, semana, priorização, máquina, fechamento, persona, produtos, estruturas, canais).
 
@@ -613,6 +616,8 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 - "O lead esfria em 5 minutos": por que o aviso de lead novo chega no WhatsApp da equipe na hora.
 
+- "Do Growths para a IA em um clique": levar a pauta inteira, com contexto, para a IA escrever o roteiro.
+
 - "Arraste dez de uma vez": organizar a semana de conteúdo em lote, em vez de cartão por cartão.
 
 - "Aprovar não é agendar": separar o que vale a pena do que já tem data tira o peso de decidir tudo de uma vez.
@@ -702,6 +707,7 @@ As finanças pessoais da sócia num livro contábil separado, que nunca se mistu
 
 ## 14. Histórico resumido
 
+- **07/11 (v0.284):** Content: copiar tudo de um ou vários conteúdos para levar a uma IA.
 - **07/11 (v0.283):** Content: selecionar vários e mover de uma vez, dois cliques para abrir, carregamento mais rápido.
 - **07/11 (v0.282):** Growth's Content: aprovar a ideia sem data; tema e data só na produção.
 - **02/11 (v0.245):** aviso de formulário respondido, com a pontuação da qualificação.

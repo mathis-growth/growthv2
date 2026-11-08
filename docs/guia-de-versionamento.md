@@ -1,3 +1,7 @@
+## v0.284
+- `aplica284.py` sobre a v0.283: `ctTextoIA`, `ctCopiaTexto`, `ctCopiaVarios`, `CT_COPIA_CAMPOS`; botão `data-copia` no cartão, `data-selcopia` na barra, `data-copia-mdl` na janela do conteúdo.
+- Sem migração. Teste `t284_copiar_para_ia.py` (10 verificações).
+
 ## v0.283
 - `aplica283.py` sobre o `index.html` da v0.282: `CT_CACHE`/`CT_SUJO` em `dadosConteudo` (o `q()` marca sujo em gravações do Content; leituras por RPC ficam de fora), `window.__ctFresco` no `render()`; `ctSelLiga` e `ctMoverVarios`; caixinha e `data-selcol` no Kanban; dois cliques no cartão.
 - Sem migração. Teste `t283_selecao_e_carregamento.py` (15 verificações); `t282` ajustado (entra no Content vindo de outra tela).

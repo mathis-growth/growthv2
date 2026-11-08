@@ -1,3 +1,8 @@
+## v0.284 — Copiar tudo para levar a uma IA (07/11/2026)
+- **Growth's Content:** botão "Copiar" em cada cartão; "Copiar tudo" na barra da seleção (vários conteúdos, separados por ---); "Copiar tudo para a IA" dentro do conteúdo aberto, com o que está na tela mesmo antes de salvar.
+- O texto sai organizado: título, etapa, tema, canais, data e os campos preenchidos (descrição, gancho, roteiro…), cada um com título. Campos vazios ficam de fora.
+- Sem mudança no banco. Teste: `t284_copiar_para_ia.py` (0 falhas); t283 sem falhas.
+
 ## v0.283 — Kanban do Content: selecionar vários, dois cliques e mais rápido (07/11/2026)
 - **Selecionar vários:** caixinha em cada cartão, "Selecionar todos" na coluna e Ctrl/Cmd + clique. A barra mostra quantos estão marcados, com "Mover para…" e "Limpar seleção". Arrastar um marcado leva todos.
 - **Mover em lote para a produção:** os que não têm tema ou data ficam e a tela lista quais.

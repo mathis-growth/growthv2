@@ -1,3 +1,9 @@
+## v0.284 — Copiar tudo para levar a uma IA
+**Pedido da Rebecka (07/11):** "o botãozinho para eu clicar e já copiar tudo, se eu quiser copiar e levar para alguma IA".
+**Como ficou:** três lugares. No cartão, o botão "Copiar" copia aquele conteúdo. Na barra da seleção, "Copiar tudo" copia todos os marcados, separados por `---`. Dentro do conteúdo aberto, "Copiar tudo para a IA" copia o que está escrito na tela, mesmo antes de salvar.
+**Formato:** texto organizado com título, uma lista com etapa, território, tema, subtema, formato, tipo de mídia, canais, destino, palavra-chave, nível de consciência, etiquetas, prazo, data e nota, e depois cada campo preenchido com o seu título (descrição, gancho, tese, objetivo, CTA, roteiro, problema, achado, evidência, observações e links). Campos vazios ficam de fora.
+**Se o navegador bloquear a cópia:** abre uma janela com o texto para copiar à mão.
+
 ## v0.283 — Selecionar vários, dois cliques e carregamento do Content
 **Pedido da Rebecka (07/11):** selecionar vários conteúdos (ideias, pautas) e arrastar todos de uma vez para a próxima coluna; abrir o cartão com dois cliques; a tela do Content demorava para carregar.
 **Causa da demora (fato):** a cada clique (filtro, aba, busca, mover) o Growths baixava de novo 15 tabelas do Content, incluindo todos os conteúdos com a descrição completa. Na Mathisa são 294 conteúdos e cerca de 820 kB, quase tudo no campo descrição (consulta só de leitura em 07/11).

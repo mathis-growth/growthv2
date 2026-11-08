@@ -1,3 +1,6 @@
+## v0.284
+- **Copiar para a IA:** copia só o que está preenchido. Na janela do conteúdo, copia o que está na tela (inclusive o que ainda não foi salvo) e não grava nada.
+
 ## v0.283
 - **Mover vários conteúdos:** cada um segue as mesmas regras de mover um só. Para Em produção, os sem tema ou sem data ficam onde estão e aparecem numa lista; o resto é movido.
 - **Dados do Content na memória:** recarregam ao gravar, ao entrar no Content vindo de outra tela, ao trocar de workspace e a cada 1 minuto.
