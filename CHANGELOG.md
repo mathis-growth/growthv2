@@ -1,3 +1,9 @@
+## v0.286 — Pergunte ao Growth por voz em qualquer tela (07/11/2026)
+
+- Adiciona atalho flutuante global que abre o Pergunte ao Growth e inicia ditado por voz.
+- Permite ditar e revisar a pergunta antes de enviá-la; mantém a consulta somente leitura e o contexto agregado existente.
+- Navegadores sem reconhecimento de voz continuam podendo digitar ou usar o ditado do teclado.
+
 ## v0.285 — Copiar para a IA com as referências (07/11/2026)
 - **Referências e links:** a cópia traz a fonte da ideia, o link da copy, o link da mídia e o vídeo bruto de cada conteúdo.
 - **Referências do cliente:** de Identidade visual (referências aprovadas, o que nunca fazer, cores, fontes e pasta), uma vez no fim do texto.
