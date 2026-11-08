@@ -1,3 +1,6 @@
+## Planejamento de campanha avançado (v0.287)
+Motor: `node testes.js` em `docs/planejamento-campanha-avancado/`: 67 de 67 (fórmulas, limites e bordas, 15 casos da especificação, recursos, histórico por canal e ofertas, plano por canal e cenários, versão aprovada). Módulo com os dados do workspace Growths — Demo (leitura do banco de produção, sem gravar): 14 passos sem erro, rascunho gravado pelo Growths (simulado), largura de 390 px sem rolagem lateral. `index.html`: sintaxe conferida. Não rodou com o banco local completo (PostgREST fora do ar nesta sessão).
+
 ## Copiar com referências (v0.285)
 `t285_copiar_referencias.py`: 14 verificações, 0 falhas. Além das da v0.284: links do conteúdo em "Referências e links"; referências do cliente (aprovadas, nunca fazer, cores, fontes); com vários, as do cliente aparecem uma vez só; botão no painel Detalhes. Regressão: t284 sem falhas.
 

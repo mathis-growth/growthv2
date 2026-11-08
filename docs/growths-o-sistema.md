@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 07/11/2026, versão 0.285 (copiar para a IA com as referências).
+**Última atualização:** 08/11/2026, versão 0.287 (Planejamento de campanha avançado).
+
+**v0.287 · Planejamento de campanha avançado.** Em Marketing, uma tela nova para planejar a campanha antes de criar: escolhe a estratégia e o produto, vê o histórico das últimas campanhas desse produto (CAC, CPL, conversão, ticket, bump e upsell, por canal), confere a margem, marca os recursos que vai usar, vê até quanto o negócio aguenta investir, escolhe o CAC (por exemplo, o do histórico em vez do máximo), copia para os cenários pessimista, base e otimista, divide a verba entre os canais e mexe no funil da campanha etapa por etapa. Tudo fica salvo como rascunho.
 
 **v0.285 · Copiar com as referências.** A cópia para a IA leva os links de cada conteúdo (fonte, copy, mídia, vídeo) e, no fim, as referências do cliente: posts que ele aprova, o que nunca fazer, cores e fontes. Dentro do conteúdo, o botão fica no painel Detalhes, ao lado.
 
@@ -259,6 +261,7 @@ A campanha é uma página com abas: dashboard, estratégia e etapas, metas, capt
   - vendas por plataforma (Hotmart, Kiwify, Eduzz…): bruto, taxas, reembolsos e o que a plataforma deve repassar;
   - quanto custou e o que trouxe cada vídeo ou criativo.
 - **Ofertas e esteira.** Oferta principal com order bumps, upsells, downsells e cross-sells. Cada item tem condição (sempre, se aceitou, se recusou), validações contra ciclos e taxa de aceite medida com o denominador certo (quem recebeu a oferta, não todos).
+- **Planejamento de campanha avançado (v0.287).** Tela própria em Marketing, em 14 passos, do histórico do produto ao Growth Model da campanha. Mostra o que as últimas campanhas do produto custaram ao lado de cada limite, para não planejar um CAC de R$ 500 quando o histórico é R$ 195. A escolha do CAC vira a verba; a verba vai para três cenários e é dividida por canal, com quanto o orgânico precisa trazer para a meta. Salva como rascunho por produto e estratégia.
 - **Calculadora de campanha.** Preencha o que souber e o resto se ajusta: CPL e conversão dão o CAC, a margem-alvo dá o CAC máximo, e assim por diante. "Salvar metas na campanha" leva tudo para a campanha.
 - **Financeiro simplificado** (no Go-to-Market é o único financeiro; no Growths completo, uma visão rápida ao lado do financeiro completo). O cliente lança os totais do mês, de marketing e de outros custos da operação, e os parceiros (coprodutor, afiliado, vendedor) com uma comissão geral e, se for diferente, uma % por produto. O Growths monta o DRE simplificado mês a mês, de faturamento a Resultado da operação, com % do faturamento, médias, gráfico e "para onde vai cada R$ 100 vendidos". Sem caixa, sem o que foi pago e sem lançamento contábil.
 - **Custos de marketing e Resultado de marketing** (cliente sem financeiro, pacote Go-to-Market). Custos fixos (repetem todo mês) e variáveis (lançados no fim do mês), sem detalhar a equipe; no último dia do mês o cliente recebe a atividade para lançar e, se não lançar, a Mathisa é avisada; o mês só fecha com tudo lançado. Resultado de marketing = receita − mídia − custos de marketing, sempre com o aviso de que as outras despesas da empresa não entram, com ROAS de mídia, ROAS total, CAC de mídia e CAC completo.

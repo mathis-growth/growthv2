@@ -1,3 +1,12 @@
+## v0.287
+- **Planejamento de campanha avançado:** o orçamento sai do resultado que o negócio precisa; CAC e CPL derivam dele. O autorizado é o menor entre econômico, caixa, capacidade e orçamento do ano; limite sem dado informado não limita e aparece como "não informado".
+- **Histórico comparável:** campanhas do mesmo produto, com leads ou mídia; por padrão só da mesma estratégia (com menos de 2, usa todas do produto). CPL = mídia ÷ leads pagos (Meta, Google, TikTok); sem anúncios ligados, mídia ÷ todos os leads. Taxas são ponderadas.
+- **Sem presença registrada:** comparecimento 100% e conversão direta de lead em venda, com aviso na tela.
+- **Margem:** impostos, taxa da plataforma e reembolso vêm das vendas reais do produto; custo de entrega, suporte e infraestrutura não existem no Growths e ficam como "Falta" até serem preenchidos. Valor que falta nunca vira zero.
+- **Escolher o CAC:** histórico, alvo do plano, máximo que o negócio aguenta ou outro valor; verba = CAC × novos clientes da meta. Copiar leva a mesma verba para pessimista, base e otimista; as taxas vêm da pior campanha, da média e da melhor.
+- **CPL com a verba:** sobe quando a verba passa da média histórica (elasticidade 0,6, premissa editável no motor).
+- **Anúncios nunca são alterados pelo módulo.**
+
 ## v0.285
 - **Copiar para a IA:** as referências do cliente vêm de Identidade visual e aparecem uma vez no fim, mesmo copiando vários conteúdos. Sem identidade cadastrada, copia só os conteúdos.
 

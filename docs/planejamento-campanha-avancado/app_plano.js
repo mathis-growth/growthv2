@@ -40,6 +40,7 @@ function passoCanaisPl(p) {
   return `<p class="lead">Distribua a verba entre os canais olhando o que cada um entregou. Mais leads orgânicos com a mesma verba baixam o CAC.</p>
   <div class="seg" role="group" aria-label="Cenário">${CENS.map(([kk, n]) => `<button type="button" data-ativo="${kk}" aria-pressed="${kk === k}">${n}</button>`).join('')}</div>
   <div class="linha" style="margin:10px 0"><label class="campo">Verba de mídia deste cenário<span>${inp('verba', c.verba, 100)} R$</span></label><label class="campo">Meta de vendas<span><b>${nf(pl.meta)}</b></span></label></div>
+  ${HC.meta.semDado && HC.google.semDado ? '<p class="aviso info">O histórico não tem anúncios ligados por canal: o CPL de referência é o geral das últimas campanhas (mídia ÷ todos os leads). Divida entre Meta e Google pelo que você espera.</p>' : ''}
   <div class="tw"><table><thead><tr><th>Canal</th><th class="n">% da verba</th><th class="n">Verba</th><th class="n">CPL de referência</th><th class="n">CPL com esta verba</th><th class="n">CPL no histórico</th><th class="n">Leads no plano</th><th class="n">Leads por campanha no histórico</th></tr></thead><tbody>
     <tr><td>Meta Ads</td><td class="n">${inp('canais.meta.pct', c.canais.meta.pct, 1)} %</td><td class="n">${brl(r.pagos[0].verba)}</td><td class="n">${inp('canais.meta.cpl', c.canais.meta.cpl, 0.1)}</td><td class="n">${brl(r.pagos[0].cpl, 2)}</td><td class="n peq">${brl(HC.meta.cpl, 2)}<span class="d">${fx(HC.meta.faixaCpl)}</span></td><td class="n">${nf(r.pagos[0].leads)}</td><td class="n">${nf(HC.meta.leadsPorCampanha)}</td></tr>
     <tr><td>Google Ads</td><td class="n">${nf(c.canais.google.pct, 0)} %<span class="d">o que sobra</span></td><td class="n">${brl(r.pagos[1].verba)}</td><td class="n">${inp('canais.google.cpl', c.canais.google.cpl, 0.1)}</td><td class="n">${brl(r.pagos[1].cpl, 2)}</td><td class="n peq">${brl(HC.google.cpl, 2)}<span class="d">${fx(HC.google.faixaCpl)}</span></td><td class="n">${nf(r.pagos[1].leads)}</td><td class="n">${nf(HC.google.leadsPorCampanha)}</td></tr>
@@ -51,7 +52,7 @@ function passoCanaisPl(p) {
   <p class="peq muted">CPL com esta verba = CPL de referência × (verba ÷ ${brl(c.verbaRef)}, a média histórica) ^ ${nf(c.elasticidade, 2)}: quanto mais verba, mais caro o lead. Conversão deste cenário: comparecimento ${pc(c.comparecimento / 100)}, presentes ${pc(c.convPresentes / 100)}, ausentes ${pc(c.convAusentes / 100, 2)}. Ajuste no Growth Model da campanha.</p>`;
 }
 function statusCampanha(p, L) {
-  const pl = planoDe(p), M = BC.margem(p.produto), livre = BC.orcamentoDisponivel(p.plano.orcamentoAquisicaoAno, p.plano.realizadoAquisicao, p.plano.comprometidoAquisicao), b = pl.cens && econ(p, pl.cens.base);
+  const pl = planoDe(p), M = BC.margem(p.produto), livre = livreAno(p), b = pl.cens && econ(p, pl.cens.base);
   const it = [['Estratégia escolhida', true, `${p.estrategia.nome} v${p.estrategia.versao}`], ['Margem do produto completa', M.completa, M.completa ? brl(M.mc, 2) + ' por venda' : 'faltam custos'], ['CAC escolhido e copiado para os cenários', !!pl.cens, pl.cens ? brl(pl.cac) : 'passo 9'],
     ['Verba distribuída por canal', !!(pl.cens && Math.abs(pl.cens.base.canais.meta.pct + pl.cens.base.canais.google.pct - 100) < 0.01), 'Meta, Google, orgânico e API'], ['Base atinge a meta', !!(b && b.r.vendas >= pl.meta * 0.97), b ? `${nf(b.r.vendas, 1)} de ${nf(pl.meta)} vendas` : '—'],
     ['Verba dentro do autorizado', !!(b && b.r.verba <= L.autorizado), b ? `${brl(b.r.verba)} de ${brl(L.autorizado)}` : '—'], ['Orçamento dentro do plano do ano', !!(b && b.invest <= livre), b ? `${brl(b.invest)} de ${brl(livre)} livres` : '—'], ['Business Case aprovado', ST.versoes.length > 0, ST.versoes.length ? 'v' + ST.versoes.length : 'aprovar abaixo']];
@@ -65,6 +66,7 @@ function passoGM(p) {
   const row = (nm, f, hist, opts = {}) => `<tr class="${opts.cls || ''}"><td>${nm}</td>${CENS.map(([k]) => { const c = pl.cens[k], e = E[k]; return `<td class="n ${opts.cor ? opts.cor(e, k) : ''}">${f(c, e, k)}</td>`; }).join('')}<td class="n hcol">${hist}</td></tr>`;
   const grp = t => `<tr class="grp"><td colspan="5"><b>${t}</b></td></tr>`;
   return `<p class="lead">O funil da campanha, etapa por etapa, nos três cenários. Mude qualquer taxa ou volume: tudo recalcula.</p>
+  ${pl.cens.base.semPresenca ? '<p class="aviso info">As campanhas do histórico não têm presença no evento registrada. Por isso o comparecimento está em 100% e a conversão dos presentes é a conversão direta de lead em venda. Quando a presença for registrada nas etapas da campanha, ela entra aqui.</p>' : ''}
   <div class="tw"><table class="gmc"><thead><tr><th>Etapa</th>${CENS.map(([, nm]) => `<th class="n">${nm}</th>`).join('')}<th class="n hcol">Média das ${n} últimas</th></tr></thead><tbody>
   ${grp('Captação')}
   ${row('Verba de mídia', (c, e, k) => inp(k, 'verba', c.verba, 100), brl(med(c => c.midia)))}

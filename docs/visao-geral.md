@@ -1,3 +1,6 @@
+## v0.287
+**Planejamento de campanha avançado.** Tela nova em Marketing: da estratégia ao Growth Model da campanha, com o histórico do produto, a margem, os limites de investimento, a escolha do CAC, os cenários e a divisão por canal. Lê os dados do cliente e salva como rascunho. O planejamento atual de Campanhas continua igual.
+
 ## v0.285
 **Copiar com as referências.** A cópia para a IA leva também os links do conteúdo e as referências do cliente; dentro do conteúdo, o botão fica no painel Detalhes.
 

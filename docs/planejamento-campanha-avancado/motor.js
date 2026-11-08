@@ -109,6 +109,7 @@
   // saídas: mídia espalhada nos dias de captação, custos fixos no início, variáveis por lead na captação e por venda no carrinho
   // entradas: vendas no carrinho; à vista entra após o repasse; parcelado entra em parcelas mensais, ou tudo antecipado com taxa
   function caixa(p, verba) {
+    if (!p.caixa || val(p.caixa.saldo) == null) return { semDado: true, serie: [], min: null, folga: null, payback: null, minDia: null }; // sem saldo informado não se calcula caixa
     const R = resultado(p, verba), cx = p.caixa || {}, d = p.datas || { capA: 0, capB: 20, carA: 26, carB: 32 }, n = Math.max(d.carB + 400, 60), fluxo = new Float64Array(n + 1);
     const capDias = d.capB - d.capA + 1, carDias = d.carB - d.carA + 1;
     for (let i = d.capA; i <= d.capB; i++) fluxo[i] -= (verba + R.C.linhas.filter(x => x.tipo === 'var_lead').reduce((s, x) => s + x.desembolso, 0)) / capDias;
@@ -137,14 +138,14 @@
     // a contribuição residual sobe e depois cai com a verba (cada lead a mais custa mais): acha o pico e procura o limite à direita dele
     const pico = picoResidual(p, teto), eco = pico.residual < resMin ? { x: null, convergiu: false, motivo: 'nem no melhor ponto a contribuição residual chega ao mínimo', pico } : { ...bissecao(x => resultado(p, x).residual - resMin, pico.x, teto), pico };
     // c) financiável: maior verba em que o caixa nunca fica abaixo da reserva
-    const fin = bissecao(x => caixa(p, x).folga, 0, teto);
+    const fin = !p.caixa || val(p.caixa.saldo) == null ? { x: teto, convergiu: true, semDado: true } : bissecao(x => caixa(p, x).folga, 0, teto);
     // d) operacional: vendas não podem passar da capacidade de entrega
-    const capVendas = val(p.capacidadeVendas), op = capVendas == null ? { x: teto, convergiu: true } : bissecao(x => capVendas - resultado(p, x).F.vendas, 0, teto);
+    const capVendas = val(p.capacidadeVendas), op = capVendas == null ? { x: teto, convergiu: true, semDado: true } : bissecao(x => capVendas - resultado(p, x).F.vendas, 0, teto);
     // e) orçamento: não pode usar o que já foi realizado ou está comprometido com outras campanhas
-    const disp = val(p.orcamentoDisponivel), orc = disp == null ? { x: teto, convergiu: true } : bissecao(x => disp - resultado(p, x).investimento, 0, teto);
-    const lims = [['econômico', eco.x], ['caixa', fin.x], ['capacidade de entrega', op.x], ['orçamento disponível', orc.x]], algumNulo = lims.some(l => l[1] == null);
-    const autorizado = algumNulo ? null : Math.min(...lims.map(l => l[1]));
-    const quem = autorizado == null ? (lims.find(l => l[1] == null) || ['nenhum'])[0] : lims.find(l => l[1] === autorizado)[0];
+    const disp = val(p.orcamentoDisponivel), orc = disp == null ? { x: teto, convergiu: true, semDado: true } : bissecao(x => disp - resultado(p, x).investimento, 0, teto);
+    const lims = [['econômico', eco.x], ['caixa', fin.x], ['capacidade de entrega', op.x], ['orçamento disponível', orc.x]].filter((l, i) => !(i === 1 && fin.semDado) && !(i === 2 && capVendas == null) && !(i === 3 && disp == null)), algumNulo = lims.some(l => l[1] == null);
+    const autorizado = algumNulo ? null : lims.length ? Math.min(...lims.map(l => l[1])) : teto;
+    const quem = autorizado == null ? (lims.find(l => l[1] == null) || ['nenhum'])[0] : (lims.find(l => l[1] === autorizado) || ['sem limite informado'])[0];
     const R = k => k == null ? null : resultado(p, k), Re = R(eco.x), Ra = R(autorizado);
     // pela meta de vendas
     let meta = null;
@@ -196,15 +197,15 @@
 
   /* ---------- 10. histórico: taxas ponderadas pelos denominadores, não média simples ---------- */
   // CPL tem a mesma base do plano: mídia ÷ leads PAGOS (Meta + Google) quando a campanha tem a divisão por canal
-  const leadsPagosHist = c => c.canais ? ['meta', 'google'].reduce((a, k) => a + (c.canais[k] ? val(c.canais[k].leads) || 0 : 0), 0) : val(c.leads);
+  const leadsPagosHist = c => c.canais ? ['meta', 'google', 'tiktok'].reduce((a, k) => a + (c.canais[k] ? val(c.canais[k].leads) || 0 : 0), 0) : val(c.leads);
   function historico(camps) {
     const s = k => camps.reduce((a, c) => a + (val(c[k]) || 0), 0), lp = camps.reduce((a, c) => a + (leadsPagosHist(c) || 0), 0);
-    return { cpl: div(s('midia'), lp), leadsPagos: lp, leadsOrg: s('leads') - lp, vendasPorLead: div(s('vendas'), s('leads')), comparecimentoInscritos: div(s('participantes'), s('inscritos')), convAusentes: div(s('vendas') - s('vendasPresentes'), s('inscritos') - s('participantes')), pctNovos: div(s('novos'), s('vendas')), comparecimento: div(s('participantes'), s('inscritos') || s('leads')), convPresentes: div(s('vendasPresentes'), s('participantes')), convLeadVenda: div(s('vendas'), s('leads')), cac: div(s('midia'), s('novos')), ticket: div(s('receita'), s('vendas')), n: camps.length,
+    return { cpl: div(s('midia'), lp), leadsPagos: lp, leadsOrg: s('leads') - lp, vendasPorLead: div(s('vendas'), s('leads')), comparecimentoInscritos: div(s('participantes'), s('inscritos')), convAusentes: div(s('vendas') - s('vendasPresentes'), s('inscritos') - s('participantes')), pctNovos: div(s('novos'), s('vendas')), comparecimento: s('participantes') ? div(s('participantes'), s('inscritos') || s('leads')) : null, convPresentes: div(s('vendasPresentes'), s('participantes')), convLeadVenda: div(s('vendas'), s('leads')), cac: div(s('midia'), s('novos')), ticket: div(s('receita'), s('vendas')), n: camps.length,
       mediaSimplesCpl: camps.length ? camps.reduce((a, c) => a + (div(val(c.midia), leadsPagosHist(c)) || 0), 0) / camps.length : null };
   }
 
   /* ---------- 10b. histórico por canal, faixa entre campanhas e ofertas ---------- */
-  const CANAIS = { meta: 'Meta Ads', google: 'Google Ads', org: 'Orgânico', api: 'WhatsApp API' };
+  const CANAIS = { meta: 'Meta Ads', google: 'Google Ads', tiktok: 'TikTok Ads', org: 'Orgânico', api: 'WhatsApp API' };
   function faixa(camps, f) { const v = camps.map(f).filter(x => x != null && isFinite(x)); return v.length ? { min: Math.min(...v), max: Math.max(...v), n: v.length } : null; }
   function historicoCanais(camps) {
     const out = {}, totLeads = camps.reduce((s, c) => s + (val(c.leads) || 0), 0), totNovos = camps.reduce((s, c) => s + (val(c.novos) || 0), 0);
@@ -213,6 +214,8 @@
       out[k] = { nome: CANAIS[k], custo, leads: s('leads'), novos: s('novos'), cpl: custo ? div(custo, s('leads')) : null, cac: custo ? div(custo, s('novos')) : null, convLeadNovo: div(s('novos'), s('leads')),
         pctLeads: div(s('leads'), totLeads), pctNovos: div(s('novos'), totNovos), leadsPorCampanha: s('leads') / cs.length,
         faixaCpl: custo ? faixa(cs, c => div((g(c, 'midia') || 0) + (g(c, 'custo') || 0), g(c, 'leads'))) : null, faixaCac: custo ? faixa(cs, c => div((g(c, 'midia') || 0) + (g(c, 'custo') || 0), g(c, 'novos'))) : null }; });
+    // canal sem dado aparece vazio (sem custo, sem leads), nunca some: as telas leem sempre os mesmos canais
+    Object.keys(CANAIS).forEach(k => { if (!out[k] && k !== 'tiktok') out[k] = { nome: CANAIS[k], custo: 0, leads: 0, novos: 0, cpl: null, cac: null, convLeadNovo: null, pctLeads: null, pctNovos: null, leadsPorCampanha: 0, faixaCpl: null, faixaCac: null, semDado: true }; });
     return out;
   }
   function historicoFaixas(camps) { return { cpl: faixa(camps, c => div(val(c.midia), leadsPagosHist(c))), cac: faixa(camps, c => div(val(c.midia), val(c.novos))), comparecimento: faixa(camps, c => div(val(c.participantes), val(c.inscritos))), convPresentes: faixa(camps, c => div(val(c.vendasPresentes), val(c.participantes))), ticket: faixa(camps, c => div(val(c.receita), val(c.vendas))), vendas: faixa(camps, c => val(c.vendas)) }; }
@@ -248,17 +251,23 @@
   const verbaPeloCac = (cac, meta, pctNovos) => (val(cac) == null || val(meta) == null) ? null : val(cac) * val(meta) * (val(pctNovos) || 0) / 100;
   // três cenários tirados do histórico: pior, média ponderada e melhor campanha; mesma verba nos três
   function cenariosDoHistorico(camps, verba, meta, apiCustoLead, elasticidade) {
-    const H = historico(camps), C = historicoCanais(camps), r = x => x * 100, por = f => camps.map(f).filter(x => x != null && isFinite(x)), mn = f => Math.min(...por(f)), mx = f => Math.max(...por(f));
+    const H = historico(camps), C = historicoCanais(camps), r = x => x == null ? null : x * 100, por = f => camps.map(f).filter(x => x != null && isFinite(x)), mn = f => { const v = por(f); return v.length ? Math.min(...v) : null; }, mx = f => { const v = por(f); return v.length ? Math.max(...v) : null; };
+    const cc = k => C[k] || {}, def = (v, d) => v == null ? d : v;
     const cAus = c => div(val(c.vendas) - val(c.vendasPresentes), val(c.inscritos) - val(c.participantes)), cComp = c => div(val(c.participantes), val(c.inscritos)), cPres = c => div(val(c.vendasPresentes), val(c.participantes));
     const lc = (c, k) => c.canais && c.canais[k] ? val(c.canais[k].leads) : null, cplc = (c, k) => c.canais && c.canais[k] ? div(val(c.canais[k].midia), val(c.canais[k].leads)) : null;
-    const pctMeta = C.meta && C.google ? C.meta.custo / (C.meta.custo + C.google.custo) * 100 : 100;
+    const pctMeta = (cc('meta').custo || 0) + (cc('google').custo || 0) > 0 ? (cc('meta').custo || 0) / ((cc('meta').custo || 0) + (cc('google').custo || 0)) * 100 : 100;
     const verbaRef = camps.reduce((s, c) => s + (val(c.midia) || 0), 0) / camps.length;
-    const mk = (comp, pres, aus, cplM, cplG, org, api) => ({ verba, meta, verbaRef, elasticidade: elasticidade || 0, pctNovos: r(H.pctNovos), comparecimento: r(comp), convPresentes: r(pres), convAusentes: r(aus),
-      canais: { meta: { pct: pctMeta, cpl: cplM }, google: { pct: 100 - pctMeta, cpl: cplG }, org: { leads: org }, api: { leads: api, custoLead: apiCustoLead } } });
+    // sem dado de presença: comparecimento 100% e conversão direta de lead em venda (mesmo resultado em vendas por lead)
+    const semPresenca = H.convPresentes == null, vpl = c => div(val(c.vendas), val(c.leads));
+    const mk = (comp, pres, aus, cplM, cplG, org, api) => ({ verba, meta, verbaRef, elasticidade: elasticidade || 0, semPresenca, pctNovos: def(r(H.pctNovos), 100), comparecimento: semPresenca ? 100 : r(comp), convPresentes: semPresenca ? r(pres) : r(pres), convAusentes: semPresenca ? 0 : def(r(aus), 0),
+      canais: { meta: { pct: pctMeta, cpl: cplM }, google: { pct: 100 - pctMeta, cpl: cplG }, org: { leads: def(org, 0) }, api: { leads: def(api, 0), custoLead: apiCustoLead || 0 } } });
+    // sem anúncios ligados no histórico: o CPL de referência é o geral (mídia ÷ leads), e toda a verba vai para um canal pago
+    const semCanal = !(cc('meta').custo > 0) && !(cc('google').custo > 0), cplG0 = c => div(val(c.midia), leadsPagosHist(c));
+    if (semCanal) return { pessimista: mk(mn(cComp), semPresenca ? mn(vpl) : mn(cPres), mn(cAus), mx(cplG0), mx(cplG0), 0, 0), base: mk(H.comparecimento, semPresenca ? H.vendasPorLead : H.convPresentes, H.convAusentes, H.cpl, H.cpl, 0, 0), otimista: mk(mx(cComp), semPresenca ? mx(vpl) : mx(cPres), mx(cAus), mn(cplG0), mn(cplG0), 0, 0) };
     return {
-      pessimista: mk(mn(cComp), mn(cPres), mn(cAus), mx(c => cplc(c, 'meta')), mx(c => cplc(c, 'google')), mn(c => lc(c, 'org')), mn(c => lc(c, 'api'))),
-      base: mk(H.comparecimento, H.convPresentes, H.convAusentes, C.meta.cpl, C.google.cpl, C.org.leadsPorCampanha, C.api.leadsPorCampanha),
-      otimista: mk(mx(cComp), mx(cPres), mx(cAus), mn(c => cplc(c, 'meta')), mn(c => cplc(c, 'google')), mx(c => lc(c, 'org')), mx(c => lc(c, 'api'))) };
+      pessimista: mk(mn(cComp), semPresenca ? mn(vpl) : mn(cPres), mn(cAus), mx(c => cplc(c, 'meta')), mx(c => cplc(c, 'google')), mn(c => lc(c, 'org')), mn(c => lc(c, 'api'))),
+      base: mk(H.comparecimento, semPresenca ? H.vendasPorLead : H.convPresentes, H.convAusentes, cc('meta').cpl, cc('google').cpl, cc('org').leadsPorCampanha, cc('api').leadsPorCampanha),
+      otimista: mk(mx(cComp), semPresenca ? mx(vpl) : mx(cPres), mx(cAus), mn(c => cplc(c, 'meta')), mn(c => cplc(c, 'google')), mx(c => lc(c, 'org')), mx(c => lc(c, 'api'))) };
   }
 
   /* ---------- 11. status no cockpit ---------- */

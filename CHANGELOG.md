@@ -1,3 +1,9 @@
+## v0.287 — Planejamento de campanha avançado (08/11/2026)
+- **Tela nova em Marketing → Planejamento de campanha avançado**, com 14 passos: estratégia, produto e oferta, histórico do produto, informações financeiras, margem, recursos, orçamento máximo, CAC e CPL, escolher e copiar para os cenários, distribuir por canal, Business Case, status e aprovação, Growth Model da campanha e cockpit.
+- **Dados reais:** histórico das campanhas do produto (mídia, leads, vendas, CPL, CAC, ticket; por canal quando os anúncios estão ligados; bump e upsell pelas vendas), impostos, taxa e reembolso das vendas do produto, etapas da estratégia.
+- **Salva sozinho** como rascunho em `campanha_calculos`, um por produto e estratégia. A calculadora antiga não mostra esses rascunhos.
+- O planejamento atual de Campanhas continua igual. Sem mudança no banco. Motor: 67 testes.
+
 ## v0.286 — Pergunte ao Growth por voz em qualquer tela (07/11/2026)
 
 - Adiciona atalho flutuante global que abre o Pergunte ao Growth e inicia ditado por voz.

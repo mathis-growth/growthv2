@@ -239,6 +239,7 @@ table.gmc td input[type=number] { width: 80px }
   // saídas: mídia espalhada nos dias de captação, custos fixos no início, variáveis por lead na captação e por venda no carrinho
   // entradas: vendas no carrinho; à vista entra após o repasse; parcelado entra em parcelas mensais, ou tudo antecipado com taxa
   function caixa(p, verba) {
+    if (!p.caixa || val(p.caixa.saldo) == null) return { semDado: true, serie: [], min: null, folga: null, payback: null, minDia: null }; // sem saldo informado não se calcula caixa
     const R = resultado(p, verba), cx = p.caixa || {}, d = p.datas || { capA: 0, capB: 20, carA: 26, carB: 32 }, n = Math.max(d.carB + 400, 60), fluxo = new Float64Array(n + 1);
     const capDias = d.capB - d.capA + 1, carDias = d.carB - d.carA + 1;
     for (let i = d.capA; i <= d.capB; i++) fluxo[i] -= (verba + R.C.linhas.filter(x => x.tipo === 'var_lead').reduce((s, x) => s + x.desembolso, 0)) / capDias;
@@ -267,14 +268,14 @@ table.gmc td input[type=number] { width: 80px }
     // a contribuição residual sobe e depois cai com a verba (cada lead a mais custa mais): acha o pico e procura o limite à direita dele
     const pico = picoResidual(p, teto), eco = pico.residual < resMin ? { x: null, convergiu: false, motivo: 'nem no melhor ponto a contribuição residual chega ao mínimo', pico } : { ...bissecao(x => resultado(p, x).residual - resMin, pico.x, teto), pico };
     // c) financiável: maior verba em que o caixa nunca fica abaixo da reserva
-    const fin = bissecao(x => caixa(p, x).folga, 0, teto);
+    const fin = !p.caixa || val(p.caixa.saldo) == null ? { x: teto, convergiu: true, semDado: true } : bissecao(x => caixa(p, x).folga, 0, teto);
     // d) operacional: vendas não podem passar da capacidade de entrega
-    const capVendas = val(p.capacidadeVendas), op = capVendas == null ? { x: teto, convergiu: true } : bissecao(x => capVendas - resultado(p, x).F.vendas, 0, teto);
+    const capVendas = val(p.capacidadeVendas), op = capVendas == null ? { x: teto, convergiu: true, semDado: true } : bissecao(x => capVendas - resultado(p, x).F.vendas, 0, teto);
     // e) orçamento: não pode usar o que já foi realizado ou está comprometido com outras campanhas
-    const disp = val(p.orcamentoDisponivel), orc = disp == null ? { x: teto, convergiu: true } : bissecao(x => disp - resultado(p, x).investimento, 0, teto);
-    const lims = [['econômico', eco.x], ['caixa', fin.x], ['capacidade de entrega', op.x], ['orçamento disponível', orc.x]], algumNulo = lims.some(l => l[1] == null);
-    const autorizado = algumNulo ? null : Math.min(...lims.map(l => l[1]));
-    const quem = autorizado == null ? (lims.find(l => l[1] == null) || ['nenhum'])[0] : lims.find(l => l[1] === autorizado)[0];
+    const disp = val(p.orcamentoDisponivel), orc = disp == null ? { x: teto, convergiu: true, semDado: true } : bissecao(x => disp - resultado(p, x).investimento, 0, teto);
+    const lims = [['econômico', eco.x], ['caixa', fin.x], ['capacidade de entrega', op.x], ['orçamento disponível', orc.x]].filter((l, i) => !(i === 1 && fin.semDado) && !(i === 2 && capVendas == null) && !(i === 3 && disp == null)), algumNulo = lims.some(l => l[1] == null);
+    const autorizado = algumNulo ? null : lims.length ? Math.min(...lims.map(l => l[1])) : teto;
+    const quem = autorizado == null ? (lims.find(l => l[1] == null) || ['nenhum'])[0] : (lims.find(l => l[1] === autorizado) || ['sem limite informado'])[0];
     const R = k => k == null ? null : resultado(p, k), Re = R(eco.x), Ra = R(autorizado);
     // pela meta de vendas
     let meta = null;
@@ -326,15 +327,15 @@ table.gmc td input[type=number] { width: 80px }
 
   /* ---------- 10. histórico: taxas ponderadas pelos denominadores, não média simples ---------- */
   // CPL tem a mesma base do plano: mídia ÷ leads PAGOS (Meta + Google) quando a campanha tem a divisão por canal
-  const leadsPagosHist = c => c.canais ? ['meta', 'google'].reduce((a, k) => a + (c.canais[k] ? val(c.canais[k].leads) || 0 : 0), 0) : val(c.leads);
+  const leadsPagosHist = c => c.canais ? ['meta', 'google', 'tiktok'].reduce((a, k) => a + (c.canais[k] ? val(c.canais[k].leads) || 0 : 0), 0) : val(c.leads);
   function historico(camps) {
     const s = k => camps.reduce((a, c) => a + (val(c[k]) || 0), 0), lp = camps.reduce((a, c) => a + (leadsPagosHist(c) || 0), 0);
-    return { cpl: div(s('midia'), lp), leadsPagos: lp, leadsOrg: s('leads') - lp, vendasPorLead: div(s('vendas'), s('leads')), comparecimentoInscritos: div(s('participantes'), s('inscritos')), convAusentes: div(s('vendas') - s('vendasPresentes'), s('inscritos') - s('participantes')), pctNovos: div(s('novos'), s('vendas')), comparecimento: div(s('participantes'), s('inscritos') || s('leads')), convPresentes: div(s('vendasPresentes'), s('participantes')), convLeadVenda: div(s('vendas'), s('leads')), cac: div(s('midia'), s('novos')), ticket: div(s('receita'), s('vendas')), n: camps.length,
+    return { cpl: div(s('midia'), lp), leadsPagos: lp, leadsOrg: s('leads') - lp, vendasPorLead: div(s('vendas'), s('leads')), comparecimentoInscritos: div(s('participantes'), s('inscritos')), convAusentes: div(s('vendas') - s('vendasPresentes'), s('inscritos') - s('participantes')), pctNovos: div(s('novos'), s('vendas')), comparecimento: s('participantes') ? div(s('participantes'), s('inscritos') || s('leads')) : null, convPresentes: div(s('vendasPresentes'), s('participantes')), convLeadVenda: div(s('vendas'), s('leads')), cac: div(s('midia'), s('novos')), ticket: div(s('receita'), s('vendas')), n: camps.length,
       mediaSimplesCpl: camps.length ? camps.reduce((a, c) => a + (div(val(c.midia), leadsPagosHist(c)) || 0), 0) / camps.length : null };
   }
 
   /* ---------- 10b. histórico por canal, faixa entre campanhas e ofertas ---------- */
-  const CANAIS = { meta: 'Meta Ads', google: 'Google Ads', org: 'Orgânico', api: 'WhatsApp API' };
+  const CANAIS = { meta: 'Meta Ads', google: 'Google Ads', tiktok: 'TikTok Ads', org: 'Orgânico', api: 'WhatsApp API' };
   function faixa(camps, f) { const v = camps.map(f).filter(x => x != null && isFinite(x)); return v.length ? { min: Math.min(...v), max: Math.max(...v), n: v.length } : null; }
   function historicoCanais(camps) {
     const out = {}, totLeads = camps.reduce((s, c) => s + (val(c.leads) || 0), 0), totNovos = camps.reduce((s, c) => s + (val(c.novos) || 0), 0);
@@ -343,6 +344,8 @@ table.gmc td input[type=number] { width: 80px }
       out[k] = { nome: CANAIS[k], custo, leads: s('leads'), novos: s('novos'), cpl: custo ? div(custo, s('leads')) : null, cac: custo ? div(custo, s('novos')) : null, convLeadNovo: div(s('novos'), s('leads')),
         pctLeads: div(s('leads'), totLeads), pctNovos: div(s('novos'), totNovos), leadsPorCampanha: s('leads') / cs.length,
         faixaCpl: custo ? faixa(cs, c => div((g(c, 'midia') || 0) + (g(c, 'custo') || 0), g(c, 'leads'))) : null, faixaCac: custo ? faixa(cs, c => div((g(c, 'midia') || 0) + (g(c, 'custo') || 0), g(c, 'novos'))) : null }; });
+    // canal sem dado aparece vazio (sem custo, sem leads), nunca some: as telas leem sempre os mesmos canais
+    Object.keys(CANAIS).forEach(k => { if (!out[k] && k !== 'tiktok') out[k] = { nome: CANAIS[k], custo: 0, leads: 0, novos: 0, cpl: null, cac: null, convLeadNovo: null, pctLeads: null, pctNovos: null, leadsPorCampanha: 0, faixaCpl: null, faixaCac: null, semDado: true }; });
     return out;
   }
   function historicoFaixas(camps) { return { cpl: faixa(camps, c => div(val(c.midia), leadsPagosHist(c))), cac: faixa(camps, c => div(val(c.midia), val(c.novos))), comparecimento: faixa(camps, c => div(val(c.participantes), val(c.inscritos))), convPresentes: faixa(camps, c => div(val(c.vendasPresentes), val(c.participantes))), ticket: faixa(camps, c => div(val(c.receita), val(c.vendas))), vendas: faixa(camps, c => val(c.vendas)) }; }
@@ -378,17 +381,23 @@ table.gmc td input[type=number] { width: 80px }
   const verbaPeloCac = (cac, meta, pctNovos) => (val(cac) == null || val(meta) == null) ? null : val(cac) * val(meta) * (val(pctNovos) || 0) / 100;
   // três cenários tirados do histórico: pior, média ponderada e melhor campanha; mesma verba nos três
   function cenariosDoHistorico(camps, verba, meta, apiCustoLead, elasticidade) {
-    const H = historico(camps), C = historicoCanais(camps), r = x => x * 100, por = f => camps.map(f).filter(x => x != null && isFinite(x)), mn = f => Math.min(...por(f)), mx = f => Math.max(...por(f));
+    const H = historico(camps), C = historicoCanais(camps), r = x => x == null ? null : x * 100, por = f => camps.map(f).filter(x => x != null && isFinite(x)), mn = f => { const v = por(f); return v.length ? Math.min(...v) : null; }, mx = f => { const v = por(f); return v.length ? Math.max(...v) : null; };
+    const cc = k => C[k] || {}, def = (v, d) => v == null ? d : v;
     const cAus = c => div(val(c.vendas) - val(c.vendasPresentes), val(c.inscritos) - val(c.participantes)), cComp = c => div(val(c.participantes), val(c.inscritos)), cPres = c => div(val(c.vendasPresentes), val(c.participantes));
     const lc = (c, k) => c.canais && c.canais[k] ? val(c.canais[k].leads) : null, cplc = (c, k) => c.canais && c.canais[k] ? div(val(c.canais[k].midia), val(c.canais[k].leads)) : null;
-    const pctMeta = C.meta && C.google ? C.meta.custo / (C.meta.custo + C.google.custo) * 100 : 100;
+    const pctMeta = (cc('meta').custo || 0) + (cc('google').custo || 0) > 0 ? (cc('meta').custo || 0) / ((cc('meta').custo || 0) + (cc('google').custo || 0)) * 100 : 100;
     const verbaRef = camps.reduce((s, c) => s + (val(c.midia) || 0), 0) / camps.length;
-    const mk = (comp, pres, aus, cplM, cplG, org, api) => ({ verba, meta, verbaRef, elasticidade: elasticidade || 0, pctNovos: r(H.pctNovos), comparecimento: r(comp), convPresentes: r(pres), convAusentes: r(aus),
-      canais: { meta: { pct: pctMeta, cpl: cplM }, google: { pct: 100 - pctMeta, cpl: cplG }, org: { leads: org }, api: { leads: api, custoLead: apiCustoLead } } });
+    // sem dado de presença: comparecimento 100% e conversão direta de lead em venda (mesmo resultado em vendas por lead)
+    const semPresenca = H.convPresentes == null, vpl = c => div(val(c.vendas), val(c.leads));
+    const mk = (comp, pres, aus, cplM, cplG, org, api) => ({ verba, meta, verbaRef, elasticidade: elasticidade || 0, semPresenca, pctNovos: def(r(H.pctNovos), 100), comparecimento: semPresenca ? 100 : r(comp), convPresentes: semPresenca ? r(pres) : r(pres), convAusentes: semPresenca ? 0 : def(r(aus), 0),
+      canais: { meta: { pct: pctMeta, cpl: cplM }, google: { pct: 100 - pctMeta, cpl: cplG }, org: { leads: def(org, 0) }, api: { leads: def(api, 0), custoLead: apiCustoLead || 0 } } });
+    // sem anúncios ligados no histórico: o CPL de referência é o geral (mídia ÷ leads), e toda a verba vai para um canal pago
+    const semCanal = !(cc('meta').custo > 0) && !(cc('google').custo > 0), cplG0 = c => div(val(c.midia), leadsPagosHist(c));
+    if (semCanal) return { pessimista: mk(mn(cComp), semPresenca ? mn(vpl) : mn(cPres), mn(cAus), mx(cplG0), mx(cplG0), 0, 0), base: mk(H.comparecimento, semPresenca ? H.vendasPorLead : H.convPresentes, H.convAusentes, H.cpl, H.cpl, 0, 0), otimista: mk(mx(cComp), semPresenca ? mx(vpl) : mx(cPres), mx(cAus), mn(cplG0), mn(cplG0), 0, 0) };
     return {
-      pessimista: mk(mn(cComp), mn(cPres), mn(cAus), mx(c => cplc(c, 'meta')), mx(c => cplc(c, 'google')), mn(c => lc(c, 'org')), mn(c => lc(c, 'api'))),
-      base: mk(H.comparecimento, H.convPresentes, H.convAusentes, C.meta.cpl, C.google.cpl, C.org.leadsPorCampanha, C.api.leadsPorCampanha),
-      otimista: mk(mx(cComp), mx(cPres), mx(cAus), mn(c => cplc(c, 'meta')), mn(c => cplc(c, 'google')), mx(c => lc(c, 'org')), mx(c => lc(c, 'api'))) };
+      pessimista: mk(mn(cComp), semPresenca ? mn(vpl) : mn(cPres), mn(cAus), mx(c => cplc(c, 'meta')), mx(c => cplc(c, 'google')), mn(c => lc(c, 'org')), mn(c => lc(c, 'api'))),
+      base: mk(H.comparecimento, semPresenca ? H.vendasPorLead : H.convPresentes, H.convAusentes, cc('meta').cpl, cc('google').cpl, cc('org').leadsPorCampanha, cc('api').leadsPorCampanha),
+      otimista: mk(mx(cComp), semPresenca ? mx(vpl) : mx(cPres), mx(cAus), mn(c => cplc(c, 'meta')), mn(c => cplc(c, 'google')), mx(c => lc(c, 'org')), mx(c => lc(c, 'api'))) };
   }
 
   /* ---------- 11. status no cockpit ---------- */
@@ -564,9 +573,11 @@ const pc = (v, d = 1) => (v == null || !isFinite(v)) ? '—' : nf(Math.abs(v) < 
 const v_ = c => c && typeof c === 'object' && 'v' in c ? c.v : c;
 const PASSOS = ['Estratégia', 'Produto e oferta', 'Histórico do produto', 'Informações financeiras', 'Validar margem', 'Recursos', 'Orçamento máximo', 'CAC e CPL', 'Escolher e copiar para os cenários', 'Distribuir por canal', 'Business Case', 'Status e aprovação', 'Growth Model da campanha', 'Cockpit'];
 const NP = PASSOS.length;
+const livreAno = p => p.plano && p.plano.orcamentoAquisicaoAno != null ? BC.orcamentoDisponivel(p.plano.orcamentoAquisicaoAno, p.plano.realizadoAquisicao, p.plano.comprometidoAquisicao) : null;
+const acima = (x, lim) => x != null && lim != null && x > lim;
 let ST = { passo: 0, p: EXEMPLO(), semMargem: false, versoes: [], hoje: 12, rastro: null, fat: JSON.parse(JSON.stringify(BC.FATORES)), testes: null };
 try { const s = localStorage.getItem('bcProto5'); if (s) { const x = JSON.parse(s); ST = { ...ST, ...x, rastro: null, testes: null }; } } catch (e) {}
-const salva = () => { try { localStorage.setItem('bcProto5', JSON.stringify({ ...ST, rastro: null, testes: null })); } catch (e) {} };
+let salva = () => { try { localStorage.setItem('bcProto5', JSON.stringify({ ...ST, rastro: null, testes: null })); } catch (e) {} };
 const P = () => { const q = JSON.parse(JSON.stringify(ST.p)); if (ST.semMargem) { delete q.produto.entrega; delete q.produto.suporte; delete q.produto.infra; }
   const b = q.plan && q.plan.cens && q.plan.cens.base; // depois da decisão, o Business Case usa a base escolhida
   if (b) { const f = q.funil, ch = b.canais, cplMix = b.verba / ((b.verba * ch.meta.pct / 100) / ch.meta.cpl + (b.verba * ch.google.pct / 100) / ch.google.cpl);
@@ -590,7 +601,7 @@ function passoEstrategia(p) {
   <p class="peq muted">Objetivo e modelo de conversão são dimensões separadas. Uma campanha aprovada guarda a versão da estratégia usada: se a estratégia mudar depois, a campanha continua com as regras de quando foi aprovada.</p>`;
 }
 function passoProduto(p) {
-  const pl = p.plano, disp = BC.orcamentoDisponivel(pl.orcamentoAquisicaoAno, pl.realizadoAquisicao, pl.comprometidoAquisicao), o = p.ofertas, HO = BC.historicoOfertas(p.historico);
+  const pl = p.plano, disp = livreAno(p), o = p.ofertas, HO = BC.historicoOfertas(p.historico);
   return `<p class="lead">O produto e a oferta vêm do cadastro. O planejamento anual diz quanto ainda está livre para esta campanha.</p>
   <div class="grid2"><section class="painel"><h3>${p.produto.nome}</h3><dl class="lin"><dt>Preço</dt><dd>${brl(v_(p.produto.preco))}</dd><dt>Order bump</dt><dd>${o.bump.tem ? `${o.bump.nome}: ${brl(o.bump.preco)} · planejado ${nf(o.bump.aceite)}% · histórico ${HO.bump ? pc(HO.bump.aceite) : 'sem dado'}` : 'não tem'}</dd><dt>Upsell</dt><dd>${o.upsell.tem ? `${o.upsell.nome}: ${brl(o.upsell.preco)} · planejado ${nf(o.upsell.aceite)}% · histórico ${HO.upsell ? pc(HO.upsell.aceite) : 'sem dado'}` : 'não tem'}</dd><dt>Downsell</dt><dd>não tem nesta oferta${HO.downsell ? ` · histórico ${pc(HO.downsell.aceite)} de quem viu, em ${HO.downsell.campanhas} de ${HO.downsell.de} campanhas` : ''}</dd><dt>Capacidade de entrega</dt><dd>${nf(p.capacidadeVendas)} alunos por turma</dd></dl></section>
   <section class="painel"><h3>Orçamento de aquisição do ano</h3><table><tbody>
@@ -599,7 +610,7 @@ function passoProduto(p) {
     <tr><td>Comprometido com outras campanhas</td><td class="n">− ${`<input type="number" step="1000" value="${pl.comprometidoAquisicao}" data-orcano="comprometidoAquisicao"> R$`}</td></tr>
     <tr class="tot"><td>Livre no plano do ano</td><td class="n">${brl(disp)}</td></tr>
     <tr><td>Quanto desta campanha vai usar<span class="d">mídia + demais custos; pode ser menos que o livre</span></td><td class="n"><input type="number" step="1000" value="${p.orcamentoDisponivel}" data-orcdisp> R$</td></tr></tbody></table>
-    ${p.orcamentoDisponivel > disp ? `<p class="aviso bad">${brl(p.orcamentoDisponivel)} passa do livre no plano (${brl(disp)}). Para usar mais, revise o plano do ano e aprove o aumento antes de seguir; o Business Case fica marcado como "acima do plano".</p>` : p.orcamentoDisponivel < disp ? `<p class="aviso info">Usando ${brl(disp - p.orcamentoDisponivel)} a menos que o livre. A diferença continua disponível para outras campanhas.</p>` : ''}
+    ${acima(p.orcamentoDisponivel, disp) ? `<p class="aviso bad">${brl(p.orcamentoDisponivel)} passa do livre no plano (${brl(disp)}). Para usar mais, revise o plano do ano e aprove o aumento antes de seguir; o Business Case fica marcado como "acima do plano".</p>` : disp != null && p.orcamentoDisponivel != null && p.orcamentoDisponivel < disp ? `<p class="aviso info">Usando ${brl(disp - p.orcamentoDisponivel)} a menos que o livre. A diferença continua disponível para outras campanhas.</p>` : ''}
     <p class="peq muted">O ano não está todo disponível: o que já foi gasto e o que está reservado para outras campanhas ficam de fora. Contribuição do produto no ano: meta ${brl(pl.contribuicaoProdutoAno)}, realizado até agosto ${brl(pl.realizadoAteAgosto)}.</p></section></div>`;
 }
 function passoHistorico(p, L) {
@@ -609,22 +620,22 @@ function passoHistorico(p, L) {
   ${blocoHist(p, L)}
   ${(() => { const R = BC.resultado(p, p.verbaPlanejada), f = p.funil, o = p.ofertas, org = p.canais.filter(c => c.tipo === 'org').reduce((x, c) => x + c.leads, 0), api = p.canais.filter(c => c.tipo === 'api').reduce((x, c) => x + c.leads, 0), n = h.length;
     // [nome, plano, histórico, formato, maior é melhor]
-    const L = [['CPL', R.cpl, H.cpl, v => brl(v, 2), false], ['Comparecimento', f.comparecimento / 100, H.comparecimento, pc, true], ['Conversão dos presentes', f.convPresentes / 100, H.convPresentes, pc, true], ['Conversão dos ausentes', f.convAusentes / 100, H.convAusentes, v => pc(v, 2), true], ['Vendas por lead', R.F.vendas / R.F.leads, H.vendasPorLead, v => pc(v, 2), true], ['Compradores novos', f.pctNovos / 100, H.pctNovos, pc, true], ['Leads orgânicos', org, HC.org.leadsPorCampanha, v => nf(v), true], ['Leads da API', api, HC.api.leadsPorCampanha, v => nf(v), true], ['Aceite do bump', o.bump.tem ? o.bump.aceite / 100 : null, HO.bump && HO.bump.aceite, pc, true], ['Aceite do upsell', o.upsell.tem ? o.upsell.aceite / 100 : null, HO.upsell && HO.upsell.aceite, pc, true]];
-    const leitura = (pl, hi, maior) => { if (pl == null || hi == null) return '<span class="muted">—</span>'; const d = pl / hi - 1; if (Math.abs(d) <= 0.1) return '<span class="st ok">em linha</span>'; const otim = maior ? d > 0 : d < 0; return otim ? '<span class="st warn">mais otimista</span>' : '<span class="st meta">mais conservador</span>'; };
-    return `<h3>Premissas do plano contra o histórico</h3><div class="tw"><table><thead><tr><th>Premissa</th><th class="n">No plano</th><th class="n">Histórico</th><th class="n">Diferença</th><th>Leitura</th></tr></thead><tbody>${L.map(([nm, pl, hi, fm, mx]) => `<tr><td>${nm}</td><td class="n">${pl == null ? '—' : fm(pl)}</td><td class="n">${hi == null ? '—' : fm(hi)}</td><td class="n">${pl == null || hi == null ? '—' : (pl >= hi ? '+' : '') + nf((pl / hi - 1) * 100, 0) + '%'}</td><td>${leitura(pl, hi, mx)}</td></tr>`).join('')}</tbody></table></div>
+    const L = [['CPL', R.cpl, H.cpl, v => brl(v, 2), false], ...(H.convPresentes == null ? [] : [['Comparecimento', f.comparecimento / 100, H.comparecimento, pc, true], ['Conversão dos presentes', f.convPresentes / 100, H.convPresentes, pc, true], ['Conversão dos ausentes', f.convAusentes / 100, H.convAusentes, v => pc(v, 2), true]]), ['Vendas por lead', R.F.vendas / R.F.leads, H.vendasPorLead, v => pc(v, 2), true], ['Compradores novos', f.pctNovos / 100, H.pctNovos, pc, true], ['Leads orgânicos', org, HC.org.leadsPorCampanha, v => nf(v), true], ['Leads da API', api, HC.api.leadsPorCampanha, v => nf(v), true], ['Aceite do bump', o.bump.tem ? o.bump.aceite / 100 : null, HO.bump && HO.bump.aceite, pc, true], ['Aceite do upsell', o.upsell.tem ? o.upsell.aceite / 100 : null, HO.upsell && HO.upsell.aceite, pc, true]];
+    const leitura = (pl, hi, maior) => { if (pl == null || hi == null) return '<span class="muted">—</span>'; if (hi === 0) return pl === 0 ? '<span class="st ok">em linha</span>' : '<span class="st warn">mais otimista</span>'; const d = pl / hi - 1; if (Math.abs(d) <= 0.1) return '<span class="st ok">em linha</span>'; const otim = maior ? d > 0 : d < 0; return otim ? '<span class="st warn">mais otimista</span>' : '<span class="st meta">mais conservador</span>'; };
+    return `<h3>Premissas do plano contra o histórico</h3><div class="tw"><table><thead><tr><th>Premissa</th><th class="n">No plano</th><th class="n">Histórico</th><th class="n">Diferença</th><th>Leitura</th></tr></thead><tbody>${L.map(([nm, pl, hi, fm, mx]) => `<tr><td>${nm}</td><td class="n">${pl == null ? '—' : fm(pl)}</td><td class="n">${hi == null ? '—' : fm(hi)}</td><td class="n">${pl == null || hi == null || hi === 0 ? '—' : (pl >= hi ? '+' : '') + nf((pl / hi - 1) * 100, 0) + '%'}</td><td>${leitura(pl, hi, mx)}</td></tr>`).join('')}</tbody></table></div>
     <p class="peq muted">Mais otimista = o plano espera algo melhor do que as ${n} últimas campanhas entregaram: precisa de um motivo (oferta nova, público novo, ação orgânica). Diferença de até 10% conta como em linha.</p>`; })()}
   <h3>Campanhas comparáveis</h3><div class="tw"><table><thead><tr><th>Campanha</th><th class="n">Mídia</th><th class="n">Leads</th><th class="n">CPL</th><th class="n">Comparec.</th><th class="n">Conv. presentes</th><th class="n">Vendas</th><th class="n">CAC de mídia</th><th class="n">Ticket</th><th class="n">Bump</th><th class="n">Upsell</th><th class="n">Downsell</th></tr></thead><tbody>
-  ${h.map(c => `<tr><td>${c.nome}<span class="d">${c.oferta}${c.diferenca ? ` · <span class="warn-t">diferença: ${c.diferenca}</span>` : ''}</span></td><td class="n">${brl(c.midia)}</td><td class="n">${nf(c.leads)}<span class="d">${nf(c.canais.meta.leads + c.canais.google.leads)} pagos</span></td><td class="n">${brl(c.midia / (c.canais.meta.leads + c.canais.google.leads), 2)}</td><td class="n">${pc(c.participantes / c.inscritos)}</td><td class="n">${pc(c.vendasPresentes / c.participantes)}</td><td class="n">${nf(c.vendas)}</td><td class="n">${brl(c.midia / c.novos)}</td><td class="n">${brl(c.receita / c.vendas)}</td><td class="n">${tx(c, 'bump')}</td><td class="n">${tx(c, 'upsell')}</td><td class="n">${tx(c, 'downsell')}</td></tr>`).join('')}
+  ${h.map(c => `<tr><td>${c.nome}<span class="d">${c.oferta}${c.diferenca ? ` · <span class="warn-t">diferença: ${c.diferenca}</span>` : ''}</span></td><td class="n">${brl(c.midia)}</td><td class="n">${nf(c.leads)}<span class="d">${c.canais ? nf(['meta', 'google', 'tiktok'].reduce((x, k) => x + (c.canais[k] ? c.canais[k].leads : 0), 0)) + ' pagos' : 'canal não registrado'}</span></td><td class="n">${brl(c.midia / (c.canais ? ['meta', 'google', 'tiktok'].reduce((x, k) => x + (c.canais[k] ? c.canais[k].leads : 0), 0) : c.leads), 2)}</td><td class="n">${pc(c.participantes / c.inscritos)}</td><td class="n">${pc(c.vendasPresentes / c.participantes)}</td><td class="n">${nf(c.vendas)}</td><td class="n">${brl(c.midia / c.novos)}</td><td class="n">${brl(c.receita / c.vendas)}</td><td class="n">${tx(c, 'bump')}</td><td class="n">${tx(c, 'upsell')}</td><td class="n">${tx(c, 'downsell')}</td></tr>`).join('')}
   <tr class="tot"><td>Média ponderada</td><td></td><td></td><td class="n">${brl(H.cpl, 2)}</td><td class="n">${pc(H.comparecimento)}</td><td class="n">${pc(H.convPresentes)}</td><td class="n">${nf(h.reduce((s, c) => s + c.vendas, 0) / h.length, 1)}</td><td class="n">${brl(H.cac)}</td><td class="n">${brl(H.ticket)}</td><td class="n">${HO.bump ? pc(HO.bump.aceite) : '—'}</td><td class="n">${HO.upsell ? pc(HO.upsell.aceite) : '—'}</td><td class="n">${HO.downsell ? pc(HO.downsell.aceite) : '—'}</td></tr>
   <tr class="faixa"><td class="muted">Variação entre campanhas</td><td></td><td></td><td class="n">${fx(FX.cpl, v => brl(v, 2))}</td><td class="n">${fx(FX.comparecimento, pc)}</td><td class="n">${fx(FX.convPresentes, pc)}</td><td class="n">${fx(FX.vendas, v => nf(v))}</td><td class="n">${fx(FX.cac, brl)}</td><td class="n">${fx(FX.ticket, brl)}</td><td class="n">${HO.bump ? fx(HO.bump.faixa, pc) : '—'}</td><td class="n">${HO.upsell ? fx(HO.upsell.faixa, pc) : '—'}</td><td class="n">${HO.downsell ? `${HO.downsell.campanhas} de ${HO.downsell.de}` : '—'}</td></tr></tbody></table></div>
   <p class="peq muted">Bump e upsell: vendas da oferta ÷ vendas principais. Downsell: vendas ÷ quem viu e não comprou o principal. CPL: mídia ÷ leads pagos (Meta + Google), a mesma conta do plano. CAC de mídia: mídia ÷ todos os novos clientes, inclusive os que vieram do orgânico.</p>
-  <h3>Por canal</h3><div class="tw"><table><thead><tr><th>Canal</th><th class="n">Leads por campanha</th><th class="n">% dos leads</th><th class="n">CPL</th><th class="n">CPL, variação</th><th class="n">Novos clientes</th><th class="n">% dos novos</th><th class="n">Lead → novo cliente</th><th class="n">CAC do canal</th><th class="n">CAC, variação</th></tr></thead><tbody>
+  ${HC.meta.semDado && HC.google.semDado ? '<h3>Por canal</h3><p class="aviso info">Estas campanhas não têm anúncios ligados (Meta ou Google), então não dá para separar CPL e CAC por canal. Ligue os anúncios à campanha em Mídia paga para ver aqui.</p>' : `<h3>Por canal</h3><div class="tw"><table><thead><tr><th>Canal</th><th class="n">Leads por campanha</th><th class="n">% dos leads</th><th class="n">CPL</th><th class="n">CPL, variação</th><th class="n">Novos clientes</th><th class="n">% dos novos</th><th class="n">Lead → novo cliente</th><th class="n">CAC do canal</th><th class="n">CAC, variação</th></tr></thead><tbody>
   ${Object.values(HC).map(c => `<tr><td>${c.nome}</td><td class="n">${nf(c.leadsPorCampanha)}</td><td class="n">${pc(c.pctLeads)}</td><td class="n">${c.cpl == null ? '<span class="muted">sem custo</span>' : brl(c.cpl, 2)}</td><td class="n">${fx(c.faixaCpl, v => brl(v, 2))}</td><td class="n">${nf(c.novos)}</td><td class="n">${pc(c.pctNovos)}</td><td class="n">${pc(c.convLeadNovo, 2)}</td><td class="n">${c.cac == null ? '<span class="muted">sem custo</span>' : brl(c.cac)}</td><td class="n">${fx(c.faixaCac, brl)}</td></tr>`).join('')}</tbody></table></div>
-  <p class="peq">O CAC de cada canal pago (Meta ${brl(HC.meta.cac)}, Google ${brl(HC.google.cac)}) é maior que o CAC de mídia geral (${brl(H.cac)}) porque o orgânico trouxe ${pc(HC.org.pctNovos)} dos novos clientes sem custo de mídia. Se o orgânico cair, o CAC geral sobe.</p>`;
+  <p class="peq">O CAC de cada canal pago (Meta ${brl(HC.meta.cac)}, Google ${brl(HC.google.cac)}) é maior que o CAC de mídia geral (${brl(H.cac)}) porque o orgânico trouxe ${pc(HC.org.pctNovos)} dos novos clientes sem custo de mídia. Se o orgânico cair, o CAC geral sobe.</p>`}`;
 }
 function blocoHist(p, L) {
   const H = BC.historico(p.historico), FX = BC.historicoFaixas(p.historico), HC = BC.historicoCanais(p.historico), x = L.cacMaxAutorizado / H.cac;
-  return `<div class="hist"><div class="cards">${card('CAC de mídia nas últimas campanhas', brl(H.cac), `${FX.cac ? `variou de ${brl(FX.cac.min)} a ${brl(FX.cac.max)}` : ''} · ${H.n} campanhas`)}${card('CPL nas últimas campanhas', brl(H.cpl, 2), FX.cpl ? `variou de ${brl(FX.cpl.min, 2)} a ${brl(FX.cpl.max, 2)}` : '')}${card('CAC do canal pago mais caro', brl(Math.max(HC.meta.cac, HC.google.cac)), `Meta ${brl(HC.meta.cac)} · Google ${brl(HC.google.cac)}`)}${card('CAC máximo que o negócio aguenta', brl(L.cacMaxAutorizado), x > 1.25 ? `${nf(x, 1)}× o histórico: é teto, não meta` : 'próximo do histórico', x > 1.25 ? 'warn' : 'ok')}</div>
+  return `<div class="hist"><div class="cards">${card('CAC de mídia nas últimas campanhas', brl(H.cac), `${FX.cac ? `variou de ${brl(FX.cac.min)} a ${brl(FX.cac.max)}` : ''} · ${H.n} campanhas`)}${card('CPL nas últimas campanhas', brl(H.cpl, 2), FX.cpl ? `variou de ${brl(FX.cpl.min, 2)} a ${brl(FX.cpl.max, 2)}` : '')}${HC.meta.semDado && HC.google.semDado ? card('CAC por canal', '—', 'sem anúncios ligados às campanhas') : card('CAC do canal pago mais caro', brl(Math.max(HC.meta.cac || 0, HC.google.cac || 0)), `Meta ${brl(HC.meta.cac)} · Google ${brl(HC.google.cac)}`)}${card('CAC máximo que o negócio aguenta', brl(L.cacMaxAutorizado), x > 1.25 ? `${nf(x, 1)}× o histórico: é teto, não meta` : 'próximo do histórico', x > 1.25 ? 'warn' : 'ok')}</div>
   ${x > 1.25 ? `<p class="aviso warn">O limite de ${brl(L.cacMaxAutorizado)} é quanto a campanha aguentaria pagar sem furar resultado e caixa. O histórico do produto é ${brl(H.cac)}. Recomendação: planejar com CAC perto do histórico (até ${brl(FX.cac.max)}, o pior dos últimos lançamentos) e usar o limite só como alarme.</p>` : ''}</div>`;
 }
 function passoFinanceiro(p) {
@@ -675,13 +686,13 @@ function grafCaixa(series, reserva, dias) {
     <div class="leg">${series.map(s => `<span><i style="background:${s.cor}"></i>${s.n}</span>`).join('')}</div>`;
 }
 function passoOrcamento(p, L) {
-  const lin = (n, o, sub) => `<tr><td>${n}<span class="d">${sub}</span></td><td class="n">${o.x == null ? '<span class="st bad">sem valor viável</span>' : brl(o.x)}</td></tr>`, ca = BC.caixa(p, L.autorizado || 0), cp = BC.caixa(p, p.verbaPlanejada);
-  const LM = BC.leadsParaMeta(p, p.verbaPlanejada), HC = BC.historicoCanais(p.historico), F = BC.funil(p, p.verbaPlanejada), pagHist = HC.meta.leads + HC.google.leads, sMeta = HC.meta.leads / pagHist, livre = BC.orcamentoDisponivel(p.plano.orcamentoAquisicaoAno, p.plano.realizadoAquisicao, p.plano.comprometidoAquisicao);
+  const lin = (n, o, sub) => `<tr><td>${n}<span class="d">${sub}</span></td><td class="n">${o.semDado ? '<span class="muted">não informado, não limita</span>' : o.x == null ? '<span class="st bad">sem valor viável</span>' : brl(o.x)}</td></tr>`, ca = BC.caixa(p, L.autorizado || 0), cp = BC.caixa(p, p.verbaPlanejada);
+  const LM = BC.leadsParaMeta(p, p.verbaPlanejada), HC = BC.historicoCanais(p.historico), F = BC.funil(p, p.verbaPlanejada), pagHist = HC.meta.leads + HC.google.leads, sMeta = pagHist ? HC.meta.leads / pagHist : 1, livre = livreAno(p);
   return `<p class="lead">O orçamento sai do resultado que o negócio precisa, não de um CPL escolhido antes. O limite autorizado é o menor entre quatro tetos. Diminuir o orçamento é livre; aumentar acima do livre no plano pede revisão do plano.</p>
   ${blocoHist(p, L)}
   <h3>Com a verba que vamos usar, de onde vêm os leads da meta</h3>
   <div class="linha" style="margin-bottom:8px"><label class="campo">Verba de mídia desta campanha<span><input type="number" step="500" value="${p.verbaPlanejada}" data-verba> R$</span></label><label class="campo">Orçamento desta campanha<span><input type="number" step="1000" value="${p.orcamentoDisponivel}" data-orcdisp> R$</span></label><label class="campo">Meta de vendas<span><input type="number" step="1" value="${p.metaVendas}" data-meta></span></label></div>
-  ${p.orcamentoDisponivel > livre ? `<p class="aviso bad">Orçamento acima do livre no plano do ano (${brl(livre)}): precisa revisar o plano e aprovar o aumento.</p>` : ''}
+  ${acima(p.orcamentoDisponivel, livre) ? `<p class="aviso bad">Orçamento acima do livre no plano do ano (${brl(livre)}): precisa revisar o plano e aprovar o aumento.</p>` : ''}
   ${LM ? `<div class="tw"><table><thead><tr><th>Canal</th><th class="n">Leads previstos</th><th class="n">Leads por campanha no histórico</th><th>Leitura</th></tr></thead><tbody>
     <tr><td>Meta Ads<span class="d">${pc(sMeta, 0)} dos leads pagos, pela proporção histórica</span></td><td class="n">${nf(LM.leadsPagos * sMeta)}</td><td class="n">${nf(HC.meta.leadsPorCampanha)}</td><td class="peq">CPL histórico ${brl(HC.meta.cpl, 2)}</td></tr>
     <tr><td>Google Ads</td><td class="n">${nf(LM.leadsPagos * (1 - sMeta))}</td><td class="n">${nf(HC.google.leadsPorCampanha)}</td><td class="peq">CPL histórico ${brl(HC.google.cpl, 2)}</td></tr>
@@ -698,8 +709,9 @@ function passoOrcamento(p, L) {
     ${lin('Capacidade de entrega', L.operacional, `vendas até ${nf(p.capacidadeVendas)} alunos`)}
     ${lin('Orçamento desta campanha', L.orcamento, `${brl(p.orcamentoDisponivel)} para mídia + demais custos`)}
     <tr class="tot"><td>Autorizado (o menor dos quatro)</td><td class="n">${brl(L.autorizado)}</td></tr></tbody></table></div>
-  <h3>Caixa dia a dia</h3>${grafCaixa([{ n: `Com a verba autorizada (${brl(L.autorizado)})`, d: ca.serie, cor: 'var(--accent)' }, { n: `Com a verba planejada (${brl(p.verbaPlanejada)})`, d: cp.serie, cor: 'var(--muted)', tr: 1 }], p.caixa.reserva, 130)}
-  <p class="peq muted">Entradas: ${100 - p.caixa.pctParcelado}% à vista, ${p.caixa.repasseDias} dias depois da venda; ${p.caixa.pctParcelado}% parcelado em até ${p.caixa.parcelas}x, ${p.caixa.antecipar ? 'antecipado com taxa' : 'recebido mês a mês'}. Saídas programadas do Financeiro: ${p.caixa.programados.map(x => `${x.nome} (dia ${x.dia})`).join(', ')}. Payback no autorizado: ${ca.payback == null ? '—' : ca.payback + ' dias'}.</p>`;
+  <h3>Premissas do negócio</h3><div class="campos"><label class="campo">Contribuição residual mínima<span><input type="number" step="1000" value="${p.residualMinimo ?? ''}" data-pneg="residualMinimo"> R$</span></label><label class="campo">Saldo de caixa hoje<span><input type="number" step="1000" value="${p.caixa.saldo ?? ''}" placeholder="falta" data-pneg="caixa.saldo"> R$</span></label><label class="campo">Reserva mínima de caixa<span><input type="number" step="1000" value="${p.caixa.reserva ?? ''}" data-pneg="caixa.reserva"> R$</span></label><label class="campo">Capacidade de entrega<span><input type="number" step="10" value="${p.capacidadeVendas ?? ''}" placeholder="sem limite" data-pneg="capacidadeVendas"> vendas</span></label><label class="campo">Parcelado<span><input type="number" step="5" value="${p.caixa.pctParcelado ?? 0}" data-pneg="caixa.pctParcelado"> %</span></label><label class="campo">Repasse da plataforma<span><input type="number" step="1" value="${p.caixa.repasseDias ?? 30}" data-pneg="caixa.repasseDias"> dias</span></label></div>
+  <h3>Caixa dia a dia</h3>${ca.semDado ? '<p class="aviso warn">Sem o saldo de caixa de hoje, o teto financiável não é calculado e o gráfico não aparece. Informe o saldo acima.</p>' : ''}${ca.semDado ? '' : grafCaixa([{ n: `Com a verba autorizada (${brl(L.autorizado)})`, d: ca.serie, cor: 'var(--accent)' }, { n: `Com a verba planejada (${brl(p.verbaPlanejada)})`, d: cp.serie, cor: 'var(--muted)', tr: 1 }], p.caixa.reserva, 130)}
+  ${ca.semDado ? '' : `<p class="peq muted">Entradas: ${100 - p.caixa.pctParcelado}% à vista, ${p.caixa.repasseDias} dias depois da venda; ${p.caixa.pctParcelado}% parcelado em até ${p.caixa.parcelas}x, ${p.caixa.antecipar ? 'antecipado com taxa' : 'recebido mês a mês'}. Saídas programadas do Financeiro: ${p.caixa.programados.map(x => `${x.nome} (dia ${x.dia})`).join(', ')}. Payback no autorizado: ${ca.payback == null ? '—' : ca.payback + ' dias'}.</p>`}`;
 }
 function passoCacCpl(p, L) {
   const Ra = L.Ra, conv = Ra ? Ra.F.convLeadNovo : null, cacPago = Ra ? L.autorizado / (Ra.F.leadsPagos * conv) : null, cacEco = L.economico.R ? L.economico.R.cacMidia : null;
@@ -740,18 +752,18 @@ function passoSimular(p, L) {
 }
 function passoBC(p, L) {
   const S = BC.cenarios(p, p.verbaPlanejada, ST.fat), M = BC.margem(p.produto), H = BC.historico(p.historico), LT = BC.ltv(p.ltv), C = BC.custos(p, BC.funil(p, p.verbaPlanejada)), base = S.base;
-  const livreAno = BC.orcamentoDisponivel(p.plano.orcamentoAquisicaoAno, p.plano.realizadoAquisicao, p.plano.comprometidoAquisicao), LM = BC.leadsParaMeta(p, p.verbaPlanejada), HCx = BC.historicoCanais(p.historico), Hx = BC.historico(p.historico);
-  const riscos = [base.C.folga < 0 && 'Caixa abaixo da reserva com a verba planejada', S.pessimista.residual < p.residualMinimo && `No pessimista, a contribuição residual (${brl(S.pessimista.residual)}) fica abaixo do mínimo`, p.verbaPlanejada > (L.autorizado || 0) && 'Verba planejada acima do autorizado', !LT.fundamentado && 'Recompra sem histórico suficiente', M.estimados.length && 'Custos do produto com premissas estimadas: ' + M.estimados.join(', '), p.orcamentoDisponivel > livreAno && `Orçamento acima do livre no plano do ano (${brl(livreAno)}): precisa de revisão do plano`, LM && LM.orgPrecisa > HCx.org.leadsPorCampanha * 1.1 && `Para a meta, o orgânico precisa trazer ${nf(LM.orgPrecisa)} leads; o histórico é ${nf(HCx.org.leadsPorCampanha)} por campanha`, base.cacMidia > Hx.cac * 1.25 && `CAC planejado (${brl(base.cacMidia)}) bem acima do histórico do produto (${brl(Hx.cac)})`].filter(Boolean);
+  const livreA = livreAno(p), LM = BC.leadsParaMeta(p, p.verbaPlanejada), HCx = BC.historicoCanais(p.historico), Hx = BC.historico(p.historico);
+  const riscos = [base.C.folga < 0 && 'Caixa abaixo da reserva com a verba planejada', S.pessimista.residual < p.residualMinimo && `No pessimista, a contribuição residual (${brl(S.pessimista.residual)}) fica abaixo do mínimo`, p.verbaPlanejada > (L.autorizado || 0) && 'Verba planejada acima do autorizado', LT && !LT.fundamentado && 'Recompra sem histórico suficiente', M.estimados.length && 'Custos do produto com premissas estimadas: ' + M.estimados.join(', '), acima(p.orcamentoDisponivel, livreA) && `Orçamento acima do livre no plano do ano (${brl(livreA)}): precisa de revisão do plano`, LM && LM.orgPrecisa > HCx.org.leadsPorCampanha * 1.1 && `Para a meta, o orgânico precisa trazer ${nf(LM.orgPrecisa)} leads; o histórico é ${nf(HCx.org.leadsPorCampanha)} por campanha`, base.cacMidia > Hx.cac * 1.25 && `CAC planejado (${brl(base.cacMidia)}) bem acima do histórico do produto (${brl(Hx.cac)})`].filter(Boolean);
   return `<article class="bcdoc"><h2>Business Case: ${p.nome}</h2><p class="peq muted">Estratégia ${p.estrategia.nome} v${p.estrategia.versao} · produto ${p.produto.nome} · ${versaoAtual() ? `aprovado na v${versaoAtual().n}` : 'rascunho, não aprovado'}</p>
   <h3>Objetivo</h3><p>Trazer ${nf(p.metaVendas)} vendas do curso, deixando pelo menos ${brl(p.residualMinimo)} de contribuição residual para a meta do produto no ano.</p>
-  <h3>Viabilidade</h3><div class="cards">${card('Econômica', base.residual >= p.residualMinimo ? 'Viável' : 'Inviável', `contribuição residual ${brl(base.residual)} (mínimo ${brl(p.residualMinimo)})`, base.residual >= p.residualMinimo ? 'ok' : 'bad')}${card('Financeira', base.C.folga >= 0 ? 'Viável' : 'Inviável', `caixa mínimo ${brl(base.caixaMin)} (reserva ${brl(p.caixa.reserva)})`, base.C.folga >= 0 ? 'ok' : 'bad')}${card('Operacional', base.vendas <= p.capacidadeVendas ? 'Viável' : 'Inviável', `${nf(base.vendas, 1)} vendas para ${nf(p.capacidadeVendas)} vagas`, base.vendas <= p.capacidadeVendas ? 'ok' : 'bad')}</div>
+  <h3>Viabilidade</h3><div class="cards">${card('Econômica', base.residual >= p.residualMinimo ? 'Viável' : 'Inviável', `contribuição residual ${brl(base.residual)} (mínimo ${brl(p.residualMinimo)})`, base.residual >= p.residualMinimo ? 'ok' : 'bad')}${base.C.semDado ? card('Financeira', 'Sem dado', 'informe o saldo de caixa em Orçamento máximo', 'warn') : card('Financeira', base.C.folga >= 0 ? 'Viável' : 'Inviável', `caixa mínimo ${brl(base.caixaMin)} (reserva ${brl(p.caixa.reserva)})`, base.C.folga >= 0 ? 'ok' : 'bad')}${card('Operacional', base.vendas <= p.capacidadeVendas ? 'Viável' : 'Inviável', `${nf(base.vendas, 1)} vendas para ${nf(p.capacidadeVendas)} vagas`, base.vendas <= p.capacidadeVendas ? 'ok' : 'bad')}</div>
   <h3>Orçamento e limites</h3><table><tbody><tr><td>Verba planejada</td><td class="n">${brl(p.verbaPlanejada)}</td></tr><tr><td>Verba autorizada</td><td class="n">${brl(L.autorizado)} (limite: ${L.limitadoPor})</td></tr><tr><td>Demais custos</td><td class="n">${brl(C.total)}</td></tr><tr><td>CAC alvo / máximo autorizado</td><td class="n">${brl(L.alvo.cac)} / ${brl(L.cacMaxAutorizado)}</td></tr><tr><td>CPL alvo / máximo autorizado</td><td class="n">${brl(L.alvo.cpl, 2)} / ${brl(L.cplMaxAutorizado, 2)}</td></tr></tbody></table>
   <h3>Cenários</h3><table><thead><tr><th></th><th class="n">Pessimista</th><th class="n">Base</th><th class="n">Otimista</th></tr></thead><tbody>${[['Vendas', s => nf(s.vendas, 1)], ['Receita líquida', s => brl(s.recLiq)], ['Contribuição residual', s => brl(s.residual)], ['Caixa mínimo', s => brl(s.caixaMin)], ['Risco', s => s.risco]].map(([n, f]) => `<tr><td>${n}</td>${['pessimista', 'base', 'otimista'].map(k => `<td class="n">${f(S[k])}</td>`).join('')}</tr>`).join('')}</tbody></table>
   <h3>Histórico comparável (3 últimas campanhas do produto e da estratégia)</h3><div class="tw"><table><thead><tr><th>Campanha</th><th>Oferta</th><th class="n">Ticket</th><th class="n">CPL</th><th class="n">Comparecimento</th><th class="n">Conv. presentes</th><th class="n">CAC</th><th class="n">Receita</th></tr></thead><tbody>
     ${p.historico.map(h => `<tr><td>${h.nome}${h.diferenca ? `<span class="d warn-t">diferença: ${h.diferenca}</span>` : ''}</td><td>${h.oferta}</td><td class="n">${brl(h.ticket)}</td><td class="n">${brl(h.midia / h.leads, 2)}</td><td class="n">${pc(h.participantes / h.inscritos)}</td><td class="n">${pc(h.vendasPresentes / h.participantes)}</td><td class="n">${brl(h.midia / h.novos)}</td><td class="n">${brl(h.receita)}</td></tr>`).join('')}
     <tr class="tot"><td>Referência ponderada</td><td></td><td class="n">${brl(H.ticket)}</td><td class="n">${brl(H.cpl, 2)}</td><td class="n">${pc(H.comparecimento)}</td><td class="n">${pc(H.convPresentes)}</td><td class="n">${brl(H.cac)}</td><td></td></tr></tbody></table></div>
   <p class="peq muted">Taxas ponderadas: soma dos numeradores ÷ soma dos denominadores (a média simples do CPL daria ${brl(H.mediaSimplesCpl, 2)}). A campanha de julho teve preço promocional: está marcada como diferente.</p>
-  <h3>Recompra (LTV)</h3><p>${pc(p.ltv.taxaSegunda / 100, 0)} compram de novo em cerca de ${p.ltv.diasAteSegunda} dias, deixando ${brl(p.ltv.mcIncremental)} de contribuição incremental menos ${brl(p.ltv.custoRetencao)} de retenção: ${brl(LT.valorPorCliente)} por cliente. ${LT.risco}. Não entra no limite de investimento: a campanha se paga na primeira venda.</p>
+  <h3>Recompra (LTV)</h3>${!LT ? '<p class="muted">Sem dado de recompra deste produto ainda: não entra no cálculo.</p>' : `<p>${pc(p.ltv.taxaSegunda / 100, 0)} compram de novo em cerca de ${p.ltv.diasAteSegunda} dias, deixando ${brl(p.ltv.mcIncremental)} de contribuição incremental menos ${brl(p.ltv.custoRetencao)} de retenção: ${brl(LT.valorPorCliente)} por cliente. ${LT.risco}. Não entra no limite de investimento: a campanha se paga na primeira venda.</p>`}
   <h3>Riscos</h3>${riscos.length ? `<ul>${riscos.map(r => `<li>${r}</li>`).join('')}</ul>` : '<p>Nenhum risco acima do aceito.</p>'}
   <h3>Fontes</h3><p class="peq">Margem: cadastro do produto (${Object.entries(M.origem).filter(([, o]) => o).length} campos com origem marcada). Funil: estratégia v${p.estrategia.versao} e histórico ponderado. Caixa: Financeiro (saldo e programados). Orçamento: planejamento anual 2027.</p>
   <h3>Aprovação</h3><p>Responsável: Rebecka (sócia). ${versaoAtual() ? `Aprovado em ${versaoAtual().quando} · versão ${versaoAtual().n} · código ${versaoAtual().hash}` : 'Ainda não aprovado.'}</p></article>`;
@@ -827,7 +839,8 @@ document.addEventListener('change', e => { const el = e.target, n = Number(el.va
   else if (el.hasAttribute('data-cacman')) { const pl = planoDe(p); pl.fonte = 'manual'; pl.cac = n; }
   else if (el.hasAttribute('data-plmeta')) { const pl = planoDe(p); pl.meta = n; if (pl.cens) CENS.forEach(([k]) => { pl.cens[k].meta = n; }); }
   else if (el.dataset.cen) { const [k, ...path] = el.dataset.cen.split('.'), c = planoDe(p).cens[k]; let o = c; path.slice(0, -1).forEach(x => { o = o[x]; }); o[path.at(-1)] = n; if (path.join('.') === 'canais.meta.pct') c.canais.google.pct = Math.max(0, 100 - n); }
-  else if (el.dataset.orcano) { const lv = () => BC.orcamentoDisponivel(p.plano.orcamentoAquisicaoAno, p.plano.realizadoAquisicao, p.plano.comprometidoAquisicao), antes = lv(); p.plano[el.dataset.orcano] = n; if (p.orcamentoDisponivel === antes) p.orcamentoDisponivel = lv(); }
+  else if (el.dataset.pneg) { const k = el.dataset.pneg.split('.'), v = el.value === '' ? null : n; if (k.length === 2) p[k[0]][k[1]] = v; else p[k[0]] = v; }
+  else if (el.dataset.orcano) { const lv = () => livreAno(p), antes = lv(); p.plano[el.dataset.orcano] = n; if (p.orcamentoDisponivel === antes) p.orcamentoDisponivel = lv(); }
   else if (el.dataset.rtipo) p.recursos[el.dataset.rtipo].tipo = el.value;
   else if (el.dataset.rusar) p.recursos[el.dataset.rusar].usar = el.checked;
   else if (el.dataset.runi) p.recursos[el.dataset.runi].unidade = el.value;
@@ -885,6 +898,7 @@ function passoCanaisPl(p) {
   return `<p class="lead">Distribua a verba entre os canais olhando o que cada um entregou. Mais leads orgânicos com a mesma verba baixam o CAC.</p>
   <div class="seg" role="group" aria-label="Cenário">${CENS.map(([kk, n]) => `<button type="button" data-ativo="${kk}" aria-pressed="${kk === k}">${n}</button>`).join('')}</div>
   <div class="linha" style="margin:10px 0"><label class="campo">Verba de mídia deste cenário<span>${inp('verba', c.verba, 100)} R$</span></label><label class="campo">Meta de vendas<span><b>${nf(pl.meta)}</b></span></label></div>
+  ${HC.meta.semDado && HC.google.semDado ? '<p class="aviso info">O histórico não tem anúncios ligados por canal: o CPL de referência é o geral das últimas campanhas (mídia ÷ todos os leads). Divida entre Meta e Google pelo que você espera.</p>' : ''}
   <div class="tw"><table><thead><tr><th>Canal</th><th class="n">% da verba</th><th class="n">Verba</th><th class="n">CPL de referência</th><th class="n">CPL com esta verba</th><th class="n">CPL no histórico</th><th class="n">Leads no plano</th><th class="n">Leads por campanha no histórico</th></tr></thead><tbody>
     <tr><td>Meta Ads</td><td class="n">${inp('canais.meta.pct', c.canais.meta.pct, 1)} %</td><td class="n">${brl(r.pagos[0].verba)}</td><td class="n">${inp('canais.meta.cpl', c.canais.meta.cpl, 0.1)}</td><td class="n">${brl(r.pagos[0].cpl, 2)}</td><td class="n peq">${brl(HC.meta.cpl, 2)}<span class="d">${fx(HC.meta.faixaCpl)}</span></td><td class="n">${nf(r.pagos[0].leads)}</td><td class="n">${nf(HC.meta.leadsPorCampanha)}</td></tr>
     <tr><td>Google Ads</td><td class="n">${nf(c.canais.google.pct, 0)} %<span class="d">o que sobra</span></td><td class="n">${brl(r.pagos[1].verba)}</td><td class="n">${inp('canais.google.cpl', c.canais.google.cpl, 0.1)}</td><td class="n">${brl(r.pagos[1].cpl, 2)}</td><td class="n peq">${brl(HC.google.cpl, 2)}<span class="d">${fx(HC.google.faixaCpl)}</span></td><td class="n">${nf(r.pagos[1].leads)}</td><td class="n">${nf(HC.google.leadsPorCampanha)}</td></tr>
@@ -896,7 +910,7 @@ function passoCanaisPl(p) {
   <p class="peq muted">CPL com esta verba = CPL de referência × (verba ÷ ${brl(c.verbaRef)}, a média histórica) ^ ${nf(c.elasticidade, 2)}: quanto mais verba, mais caro o lead. Conversão deste cenário: comparecimento ${pc(c.comparecimento / 100)}, presentes ${pc(c.convPresentes / 100)}, ausentes ${pc(c.convAusentes / 100, 2)}. Ajuste no Growth Model da campanha.</p>`;
 }
 function statusCampanha(p, L) {
-  const pl = planoDe(p), M = BC.margem(p.produto), livre = BC.orcamentoDisponivel(p.plano.orcamentoAquisicaoAno, p.plano.realizadoAquisicao, p.plano.comprometidoAquisicao), b = pl.cens && econ(p, pl.cens.base);
+  const pl = planoDe(p), M = BC.margem(p.produto), livre = livreAno(p), b = pl.cens && econ(p, pl.cens.base);
   const it = [['Estratégia escolhida', true, `${p.estrategia.nome} v${p.estrategia.versao}`], ['Margem do produto completa', M.completa, M.completa ? brl(M.mc, 2) + ' por venda' : 'faltam custos'], ['CAC escolhido e copiado para os cenários', !!pl.cens, pl.cens ? brl(pl.cac) : 'passo 9'],
     ['Verba distribuída por canal', !!(pl.cens && Math.abs(pl.cens.base.canais.meta.pct + pl.cens.base.canais.google.pct - 100) < 0.01), 'Meta, Google, orgânico e API'], ['Base atinge a meta', !!(b && b.r.vendas >= pl.meta * 0.97), b ? `${nf(b.r.vendas, 1)} de ${nf(pl.meta)} vendas` : '—'],
     ['Verba dentro do autorizado', !!(b && b.r.verba <= L.autorizado), b ? `${brl(b.r.verba)} de ${brl(L.autorizado)}` : '—'], ['Orçamento dentro do plano do ano', !!(b && b.invest <= livre), b ? `${brl(b.invest)} de ${brl(livre)} livres` : '—'], ['Business Case aprovado', ST.versoes.length > 0, ST.versoes.length ? 'v' + ST.versoes.length : 'aprovar abaixo']];
@@ -910,6 +924,7 @@ function passoGM(p) {
   const row = (nm, f, hist, opts = {}) => `<tr class="${opts.cls || ''}"><td>${nm}</td>${CENS.map(([k]) => { const c = pl.cens[k], e = E[k]; return `<td class="n ${opts.cor ? opts.cor(e, k) : ''}">${f(c, e, k)}</td>`; }).join('')}<td class="n hcol">${hist}</td></tr>`;
   const grp = t => `<tr class="grp"><td colspan="5"><b>${t}</b></td></tr>`;
   return `<p class="lead">O funil da campanha, etapa por etapa, nos três cenários. Mude qualquer taxa ou volume: tudo recalcula.</p>
+  ${pl.cens.base.semPresenca ? '<p class="aviso info">As campanhas do histórico não têm presença no evento registrada. Por isso o comparecimento está em 100% e a conversão dos presentes é a conversão direta de lead em venda. Quando a presença for registrada nas etapas da campanha, ela entra aqui.</p>' : ''}
   <div class="tw"><table class="gmc"><thead><tr><th>Etapa</th>${CENS.map(([, nm]) => `<th class="n">${nm}</th>`).join('')}<th class="n hcol">Média das ${n} últimas</th></tr></thead><tbody>
   ${grp('Captação')}
   ${row('Verba de mídia', (c, e, k) => inp(k, 'verba', c.verba, 100), brl(med(c => c.midia)))}
@@ -942,6 +957,75 @@ function passoGM(p) {
   ${row('CAC de mídia', (c, e) => brl(e.r.cacMidia), brl(H.cac), { cor: e => e.r.cacMidia <= pl.cac * 1.03 ? 'c-ok' : 'c-bad' })}
   </tbody></table></div>
   <p class="leg-cor"><span><i class="c" style="background:var(--bad)"></i>abaixo da meta</span><span><i class="c" style="background:var(--accent)"></i>na meta (±3%)</span><span><i class="c" style="background:var(--ok)"></i>acima</span><span>Leads contra os leads que a meta pede; vendas contra a meta de ${nf(pl.meta)}; contribuição contra o mínimo de ${brl(p.residualMinimo)}; CAC contra o escolhido (${brl(pl.cac)}).</span></p>`;
+}
+
+/* ===== Modo Growths: dados reais do workspace (window.DADOS), salvo em campanha_calculos pelo Growths ===== */
+const REAL = typeof window !== 'undefined' && !!window.DADOS;
+if (REAL) {
+  const D = window.DADOS, PREM = (v, o) => v == null || !isFinite(v) ? undefined : { v: Math.round(v * 100) / 100, origem: o };
+  const histDe = (prodId, funilId, soEstr) => D.campanhas.filter(c => c.produto_id === prodId && (c.leads > 0 || c.midia > 0) && (!soEstr || c.funil_id === funilId))
+    .sort((a, b) => String(b.data_inicio || '').localeCompare(String(a.data_inicio || '')));
+  const montaP = (prodId, funilId, soEstr) => {
+    const pr = D.produtos.find(x => x.id === prodId) || D.produtos[0] || { nome: '—', preco: 0 }, fu = D.funis.find(x => x.id === funilId) || { nome: 'Sem estratégia', etapas: [] };
+    const h = histDe(pr.id, fu.id, soEstr), H = BC.historico(h), HC = BC.historicoCanais(h), med = k => h.length ? h.reduce((s, c) => s + (c[k] || 0), 0) / h.length : null;
+    const trib = pr.impostoPct, taxa = pr.taxaPct, of = papel => (D.ofertas || []).filter(o => o.produto_id === pr.id && o.papel === papel)[0], HO = BC.historicoOfertas(h);
+    const ofx = (papel, k) => { const o = of(papel); if (!o) return { tem: false }; const liq = o.preco * (1 - ((trib || 0) + (taxa || 0)) / 100), ac = o.taxa_aceite != null ? o.taxa_aceite : HO[k] ? HO[k].aceite * 100 : 0; return { tem: true, nome: o.nome, preco: o.preco, aceite: Math.round(ac * 10) / 10, recLiqUnit: liq, mcUnit: liq }; };
+    const semP = H.convPresentes == null, cpl = H.cpl || 10;
+    return { nome: `${pr.nome} · ${fu.nome}`, produto_id: pr.id, funil_id: fu.id || null, soEstrategia: !!soEstr,
+      estrategia: { id: fu.id, nome: fu.nome, versao: fu.versao_atual || 1, objetivo: fu.objetivo || 'não informado', modelo: fu.tipo || 'não informado', etapas: fu.etapas || [] },
+      produto: { nome: pr.nome, preco: PREM(pr.preco, 'real_conc'), desconto: { v: 0, origem: 'usuario' }, tributos: PREM(trib, 'real_conc'), taxaPlataforma: PREM(taxa, 'real_conc'), taxaTransacao: PREM(pr.taxaFixa || 0, pr.taxaFixa ? 'real_conc' : 'premissa'),
+        comissao: { v: 0, origem: 'premissa' }, reembolso: PREM(pr.reembolsoPct, 'real_conc'), chargeback: { v: 0, origem: 'premissa' }, inadimplencia: { v: 0, origem: 'premissa' } },
+      ofertas: { bump: ofx('order_bump', 'bump'), upsell: ofx('upsell', 'upsell') },
+      funil: { cpm: cpl * 10, ctr: 1, cliqueVisita: 100, convPagina: 100, inscricao: null, comparecimento: semP ? 100 : (H.comparecimento || 0) * 100, convPresentes: (semP ? H.vendasPorLead || 0 : H.convPresentes) * 100, convAusentes: semP ? 0 : (H.convAusentes || 0) * 100, pctNovos: H.pctNovos != null ? Math.min(100, H.pctNovos * 100) : 100, elasticidade: 0.6, verbaRef: med('midia') || 10000 },
+      canais: [{ nome: 'Mídia paga', tipo: 'pago' }, { nome: 'Orgânico', tipo: 'org', leads: Math.round((HC.org && HC.org.leadsPorCampanha) || 0) }, { nome: 'WhatsApp API', tipo: 'api', leads: 0, custoLead: 0 }],
+      recursos: [], plano: { orcamentoAquisicaoAno: null, realizadoAquisicao: null, comprometidoAquisicao: null, contribuicaoProdutoAno: null, realizadoAteAgosto: null, campanhasComprometidas: null },
+      residualMinimo: 0, metaVendas: Math.round(med('vendas') || 0), verbaPlanejada: Math.round(med('midia') || 0), capacidadeVendas: null, orcamentoDisponivel: null, tetoBusca: 500000,
+      caixa: { saldo: null, reserva: 0, pctParcelado: 0, parcelas: 1, antecipar: false, taxaAntecipacao: 0, repasseDias: 30, programados: [] },
+      datas: { capA: 0, capB: 20, live: 23, carA: 24, carB: 30, inicio: null }, ltv: null, historico: h };
+  };
+  // estado inicial: o último rascunho salvo, ou o produto com mais campanhas
+  const temHist = id => D.campanhas.filter(c => c.produto_id === id && c.leads > 0).length;
+  const abre = (prodId, funilId, soEstr) => {
+    const rs = (D.rascunhos || []).find(r => r.premissas && r.premissas.produto_id === prodId && (r.premissas.funil_id || null) === (funilId || null));
+    const novo = montaP(prodId, funilId, soEstr);
+    if (rs && rs.premissas.p) { const sp = rs.premissas.p; sp.historico = novo.historico; sp.soEstrategia = !!soEstr; ST.p = sp; ST.versoes = rs.premissas.versoes || []; ST.semMargem = false; ST.calcId = rs.id; }
+    else { ST.p = novo; ST.versoes = []; ST.semMargem = false; ST.calcId = null; }
+    ST.testes = null;
+  };
+  const prodIni = (D.rascunhos && D.rascunhos[0] && D.rascunhos[0].premissas.produto_id) || (D.produtos.slice().sort((a, b) => temHist(b.id) - temHist(a.id))[0] || {}).id;
+  const funilMaisUsado = prodId => { const n = {}; D.campanhas.filter(c => c.produto_id === prodId && c.funil_id && c.leads > 0).forEach(c => { n[c.funil_id] = (n[c.funil_id] || 0) + 1; }); const k = Object.keys(n).sort((a, b) => n[b] - n[a])[0]; return k || ((D.campanhas.find(c => c.produto_id === prodId && c.funil_id) || {}).funil_id) || null; };
+  const funilIni = (D.rascunhos && D.rascunhos[0] && D.rascunhos[0].premissas.funil_id) || funilMaisUsado(prodIni);
+  ST.passo = 0; ST.hoje = 12; ST.fat = JSON.parse(JSON.stringify(BC.FATORES));
+  abre(prodIni, funilIni, true); if (ST.p.historico.length < 2) abre(prodIni, funilIni, false);
+  // salvar: o Growths grava em campanha_calculos
+  let tSalva = null;
+  salva = () => { clearTimeout(tSalva); tSalva = setTimeout(() => { const p = JSON.parse(JSON.stringify(ST.p)); delete p.historico;
+    parent.postMessage({ tipo: 'planav-salvar', id: ST.calcId || null, nome: `Planejamento avançado · ${ST.p.nome}`, premissas: { modulo: 'planav', produto_id: ST.p.produto_id, funil_id: ST.p.funil_id, p, versoes: ST.versoes } }, '*'); }, 1200); };
+  window.addEventListener('message', e => { const m = e.data || {}; if (m.tipo === 'planav-salvo') { ST.calcId = m.id; const el = document.getElementById('salvoEm'); if (el) el.textContent = m.erro ? 'Não salvou: ' + m.erro : 'Salvo no Growths às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); } });
+  // altura do iframe acompanha a página
+  const ro = new ResizeObserver(() => parent.postMessage({ tipo: 'planav-altura', h: document.documentElement.scrollHeight }, '*')); ro.observe(document.body);
+  window.scrollTo = () => parent.postMessage({ tipo: 'planav-topo' }, '*');
+  // passos 1 e 2 com seletores reais
+  const opt = (v, n, sel) => `<option value="${v || ''}" ${sel ? 'selected' : ''}>${n}</option>`, esc2 = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  passoEstrategia = p => { const usados = new Set(D.campanhas.filter(c => c.produto_id === p.produto_id).map(c => c.funil_id)), fs = D.funis.slice().sort((a, b) => (usados.has(b.id) ? 1 : 0) - (usados.has(a.id) ? 1 : 0) || a.nome.localeCompare(b.nome));
+    return `<p class="lead">A campanha parte de uma estratégia cadastrada no Growths. As etapas vêm da versão publicada dela.</p>
+    <div class="campos"><label class="campo">Estratégia<select data-selfunil>${opt('', 'Sem estratégia', !p.funil_id)}${fs.map(f => opt(f.id, esc2(f.nome) + (usados.has(f.id) ? ' · já usada com este produto' : ''), f.id === p.funil_id)).join('')}</select></label>
+    <label class="campo">Produto<select data-selprod>${D.produtos.map(x => opt(x.id, esc2(x.nome) + ` · ${temHist(x.id)} campanhas`, x.id === p.produto_id)).join('')}</select></label></div>
+    <div class="cards2" style="margin-top:12px"><article class="est sel"><h3>${esc2(p.estrategia.nome)}</h3><dl><dt>Objetivo</dt><dd>${esc2(p.estrategia.objetivo)}</dd><dt>Modelo</dt><dd>${esc2(p.estrategia.modelo)}</dd><dt>Versão</dt><dd>v${p.estrategia.versao}</dd></dl></article></div>
+    ${p.estrategia.etapas.length ? `<h3>Etapas da jornada</h3><ol class="jorn">${p.estrategia.etapas.map(e => `<li>${esc2(e)}</li>`).join('')}</ol>` : '<p class="muted">Esta estratégia não tem etapas cadastradas.</p>'}
+    <p class="peq muted">Trocar a estratégia ou o produto abre o planejamento salvo dessa combinação, ou começa um novo a partir do histórico.</p>`; };
+  const passoProduto0 = passoProduto;
+  passoProduto = (p, L) => `<div class="campos" style="margin-bottom:12px"><label class="campo">Produto<select data-selprod>${D.produtos.map(x => opt(x.id, esc2(x.nome), x.id === p.produto_id)).join('')}</select></label></div>` + passoProduto0(p, L);
+  const passoHistorico0 = passoHistorico;
+  passoHistorico = (p, L) => `<label class="ck"><input type="checkbox" data-soestr ${p.soEstrategia ? 'checked' : ''}> Só campanhas desta estratégia (${esc2(p.estrategia.nome)})</label>` +
+    (p.historico.length ? passoHistorico0(p, L) + (BC.historico(p.historico).convPresentes == null ? '<p class="aviso info">Estas campanhas não têm presença no evento registrada. A conversão usada é direta: vendas ÷ leads.</p>' : '') : '<p class="aviso warn">Nenhuma campanha deste produto com leads ou mídia. Desmarque "só desta estratégia" ou planeje sem histórico, preenchendo as premissas à mão.</p>');
+  passoCockpit = () => '<p class="aviso info">O cockpit acompanha a campanha depois que ela for criada a partir deste planejamento. Nesta versão, use o painel da campanha em Campanhas e planejamento.</p>';
+  document.addEventListener('change', e => { const el = e.target;
+    if (el.matches('[data-selprod]')) { const f = funilMaisUsado(el.value); abre(el.value, f, true); if (ST.p.historico.length < 2) abre(el.value, f, false); render(); }
+    else if (el.matches('[data-selfunil]')) { abre(ST.p.produto_id, el.value || null, true); if (ST.p.historico.length < 2) abre(ST.p.produto_id, el.value || null, false); render(); }
+    else if (el.matches('[data-soestr]')) { const sp = ST.p, n = montaP(sp.produto_id, sp.funil_id, el.checked); sp.historico = n.historico; sp.soEstrategia = el.checked; render(); }
+  }, true);
+  const hdr = document.querySelector('header'); if (hdr) hdr.innerHTML = `<p class="muted" style="margin:0">Dados deste cliente no Growths. O que você muda fica salvo como rascunho. <b id="salvoEm" class="peq"></b></p>`;
 }
 
 render();</script></body></html>

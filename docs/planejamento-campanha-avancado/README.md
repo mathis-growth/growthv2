@@ -1,6 +1,6 @@
 # Planejamento de campanha avançado
 
-Protótipo do módulo (fase 1 da especificação de arquitetura). **Não está no `index.html` e não mexe no banco.** Dados fictícios ("Seminário Método X").
+Módulo do Growths desde a **v0.287** (Marketing → Planejamento de campanha avançado). No Growths ele lê os dados do cliente e salva rascunhos em `campanha_calculos`. Aberto sozinho (`planejamento-campanha-avancado.html`), roda com os dados fictícios do exemplo.
 
 - Documento da fase 1: https://claude.ai/artifact/M22biHKQgkZjS51vL3iKVG
 - Protótipo publicado: https://claude.ai/artifact/FPN5hYdzgGCypkWJ3tUcBx
@@ -15,8 +15,11 @@ Protótipo do módulo (fase 1 da especificação de arquitetura). **Não está n
 | `motor.js` | Motor de cálculo, funções puras (Node e navegador). Fonte única das fórmulas. |
 | `exemplo.js` | Dados fictícios do exemplo. |
 | `testes.js` | 67 testes. `node testes.js` sai com erro se algum falhar. |
-| `app.js`, `app_plano.js`, `bc.css`, `base.css` | Telas do protótipo. |
-| `build.py` | Junta tudo em `planejamento-campanha-avancado.html`. |
+| `app.js`, `app_plano.js`, `bc.css`, `base.css` | Telas. |
+| `app_real.js` | Modo Growths: monta as premissas com os dados do cliente, seletores de produto e estratégia, salvamento. |
+| `planav_growths.js` | O que entra no `index.html`: leitura dos dados (`planavDados`) e a tela (`vPlanav`). |
+| `fake_sb.js`, `teste_planav.js` | Teste do módulo com um banco de mentira (precisa de um `fixture_demo.json`, não versionado). |
+| `build.py` | Junta tudo em `planejamento-campanha-avancado.html` e gera `planav_srcdoc.js` (o módulo como texto, para o `index.html`). |
 | `perf.js`, `perf.json`, `perf_sql.json` | Performance medida (motor e consultas de leitura em produção). |
 
-Próximo passo (fase 2) só com aprovação explícita: ver "Plano em fases e decisões pendentes" no documento.
+Para atualizar o Growths: `python3 build.py`, depois o `aplicaNNN.py` da versão cola `planav_srcdoc.js` + `planav_growths.js` no `index.html`.

@@ -1,3 +1,8 @@
+## v0.287
+- `aplica287.py` sobre a v0.286: item `mkt-planav` no menu de Marketing e ícone; `PLANAV_HTML` (o módulo inteiro, gerado por `build.py`), `planavDados` (leitura) e `vPlanav` (iframe + mensagens `planav-salvar`, `planav-altura`, `planav-topo`); filtro na calculadora antiga.
+- Fonte do módulo em `docs/planejamento-campanha-avancado/` (motor, telas, testes). Mudou o módulo: rodar `python3 build.py` e reaplicar.
+- Sem migração.
+
 ## v0.285
 - `aplica285.py` sobre a v0.284: `CT_COPIA_REFS`, `ctTextoCliente`, `ctIdentPre` (busca `content_identidade` antes do clique, para o navegador deixar copiar); botão no `.ctd-side`.
 - Sem migração. Teste `t285_copiar_referencias.py` (14 verificações); t284 sem falhas.

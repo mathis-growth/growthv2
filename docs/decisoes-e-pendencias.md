@@ -1,3 +1,8 @@
+## v0.287 — Planejamento de campanha avançado no Growths
+**Pedido da Rebecka (08/11):** "A ideia é gerar esse módulo lá dentro... Ele vai chamar planejamento de campanha avançado. Pode executar dentro da produção e depois eu vou melhorando ele e, quem sabe, desativando o outro."
+**Como ficou:** tela nova em Marketing, com os 14 passos do protótipo e os dados reais do cliente. Salva sozinho como rascunho por produto e estratégia. O planejamento atual continua.
+**Fora, por enquanto:** levar as metas e a divisão por canal para uma campanha (próxima versão); cockpit da campanha dentro do módulo; TikTok no plano (aparece só no histórico); custos de entrega, suporte e infraestrutura no cadastro do produto; orçamento de aquisição do ano e saldo de caixa vindos do financeiro (hoje são digitados); versão aprovada imutável no banco (hoje fica no rascunho).
+
 ## v0.285 — Copiar para a IA com as referências, no painel ao lado
 **Pedido da Rebecka (07/11):** "Referências, essas coisas. E pode ser na telinha ali do lado."
 **Como ficou:** o texto copiado ganhou duas partes. **Referências e links** traz, de cada conteúdo, a fonte da ideia, o link da copy, o link da mídia e o vídeo bruto. **Referências do cliente** vem uma vez no fim, de Identidade visual: referências que o cliente aprova, o que nunca fazer, cores, fontes e pasta. Dentro do conteúdo, o botão "Copiar tudo para a IA" foi para o painel Detalhes, ao lado.
