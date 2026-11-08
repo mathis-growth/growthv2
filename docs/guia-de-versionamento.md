@@ -1,3 +1,7 @@
+## v0.283
+- `aplica283.py` sobre o `index.html` da v0.282: `CT_CACHE`/`CT_SUJO` em `dadosConteudo` (o `q()` marca sujo em gravações do Content; leituras por RPC ficam de fora), `window.__ctFresco` no `render()`; `ctSelLiga` e `ctMoverVarios`; caixinha e `data-selcol` no Kanban; dois cliques no cartão.
+- Sem migração. Teste `t283_selecao_e_carregamento.py` (15 verificações); `t282` ajustado (entra no Content vindo de outra tela).
+
 ## v0.282
 - `aplica282.py` sobre o `index.html` da v0.281: `moverConteudo` pede tema e data só para Em produção em diante (`CT_PEDE_DATA`); `modalAprovaIdeia` recebe a etapa de destino; botão do Baú "Aprovar ideia".
 - Migração `20270126100000_conteudo_aprovar_sem_data.sql` = `RODAR_v0.282_conteudo_aprovar_sem_data.sql`.

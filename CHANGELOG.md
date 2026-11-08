@@ -1,3 +1,10 @@
+## v0.283 — Kanban do Content: selecionar vários, dois cliques e mais rápido (07/11/2026)
+- **Selecionar vários:** caixinha em cada cartão, "Selecionar todos" na coluna e Ctrl/Cmd + clique. A barra mostra quantos estão marcados, com "Mover para…" e "Limpar seleção". Arrastar um marcado leva todos.
+- **Mover em lote para a produção:** os que não têm tema ou data ficam e a tela lista quais.
+- **Dois cliques** no cartão abrem o conteúdo.
+- **Carregamento:** os dados do Content ficam na memória; filtro, aba e busca não baixam tudo de novo. Recarrega ao gravar, ao entrar vindo de outra tela, ao trocar de workspace e a cada 1 minuto.
+- Sem mudança no banco. Teste: `t283_selecao_e_carregamento.py` (0 falhas); t282 sem falhas.
+
 ## v0.282 — Aprovar a ideia sem data (07/11/2026)
 - **Growth's Content:** levar a ideia para Pautas aprovadas não pede mais data nem tema. Só ao ir para Em produção o Growths pede o tema, o formato e a data de publicação; a janela "Mandar para a produção" agora coloca o conteúdo direto em Em produção.
 - **Baú de ideias:** o botão virou "Aprovar ideia" e leva para Pautas aprovadas sem perguntar nada.

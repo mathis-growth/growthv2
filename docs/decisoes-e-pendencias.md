@@ -1,3 +1,11 @@
+## v0.283 — Selecionar vários, dois cliques e carregamento do Content
+**Pedido da Rebecka (07/11):** selecionar vários conteúdos (ideias, pautas) e arrastar todos de uma vez para a próxima coluna; abrir o cartão com dois cliques; a tela do Content demorava para carregar.
+**Causa da demora (fato):** a cada clique (filtro, aba, busca, mover) o Growths baixava de novo 15 tabelas do Content, incluindo todos os conteúdos com a descrição completa. Na Mathisa são 294 conteúdos e cerca de 820 kB, quase tudo no campo descrição (consulta só de leitura em 07/11).
+**Como ficou:** os dados ficam guardados na memória enquanto você trabalha no Content. Recarrega quando algo é gravado, ao entrar no Content vindo de outra tela, ao trocar de workspace ou depois de 1 minuto. A primeira entrada continua baixando tudo.
+**Seleção:** caixinha em cada cartão, "Selecionar todos" no topo da coluna, Ctrl/Cmd + clique. A barra mostra quantos estão marcados, tem "Mover para…" e "Limpar seleção". Arrastar qualquer marcado leva todos.
+**Decisão:** ao mover vários para Em produção, os que não têm tema ou data ficam onde estão e a tela lista quais são (cada um tem data própria). Erros do banco (por exemplo, roteiro não aprovado) também são listados.
+**Ideia para depois (recomendação):** deixar a primeira entrada mais leve, buscando a descrição só quando o cartão é aberto.
+
 ## v0.282 — Aprovar a ideia sem data
 **Pedido da Rebecka (07/11):** "Quando eu mudo para ideia aprovada, ele não tem que me obrigar a colocar a data. De nada. Só quando for a produção."
 **O que encontrei (fato):** no método simples (o da Mathisa), o banco exigia tema e data já em Pautas aprovadas; a tela (v0.275) abria "Mandar para a produção" a cada ideia aprovada.

@@ -1,3 +1,6 @@
+## v0.283
+**Kanban mais rápido e em lote.** No Growth's Content dá para marcar vários cartões e arrastar todos de uma vez. Dois cliques abrem o cartão, e trocar de aba ou filtro ficou imediato.
+
 ## v0.282
 **Aprovar sem data.** No Growth's Content, aprovar uma ideia não pede mais data nem tema. O Growths só pede isso quando o conteúdo vai para a produção.
 

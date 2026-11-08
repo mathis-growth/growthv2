@@ -1,3 +1,6 @@
+## Selecionar vários, dois cliques e carregamento (v0.283)
+`t283_selecao_e_carregamento.py`: 15 verificações, 0 falhas, com 300 conteúdos de descrição longa. Trocar filtro, aba e voltar não baixa de novo; filtro responde em menos de 1 s; dois cliques abrem; Selecionar todos / Desmarcar todos; Limpar seleção; caixinha e Ctrl+clique; arrastar leva os 3; barra "Mover para…" leva os 2 com data e deixa o sem data, com a lista; recarrega depois de gravar e ao voltar de outra tela; sem erros de JavaScript. Regressão: t282 sem falhas.
+
 ## Aprovar a ideia sem data (v0.282)
 `t282_aprovar_sem_data.py`: 11 verificações, 0 falhas. Banco: pauta sem tema/data aceita; produção sem tema/data recusada. Tela: ideia → Pautas aprovadas direto; arquivar sem janela; pauta com tema e data vai direto para Em produção; ideia e pauta sem data pedem a janela e entram em Em produção; botão "Aprovar ideia" no Baú; sem erros de JavaScript.
 

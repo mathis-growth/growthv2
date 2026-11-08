@@ -58,6 +58,7 @@ with sync_playwright() as pw:
     pg.evaluate("() => { const r = document.querySelector('#modalRoot'); if (r) r.innerHTML = ''; }"); pg.wait_for_timeout(300)
     # Baú de ideias: o botão "Aprovar ideia" leva para Pautas aprovadas sem perguntar nada
     C = nova('T282 Baú')
+    front.vai(pg, 'crm-leads', '', 1500)  # v0.283: o Content guarda os dados; entrar de novo vindo de outra tela recarrega
     front.vai(pg, 'mkt-cont', "S.ct = Object.assign(S.ct || {}, { tab: 'ideias' });", 4000)
     card = pg.locator(f'.ct-ideia[data-id="{C}"]')
     chk(card.locator('[data-ok]').inner_text().strip() == 'Aprovar ideia', 'no Baú, o botão se chama "Aprovar ideia"', card.count())

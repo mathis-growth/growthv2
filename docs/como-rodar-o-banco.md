@@ -1,3 +1,6 @@
+## v0.283
+Sem mudança no banco. Só publicar o `index.html`.
+
 ## v0.282
 1. Rodar `supabase/RODAR_v0.282_conteudo_aprovar_sem_data.sql` (troca só a função `conteudo_valida`; a versão em produção foi conferida em 07/11 e é igual à do repositório, fora as quebras de linha).
 2. Publicar o `index.html`.

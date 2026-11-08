@@ -1,3 +1,6 @@
+## v0.283
+Sem mudança no banco.
+
 ## v0.282
 - `conteudo_valida` (método simples): tema e data de publicação exigidos a partir de `producao` (antes: a partir de `pauta`). Sem coluna nova.
 
