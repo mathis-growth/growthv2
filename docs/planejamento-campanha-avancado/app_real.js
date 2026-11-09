@@ -40,7 +40,7 @@ if (REAL) {
   let tSalva = null;
   salva = () => { clearTimeout(tSalva); tSalva = setTimeout(() => { const p = JSON.parse(JSON.stringify(ST.p)); delete p.historico;
     parent.postMessage({ tipo: 'planav-salvar', id: ST.calcId || null, nome: `Planejamento avançado · ${ST.p.nome}`, premissas: { modulo: 'planav', produto_id: ST.p.produto_id, funil_id: ST.p.funil_id, p, versoes: ST.versoes } }, '*'); }, 1200); };
-  window.addEventListener('message', e => { const m = e.data || {}; if (m.tipo === 'planav-salvo') { ST.calcId = m.id; const el = document.getElementById('salvoEm'); if (el) el.textContent = m.erro ? 'Não salvou: ' + m.erro : 'Salvo no Growths às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); } });
+  window.addEventListener('message', e => { const m = e.data || {}; if (m.tipo === 'planav-salvo') { ST.calcId = m.id; ST.salvoTxt = m.erro ? 'Não salvou: ' + m.erro : '✓ Rascunho salvo às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); const el = document.getElementById('salvoEm'); if (el) { el.textContent = ST.salvoTxt; el.style.color = m.erro ? 'var(--bad)' : ''; } } });
   // altura do iframe acompanha a página
   const ro = new ResizeObserver(() => parent.postMessage({ tipo: 'planav-altura', h: document.documentElement.scrollHeight }, '*')); ro.observe(document.body);
   window.scrollTo = () => parent.postMessage({ tipo: 'planav-topo' }, '*');
@@ -64,5 +64,6 @@ if (REAL) {
     else if (el.matches('[data-selfunil]')) { abre(ST.p.produto_id, el.value || null, true); if (ST.p.historico.length < 2) abre(ST.p.produto_id, el.value || null, false); render(); }
     else if (el.matches('[data-soestr]')) { const sp = ST.p, n = montaP(sp.produto_id, sp.funil_id, el.checked); sp.historico = n.historico; sp.soEstrategia = el.checked; render(); }
   }, true);
-  const hdr = document.querySelector('header'); if (hdr) hdr.innerHTML = `<p class="muted" style="margin:0">Dados deste cliente no Growths. O que você muda fica salvo como rascunho. <b id="salvoEm" class="peq"></b></p>`;
+  const hdr = document.querySelector('header'); if (hdr) hdr.remove(); document.documentElement.classList.add('growths');
+  REAL_TITULO = () => ST.p && ST.p.nome ? ST.p.nome : 'Planejamento de campanha avançado';
 }

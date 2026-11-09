@@ -1,3 +1,7 @@
+## v0.289 — Planejamento avançado com a tela igual à de Campanhas e planejamento
+**Pedido da Rebecka (08/11, noite):** "pode aplicar o ajuste mas quero a tela igual a da campanha e planejamento".
+**Como ficou:** mesmo esqueleto do assistente Nova campanha (barras de passo, corpo, rodapé com Salvar e continuar e "✓ Rascunho salvo"), mesmas cores, botões, tabelas, cartões de número e campos, no tema escuro ou claro do Growths. Continua numa área da página, não numa janela por cima.
+
 ## v0.288 — Tipo de campanha no Planejamento avançado
 **Pedido da Rebecka (08/11, noite):** "a hora que eu vou escolher a estratégia, eu tenho que escolher que tipo de estratégia que é... dependendo do tipo de campanha, eu tenho um cálculo diferente."
 **Como ficou:** dois grupos de cartões no passo 1, com os 4 objetivos e os 4 modelos da especificação. O modelo muda o funil; o objetivo muda a meta e o limite (CPL, CAC ou custo por venda).

@@ -1,3 +1,6 @@
+## v0.289
+**Planejamento avançado com a cara de Nova campanha.** O módulo agora usa o mesmo visual do assistente de Campanhas e planejamento: barras de passo no topo, corpo e rodapé com Voltar e Salvar e continuar, cores e tema (escuro ou claro) do Growths.
+
 ## v0.288
 **Tipo de campanha no Planejamento avançado.** O passo 1 começa com dois cartões: o objetivo (captação de leads, aquisição de novos clientes, rentabilização da base, expansão de mercado) e o modelo de conversão (evento, venda direta, comercial, recompra). O funil e o cálculo seguem o que for escolhido.
 

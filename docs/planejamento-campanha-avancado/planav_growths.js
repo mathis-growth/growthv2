@@ -42,11 +42,12 @@ async function planavDados(w) {
 let PLANAV_MSG = null;
 async function vPlanav(m) {
   const w = S.ws;
-  m.innerHTML = `<div class="head"><div><h1>Planejamento de campanha avançado</h1><span class="muted">Da estratégia ao Growth Model da campanha: histórico do produto, margem, limites, CAC, cenários e canais. O planejamento atual de Campanhas continua igual.</span></div></div><div class="muted" id="pvCarrega">Carregando os dados deste cliente…</div><iframe id="pvFrame" title="Planejamento de campanha avançado" style="width:100%;border:0;min-height:900px;display:block;background:transparent"></iframe>`;
+  m.innerHTML = `<div class="head"><div><h1>Planejamento de campanha avançado</h1><span class="muted">Da estratégia ao Growth Model da campanha: histórico do produto, margem, limites, CAC, cenários e canais.</span></div></div><div class="muted" id="pvCarrega">Carregando os dados deste cliente…</div><iframe id="pvFrame" title="Planejamento de campanha avançado" style="width:100%;border:0;min-height:900px;display:block;background:transparent"></iframe>`;
   const D = await planavDados(w), fr = m.querySelector('#pvFrame');
   m.querySelector('#pvCarrega').remove();
   const dados = JSON.stringify(D).replace(/</g, '\\u003c');
-  fr.srcdoc = PLANAV_HTML.replace('<script>', '<script>window.DADOS = ' + dados + ';<\/script><script>');
+  const tema = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  fr.srcdoc = PLANAV_HTML.replace('<html lang="pt-BR">', '<html lang="pt-BR" data-theme="' + tema + '" class="growths">').replace('<script>', '<script>window.DADOS = ' + dados + ';<\/script><script>');
   if (PLANAV_MSG) window.removeEventListener('message', PLANAV_MSG);
   PLANAV_MSG = async e => { if (!fr.isConnected || e.source !== fr.contentWindow) return; const d = e.data || {};
     if (d.tipo === 'planav-altura') fr.style.height = Math.max(900, d.h + 20) + 'px';

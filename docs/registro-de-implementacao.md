@@ -1,3 +1,6 @@
+## Visual da Nova campanha (v0.289)
+Motor 67 de 67. Os cinco tipos de campanha no navegador, sem erro; dados reais do Demo, sem erro, com o rascunho gravado (simulado) e "✓ Rascunho salvo" no rodapé; 390 px sem rolagem lateral. `index.html`: sintaxe conferida.
+
 ## Tipo de campanha (v0.288)
 Motor: 67 de 67. Os cinco tipos testados no navegador (aquisição com evento, venda direta e comercial; rentabilização com recompra; captação de leads com evento): copiar para os cenários, Growth Model e status sem erro; rótulos do funil trocados; custo por venda na recompra (R$ 169 = mídia ÷ vendas no exemplo); meta de leads na captação. Dados reais do workspace Demo: sem erro; 390 px sem rolagem lateral. `index.html`: sintaxe conferida.
 

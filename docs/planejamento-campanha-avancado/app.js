@@ -6,6 +6,7 @@ const pc = (v, d = 1) => (v == null || !isFinite(v)) ? '—' : nf(Math.abs(v) < 
 const v_ = c => c && typeof c === 'object' && 'v' in c ? c.v : c;
 const PASSOS = ['Estratégia', 'Produto e oferta', 'Histórico do produto', 'Informações financeiras', 'Validar margem', 'Recursos', 'Orçamento máximo', 'CAC e CPL', 'Escolher e copiar para os cenários', 'Distribuir por canal', 'Business Case', 'Status e aprovação', 'Growth Model da campanha', 'Cockpit'];
 const NP = PASSOS.length;
+let REAL_TITULO = () => 'Planejamento de campanha avançado';
 const livreAno = p => p.plano && p.plano.orcamentoAquisicaoAno != null ? BC.orcamentoDisponivel(p.plano.orcamentoAquisicaoAno, p.plano.realizadoAquisicao, p.plano.comprometidoAquisicao) : null;
 const acima = (x, lim) => x != null && lim != null && x > lim;
 let ST = { passo: 0, p: EXEMPLO(), semMargem: false, versoes: [], hoje: 12, rastro: null, fat: JSON.parse(JSON.stringify(BC.FATORES)), testes: null };
@@ -242,10 +243,12 @@ function render() {
   const ae = document.activeElement, aa = ae && ae.attributes ? [...ae.attributes].find(x => x.name.startsWith('data-')) : null, foco = aa ? `[${aa.name}="${aa.value}"]` : null;
   for (const k in RAST) delete RAST[k];
   const p = P(), L = BC.limites(p), i = ST.passo, fns = [passoEstrategia, passoProduto, passoHistorico, passoFinanceiro, passoMargem, passoRecursos, passoOrcamento, passoCacCpl, passoDecidir, passoCanaisPl, passoBC, passoAprovacao, passoGM, passoCockpit, passoTestes];
-  $('#nav').innerHTML = `<ol class="stepper">${PASSOS.map((n, k) => `<li class="${k === i ? 'atual' : k < i ? 'feito' : ''}"><button type="button" data-ir="${k}"><span>${k + 1}</span>${n}</button></li>`).join('')}<li class="${i === NP ? 'atual' : ''}"><button type="button" data-ir="${NP}"><span>✓</span>Testes</button></li></ol>`;
+  $('#nav').innerHTML = '';
   const t0 = performance.now(), corpo = fns[i](p, L), ms = performance.now() - t0;
-  $('#app').innerHTML = `<section class="painel"><h2>${i < NP ? (i + 1) + '. ' + PASSOS[i] : 'Testes do motor'}</h2>${corpo}
-    <div class="rodape"><span class="peq muted">Calculado em ${nf(ms, 1)} ms neste navegador.</span>${i > 0 ? `<button type="button" class="btn" data-ir="${i - 1}">‹ Voltar</button>` : ''}${i < NP - 1 ? `<button type="button" class="btn pri" data-ir="${i + 1}">Continuar ›</button>` : ''}</div></section>
+  const barras = PASSOS.map((n, k) => `<button type="button" data-ir="${k}" class="${k === i ? 'at' : k < i ? 'ok' : ''}" title="${k < i ? 'Ver ou mudar' : 'Abrir'} ${n}"><i></i><span><b class="wn">${k + 1}</b>. ${n}${k < i ? ' ✓' : ''}</span></button>`).join('');
+  $('#app').innerHTML = `<div class="wz"><div class="wzh"><h2>${REAL_TITULO()}</h2><div class="wzp">${barras}</div><small class="muted wz-resumo">Passo ${Math.min(i + 1, NP)} de ${NP}. Clique em qualquer passo para ver o que já está lá ou mudar. · <button type="button" class="lnk" data-ir="${NP}">Testes do motor</button> · calculado em ${nf(ms, 1)} ms</small></div>
+    <div class="wzb"><h3>${i < NP ? (i + 1) + '. ' + PASSOS[i] : 'Testes do motor'}</h3>${corpo}</div>
+    <div class="wzf">${i > 0 ? `<button type="button" class="btn" data-ir="${i - 1}">Voltar</button>` : ''}<span class="sp"></span><span class="salvo" id="salvoEm">${ST.salvoTxt || ''}</span>${i < NP - 1 ? `<button type="button" class="btn pri" data-ir="${i + 1}">Salvar e continuar</button>` : i === NP - 1 ? '<button type="button" class="btn pri" data-ir="0">Voltar ao início</button>' : ''}</div></div>
     ${ST.rastro && RAST[ST.rastro] ? `<aside class="painel rastro"><h3>De onde vem este número</h3><dl>${[['Fonte', 'fonte'], ['Período', 'periodo'], ['Fórmula', 'formula'], ['Filtros', 'filtros'], ['Atualizado', 'atualizado'], ['Versão das premissas', 'versao'], ['Confiabilidade', 'conf']].map(([n, k]) => `<dt>${n}</dt><dd>${RAST[ST.rastro][k]}</dd>`).join('')}</dl><button type="button" class="btn" data-fecharrastro>Fechar</button></aside>` : ''}`;
   if (foco) { const el = document.querySelector(foco); if (el) { el.focus(); try { if (el.type === 'text') el.setSelectionRange(el.value.length, el.value.length); } catch (e) {} } }
 }

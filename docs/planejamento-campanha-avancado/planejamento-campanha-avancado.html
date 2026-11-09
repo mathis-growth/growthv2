@@ -1,6 +1,6 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Planejamento de campanha avançado</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>:root {
   --bg: #F3F5FA; --surface: #FFFFFF; --surface-2: #EEF2FA; --surface-3: #C9D3E8; --line: #D8DEEA; --fg: #16213A; --muted: #5B6683;
   --accent: #2456D6; --accent-soft: #E3EBFF;
@@ -129,6 +129,55 @@ table.gmc td input[type=number] { width: 80px }
 .tipo { text-align: left; font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 4px }
 .tipo b { font-size: 14px } .tipo span { font-size: 12.5px; color: var(--muted) } .tipo:hover { border-color: var(--accent) } .tipo.on { border: 2px solid var(--accent); background: var(--accent-soft) }
 .sep { border: 0; border-top: 1px solid var(--line); margin: 16px 0 }
+/* ===== Visual do Growths (mesmo da tela Campanhas e planejamento / Nova campanha), tema azul ===== */
+:root { --bg:#f4f7fc; --surface:#ffffff; --surface-2:#f1f5fb; --line:#e1e8f3; --ink:#0f1a33; --muted:#5a6a86; --accent:#1d4ed8; --accent-2:#1e3a8a; --accent-ink:#fff; --accent-soft:#e3ecfd; --accent-rgb:29,78,216;
+  --good:#17803d; --good-soft:#dcf3e3; --warn:#9a6700; --warn-soft:#fbefc9; --bad:#b42318; --bad-soft:#fbe1de; --info:#2457a6; --info-soft:#e0eaf9;
+  --grad:linear-gradient(120deg,#1e3a8a,#1d4ed8 45%,#0891b2); --brilho:rgba(29,78,216,.22); --raio:14px; color-scheme:light }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#050a18; --surface:#0a1226; --surface-2:#0f1a33; --line:#18264a; --ink:#e7edfa; --muted:#8a9aba; --accent:#3b82f6; --accent-2:#1d4ed8; --accent-soft:#10224a; --accent-rgb:59,130,246;
+  --good:#4ade80; --good-soft:#12301f; --warn:#f5b942; --warn-soft:#3a2c0e; --bad:#ff6b6b; --bad-soft:#401719; --info:#7fb0ff; --info-soft:#15284a; --brilho:rgba(37,99,235,.38); color-scheme:dark } }
+:root[data-theme="dark"] { --bg:#050a18; --surface:#0a1226; --surface-2:#0f1a33; --line:#18264a; --ink:#e7edfa; --muted:#8a9aba; --accent:#3b82f6; --accent-2:#1d4ed8; --accent-soft:#10224a; --accent-rgb:59,130,246;
+  --good:#4ade80; --good-soft:#12301f; --warn:#f5b942; --warn-soft:#3a2c0e; --bad:#ff6b6b; --bad-soft:#401719; --info:#7fb0ff; --info-soft:#15284a; --brilho:rgba(37,99,235,.38); color-scheme:dark }
+:root { --fg:var(--ink); --ok:var(--good); --ok-soft:var(--good-soft); --surface-3:var(--surface-2); --f-ui:'Inter','Segoe UI',system-ui,sans-serif; --f-num:'Inter','Segoe UI',system-ui,sans-serif }
+body { font:14px/1.5 var(--f-ui); color:var(--ink); background:var(--bg); -webkit-font-smoothing:antialiased }
+html.growths body { background:transparent } html.growths .wrap { padding:0; max-width:none }
+h1,h2,h3 { letter-spacing:-.01em } h2 { font-size:17px; font-weight:650 } h3 { font-size:15px; font-weight:600 }
+/* janela do assistente: cabeçalho com barras de passo, corpo e rodapé */
+.wz { background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden }
+.wzh { padding:20px 24px 14px; border-bottom:1px solid var(--line) } .wzh h2 { margin:0 0 14px; font-size:20px }
+.wzp { display:grid; grid-template-columns:repeat(7, minmax(0, 1fr)); gap:10px 8px }
+.wzp button { all:unset; display:flex; flex-direction:column; gap:6px; font-size:12px; color:var(--muted); font-weight:600; cursor:pointer; line-height:1.3 }
+.wzp button i { height:5px; border-radius:9px; background:var(--line) } .wzp button:hover span { color:var(--accent) } .wzp button:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:4px }
+.wzp button.ok { color:var(--good) } .wzp button.ok i { background:var(--good); box-shadow:0 0 10px rgba(47,245,143,.35) }
+.wzp button.at { color:var(--ink) } .wzp button.at i { background:var(--grad); box-shadow:0 0 12px var(--brilho) }
+.wz-resumo { display:block; margin-top:10px; font-size:12.5px }
+.wzb { padding:20px 24px; display:flex; flex-direction:column; gap:14px } .wzb > h3:first-child { margin:0; font-size:17px }
+.wzb p.lead { margin:0; color:var(--muted); font-size:13.5px; max-width:none }
+.wzf { display:flex; gap:10px; align-items:center; padding:14px 24px; border-top:1px solid var(--line); background:var(--surface-2); flex-wrap:wrap } .wzf .sp { flex:1 }
+.wzf .salvo { font-size:12.5px; color:var(--good); font-weight:600 }
+/* componentes no jeito do Growths */
+.painel { background:var(--surface); border:1px solid var(--line); border-radius:var(--raio); padding:18px }
+.wzb .painel { background:var(--surface-2) }
+.cards { grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:12px }
+.q { background:var(--surface); border:1px solid var(--line); border-left:1px solid var(--line); border-radius:var(--raio); padding:14px 16px; gap:3px }
+.q span { font-size:12px; color:var(--muted) } .q b { font:700 19px var(--f-ui); letter-spacing:-.02em; font-variant-numeric:tabular-nums } .q small { font-size:12px; color:var(--muted) }
+.q.ok { box-shadow:inset 3px 0 0 var(--good) } .q.warn { box-shadow:inset 3px 0 0 var(--warn) } .q.bad { box-shadow:inset 3px 0 0 var(--bad) }
+th { font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); font-weight:600 } th, td { padding:8px 10px; border-bottom:1px solid var(--line) }
+td.n { font-family:var(--f-ui); font-size:13px; font-variant-numeric:tabular-nums } tbody tr:hover td { background:rgba(var(--accent-rgb), .045) }
+tr.tot td { border-top:2px solid var(--line) } tr.grp td { background:var(--surface-2); font-size:12.5px }
+.btn { background:var(--surface-2); color:var(--ink); border:1px solid var(--line); border-radius:9px; padding:7px 13px; font:500 14px var(--f-ui) } .btn:hover { border-color:var(--accent) }
+.btn.pri { background:linear-gradient(135deg, var(--accent), var(--accent-2)); border-color:var(--accent); color:var(--accent-ink); font-weight:600; box-shadow:0 4px 14px rgba(var(--accent-rgb), .28) }
+input, select { background:var(--bg); border:1px solid var(--line); border-radius:9px; padding:7px 10px; color:var(--ink); font:inherit }
+input:focus, select:focus { border-color:var(--accent); outline:none; box-shadow:0 0 0 3px rgba(var(--accent-rgb), .18) }
+input[type=checkbox], input[type=radio] { width:auto; padding:0; box-shadow:none }
+.campo { font-size:12px; font-weight:500 }
+.st { border-radius:99px; padding:2px 9px; font-weight:500 } .st.ok { background:var(--good-soft); color:var(--good) } .st.meta { background:var(--info-soft); color:var(--info) }
+.aviso { border-radius:10px; font-size:13.5px; border:1px solid transparent } .aviso.info { background:var(--info-soft); color:var(--info) }
+.tag { font-weight:500 } .tag.ok { background:var(--good-soft); color:var(--good) } .tag.meta { background:var(--info-soft); color:var(--info) }
+.tipo { background:var(--surface); border-radius:12px } .tipo.on { border:2px solid var(--accent); background:var(--accent-soft) }
+.seg button { background:var(--surface-2); border:1px solid var(--line); border-radius:9px; padding:6px 12px; color:var(--ink); cursor:pointer } .seg button[aria-pressed="true"] { background:var(--accent-soft); color:var(--accent); border-color:var(--accent) }
+.hcol { background:var(--surface-2) }
+@media (max-width: 760px) { .wzp { grid-template-columns:repeat(2, minmax(0, 1fr)) } .wzh, .wzb, .wzf { padding-left:16px; padding-right:16px } }
+.lnk { all:unset; color:var(--accent); cursor:pointer; font-weight:600 } .lnk:hover { text-decoration:underline }
 </style></head><body><div class="wrap">
 <header style="margin-bottom:14px"><h1>Planejamento de campanha avançado <span class="exemplo">dados fictícios</span></h1>
 <p class="muted">Módulo em protótipo (fase 1): da estratégia ao cockpit, com o Business Case no meio. Primeiro caso: Captação → Evento → Venda. Roda só no seu navegador, com o motor isolado e dados de exemplo. Nada é gravado no Growths. <button type="button" class="btn" data-zera style="margin-left:6px">Recomeçar o exemplo</button></p></header>
@@ -578,6 +627,7 @@ const pc = (v, d = 1) => (v == null || !isFinite(v)) ? '—' : nf(Math.abs(v) < 
 const v_ = c => c && typeof c === 'object' && 'v' in c ? c.v : c;
 const PASSOS = ['Estratégia', 'Produto e oferta', 'Histórico do produto', 'Informações financeiras', 'Validar margem', 'Recursos', 'Orçamento máximo', 'CAC e CPL', 'Escolher e copiar para os cenários', 'Distribuir por canal', 'Business Case', 'Status e aprovação', 'Growth Model da campanha', 'Cockpit'];
 const NP = PASSOS.length;
+let REAL_TITULO = () => 'Planejamento de campanha avançado';
 const livreAno = p => p.plano && p.plano.orcamentoAquisicaoAno != null ? BC.orcamentoDisponivel(p.plano.orcamentoAquisicaoAno, p.plano.realizadoAquisicao, p.plano.comprometidoAquisicao) : null;
 const acima = (x, lim) => x != null && lim != null && x > lim;
 let ST = { passo: 0, p: EXEMPLO(), semMargem: false, versoes: [], hoje: 12, rastro: null, fat: JSON.parse(JSON.stringify(BC.FATORES)), testes: null };
@@ -814,10 +864,12 @@ function render() {
   const ae = document.activeElement, aa = ae && ae.attributes ? [...ae.attributes].find(x => x.name.startsWith('data-')) : null, foco = aa ? `[${aa.name}="${aa.value}"]` : null;
   for (const k in RAST) delete RAST[k];
   const p = P(), L = BC.limites(p), i = ST.passo, fns = [passoEstrategia, passoProduto, passoHistorico, passoFinanceiro, passoMargem, passoRecursos, passoOrcamento, passoCacCpl, passoDecidir, passoCanaisPl, passoBC, passoAprovacao, passoGM, passoCockpit, passoTestes];
-  $('#nav').innerHTML = `<ol class="stepper">${PASSOS.map((n, k) => `<li class="${k === i ? 'atual' : k < i ? 'feito' : ''}"><button type="button" data-ir="${k}"><span>${k + 1}</span>${n}</button></li>`).join('')}<li class="${i === NP ? 'atual' : ''}"><button type="button" data-ir="${NP}"><span>✓</span>Testes</button></li></ol>`;
+  $('#nav').innerHTML = '';
   const t0 = performance.now(), corpo = fns[i](p, L), ms = performance.now() - t0;
-  $('#app').innerHTML = `<section class="painel"><h2>${i < NP ? (i + 1) + '. ' + PASSOS[i] : 'Testes do motor'}</h2>${corpo}
-    <div class="rodape"><span class="peq muted">Calculado em ${nf(ms, 1)} ms neste navegador.</span>${i > 0 ? `<button type="button" class="btn" data-ir="${i - 1}">‹ Voltar</button>` : ''}${i < NP - 1 ? `<button type="button" class="btn pri" data-ir="${i + 1}">Continuar ›</button>` : ''}</div></section>
+  const barras = PASSOS.map((n, k) => `<button type="button" data-ir="${k}" class="${k === i ? 'at' : k < i ? 'ok' : ''}" title="${k < i ? 'Ver ou mudar' : 'Abrir'} ${n}"><i></i><span><b class="wn">${k + 1}</b>. ${n}${k < i ? ' ✓' : ''}</span></button>`).join('');
+  $('#app').innerHTML = `<div class="wz"><div class="wzh"><h2>${REAL_TITULO()}</h2><div class="wzp">${barras}</div><small class="muted wz-resumo">Passo ${Math.min(i + 1, NP)} de ${NP}. Clique em qualquer passo para ver o que já está lá ou mudar. · <button type="button" class="lnk" data-ir="${NP}">Testes do motor</button> · calculado em ${nf(ms, 1)} ms</small></div>
+    <div class="wzb"><h3>${i < NP ? (i + 1) + '. ' + PASSOS[i] : 'Testes do motor'}</h3>${corpo}</div>
+    <div class="wzf">${i > 0 ? `<button type="button" class="btn" data-ir="${i - 1}">Voltar</button>` : ''}<span class="sp"></span><span class="salvo" id="salvoEm">${ST.salvoTxt || ''}</span>${i < NP - 1 ? `<button type="button" class="btn pri" data-ir="${i + 1}">Salvar e continuar</button>` : i === NP - 1 ? '<button type="button" class="btn pri" data-ir="0">Voltar ao início</button>' : ''}</div></div>
     ${ST.rastro && RAST[ST.rastro] ? `<aside class="painel rastro"><h3>De onde vem este número</h3><dl>${[['Fonte', 'fonte'], ['Período', 'periodo'], ['Fórmula', 'formula'], ['Filtros', 'filtros'], ['Atualizado', 'atualizado'], ['Versão das premissas', 'versao'], ['Confiabilidade', 'conf']].map(([n, k]) => `<dt>${n}</dt><dd>${RAST[ST.rastro][k]}</dd>`).join('')}</dl><button type="button" class="btn" data-fecharrastro>Fechar</button></aside>` : ''}`;
   if (foco) { const el = document.querySelector(foco); if (el) { el.focus(); try { if (el.type === 'text') el.setSelectionRange(el.value.length, el.value.length); } catch (e) {} } }
 }
@@ -900,11 +952,11 @@ function resumoCens(p) {
 }
 function passoCanaisPl(p) {
   const pl = planoDe(p); if (!pl.cens) return `<p class="aviso warn">Escolha o CAC e copie para os cenários no passo anterior.</p>`;
-  const k = pl.ativo, c = pl.cens[k], e = econ(p, c), r = e.r, HC = BC.historicoCanais(p.historico), fx = f => f ? `${brl(f.min, 2)} a ${brl(f.max, 2)}` : '—';
+  const ML = termos(p).metaLeads, k = pl.ativo, c = pl.cens[k], e = econ(p, c), r = e.r, HC = BC.historicoCanais(p.historico), fx = f => f ? `${brl(f.min, 2)} a ${brl(f.max, 2)}` : '—';
   const inp = (path, v, step = 'any') => `<input type="number" step="${step}" value="${Math.round(v * 100) / 100}" data-cen="${k}.${path}">`;
   return `<p class="lead">Distribua a verba entre os canais olhando o que cada um entregou. Mais leads orgânicos com a mesma verba baixam o CAC.</p>
   <div class="seg" role="group" aria-label="Cenário">${CENS.map(([kk, n]) => `<button type="button" data-ativo="${kk}" aria-pressed="${kk === k}">${n}</button>`).join('')}</div>
-  <div class="linha" style="margin:10px 0"><label class="campo">Verba de mídia deste cenário<span>${inp('verba', c.verba, 100)} R$</span></label><label class="campo">Meta de vendas<span><b>${nf(pl.meta)}</b></span></label></div>
+  <div class="linha" style="margin:10px 0"><label class="campo">Verba de mídia deste cenário<span>${inp('verba', c.verba, 100)} R$</span></label><label class="campo">${ML ? 'Meta de leads' : 'Meta de vendas'}<span><b>${nf(ML ? pl.metaLeads : pl.meta)}</b></span></label></div>
   ${HC.meta.semDado && HC.google.semDado ? '<p class="aviso info">O histórico não tem anúncios ligados por canal: o CPL de referência é o geral das últimas campanhas (mídia ÷ todos os leads). Divida entre Meta e Google pelo que você espera.</p>' : ''}
   <div class="tw"><table><thead><tr><th>Canal</th><th class="n">% da verba</th><th class="n">Verba</th><th class="n">CPL de referência</th><th class="n">CPL com esta verba</th><th class="n">CPL no histórico</th><th class="n">Leads no plano</th><th class="n">Leads por campanha no histórico</th></tr></thead><tbody>
     <tr><td>Meta Ads</td><td class="n">${inp('canais.meta.pct', c.canais.meta.pct, 1)} %</td><td class="n">${brl(r.pagos[0].verba)}</td><td class="n">${inp('canais.meta.cpl', c.canais.meta.cpl, 0.1)}</td><td class="n">${brl(r.pagos[0].cpl, 2)}</td><td class="n peq">${brl(HC.meta.cpl, 2)}<span class="d">${fx(HC.meta.faixaCpl)}</span></td><td class="n">${nf(r.pagos[0].leads)}</td><td class="n">${nf(HC.meta.leadsPorCampanha)}</td></tr>
@@ -912,8 +964,8 @@ function passoCanaisPl(p) {
     <tr><td>Orgânico</td><td class="n">—</td><td class="n">—</td><td class="n muted">sem mídia</td><td class="n muted">—</td><td class="n muted">—</td><td class="n">${inp('canais.org.leads', c.canais.org.leads, 10)}</td><td class="n">${nf(HC.org.leadsPorCampanha)}</td></tr>
     <tr><td>WhatsApp API</td><td class="n">—</td><td class="n">${brl(r.custoApi)}<span class="d">${brl(c.canais.api.custoLead, 2)} por lead</span></td><td class="n muted">—</td><td class="n muted">—</td><td class="n peq">${brl(HC.api.cpl, 2)}</td><td class="n">${inp('canais.api.leads', c.canais.api.leads, 10)}</td><td class="n">${nf(HC.api.leadsPorCampanha)}</td></tr>
     <tr class="tot"><td>Total</td><td></td><td class="n">${brl(r.verba)}</td><td></td><td class="n">${brl(r.cpl, 2)}<span class="d">média dos pagos</span></td><td class="n peq">${brl(BC.historico(p.historico).cpl, 2)}</td><td class="n">${nf(r.leads)}</td><td class="n">${nf(p.historico.reduce((s, x) => s + x.leads, 0) / p.historico.length)}</td></tr></tbody></table></div>
-  <div class="cards" style="margin-top:12px">${card('Leads para a meta', nf(r.leadsPrecisa), `${pc(r.vendasPorLead, 2)} dos leads viram venda`)}${card('Vendas previstas', nf(r.vendas, 1), `meta ${nf(pl.meta)}`, Math.abs(r.vendas / pl.meta - 1) <= .03 ? '' : r.vendas < pl.meta ? 'bad' : 'ok')}${card('CAC de mídia', brl(r.cacMidia), `escolhido ${brl(pl.cac)}`, r.cacMidia <= pl.cac * 1.03 ? 'ok' : 'bad')}${card('Contribuição residual', brl(e.contrib), `mínimo ${brl(p.residualMinimo)}`, e.contrib >= p.residualMinimo ? 'ok' : 'bad')}</div>
-  ${r.faltaLeads > 0.5 ? `<p class="aviso warn">Faltam ${nf(r.faltaLeads)} leads para a meta neste cenário. Sem mais verba, o orgânico teria que trazer ${nf(r.orgParaMeta)} leads (histórico: ${nf(HC.org.leadsPorCampanha)} por campanha). Opções: ações orgânicas, mais API, CPL menor ou meta menor.</p>` : `<p class="aviso ok">Os leads planejados cobrem a meta neste cenário${r.leads > r.leadsPrecisa * 1.05 ? `, com ${nf(r.leads - r.leadsPrecisa)} de folga: dá para reduzir a verba` : ''}.</p>`}
+  <div class="cards" style="margin-top:12px">${ML ? card('Leads previstos', nf(r.leads), `meta ${nf(pl.metaLeads)}`, Math.abs(r.leads / pl.metaLeads - 1) <= .03 ? '' : r.leads < pl.metaLeads ? 'bad' : 'ok') + card('Vendas que vêm junto', nf(r.vendas, 1), `${pc(r.vendasPorLead, 2)} dos leads viram venda`) : card('Leads para a meta', nf(r.leadsPrecisa), `${pc(r.vendasPorLead, 2)} dos leads viram venda`) + card('Vendas previstas', nf(r.vendas, 1), `meta ${nf(pl.meta)}`, Math.abs(r.vendas / pl.meta - 1) <= .03 ? '' : r.vendas < pl.meta ? 'bad' : 'ok')}${card('CAC de mídia', brl(r.cacMidia), `escolhido ${brl(pl.cac)}`, r.cacMidia <= pl.cac * 1.03 ? 'ok' : 'bad')}${card('Contribuição residual', brl(e.contrib), `mínimo ${brl(p.residualMinimo)}`, e.contrib >= p.residualMinimo ? 'ok' : 'bad')}</div>
+  ${ML ? (r.leads < pl.metaLeads * 0.97 ? `<p class="aviso warn">Faltam ${nf(pl.metaLeads - r.leads)} leads para a meta neste cenário. Opções: mais orgânico, mais API, CPL menor ou mais verba.</p>` : '<p class="aviso ok">Os leads planejados cobrem a meta de leads neste cenário.</p>') : (r.faltaLeads > 0.5 ? `<p class="aviso warn">Faltam ${nf(r.faltaLeads)} leads para a meta neste cenário. Sem mais verba, o orgânico teria que trazer ${nf(r.orgParaMeta)} leads (histórico: ${nf(HC.org.leadsPorCampanha)} por campanha). Opções: ações orgânicas, mais API, CPL menor ou meta menor.</p>` : `<p class="aviso ok">Os leads planejados cobrem a meta neste cenário${r.leads > r.leadsPrecisa * 1.05 ? `, com ${nf(r.leads - r.leadsPrecisa)} de folga: dá para reduzir a verba` : ''}.</p>`)}
   <p class="peq muted">CPL com esta verba = CPL de referência × (verba ÷ ${brl(c.verbaRef)}, a média histórica) ^ ${nf(c.elasticidade, 2)}: quanto mais verba, mais caro o lead. Conversão deste cenário: comparecimento ${pc(c.comparecimento / 100)}, presentes ${pc(c.convPresentes / 100)}, ausentes ${pc(c.convAusentes / 100, 2)}. Ajuste no Growth Model da campanha.</p>`;
 }
 function statusCampanha(p, L) {
@@ -1008,7 +1060,7 @@ if (REAL) {
   let tSalva = null;
   salva = () => { clearTimeout(tSalva); tSalva = setTimeout(() => { const p = JSON.parse(JSON.stringify(ST.p)); delete p.historico;
     parent.postMessage({ tipo: 'planav-salvar', id: ST.calcId || null, nome: `Planejamento avançado · ${ST.p.nome}`, premissas: { modulo: 'planav', produto_id: ST.p.produto_id, funil_id: ST.p.funil_id, p, versoes: ST.versoes } }, '*'); }, 1200); };
-  window.addEventListener('message', e => { const m = e.data || {}; if (m.tipo === 'planav-salvo') { ST.calcId = m.id; const el = document.getElementById('salvoEm'); if (el) el.textContent = m.erro ? 'Não salvou: ' + m.erro : 'Salvo no Growths às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); } });
+  window.addEventListener('message', e => { const m = e.data || {}; if (m.tipo === 'planav-salvo') { ST.calcId = m.id; ST.salvoTxt = m.erro ? 'Não salvou: ' + m.erro : '✓ Rascunho salvo às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); const el = document.getElementById('salvoEm'); if (el) { el.textContent = ST.salvoTxt; el.style.color = m.erro ? 'var(--bad)' : ''; } } });
   // altura do iframe acompanha a página
   const ro = new ResizeObserver(() => parent.postMessage({ tipo: 'planav-altura', h: document.documentElement.scrollHeight }, '*')); ro.observe(document.body);
   window.scrollTo = () => parent.postMessage({ tipo: 'planav-topo' }, '*');
@@ -1032,7 +1084,8 @@ if (REAL) {
     else if (el.matches('[data-selfunil]')) { abre(ST.p.produto_id, el.value || null, true); if (ST.p.historico.length < 2) abre(ST.p.produto_id, el.value || null, false); render(); }
     else if (el.matches('[data-soestr]')) { const sp = ST.p, n = montaP(sp.produto_id, sp.funil_id, el.checked); sp.historico = n.historico; sp.soEstrategia = el.checked; render(); }
   }, true);
-  const hdr = document.querySelector('header'); if (hdr) hdr.innerHTML = `<p class="muted" style="margin:0">Dados deste cliente no Growths. O que você muda fica salvo como rascunho. <b id="salvoEm" class="peq"></b></p>`;
+  const hdr = document.querySelector('header'); if (hdr) hdr.remove(); document.documentElement.classList.add('growths');
+  REAL_TITULO = () => ST.p && ST.p.nome ? ST.p.nome : 'Planejamento de campanha avançado';
 }
 
 /* ===== Tipo de campanha: objetivo estratégico × modelo de conversão (duas dimensões separadas) ===== */

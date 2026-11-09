@@ -1,3 +1,8 @@
+## v0.289 — Planejamento avançado com a tela de Campanhas e planejamento (08/11/2026)
+- Mesmo visual do assistente Nova campanha: barras de passo no topo (clique para ir a qualquer passo), corpo, rodapé com Voltar, "✓ Rascunho salvo" e Salvar e continuar. Cores, fontes, botões, tabelas e campos do Growths, no tema escuro ou claro.
+- Captação de leads: o passo 10 mostra a meta de leads.
+- Sem mudança no banco.
+
 ## v0.288 — Tipo de campanha no Planejamento avançado (08/11/2026)
 - Passo 1 com dois grupos de cartões: **objetivo** (captação de leads, aquisição de novos clientes, rentabilização da base, expansão de mercado) e **modelo de conversão** (Captação → Evento → Venda, Anúncio → Página → Checkout, Captação → Qualificação → Comercial → Venda, Base de clientes → Oferta → Recompra). Vem sugerido pelo tipo da estratégia.
 - O modelo troca as etapas e as taxas do funil (passos 9, 10 e 13). O objetivo troca a meta: leads e CPL na captação; custo por venda na base; aviso de histórico de outro mercado na expansão.

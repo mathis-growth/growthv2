@@ -1,0 +1,49 @@
+/* ===== Visual do Growths (mesmo da tela Campanhas e planejamento / Nova campanha), tema azul ===== */
+:root { --bg:#f4f7fc; --surface:#ffffff; --surface-2:#f1f5fb; --line:#e1e8f3; --ink:#0f1a33; --muted:#5a6a86; --accent:#1d4ed8; --accent-2:#1e3a8a; --accent-ink:#fff; --accent-soft:#e3ecfd; --accent-rgb:29,78,216;
+  --good:#17803d; --good-soft:#dcf3e3; --warn:#9a6700; --warn-soft:#fbefc9; --bad:#b42318; --bad-soft:#fbe1de; --info:#2457a6; --info-soft:#e0eaf9;
+  --grad:linear-gradient(120deg,#1e3a8a,#1d4ed8 45%,#0891b2); --brilho:rgba(29,78,216,.22); --raio:14px; color-scheme:light }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#050a18; --surface:#0a1226; --surface-2:#0f1a33; --line:#18264a; --ink:#e7edfa; --muted:#8a9aba; --accent:#3b82f6; --accent-2:#1d4ed8; --accent-soft:#10224a; --accent-rgb:59,130,246;
+  --good:#4ade80; --good-soft:#12301f; --warn:#f5b942; --warn-soft:#3a2c0e; --bad:#ff6b6b; --bad-soft:#401719; --info:#7fb0ff; --info-soft:#15284a; --brilho:rgba(37,99,235,.38); color-scheme:dark } }
+:root[data-theme="dark"] { --bg:#050a18; --surface:#0a1226; --surface-2:#0f1a33; --line:#18264a; --ink:#e7edfa; --muted:#8a9aba; --accent:#3b82f6; --accent-2:#1d4ed8; --accent-soft:#10224a; --accent-rgb:59,130,246;
+  --good:#4ade80; --good-soft:#12301f; --warn:#f5b942; --warn-soft:#3a2c0e; --bad:#ff6b6b; --bad-soft:#401719; --info:#7fb0ff; --info-soft:#15284a; --brilho:rgba(37,99,235,.38); color-scheme:dark }
+:root { --fg:var(--ink); --ok:var(--good); --ok-soft:var(--good-soft); --surface-3:var(--surface-2); --f-ui:'Inter','Segoe UI',system-ui,sans-serif; --f-num:'Inter','Segoe UI',system-ui,sans-serif }
+body { font:14px/1.5 var(--f-ui); color:var(--ink); background:var(--bg); -webkit-font-smoothing:antialiased }
+html.growths body { background:transparent } html.growths .wrap { padding:0; max-width:none }
+h1,h2,h3 { letter-spacing:-.01em } h2 { font-size:17px; font-weight:650 } h3 { font-size:15px; font-weight:600 }
+/* janela do assistente: cabeçalho com barras de passo, corpo e rodapé */
+.wz { background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden }
+.wzh { padding:20px 24px 14px; border-bottom:1px solid var(--line) } .wzh h2 { margin:0 0 14px; font-size:20px }
+.wzp { display:grid; grid-template-columns:repeat(7, minmax(0, 1fr)); gap:10px 8px }
+.wzp button { all:unset; display:flex; flex-direction:column; gap:6px; font-size:12px; color:var(--muted); font-weight:600; cursor:pointer; line-height:1.3 }
+.wzp button i { height:5px; border-radius:9px; background:var(--line) } .wzp button:hover span { color:var(--accent) } .wzp button:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:4px }
+.wzp button.ok { color:var(--good) } .wzp button.ok i { background:var(--good); box-shadow:0 0 10px rgba(47,245,143,.35) }
+.wzp button.at { color:var(--ink) } .wzp button.at i { background:var(--grad); box-shadow:0 0 12px var(--brilho) }
+.wz-resumo { display:block; margin-top:10px; font-size:12.5px }
+.wzb { padding:20px 24px; display:flex; flex-direction:column; gap:14px } .wzb > h3:first-child { margin:0; font-size:17px }
+.wzb p.lead { margin:0; color:var(--muted); font-size:13.5px; max-width:none }
+.wzf { display:flex; gap:10px; align-items:center; padding:14px 24px; border-top:1px solid var(--line); background:var(--surface-2); flex-wrap:wrap } .wzf .sp { flex:1 }
+.wzf .salvo { font-size:12.5px; color:var(--good); font-weight:600 }
+/* componentes no jeito do Growths */
+.painel { background:var(--surface); border:1px solid var(--line); border-radius:var(--raio); padding:18px }
+.wzb .painel { background:var(--surface-2) }
+.cards { grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:12px }
+.q { background:var(--surface); border:1px solid var(--line); border-left:1px solid var(--line); border-radius:var(--raio); padding:14px 16px; gap:3px }
+.q span { font-size:12px; color:var(--muted) } .q b { font:700 19px var(--f-ui); letter-spacing:-.02em; font-variant-numeric:tabular-nums } .q small { font-size:12px; color:var(--muted) }
+.q.ok { box-shadow:inset 3px 0 0 var(--good) } .q.warn { box-shadow:inset 3px 0 0 var(--warn) } .q.bad { box-shadow:inset 3px 0 0 var(--bad) }
+th { font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); font-weight:600 } th, td { padding:8px 10px; border-bottom:1px solid var(--line) }
+td.n { font-family:var(--f-ui); font-size:13px; font-variant-numeric:tabular-nums } tbody tr:hover td { background:rgba(var(--accent-rgb), .045) }
+tr.tot td { border-top:2px solid var(--line) } tr.grp td { background:var(--surface-2); font-size:12.5px }
+.btn { background:var(--surface-2); color:var(--ink); border:1px solid var(--line); border-radius:9px; padding:7px 13px; font:500 14px var(--f-ui) } .btn:hover { border-color:var(--accent) }
+.btn.pri { background:linear-gradient(135deg, var(--accent), var(--accent-2)); border-color:var(--accent); color:var(--accent-ink); font-weight:600; box-shadow:0 4px 14px rgba(var(--accent-rgb), .28) }
+input, select { background:var(--bg); border:1px solid var(--line); border-radius:9px; padding:7px 10px; color:var(--ink); font:inherit }
+input:focus, select:focus { border-color:var(--accent); outline:none; box-shadow:0 0 0 3px rgba(var(--accent-rgb), .18) }
+input[type=checkbox], input[type=radio] { width:auto; padding:0; box-shadow:none }
+.campo { font-size:12px; font-weight:500 }
+.st { border-radius:99px; padding:2px 9px; font-weight:500 } .st.ok { background:var(--good-soft); color:var(--good) } .st.meta { background:var(--info-soft); color:var(--info) }
+.aviso { border-radius:10px; font-size:13.5px; border:1px solid transparent } .aviso.info { background:var(--info-soft); color:var(--info) }
+.tag { font-weight:500 } .tag.ok { background:var(--good-soft); color:var(--good) } .tag.meta { background:var(--info-soft); color:var(--info) }
+.tipo { background:var(--surface); border-radius:12px } .tipo.on { border:2px solid var(--accent); background:var(--accent-soft) }
+.seg button { background:var(--surface-2); border:1px solid var(--line); border-radius:9px; padding:6px 12px; color:var(--ink); cursor:pointer } .seg button[aria-pressed="true"] { background:var(--accent-soft); color:var(--accent); border-color:var(--accent) }
+.hcol { background:var(--surface-2) }
+@media (max-width: 760px) { .wzp { grid-template-columns:repeat(2, minmax(0, 1fr)) } .wzh, .wzb, .wzf { padding-left:16px; padding-right:16px } }
+.lnk { all:unset; color:var(--accent); cursor:pointer; font-weight:600 } .lnk:hover { text-decoration:underline }

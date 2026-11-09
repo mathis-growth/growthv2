@@ -1,3 +1,7 @@
+## v0.289
+- `aplica289.py` sobre a v0.288: troca o bloco do módulo (`PLANAV_HTML` até `VIEWS['mkt-planav']`). `gskin.css` novo no módulo (tokens e componentes do Growths: `.wz`, `.wzh`, `.wzp`, `.wzb`, `.wzf`); o tema vem do Growths (`data-theme`).
+- Sem migração.
+
 ## v0.288
 - `aplica288.py` sobre a v0.287: troca a constante `PLANAV_HTML` pelo módulo novo (gerado por `build.py`, agora com `app_tipo.js`).
 - Sem migração.

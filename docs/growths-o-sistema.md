@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 08/11/2026, versão 0.288 (tipo de campanha no Planejamento avançado).
+**Última atualização:** 08/11/2026, versão 0.289 (Planejamento avançado com a tela de Nova campanha).
+
+**v0.289 · Mesma cara de Nova campanha.** O Planejamento de campanha avançado agora parece com o assistente que cria campanhas: passos em barras no topo, um passo por vez e Salvar e continuar no rodapé, com o rascunho salvo sozinho.
 
 **v0.288 · Tipo de campanha.** No Planejamento de campanha avançado, o primeiro passo pergunta que campanha é: o objetivo (captar leads, conquistar novos clientes, vender de novo para a base ou abrir um mercado novo) e o modelo (evento, venda direta na página, comercial ou oferta para a base). Cada combinação tem o seu funil e a sua conta: em captação a meta é em leads e o limite é o CPL; para a base, o que importa é quanto custa cada venda, não o CAC.
 

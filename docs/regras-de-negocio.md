@@ -1,3 +1,6 @@
+## v0.289
+- **Captação de leads, passo 10:** a meta mostrada é a de leads; o aviso compara leads previstos com a meta de leads (antes comparava com a meta de vendas, que não existe nesse objetivo).
+
 ## v0.288
 - **Tipo de campanha:** objetivo e modelo são escolhas separadas, sugeridas pelo tipo da estratégia (lançamento, webinário e captação → evento; perpétuo → venda direta; comercial → comercial; recompra, assinatura e disparo → recompra) e confirmadas por um clique.
 - **Modelo:** muda as etapas e as taxas do funil. Fora do evento não existe "ausentes": a conversão é recalculada para manter as vendas por lead do histórico.

@@ -1,3 +1,6 @@
+## v0.289
+Sem mudança no banco.
+
 ## v0.288
 Sem mudança no banco. O tipo (objetivo e modelo) fica no rascunho, em `campanha_calculos.premissas.p.tipo`.
 
