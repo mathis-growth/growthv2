@@ -12,7 +12,7 @@ const CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers
 const json = (body: Obj, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...CORS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } });
 const texto = (v: unknown, max = 500) => typeof v === 'string' ? v.trim().slice(0, max) : '';
 const uuidValido = (v: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v);
-const escoposValidos = new Set(['growth:consultar', 'campanha:criar']);
+const escoposValidos = new Set(['growth:consultar', 'campanha:criar', 'tarefas:gerenciar']);
 const normaliza = (s: string) => s.normalize('NFKC').trim().toLocaleLowerCase('pt-BR');
 const nomeValido = (s: string) => s.length >= 1 && s.length <= 100;
 const hex = (b: Uint8Array) => Array.from(b, x => x.toString(16).padStart(2, '0')).join('');
@@ -43,7 +43,7 @@ function erroDb(e: unknown): never {
 }
 function listaEscopos(v: unknown, padrao = ['growth:consultar']) {
   const s = Array.isArray(v) ? [...new Set(v.map(x => texto(x, 40)))] : padrao;
-  if (!s.length || s.some(x => !escoposValidos.has(x))) throw new HttpErro(400, 'Escopos inválidos. Use growth:consultar e/ou campanha:criar.');
+  if (!s.length || s.some(x => !escoposValidos.has(x))) throw new HttpErro(400, 'Escopos inválidos. Use growth:consultar, campanha:criar e/ou tarefas:gerenciar.');
   return s;
 }
 
@@ -142,6 +142,19 @@ Deno.serve(async (req: Request) => {
       return matches[0];
     }
 
+    async function projetoDosAgentes(workspaceId: string): Promise<Obj> {
+      const atual = await db.from('projetos').select('id,nome,status').eq('workspace_id', workspaceId).eq('pipeline_agentes', true).maybeSingle();
+      if (atual.error) erroDb(atual.error);
+      if (atual.data) return atual.data;
+      const novo = await db.from('projetos').insert({ workspace_id: workspaceId, nome: 'Pipeline dos agentes', descricao: 'Tarefas criadas e acompanhadas pelo Frank e pelo time de agentes.', pipeline_agentes: true })
+        .select('id,nome,status').single();
+      if (!novo.error) return novo.data;
+      if (novo.error.code !== '23505') erroDb(novo.error);
+      const concorrente = await db.from('projetos').select('id,nome,status').eq('workspace_id', workspaceId).eq('pipeline_agentes', true).single();
+      if (concorrente.error) erroDb(concorrente.error);
+      return concorrente.data;
+    }
+
     // Gestão dos usuários de sistema pela interface de Integrações.
     const acoesAdmin = new Set(['integracoes_listar', 'integracao_criar', 'integracao_atualizar', 'integracao_acessos_salvar', 'integracao_rotacionar', 'integracao_revogar']);
     if (acoesAdmin.has(acao)) {
@@ -213,6 +226,54 @@ Deno.serve(async (req: Request) => {
 
     // Ações operacionais: somente uma identidade de máquina com escopo explícito.
     if (!integracao) throw new HttpErro(401, 'Envie x-frank-growth-key para ações do Frank.');
+    if (['tarefas_listar', 'tarefa_criar', 'tarefa_atualizar'].includes(acao)) {
+      if (!integracao.escopos.includes('tarefas:gerenciar')) throw new HttpErro(403, 'Esta integração não tem o escopo tarefas:gerenciar.');
+      const ws = await workspaceDaIntegracao();
+      const projeto = await projetoDosAgentes(ws.id);
+      if (acao === 'tarefas_listar') {
+        const r = await db.from('projeto_atividades').select('id,titulo,descricao,status,prazo,agente_id,hermes_tarefa_id,hermes_resumo,criado_em,atualizado_em,concluida_em')
+          .eq('workspace_id', ws.id).eq('projeto_id', projeto.id).order('criado_em', { ascending: false }).limit(500);
+        if (r.error) erroDb(r.error);
+        return json({ ok: true, workspace: { id: ws.id, nome: ws.nome }, projeto, tarefas: r.data || [] });
+      }
+      const hermesId = texto(body.hermes_tarefa_id, 80);
+      if (!/^t_[A-Za-z0-9_-]{1,78}$/.test(hermesId)) throw new HttpErro(400, 'Informe hermes_tarefa_id válido (t_...).');
+      if (acao === 'tarefa_criar') {
+        const titulo = texto(body.titulo, 180), agenteId = texto(body.agente_id, 60).toLowerCase();
+        if (!titulo) throw new HttpErro(400, 'Informe o título da tarefa.');
+        if (!/^[a-z][a-z0-9_-]{0,59}$/.test(agenteId)) throw new HttpErro(400, 'Informe agente_id válido.');
+        const existente = await db.from('projeto_atividades').select('id,projeto_id,titulo,descricao,status,prazo,agente_id,hermes_tarefa_id,hermes_resumo').eq('workspace_id', ws.id).eq('hermes_tarefa_id', hermesId).maybeSingle();
+        if (existente.error) erroDb(existente.error);
+        if (existente.data) {
+          if (existente.data.projeto_id !== projeto.id || existente.data.titulo !== titulo || existente.data.agente_id !== agenteId) throw new HttpErro(409, 'ID do Hermes já vinculado a outra tarefa.');
+          return json({ ok: true, replay: true, projeto, tarefa: existente.data });
+        }
+        const ordemR = await db.from('projeto_atividades').select('ordem').eq('projeto_id', projeto.id).order('ordem', { ascending: false }).limit(1);
+        if (ordemR.error) erroDb(ordemR.error);
+        const criado = await db.from('projeto_atividades').insert({ workspace_id: ws.id, projeto_id: projeto.id, titulo, descricao: texto(body.descricao, 5000) || null,
+          agente_id: agenteId, hermes_tarefa_id: hermesId, prazo: dataIso(body.prazo, 'prazo'), ordem: Number(ordemR.data?.[0]?.ordem || 0) + 1 })
+          .select('id,titulo,descricao,status,prazo,agente_id,hermes_tarefa_id,hermes_resumo').single();
+        if (criado.error) {
+          if (criado.error.code !== '23505') erroDb(criado.error);
+          const repetida = await db.from('projeto_atividades').select('id,projeto_id,titulo,descricao,status,prazo,agente_id,hermes_tarefa_id,hermes_resumo').eq('workspace_id', ws.id).eq('hermes_tarefa_id', hermesId).single();
+          if (repetida.error) erroDb(repetida.error);
+          if (repetida.data.projeto_id !== projeto.id || repetida.data.titulo !== titulo || repetida.data.agente_id !== agenteId) throw new HttpErro(409, 'ID do Hermes já vinculado a outra tarefa.');
+          return json({ ok: true, replay: true, projeto, tarefa: repetida.data });
+        }
+        return json({ ok: true, replay: false, projeto, tarefa: criado.data }, 201);
+      }
+      const novoStatus = texto(body.status, 30);
+      if (!['liberada', 'em_andamento', 'concluida', 'cancelada'].includes(novoStatus)) throw new HttpErro(400, 'Status inválido.');
+      const tarefa = await db.from('projeto_atividades').select('id,status').eq('workspace_id', ws.id).eq('projeto_id', projeto.id).eq('hermes_tarefa_id', hermesId).maybeSingle();
+      if (tarefa.error) erroDb(tarefa.error);
+      if (!tarefa.data) throw new HttpErro(404, 'Tarefa do Hermes não encontrada nesta pipeline.');
+      const resumo = texto(body.resumo, 5000);
+      if (tarefa.data.status === novoStatus && !resumo) return json({ ok: true, replay: true, tarefa: tarefa.data });
+      const atualizado = await db.from('projeto_atividades').update({ status: novoStatus, ...(resumo ? { hermes_resumo: resumo } : {}) }).eq('id', tarefa.data.id).eq('workspace_id', ws.id)
+        .select('id,titulo,status,agente_id,hermes_tarefa_id,hermes_resumo,atualizado_em,concluida_em').single();
+      if (atualizado.error) erroDb(atualizado.error);
+      return json({ ok: true, replay: false, tarefa: atualizado.data });
+    }
     if (acao === 'clientes' || acao === 'contexto') {
       if (!integracao.escopos.includes('growth:consultar')) throw new HttpErro(403, 'Esta integração não tem o escopo growth:consultar.');
       if (acao === 'clientes') {

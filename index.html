@@ -1454,7 +1454,7 @@ const NAV = [
   { g: 'Customer Success', items: [['ho-dash', 'Dashboard'], ['ho-cg', 'Customer Growth'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
   { g: 'Financeiro', items: [['fin-dash', 'Dashboard'], ['fin-receber', 'Contas a receber'], ['fin-pagar', 'Contas a pagar'], ['fin-custo', 'Custos e margens'], ['fin-lanc', 'Lançamentos contábeis']] },
   { g: 'Casa', casa: true, items: [['casa-dash', 'Dashboard'], ['casa-receber', 'Contas a receber'], ['casa-pagar', 'Contas a pagar'], ['casa-custo', 'Custos do mês'], ['casa-lanc', 'Lançamentos contábeis'], ['casa-bancos', 'Contas bancárias e cartões'], ['casa-planocontas', 'Plano de contas'], ['casa-fornecedores', 'Fornecedores'], ['casa-formaspag', 'Formas de pagamento'], ['casa-centros', 'Centros de custo']] },
-  { g: 'Projetos', items: [['prj-lista', 'Projetos'], ['prj-minhas', 'Minhas atividades'], ['prj-atividades', 'Todas as atividades'], ['prj-modelos', 'Modelos de projeto'], ['prj-avisos', 'Avisos']] },
+  { g: 'Projetos', items: [['prj-lista', 'Projetos'], ['prj-agentes', 'Pipeline dos agentes'], ['prj-minhas', 'Minhas atividades'], ['prj-atividades', 'Todas as atividades'], ['prj-modelos', 'Modelos de projeto'], ['prj-avisos', 'Avisos']] },
   { g: 'Growth', items: [['gro-diag', 'Diagnóstico Growth'], ['gro-modelo', 'Growth Model'], ['gro-pesq', 'Pesquisas'], ['gro-ciclo', 'Ciclo de Growth (Kanban)'], ['gro-result', 'Resultados e aprendizados'], ['gro-guard', 'Guardrails']] },
   { g: 'Configurações', adm: true, items: [], subs: [
     { g: 'Dados e integrações', mod: 'cfg', items: [['cfg-importar', 'Importar e validar dados'], ['cfg-integracoes', 'Integrações'], ['cfg-uso', 'Uso da plataforma'], ['cfg-qualidade', 'Qualidade dos dados'], ['cfg-metricas', 'Dicionário de métricas']] },
@@ -1792,6 +1792,7 @@ const ICO = {
   'fin-dash': P('<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>'),
   Projetos: P('<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 13l2 2 4-4"/>'),
   'prj-lista': P('<path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/>'),
+  'prj-agentes': P('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 9v12M15 9v12"/>'),
   'prj-minhas': P('<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12l3 3 5-6"/>'),
   'prj-modelos': P('<rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>'),
   'prj-avisos': P('<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.300 21a1.900 1.900 0 0 0 3.400 0"/>'),
@@ -1897,7 +1898,7 @@ const ncModalV140 = () => { modal('Novo cliente', `<label>Nome do cliente<input 
 $('#wsSel').onchange = e => { S.ws = S.wsBase = e.target.value; S.estSel = null; S.cvSel = null; S.cvView = null; if (ehCasaV(S.view)) S.view = 'fin-dash'; S.perm = null; S.permWs = null; render(); };
 
 const VIEWS = {
-  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'ho-cg': vCustomerGrowth, 'cockpit': vCockpit, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': vConteudo, 'cfg-estruturas': vEstruturas, 'cfg-pastas': vPastasMathisa, 'cfg-custos': vCustos, 'crm-dms': vDMsCrm,
+  'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'ho-cg': vCustomerGrowth, 'cockpit': vCockpit, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-agentes': vPipelineAgentes, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': vConteudo, 'cfg-estruturas': vEstruturas, 'cfg-pastas': vPastasMathisa, 'cfg-custos': vCustos, 'crm-dms': vDMsCrm,
   'crm-leads': vCrmLeads, 'crm-oport': vCrmOport, 'crm-vendas': vVendas, 'crm-contratos': vContratos, 'crm-comissoes': vComissoes, 'cad-comissoes': vComissoes, 'crm-alunos': vCrmAlunos,
   'fin-receber': vReceber,  'cfg-uso': vUso, 'fin-pagar': vPagar, 'fin-custo': vCustoOp, 'fin-lanc': vLanc, 'adm-painel': vPainel, 'adm-plano': vPlano,
   'cad-clientes': vClientes, 'cad-plataformas': vPlataformas, 'cad-funis': vFunis, 'mkt-estrategias': vFunis, 'cad-regras': vRegras,
@@ -7821,12 +7822,12 @@ function frankWorkspacesChecks(ws, escolhidos = []) {
   const disponiveis = (ws || []).filter(x => x.agencia ? !x.inativo_em : !x.inativo_em && !x.casa_de);
   return disponiveis.map(x => `<label style="display:flex;align-items:center;gap:8px;padding:7px 9px;border:1px solid var(--line);border-radius:8px"><input type="checkbox" name="frankWs" value="${esc(x.id)}"${ids.has(x.id) ? ' checked' : ''}><span>${esc(x.nome)}${x.agencia ? ' · Mathisa' : ''}</span></label>`).join('') || '<span class="muted">Nenhum workspace disponível.</span>';
 }
-const frankEscoposHtml = escopos => `<div class="grid2"><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fgScopeRead"${escopos.includes('growth:consultar') ? ' checked' : ''}> Consultar dados, estratégias e equipe</label><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fgScopeCreate"${escopos.includes('campanha:criar') ? ' checked' : ''}> Criar campanhas e distribuir tarefas</label></div>`;
+const frankEscoposHtml = escopos => `<div class="grid2"><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fgScopeRead"${escopos.includes('growth:consultar') ? ' checked' : ''}> Consultar dados, estratégias e equipe</label><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fgScopeCreate"${escopos.includes('campanha:criar') ? ' checked' : ''}> Criar campanhas e distribuir tarefas</label><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fgScopeTasks"${escopos.includes('tarefas:gerenciar') ? ' checked' : ''}> Gerenciar tarefas na pipeline dos agentes</label></div>`;
 function frankGestaoHtml(FG) {
   if (FG?.erro) return `<div class="panel"><h2>Agentes externos</h2><p class="muted">Usuários de integração do Frank e outros agentes, com acesso limitado por cliente.</p><div class="pill warn">${esc(FG.erro)}</div></div>`;
   const lista = FG?.integracoes || [];
   return `<div class="panel"><div class="head" style="margin:0 0 8px"><div><h2 style="margin:0">Agentes externos · Frank</h2><span class="muted">Cada agente tem uma identidade própria e só acessa os workspaces liberados aqui. O token aparece apenas na criação ou rotação.</span></div><button type="button" class="btn pri sm" id="frankNovo">Criar usuário de sistema</button></div>
-    ${lista.length ? `<div class="adgrid">${lista.map(x => `<article class="ad" style="padding:14px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px"><b>${esc(x.nome)}</b><span class="pill ${x.ativo ? 'good' : 'neutral'}">${x.ativo ? 'Ativo' : 'Revogado'}</span></div><small class="muted">Token: <code>${esc(x.token_prefix)}</code> · Criado ${dtt(x.criado_em)}${x.ultimo_uso_em ? ' · Usado ' + dtt(x.ultimo_uso_em) : ' · Ainda não usado'}</small><small>Permissões: ${esc((x.escopos || []).map(s => s === 'growth:consultar' ? 'consultar Growth' : 'criar campanhas').join(' · ') || 'nenhuma')}</small><small>Workspaces: ${esc((x.workspaces || []).map(w => w.nome + (w.inativo ? ' (inativo)' : '')).join(', ') || 'nenhum liberado')}</small><div class="acts"><button type="button" class="btn sm" data-frank-edit="${esc(x.id)}">Editar</button><button type="button" class="btn sm" data-frank-access="${esc(x.id)}">Acessos</button><button type="button" class="btn sm" data-frank-rotate="${esc(x.id)}">Rotacionar token</button>${x.ativo ? `<button type="button" class="btn sm" data-frank-revoke="${esc(x.id)}">Revogar</button>` : ''}</div></article>`).join('')}</div>` : '<div class="empty">Nenhum usuário de integração criado.</div>'}</div>`;
+    ${lista.length ? `<div class="adgrid">${lista.map(x => `<article class="ad" style="padding:14px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px"><b>${esc(x.nome)}</b><span class="pill ${x.ativo ? 'good' : 'neutral'}">${x.ativo ? 'Ativo' : 'Revogado'}</span></div><small class="muted">Token: <code>${esc(x.token_prefix)}</code> · Criado ${dtt(x.criado_em)}${x.ultimo_uso_em ? ' · Usado ' + dtt(x.ultimo_uso_em) : ' · Ainda não usado'}</small><small>Permissões: ${esc((x.escopos || []).map(s => s === 'growth:consultar' ? 'consultar Growth' : s === 'tarefas:gerenciar' ? 'gerenciar tarefas' : 'criar campanhas').join(' · ') || 'nenhuma')}</small><small>Workspaces: ${esc((x.workspaces || []).map(w => w.nome + (w.inativo ? ' (inativo)' : '')).join(', ') || 'nenhum liberado')}</small><div class="acts"><button type="button" class="btn sm" data-frank-edit="${esc(x.id)}">Editar</button><button type="button" class="btn sm" data-frank-access="${esc(x.id)}">Acessos</button><button type="button" class="btn sm" data-frank-rotate="${esc(x.id)}">Rotacionar token</button>${x.ativo ? `<button type="button" class="btn sm" data-frank-revoke="${esc(x.id)}">Revogar</button>` : ''}</div></article>`).join('')}</div>` : '<div class="empty">Nenhum usuário de integração criado.</div>'}</div>`;
 }
 function frankGestaoLiga(root, FG, agenciaWorkspaceId) {
   const chama = dados => frankAdminChama({ agencia_workspace_id: agenciaWorkspaceId, ...dados });
@@ -7835,7 +7836,7 @@ function frankGestaoLiga(root, FG, agenciaWorkspaceId) {
   const workspaceChecks = escolhidos => frankWorkspacesChecks(FG?.workspace_options || S.workspaces || [], escolhidos);
   root.querySelector('#frankNovo')?.addEventListener('click', () => {
     const f = modal('Criar usuário de sistema', `<p class="muted">Crie uma identidade para o Frank ou outro agente. Selecione somente os clientes que ele precisa acessar.</p><label>Nome do agente<input name="nome" required maxlength="100" placeholder="Frank · Gerencial Mathisa"></label><div style="margin:12px 0"><b>Workspaces liberados</b><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px;margin-top:7px;max-height:230px;overflow:auto">${workspaceChecks([])}</div></div>${frankEscoposHtml(['growth:consultar','campanha:criar'])}<p class="muted">A permissão de criar campanha também cria o projeto e as tarefas do modelo selecionado.</p>`, async (d, form) => {
-      const escopos = []; if (form.querySelector('#fgScopeRead').checked) escopos.push('growth:consultar'); if (form.querySelector('#fgScopeCreate').checked) escopos.push('campanha:criar');
+      const escopos = []; if (form.querySelector('#fgScopeRead').checked) escopos.push('growth:consultar'); if (form.querySelector('#fgScopeCreate').checked) escopos.push('campanha:criar'); if (form.querySelector('#fgScopeTasks').checked) escopos.push('tarefas:gerenciar');
       const workspace_ids = [...form.querySelectorAll('[name=frankWs]:checked')].map(x => x.value);
       const r = await chama({ acao: 'integracao_criar', nome: d.nome, escopos, workspace_ids });
       toast('Usuário de sistema criado. Copie o token para a VPS.'); mostrarToken(r, 'Token novo · copie e guarde');
@@ -7844,7 +7845,7 @@ function frankGestaoLiga(root, FG, agenciaWorkspaceId) {
   root.querySelectorAll('[data-frank-edit]').forEach(b => b.onclick = () => {
     const x = integracoes.find(i => i.id === b.dataset.frankEdit); if (!x) return;
     const f = modal('Editar integração · ' + x.nome, `<label>Nome do agente<input name="nome" required maxlength="100" value="${esc(x.nome)}"></label>${frankEscoposHtml(x.escopos || [])}<p class="muted">O token atual permanece válido. Use “Rotacionar token” para invalidá-lo.</p>`, async (d, form) => {
-      const escopos = []; if (form.querySelector('#fgScopeRead').checked) escopos.push('growth:consultar'); if (form.querySelector('#fgScopeCreate').checked) escopos.push('campanha:criar');
+      const escopos = []; if (form.querySelector('#fgScopeRead').checked) escopos.push('growth:consultar'); if (form.querySelector('#fgScopeCreate').checked) escopos.push('campanha:criar'); if (form.querySelector('#fgScopeTasks').checked) escopos.push('tarefas:gerenciar');
       await chama({ acao: 'integracao_atualizar', integracao_id: x.id, nome: d.nome, escopos }); toast('Integração atualizada.');
     }, 'Salvar', true);
   });
@@ -16960,6 +16961,21 @@ const checkDeps = (outras, sel) => outras.length ? `<fieldset style="grid-column
 const lerDeps = f => [...f.querySelectorAll('input[name=dep]:checked')].map(x => x.value);
 
 /* ---------- Projetos: lista ---------- */
+async function vPipelineAgentes(m) {
+  const buscar = () => q(sb.from('projetos').select('id').eq('workspace_id', S.ws).eq('pipeline_agentes', true).limit(1));
+  let projetos = await buscar();
+  if (!projetos.length) {
+    try {
+      projetos = [await q(sb.from('projetos').insert({ workspace_id: S.ws, nome: 'Pipeline dos agentes', descricao: 'Tarefas criadas e acompanhadas pelo Frank e pelo time de agentes.', pipeline_agentes: true }).select('id').single())];
+    } catch (e) {
+      projetos = await buscar();
+      if (!projetos.length) throw e;
+    }
+  }
+  if (S.projSel !== projetos[0].id) S.ptab = 'quadro';
+  S.projSel = projetos[0].id;
+  return vProjetoDet(m);
+}
 async function vProjetos(m) {
   if (S.projSel) return vProjetoDet(m);
   S.pessoasP = null;
@@ -17043,7 +17059,7 @@ async function modalProjeto(row, mods, eq) {
     else { const r = await q(sb.from('projetos').insert({ ...v, workspace_id: S.ws }).select('id').single()); S.projSel = r.id; if (campNova) await vincularCampanha(r.id, campNova); }
     toast(row ? 'Projeto salvo' : 'Projeto criado');
   });
-  if (row) botaoExcluir(f, 'projetos', row.id, 'Projeto excluído');
+  if (row && !row.pipeline_agentes) botaoExcluir(f, 'projetos', row.id, 'Projeto excluído');
   if (!row) f.querySelector('#pjDeCamp').onchange = e => { f.querySelector('#pjCamp').style.display = e.target.checked ? '' : 'none'; };
 }
 
@@ -17079,11 +17095,11 @@ async function vProjetoDet(m) {
     const falta = a.status === 'bloqueada' ? (a.depende_de || []).map(d => at.find(x => x.id === d)).filter(x => x && ABERTA.includes(x.status)) : [];
     return `<tr${folha ? '' : ' style="background:var(--bg)"'}><td style="padding-left:${8 + n * 22}px">${n ? '↳ ' : ''}<b>${esc(a.titulo)}</b>${tagsHtml(a.tags)}${a.descricao ? `<br><small class="muted">${esc(a.descricao)}</small>` : ''}${falta.length ? `<br><small class="muted">Aguarda: ${falta.map(x => esc(x.titulo)).join('; ')}</small>` : ''}</td>
     <td>${pillAt(a.status)}${atrasada(a, h) ? ' <span class="pill bad">atrasada</span>' : ''}</td>
-    <td>${folha ? (r ? esc(r.nome) + (a.funcao ? `<br><small class="muted">${esc(a.funcao)}</small>` : '') : `<span class="muted">${esc(a.funcao || 'sem responsável')}</span>`) : `<span class="muted">${feitos} de ${fil.length} subatividades</span>`}</td>
+    <td>${folha ? (r ? esc(r.nome) + (a.funcao ? `<br><small class="muted">${esc(a.funcao)}</small>` : '') : `<span class="muted">${esc(a.agente_id ? 'Agente: ' + a.agente_id : (a.funcao || 'sem responsável'))}</span>`) : `<span class="muted">${feitos} de ${fil.length} subatividades</span>`}</td>
     <td>${dd(a.prazo)}</td><td style="white-space:normal">${botoes(a)}</td></tr>`;
   };
   const COLS = [['bloqueada', 'Bloqueadas'], ['liberada', 'Liberadas'], ['em_andamento', 'Em andamento'], ['concluida', 'Concluídas']];
-  const card = a => { const r = quemFaz(a, eq); return `<div class="card" draggable="${a.status === 'bloqueada' ? 'false' : 'true'}" data-id="${a.id}"><b>${esc(a.titulo)}</b>${a.pai_id ? `<small>${esc(tit[a.pai_id] || '')}</small>` : ''}<small>${r ? esc(r.nome) : esc(a.funcao || 'sem responsável')}${a.prazo ? ' · ' + dd(a.prazo) : ''}${atrasada(a, h) ? ' · <b style="color:var(--bad)">atrasada</b>' : ''}</small><div class="ca"><button class="btn sm" data-ed="${a.id}">Abrir</button>${a.status === 'bloqueada' ? '' : `<select class="mv" data-mv="${a.id}" aria-label="Mover para"><option value="">Mover para…</option>${COLS.filter(c => c[0] !== a.status && c[0] !== 'bloqueada').map(c => `<option value="${c[0]}">${c[1]}</option>`).join('')}</select>`}</div></div>`; };
+  const card = a => { const r = quemFaz(a, eq); return `<div class="card" draggable="${a.status === 'bloqueada' ? 'false' : 'true'}" data-id="${a.id}"><b>${esc(a.titulo)}</b>${a.pai_id ? `<small>${esc(tit[a.pai_id] || '')}</small>` : ''}<small>${r ? esc(r.nome) : esc(a.agente_id ? 'Agente: ' + a.agente_id : (a.funcao || 'sem responsável'))}${a.prazo ? ' · ' + dd(a.prazo) : ''}${atrasada(a, h) ? ' · <b style="color:var(--bad)">atrasada</b>' : ''}</small>${a.hermes_tarefa_id ? `<small class="muted">Hermes: ${esc(a.hermes_tarefa_id)}</small>` : ''}${a.hermes_resumo ? `<small class="muted">${esc(String(a.hermes_resumo).slice(0, 180))}</small>` : ''}<div class="ca"><button class="btn sm" data-ed="${a.id}">Abrir</button>${a.status === 'bloqueada' ? '' : `<select class="mv" data-mv="${a.id}" aria-label="Mover para"><option value="">Mover para…</option>${COLS.filter(c => c[0] !== a.status && c[0] !== 'bloqueada').map(c => `<option value="${c[0]}">${c[1]}</option>`).join('')}</select>`}</div></div>`; };
   m.innerHTML = `<div class="head"><div><button class="btn sm" id="pVolta">← Projetos</button><h1 style="margin-top:8px">${esc(p.nome)} ${pillProj(p.status)}</h1><span class="muted">${camNome ? 'Campanha ' + esc(camNome) + ' · ' : ''}${p.pessoa_id ? 'Cliente: <a href="#" data-cli="' + p.pessoa_id + '">' + esc(cliNome || 'abrir ficha') + '</a> · ' : ''}${dd(p.data_inicio)} a ${dd(p.data_fim_prevista)}${p.responsavel_id && E[p.responsavel_id] ? ' · responsável ' + esc(E[p.responsavel_id].nome) : ''}${p.descricao ? '<br>' + esc(p.descricao) : ''}</span></div>
     <div class="acts">${p.campanha_id ? '<button class="btn" id="pLinks">Links e tracking</button><button class="btn" id="pBlocos" title="Cria uma atividade para cada bloco da estratégia da campanha que ainda não tem">Atividades dos blocos</button>' : ''}<button class="btn" id="pCamp90">${p.campanha_id ? 'Trocar campanha' : 'Vincular campanha'}</button><button class="btn" id="pModelo90">Salvar como modelo</button><button class="btn" id="pEd">Editar projeto</button><button class="btn pri" id="pNovaA">Nova atividade</button></div></div>
   <div class="kpis">${kpi('Progresso', folhas.length ? pct(ok, folhas.length) + '%' : '—', ok + ' de ' + folhas.length + ' atividades')}${kpi('Liberadas', num(folhas.filter(a => a.status === 'liberada').length), 'prontas para começar')}${kpi('Em andamento', num(folhas.filter(a => a.status === 'em_andamento').length), '')}${kpi('Atrasadas', num(folhas.filter(a => atrasada(a, h)).length), 'passaram do prazo')}</div>
@@ -17092,7 +17108,7 @@ async function vProjetoDet(m) {
   ${at.length ? filtroAtvHtml(FP90, eq, [...new Set(at.flatMap(a => a.tags || []))].sort(), false) : ''}<div class="tabs"><button data-t="lista" class="${PT === 'lista' ? 'on' : ''}">Lista</button><button data-t="quadro" class="${PT === 'quadro' ? 'on' : ''}">Quadro</button></div>
   ${PT === 'lista' ? `<div class="panel"><div class="tw"><table><thead><tr><th>Atividade</th><th>Situação</th><th>Responsável</th><th>Prazo</th><th></th></tr></thead><tbody>${T.lista.filter(([a]) => atvPassa(a, FP90, h) || (T.filhos[a.id] || []).some(x => atvPassa(x, FP90, h))).map(linha).join('') || '<tr><td colspan="5" class="empty">Sem atividades.</td></tr>'}</tbody></table></div></div>`
     : `<div class="board" style="grid-auto-columns:minmax(240px,1fr)">${COLS.map(([k, n]) => { const L = folhas.filter(a => a.status === k).sort(porOrdem); return `<div class="colk" data-col="${k}"><h3><span>${n}</span><span class="mono">${L.length}</span></h3>${L.map(card).join('') || '<small class="muted">Vazio</small>'}</div>`; }).join('')}</div>`}`;
-  $('#pVolta').onclick = () => { S.projSel = null; render(); };
+  $('#pVolta').onclick = () => { S.projSel = null; S.view = 'prj-lista'; render(); };
   ligaFiltroAtv(m, FP90);
   $('#pCamp90').onclick = () => modalCampanhaDoProjeto(p); $('#pModelo90').onclick = () => modalSalvarModelo(p);
   projetoPainel($('#pPainel'), id);
@@ -17117,6 +17133,7 @@ function modalAtividade(row, p, at, eq, pre) {
   const st = row ? (row.status === 'bloqueada' ? ['bloqueada', 'cancelada'] : row.status === 'cancelada' ? ['cancelada', 'bloqueada'] : ['liberada', 'em_andamento', 'concluida', 'cancelada']) : [];
   const campos = [{ k: 'titulo', l: 'Atividade', req: 1, full: 1 }, { k: 'descricao', l: 'Detalhes', t: 'textarea' },
     { k: 'pai_id', l: 'Dentro da atividade principal', t: 'select', opts: filhos.length ? [] : sel(mains, 'id', 'titulo'), hint: filhos.length ? 'Esta atividade tem subatividades, então é principal.' : 'Vazio = atividade principal.' },
+    ...(p.pipeline_agentes ? [{ k: 'agente_id', l: 'Agente responsável', ph: 'frank, camila, bia...', hint: 'Identificador do perfil no Hermes.' }] : []),
     { k: 'funcao', l: 'Função', ph: 'Designer', hint: 'Sem responsável escolhido, vale a primeira pessoa ativa da equipe com esta função.' },
     { k: 'responsavel_id', l: 'Responsável', t: 'select', opts: sel(eq.filter(e => e.ativo || (row && row.responsavel_id === e.id)), 'id', e => e.nome + (e.funcao ? ' · ' + e.funcao : '')) },
     ...(_colCache['projeto_atividades.tags'] ? [{ k: 'tags_txt', l: 'Tags', ph: 'urgente, site', def: ((row && row.tags) || []).join(', ') }] : []), { k: 'prazo', l: 'Prazo', t: 'date' }, { k: 'ordem', l: 'Ordem', t: 'number', def: Math.max(0, ...at.map(a => a.ordem || 0)) + 10 },
