@@ -1,3 +1,6 @@
+## Tipo de campanha (v0.288)
+Motor: 67 de 67. Os cinco tipos testados no navegador (aquisição com evento, venda direta e comercial; rentabilização com recompra; captação de leads com evento): copiar para os cenários, Growth Model e status sem erro; rótulos do funil trocados; custo por venda na recompra (R$ 169 = mídia ÷ vendas no exemplo); meta de leads na captação. Dados reais do workspace Demo: sem erro; 390 px sem rolagem lateral. `index.html`: sintaxe conferida.
+
 ## Planejamento de campanha avançado (v0.287)
 Motor: `node testes.js` em `docs/planejamento-campanha-avancado/`: 67 de 67 (fórmulas, limites e bordas, 15 casos da especificação, recursos, histórico por canal e ofertas, plano por canal e cenários, versão aprovada). Módulo com os dados do workspace Growths — Demo (leitura do banco de produção, sem gravar): 14 passos sem erro, rascunho gravado pelo Growths (simulado), largura de 390 px sem rolagem lateral. `index.html`: sintaxe conferida. Não rodou com o banco local completo (PostgREST fora do ar nesta sessão).
 

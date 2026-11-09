@@ -48,3 +48,8 @@ tr.sel td { background: var(--accent-soft) } .radio { display: inline-flex; gap:
 .statusc { margin-bottom: 14px } .chk { list-style: none; padding: 0; margin: 8px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 6px 16px; font-size: 13.5px } .chk li span[aria-hidden] { display: inline-block; width: 16px; font-weight: 700 } .chk li.ok span[aria-hidden] { color: var(--ok) } .chk li.no { color: var(--muted) } .chk .d { margin-left: 20px; color: var(--muted) }
 .c-ok { color: var(--ok); font-weight: 600 } .c-bad { color: var(--bad); font-weight: 600 } .c-meta { color: var(--accent); font-weight: 600 }
 table.gmc td input[type=number] { width: 80px }
+
+.rot { font-weight: 600; margin: 12px 0 6px } .tipos { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px }
+.tipo { text-align: left; font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 4px }
+.tipo b { font-size: 14px } .tipo span { font-size: 12.5px; color: var(--muted) } .tipo:hover { border-color: var(--accent) } .tipo.on { border: 2px solid var(--accent); background: var(--accent-soft) }
+.sep { border: 0; border-top: 1px solid var(--line); margin: 16px 0 }

@@ -1,3 +1,6 @@
+## v0.288
+**Tipo de campanha no Planejamento avançado.** O passo 1 começa com dois cartões: o objetivo (captação de leads, aquisição de novos clientes, rentabilização da base, expansão de mercado) e o modelo de conversão (evento, venda direta, comercial, recompra). O funil e o cálculo seguem o que for escolhido.
+
 ## v0.287
 **Planejamento de campanha avançado.** Tela nova em Marketing: da estratégia ao Growth Model da campanha, com o histórico do produto, a margem, os limites de investimento, a escolha do CAC, os cenários e a divisão por canal. Lê os dados do cliente e salva como rascunho. O planejamento atual de Campanhas continua igual.
 

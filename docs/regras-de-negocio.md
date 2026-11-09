@@ -1,3 +1,9 @@
+## v0.288
+- **Tipo de campanha:** objetivo e modelo são escolhas separadas, sugeridas pelo tipo da estratégia (lançamento, webinário e captação → evento; perpétuo → venda direta; comercial → comercial; recompra, assinatura e disparo → recompra) e confirmadas por um clique.
+- **Modelo:** muda as etapas e as taxas do funil. Fora do evento não existe "ausentes": a conversão é recalculada para manter as vendas por lead do histórico.
+- **Objetivo:** captação de leads → meta em leads e verba = CPL × leads pagos que faltam depois do orgânico e da API. Rentabilização da base ou modelo de recompra → toda venda conta, e o limite é o custo por venda (mídia ÷ vendas) no lugar do CAC. Expansão de mercado → aviso de que o histórico é de outro mercado.
+- Mudar o tipo depois de copiar para os cenários pede para copiar de novo.
+
 ## v0.287
 - **Planejamento de campanha avançado:** o orçamento sai do resultado que o negócio precisa; CAC e CPL derivam dele. O autorizado é o menor entre econômico, caixa, capacidade e orçamento do ano; limite sem dado informado não limita e aparece como "não informado".
 - **Histórico comparável:** campanhas do mesmo produto, com leads ou mídia; por padrão só da mesma estratégia (com menos de 2, usa todas do produto). CPL = mídia ÷ leads pagos (Meta, Google, TikTok); sem anúncios ligados, mídia ÷ todos os leads. Taxas são ponderadas.

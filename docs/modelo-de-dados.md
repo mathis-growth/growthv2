@@ -1,3 +1,6 @@
+## v0.288
+Sem mudança no banco. O tipo (objetivo e modelo) fica no rascunho, em `campanha_calculos.premissas.p.tipo`.
+
 ## v0.287
 Sem mudança no banco. O Planejamento de campanha avançado lê `produtos`, `funis`, `estrategia_etapas`, `campanhas`, `v_marketing_campanha`, `v_trafego_anuncio_dia`, `campanha_etapas` + `campanha_etapa_valores` (etapas com "presentes"), `vendas` e `campanha_ofertas`, e grava em `campanha_calculos` com `premissas.modulo = 'planav'` (premissas, decisão, cenários e versões aprovadas). A calculadora antiga deixa de listar essas linhas.
 

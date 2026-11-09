@@ -17,6 +17,7 @@ const P = () => { const q = JSON.parse(JSON.stringify(ST.p)); if (ST.semMargem) 
     q.verbaPlanejada = b.verba; q.metaVendas = q.plan.meta; f.verbaRef = b.verba; f.cpm = cplMix * f.ctr / 100 * f.cliqueVisita / 100 * f.convPagina / 100 * 1000;
     f.comparecimento = b.comparecimento; f.convPresentes = b.convPresentes; f.convAusentes = b.convAusentes; f.pctNovos = b.pctNovos;
     q.canais = q.canais.map(x => x.tipo === 'org' ? { ...x, leads: ch.org.leads } : x.tipo === 'api' ? { ...x, leads: ch.api.leads } : x); }
+  if (q.tipo && (q.tipo.modelo === 'recompra' || q.tipo.objetivo === 'rentabilizacao')) { q.historico = q.historico.map(c => ({ ...c, novos: c.vendas, canais: c.canais && Object.fromEntries(Object.entries(c.canais).map(([k, x]) => [k, { ...x, novos: x.leads ? x.novos : x.novos }])) })); q.funil.pctNovos = 100; } // na base, toda venda conta: custo por venda no lugar de CAC
   return q; };
 const ORIG = { real_conc: ['ok', 'Real conciliado'], real_nconc: ['warn', 'Real não conciliado'], usuario: ['meta', 'Informado'], historico: ['hist', 'Histórico'], premissa: ['prem', 'Premissa'] };
 const tag = o => o ? `<span class="tag ${ORIG[o][0]}">${ORIG[o][1]}</span>` : '<span class="tag bad">Falta</span>';
@@ -253,8 +254,9 @@ document.addEventListener('click', e => { const b = e.target.closest('button'); 
   else if (b.dataset.rast) ST.rastro = b.dataset.rast;
   else if (b.hasAttribute('data-fecharrastro')) ST.rastro = null;
   else if (b.dataset.addrec) { const t = b.dataset.addrec; ST.p.recursos.push(t === 'var_venda' ? { nome: 'Comissão por venda', tipo: t, unidade: 'pct', valor: 10 } : t === 'var_lead' ? { nome: 'Custo por lead', tipo: t, valor: 1 } : { nome: 'Novo custo fixo', tipo: t, valor: 1000 }); }
-  else if (b.dataset.copiar) { const pl = planoDe(ST.p), H = BC.historico(ST.p.historico), v = BC.verbaPeloCac(pl.cac, pl.meta, H.pctNovos * 100), S = BC.cenariosDoHistorico(ST.p.historico, v, pl.meta, apiCusto(ST.p), ST.p.funil.elasticidade);
+  else if (b.dataset.copiar) { const pl = planoDe(ST.p), H = BC.historico(ST.p.historico), v = verbaEscolhida(ST.p, pl), S = BC.cenariosDoHistorico(ST.p.historico, v, pl.meta, apiCusto(ST.p), ST.p.funil.elasticidade);
     const r2 = x => Math.round(x * 100) / 100; Object.values(S).forEach(c => { c.verba = Math.round(c.verba); c.comparecimento = r2(c.comparecimento); c.convPresentes = r2(c.convPresentes); c.convAusentes = r2(c.convAusentes); c.pctNovos = Math.round(c.pctNovos); c.canais.meta.pct = Math.round(c.canais.meta.pct); c.canais.google.pct = 100 - c.canais.meta.pct; c.canais.meta.cpl = r2(c.canais.meta.cpl); c.canais.google.cpl = r2(c.canais.google.cpl); c.canais.org.leads = Math.round(c.canais.org.leads); c.canais.api.leads = Math.round(c.canais.api.leads); });
+    ajustaTipo(S, ST.p); pl.avisoTipo = false;
     if (b.dataset.copiar === 'base' && pl.cens) pl.cens.base = S.base; else pl.cens = S; }
   else if (b.dataset.ativo) planoDe(ST.p).ativo = b.dataset.ativo;
   else if (b.dataset.rdel) ST.p.recursos.splice(Number(b.dataset.rdel), 1);

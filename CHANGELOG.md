@@ -1,3 +1,8 @@
+## v0.288 — Tipo de campanha no Planejamento avançado (08/11/2026)
+- Passo 1 com dois grupos de cartões: **objetivo** (captação de leads, aquisição de novos clientes, rentabilização da base, expansão de mercado) e **modelo de conversão** (Captação → Evento → Venda, Anúncio → Página → Checkout, Captação → Qualificação → Comercial → Venda, Base de clientes → Oferta → Recompra). Vem sugerido pelo tipo da estratégia.
+- O modelo troca as etapas e as taxas do funil (passos 9, 10 e 13). O objetivo troca a meta: leads e CPL na captação; custo por venda na base; aviso de histórico de outro mercado na expansão.
+- Sem mudança no banco.
+
 ## v0.287 — Planejamento de campanha avançado (08/11/2026)
 - **Tela nova em Marketing → Planejamento de campanha avançado**, com 14 passos: estratégia, produto e oferta, histórico do produto, informações financeiras, margem, recursos, orçamento máximo, CAC e CPL, escolher e copiar para os cenários, distribuir por canal, Business Case, status e aprovação, Growth Model da campanha e cockpit.
 - **Dados reais:** histórico das campanhas do produto (mídia, leads, vendas, CPL, CAC, ticket; por canal quando os anúncios estão ligados; bump e upsell pelas vendas), impostos, taxa e reembolso das vendas do produto, etapas da estratégia.

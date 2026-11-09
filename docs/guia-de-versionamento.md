@@ -1,3 +1,7 @@
+## v0.288
+- `aplica288.py` sobre a v0.287: troca a constante `PLANAV_HTML` pelo módulo novo (gerado por `build.py`, agora com `app_tipo.js`).
+- Sem migração.
+
 ## v0.287
 - `aplica287.py` sobre a v0.286: item `mkt-planav` no menu de Marketing e ícone; `PLANAV_HTML` (o módulo inteiro, gerado por `build.py`), `planavDados` (leitura) e `vPlanav` (iframe + mensagens `planav-salvar`, `planav-altura`, `planav-topo`); filtro na calculadora antiga.
 - Fonte do módulo em `docs/planejamento-campanha-avancado/` (motor, telas, testes). Mudou o módulo: rodar `python3 build.py` e reaplicar.

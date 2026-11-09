@@ -1,3 +1,6 @@
+## v0.288
+Sem mudança no banco. Só publicar o `index.html`.
+
 ## v0.287
 Sem mudança no banco. Só publicar o `index.html`.
 

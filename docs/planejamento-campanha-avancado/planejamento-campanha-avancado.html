@@ -124,6 +124,11 @@ tr.sel td { background: var(--accent-soft) } .radio { display: inline-flex; gap:
 .statusc { margin-bottom: 14px } .chk { list-style: none; padding: 0; margin: 8px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 6px 16px; font-size: 13.5px } .chk li span[aria-hidden] { display: inline-block; width: 16px; font-weight: 700 } .chk li.ok span[aria-hidden] { color: var(--ok) } .chk li.no { color: var(--muted) } .chk .d { margin-left: 20px; color: var(--muted) }
 .c-ok { color: var(--ok); font-weight: 600 } .c-bad { color: var(--bad); font-weight: 600 } .c-meta { color: var(--accent); font-weight: 600 }
 table.gmc td input[type=number] { width: 80px }
+
+.rot { font-weight: 600; margin: 12px 0 6px } .tipos { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px }
+.tipo { text-align: left; font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 4px }
+.tipo b { font-size: 14px } .tipo span { font-size: 12.5px; color: var(--muted) } .tipo:hover { border-color: var(--accent) } .tipo.on { border: 2px solid var(--accent); background: var(--accent-soft) }
+.sep { border: 0; border-top: 1px solid var(--line); margin: 16px 0 }
 </style></head><body><div class="wrap">
 <header style="margin-bottom:14px"><h1>Planejamento de campanha avançado <span class="exemplo">dados fictícios</span></h1>
 <p class="muted">Módulo em protótipo (fase 1): da estratégia ao cockpit, com o Business Case no meio. Primeiro caso: Captação → Evento → Venda. Roda só no seu navegador, com o motor isolado e dados de exemplo. Nada é gravado no Growths. <button type="button" class="btn" data-zera style="margin-left:6px">Recomeçar o exemplo</button></p></header>
@@ -584,6 +589,7 @@ const P = () => { const q = JSON.parse(JSON.stringify(ST.p)); if (ST.semMargem) 
     q.verbaPlanejada = b.verba; q.metaVendas = q.plan.meta; f.verbaRef = b.verba; f.cpm = cplMix * f.ctr / 100 * f.cliqueVisita / 100 * f.convPagina / 100 * 1000;
     f.comparecimento = b.comparecimento; f.convPresentes = b.convPresentes; f.convAusentes = b.convAusentes; f.pctNovos = b.pctNovos;
     q.canais = q.canais.map(x => x.tipo === 'org' ? { ...x, leads: ch.org.leads } : x.tipo === 'api' ? { ...x, leads: ch.api.leads } : x); }
+  if (q.tipo && (q.tipo.modelo === 'recompra' || q.tipo.objetivo === 'rentabilizacao')) { q.historico = q.historico.map(c => ({ ...c, novos: c.vendas, canais: c.canais && Object.fromEntries(Object.entries(c.canais).map(([k, x]) => [k, { ...x, novos: x.leads ? x.novos : x.novos }])) })); q.funil.pctNovos = 100; } // na base, toda venda conta: custo por venda no lugar de CAC
   return q; };
 const ORIG = { real_conc: ['ok', 'Real conciliado'], real_nconc: ['warn', 'Real não conciliado'], usuario: ['meta', 'Informado'], historico: ['hist', 'Histórico'], premissa: ['prem', 'Premissa'] };
 const tag = o => o ? `<span class="tag ${ORIG[o][0]}">${ORIG[o][1]}</span>` : '<span class="tag bad">Falta</span>';
@@ -820,8 +826,9 @@ document.addEventListener('click', e => { const b = e.target.closest('button'); 
   else if (b.dataset.rast) ST.rastro = b.dataset.rast;
   else if (b.hasAttribute('data-fecharrastro')) ST.rastro = null;
   else if (b.dataset.addrec) { const t = b.dataset.addrec; ST.p.recursos.push(t === 'var_venda' ? { nome: 'Comissão por venda', tipo: t, unidade: 'pct', valor: 10 } : t === 'var_lead' ? { nome: 'Custo por lead', tipo: t, valor: 1 } : { nome: 'Novo custo fixo', tipo: t, valor: 1000 }); }
-  else if (b.dataset.copiar) { const pl = planoDe(ST.p), H = BC.historico(ST.p.historico), v = BC.verbaPeloCac(pl.cac, pl.meta, H.pctNovos * 100), S = BC.cenariosDoHistorico(ST.p.historico, v, pl.meta, apiCusto(ST.p), ST.p.funil.elasticidade);
+  else if (b.dataset.copiar) { const pl = planoDe(ST.p), H = BC.historico(ST.p.historico), v = verbaEscolhida(ST.p, pl), S = BC.cenariosDoHistorico(ST.p.historico, v, pl.meta, apiCusto(ST.p), ST.p.funil.elasticidade);
     const r2 = x => Math.round(x * 100) / 100; Object.values(S).forEach(c => { c.verba = Math.round(c.verba); c.comparecimento = r2(c.comparecimento); c.convPresentes = r2(c.convPresentes); c.convAusentes = r2(c.convAusentes); c.pctNovos = Math.round(c.pctNovos); c.canais.meta.pct = Math.round(c.canais.meta.pct); c.canais.google.pct = 100 - c.canais.meta.pct; c.canais.meta.cpl = r2(c.canais.meta.cpl); c.canais.google.cpl = r2(c.canais.google.cpl); c.canais.org.leads = Math.round(c.canais.org.leads); c.canais.api.leads = Math.round(c.canais.api.leads); });
+    ajustaTipo(S, ST.p); pl.avisoTipo = false;
     if (b.dataset.copiar === 'base' && pl.cens) pl.cens.base = S.base; else pl.cens = S; }
   else if (b.dataset.ativo) planoDe(ST.p).ativo = b.dataset.ativo;
   else if (b.dataset.rdel) ST.p.recursos.splice(Number(b.dataset.rdel), 1);
@@ -876,7 +883,7 @@ function passoDecidir(p, L) {
   const ops = [['historico', 'Histórico do produto', Math.round(H.cac), `média ponderada; variou de ${brl(FX.cac.min)} a ${brl(FX.cac.max)}`], ['alvo', 'Alvo do plano', Math.round(L.alvo.cac), 'o que as premissas do plano dão'], ['autorizado', 'Máximo que o negócio aguenta', Math.round(L.cacMaxAutorizado), 'teto: resultado, caixa, capacidade e orçamento'], ['manual', 'Outro valor', pl.fonte === 'manual' ? pl.cac : Math.round(H.cac), 'digite']];
   const mcV = BC.resultado(p, 1000).mcVenda, linha = ([k, nm, cac, sub]) => { const v = BC.verbaPeloCac(cac, pl.meta, pctN), e = econ(p, base0(cac)), naMeta = pl.meta * mcV - v - e.demais * (pl.meta / Math.max(1, e.r.vendas)); return `<tr class="${pl.fonte === k ? 'sel' : ''}"><td><label class="radio"><input type="radio" name="fonte" value="${k}" data-fonte ${pl.fonte === k ? 'checked' : ''}> ${nm}</label><span class="d">${sub}</span></td><td class="n">${k === 'manual' ? `<input type="number" step="5" value="${cac}" data-cacman> ` : brl(cac)}</td><td class="n">${brl(v)}</td><td class="n">${brl(e.invest)}</td><td class="n ${naMeta >= p.residualMinimo ? 'c-ok' : 'c-bad'}"><b>${brl(naMeta)}</b></td><td class="n">${nf(e.r.vendas, 1)}</td><td>${v > L.autorizado ? '<span class="st bad">passa do autorizado</span>' : e.invest > p.orcamentoDisponivel ? '<span class="st warn">passa do orçamento</span>' : '<span class="st ok">cabe</span>'}</td></tr>`; };
   const v = BC.verbaPeloCac(pl.cac, pl.meta, pctN);
-  return `<p class="lead">Aqui você decide. Escolha o CAC que a campanha vai pagar: a verba sai dele (CAC × novos clientes da meta). Depois copie para os cenários pessimista, base e otimista do planejamento, ou ajuste à mão.</p>
+  return `${pl.avisoTipo ? '<p class="aviso warn">O tipo da campanha mudou depois da cópia. Copie de novo para os cenários usarem o funil certo.</p>' : ''}<p class="lead">Aqui você decide. Escolha o CAC que a campanha vai pagar: a verba sai dele (CAC × novos clientes da meta). Depois copie para os cenários pessimista, base e otimista do planejamento, ou ajuste à mão.</p>
   <div class="linha" style="margin-bottom:10px"><label class="campo">Meta de vendas<span><input type="number" step="1" value="${pl.meta}" data-plmeta></span></label><span class="peq muted">${pc(H.pctNovos)} das vendas são clientes novos (histórico): ${nf(pl.meta * H.pctNovos, 1)} novos para a meta.</span></div>
   <div class="tw"><table><thead><tr><th>De onde vem o CAC</th><th class="n">CAC de mídia</th><th class="n">Verba de mídia para a meta</th><th class="n">Investimento total</th><th class="n">Contribuição se bater a meta</th><th class="n">Vendas que essa verba traz (taxas do histórico)</th><th>Limites</th></tr></thead><tbody>${ops.map(linha).join('')}</tbody></table></div>
   <p class="peq muted">Contribuição se bater a meta: ${nf(pl.meta)} vendas × ${brl(mcV)} de margem por venda − verba − demais custos. Quanto menor o CAC, mais sobra na mesma meta. A última coluna mostra quantas vendas essa verba traria com as taxas médias das últimas campanhas, já com o CPL subindo quando a verba cresce. Mínimo exigido: ${brl(p.residualMinimo)}.</p>
@@ -1027,5 +1034,73 @@ if (REAL) {
   }, true);
   const hdr = document.querySelector('header'); if (hdr) hdr.innerHTML = `<p class="muted" style="margin:0">Dados deste cliente no Growths. O que você muda fica salvo como rascunho. <b id="salvoEm" class="peq"></b></p>`;
 }
+
+/* ===== Tipo de campanha: objetivo estratégico × modelo de conversão (duas dimensões separadas) ===== */
+const OBJETIVOS = [['captacao', 'Captação de leads', 'Formar base. A meta é em leads e o limite é o CPL.'], ['aquisicao', 'Aquisição de novos clientes', 'Vender para quem ainda não é cliente. A meta é em vendas e o limite é o CAC.'], ['rentabilizacao', 'Rentabilização da base', 'Vender de novo para quem já é cliente. Conta custo por venda, não CAC.'], ['expansao', 'Expansão de mercado', 'Novo público ou novo mercado. O histórico é de outro mercado: serve só de referência.']];
+const MODELOS = {
+  evento: { grupo: 'Evento', nome: 'Captação → Evento → Venda', sub: 'Leads vão para um evento (aula, live, webinário) e a venda acontece nele.', lead: 'Leads', etapa: 'Participantes', taxa1: 'Comparecimento', taxa2: 'Conversão dos presentes', taxa3: 'Conversão dos ausentes' },
+  direta: { grupo: 'Página e checkout', nome: 'Anúncio → Página → Checkout', sub: 'O anúncio leva direto para a página de vendas.', lead: 'Visitas à página', etapa: 'Checkouts iniciados', taxa1: 'Visita → checkout', taxa2: 'Checkout → compra', taxa3: null },
+  comercial: { grupo: 'Comercial', nome: 'Captação → Qualificação → Comercial → Venda', sub: 'Leads qualificados vão para uma conversa com o comercial.', lead: 'Leads', etapa: 'Reuniões com o comercial', taxa1: 'Lead → reunião', taxa2: 'Fechamento das reuniões', taxa3: null },
+  recompra: { grupo: 'Oferta para a base', nome: 'Base de clientes → Oferta → Recompra', sub: 'Oferta para quem já comprou: upgrade, renovação, novo produto.', lead: 'Clientes abordados', etapa: 'Viram a oferta', taxa1: 'Abordados → viram a oferta', taxa2: 'Compra de quem viu', taxa3: null } };
+const TIPO_PADRAO = { lancamento: 'evento', webinario: 'evento', captacao: 'evento', perpetuo: 'direta', comercial: 'comercial', recompra: 'recompra', assinatura: 'recompra', disparo: 'recompra' };
+function tipoDe(p) {
+  if (!ST.p.tipo) { const t = String((p.estrategia && (p.estrategia.tipo || p.estrategia.modelo)) || '').toLowerCase(), mod = TIPO_PADRAO[t] || (MODELOS[t] ? t : 'evento');
+    ST.p.tipo = { objetivo: mod === 'recompra' ? 'rentabilizacao' : t === 'captacao' ? 'captacao' : 'aquisicao', modelo: mod, confirmado: false }; }
+  return ST.p.tipo;
+}
+function termos(p) { const t = tipoDe(p), M = MODELOS[t.modelo] || MODELOS.evento, base = t.objetivo === 'rentabilizacao' || t.modelo === 'recompra';
+  return { ...M, cac: base ? 'Custo por venda' : 'CAC de mídia', novos: base ? 'Vendas que contam' : 'Novos clientes', metaLeads: t.objetivo === 'captacao' }; }
+// passo 1: os dois cartões vêm antes da estratégia
+const passoEstrategia0 = passoEstrategia;
+passoEstrategia = (p, L) => { const t = tipoDe(p);
+  return `<h3 style="margin-top:0">Que tipo de campanha é esta?</h3><p class="peq muted">Objetivo e modelo são escolhas separadas. O modelo muda o funil e o cálculo; o objetivo muda o que é a meta.</p>
+  <p class="rot">Objetivo estratégico</p><div class="tipos">${OBJETIVOS.map(([k, n, s]) => `<button type="button" class="tipo ${t.objetivo === k ? 'on' : ''}" data-tobj="${k}" aria-pressed="${t.objetivo === k}"><b>${n}</b><span>${s}</span></button>`).join('')}</div>
+  <p class="rot">Modelo de conversão</p><div class="tipos">${Object.entries(MODELOS).map(([k, m]) => `<button type="button" class="tipo ${t.modelo === k ? 'on' : ''}" data-tmod="${k}" aria-pressed="${t.modelo === k}"><b>${m.nome}</b><span>${m.sub}</span></button>`).join('')}</div>
+  ${t.confirmado ? '' : '<p class="aviso info">Sugerido pelo tipo da estratégia. Confira e clique no que for o caso.</p>'}
+  <hr class="sep">` + passoEstrategia0(p, L); };
+// histórico: aviso para expansão de mercado
+const passoHistoricoT = passoHistorico;
+passoHistorico = (p, L) => (tipoDe(p).objetivo === 'expansao' ? '<p class="aviso warn">Expansão de mercado: estas campanhas foram em outro mercado ou público. Use o histórico como referência, não como régua.</p>' : '') + passoHistoricoT(p, L);
+// passo 9 quando o objetivo é captar leads: escolhe o CPL e a meta é em leads
+const passoDecidirV = passoDecidir;
+passoDecidir = (p, L) => { if (!termos(p).metaLeads) return troca(passoDecidirV(p, L), p);
+  const pl = planoDe(p), H = BC.historico(p.historico), FX = BC.historicoFaixas(p.historico), med = p.historico.length ? p.historico.reduce((s, c) => s + (c.leads || 0), 0) / p.historico.length : 0;
+  if (pl.metaLeads == null) pl.metaLeads = Math.round(med); if (pl.cplEsc == null) { pl.fonteCpl = 'historico'; pl.cplEsc = Math.round((H.cpl || 0) * 100) / 100; }
+  const ops = [['historico', 'Histórico do produto', H.cpl, FX.cpl ? `variou de ${brl(FX.cpl.min, 2)} a ${brl(FX.cpl.max, 2)}` : ''], ['alvo', 'Alvo do plano', L.alvo.cpl, 'o que as premissas do plano dão'], ['autorizado', 'Máximo que o negócio aguenta', L.cplMaxAutorizado, 'teto pelo CAC máximo'], ['manual', 'Outro valor', pl.fonteCpl === 'manual' ? pl.cplEsc : H.cpl, 'digite']].filter(o => o[2] != null);
+  const v = cpl => verbaLeads(p, pl, cpl);
+  return `<p class="lead">O objetivo é captar leads: a meta é em leads e a verba sai do CPL (CPL × leads pagos que faltam depois do orgânico e da API).</p>
+  <div class="linha" style="margin-bottom:10px"><label class="campo">Meta de leads<span><input type="number" step="50" value="${pl.metaLeads}" data-metaleads></span></label><span class="peq muted">Média das últimas campanhas: ${nf(med)} leads.</span></div>
+  <div class="tw"><table><thead><tr><th>De onde vem o CPL</th><th class="n">CPL</th><th class="n">Verba para a meta</th><th>Limites</th></tr></thead><tbody>${ops.map(([k, nm, c, sub]) => `<tr class="${pl.fonteCpl === k ? 'sel' : ''}"><td><label class="radio"><input type="radio" name="fontecpl" value="${k}" data-fontecpl ${pl.fonteCpl === k ? 'checked' : ''}> ${nm}</label><span class="d">${sub}</span></td><td class="n">${k === 'manual' ? `<input type="number" step="0.5" value="${Math.round(c * 100) / 100}" data-cplman>` : brl(c, 2)}</td><td class="n">${brl(v(c))}</td><td>${L.autorizado != null && v(c) > L.autorizado ? '<span class="st bad">passa do autorizado</span>' : '<span class="st ok">cabe</span>'}</td></tr>`).join('')}</tbody></table></div>
+  <div class="painel destaque"><div class="cards">${card('CPL escolhido', brl(pl.cplEsc, 2), '')}${card('Verba de mídia', brl(v(pl.cplEsc)), `para ${nf(pl.metaLeads)} leads`)}${card('Cenários', pl.cens ? 'copiados' : 'ainda não', '', pl.cens ? 'ok' : 'warn')}</div>
+  <div class="linha" style="margin-top:10px"><button type="button" class="btn pri" data-copiar="todos">Copiar para pessimista, base e otimista</button><button type="button" class="btn" data-copiar="base">Copiar só para a base</button></div></div>
+  ${pl.cens ? resumoCens(p) : ''}`; };
+function verbaLeads(p, pl, cpl) { const S = BC.cenariosDoHistorico(p.historico, 1, null, apiCusto(p), 0).base; return Math.max(0, Math.round((pl.metaLeads - S.canais.org.leads - S.canais.api.leads) * (cpl || 0))); }
+// verba escolhida no passo 9, pelo objetivo
+function verbaEscolhida(p, pl) { const H = BC.historico(p.historico); return termos(p).metaLeads ? verbaLeads(p, pl, pl.cplEsc) : BC.verbaPeloCac(pl.cac, pl.meta, (tipoDe(p).modelo === 'recompra' || tipoDe(p).objetivo === 'rentabilizacao') ? 100 : H.pctNovos * 100); }
+// depois de copiar: ajusta os cenários ao modelo (sem etapa de ausentes fora do evento; na base, toda venda conta)
+function ajustaTipo(S, p) { const t = tipoDe(p), T = termos(p);
+  Object.values(S).forEach(c => { if (t.modelo !== 'evento') { const comp = c.comparecimento / 100, vpl = comp * c.convPresentes / 100 + (1 - comp) * c.convAusentes / 100; c.convPresentes = comp > 0 ? Math.min(100, Math.round(vpl / comp * 10000) / 100) : 0; c.convAusentes = 0; }
+    if (T.cac === 'Custo por venda') c.pctNovos = 100; if (T.metaLeads) c.meta = null; }); return S; }
+// rótulos do funil e dos cartões nos passos 9, 10 e 13
+const passoCanaisPlT = passoCanaisPl, passoGMT = passoGM, resumoCensT = resumoCens, statusCampanhaT = statusCampanha;
+const troca = (html, p) => { const T = termos(p); let s = html;
+  s = s.split('<b>Evento</b>').join('<b>' + T.grupo + '</b>');
+  if (T.cac === 'Custo por venda') { s = s.split('De onde vem o CAC').join('De onde vem o custo por venda').split('Escolha o CAC que a campanha vai pagar: a verba sai dele (CAC × novos clientes da meta)').join('Escolha quanto a campanha pode pagar por venda: a verba sai dele (custo por venda × meta de vendas)').split('CAC escolhido').join('Custo por venda escolhido'); s = s.replace(/<span class="peq muted">[^<]*das vendas são clientes novos[^<]*<\/span>/, ''); }
+  [['Conversão dos ausentes', T.taxa3 || ''], ['Conversão dos presentes', T.taxa2], ['Comparecimento', T.taxa1], ['Participantes', T.etapa], ['CAC de mídia', T.cac], ['Novos clientes', T.novos]].forEach(([a, b]) => { if (b !== a) s = s.split(a).join(b); });
+  if (!T.taxa3) s = s.replace(/<tr class="[^"]*"><td><\/td>.*?<\/tr>/s, m => m); // linha vazia some abaixo
+  return s; };
+passoCanaisPl = p => troca(passoCanaisPlT(p), p);
+resumoCens = p => troca(resumoCensT(p), p);
+passoGM = p => { let s = troca(passoGMT(p), p); if (!termos(p).taxa3) s = s.replace(/<tr class=""><td><\/td>[\s\S]*?<\/tr>/, ''); return s; };
+statusCampanha = (p, L) => { let s = statusCampanhaT(p, L); const pl = planoDe(p);
+  if (termos(p).metaLeads && pl.cens) { const r = BC.planoCampanha(pl.cens.base), ok = r.leads >= pl.metaLeads * 0.97; s = s.replace(/<li class="(ok|no)"><span aria-hidden="true">.<\/span> Base atinge a meta<span class="d">[^<]*<\/span><\/li>/, `<li class="${ok ? 'ok' : 'no'}"><span aria-hidden="true">${ok ? '✓' : '○'}</span> Base atinge a meta de leads<span class="d">${nf(r.leads)} de ${nf(pl.metaLeads)} leads</span></li>`); }
+  return s; };
+document.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const t = tipoDe(ST.p);
+  if (b.dataset.tobj) { t.objetivo = b.dataset.tobj; t.confirmado = true; } else if (b.dataset.tmod) { t.modelo = b.dataset.tmod; t.confirmado = true; } else return;
+  if (ST.p.plan && ST.p.plan.cens) ST.p.plan.avisoTipo = true; salva(); render(); }, true);
+document.addEventListener('change', e => { const el = e.target, n = Number(el.value), pl = ST.p.plan; if (!pl) return;
+  if (el.hasAttribute('data-metaleads')) pl.metaLeads = n; else if (el.hasAttribute('data-fontecpl')) { const H = BC.historico(ST.p.historico), L = BC.limites(P()); pl.fonteCpl = el.value; if (el.value !== 'manual') pl.cplEsc = Math.round(({ historico: H.cpl, alvo: L.alvo.cpl, autorizado: L.cplMaxAutorizado })[el.value] * 100) / 100; }
+  else if (el.hasAttribute('data-cplman')) { pl.fonteCpl = 'manual'; pl.cplEsc = n; } else return;
+  e.stopImmediatePropagation(); salva(); render(); }, true);
 
 render();</script></body></html>

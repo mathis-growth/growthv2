@@ -16,6 +16,7 @@ html = f'''<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta n
 <script>{(d / 'app.js').read_text().rstrip()[:-len('render();')]}
 {(d / 'app_plano.js').read_text()}
 {(d / 'app_real.js').read_text()}
+{(d / 'app_tipo.js').read_text()}
 render();</script></body></html>'''
 (d / 'planejamento-campanha-avancado.html').write_text(html); print(len(html))
 import json

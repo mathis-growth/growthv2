@@ -1,3 +1,8 @@
+## v0.288 — Tipo de campanha no Planejamento avançado
+**Pedido da Rebecka (08/11, noite):** "a hora que eu vou escolher a estratégia, eu tenho que escolher que tipo de estratégia que é... dependendo do tipo de campanha, eu tenho um cálculo diferente."
+**Como ficou:** dois grupos de cartões no passo 1, com os 4 objetivos e os 4 modelos da especificação. O modelo muda o funil; o objetivo muda a meta e o limite (CPL, CAC ou custo por venda).
+**A confirmar:** no histórico, as taxas de venda direta e comercial vêm das campanhas como estão registradas. Ainda não há registro de checkouts nem de reuniões por campanha que permita separar as duas etapas.
+
 ## v0.287 — Planejamento de campanha avançado no Growths
 **Pedido da Rebecka (08/11):** "A ideia é gerar esse módulo lá dentro... Ele vai chamar planejamento de campanha avançado. Pode executar dentro da produção e depois eu vou melhorando ele e, quem sabe, desativando o outro."
 **Como ficou:** tela nova em Marketing, com os 14 passos do protótipo e os dados reais do cliente. Salva sozinho como rascunho por produto e estratégia. O planejamento atual continua.
