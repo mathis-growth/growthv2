@@ -652,6 +652,13 @@ async function processarDisparosGrupos(){
   }
   return {reservados:jobs.length,enviados,erros,incertos};
 }
+async function processarDisparosGruposAgendados(req:Request){
+  const config=await q(db.from('sistema_config').select('valor').eq('chave','atd_agenda_token').maybeSingle());
+  const expected=String(config?.valor||'');
+  if(!expected||!await segredoIgual(req.headers.get('x-atd-agenda-token')||'',expected))
+    return json({erro:'Agendador não autorizado.'},401);
+  return json({ok:true,grupos:await processarDisparosGrupos()});
+}
 async function qrSharePublico(b:any){
   const token=String(b.token||'');
   if(!/^[A-Za-z0-9_-]{43}$/.test(token))return json({erro:'Este link de conexão é inválido.'},404);
@@ -919,7 +926,7 @@ async function handle(req: Request, b: any) {
     if(!ctx.editar)throw Error('Sem permissão para criar disparos.');if(!ctx.nome)throw Error('Cadastre seu nome na equipe antes de agendar.');
     const nome=String(b.nome||'').trim().slice(0,100),texto=String(b.texto||'').trim(),iniciar=new Date(b.iniciar_em),intervalo=Number(b.intervalo_segundos),canalIds=Array.isArray(b.canal_ids)?[...new Set(b.canal_ids.map(String))]:[],grupos=Array.isArray(b.grupos)?b.grupos:[];
     if(!nome||(!texto&&!b.midia)||texto.length>4000||!Number.isFinite(iniciar.getTime())||iniciar.getTime()<Date.now()+60000||iniciar.getTime()>Date.now()+90*86400000)throw Error('Confira o nome, a mensagem e o horário (1 minuto a 90 dias).');
-    if(!Number.isInteger(intervalo)||intervalo<60||intervalo>86400)throw Error('O intervalo deve ficar entre 60 segundos e 24 horas, conforme a frequência atual do worker.');
+    if(!Number.isInteger(intervalo)||intervalo<10||intervalo>86400)throw Error('O intervalo deve ficar entre 10 segundos e 24 horas.');
     if(!canalIds.length||canalIds.length>20||!grupos.length||grupos.length>500)throw Error('Selecione chips e grupos válidos (até 500 grupos).');
     const channels=await q(db.from('atd_canais').select('*').eq('workspace_id',ws).eq('provedor','evolution').eq('canal','whatsapp').eq('ativo',true).in('id',canalIds));
     if(channels.length!==canalIds.length||channels.some((c:any)=>c.status!=='conectado'))throw Error('Selecione apenas chips Evolution conectados deste workspace.');
@@ -1954,6 +1961,7 @@ Deno.serve(async req => {
     if(b.action==='qr-share-view')return await qrSharePublico(b);
     if(b.action==='processar-grupos-periodico')return await processarGruposPeriodicos(req);
     if(b.action==='processar-agendamentos')return await processarAgendamentos(req);
+    if(b.action==='processar-grupos-disparo')return await processarDisparosGruposAgendados(req);
     if(b.action==='processar-emails')return await processarEmails(req);
     return await handle(req,b);
   } catch(e) {
