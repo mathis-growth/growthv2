@@ -17087,7 +17087,7 @@ async function vProjetoDet(m) {
     if (folha && a.status === 'concluida') b.push(`<button class="btn sm" data-st="em_andamento" data-id="${a.id}">Reabrir</button>`);
     if (folha && r && r.telefone && (a.status === 'liberada' || a.status === 'em_andamento')) b.push(`<a class="btn sm" target="_blank" rel="noopener" href="${esc(waLink(r.telefone, msgWa(a)))}">Avisar no WhatsApp</a>`);
     if (!a.pai_id) b.push(`<button class="btn sm" data-sub="${a.id}">+ Sub</button>`);
-    b.push(`<button class="btn sm" data-ed="${a.id}">Editar</button>`);
+    b.push(`<button class="btn sm" data-ed="${a.id}">Editar e anexar</button>`);
     return b.join(' ');
   };
   const linha = ([a, n]) => {
@@ -17099,7 +17099,7 @@ async function vProjetoDet(m) {
     <td>${dd(a.prazo)}</td><td style="white-space:normal">${botoes(a)}</td></tr>`;
   };
   const COLS = [['bloqueada', 'Bloqueadas'], ['liberada', 'Liberadas'], ['em_andamento', 'Em andamento'], ['concluida', 'Concluídas']];
-  const card = a => { const r = quemFaz(a, eq); return `<div class="card" draggable="${a.status === 'bloqueada' ? 'false' : 'true'}" data-id="${a.id}"><b>${esc(a.titulo)}</b>${a.pai_id ? `<small>${esc(tit[a.pai_id] || '')}</small>` : ''}<small>${r ? esc(r.nome) : esc(a.agente_id ? 'Agente: ' + a.agente_id : (a.funcao || 'sem responsável'))}${a.prazo ? ' · ' + dd(a.prazo) : ''}${atrasada(a, h) ? ' · <b style="color:var(--bad)">atrasada</b>' : ''}</small>${a.hermes_tarefa_id ? `<small class="muted">Hermes: ${esc(a.hermes_tarefa_id)}</small>` : ''}${a.hermes_resumo ? `<small class="muted">${esc(String(a.hermes_resumo).slice(0, 180))}</small>` : ''}<div class="ca"><button class="btn sm" data-ed="${a.id}">Abrir</button>${a.status === 'bloqueada' ? '' : `<select class="mv" data-mv="${a.id}" aria-label="Mover para"><option value="">Mover para…</option>${COLS.filter(c => c[0] !== a.status && c[0] !== 'bloqueada').map(c => `<option value="${c[0]}">${c[1]}</option>`).join('')}</select>`}</div></div>`; };
+  const card = a => { const r = quemFaz(a, eq); return `<div class="card" draggable="${a.status === 'bloqueada' ? 'false' : 'true'}" data-id="${a.id}"><b>${esc(a.titulo)}</b>${a.pai_id ? `<small>${esc(tit[a.pai_id] || '')}</small>` : ''}<small>${r ? esc(r.nome) : esc(a.agente_id ? 'Agente: ' + a.agente_id : (a.funcao || 'sem responsável'))}${a.prazo ? ' · ' + dd(a.prazo) : ''}${atrasada(a, h) ? ' · <b style="color:var(--bad)">atrasada</b>' : ''}</small>${a.hermes_tarefa_id ? `<small class="muted">Hermes: ${esc(a.hermes_tarefa_id)}</small>` : ''}${a.hermes_resumo ? `<small class="muted">${esc(String(a.hermes_resumo).slice(0, 180))}</small>` : ''}<div class="ca"><button class="btn sm" data-ed="${a.id}">Abrir · anexos</button>${a.status === 'bloqueada' ? '' : `<select class="mv" data-mv="${a.id}" aria-label="Mover para"><option value="">Mover para…</option>${COLS.filter(c => c[0] !== a.status && c[0] !== 'bloqueada').map(c => `<option value="${c[0]}">${c[1]}</option>`).join('')}</select>`}</div></div>`; };
   m.innerHTML = `<div class="head"><div><button class="btn sm" id="pVolta">← Projetos</button><h1 style="margin-top:8px">${esc(p.nome)} ${pillProj(p.status)}</h1><span class="muted">${camNome ? 'Campanha ' + esc(camNome) + ' · ' : ''}${p.pessoa_id ? 'Cliente: <a href="#" data-cli="' + p.pessoa_id + '">' + esc(cliNome || 'abrir ficha') + '</a> · ' : ''}${dd(p.data_inicio)} a ${dd(p.data_fim_prevista)}${p.responsavel_id && E[p.responsavel_id] ? ' · responsável ' + esc(E[p.responsavel_id].nome) : ''}${p.descricao ? '<br>' + esc(p.descricao) : ''}</span></div>
     <div class="acts">${p.campanha_id ? '<button class="btn" id="pLinks">Links e tracking</button><button class="btn" id="pBlocos" title="Cria uma atividade para cada bloco da estratégia da campanha que ainda não tem">Atividades dos blocos</button>' : ''}<button class="btn" id="pCamp90">${p.campanha_id ? 'Trocar campanha' : 'Vincular campanha'}</button><button class="btn" id="pModelo90">Salvar como modelo</button><button class="btn" id="pEd">Editar projeto</button><button class="btn pri" id="pNovaA">Nova atividade</button></div></div>
   <div class="kpis">${kpi('Progresso', folhas.length ? pct(ok, folhas.length) + '%' : '—', ok + ' de ' + folhas.length + ' atividades')}${kpi('Liberadas', num(folhas.filter(a => a.status === 'liberada').length), 'prontas para começar')}${kpi('Em andamento', num(folhas.filter(a => a.status === 'em_andamento').length), '')}${kpi('Atrasadas', num(folhas.filter(a => atrasada(a, h)).length), 'passaram do prazo')}</div>
@@ -17139,13 +17139,49 @@ function modalAtividade(row, p, at, eq, pre) {
     ...(_colCache['projeto_atividades.tags'] ? [{ k: 'tags_txt', l: 'Tags', ph: 'urgente, site', def: ((row && row.tags) || []).join(', ') }] : []), { k: 'prazo', l: 'Prazo', t: 'date' }, { k: 'ordem', l: 'Ordem', t: 'number', def: Math.max(0, ...at.map(a => a.ordem || 0)) + 10 },
     ...(row ? [{ k: 'status', l: 'Situação', t: 'select', req: 1, opts: st.map(s => [s, ST_AT[s][1]]) }] : [])];
   const base = row || pre || {};
-  const f = modal(row ? 'Editar atividade' : 'Nova atividade', `<div class="grid2">${campos.map(c => campoHtml(c, base[c.k])).join('')}${checkDeps(outras, row ? row.depende_de : [])}</div>`, async (_d, form) => {
+  let atividadeSalvaId = row?.id || null;
+  const anexosHtml = `<div class="panel" style="margin:12px 0 0"><b>Arquivos da atividade</b><p class="muted peq">Até 20 MB por arquivo. Os anexos ficam disponíveis para a equipe deste workspace e são enviados ao salvar.</p><input type="file" id="paArquivos" multiple><div id="paLista" style="margin-top:8px">${row ? 'Carregando arquivos…' : 'Os arquivos selecionados serão enviados ao salvar a atividade.'}</div></div>`;
+  const f = modal(row ? 'Editar atividade' : 'Nova atividade', `<div class="grid2">${campos.map(c => campoHtml(c, base[c.k])).join('')}${checkDeps(outras, row ? row.depende_de : [])}</div>${anexosHtml}`, async (_d, form) => {
     const v = lerCampos(campos, form); v.depende_de = lerDeps(form); if ('tags_txt' in v) { v.tags = parseTags(v.tags_txt); delete v.tags_txt; }
     if (!v.responsavel_id && v.funcao) { const e = eq.find(x => x.ativo && (x.funcao || '').trim().toLowerCase() === v.funcao.trim().toLowerCase()); if (e) v.responsavel_id = e.id; }
-    if (row) await q(sb.from('projeto_atividades').update(v).eq('id', row.id));
-    else await q(sb.from('projeto_atividades').insert({ ...v, workspace_id: S.ws, projeto_id: p.id }));
+    if (atividadeSalvaId) await q(sb.from('projeto_atividades').update(v).eq('id', atividadeSalvaId));
+    else { const criada = await q(sb.from('projeto_atividades').insert({ ...v, workspace_id: S.ws, projeto_id: p.id }).select('id').single()); atividadeSalvaId = criada.id; }
+    const input = form.querySelector('#paArquivos');
+    for (const arquivo of [...input.files]) {
+      if (!arquivo.size || arquivo.size > 20971520) throw new Error(`O arquivo ${arquivo.name} deve ter entre 1 byte e 20 MB.`);
+      const caminho = `${S.ws}/${atividadeSalvaId}/${crypto.randomUUID()}`;
+      const enviado = await sb.storage.from('projeto-anexos').upload(caminho, arquivo, { contentType: arquivo.type || 'application/octet-stream', upsert: false });
+      if (enviado.error) throw new Error('Não foi possível enviar ' + arquivo.name + ': ' + enviado.error.message);
+      try { await q(sb.from('projeto_atividade_arquivos').insert({ workspace_id: S.ws, projeto_id: p.id, atividade_id: atividadeSalvaId, nome: arquivo.name.slice(0, 255), caminho, tamanho: arquivo.size, tipo: arquivo.type || null })); }
+      catch (erro) { await sb.storage.from('projeto-anexos').remove([caminho]); throw erro; }
+    }
     toast('Atividade salva');
   });
+  if (row) {
+    const lista = f.querySelector('#paLista');
+    const carregar = async () => {
+      const anexos = await q(sb.from('projeto_atividade_arquivos').select('id,nome,caminho,tamanho').eq('atividade_id', row.id).eq('workspace_id', S.ws).order('criado_em', { ascending: false }));
+      if (!lista.isConnected) return;
+      lista.innerHTML = anexos.length ? anexos.map(a => `<div class="row" style="gap:8px"><button type="button" class="btn sm" data-pa-abrir="${a.id}">${esc(a.nome)}</button><small class="muted">${(a.tamanho / 1048576).toFixed(1)} MB</small><button type="button" class="btn sm bad" data-pa-excluir="${a.id}">Remover</button></div>`).join('') : '<span class="muted">Nenhum arquivo anexado.</span>';
+      lista.querySelectorAll('[data-pa-abrir]').forEach(b => b.onclick = () => act(async () => {
+        const anexo = anexos.find(a => a.id === b.dataset.paAbrir);
+        const r = await sb.storage.from('projeto-anexos').createSignedUrl(anexo.caminho, 300, { download: anexo.nome });
+        if (r.error) throw new Error('Não foi possível abrir o arquivo: ' + r.error.message);
+        window.open(r.data.signedUrl, '_blank', 'noopener');
+      }));
+      lista.querySelectorAll('[data-pa-excluir]').forEach(b => b.onclick = () => {
+        if (b.dataset.confirmar !== 'sim') { b.dataset.confirmar = 'sim'; b.textContent = 'Confirmar remoção'; return; }
+        act(async () => {
+        const anexo = anexos.find(a => a.id === b.dataset.paExcluir);
+        const r = await sb.storage.from('projeto-anexos').remove([anexo.caminho]);
+        if (r.error) throw new Error('Não foi possível remover o arquivo: ' + r.error.message);
+        await q(sb.from('projeto_atividade_arquivos').delete().eq('id', anexo.id).eq('workspace_id', S.ws));
+        await carregar();
+        });
+      });
+    };
+    carregar().catch(e => { if (lista.isConnected) lista.textContent = 'Não foi possível carregar os anexos: ' + e.message; });
+  }
   if (row) botaoExcluir(f, 'projeto_atividades', row.id, 'Atividade excluída');
 }
 
