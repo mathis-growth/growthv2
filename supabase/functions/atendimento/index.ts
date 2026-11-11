@@ -138,7 +138,7 @@ export const providers: Record<string, {
             mediatype: type.startsWith('image/') ? 'image' : type.startsWith('video/') ? 'video' : type.startsWith('audio/') ? 'audio' : 'document',
             mimetype: type, fileName: attachment.nome, caption: text || undefined, media: attachment.url }
           : { number: cv.externo_id, text };
-      const r = await evolution(cfg, '/message/' + (voice ? 'sendWhatsAppAudio/' : attachment ? 'sendMedia/' : 'sendText/') + inst, 'POST', payload);
+      const r = await evolution(cfg, '/message/' + (voice ? 'sendWhatsAppAudio/' : attachment ? 'sendMedia/' : 'sendText/') + inst, 'POST', payload, attachment?.mime==='video/mp4'?90000:20000);
       if (!r.key?.id) throw new Error('O provedor não confirmou o identificador da mensagem.');
       return r.key.id;
     },
@@ -922,6 +922,15 @@ async function handle(req: Request, b: any) {
     if(!ctx.editar)throw Error('Sem permissão para remover segmentos.');const id=String(b.id||'');if(!/^[0-9a-f-]{36}$/i.test(id))throw Error('Segmento inválido.');
     const rows=await q(db.from('atd_disparos_segmentos').delete().eq('workspace_id',ws).eq('id',id).select('id'));if(!rows.length)throw Error('Segmento não encontrado.');return json({ok:true});
   }
+  if(b.action==='disparos-grupos-media-preparar'){
+    if(!ctx.editar)throw Error('Sem permissão para preparar mídia de disparo.');
+    const mime=String(b.mime||'').toLowerCase().split(';')[0];
+    const ext=({'image/jpeg':'jpg','image/png':'png','image/webp':'webp','video/mp4':'mp4'} as Record<string,string>)[mime];
+    if(!ext)throw Error('Use imagem JPG, PNG ou WebP, ou vídeo MP4.');
+    const path=`${ws}/disparos-grupos/rascunhos/${crypto.randomUUID()}/midia.${ext}`;
+    const signed=await q(db.storage.from('atendimento').createSignedUploadUrl(path));
+    return json({path,token:signed.token});
+  }
   if(b.action==='disparos-grupos-create'){
     if(!ctx.editar)throw Error('Sem permissão para criar disparos.');if(!ctx.nome)throw Error('Cadastre seu nome na equipe antes de agendar.');
     const nome=String(b.nome||'').trim().slice(0,100),texto=String(b.texto||'').trim(),iniciar=new Date(b.iniciar_em),intervalo=Number(b.intervalo_segundos),canalIds=Array.isArray(b.canal_ids)?[...new Set(b.canal_ids.map(String))]:[],grupos=Array.isArray(b.grupos)?b.grupos:[];
@@ -935,10 +944,29 @@ async function handle(req: Request, b: any) {
     if(groupRows.length!==groupIds.length||groupRows.some((g:any)=>!canalIds.includes(g.canal_id)||String(grupos.find((x:any)=>x.conversa_id===g.id)?.canal_id)!==g.canal_id))throw Error('Um ou mais destinatários não correspondem aos chips selecionados.');
     if(groupRows.some((g:any)=>g.grupo_tipo==='comunidade'))throw Error('A comunidade é um contêiner. Selecione os grupos ou avisos vinculados para enviar.');
     let media:any=null;
-    if(b.midia){const mime=String(b.midia.mime||'').toLowerCase().split(';')[0];if(!['image/jpeg','image/png','image/webp','video/mp4'].includes(mime))throw Error('Use imagem JPG, PNG ou WebP, ou vídeo MP4.');const bytes=base64Bytes(String(b.midia.base64||''));if(!bytes.length||bytes.length>MAX_MEDIA)throw Error('A mídia deve ter até 8 MB.');media={bytes,mime,nome:String(b.midia.nome||'midia').replace(/[\\/\r\n]/g,'_').slice(0,150)};}
+    if(b.midia){
+      const mime=String(b.midia.mime||'').toLowerCase().split(';')[0];
+      const ext=({'image/jpeg':'jpg','image/png':'png','image/webp':'webp','video/mp4':'mp4'} as Record<string,string>)[mime];
+      if(!ext)throw Error('Use imagem JPG, PNG ou WebP, ou vídeo MP4.');
+      const nome=String(b.midia.nome||'midia').replace(/[\\/\r\n]/g,'_').slice(0,150);
+      if(b.midia.path){
+        const path=String(b.midia.path);
+        if(!new RegExp(`^${ws}/disparos-grupos/rascunhos/[0-9a-f-]{36}/midia\\.${ext}$`,'i').test(path))throw Error('A mídia não pertence a este workspace ou tem formato inválido.');
+        const folder=path.slice(0,path.lastIndexOf('/')),file=path.slice(path.lastIndexOf('/')+1);
+        const files=await q(db.storage.from('atendimento').list(folder,{limit:10,search:file}));
+        const found=files.find((x:any)=>x.name===file),size=Number(found?.metadata?.size),storedMime=String(found?.metadata?.mimetype||found?.metadata?.mimeType||'').toLowerCase();
+        if(!found||!Number.isFinite(size)||size<1||size>(mime==='video/mp4'?30:7)*1024*1024||storedMime!==mime)throw Error('Mídia não encontrada ou acima do limite: imagem 7 MB, vídeo 30 MB.');
+        media={path,mime,nome};
+      }else{
+        // Compatibilidade com versões antigas da interface durante a publicação.
+        const bytes=base64Bytes(String(b.midia.base64||''));
+        if(!bytes.length||bytes.length>MAX_MEDIA)throw Error('A mídia deve ter até 8 MB.');
+        media={bytes,mime,nome};
+      }
+    }
     const campaign=await q(db.from('atd_disparos_grupos').insert({workspace_id:ws,nome,texto,iniciar_em:iniciar.toISOString(),intervalo_segundos:intervalo,status:'agendado',total:groupRows.length,autor_id:user.id,autor_nome:ctx.nome}).select('id').single());
     try{
-    if(media){const ext=media.mime==='video/mp4'?'mp4':media.mime==='image/png'?'png':media.mime==='image/webp'?'webp':'jpg',path=ws+'/disparos-grupos/'+campaign.id+'/midia.'+ext;await q(db.storage.from('atendimento').upload(path,media.bytes,{contentType:media.mime,upsert:true}));await q(db.from('atd_disparos_grupos').update({midia_path:path,midia_nome:media.nome,midia_mime:media.mime}).eq('id',campaign.id).eq('workspace_id',ws));}
+    if(media){const ext=media.mime==='video/mp4'?'mp4':media.mime==='image/png'?'png':media.mime==='image/webp'?'webp':'jpg',path=media.path||ws+'/disparos-grupos/'+campaign.id+'/midia.'+ext;if(media.bytes)await q(db.storage.from('atendimento').upload(path,media.bytes,{contentType:media.mime,upsert:true}));await q(db.from('atd_disparos_grupos').update({midia_path:path,midia_nome:media.nome,midia_mime:media.mime}).eq('id',campaign.id).eq('workspace_id',ws));}
     const items=groupRows.map((g:any,index:number)=>({workspace_id:ws,campanha_id:campaign.id,conversa_id:g.id,canal_id:g.canal_id,texto,posicao:index,enviar_em:new Date(iniciar.getTime()+index*intervalo*1000).toISOString(),status:'agendado'}));
     await q(db.from('atd_disparos_grupos_itens').insert(items));
     }catch(e){await q(db.from('atd_disparos_grupos').delete().eq('id',campaign.id).eq('workspace_id',ws));throw e;}
