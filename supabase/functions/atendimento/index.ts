@@ -892,17 +892,25 @@ async function handle(req: Request, b: any) {
   }
   if (b.action === 'contexto') return json(ctx);
   if(b.action==='disparos-grupos-list'){
-    const rows=await q(db.from('atd_disparos_grupos').select('id,nome,texto,status,iniciar_em,intervalo_segundos,total,criado_em').eq('workspace_id',ws).order('criado_em',{ascending:false}).limit(50));
+    const rows=await q(db.from('atd_disparos_grupos').select('id,nome,texto,status,iniciar_em,intervalo_segundos,total,criado_em,midia_path,midia_nome,midia_mime').eq('workspace_id',ws).order('criado_em',{ascending:false}).limit(50));
     const items=rows.length?await q(db.from('atd_disparos_grupos_itens').select('campanha_id,status,erro').eq('workspace_id',ws).in('campanha_id',rows.map((x:any)=>x.id))):[];
     for(const row of rows){const own=items.filter((i:any)=>i.campanha_id===row.id);row.enviados=own.filter((i:any)=>i.status==='enviado').length;row.falhas=own.filter((i:any)=>['erro','incerto'].includes(i.status)).length;row.pendentes=own.filter((i:any)=>i.status==='agendado').length;row.erro=own.find((i:any)=>i.erro)?.erro||null;}
     return json({campanhas:rows});
   }
   if(b.action==='disparos-grupos-edit'){
     if(!ctx.editar)throw Error('Sem permissão para editar disparos.');
-    const id=String(b.campanha_id||''),texto=String(b.texto??'');
-    if(!/^[0-9a-f-]{36}$/i.test(id)||texto.length>4000)throw Error('Campanha ou mensagem inválida.');
-    const atualizados=await q(db.rpc('atd_grupo_disparo_editar_mensagem',{p_workspace:ws,p_campanha:id,p_texto:texto}));
+    const id=String(b.campanha_id||''),texto=String(b.texto??''),nome=String(b.nome||'').trim(),inicio=new Date(String(b.iniciar_em||''));
+    if(!/^[0-9a-f-]{36}$/i.test(id)||texto.length>4000||!nome||nome.length>100||!Number.isFinite(inicio.getTime())||inicio.getTime()<Date.now()+60000)throw Error('Informe nome, mensagem e horário futuro válido.');
+    const atualizados=await q(db.rpc('atd_grupo_disparo_editar_agendamento',{p_workspace:ws,p_campanha:id,p_nome:nome,p_texto:texto,p_iniciar_em:inicio.toISOString()}));
     return json({ok:true,atualizados:Number(atualizados)||0});
+  }
+  if(b.action==='disparos-grupos-media-url'){
+    const id=String(b.campanha_id||'');
+    if(!/^[0-9a-f-]{36}$/i.test(id))throw Error('Campanha inválida.');
+    const row=await q(db.from('atd_disparos_grupos').select('midia_path,midia_nome').eq('workspace_id',ws).eq('id',id).single());
+    if(!row.midia_path)throw Error('Esta campanha não possui anexo.');
+    const signed=await q(db.storage.from('atendimento').createSignedUrl(row.midia_path,300));
+    return json({url:signed.signedUrl,nome:row.midia_nome});
   }
   if(b.action==='disparos-segmentos-list'){
     const segmentos=await q(db.from('atd_disparos_segmentos').select('id,nome,conversas,criado_em').eq('workspace_id',ws).order('nome'));
