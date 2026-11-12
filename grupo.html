@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <title>Entrar no grupo · Growth</title>
+  <style>
+    :root{color-scheme:light;--ink:#16213e;--muted:#63708a;--line:#d9e1ef;--bg:#edf2fb;--blue:#2456d9}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:18px;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,"Segoe UI",sans-serif}
+    main{width:min(100%,440px);padding:28px;background:#fff;border:1px solid var(--line);border-radius:16px;text-align:center;box-shadow:0 16px 40px #16213e16}
+    h1{font-size:22px;margin:0 0 8px}p{color:var(--muted)}a{display:inline-block;margin-top:12px;padding:10px 18px;border-radius:8px;background:var(--blue);color:#fff;text-decoration:none;font-weight:700}a[hidden]{display:none}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Seu grupo está a um passo</h1>
+    <p id="status" role="status">Buscando um grupo disponível…</p>
+    <a id="continue" hidden rel="noreferrer">Abrir convite no WhatsApp</a>
+  </main>
+  <script>
+    (()=>{
+      'use strict';
+      const url='https://yngyghlyonybvfvjcmxl.supabase.co/functions/v1/atendimento';
+      const key='sb_publishable_I50_7INl88K4nX4rjE7qRQ_Xs_m7Ati';
+      const token=new URLSearchParams(location.search).get('c')||'';
+      const status=document.querySelector('#status'),button=document.querySelector('#continue');
+      if(!/^[0-9a-f-]{36}$/i.test(token)){status.textContent='Este link de campanha é inválido.';return;}
+      fetch(url,{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json',apikey:key},body:JSON.stringify({action:'grupo-campanha-convite',token})})
+        .then(async response=>{const data=await response.json();if(!response.ok)throw Error(data.erro||'Nenhum grupo disponível agora.');const target=new URL(data.url);if(target.protocol!=='https:'||target.hostname!=='chat.whatsapp.com'||!/^\/[A-Za-z0-9]{22}$/.test(target.pathname))throw Error('Convite indisponível.');button.href=target.href;button.hidden=false;status.textContent='Grupo encontrado. Abrindo o WhatsApp…';location.replace(target.href);})
+        .catch(error=>{status.textContent=error.message||'Não foi possível localizar um grupo. Tente novamente mais tarde.';});
+    })();
+  </script>
+</body>
+</html>

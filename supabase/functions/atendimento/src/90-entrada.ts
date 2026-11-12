@@ -8,6 +8,7 @@ Deno.serve(async req => {
     if(url.searchParams.has('provider'))return await webhook(req,url,raw);
     const b=JSON.parse(raw);
     if(b.action==='qr-share-view')return await qrSharePublico(b);
+    if(b.action==='grupo-campanha-convite')return await conviteGrupoPublico(b);
     if(b.action==='processar-grupos-periodico')return await processarGruposPeriodicos(req);
     if(b.action==='processar-agendamentos')return await processarAgendamentos(req);
     if(b.action==='processar-grupos-disparo')return await processarDisparosGruposAgendados(req);

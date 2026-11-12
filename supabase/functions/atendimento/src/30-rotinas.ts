@@ -169,3 +169,32 @@ async function qrSharePublico(b:any){
     throw e;
   }
 }
+async function conviteGrupoPublico(b:any){
+  const token=String(b.token||'');
+  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token))return json({erro:'Link de campanha inválido.'},404);
+  const reserved=await q(db.rpc('atd_grupo_campanha_reservar',{p_token:token})),campaign=reserved?.[0];
+  if(!campaign)return json({erro:'Este link está desativado ou ainda não tem grupos disponíveis.'},410);
+  const ids:string[]=campaign.conversas||[],groups:any[]=[];
+  for(let offset=0;offset<ids.length;offset+=100)groups.push(...await q(db.from('atd_conversas').select('id,canal_id,externo_id,grupo,grupo_tipo,grupo_membros').eq('workspace_id',campaign.workspace_id).in('id',ids.slice(offset,offset+100))));
+  const channelIds=[...new Set(groups.map(g=>g.canal_id))],channels:any[]=[];
+  for(let offset=0;offset<channelIds.length;offset+=100)channels.push(...await q(db.from('atd_canais').select('id,externo_id,provedor,canal,ativo,status').eq('workspace_id',campaign.workspace_id).in('id',channelIds.slice(offset,offset+100))));
+  const byGroup=new Map(groups.map(g=>[g.id,g])),byChannel=new Map(channels.map(ch=>[ch.id,ch]));
+  const start=Number((BigInt(campaign.rodada)-1n)%BigInt(ids.length)),cfg=await secret(campaign.workspace_id);
+  if(cfg)for(let offset=0,checked=0;offset<ids.length&&checked<12;offset++){
+    const group=byGroup.get(ids[(start+offset)%ids.length]),ch=group&&byChannel.get(group.canal_id);
+    if(!group?.grupo||group.grupo_tipo==='comunidade'||Number(group.grupo_membros)>=campaign.limite_membros||!/^\d[\d-]{4,39}@g\.us$/.test(group.externo_id)||!ch?.ativo||ch.status!=='conectado'||ch.provedor!=='evolution'||ch.canal!=='whatsapp')continue;
+    checked++;
+    try{
+      const instance=encodeURIComponent(ch.externo_id),params='?'+new URLSearchParams({groupJid:group.externo_id});
+      const metadata=await evolution(cfg,'/group/findGroupInfos/'+instance+params,'GET',undefined,4500),members=groupMembers(metadata);
+      if(members===null||members>=campaign.limite_membros)continue;
+      const invite=await evolution(cfg,'/group/inviteCode/'+instance+params,'GET',undefined,4500),code=String(invite?.inviteCode||invite?.data?.inviteCode||'');
+      if(!/^[A-Za-z0-9]{22}$/.test(code))continue;
+      await q(db.from('atd_conversas').update({grupo_membros:members}).eq('workspace_id',campaign.workspace_id).eq('id',group.id));
+      await q(db.from('atd_grupo_campanha_acessos').insert({workspace_id:campaign.workspace_id,campanha_id:campaign.campanha_id,conversa_id:group.id,status:'redirecionado'}));
+      return json({url:'https://chat.whatsapp.com/'+code});
+    }catch(error){console.warn('Convite de grupo indisponível',{campanha:campaign.campanha_id,grupo:group.id,erro:String((error as Error).message||error).slice(0,120)});}
+  }
+  await q(db.from('atd_grupo_campanha_acessos').insert({workspace_id:campaign.workspace_id,campanha_id:campaign.campanha_id,status:'indisponivel'}));
+  return json({erro:'Os grupos desta campanha estão temporariamente indisponíveis. Tente novamente mais tarde.'},503);
+}

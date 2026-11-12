@@ -688,6 +688,35 @@ async function qrSharePublico(b:any){
     throw e;
   }
 }
+async function conviteGrupoPublico(b:any){
+  const token=String(b.token||'');
+  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token))return json({erro:'Link de campanha inválido.'},404);
+  const reserved=await q(db.rpc('atd_grupo_campanha_reservar',{p_token:token})),campaign=reserved?.[0];
+  if(!campaign)return json({erro:'Este link está desativado ou ainda não tem grupos disponíveis.'},410);
+  const ids:string[]=campaign.conversas||[],groups:any[]=[];
+  for(let offset=0;offset<ids.length;offset+=100)groups.push(...await q(db.from('atd_conversas').select('id,canal_id,externo_id,grupo,grupo_tipo,grupo_membros').eq('workspace_id',campaign.workspace_id).in('id',ids.slice(offset,offset+100))));
+  const channelIds=[...new Set(groups.map(g=>g.canal_id))],channels:any[]=[];
+  for(let offset=0;offset<channelIds.length;offset+=100)channels.push(...await q(db.from('atd_canais').select('id,externo_id,provedor,canal,ativo,status').eq('workspace_id',campaign.workspace_id).in('id',channelIds.slice(offset,offset+100))));
+  const byGroup=new Map(groups.map(g=>[g.id,g])),byChannel=new Map(channels.map(ch=>[ch.id,ch]));
+  const start=Number((BigInt(campaign.rodada)-1n)%BigInt(ids.length)),cfg=await secret(campaign.workspace_id);
+  if(cfg)for(let offset=0,checked=0;offset<ids.length&&checked<12;offset++){
+    const group=byGroup.get(ids[(start+offset)%ids.length]),ch=group&&byChannel.get(group.canal_id);
+    if(!group?.grupo||group.grupo_tipo==='comunidade'||Number(group.grupo_membros)>=campaign.limite_membros||!/^\d[\d-]{4,39}@g\.us$/.test(group.externo_id)||!ch?.ativo||ch.status!=='conectado'||ch.provedor!=='evolution'||ch.canal!=='whatsapp')continue;
+    checked++;
+    try{
+      const instance=encodeURIComponent(ch.externo_id),params='?'+new URLSearchParams({groupJid:group.externo_id});
+      const metadata=await evolution(cfg,'/group/findGroupInfos/'+instance+params,'GET',undefined,4500),members=groupMembers(metadata);
+      if(members===null||members>=campaign.limite_membros)continue;
+      const invite=await evolution(cfg,'/group/inviteCode/'+instance+params,'GET',undefined,4500),code=String(invite?.inviteCode||invite?.data?.inviteCode||'');
+      if(!/^[A-Za-z0-9]{22}$/.test(code))continue;
+      await q(db.from('atd_conversas').update({grupo_membros:members}).eq('workspace_id',campaign.workspace_id).eq('id',group.id));
+      await q(db.from('atd_grupo_campanha_acessos').insert({workspace_id:campaign.workspace_id,campanha_id:campaign.campanha_id,conversa_id:group.id,status:'redirecionado'}));
+      return json({url:'https://chat.whatsapp.com/'+code});
+    }catch(error){console.warn('Convite de grupo indisponível',{campanha:campaign.campanha_id,grupo:group.id,erro:String((error as Error).message||error).slice(0,120)});}
+  }
+  await q(db.from('atd_grupo_campanha_acessos').insert({workspace_id:campaign.workspace_id,campanha_id:campaign.campanha_id,status:'indisponivel'}));
+  return json({erro:'Os grupos desta campanha estão temporariamente indisponíveis. Tente novamente mais tarde.'},503);
+}
 function emailFiltroAplica(p:any,f:any){if(f?.tipo&&p.status_funil!==f.tipo)return false;if(f?.qualificacao&&p.qualificacao!==f.qualificacao)return false;if(f?.campanha_id&&p.campanha_id!==f.campanha_id)return false;if(f?.tag&&!(Array.isArray(p.tags)?p.tags:[]).includes(f.tag))return false;return true;}
 function htmlSeguro(v:string){return v.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));}
 function emailPersonalizar(s:string,p:any){const n=String(p.nome||'').trim(),map:Record<string,string>={nome:n,primeiro_nome:n.split(/\s+/)[0]||'',email:String(p.email||'')};return s.replace(/\{\{\s*(nome|primeiro_nome|email)\s*\}\}/gi,(_m,k)=>htmlSeguro(map[String(k).toLowerCase()]||''));}
@@ -892,7 +921,7 @@ async function handle(req: Request, b: any) {
   }
   if (b.action === 'contexto') return json(ctx);
   if(b.action==='grupo-campanhas-list'){
-    const campanhas=await q(db.from('atd_grupo_campanhas').select('id,nome,descricao,conversas,criado_em,atualizado_em').eq('workspace_id',ws).order('atualizado_em',{ascending:false}).limit(100));
+    const campanhas=await q(db.from('atd_grupo_campanhas').select('id,nome,descricao,conversas,link_token,link_ativo,link_cliques,link_limite_membros,criado_em,atualizado_em').eq('workspace_id',ws).order('atualizado_em',{ascending:false}).limit(100));
     return json({campanhas});
   }
   if(b.action==='grupo-campanha-save'){
@@ -905,6 +934,17 @@ async function handle(req: Request, b: any) {
     }
     const campanha=await q(db.from('atd_grupo_campanhas').insert({workspace_id:ws,nome,descricao,criado_por:user.id}).select('id,nome,descricao,conversas').single());
     return json({campanha});
+  }
+  if(b.action==='grupo-campanha-link-save'){
+    const id=String(b.id||''),ativo=b.ativo,limite=b.limite_membros==null?null:Number(b.limite_membros);
+    if(!/^[0-9a-f-]{36}$/i.test(id)||typeof ativo!=='boolean'||(limite!==null&&(!Number.isInteger(limite)||limite<1||limite>1024)))throw Error('Informe campanha, estado e limite de membros válidos.');
+    const current=await q(db.from('atd_grupo_campanhas').select('id,conversas').eq('workspace_id',ws).eq('id',id).maybeSingle());
+    if(!current)throw Error('Campanha não encontrada.');
+    if(ativo&&!(current.conversas||[]).length)throw Error('Vincule pelo menos um grupo antes de ativar o link.');
+    const update:any={link_ativo:ativo,atualizado_em:new Date().toISOString()};if(limite!==null)update.link_limite_membros=limite;
+    const rows=await q(db.from('atd_grupo_campanhas').update(update).eq('workspace_id',ws).eq('id',id).select('id,link_token,link_ativo,link_limite_membros').limit(1));
+    if(!rows.length)throw Error('Campanha não encontrada.');
+    return json({campanha:rows[0]});
   }
   if(b.action==='grupo-campanha-grupos-save'){
     const id=String(b.campanha_id||''),ids=Array.isArray(b.conversas)?[...new Set(b.conversas.map(String))]:[];
@@ -2098,6 +2138,7 @@ Deno.serve(async req => {
     if(url.searchParams.has('provider'))return await webhook(req,url,raw);
     const b=JSON.parse(raw);
     if(b.action==='qr-share-view')return await qrSharePublico(b);
+    if(b.action==='grupo-campanha-convite')return await conviteGrupoPublico(b);
     if(b.action==='processar-grupos-periodico')return await processarGruposPeriodicos(req);
     if(b.action==='processar-agendamentos')return await processarAgendamentos(req);
     if(b.action==='processar-grupos-disparo')return await processarDisparosGruposAgendados(req);

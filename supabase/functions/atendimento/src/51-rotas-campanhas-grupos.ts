@@ -1,5 +1,5 @@
   if(b.action==='grupo-campanhas-list'){
-    const campanhas=await q(db.from('atd_grupo_campanhas').select('id,nome,descricao,conversas,criado_em,atualizado_em').eq('workspace_id',ws).order('atualizado_em',{ascending:false}).limit(100));
+    const campanhas=await q(db.from('atd_grupo_campanhas').select('id,nome,descricao,conversas,link_token,link_ativo,link_cliques,link_limite_membros,criado_em,atualizado_em').eq('workspace_id',ws).order('atualizado_em',{ascending:false}).limit(100));
     return json({campanhas});
   }
   if(b.action==='grupo-campanha-save'){
@@ -12,6 +12,17 @@
     }
     const campanha=await q(db.from('atd_grupo_campanhas').insert({workspace_id:ws,nome,descricao,criado_por:user.id}).select('id,nome,descricao,conversas').single());
     return json({campanha});
+  }
+  if(b.action==='grupo-campanha-link-save'){
+    const id=String(b.id||''),ativo=b.ativo,limite=b.limite_membros==null?null:Number(b.limite_membros);
+    if(!/^[0-9a-f-]{36}$/i.test(id)||typeof ativo!=='boolean'||(limite!==null&&(!Number.isInteger(limite)||limite<1||limite>1024)))throw Error('Informe campanha, estado e limite de membros válidos.');
+    const current=await q(db.from('atd_grupo_campanhas').select('id,conversas').eq('workspace_id',ws).eq('id',id).maybeSingle());
+    if(!current)throw Error('Campanha não encontrada.');
+    if(ativo&&!(current.conversas||[]).length)throw Error('Vincule pelo menos um grupo antes de ativar o link.');
+    const update:any={link_ativo:ativo,atualizado_em:new Date().toISOString()};if(limite!==null)update.link_limite_membros=limite;
+    const rows=await q(db.from('atd_grupo_campanhas').update(update).eq('workspace_id',ws).eq('id',id).select('id,link_token,link_ativo,link_limite_membros').limit(1));
+    if(!rows.length)throw Error('Campanha não encontrada.');
+    return json({campanha:rows[0]});
   }
   if(b.action==='grupo-campanha-grupos-save'){
     const id=String(b.campanha_id||''),ids=Array.isArray(b.conversas)?[...new Set(b.conversas.map(String))]:[];
