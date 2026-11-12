@@ -784,7 +784,7 @@ async function handle(req: Request, b: any) {
   const { data: { user }, error } = await userDb.auth.getUser();
   if (error || !user) return json({ erro: 'Faça login novamente.' },401);
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
-  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo','disparos-grupos-list','disparos-segmentos-list','grupos-busca-status','email-transmissao-list','email-dominios-list','email-dominio-get','email-automacoes-list'];
+  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo','disparos-grupos-list','disparos-segmentos-list','grupo-campanhas-list','grupo-campanha-grupo-info','grupos-busca-status','email-transmissao-list','email-dominios-list','email-dominio-get','email-automacoes-list'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
   const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete','templates-mapping-save','canal-salvar','qr-share-create','email-dominio-create','email-dominio-verify','email-dominio-remetente-save'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
@@ -891,8 +891,89 @@ async function handle(req: Request, b: any) {
     if (!interna) return json({ erro:'Somente a equipe interna pode vincular contas da Zernio.' },403);
   }
   if (b.action === 'contexto') return json(ctx);
+  if(b.action==='grupo-campanhas-list'){
+    const campanhas=await q(db.from('atd_grupo_campanhas').select('id,nome,descricao,conversas,criado_em,atualizado_em').eq('workspace_id',ws).order('atualizado_em',{ascending:false}).limit(100));
+    return json({campanhas});
+  }
+  if(b.action==='grupo-campanha-save'){
+    const id=String(b.id||''),nome=String(b.nome||'').trim(),descricao=String(b.descricao||'').trim();
+    if(!nome||nome.length>100||descricao.length>1000)throw Error('Informe um nome de até 100 caracteres e descrição de até 1.000.');
+    if(id){
+      if(!/^[0-9a-f-]{36}$/i.test(id))throw Error('Campanha inválida.');
+      const rows=await q(db.from('atd_grupo_campanhas').update({nome,descricao,atualizado_em:new Date().toISOString()}).eq('workspace_id',ws).eq('id',id).select('id,nome,descricao,conversas').limit(1));
+      if(!rows.length)throw Error('Campanha não encontrada.');return json({campanha:rows[0]});
+    }
+    const campanha=await q(db.from('atd_grupo_campanhas').insert({workspace_id:ws,nome,descricao,criado_por:user.id}).select('id,nome,descricao,conversas').single());
+    return json({campanha});
+  }
+  if(b.action==='grupo-campanha-grupos-save'){
+    const id=String(b.campanha_id||''),ids=Array.isArray(b.conversas)?[...new Set(b.conversas.map(String))]:[];
+    if(!/^[0-9a-f-]{36}$/i.test(id)||ids.length>500||ids.some((x:string)=>!/^[0-9a-f-]{36}$/i.test(x)))throw Error('Campanha ou lista de grupos inválida.');
+    await q(db.from('atd_grupo_campanhas').select('id').eq('workspace_id',ws).eq('id',id).single());
+    const grupos:any[]=[];for(let offset=0;offset<ids.length;offset+=100)grupos.push(...await q(db.from('atd_conversas').select('id,canal_id,grupo,grupo_tipo').eq('workspace_id',ws).in('id',ids.slice(offset,offset+100))));
+    if(grupos.length!==ids.length||grupos.some((g:any)=>!g.grupo||g.grupo_tipo==='comunidade'))throw Error('Selecione apenas grupos WhatsApp disponíveis; comunidades não recebem disparos.');
+    const channelIds=[...new Set(grupos.map((g:any)=>g.canal_id))],channels=channelIds.length?await q(db.from('atd_canais').select('id,provedor,canal').eq('workspace_id',ws).in('id',channelIds)):[];
+    if(channels.length!==channelIds.length||channels.some((c:any)=>c.provedor!=='evolution'||c.canal!=='whatsapp'))throw Error('A campanha aceita apenas grupos de chips Evolution deste workspace.');
+    const saved=await q(db.from('atd_grupo_campanhas').update({conversas:ids,atualizado_em:new Date().toISOString()}).eq('workspace_id',ws).eq('id',id).select('id,nome,descricao,conversas').single());
+    return json({campanha:saved});
+  }
+  if(b.action==='grupo-campanha-criar-grupo'){
+    const id=String(b.campanha_id||''),canalId=String(b.canal_id||''),subject=String(b.nome||'').trim(),description=String(b.descricao||'').trim(),participants=String(b.participantes||'').split(/[\s,;]+/).map((x:string)=>x.replace(/\D/g,'')).filter(Boolean);
+    if(!/^[0-9a-f-]{36}$/i.test(id)||!/^[0-9a-f-]{36}$/i.test(canalId)||!subject||subject.length>100||description.length>1000||!participants.length||participants.length>20||participants.some((x:string)=>!/^\d{10,15}$/.test(x)))throw Error('Informe campanha, chip, nome e ao menos um telefone com DDI (até 20).');
+    const campanha=await q(db.from('atd_grupo_campanhas').select('id,conversas').eq('workspace_id',ws).eq('id',id).single());
+    if((campanha.conversas||[]).length>=500)throw Error('A campanha já tem 500 grupos.');
+    const ch=await channel(canalId,ws);if(ch.provedor!=='evolution'||ch.canal!=='whatsapp'||!ch.ativo||ch.status!=='conectado')throw Error('Selecione um chip Evolution conectado.');
+    const cfg=await secret(ws),created=await evolution(cfg,'/group/create/'+encodeURIComponent(ch.externo_id),'POST',{subject,description,participants:[...new Set(participants)]},60000);
+    const jid=String(created?.id||created?.groupJid||created?.group?.id||created?.data?.id||created?.data?.groupJid||created?.data?.group?.id||'');
+    if(!isJid(jid)||!jid.endsWith('@g.us'))throw Error('A Evolution não confirmou o ID. O grupo pode ter sido criado; busque-o antes de tentar novamente.');
+    await q(db.rpc('atd_receber',{p_canal:ch.id,p_conversa:{id:jid,nome:subject,endereco:jid,grupo:true}}));
+    const cv=await q(db.from('atd_conversas').select('id').eq('workspace_id',ws).eq('canal_id',ch.id).eq('externo_id',jid).single());
+    const current=await q(db.from('atd_grupo_campanhas').select('conversas').eq('workspace_id',ws).eq('id',id).single()),ids=[...new Set([...(current.conversas||[]),cv.id])];
+    await q(db.from('atd_grupo_campanhas').update({conversas:ids,atualizado_em:new Date().toISOString()}).eq('workspace_id',ws).eq('id',id));
+    return json({ok:true,conversa_id:cv.id,groupJid:jid});
+  }
+  if(b.action==='grupo-campanha-foto-preparar'){
+    const mime=String(b.mime||'').toLowerCase(),ext=({'image/jpeg':'jpg','image/png':'png','image/webp':'webp'} as Record<string,string>)[mime];
+    if(!ext)throw Error('Use uma imagem JPG, PNG ou WebP.');
+    const path=ws+'/grupo-fotos/'+crypto.randomUUID()+'/foto.'+ext,signed=await q(db.storage.from('atendimento').createSignedUploadUrl(path));
+    return json({path,token:signed.token});
+  }
+  if(['grupo-campanha-grupo-info','grupo-campanha-grupo-update'].includes(b.action)){
+    const id=String(b.campanha_id||''),conversaId=String(b.conversa_id||'');
+    if(!/^[0-9a-f-]{36}$/i.test(id)||!/^[0-9a-f-]{36}$/i.test(conversaId))throw Error('Campanha ou grupo inválido.');
+    const campanha=await q(db.from('atd_grupo_campanhas').select('conversas').eq('workspace_id',ws).eq('id',id).single());
+    if(!(campanha.conversas||[]).includes(conversaId))throw Error('Este grupo não pertence à campanha.');
+    const cv=await q(db.from('atd_conversas').select('id,canal_id,externo_id,nome,grupo').eq('workspace_id',ws).eq('id',conversaId).single());
+    if(!cv.grupo||!isJid(cv.externo_id)||!cv.externo_id.endsWith('@g.us'))throw Error('Grupo inválido.');
+    const ch=await channel(cv.canal_id,ws);if(ch.provedor!=='evolution'||ch.canal!=='whatsapp'||!ch.ativo||ch.status!=='conectado')throw Error('O chip deste grupo precisa estar conectado.');
+    const cfg=await secret(ws),instance=encodeURIComponent(ch.externo_id);
+    if(b.action==='grupo-campanha-grupo-update'){
+      const action=String(b.tipo||''),value=String(b.valor||'').trim();
+      if(action==='nome'){
+        if(!value||value.length>100)throw Error('Informe um nome de até 100 caracteres.');
+        await evolution(cfg,'/group/updateGroupSubject/'+instance,'POST',{groupJid:cv.externo_id,subject:value});
+        await q(db.from('atd_conversas').update({nome:value}).eq('workspace_id',ws).eq('id',cv.id));
+      }else if(action==='descricao'){
+        if(value.length>1000)throw Error('A descrição deve ter até 1.000 caracteres.');
+        await evolution(cfg,'/group/updateGroupDescription/'+instance,'POST',{groupJid:cv.externo_id,description:value});
+      }else if(['announcement','not_announcement','locked','unlocked'].includes(action)){
+        await evolution(cfg,'/group/updateSetting/'+instance,'POST',{groupJid:cv.externo_id,action});
+      }else if(action==='foto'){
+        const path=String(b.path||''),match=path.match(new RegExp('^'+ws+'/grupo-fotos/[0-9a-f-]{36}/foto\\.(jpg|png|webp)$','i'));
+        if(!match)throw Error('A foto não pertence a este workspace.');
+        const folder=path.slice(0,path.lastIndexOf('/')),file=path.slice(path.lastIndexOf('/')+1),files=await q(db.storage.from('atendimento').list(folder,{limit:5,search:file})),found=files.find((x:any)=>x.name===file),mime=String(found?.metadata?.mimetype||found?.metadata?.mimeType||'').toLowerCase(),size=Number(found?.metadata?.size);
+        if(!found||!['image/jpeg','image/png','image/webp'].includes(mime)||!Number.isFinite(size)||size<1||size>2*1024*1024)throw Error('Foto não encontrada ou acima de 2 MB.');
+        const signed=await q(db.storage.from('atendimento').createSignedUrl(path,300));
+        await evolution(cfg,'/group/updateGroupPicture/'+instance,'POST',{groupJid:cv.externo_id,image:signed.signedUrl},60000);
+        await q(db.from('atd_conversas').update({avatar_path:path,avatar_atualizado_em:new Date().toISOString()}).eq('workspace_id',ws).eq('id',cv.id));
+      }else throw Error('Alteração de grupo não suportada pela Evolution 2.3.7.');
+      return json({ok:true});
+    }
+    const raw=await evolution(cfg,'/group/findGroupInfos/'+instance+'?'+new URLSearchParams({groupJid:cv.externo_id})),meta=unwrapGroupMeta(raw);
+    return json({nome:groupName(meta)||cv.nome,descricao:String(meta.desc||meta.description||''),somente_admin_envia:meta.announce===true,somente_admin_edita:meta.restrict===true,membros:groupMembers(meta)});
+  }
   if(b.action==='disparos-grupos-list'){
-    const rows=await q(db.from('atd_disparos_grupos').select('id,nome,texto,status,iniciar_em,intervalo_segundos,total,criado_em,midia_path,midia_nome,midia_mime').eq('workspace_id',ws).order('criado_em',{ascending:false}).limit(50));
+    const rows=await q(db.from('atd_disparos_grupos').select('id,nome,texto,status,iniciar_em,intervalo_segundos,total,criado_em,midia_path,midia_nome,midia_mime,grupo_campanha_id').eq('workspace_id',ws).order('criado_em',{ascending:false}).limit(50));
     const items=rows.length?await q(db.from('atd_disparos_grupos_itens').select('campanha_id,status,erro').eq('workspace_id',ws).in('campanha_id',rows.map((x:any)=>x.id))):[];
     for(const row of rows){const own=items.filter((i:any)=>i.campanha_id===row.id);row.enviados=own.filter((i:any)=>i.status==='enviado').length;row.falhas=own.filter((i:any)=>['erro','incerto'].includes(i.status)).length;row.pendentes=own.filter((i:any)=>i.status==='agendado').length;row.erro=own.find((i:any)=>i.erro)?.erro||null;}
     return json({campanhas:rows});
@@ -954,16 +1035,25 @@ async function handle(req: Request, b: any) {
   }
   if(b.action==='disparos-grupos-create'){
     if(!ctx.editar)throw Error('Sem permissão para criar disparos.');if(!ctx.nome)throw Error('Cadastre seu nome na equipe antes de agendar.');
-    const nome=String(b.nome||'').trim().slice(0,100),texto=String(b.texto||'').trim(),iniciar=new Date(b.iniciar_em),intervalo=Number(b.intervalo_segundos),canalIds=Array.isArray(b.canal_ids)?[...new Set(b.canal_ids.map(String))]:[],grupos=Array.isArray(b.grupos)?b.grupos:[];
+    const nome=String(b.nome||'').trim().slice(0,100),texto=String(b.texto||'').trim(),iniciar=new Date(b.iniciar_em),intervalo=Number(b.intervalo_segundos),grupoCampanhaId=String(b.grupo_campanha_id||'');
+    let canalIds=Array.isArray(b.canal_ids)?[...new Set(b.canal_ids.map(String))]:[],grupos=Array.isArray(b.grupos)?b.grupos:[];
     if(!nome||(!texto&&!b.midia)||texto.length>4000||!Number.isFinite(iniciar.getTime())||iniciar.getTime()<Date.now()+60000||iniciar.getTime()>Date.now()+90*86400000)throw Error('Confira o nome, a mensagem e o horário (1 minuto a 90 dias).');
     if(!Number.isInteger(intervalo)||intervalo<10||intervalo>86400)throw Error('O intervalo deve ficar entre 10 segundos e 24 horas.');
+    if(grupoCampanhaId){
+      if(!/^[0-9a-f-]{36}$/i.test(grupoCampanhaId))throw Error('Campanha de grupos inválida.');
+      const saved=await q(db.from('atd_grupo_campanhas').select('conversas').eq('workspace_id',ws).eq('id',grupoCampanhaId).single()),ids=saved.conversas||[];
+      if(!ids.length||ids.length>500)throw Error('A campanha de grupos precisa conter de 1 a 500 grupos.');
+      const members:any[]=[];for(let offset=0;offset<ids.length;offset+=100)members.push(...await q(db.from('atd_conversas').select('id,canal_id').eq('workspace_id',ws).in('id',ids.slice(offset,offset+100))));
+      if(members.length!==ids.length)throw Error('A campanha contém grupos que não estão mais disponíveis. Atualize a campanha.');
+      grupos=members.map((g:any)=>({conversa_id:g.id,canal_id:g.canal_id}));canalIds=[...new Set(members.map((g:any)=>g.canal_id))];
+    }
     if(!canalIds.length||canalIds.length>20||!grupos.length||grupos.length>500)throw Error('Selecione chips e grupos válidos (até 500 grupos).');
     const channels=await q(db.from('atd_canais').select('*').eq('workspace_id',ws).eq('provedor','evolution').eq('canal','whatsapp').eq('ativo',true).in('id',canalIds));
     if(channels.length!==canalIds.length||channels.some((c:any)=>c.status!=='conectado'))throw Error('Selecione apenas chips Evolution conectados deste workspace.');
     const groupIds=[...new Set(grupos.map((g:any)=>String(g.conversa_id||'')))];if(groupIds.length!==grupos.length)throw Error('Há grupos duplicados na seleção.');
-    const groupRows=await q(db.from('atd_conversas').select('id,canal_id,grupo,grupo_tipo').eq('workspace_id',ws).in('id',groupIds));
+    const groupRows:any[]=[];for(let offset=0;offset<groupIds.length;offset+=100)groupRows.push(...await q(db.from('atd_conversas').select('id,canal_id,grupo,grupo_tipo').eq('workspace_id',ws).in('id',groupIds.slice(offset,offset+100))));
     if(groupRows.length!==groupIds.length||groupRows.some((g:any)=>!canalIds.includes(g.canal_id)||String(grupos.find((x:any)=>x.conversa_id===g.id)?.canal_id)!==g.canal_id))throw Error('Um ou mais destinatários não correspondem aos chips selecionados.');
-    if(groupRows.some((g:any)=>g.grupo_tipo==='comunidade'))throw Error('A comunidade é um contêiner. Selecione os grupos ou avisos vinculados para enviar.');
+    if(groupRows.some((g:any)=>g.grupo_tipo==='comunidade'||(grupoCampanhaId&&!g.grupo)))throw Error('A campanha deve conter somente grupos ou grupos de avisos disponíveis.');
     let media:any=null;
     if(b.midia){
       const mime=String(b.midia.mime||'').toLowerCase().split(';')[0];
@@ -985,7 +1075,7 @@ async function handle(req: Request, b: any) {
         media={bytes,mime,nome};
       }
     }
-    const campaign=await q(db.from('atd_disparos_grupos').insert({workspace_id:ws,nome,texto,iniciar_em:iniciar.toISOString(),intervalo_segundos:intervalo,status:'agendado',total:groupRows.length,autor_id:user.id,autor_nome:ctx.nome}).select('id').single());
+    const campaign=await q(db.from('atd_disparos_grupos').insert({workspace_id:ws,grupo_campanha_id:grupoCampanhaId||null,nome,texto,iniciar_em:iniciar.toISOString(),intervalo_segundos:intervalo,status:'agendado',total:groupRows.length,autor_id:user.id,autor_nome:ctx.nome}).select('id').single());
     try{
     if(media){const ext=media.mime==='video/mp4'?'mp4':media.mime==='image/png'?'png':media.mime==='image/webp'?'webp':'jpg',path=media.path||ws+'/disparos-grupos/'+campaign.id+'/midia.'+ext;if(media.bytes)await q(db.storage.from('atendimento').upload(path,media.bytes,{contentType:media.mime,upsert:true}));await q(db.from('atd_disparos_grupos').update({midia_path:path,midia_nome:media.nome,midia_mime:media.mime}).eq('id',campaign.id).eq('workspace_id',ws));}
     const items=groupRows.map((g:any,index:number)=>({workspace_id:ws,campanha_id:campaign.id,conversa_id:g.id,canal_id:g.canal_id,texto,posicao:index,enviar_em:new Date(iniciar.getTime()+index*intervalo*1000).toISOString(),status:'agendado'}));
