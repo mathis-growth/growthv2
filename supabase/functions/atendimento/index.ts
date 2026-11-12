@@ -897,6 +897,19 @@ async function handle(req: Request, b: any) {
     for(const row of rows){const own=items.filter((i:any)=>i.campanha_id===row.id);row.enviados=own.filter((i:any)=>i.status==='enviado').length;row.falhas=own.filter((i:any)=>['erro','incerto'].includes(i.status)).length;row.pendentes=own.filter((i:any)=>i.status==='agendado').length;row.erro=own.find((i:any)=>i.erro)?.erro||null;}
     return json({campanhas:rows});
   }
+  if(b.action==='disparos-grupos-destinatarios'){
+    const id=String(b.campanha_id||'');
+    if(!/^[0-9a-f-]{36}$/i.test(id))throw Error('Campanha inválida.');
+    await q(db.from('atd_disparos_grupos').select('id').eq('workspace_id',ws).eq('id',id).single());
+    const items=await q(db.from('atd_disparos_grupos_itens').select('conversa_id,canal_id,status,posicao').eq('workspace_id',ws).eq('campanha_id',id).order('posicao').limit(500));
+    const ids=[...new Set(items.map((item:any)=>item.conversa_id))];
+    const conversas=[];
+    for(let offset=0;offset<ids.length;offset+=100){
+      conversas.push(...await q(db.from('atd_conversas').select('id,nome,endereco,externo_id,grupo').eq('workspace_id',ws).in('id',ids.slice(offset,offset+100))));
+    }
+    const byId=new Map(conversas.map((c:any)=>[c.id,c]));
+    return json({destinatarios:items.map((item:any)=>{const c:any=byId.get(item.conversa_id)||{};return {id:item.conversa_id,nome:c.nome||c.endereco||c.externo_id||'Conversa sem nome',grupo:Boolean(c.grupo),status:item.status,posicao:item.posicao};})});
+  }
   if(b.action==='disparos-grupos-edit'){
     if(!ctx.editar)throw Error('Sem permissão para editar disparos.');
     const id=String(b.campanha_id||''),texto=String(b.texto??''),nome=String(b.nome||'').trim(),inicio=new Date(String(b.iniciar_em||''));
