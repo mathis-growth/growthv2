@@ -547,6 +547,18 @@
       for(const ch of canais){const ident=nomesNovos.get(ch.id);if(ident?.numero)ch.numero=ident.numero;}
     if(S.ws!==ws||S.view!=='atd-canais')return;
     $('#atdCanaisCorpo').innerHTML=`<div class="panel"><p>WhatsApp oficial e Instagram pela Zernio. Na Evolution, nomes pendentes são atualizados sob demanda; novos grupos são descobertos automaticamente a cada seis horas.</p>${ctx.admin?'<div class="acts"><button class="btn" id="atdConfigEvo">Configurar Evolution</button><button class="btn pri" id="atdNovaInst">Nova instância WhatsApp</button><button class="btn pri" id="atdInstagramConectar">Conectar Instagram</button><button class="btn" id="atdWhatsappConectar">Conectar WhatsApp API oficial</button><button class="btn" id="atdZernio">Adicionar canal já conectado</button></div>':'<p>Um administrador gerencia as conexões.</p>'}</div><div class="atd-canais">${canais.map(c=>`<article class="atd-canal">${c.avatar_path?`<img data-channel-avatar="${c.id}" alt="Foto de ${esc(c.nome)}" style="width:56px;height:56px;object-fit:cover;border-radius:50%;float:right">`:''}<h3>${esc(c.nome)}</h3><div class="atd-identificacao">${faixaCanal(c)}</div>${c.provedor==='evolution'&&c.canal==='whatsapp'?`<label class="atd-arquivados"><input type="checkbox" data-arquivados="${c.id}" ${c.exibir_grupos_arquivados?'checked':''} ${ctx.admin?'':'disabled'}> Exibir grupos arquivados</label><small>Arquivados no Growth V2 (não altera o WhatsApp).</small>`:''}<span class="pill ${c.status==='conectado'?'good':'warn'}" data-channel-status="${c.id}">${esc(c.status)}</span><p class="muted">${esc(c.numero?'+'+String(c.numero).replace(/\D/g,''):c.externo_id)}</p><div class="acts">${ctx.admin?`<button class="btn sm" data-ca="editar" data-id="${c.id}">Configurar nome e foto</button>`:''}${ctx.admin&&c.provedor==='evolution'&&c.ativo?`<button class="btn sm" data-ca="conectar" data-id="${c.id}">QR Code</button><button class="btn sm pri" data-ca="qr-share" data-id="${c.id}">Gerar link temporário do QR</button><button class="btn sm" data-ca="status" data-id="${c.id}">Verificar status</button><button class="btn sm bad" data-ca="excluir-instancia" data-id="${c.id}">Excluir instância</button>`:''}${ctx.admin&&c.provedor==='zernio'&&c.canal==='whatsapp'&&c.ativo?`<button class="btn sm" data-ca="status" data-id="${c.id}">Verificar número e conexão</button>`:''}${ctx.admin&&c.ativo?`<button class="btn sm" data-ca="webhook" data-id="${c.id}">Ativar recebimento</button>`:''}${ctx.editar&&c.ativo?(c.provedor==='evolution'?`<button class="btn sm" data-ca="sincronizar" data-modo="conversas" data-id="${c.id}">Buscar conversas</button><button class="btn sm" data-ca="sincronizar" data-modo="grupos_sem_nome" data-id="${c.id}">Atualizar dados dos grupos</button><button class="btn sm" data-ca="sincronizar" data-modo="grupos_novos" data-id="${c.id}">Buscar grupos novos</button>`:`<button class="btn sm" data-ca="sincronizar" data-id="${c.id}">Buscar conversas</button>`):''}</div><div id="ca-${c.id}"></div></article>`).join('')||'<div class="panel">Nenhum canal adicionado.</div>'}</div>`;
+    if(ctx.admin){
+      const cfg=await api('config',{},ws);
+      if(cfg.configurada)$('#atdConfigEvo').insertAdjacentHTML('afterend','<button class="btn bad" id="atdRemoverEvo">Remover API Evolution</button>');
+      $('#atdRemoverEvo')?.addEventListener('click',()=>act(async()=>{
+        if(!confirm('Remover a URL e a chave da Evolution deste workspace? As instâncias no servidor Evolution não serão excluídas. Remova antes todos os canais Evolution ativos.'))return;
+        await api('remover-config',{},ws);toast('Configuração da Evolution removida.');await render();
+      }));
+      for(const c of canais.filter(c=>c.ativo)){
+        const actions=$('#ca-'+c.id)?.previousElementSibling;
+        actions?.insertAdjacentHTML('beforeend',`<button class="btn sm bad" data-ca="desativar" data-id="${c.id}">Remover canal do Growth</button>`);
+      }
+    }
     for(const image of $('#atdCanaisCorpo').querySelectorAll('[data-channel-avatar]'))api('channel-avatar',{canal_id:image.dataset.channelAvatar},ws).then(r=>{if(r.url&&image.isConnected)image.src=r.url;}).catch(()=>{});
     $('#atdConfigEvo')?.addEventListener('click',()=>act(configurarEvolution));
     $('#atdInstagramConectar')?.addEventListener('click',()=>conectarInstagram(ws));
@@ -587,6 +599,10 @@
         const aviso='Excluir definitivamente a instância '+canal.nome+' da Evolution? O WhatsApp será desconectado e a instância apagada no servidor. O histórico do Growth V2 será preservado.';
         if(!confirm(aviso))return;
       }
+      if(action==='desativar'){
+        const canal=canais.find(x=>x.id===id);if(!canal)return;
+        if(!confirm(`Remover ${canal.nome} do Growth? O histórico será preservado. Esta ação não desconecta a conta no provedor e será bloqueada se houver envios pendentes.`))return;
+      }
       btn.disabled=true;
       const target=$('#ca-'+id),mode=btn.dataset.modo||'all';
       try{let r;
@@ -607,7 +623,8 @@
           else if(status.estado==='falhou')throw new Error(status.resultado?.erro||'Não foi possível consultar os grupos.');
           else {target.textContent='A busca ainda está em andamento. Clique em “Buscar grupos” novamente em instantes para consultar o resultado.';return;}
         }else r=await api(action,{canal_id:id,cursor:btn.dataset.cursor||undefined,modo_sincronizacao:mode},ws);
-        if(action==='excluir-instancia'){toast('Instância excluída da Evolution. Histórico preservado.');await render();return;}if(S.ws!==ws||S.view!=='atd-canais')return;
+        if(action==='excluir-instancia'){toast('Instância excluída da Evolution. Histórico preservado.');await render();return;}
+        if(action==='desativar'){toast('Canal removido do Growth. Histórico preservado.');await render();return;}if(S.ws!==ws||S.view!=='atd-canais')return;
         if(action==='conectar'){target.innerHTML=r.qrcode&&/^data:image\/(png|jpeg);base64,/.test(r.qrcode)?`<img class="atd-qr" alt="QR Code para conectar o WhatsApp" src="${r.qrcode}"><p>WhatsApp → Aparelhos conectados → Conectar aparelho. Se expirar, clique em QR Code novamente.</p>`:'<p>QR Code indisponível. Confira o status ou tente novamente.</p>';}
         else if(action==='sincronizar'){
           if(mode==='grupos_sem_nome'){

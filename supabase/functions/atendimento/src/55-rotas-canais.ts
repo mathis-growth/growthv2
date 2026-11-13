@@ -1,4 +1,10 @@
   if (b.action === 'config') { const cfg = await secret(ws); return json({ url: cfg?.evolution_url || '', configurada: !!cfg, versao:'2.3.7' }); }
+  if (b.action === 'remover-config') {
+    const ativos=await q(db.from('atd_canais').select('id').eq('workspace_id',ws).eq('provedor','evolution').eq('ativo',true).limit(1));
+    if(ativos.length)throw new Error('Remova os canais Evolution antes de remover a configuração da API.');
+    await q(db.rpc('atd_segredo_remover',{p_ws:ws}));
+    return json({ok:true});
+  }
   if (b.action === 'salvar-config') {
     const previous = await secret(ws), u = urlPublica(String(b.url));
     const key = String(b.key || previous?.evolution_key || ''); if (!key) throw new Error('Informe a API Key.');
@@ -110,6 +116,9 @@
     if (!a) throw new Error('Conta não vinculada ao perfil Zernio deste workspace.');
     const existing = await q(db.from('atd_canais').select('workspace_id').eq('provedor','zernio').eq('externo_id',a.id).maybeSingle());
     if(existing && existing.workspace_id!==ws) throw new Error('Esta conta já pertence a outro workspace.');
+    if(existing){
+      await q(db.from('atd_canais').update({ativo:true,status:'conectado'}).eq('workspace_id',ws).eq('provedor','zernio').eq('externo_id',a.id));
+    }
     const row = await q(db.from('atd_canais').upsert({workspace_id:ws,provedor:'zernio',canal:a.canal,nome:a.nome,externo_id:a.id,status:'conectado'}, {onConflict:'provedor,externo_id',ignoreDuplicates:true}).select());
     const linked=await q(db.from('atd_canais').select('*').eq('workspace_id',ws).eq('provedor','zernio').eq('externo_id',a.id).single());
     await setupWebhook(linked,null);
@@ -212,7 +221,14 @@
       .eq('id',ch.id).eq('workspace_id',ws).eq('provedor','evolution'));
     return json({ok:true,instancia_excluida:true,historico_preservado:true});
   }
-  if (b.action === 'desativar') { await q(db.from('atd_canais').update({ativo:false,status:'desativado'}).eq('id',ch.id)); return json({ok:true}); }
+  if (b.action === 'desativar') {
+    const agenda=await q(db.from('atd_agendamentos').select('id,atd_conversas!inner(canal_id)').eq('workspace_id',ws).eq('atd_conversas.canal_id',ch.id).in('status',['agendado','processando']).limit(1));
+    if(agenda.length)throw new Error('Há mensagens agendadas neste canal. Cancele ou aguarde os envios antes de removê-lo.');
+    const disparos=await q(db.from('atd_disparos_grupos_itens').select('id').eq('workspace_id',ws).eq('canal_id',ch.id).in('status',['agendado','processando']).limit(1));
+    if(disparos.length)throw new Error('Há disparos programados neste canal. Cancele ou aguarde os envios antes de removê-lo.');
+    await q(db.from('atd_canais').update({ativo:false,status:'desativado'}).eq('id',ch.id).eq('workspace_id',ws));
+    return json({ok:true,historico_preservado:true});
+  }
   if (b.action === 'webhook') { await setupWebhook(ch, ch.provedor === 'evolution' ? await secret(ws) : null); return json({ok:true}); }
   if (b.action === 'grupos-busca-status') return json({
     estado:ch.grupos_busca_estado||'ociosa',

@@ -5,7 +5,7 @@ async function handle(req: Request, b: any) {
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
   const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo','disparos-grupos-list','disparos-segmentos-list','grupo-campanhas-list','grupo-campanha-grupo-info','grupos-busca-status','email-transmissao-list','email-dominios-list','email-dominio-get','email-automacoes-list'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
-  const admins = ['config','salvar-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete','templates-mapping-save','canal-salvar','qr-share-create','email-dominio-create','email-dominio-verify','email-dominio-remetente-save'];
+  const admins = ['config','salvar-config','remover-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete','templates-mapping-save','canal-salvar','qr-share-create','email-dominio-create','email-dominio-verify','email-dominio-remetente-save'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
   const ws = b.workspace_id;
   if(b.action==='email-dominios-list'){
