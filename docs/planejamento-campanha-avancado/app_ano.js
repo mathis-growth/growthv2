@@ -56,6 +56,7 @@ if (REAL && window.PV) {
     set(pl, 'orcamentoAquisicaoAno', Math.round(A.base.orcAq), '_orcAno'); set(pl, 'realizadoAquisicao', Math.round((y.midia || 0) + (y.custosAq || 0)), '_realAno'); set(pl, 'comprometidoAquisicao', Math.round(comprometido()), '_compAno');
     set(p, 'orcamentoDisponivel', Math.max(0, pl.orcamentoAquisicaoAno - pl.realizadoAquisicao - pl.comprometidoAquisicao), '_orcDoPlano');
     if (!p.residualMinimo || p.residualMinimo === p._resDoPlano) { p.residualMinimo = Math.round(A.residualCampanha); p._resDoPlano = p.residualMinimo; } };
+  PV.planoDoAno = () => { const { x } = entradas(), A = BC.planoAno(x); return A.completo ? { ...A, aprovado: PA.versoes.length || null } : A; };
   PV.renderAno = renderAno;
   PV.navAno = () => { const v = PA.versoes[PA.versoes.length - 1]; return `<button type="button" role="tab" data-barea="ano" aria-selected="${ST.area === 'ano'}">Plano do ano <span class="st ${v ? 'ok' : 'warn'}">${v ? 'aprovado v' + v.n : 'a aprovar'}</span></button>`; };
   document.addEventListener('click', e => { const b = e.target.closest('button'); if (!b || !b.hasAttribute('data-banoaprovar')) return; e.stopImmediatePropagation();

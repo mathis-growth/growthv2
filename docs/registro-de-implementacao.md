@@ -1,3 +1,6 @@
+## Resultados do ano (v0.292)
+Motor: 82 de 82 (5 novos: desvio, medidas pelos totais, vazio sem plano ou sem real, aprendizado com média e sentido, uma campanha não conclui). Com os dados do workspace Demo (leitura de produção): trimestres de 2026 com o realizado, 6 campanhas listadas, planejamento ligado a uma campanha com dados mostrando planejado → realizado, aviso de uma campanha só, troca de ano, rascunho gravado com a campanha ligada (simulado), 390 px sem rolagem lateral, sem erros. `index.html`: sintaxe conferida. Não rodou no Growths logado. O caso de duas ou mais campanhas comparadas está coberto só pelo teste do motor.
+
 ## Plano do ano (v0.291)
 Motor: 77 de 77 (10 novos do plano do ano: orçamento de aquisição, novos clientes, CAC máximo, lucro no CAC de referência, receita mínima, trimestres, cenários, meta inviável, dados faltando, contribuição por campanha). Baseline: 10 de 10. Com os dados do workspace Demo (leitura de produção): plano bloqueado sem custos fixos, plano calculado depois do baseline, pesos por trimestre, aprovação, gravação (simulada), orçamento do ano e contribuição mínima chegando nos passos 2 e 7 e respeitando valor digitado, 390 px sem rolagem lateral, sem erros. `index.html`: sintaxe conferida. Não rodou no Growths logado.
 

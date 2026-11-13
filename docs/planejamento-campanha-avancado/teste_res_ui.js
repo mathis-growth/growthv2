@@ -1,0 +1,16 @@
+const { chromium } = require('playwright');
+(async () => { const b = await chromium.launch(); const pg = await b.newPage({ viewport: { width: 1280, height: 900 } }); const errs = [];
+  pg.on('pageerror', e => errs.push('page: ' + e.message)); pg.on('console', m => m.type() === 'error' && !/ERR_TUNNEL|Failed to load resource/.test(m.text()) && errs.push('console: ' + m.text()));
+  await pg.goto('file://' + __dirname + '/teste_planav.html'); await pg.waitForTimeout(1500);
+  const fr = pg.frames().find(f => f !== pg.mainFrame()), txt = async () => (await fr.$eval('#app', e => e.innerText)).replace(/\n+/g, ' | ');
+  console.log('ABAS', await fr.$eval('#nav', e => e.innerText.replace(/\n+/g, ' | ')));
+  await fr.click('[data-barea="res"]'); console.log('RES sem plano', (await txt()).slice(0, 1500));
+  await fr.click('[data-barea="camp"]'); await fr.click('[data-ir="8"]'); await fr.click('[data-copiar="todos"]'); await fr.click('[data-ir="1"]');
+  const ops = await fr.$$eval('[data-bcamp] option', os => os.map(o => o.value + '|' + o.textContent)); console.log('CAMPANHAS', ops.slice(0, 4));
+  await fr.selectOption('[data-bcamp]', ops[1].split('|')[0]); console.log('MES', await fr.$eval('.painel .campos', e => e.innerText.replace(/\n+/g, ' | ').slice(-60)));
+  await fr.click('[data-barea="res"]'); const t = await txt(); console.log('RES', t.slice(t.indexOf('2. Campanhas'), t.indexOf('2. Campanhas') + 1500)); console.log('APR', t.slice(t.indexOf('3. Onde')).slice(0, 700));
+  await pg.screenshot({ path: 'res1.png', fullPage: true });
+  await fr.click('[data-bresano="2027"]'); console.log('2027', (await txt()).slice(0, 700));
+  await pg.waitForTimeout(1500); console.log('GRAVADOS', await pg.evaluate(() => GRAVADOS.map(g => g[0] + ' ' + (g[1].nome || '').slice(0, 30) + ' camp=' + ((g[1].premissas.p || {}).campanha_id || '-').slice(0, 8))));
+  const m = await b.newPage({ viewport: { width: 390, height: 844 } }); await m.goto('file://' + __dirname + '/teste_planav.html'); await m.waitForTimeout(1500); const f2 = m.frames().find(f => f !== m.mainFrame()); await f2.click('[data-barea="res"]'); console.log('mob', await f2.evaluate(() => document.documentElement.scrollWidth));
+  console.log('ERRS', errs); await b.close(); })();

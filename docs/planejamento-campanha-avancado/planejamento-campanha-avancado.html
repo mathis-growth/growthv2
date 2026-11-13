@@ -492,7 +492,22 @@ table.bl td input[type=number] { width:110px } table.bl td { vertical-align:top 
       residualCampanha: (fixosAno + lucro) / Math.max(1, val(x.nCamp) || 1) };
   }
 
-  const API = { planoAno, planoCampanha, verbaPeloCac, cenariosDoHistorico, CANAIS, faixa, historicoCanais, historicoFaixas, historicoOfertas, leadsParaMeta, ORIGENS, FATORES, picoResidual, valida, margem, funil, custos, resultado, bissecao, caixa, limites, cplMaxDinamico, aplicaCenario, cenarios, ltv, permiteNegativa, historico, status, projecao, congela, hash, orcamentoDisponivel, div, r2 };
+  /* ---------- 13. planejado contra realizado e aprendizado ---------- */
+  // pl e re = { verba|midia, leads, vendas, novos, receita }; devolve cada medida com plano, real e desvio (real ÷ plano − 1)
+  function desvios(pl, re) {
+    const d = (a, b) => (a == null || b == null || !(a > 0)) ? null : b / a - 1, mk = (plano, real) => ({ plano, real, desvio: d(plano, real) });
+    const P = { midia: val(pl.midia), leads: val(pl.leads), vendas: val(pl.vendas), novos: val(pl.novos), receita: val(pl.receita) }, R = { midia: val(re.midia), leads: val(re.leads), vendas: val(re.vendas), novos: val(re.novos), receita: val(re.receita) };
+    return { midia: mk(P.midia, R.midia), leads: mk(P.leads, R.leads), vendas: mk(P.vendas, R.vendas), receita: mk(P.receita, R.receita),
+      cpl: mk(div(P.midia, P.leads), div(R.midia, R.leads)), conv: mk(div(P.vendas, P.leads), div(R.vendas, R.leads)), ticket: mk(div(P.receita, P.vendas), div(R.receita, R.vendas)), cac: mk(div(P.midia, P.novos), div(R.midia, R.novos)) };
+  }
+  // média simples do desvio de cada premissa entre campanhas; com menos de minimo campanhas, não conclui
+  function aprendizado(lista, minimo) {
+    const min = minimo || 2, o = {}; ['cpl', 'conv', 'ticket', 'cac'].forEach(k => { const v = lista.map(x => x[k] && x[k].desvio).filter(x => x != null && isFinite(x));
+      o[k] = { n: v.length, media: v.length >= min ? v.reduce((a, b) => a + b, 0) / v.length : null, suficiente: v.length >= min, mesmoSentido: v.length >= min && (v.every(x => x > 0) || v.every(x => x < 0)) }; });
+    return o;
+  }
+
+  const API = { desvios, aprendizado, planoAno, planoCampanha, verbaPeloCac, cenariosDoHistorico, CANAIS, faixa, historicoCanais, historicoFaixas, historicoOfertas, leadsParaMeta, ORIGENS, FATORES, picoResidual, valida, margem, funil, custos, resultado, bissecao, caixa, limites, cplMaxDinamico, aplicaCenario, cenarios, ltv, permiteNegativa, historico, status, projecao, congela, hash, orcamentoDisponivel, div, r2 };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else raiz.BC = API;
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
@@ -640,6 +655,14 @@ grupo = 'Plano do ano';
   t('Meta que não paga fixos e lucro: inviável, sem CAC máximo', (() => { const r = BC.planoAno({ ...x, meta: 500000 }); return r.base.viavel === false && r.base.cacMax === null; })());
   t('Sem margem ou sem ticket: incompleto, nada é calculado', (() => { const r = BC.planoAno({ ...x, margem: null, ticket: 0 }); return r.completo === false && r.faltando.includes('margem') && r.faltando.includes('ticket'); })());
   t('Contribuição que cada campanha precisa deixar = (fixos + lucro) ÷ campanhas do ano', A.residualCampanha === 60000); }
+grupo = 'Planejado contra realizado';
+{ const d = BC.desvios({ midia: 10000, leads: 1000, vendas: 50, novos: 40, receita: 50000 }, { midia: 12000, leads: 1000, vendas: 40, novos: 32, receita: 44000 });
+  t('Desvio = real ÷ plano − 1', perto(d.vendas.desvio, -0.2, 1e-12) && perto(d.midia.desvio, 0.2, 1e-12));
+  t('CPL, conversão, ticket e CAC saem dos totais de cada lado', perto(d.cpl.plano, 10, 1e-12) && perto(d.cpl.real, 12, 1e-12) && perto(d.conv.real, 0.04, 1e-12) && perto(d.ticket.real, 1100, 1e-12) && perto(d.cac.real, 375, 1e-12));
+  t('Sem plano ou sem real, o desvio fica vazio (não vira zero)', BC.desvios({ midia: 0, leads: 0 }, { midia: 500, leads: 10 }).cpl.desvio === null && BC.desvios({ midia: 100, leads: 10 }, {}).cpl.desvio === null);
+  const d2 = BC.desvios({ midia: 10000, leads: 1000, vendas: 50, novos: 40, receita: 50000 }, { midia: 11000, leads: 1000, vendas: 55, novos: 44, receita: 55000 }), A = BC.aprendizado([d, d2]);
+  t('Aprendizado: média do desvio entre campanhas, e se todas erraram para o mesmo lado', perto(A.cpl.media, 0.15, 1e-12) && A.cpl.mesmoSentido === true && A.conv.mesmoSentido === false);
+  t('Com uma campanha só, não conclui', BC.aprendizado([d]).cpl.suficiente === false && BC.aprendizado([d]).cpl.media === null); }
 grupo = 'Versão aprovada';
 { const v = BC.congela({ a: 1 }, 'Rebecka', '2026-11-08', 'aprovação'); let mudou = false; try { v.foto.a = 2; mudou = v.foto.a === 2; } catch (e) {} t('Versão aprovada é imutável', !mudou && v.hash === BC.hash(JSON.stringify({ a: 1 }))); }
 
@@ -1267,9 +1290,9 @@ if (REAL) {
   const render0 = render; let rend = false, pend = false;
   render = () => { if (rend) { pend = true; return; } rend = true; try { renderTudo(); } finally { rend = false; } if (pend) { pend = false; render(); } };
   const renderTudo = () => { const ae = document.activeElement, at = ae && ae.attributes ? [...ae.attributes].find(x => /^data-b/.test(x.name)) : null, foco = at ? `[${at.name}="${at.value}"]` : null;
-    if (ST.area === 'base') renderBase(); else if (ST.area === 'ano' && PV.renderAno) PV.renderAno(); else { aplicaBase(); if (PV.aplicaAno) PV.aplicaAno(); render0(); }
+    if (ST.area === 'base') renderBase(); else if (ST.area === 'ano' && PV.renderAno) PV.renderAno(); else if (ST.area === 'res' && PV.renderRes) PV.renderRes(); else { aplicaBase(); if (PV.aplicaAno) PV.aplicaAno(); render0(); }
     const v = BL.versoes[BL.versoes.length - 1];
-    $('#nav').innerHTML = `<div class="areas" role="tablist"><button type="button" role="tab" data-barea="base" aria-selected="${ST.area === 'base'}">Diagnóstico e baseline <span class="st ${v ? 'ok' : 'warn'}">${v ? 'aprovado v' + v.n : 'a aprovar'}</span></button>${PV.navAno()}<button type="button" role="tab" data-barea="camp" aria-selected="${ST.area === 'camp'}">Planejar campanha</button></div>${ST.area === 'camp' && !v ? `<p class="aviso warn" style="margin:0 0 12px">O baseline ${BL.ano} ainda não foi aprovado. Dá para planejar a campanha, mas os limites usam números não conferidos.</p>` : ''}`;
+    $('#nav').innerHTML = `<div class="areas" role="tablist"><button type="button" role="tab" data-barea="base" aria-selected="${ST.area === 'base'}">Diagnóstico e baseline <span class="st ${v ? 'ok' : 'warn'}">${v ? 'aprovado v' + v.n : 'a aprovar'}</span></button>${PV.navAno()}<button type="button" role="tab" data-barea="camp" aria-selected="${ST.area === 'camp'}">Planejar campanha</button>${PV.navRes ? PV.navRes() : ''}</div>${ST.area === 'camp' && !v ? `<p class="aviso warn" style="margin:0 0 12px">O baseline ${BL.ano} ainda não foi aprovado. Dá para planejar a campanha, mas os limites usam números não conferidos.</p>` : ''}`;
     if (foco && ST.area !== 'camp') { const el = document.querySelector(foco); if (el && el.type !== 'checkbox') { el.focus(); } } };
   document.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.barea) { ST.area = b.dataset.barea; window.scrollTo(0, 0); }
@@ -1344,6 +1367,7 @@ if (REAL && window.PV) {
     set(pl, 'orcamentoAquisicaoAno', Math.round(A.base.orcAq), '_orcAno'); set(pl, 'realizadoAquisicao', Math.round((y.midia || 0) + (y.custosAq || 0)), '_realAno'); set(pl, 'comprometidoAquisicao', Math.round(comprometido()), '_compAno');
     set(p, 'orcamentoDisponivel', Math.max(0, pl.orcamentoAquisicaoAno - pl.realizadoAquisicao - pl.comprometidoAquisicao), '_orcDoPlano');
     if (!p.residualMinimo || p.residualMinimo === p._resDoPlano) { p.residualMinimo = Math.round(A.residualCampanha); p._resDoPlano = p.residualMinimo; } };
+  PV.planoDoAno = () => { const { x } = entradas(), A = BC.planoAno(x); return A.completo ? { ...A, aprovado: PA.versoes.length || null } : A; };
   PV.renderAno = renderAno;
   PV.navAno = () => { const v = PA.versoes[PA.versoes.length - 1]; return `<button type="button" role="tab" data-barea="ano" aria-selected="${ST.area === 'ano'}">Plano do ano <span class="st ${v ? 'ok' : 'warn'}">${v ? 'aprovado v' + v.n : 'a aprovar'}</span></button>`; };
   document.addEventListener('click', e => { const b = e.target.closest('button'); if (!b || !b.hasAttribute('data-banoaprovar')) return; e.stopImmediatePropagation();
@@ -1353,6 +1377,58 @@ if (REAL && window.PV) {
     if (el.dataset.bano) PA[el.dataset.bano] = n; else if (el.dataset.bapeso != null && el.dataset.bapeso !== '') { const { x } = entradas(); PA.pesos = x.pesos.map(p => Math.round(p * 10) / 10); PA.pesos[Number(el.dataset.bapeso)] = n || 0; } else return;
     e.stopImmediatePropagation(); salvaAno(); render(); }, true);
   window.addEventListener('message', e => { const m = e.data || {}; if (m.tipo !== 'planav-salvo' || m.alvo !== 'plano') return; if (!m.erro) PA.id = m.id; ST.salvoAno = m.erro ? 'Não salvou: ' + m.erro : '✓ Plano salvo às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); const el = document.getElementById('salvoAno'); if (el) el.textContent = ST.salvoAno; }, true);
+}
+
+/* ===== v0.292 — Resultados do ano (só no Growths): trimestres, campanhas planejadas × realizadas e aprendizado ===== */
+if (REAL && window.PV) {
+  const D = window.DADOS, B = D.base || {}, PV = window.PV, anoHoje = Number(B.hoje.slice(0, 4));
+  const anos = [...new Set(Object.keys(B.anos || {}).map(Number).concat([anoHoje, PV.anoPlano]))].sort();
+  ST.resAno = anoHoje; ST.p.campanha_id = ST.p.campanha_id || null;
+  const tri = mes => Math.floor((Number(mes.slice(5, 7)) - 1) / 3), MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'], mesTxt = m => m ? `${MESES[Number(m.slice(5, 7)) - 1]}/${m.slice(2, 4)}` : 'sem data';
+  // os planejamentos avançados: os salvos, com o que está aberto agora no lugar do salvo
+  const planos = () => { const l = (D.rascunhos || []).filter(r => r.id !== ST.calcId).map(r => ({ id: r.id, p: r.premissas.p, versoes: r.premissas.versoes || [] })); if (ST.p && ST.p.produto_id) l.push({ id: ST.calcId || 'aberto', p: ST.p, versoes: ST.versoes || [], aberto: true }); return l.filter(x => x.p); };
+  const numeros = p => { const c = p.plan && p.plan.cens && p.plan.cens.base; if (!c) return null; const r = BC.planoCampanha(c), o = p.ofertas || {}, preco = (p.produto && p.produto.preco && p.produto.preco.v) || 0, extra = ['bump', 'upsell'].reduce((s, k) => s + (o[k] && o[k].tem ? o[k].aceite / 100 * o[k].preco : 0), 0);
+    return { midia: r.verba, leads: r.leads, vendas: r.vendas, novos: r.novos, receita: r.vendas * (preco + extra) }; };
+  function linhas(ano) { const usados = new Set(), L = [];
+    planos().forEach(pl => { const camp = pl.p.campanha_id && D.campanhas.find(c => c.id === pl.p.campanha_id), mes = camp && camp.data_inicio ? String(camp.data_inicio).slice(0, 7) : pl.p.mes || null; if (camp) usados.add(camp.id);
+      if (mes ? mes.slice(0, 4) !== String(ano) : ano !== PV.anoPlano) return;
+      L.push({ nome: camp ? camp.nome : pl.p.nome, mes, plano: numeros(pl.p), real: camp && (camp.leads > 0 || camp.midia > 0 || camp.vendas > 0) ? camp : null, estado: pl.versoes.length ? `plano aprovado v${pl.versoes.length}` : 'plano em rascunho', aberto: pl.aberto, ligada: !!camp }); });
+    D.campanhas.forEach(c => { if (usados.has(c.id) || !c.data_inicio || String(c.data_inicio).slice(0, 4) !== String(ano)) return; if (!(c.leads > 0 || c.midia > 0 || c.vendas > 0)) return;
+      L.push({ nome: c.nome, mes: String(c.data_inicio).slice(0, 7), plano: null, real: c, estado: 'sem planejamento avançado', ligada: true }); });
+    return L.sort((a, b) => String(a.mes || '9999').localeCompare(String(b.mes || '9999'))); }
+  const metaTri = ano => { if (ano === PV.anoPlano && PV.planoDoAno) { const A = PV.planoDoAno(); if (A && A.completo) return { q: A.trimestres.map(x => x.receita), origem: 'Plano do ano' + (A.aprovado ? ` (v${A.aprovado})` : ', ainda não aprovado') }; }
+    const g = (D.planoAnual || []).find(x => Number(x.ano) === ano && Number(x.meta_receita) > 0); return g ? { q: [0, 1, 2, 3].map(() => Number(g.meta_receita) / 4), origem: 'Planejamento anual do Growths, dividido por igual' } : null; };
+  const dv = (x, menor) => x == null || x.desvio == null ? '' : Math.abs(x.desvio) <= 0.03 ? 'c-meta' : (x.desvio > 0) === !menor ? 'c-ok' : 'c-bad';
+  const par = (x, f, menor) => x.plano == null && x.real == null ? '<span class="muted">—</span>' : `${x.plano == null ? '<span class="muted">—</span>' : f(x.plano)} <span class="muted">→</span> <b class="${dv(x, menor)}">${x.real == null ? '—' : f(x.real)}</b>${x.desvio == null ? '' : `<span class="d ${dv(x, menor)}">${x.desvio >= 0 ? '+' : ''}${nf(x.desvio * 100, 0)}%</span>`}`;
+  function renderRes() {
+    const ano = ST.resAno, L = linhas(ano), M = metaTri(ano), real = [0, 0, 0, 0], plan = [0, 0, 0, 0]; Object.entries(B.porMes || {}).forEach(([m, v]) => { if (m.slice(0, 4) === String(ano)) real[tri(m)] += v; });
+    L.forEach(x => { if (x.plano && x.mes) plan[tri(x.mes)] += x.plano.receita; });
+    const semData = L.filter(x => x.plano && !x.mes), comp = L.filter(x => x.plano && x.real).map(x => ({ x, d: BC.desvios(x.plano, x.real) })), AP = BC.aprendizado(comp.map(c => c.d));
+    const triAtual = ano < anoHoje ? 4 : ano > anoHoje ? -1 : tri(B.hoje), NOME = { cpl: ['CPL', true], conv: ['Conversão de lead em venda', false], ticket: ['Ticket médio', false], cac: ['CAC de mídia', true] };
+    $('#app').innerHTML = `<div class="wz"><div class="wzh"><h2>Resultados do ano</h2><small class="muted">O que foi planejado, o que aconteceu e onde as premissas erraram. É daqui que sai o aprendizado para o próximo plano.</small>
+      <div class="seg" role="group" aria-label="Ano" style="margin-top:10px">${anos.map(a => `<button type="button" data-bresano="${a}" aria-pressed="${a === ano}">${a}</button>`).join('')}</div></div><div class="wzb">
+    <h3>1. Trimestres</h3>
+    <div class="tw"><table><thead><tr><th>Trimestre</th><th class="n">Meta de receita</th><th class="n">Planejado nas campanhas</th><th class="n">Falta planejar</th><th class="n">Realizado</th><th class="n">Realizado ÷ meta</th></tr></thead><tbody>${[0, 1, 2, 3].map(i => { const m = M ? M.q[i] : null, falta = m == null ? null : m - plan[i], enc = i < triAtual, cur = i === triAtual; return `<tr><td>${i + 1}º trimestre${cur ? ' <span class="st meta">em andamento</span>' : ''}</td><td class="n">${m == null ? '—' : brl(m)}</td><td class="n">${plan[i] ? brl(plan[i]) : '—'}</td><td class="n ${falta > 0 && !enc ? 'c-bad' : ''}">${falta == null || enc ? '—' : falta > 0 ? brl(falta) : 'coberto'}</td><td class="n">${real[i] ? brl(real[i]) : '—'}</td><td class="n ${m && (enc || cur) && real[i] ? (enc ? cor3c(real[i], m) : '') : ''}">${m && real[i] ? pc(real[i] / m, 0) : '—'}</td></tr>`; }).join('')}
+      <tr class="tot"><td>Ano</td><td class="n">${M ? brl(M.q.reduce((a, b) => a + b, 0)) : '—'}</td><td class="n">${brl(plan.reduce((a, b) => a + b, 0))}</td><td class="n"></td><td class="n">${brl(real.reduce((a, b) => a + b, 0))}</td><td class="n">${M && real.some(v => v) ? pc(real.reduce((a, b) => a + b, 0) / M.q.reduce((a, b) => a + b, 0), 0) : '—'}</td></tr></tbody></table></div>
+    <p class="peq muted">${M ? `Meta: ${M.origem}.` : `Sem meta para ${ano}: ${ano === PV.anoPlano ? 'complete o Plano do ano.' : 'este ano não tem plano registrado, só o realizado.'}`} "Planejado nas campanhas" soma a receita do cenário base dos planejamentos avançados com data no trimestre. Realizado é a receita das vendas aprovadas, de todas as origens.${semData.length ? ` <span class="warn-t">${semData.length} planejamento(s) sem mês definido não entram em nenhum trimestre.</span>` : ''}</p>
+    <h3>2. Campanhas: planejado → realizado</h3>
+    ${L.length ? `<div class="tw"><table><thead><tr><th>Campanha</th><th class="n">Vendas</th><th class="n">Receita</th><th class="n">Mídia</th><th class="n">CPL</th><th class="n">CAC de mídia</th><th class="n">Lead → venda</th></tr></thead><tbody>${L.map(x => { const d = BC.desvios(x.plano || {}, x.real || {}); return `<tr><td>${x.nome}<span class="d">${mesTxt(x.mes)} · ${x.mes ? (tri(x.mes) + 1) + 'º tri' : 'defina o mês no passo 2'} · ${x.estado}${x.plano && !x.ligada ? ' · sem campanha ligada' : ''}${x.aberto ? ' · aberto agora' : ''}</span></td><td class="n">${par(d.vendas, v => nf(v, 0))}</td><td class="n">${par(d.receita, brl)}</td><td class="n">${par(d.midia, brl, true)}</td><td class="n">${par(d.cpl, v => brl(v, 2), true)}</td><td class="n">${par(d.cac, brl, true)}</td><td class="n">${par(d.conv, v => pc(v, 2))}</td></tr>`; }).join('')}</tbody></table></div>
+    <p class="leg-cor"><span><i class="c" style="background:var(--bad)"></i>pior que o plano</span><span><i class="c" style="background:var(--accent)"></i>no plano (±3%)</span><span><i class="c" style="background:var(--ok)"></i>melhor</span><span>Cada célula: planejado → realizado. O plano é o cenário base do planejamento avançado; para comparar, ligue o planejamento à campanha no passo 2.</span></p>` : `<p class="muted">Nenhuma campanha com dados nem planejamento avançado em ${ano}.</p>`}
+    <h3>3. Onde as premissas erraram</h3>
+    ${comp.length ? `<div class="tw"><table><thead><tr><th>Premissa</th><th class="n">Campanhas comparadas</th><th class="n">Desvio médio</th><th>Leitura</th></tr></thead><tbody>${Object.entries(NOME).map(([k, [n, menor]]) => { const a = AP[k]; return `<tr><td>${n}</td><td class="n">${a.n}</td><td class="n ${a.media == null ? '' : Math.abs(a.media) <= 0.03 ? 'c-meta' : (a.media > 0) === !menor ? 'c-ok' : 'c-bad'}">${a.media == null ? '—' : (a.media >= 0 ? '+' : '') + nf(a.media * 100, 0) + '%'}</td><td class="peq">${!a.suficiente ? 'Uma campanha só não mostra padrão: é preciso pelo menos duas.' : Math.abs(a.media) <= 0.03 ? 'Planejado e realizado andaram juntos.' : a.mesmoSentido ? `Todas as campanhas ficaram ${(a.media > 0) === !menor ? 'melhores' : 'piores'} que o plano nesta premissa: vale rever o número no próximo planejamento.` : 'Os desvios foram para lados diferentes: não há padrão.'}</td></tr>`; }).join('')}</tbody></table></div>
+    <p class="peq muted">O desvio mostra a diferença entre o plano e o que aconteceu, não a causa. Antes de mudar uma premissa, confira se a oferta, o público ou o período foram os mesmos.</p>` : '<p class="muted">Ainda não há campanha com planejamento avançado e resultado para comparar. Quando um planejamento estiver ligado a uma campanha com dados, o desvio de CPL, conversão, ticket e CAC aparece aqui.</p>'}
+    </div><div class="wzf"><button type="button" class="btn" data-barea="ano">Plano do ano</button><span class="sp"></span><button type="button" class="btn pri" data-barea="camp">Planejar campanha</button></div></div>`;
+  }
+  PV.renderRes = renderRes;
+  PV.navRes = () => `<button type="button" role="tab" data-barea="res" aria-selected="${ST.area === 'res'}">Resultados do ano</button>`;
+  // passo 2 da campanha: ligar o planejamento a uma campanha do Growths e dizer quando acontece
+  const passoProdutoR = passoProduto;
+  passoProduto = (p, L) => { const cs = D.campanhas.filter(c => c.produto_id === p.produto_id).sort((a, b) => String(b.data_inicio || '').localeCompare(String(a.data_inicio || ''))), camp = cs.find(c => c.id === p.campanha_id);
+    return `<div class="painel" style="margin-bottom:12px"><div class="campos"><label class="campo">Campanha do Growths ligada a este planejamento<select data-bcamp><option value="">Ainda não criada</option>${cs.map(c => `<option value="${c.id}" ${c.id === p.campanha_id ? 'selected' : ''}>${String(c.nome).replace(/[<>&"]/g, '')}${c.data_inicio ? ' · ' + mesTxt(String(c.data_inicio).slice(0, 7)) : ''}</option>`).join('')}</select></label>
+      <label class="campo">Mês da campanha<span>${camp && camp.data_inicio ? `<b>${mesTxt(String(camp.data_inicio).slice(0, 7))}</b> <span class="muted peq">pela data da campanha</span>` : `<input type="month" value="${p.mes || ''}" data-bmes>`}</span></label></div>
+      <p class="peq muted" style="margin:8px 0 0">A campanha continua sendo criada em Campanhas e planejamento. Ligar aqui serve para o Growths comparar o planejado com o realizado em Resultados do ano.</p></div>` + passoProdutoR(p, L); };
+  document.addEventListener('click', e => { const b = e.target.closest('button'); if (!b || !b.dataset.bresano) return; e.stopImmediatePropagation(); ST.resAno = Number(b.dataset.bresano); render(); }, true);
+  document.addEventListener('change', e => { const el = e.target; if (el.hasAttribute('data-bcamp')) ST.p.campanha_id = el.value || null; else if (el.hasAttribute('data-bmes')) ST.p.mes = el.value || null; else return; e.stopImmediatePropagation(); salva(); render(); }, true);
 }
 
 render();</script></body></html>

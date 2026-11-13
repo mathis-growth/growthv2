@@ -104,6 +104,14 @@ grupo = 'Plano do ano';
   t('Meta que não paga fixos e lucro: inviável, sem CAC máximo', (() => { const r = BC.planoAno({ ...x, meta: 500000 }); return r.base.viavel === false && r.base.cacMax === null; })());
   t('Sem margem ou sem ticket: incompleto, nada é calculado', (() => { const r = BC.planoAno({ ...x, margem: null, ticket: 0 }); return r.completo === false && r.faltando.includes('margem') && r.faltando.includes('ticket'); })());
   t('Contribuição que cada campanha precisa deixar = (fixos + lucro) ÷ campanhas do ano', A.residualCampanha === 60000); }
+grupo = 'Planejado contra realizado';
+{ const d = BC.desvios({ midia: 10000, leads: 1000, vendas: 50, novos: 40, receita: 50000 }, { midia: 12000, leads: 1000, vendas: 40, novos: 32, receita: 44000 });
+  t('Desvio = real ÷ plano − 1', perto(d.vendas.desvio, -0.2, 1e-12) && perto(d.midia.desvio, 0.2, 1e-12));
+  t('CPL, conversão, ticket e CAC saem dos totais de cada lado', perto(d.cpl.plano, 10, 1e-12) && perto(d.cpl.real, 12, 1e-12) && perto(d.conv.real, 0.04, 1e-12) && perto(d.ticket.real, 1100, 1e-12) && perto(d.cac.real, 375, 1e-12));
+  t('Sem plano ou sem real, o desvio fica vazio (não vira zero)', BC.desvios({ midia: 0, leads: 0 }, { midia: 500, leads: 10 }).cpl.desvio === null && BC.desvios({ midia: 100, leads: 10 }, {}).cpl.desvio === null);
+  const d2 = BC.desvios({ midia: 10000, leads: 1000, vendas: 50, novos: 40, receita: 50000 }, { midia: 11000, leads: 1000, vendas: 55, novos: 44, receita: 55000 }), A = BC.aprendizado([d, d2]);
+  t('Aprendizado: média do desvio entre campanhas, e se todas erraram para o mesmo lado', perto(A.cpl.media, 0.15, 1e-12) && A.cpl.mesmoSentido === true && A.conv.mesmoSentido === false);
+  t('Com uma campanha só, não conclui', BC.aprendizado([d]).cpl.suficiente === false && BC.aprendizado([d]).cpl.media === null); }
 grupo = 'Versão aprovada';
 { const v = BC.congela({ a: 1 }, 'Rebecka', '2026-11-08', 'aprovação'); let mudou = false; try { v.foto.a = 2; mudou = v.foto.a === 2; } catch (e) {} t('Versão aprovada é imutável', !mudou && v.hash === BC.hash(JSON.stringify({ a: 1 }))); }
 

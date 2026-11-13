@@ -30,3 +30,10 @@ O que ainda não faz: levar as metas para uma campanha, cockpit dentro do módul
 4. Mude o peso de um trimestre e veja a meta e o orçamento do trimestre mudarem.
 5. Clique em **Aprovar plano do ano**.
 6. Em **Planejar campanha**, o passo 2 deve trazer o orçamento de aquisição do ano e o passo 7 a contribuição mínima. Mude um deles lá: o valor digitado fica.
+
+## Resultados do ano (v0.292)
+1. Abra a aba **Resultados do ano**. O ano corrente mostra o realizado por trimestre e as campanhas com dados.
+2. Em **Planejar campanha**, copie para os cenários (passo 9) e, no passo 2, escolha uma campanha já realizada em "Campanha do Growths ligada".
+3. Volte a Resultados do ano: a campanha mostra planejado → realizado, com o desvio em cor.
+4. Com uma campanha só, a seção 3 avisa que não há padrão. Com duas ou mais, mostra o desvio médio.
+5. Troque o ano nos botões do topo.

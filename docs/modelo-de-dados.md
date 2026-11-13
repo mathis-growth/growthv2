@@ -1,3 +1,6 @@
+## v0.292
+Sem mudança no banco. A campanha ligada (`campanha_id`) e o mês (`mes`) ficam no rascunho do planejamento, em `campanha_calculos.premissas.p`. Nenhuma tabela de campanha é alterada.
+
 ## v0.291
 Sem mudança no banco. O plano do ano fica em `campanha_calculos`, com `premissas.modulo = 'planav'` e `premissas.planoAno` (ano, meta, premissas, pesos, versões aprovadas). Leitura nova: `plano_anual` (ano, meta_receita, percentuais), só para sugerir a meta; a tabela não é alterada.
 

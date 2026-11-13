@@ -1,3 +1,12 @@
+## v0.292 — Resultados do ano
+- **Ligação:** o planejamento avançado aponta para uma campanha do Growths (passo 2). A campanha continua sendo criada em Campanhas e planejamento. Sem campanha ligada, vale o mês informado.
+- **Trimestre da campanha:** pela data de início da campanha ligada; senão, pelo mês informado. Planejamento sem mês não entra em nenhum trimestre e é avisado.
+- **Meta do trimestre:** do Plano do ano (ano do plano); em outros anos, a meta do Planejamento anual do Growths dividida por igual; sem nenhuma, só o realizado.
+- **Planejado nas campanhas:** receita do cenário base de cada planejamento avançado (vendas × preço, com bump e upsell pelo aceite). "Falta planejar" = meta − planejado, só em trimestres que não acabaram.
+- **Realizado do trimestre:** receita das vendas aprovadas, de todas as origens (não só das campanhas).
+- **Planejado → realizado por campanha:** vendas, receita, mídia, CPL (mídia ÷ leads), CAC de mídia e conversão de lead em venda. Desvio = real ÷ plano − 1. Até ±3% conta como "no plano".
+- **Onde as premissas erraram:** média do desvio de CPL, conversão, ticket e CAC entre as campanhas comparadas. Com menos de duas campanhas, não conclui. Só recomenda rever a premissa quando todas erraram para o mesmo lado. É diferença, não causa.
+
 ## v0.291 — Plano do ano
 - **Ponto de partida:** a última versão aprovada do baseline; sem aprovação, os números de agora, com aviso.
 - **Meta de receita:** a do Planejamento anual do Growths para o ano, se existir; senão, receita do baseline + 20% como premissa declarada; ou a que você digitar.

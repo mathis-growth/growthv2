@@ -304,6 +304,21 @@
       residualCampanha: (fixosAno + lucro) / Math.max(1, val(x.nCamp) || 1) };
   }
 
-  const API = { planoAno, planoCampanha, verbaPeloCac, cenariosDoHistorico, CANAIS, faixa, historicoCanais, historicoFaixas, historicoOfertas, leadsParaMeta, ORIGENS, FATORES, picoResidual, valida, margem, funil, custos, resultado, bissecao, caixa, limites, cplMaxDinamico, aplicaCenario, cenarios, ltv, permiteNegativa, historico, status, projecao, congela, hash, orcamentoDisponivel, div, r2 };
+  /* ---------- 13. planejado contra realizado e aprendizado ---------- */
+  // pl e re = { verba|midia, leads, vendas, novos, receita }; devolve cada medida com plano, real e desvio (real ÷ plano − 1)
+  function desvios(pl, re) {
+    const d = (a, b) => (a == null || b == null || !(a > 0)) ? null : b / a - 1, mk = (plano, real) => ({ plano, real, desvio: d(plano, real) });
+    const P = { midia: val(pl.midia), leads: val(pl.leads), vendas: val(pl.vendas), novos: val(pl.novos), receita: val(pl.receita) }, R = { midia: val(re.midia), leads: val(re.leads), vendas: val(re.vendas), novos: val(re.novos), receita: val(re.receita) };
+    return { midia: mk(P.midia, R.midia), leads: mk(P.leads, R.leads), vendas: mk(P.vendas, R.vendas), receita: mk(P.receita, R.receita),
+      cpl: mk(div(P.midia, P.leads), div(R.midia, R.leads)), conv: mk(div(P.vendas, P.leads), div(R.vendas, R.leads)), ticket: mk(div(P.receita, P.vendas), div(R.receita, R.vendas)), cac: mk(div(P.midia, P.novos), div(R.midia, R.novos)) };
+  }
+  // média simples do desvio de cada premissa entre campanhas; com menos de minimo campanhas, não conclui
+  function aprendizado(lista, minimo) {
+    const min = minimo || 2, o = {}; ['cpl', 'conv', 'ticket', 'cac'].forEach(k => { const v = lista.map(x => x[k] && x[k].desvio).filter(x => x != null && isFinite(x));
+      o[k] = { n: v.length, media: v.length >= min ? v.reduce((a, b) => a + b, 0) / v.length : null, suficiente: v.length >= min, mesmoSentido: v.length >= min && (v.every(x => x > 0) || v.every(x => x < 0)) }; });
+    return o;
+  }
+
+  const API = { desvios, aprendizado, planoAno, planoCampanha, verbaPeloCac, cenariosDoHistorico, CANAIS, faixa, historicoCanais, historicoFaixas, historicoOfertas, leadsParaMeta, ORIGENS, FATORES, picoResidual, valida, margem, funil, custos, resultado, bissecao, caixa, limites, cplMaxDinamico, aplicaCenario, cenarios, ltv, permiteNegativa, historico, status, projecao, congela, hash, orcamentoDisponivel, div, r2 };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else raiz.BC = API;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -1,3 +1,6 @@
+## v0.292
+**Resultados do ano no Planejamento de campanha avançado.** Quarta aba: os trimestres com meta, planejado nas campanhas e realizado; cada campanha com o planejado ao lado do realizado; e onde as premissas erraram. No passo 2 da campanha, o planejamento pode ser ligado a uma campanha do Growths.
+
 ## v0.291
 **Plano do ano no Planejamento de campanha avançado.** Terceira aba, entre o baseline e a campanha: a meta de receita confrontada com o baseline vira orçamento de aquisição, clientes novos necessários, CAC máximo, três cenários e trimestres. O orçamento e a contribuição mínima passam sozinhos para cada campanha.
 
