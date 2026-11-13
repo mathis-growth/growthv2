@@ -475,7 +475,24 @@ table.bl td input[type=number] { width:110px } table.bl td { vertical-align:top 
   // duas campanhas pelo mesmo orçamento: o que sobra para a segunda depois de reservar a primeira
   const orcamentoDisponivel = (orcamento, realizado, comprometido) => Math.max(0, (val(orcamento) || 0) - (val(realizado) || 0) - (val(comprometido) || 0));
 
-  const API = { planoCampanha, verbaPeloCac, cenariosDoHistorico, CANAIS, faixa, historicoCanais, historicoFaixas, historicoOfertas, leadsParaMeta, ORIGENS, FATORES, picoResidual, valida, margem, funil, custos, resultado, bissecao, caixa, limites, cplMaxDinamico, aplicaCenario, cenarios, ltv, permiteNegativa, historico, status, projecao, congela, hash, orcamentoDisponivel, div, r2 };
+  /* ---------- 12. plano do ano: do baseline à meta, ao orçamento de aquisição e aos trimestres ---------- */
+  // x = { meta, margem (fração, antes da aquisição), fixosMes, lucro, ticket, ativos, recompra (fração), cacRef, pesos [4], pctPess, pctOtim, nCamp }
+  function planoAno(x) {
+    const obrig = ['meta', 'margem', 'fixosMes', 'ticket'], faltando = obrig.filter(k => val(x[k]) == null || (k !== 'fixosMes' && !(val(x[k]) > 0)));
+    if (faltando.length) return { completo: false, faltando };
+    const mc = val(x.margem), fixosAno = val(x.fixosMes) * 12, lucro = val(x.lucro) || 0, ticket = val(x.ticket), cacRef = val(x.cacRef), vRecBase = (val(x.ativos) || 0) * (val(x.recompra) || 0);
+    const pesosIn = (x.pesos && x.pesos.length === 4 ? x.pesos : [25, 25, 25, 25]).map(p => Math.max(0, val(p) || 0)), somaP = pesosIn.reduce((a, b) => a + b, 0) || 1, pesos = pesosIn.map(p => p / somaP);
+    const cen = R => { const contrib = R * mc, orcAq = contrib - fixosAno - lucro, vendas = R / ticket, vRec = Math.min(vendas, vRecBase), novos = vendas - vRec, cacMax = novos > 0 && orcAq > 0 ? orcAq / novos : null;
+      return { receita: R, contrib, orcAq, vendas, vendasRecompra: vRec, novos, cacMax, viavel: orcAq > 0, cabeNoCac: cacRef == null || cacMax == null ? null : cacRef <= cacMax, aquisicaoNoCacRef: cacRef == null ? null : cacRef * novos, lucroNoCacRef: cacRef == null ? null : contrib - fixosAno - cacRef * novos }; };
+    const meta = val(x.meta), base = cen(meta), den = cacRef == null ? mc : mc - cacRef / ticket;
+    // menor receita que paga fixos, lucro desejado e a aquisição no CAC de referência
+    const receitaMinima = den > 0 ? Math.max(0, (fixosAno + lucro - (cacRef || 0) * vRecBase) / den) : null;
+    return { completo: true, faltando: [], fixosAno, lucro, base, pessimista: cen(meta * (1 - (val(x.pctPess) || 0) / 100)), otimista: cen(meta * (1 + (val(x.pctOtim) || 0) / 100)), receitaMinima, pesos,
+      trimestres: pesos.map((p, i) => ({ t: i + 1, peso: p, receita: meta * p, vendas: base.vendas * p, novos: base.novos * p, orcAq: base.orcAq * p })),
+      residualCampanha: (fixosAno + lucro) / Math.max(1, val(x.nCamp) || 1) };
+  }
+
+  const API = { planoAno, planoCampanha, verbaPeloCac, cenariosDoHistorico, CANAIS, faixa, historicoCanais, historicoFaixas, historicoOfertas, leadsParaMeta, ORIGENS, FATORES, picoResidual, valida, margem, funil, custos, resultado, bissecao, caixa, limites, cplMaxDinamico, aplicaCenario, cenarios, ltv, permiteNegativa, historico, status, projecao, congela, hash, orcamentoDisponivel, div, r2 };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else raiz.BC = API;
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
@@ -611,6 +628,18 @@ grupo = 'Plano por canal e cenários';
   const mais = JSON.parse(JSON.stringify(S.base)); mais.canais.org.leads += 300; const m2 = BC.planoCampanha(mais);
   t('Mais orgânico com a mesma verba: mais vendas e CAC de mídia menor', m2.vendas > b.vendas && m2.cacMidia < b.cacMidia);
   t('Orgânico para a meta = leads necessários − pagos − API', perto(b.orgParaMeta, Math.max(0, b.leadsPrecisa - b.leadsPagos - b.api), 1e-12)); }
+grupo = 'Plano do ano';
+{ const x = { meta: 1200000, margem: 0.6, fixosMes: 20000, lucro: 120000, ticket: 1000, ativos: 400, recompra: 0.25, cacRef: 300, pesos: [10, 20, 30, 40], pctPess: 20, pctOtim: 20, nCamp: 6 }, A = BC.planoAno(x);
+  t('Orçamento de aquisição = receita × margem − fixos do ano − lucro desejado', A.base.orcAq === 1200000 * 0.6 - 240000 - 120000);
+  t('Novos clientes = vendas da meta − recompra esperada da base', A.base.vendas === 1200 && A.base.vendasRecompra === 100 && A.base.novos === 1100);
+  t('CAC máximo do ano = orçamento de aquisição ÷ novos clientes', perto(A.base.cacMax, 360000 / 1100, 1e-12) && A.base.cabeNoCac === true);
+  t('Lucro no CAC de referência = contribuição − fixos − CAC × novos', A.base.lucroNoCacRef === 720000 - 240000 - 300 * 1100);
+  t('Receita mínima paga fixos, lucro e aquisição no CAC de referência', (() => { const r = BC.planoAno({ ...x, meta: A.receitaMinima }); return perto(r.base.lucroNoCacRef, 120000, 1e-9); })());
+  t('Trimestres somam a meta e seguem os pesos', perto(A.trimestres.reduce((s, q) => s + q.receita, 0), 1200000, 1e-12) && perto(A.trimestres[3].receita, 480000, 1e-12) && perto(A.trimestres.reduce((s, q) => s + q.orcAq, 0), A.base.orcAq, 1e-12));
+  t('Cenários: pessimista e otimista mudam a receita pelos percentuais', A.pessimista.receita === 960000 && A.otimista.receita === 1440000 && A.pessimista.orcAq < A.base.orcAq);
+  t('Meta que não paga fixos e lucro: inviável, sem CAC máximo', (() => { const r = BC.planoAno({ ...x, meta: 500000 }); return r.base.viavel === false && r.base.cacMax === null; })());
+  t('Sem margem ou sem ticket: incompleto, nada é calculado', (() => { const r = BC.planoAno({ ...x, margem: null, ticket: 0 }); return r.completo === false && r.faltando.includes('margem') && r.faltando.includes('ticket'); })());
+  t('Contribuição que cada campanha precisa deixar = (fixos + lucro) ÷ campanhas do ano', A.residualCampanha === 60000); }
 grupo = 'Versão aprovada';
 { const v = BC.congela({ a: 1 }, 'Rebecka', '2026-11-08', 'aprovação'); let mudou = false; try { v.foto.a = 2; mudou = v.foto.a === 2; } catch (e) {} t('Versão aprovada é imutável', !mudou && v.hash === BC.hash(JSON.stringify({ a: 1 }))); }
 
@@ -1064,7 +1093,7 @@ if (REAL) {
   let tSalva = null;
   salva = () => { clearTimeout(tSalva); tSalva = setTimeout(() => { const p = JSON.parse(JSON.stringify(ST.p)); delete p.historico;
     parent.postMessage({ tipo: 'planav-salvar', id: ST.calcId || null, nome: `Planejamento avançado · ${ST.p.nome}`, premissas: { modulo: 'planav', produto_id: ST.p.produto_id, funil_id: ST.p.funil_id, p, versoes: ST.versoes } }, '*'); }, 1200); };
-  window.addEventListener('message', e => { const m = e.data || {}; if (m.tipo === 'planav-salvo' && m.alvo !== 'baseline') { ST.calcId = m.id; ST.salvoTxt = m.erro ? 'Não salvou: ' + m.erro : '✓ Rascunho salvo às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); const el = document.getElementById('salvoEm'); if (el) { el.textContent = ST.salvoTxt; el.style.color = m.erro ? 'var(--bad)' : ''; } } });
+  window.addEventListener('message', e => { const m = e.data || {}; if (m.tipo === 'planav-salvo' && !m.alvo) { ST.calcId = m.id; ST.salvoTxt = m.erro ? 'Não salvou: ' + m.erro : '✓ Rascunho salvo às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); const el = document.getElementById('salvoEm'); if (el) { el.textContent = ST.salvoTxt; el.style.color = m.erro ? 'var(--bad)' : ''; } } });
   // altura do iframe acompanha a página
   const ro = new ResizeObserver(() => parent.postMessage({ tipo: 'planav-altura', h: document.documentElement.scrollHeight }, '*')); ro.observe(document.body);
   window.scrollTo = () => parent.postMessage({ tipo: 'planav-topo' }, '*');
@@ -1228,19 +1257,20 @@ if (REAL) {
     ${v ? `<p class="aviso ${mudou ? 'warn' : 'ok'}">${mudou ? `Os números mudaram desde a versão ${v.n}. Aprove de novo para registrar uma revisão.` : `Baseline ${BL.ano} aprovado: versão ${v.n}, por ${v.quem}, em ${v.quando}. Código ${v.hash}.`}</p>` : '<p class="muted">Ainda não aprovado. Aprovar guarda uma foto destes números; mudanças depois viram revisão, sem apagar a anterior.</p>'}
     ${BL.versoes.length > 1 ? `<div class="tw"><table><thead><tr><th>Versão</th><th>Quando</th><th>Quem</th><th>Motivo</th><th>Código</th></tr></thead><tbody>${BL.versoes.map(x => `<tr><td>v${x.n}</td><td>${x.quando}</td><td>${x.quem}</td><td>${x.motivo || '—'}</td><td><code>${x.hash}</code></td></tr>`).join('')}</tbody></table></div>` : ''}
     <div class="linha"><label class="campo">Motivo${v ? ' da revisão' : ' (opcional)'}<input type="text" data-bmotivo placeholder="${v ? 'ex.: importei o histórico de 2025' : 'Baseline inicial'}"></label></div>
-    </div><div class="wzf"><span class="peq muted">${L.filter(x => x.ok).length} de ${L.length} indicadores conferidos</span><span class="sp"></span><span class="salvo" id="salvoBase">${ST.salvoBase || ''}</span><button type="button" class="btn" data-barea="camp">Ir para a campanha</button><button type="button" class="btn pri" data-baprovar ${v && !mudou ? 'disabled' : ''}>${v ? 'Aprovar revisão' : 'Aprovar baseline'}</button></div></div>`;
+    </div><div class="wzf"><span class="peq muted">${L.filter(x => x.ok).length} de ${L.length} indicadores conferidos</span><span class="sp"></span><span class="salvo" id="salvoBase">${ST.salvoBase || ''}</span><button type="button" class="btn" data-barea="ano">Ir para o plano do ano</button><button type="button" class="btn pri" data-baprovar ${v && !mudou ? 'disabled' : ''}>${v ? 'Aprovar revisão' : 'Aprovar baseline'}</button></div></div>`;
   }
   let tB = null;
   const salvaBase = () => { clearTimeout(tB); tB = setTimeout(() => { const { id, ...b } = BL; parent.postMessage({ tipo: 'planav-salvar', alvo: 'baseline', id: BL.id || null, nome: `Baseline ${BL.ano}`, premissas: { modulo: 'planav', baseline: b } }, '*'); }, 900); };
   // o baseline alimenta a campanha: custo de servir vira o suporte por aluno quando o produto não tem esse custo
   const aplicaBase = () => { const sv = servirPorAluno(BL.servir), pr = ST.p && ST.p.produto; if (!pr || sv == null) return; if (pr.suporte == null || pr.suporte.doBaseline) pr.suporte = { v: Math.round(sv * 100) / 100, origem: 'premissa', doBaseline: true }; };
+  const PV = window.PV = { BL, indicadores, anoPlano, navAno: () => '' };
   const render0 = render; let rend = false, pend = false;
   render = () => { if (rend) { pend = true; return; } rend = true; try { renderTudo(); } finally { rend = false; } if (pend) { pend = false; render(); } };
   const renderTudo = () => { const ae = document.activeElement, at = ae && ae.attributes ? [...ae.attributes].find(x => /^data-b/.test(x.name)) : null, foco = at ? `[${at.name}="${at.value}"]` : null;
-    if (ST.area === 'base') renderBase(); else { aplicaBase(); render0(); }
+    if (ST.area === 'base') renderBase(); else if (ST.area === 'ano' && PV.renderAno) PV.renderAno(); else { aplicaBase(); if (PV.aplicaAno) PV.aplicaAno(); render0(); }
     const v = BL.versoes[BL.versoes.length - 1];
-    $('#nav').innerHTML = `<div class="areas" role="tablist"><button type="button" role="tab" data-barea="base" aria-selected="${ST.area === 'base'}">Diagnóstico e baseline <span class="st ${v ? 'ok' : 'warn'}">${v ? 'aprovado v' + v.n : 'a aprovar'}</span></button><button type="button" role="tab" data-barea="camp" aria-selected="${ST.area !== 'base'}">Planejar campanha</button></div>${ST.area !== 'base' && !v ? `<p class="aviso warn" style="margin:0 0 12px">O baseline ${BL.ano} ainda não foi aprovado. Dá para planejar a campanha, mas os limites usam números não conferidos.</p>` : ''}`;
-    if (foco && ST.area === 'base') { const el = document.querySelector(foco); if (el && el.type !== 'checkbox') { el.focus(); } } };
+    $('#nav').innerHTML = `<div class="areas" role="tablist"><button type="button" role="tab" data-barea="base" aria-selected="${ST.area === 'base'}">Diagnóstico e baseline <span class="st ${v ? 'ok' : 'warn'}">${v ? 'aprovado v' + v.n : 'a aprovar'}</span></button>${PV.navAno()}<button type="button" role="tab" data-barea="camp" aria-selected="${ST.area === 'camp'}">Planejar campanha</button></div>${ST.area === 'camp' && !v ? `<p class="aviso warn" style="margin:0 0 12px">O baseline ${BL.ano} ainda não foi aprovado. Dá para planejar a campanha, mas os limites usam números não conferidos.</p>` : ''}`;
+    if (foco && ST.area !== 'camp') { const el = document.querySelector(foco); if (el && el.type !== 'checkbox') { el.focus(); } } };
   document.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.barea) { ST.area = b.dataset.barea; window.scrollTo(0, 0); }
     else if (b.dataset.bsit) { BL.situacao = b.dataset.bsit; BL.situacaoOk = true; salvaBase(); }
@@ -1254,6 +1284,75 @@ if (REAL) {
     else if (el.dataset.bserv) { BL.servir[el.dataset.bserv] = el.value === '' ? null : Number(el.value); }
     else return; e.stopImmediatePropagation(); salvaBase(); render(); }, true);
   window.addEventListener('message', e => { const m = e.data || {}; if (m.tipo !== 'planav-salvo' || m.alvo !== 'baseline') return; e.stopImmediatePropagation(); if (!m.erro) BL.id = m.id; ST.salvoBase = m.erro ? 'Não salvou: ' + m.erro : '✓ Baseline salvo às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); const el = document.getElementById('salvoBase'); if (el) el.textContent = ST.salvoBase; }, true);
+}
+
+/* ===== v0.291 — Plano do ano (só no Growths): do baseline à meta, ao orçamento de aquisição e aos trimestres ===== */
+if (REAL && window.PV) {
+  const D = window.DADOS, B = D.base || {}, PV = window.PV, BL = PV.BL, ano = PV.anoPlano;
+  const salvo = (D.planosAno || []).find(r => r.premissas.planoAno.ano === ano), doGrowths = (D.planoAnual || []).find(x => Number(x.ano) === ano && Number(x.meta_receita) > 0);
+  const PA = salvo ? { id: salvo.id, ...salvo.premissas.planoAno } : { id: null, ano, meta: null, lucro: null, pctPess: doGrowths ? Number(doGrowths.pct_pessimista) || 20 : 20, pctOtim: doGrowths ? Number(doGrowths.pct_otimista) || 20 : 20, nCamp: 4, pesos: null, recompra: null, cacRef: null, versoes: [] };
+  PA.versoes = PA.versoes || [];
+  // valores do baseline: a última versão aprovada; sem aprovação, os números de agora
+  const baseVals = () => { const v = BL.versoes[BL.versoes.length - 1], L = PV.indicadores(), o = {}; L.forEach(x => { const f = v && v.foto[x.k]; o[x.k] = { valor: f ? f.valor : x.valor, conf: f ? f.conf : x.conf, nome: x.nome, fmt: x.fmt }; }); return { o, aprovado: !!v, versao: v ? v.n : null }; };
+  const sazonal = () => { if (!(B.u12 && B.u12.meses >= 12)) return null; const q = [0, 0, 0, 0], lim = (Number(B.hoje.slice(0, 4)) - 1) + B.hoje.slice(4, 7); Object.entries(B.porMes || {}).forEach(([m, v]) => { if (m > lim && m <= B.hoje.slice(0, 7)) q[Math.floor((Number(m.slice(5, 7)) - 1) / 3)] += v; }); const s = q.reduce((a, b) => a + b, 0); return s > 0 ? q.map(x => Math.round(x / s * 100)) : null; };
+  const realTri = () => { const q = [0, 0, 0, 0]; Object.entries(B.porMes || {}).forEach(([m, v]) => { if (m.slice(0, 4) === String(ano)) q[Math.floor((Number(m.slice(5, 7)) - 1) / 3)] += v; }); return q; };
+  const comprometido = () => (D.rascunhos || []).filter(r => r.id !== ST.calcId).reduce((s, r) => { const vs = r.premissas.versoes || [], u = vs[vs.length - 1]; return s + (u && u.foto ? Number(u.foto.verba) || 0 : 0); }, 0);
+  function entradas() { const bv = baseVals(), g = k => bv.o[k] ? bv.o[k].valor : null, saz = sazonal();
+    const meta = PA.meta != null ? PA.meta : doGrowths ? Number(doGrowths.meta_receita) : g('receita') != null ? Math.round(g('receita') * 1.2 / 1000) * 1000 : null;
+    const origemMeta = PA.meta != null ? 'digitada por você' : doGrowths ? `Planejamento anual ${ano} do Growths` : g('receita') != null ? 'receita do baseline + 20% (premissa; ajuste)' : 'falta';
+    return { bv, saz, origemMeta, x: { meta, margem: g('margem'), fixosMes: g('fixos'), lucro: PA.lucro, ticket: g('ticket'), ativos: g('ativos'), recompra: PA.recompra != null ? PA.recompra / 100 : g('recompra'), cacRef: PA.cacRef != null ? PA.cacRef : g('cac_total'), pesos: PA.pesos || saz || [25, 25, 25, 25], pctPess: PA.pctPess, pctOtim: PA.pctOtim, nCamp: PA.nCamp } }; }
+  const fotoAno = (x, A) => ({ entradas: x, orcAq: A.base.orcAq, novos: A.base.novos, cacMax: A.base.cacMax, receitaMinima: A.receitaMinima, residualCampanha: A.residualCampanha, trimestres: A.trimestres.map(q => ({ t: q.t, receita: q.receita, orcAq: q.orcAq })) });
+  const NOMES = { meta: 'meta de receita', margem: 'margem de contribuição', fixosMes: 'custos fixos por mês', ticket: 'ticket médio' };
+  function renderAno() {
+    const { bv, saz, origemMeta, x } = entradas(), A = BC.planoAno(x), v = PA.versoes[PA.versoes.length - 1], y = (B.anos || {})[String(ano)] || {}, real = (y.midia || 0) + (y.custosAq || 0), comp = comprometido(), rt = realTri();
+    const mudou = v && A.completo && JSON.stringify(v.foto) !== JSON.stringify(fotoAno(x, A)), usados = ['receita', 'margem', 'fixos', 'ticket', 'ativos', 'recompra', 'cac_total'];
+    const corpo = !A.completo ? `<p class="aviso bad">Não dá para montar o plano: falta ${A.faltando.map(k => NOMES[k]).join(', ')}. Volte ao Diagnóstico e baseline e preencha (a coluna "Corrigir" aceita o número, e "O que falta" mostra o caminho).</p>` : (() => {
+      const b = A.base, lin = (n, f, cls) => `<tr><td>${n}</td>${['pessimista', 'base', 'otimista'].map(k => `<td class="n ${cls ? cls(A[k]) : ''}">${f(A[k])}</td>`).join('')}</tr>`, livre = b.orcAq - real - comp;
+      return `<div class="cards">${card('Orçamento de aquisição do ano', brl(b.orcAq), 'receita × margem − fixos − lucro desejado', b.viavel ? '' : 'bad')}${card('Clientes novos necessários', nf(b.novos), `${nf(b.vendas)} vendas − ${nf(b.vendasRecompra)} de recompra`)}${card('CAC máximo do ano', b.cacMax == null ? '—' : brl(b.cacMax), x.cacRef == null ? 'sem CAC de referência' : `CAC de referência ${brl(x.cacRef)}`, b.cabeNoCac === false || b.cacMax == null ? 'bad' : 'ok')}${card('Receita mínima', A.receitaMinima == null ? '—' : brl(A.receitaMinima), 'paga fixos, lucro e aquisição no CAC de referência', A.receitaMinima != null && x.meta >= A.receitaMinima ? 'ok' : 'bad')}</div>
+      ${!b.viavel ? `<p class="aviso bad">Com esta meta, a contribuição (${brl(b.contrib)}) não paga os custos fixos (${brl(A.fixosAno)}) e o lucro desejado (${brl(A.lucro)}). Não sobra orçamento para aquisição. Opções: meta maior, lucro menor, custos fixos menores ou margem melhor.</p>` : b.cabeNoCac === false ? `<p class="aviso warn">O plano só fecha com CAC de até ${brl(b.cacMax)}, e o baseline mostra ${brl(x.cacRef)}. No CAC de hoje, o lucro seria ${brl(b.lucroNoCacRef)} em vez de ${brl(A.lucro)}. Opções: mais recompra, ticket maior, CAC menor ou meta de pelo menos ${brl(A.receitaMinima)}.</p>` : `<p class="aviso ok">O plano fecha: no CAC de referência, a aquisição custa ${brl(b.aquisicaoNoCacRef)} e sobram ${brl(b.lucroNoCacRef)} depois dos custos fixos${A.lucro ? ` (lucro desejado ${brl(A.lucro)})` : ''}.</p>`}
+      <h3>3. Cenários</h3><div class="tw"><table><thead><tr><th></th><th class="n">Pessimista (−${nf(x.pctPess)}%)</th><th class="n">Base</th><th class="n">Otimista (+${nf(x.pctOtim)}%)</th></tr></thead><tbody>
+        ${lin('Receita', c => brl(c.receita))}${lin('Contribuição (receita × margem)', c => brl(c.contrib))}${lin('Custos fixos do ano', () => '− ' + brl(A.fixosAno))}${lin('Orçamento de aquisição (com o lucro desejado)', c => brl(c.orcAq), c => c.viavel ? '' : 'c-bad')}${lin('Vendas', c => nf(c.vendas))}${lin('Clientes novos', c => nf(c.novos))}${lin('CAC máximo', c => c.cacMax == null ? '—' : brl(c.cacMax), c => c.cabeNoCac === false || c.cacMax == null ? 'c-bad' : 'c-ok')}${lin('Lucro no CAC de referência', c => c.lucroNoCacRef == null ? '—' : brl(c.lucroNoCacRef), c => c.lucroNoCacRef != null && c.lucroNoCacRef < A.lucro ? 'c-bad' : 'c-ok')}</tbody></table></div>
+      <p class="peq muted">O pessimista é o piso para decidir custos fixos; o otimista mostra o quanto de aquisição o plano aguentaria.</p>
+      <h3>4. Trimestres</h3><div class="tw"><table><thead><tr><th>Trimestre</th><th class="n">Peso</th><th class="n">Meta de receita</th><th class="n">Realizado em ${ano}</th><th class="n">Vendas</th><th class="n">Clientes novos</th><th class="n">Orçamento de aquisição</th></tr></thead><tbody>${A.trimestres.map((q, i) => `<tr><td>${q.t}º trimestre</td><td class="n"><input type="number" step="1" value="${Math.round(x.pesos[i] * 10) / 10}" data-bapeso="${i}" aria-label="Peso do ${q.t}º trimestre"> %</td><td class="n">${brl(q.receita)}</td><td class="n ${rt[i] > 0 ? cor3c(rt[i], q.receita) : ''}">${rt[i] > 0 ? brl(rt[i]) : '—'}</td><td class="n">${nf(q.vendas)}</td><td class="n">${nf(q.novos)}</td><td class="n">${brl(q.orcAq)}</td></tr>`).join('')}
+        <tr class="tot"><td>Ano</td><td class="n">${nf(x.pesos.reduce((a, c) => a + (Number(c) || 0), 0))} %</td><td class="n">${brl(x.meta)}</td><td class="n">${y.bruto ? brl(y.bruto) : '—'}</td><td class="n">${nf(b.vendas)}</td><td class="n">${nf(b.novos)}</td><td class="n">${brl(b.orcAq)}</td></tr></tbody></table></div>
+      <p class="peq muted">${PA.pesos ? 'Pesos digitados por você.' : saz ? 'Pesos sugeridos pela receita de cada trimestre nos últimos 12 meses.' : 'Sem 12 meses de histórico para ver sazonalidade: 25% por trimestre, ajuste pelo seu calendário de lançamentos.'} Se a soma não der 100%, o Growths redistribui na proporção.</p>
+      <h3>5. Orçamento de aquisição para as campanhas</h3><div class="tw"><table><tbody><tr><td>Planejado no ano</td><td class="n">${brl(b.orcAq)}</td></tr><tr><td>Realizado em ${ano}<span class="d">mídia das campanhas + custos de aquisição lançados</span></td><td class="n">− ${brl(real)}</td></tr><tr><td>Comprometido<span class="d">campanhas aprovadas no Planejamento avançado</span></td><td class="n">− ${brl(comp)}</td></tr><tr class="tot"><td>Livre para novas campanhas</td><td class="n ${livre < 0 ? 'c-bad' : ''}">${brl(livre)}</td></tr></tbody></table></div>
+      <p class="peq">Cada campanha precisa deixar pelo menos <b>${brl(A.residualCampanha)}</b> de contribuição depois de pagar a própria aquisição: (custos fixos ${brl(A.fixosAno)} + lucro ${brl(A.lucro)}) ÷ ${nf(x.nCamp)} campanhas. Estes números entram sozinhos no passo 2 (orçamento do ano) e no passo 7 (contribuição mínima) de cada campanha; lá você ainda pode mudar.</p>`; })();
+    $('#app').innerHTML = `<div class="wz"><div class="wzh"><h2>Plano do ano · ${ano}</h2><small class="muted">A meta do ano confrontada com o que o baseline mostra: quanto sobra para aquisição, quantos clientes novos são precisos e até quanto cada um pode custar.</small></div><div class="wzb">
+    ${bv.aprovado ? '' : '<p class="aviso warn">O baseline ainda não foi aprovado: o plano está usando os números de agora, sem conferência.</p>'}
+    <h3>1. Ponto de partida${bv.aprovado ? ` (baseline v${bv.versao})` : ''}</h3>
+    <div class="tw"><table><thead><tr>${usados.map(k => `<th class="n">${bv.o[k].nome.replace(' dos últimos 12 meses', ' em 12 meses')}</th>`).join('')}</tr></thead><tbody><tr>${usados.map(k => `<td class="n"><b>${bv.o[k].valor == null ? '—' : bv.o[k].fmt(bv.o[k].valor)}</b><span class="d">${({ validado: 'validado', parcial: 'parcial', estimado: 'estimado', insuficiente: 'histórico insuficiente', informado: 'informado', projecao: 'projeção', falta: 'falta' })[bv.o[k].conf]}</span></td>`).join('')}</tr></tbody></table></div>
+    <h3>2. Meta e premissas</h3>
+    <div class="campos"><label class="campo">Meta de receita do ano<span><input type="number" step="10000" value="${x.meta ?? ''}" data-bano="meta"> R$</span><small class="muted">${origemMeta}</small></label>
+      <label class="campo">Lucro desejado no ano<span><input type="number" step="10000" value="${PA.lucro ?? ''}" placeholder="0" data-bano="lucro"> R$</span><small class="muted">o que sobra depois de tudo</small></label>
+      <label class="campo">CAC de referência<span><input type="number" step="10" value="${x.cacRef == null ? '' : Math.round(x.cacRef)}" data-bano="cacRef"> R$</span><small class="muted">${PA.cacRef != null ? 'digitado por você' : 'CAC total do baseline'}</small></label>
+      <label class="campo">Recompra esperada da base<span><input type="number" step="1" value="${x.recompra == null ? '' : Math.round(x.recompra * 1000) / 10}" data-bano="recompra"> %</span><small class="muted">${PA.recompra != null ? 'digitada por você' : 'taxa de 180 dias do baseline, uma vez no ano'}</small></label>
+      <label class="campo">Campanhas previstas no ano<span><input type="number" step="1" min="1" value="${PA.nCamp ?? 4}" data-bano="nCamp"></span></label>
+      <label class="campo">Pessimista e otimista<span><input type="number" step="5" value="${PA.pctPess}" data-bano="pctPess" aria-label="Pessimista, % abaixo"> % abaixo · <input type="number" step="5" value="${PA.pctOtim}" data-bano="pctOtim" aria-label="Otimista, % acima"> % acima</span></label></div>
+    ${corpo}
+    <h3>6. Aprovar</h3>
+    ${v ? `<p class="aviso ${mudou ? 'warn' : 'ok'}">${mudou ? `O plano mudou desde a versão ${v.n}. Aprove de novo para registrar a revisão.` : `Plano ${ano} aprovado: versão ${v.n}, por ${v.quem}, em ${v.quando}. Código ${v.hash}.`}</p>` : '<p class="muted">Ainda não aprovado. Aprovar guarda a foto do plano; mudanças depois viram revisão.</p>'}
+    ${PA.versoes.length > 1 ? `<div class="tw"><table><thead><tr><th>Versão</th><th>Quando</th><th>Quem</th><th>Motivo</th><th class="n">Meta</th><th class="n">Orçamento de aquisição</th></tr></thead><tbody>${PA.versoes.map(z => `<tr><td>v${z.n}</td><td>${z.quando}</td><td>${z.quem}</td><td>${z.motivo || '—'}</td><td class="n">${brl(z.foto.entradas.meta)}</td><td class="n">${brl(z.foto.orcAq)}</td></tr>`).join('')}</tbody></table></div>` : ''}
+    <div class="linha"><label class="campo">Motivo${v ? ' da revisão' : ' (opcional)'}<input type="text" data-bmotivoano placeholder="${v ? 'ex.: meta revista depois do 1º trimestre' : 'Plano inicial'}"></label></div>
+    </div><div class="wzf"><button type="button" class="btn" data-barea="base">Voltar ao baseline</button><span class="sp"></span><span class="salvo" id="salvoAno">${ST.salvoAno || ''}</span><button type="button" class="btn" data-barea="camp">Ir para a campanha</button><button type="button" class="btn pri" data-banoaprovar ${!A.completo || (v && !mudou) ? 'disabled' : ''}>${v ? 'Aprovar revisão' : 'Aprovar plano do ano'}</button></div></div>`;
+  }
+  let tA = null;
+  const salvaAno = () => { clearTimeout(tA); tA = setTimeout(() => { const { id, ...b } = PA; parent.postMessage({ tipo: 'planav-salvar', alvo: 'plano', id: PA.id || null, nome: `Plano do ano ${PA.ano}`, premissas: { modulo: 'planav', planoAno: b } }, '*'); }, 900); };
+  // o plano alimenta a campanha: orçamento de aquisição do ano e contribuição mínima, sem passar por cima do que você digitou lá
+  PV.aplicaAno = () => { const p = ST.p; if (!p || !p.plano) return; const { x } = entradas(), A = BC.planoAno(x); if (!A.completo || !A.base.viavel) return;
+    const y = (B.anos || {})[String(ano)] || {}, pl = p.plano, set = (o, k, val, tag) => { if (o[k] == null || o[k] === o[tag]) { o[k] = val; o[tag] = val; } };
+    set(pl, 'orcamentoAquisicaoAno', Math.round(A.base.orcAq), '_orcAno'); set(pl, 'realizadoAquisicao', Math.round((y.midia || 0) + (y.custosAq || 0)), '_realAno'); set(pl, 'comprometidoAquisicao', Math.round(comprometido()), '_compAno');
+    set(p, 'orcamentoDisponivel', Math.max(0, pl.orcamentoAquisicaoAno - pl.realizadoAquisicao - pl.comprometidoAquisicao), '_orcDoPlano');
+    if (!p.residualMinimo || p.residualMinimo === p._resDoPlano) { p.residualMinimo = Math.round(A.residualCampanha); p._resDoPlano = p.residualMinimo; } };
+  PV.renderAno = renderAno;
+  PV.navAno = () => { const v = PA.versoes[PA.versoes.length - 1]; return `<button type="button" role="tab" data-barea="ano" aria-selected="${ST.area === 'ano'}">Plano do ano <span class="st ${v ? 'ok' : 'warn'}">${v ? 'aprovado v' + v.n : 'a aprovar'}</span></button>`; };
+  document.addEventListener('click', e => { const b = e.target.closest('button'); if (!b || !b.hasAttribute('data-banoaprovar')) return; e.stopImmediatePropagation();
+    const { x } = entradas(), A = BC.planoAno(x); if (!A.completo) return; const foto = fotoAno(x, A), m = (document.querySelector('[data-bmotivoano]') || {}).value || (PA.versoes.length ? 'Revisão' : 'Plano inicial'), c = BC.congela(foto, D.quem || 'você', new Date().toLocaleString('pt-BR'), m);
+    PA.versoes.push({ n: PA.versoes.length + 1, quem: c.quem, quando: c.quando, motivo: c.motivo, hash: c.hash, baseline: BL.versoes.length || null, foto: JSON.parse(JSON.stringify(foto)) }); salvaAno(); render(); }, true);
+  document.addEventListener('change', e => { const el = e.target, n = el.value === '' ? null : Number(el.value);
+    if (el.dataset.bano) PA[el.dataset.bano] = n; else if (el.dataset.bapeso != null && el.dataset.bapeso !== '') { const { x } = entradas(); PA.pesos = x.pesos.map(p => Math.round(p * 10) / 10); PA.pesos[Number(el.dataset.bapeso)] = n || 0; } else return;
+    e.stopImmediatePropagation(); salvaAno(); render(); }, true);
+  window.addEventListener('message', e => { const m = e.data || {}; if (m.tipo !== 'planav-salvo' || m.alvo !== 'plano') return; if (!m.erro) PA.id = m.id; ST.salvoAno = m.erro ? 'Não salvou: ' + m.erro : '✓ Plano salvo às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); const el = document.getElementById('salvoAno'); if (el) el.textContent = ST.salvoAno; }, true);
 }
 
 render();</script></body></html>

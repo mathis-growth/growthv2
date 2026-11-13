@@ -1,3 +1,9 @@
+## v0.291 — Plano do ano no Planejamento de campanha avançado (13/11/2026)
+- Terceira aba, **Plano do ano**: parte do baseline e da meta de receita e mostra o orçamento de aquisição do ano, os clientes novos necessários, o CAC máximo contra o CAC de hoje e a receita mínima.
+- Três cenários, trimestres com peso editável e realizado ao lado, e o orçamento de aquisição livre para novas campanhas.
+- O orçamento do ano e a contribuição mínima entram sozinhos nos passos 2 e 7 de cada campanha.
+- Aprovação com versão. Sem mudança no banco; a campanha normal e o Planejamento anual não mudaram.
+
 ## v0.290 — Diagnóstico e baseline no Planejamento de campanha avançado (13/11/2026)
 - Duas abas na tela: **Diagnóstico e baseline** e **Planejar campanha**.
 - O diagnóstico identifica a situação do negócio (com histórico, operando com pouco dado, do zero) e traz 13 indicadores dos últimos 12 meses, cada um com de onde vem, cobertura e confiança, mais a tabela ano a ano.

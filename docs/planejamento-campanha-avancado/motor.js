@@ -287,6 +287,23 @@
   // duas campanhas pelo mesmo orçamento: o que sobra para a segunda depois de reservar a primeira
   const orcamentoDisponivel = (orcamento, realizado, comprometido) => Math.max(0, (val(orcamento) || 0) - (val(realizado) || 0) - (val(comprometido) || 0));
 
-  const API = { planoCampanha, verbaPeloCac, cenariosDoHistorico, CANAIS, faixa, historicoCanais, historicoFaixas, historicoOfertas, leadsParaMeta, ORIGENS, FATORES, picoResidual, valida, margem, funil, custos, resultado, bissecao, caixa, limites, cplMaxDinamico, aplicaCenario, cenarios, ltv, permiteNegativa, historico, status, projecao, congela, hash, orcamentoDisponivel, div, r2 };
+  /* ---------- 12. plano do ano: do baseline à meta, ao orçamento de aquisição e aos trimestres ---------- */
+  // x = { meta, margem (fração, antes da aquisição), fixosMes, lucro, ticket, ativos, recompra (fração), cacRef, pesos [4], pctPess, pctOtim, nCamp }
+  function planoAno(x) {
+    const obrig = ['meta', 'margem', 'fixosMes', 'ticket'], faltando = obrig.filter(k => val(x[k]) == null || (k !== 'fixosMes' && !(val(x[k]) > 0)));
+    if (faltando.length) return { completo: false, faltando };
+    const mc = val(x.margem), fixosAno = val(x.fixosMes) * 12, lucro = val(x.lucro) || 0, ticket = val(x.ticket), cacRef = val(x.cacRef), vRecBase = (val(x.ativos) || 0) * (val(x.recompra) || 0);
+    const pesosIn = (x.pesos && x.pesos.length === 4 ? x.pesos : [25, 25, 25, 25]).map(p => Math.max(0, val(p) || 0)), somaP = pesosIn.reduce((a, b) => a + b, 0) || 1, pesos = pesosIn.map(p => p / somaP);
+    const cen = R => { const contrib = R * mc, orcAq = contrib - fixosAno - lucro, vendas = R / ticket, vRec = Math.min(vendas, vRecBase), novos = vendas - vRec, cacMax = novos > 0 && orcAq > 0 ? orcAq / novos : null;
+      return { receita: R, contrib, orcAq, vendas, vendasRecompra: vRec, novos, cacMax, viavel: orcAq > 0, cabeNoCac: cacRef == null || cacMax == null ? null : cacRef <= cacMax, aquisicaoNoCacRef: cacRef == null ? null : cacRef * novos, lucroNoCacRef: cacRef == null ? null : contrib - fixosAno - cacRef * novos }; };
+    const meta = val(x.meta), base = cen(meta), den = cacRef == null ? mc : mc - cacRef / ticket;
+    // menor receita que paga fixos, lucro desejado e a aquisição no CAC de referência
+    const receitaMinima = den > 0 ? Math.max(0, (fixosAno + lucro - (cacRef || 0) * vRecBase) / den) : null;
+    return { completo: true, faltando: [], fixosAno, lucro, base, pessimista: cen(meta * (1 - (val(x.pctPess) || 0) / 100)), otimista: cen(meta * (1 + (val(x.pctOtim) || 0) / 100)), receitaMinima, pesos,
+      trimestres: pesos.map((p, i) => ({ t: i + 1, peso: p, receita: meta * p, vendas: base.vendas * p, novos: base.novos * p, orcAq: base.orcAq * p })),
+      residualCampanha: (fixosAno + lucro) / Math.max(1, val(x.nCamp) || 1) };
+  }
+
+  const API = { planoAno, planoCampanha, verbaPeloCac, cenariosDoHistorico, CANAIS, faixa, historicoCanais, historicoFaixas, historicoOfertas, leadsParaMeta, ORIGENS, FATORES, picoResidual, valida, margem, funil, custos, resultado, bissecao, caixa, limites, cplMaxDinamico, aplicaCenario, cenarios, ltv, permiteNegativa, historico, status, projecao, congela, hash, orcamentoDisponivel, div, r2 };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else raiz.BC = API;
 })(typeof window !== 'undefined' ? window : globalThis);

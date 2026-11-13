@@ -22,3 +22,11 @@ O que ainda não faz: levar as metas para uma campanha, cockpit dentro do módul
 5. Clique em **Aprovar baseline**. A aba mostra "aprovado v1" e o rodapé "✓ Baseline salvo".
 6. Vá para **Planejar campanha**, passo 4: o suporte por aluno deve vir com o custo de servir.
 7. Saia e volte: o baseline e a campanha abrem como você deixou.
+
+## Plano do ano (v0.291)
+1. Com o baseline preenchido (custos fixos e margem), abra a aba **Plano do ano**.
+2. Confira a meta sugerida e digite o lucro desejado: os quatro cartões e os cenários mudam.
+3. Suba a meta ou o lucro até aparecer o aviso de que o plano não fecha no CAC de hoje.
+4. Mude o peso de um trimestre e veja a meta e o orçamento do trimestre mudarem.
+5. Clique em **Aprovar plano do ano**.
+6. Em **Planejar campanha**, o passo 2 deve trazer o orçamento de aquisição do ano e o passo 7 a contribuição mínima. Mude um deles lá: o valor digitado fica.

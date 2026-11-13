@@ -40,7 +40,7 @@ if (REAL) {
   let tSalva = null;
   salva = () => { clearTimeout(tSalva); tSalva = setTimeout(() => { const p = JSON.parse(JSON.stringify(ST.p)); delete p.historico;
     parent.postMessage({ tipo: 'planav-salvar', id: ST.calcId || null, nome: `Planejamento avançado · ${ST.p.nome}`, premissas: { modulo: 'planav', produto_id: ST.p.produto_id, funil_id: ST.p.funil_id, p, versoes: ST.versoes } }, '*'); }, 1200); };
-  window.addEventListener('message', e => { const m = e.data || {}; if (m.tipo === 'planav-salvo' && m.alvo !== 'baseline') { ST.calcId = m.id; ST.salvoTxt = m.erro ? 'Não salvou: ' + m.erro : '✓ Rascunho salvo às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); const el = document.getElementById('salvoEm'); if (el) { el.textContent = ST.salvoTxt; el.style.color = m.erro ? 'var(--bad)' : ''; } } });
+  window.addEventListener('message', e => { const m = e.data || {}; if (m.tipo === 'planav-salvo' && !m.alvo) { ST.calcId = m.id; ST.salvoTxt = m.erro ? 'Não salvou: ' + m.erro : '✓ Rascunho salvo às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); const el = document.getElementById('salvoEm'); if (el) { el.textContent = ST.salvoTxt; el.style.color = m.erro ? 'var(--bad)' : ''; } } });
   // altura do iframe acompanha a página
   const ro = new ResizeObserver(() => parent.postMessage({ tipo: 'planav-altura', h: document.documentElement.scrollHeight }, '*')); ro.observe(document.body);
   window.scrollTo = () => parent.postMessage({ tipo: 'planav-topo' }, '*');

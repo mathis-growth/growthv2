@@ -92,6 +92,18 @@ grupo = 'Plano por canal e cenários';
   const mais = JSON.parse(JSON.stringify(S.base)); mais.canais.org.leads += 300; const m2 = BC.planoCampanha(mais);
   t('Mais orgânico com a mesma verba: mais vendas e CAC de mídia menor', m2.vendas > b.vendas && m2.cacMidia < b.cacMidia);
   t('Orgânico para a meta = leads necessários − pagos − API', perto(b.orgParaMeta, Math.max(0, b.leadsPrecisa - b.leadsPagos - b.api), 1e-12)); }
+grupo = 'Plano do ano';
+{ const x = { meta: 1200000, margem: 0.6, fixosMes: 20000, lucro: 120000, ticket: 1000, ativos: 400, recompra: 0.25, cacRef: 300, pesos: [10, 20, 30, 40], pctPess: 20, pctOtim: 20, nCamp: 6 }, A = BC.planoAno(x);
+  t('Orçamento de aquisição = receita × margem − fixos do ano − lucro desejado', A.base.orcAq === 1200000 * 0.6 - 240000 - 120000);
+  t('Novos clientes = vendas da meta − recompra esperada da base', A.base.vendas === 1200 && A.base.vendasRecompra === 100 && A.base.novos === 1100);
+  t('CAC máximo do ano = orçamento de aquisição ÷ novos clientes', perto(A.base.cacMax, 360000 / 1100, 1e-12) && A.base.cabeNoCac === true);
+  t('Lucro no CAC de referência = contribuição − fixos − CAC × novos', A.base.lucroNoCacRef === 720000 - 240000 - 300 * 1100);
+  t('Receita mínima paga fixos, lucro e aquisição no CAC de referência', (() => { const r = BC.planoAno({ ...x, meta: A.receitaMinima }); return perto(r.base.lucroNoCacRef, 120000, 1e-9); })());
+  t('Trimestres somam a meta e seguem os pesos', perto(A.trimestres.reduce((s, q) => s + q.receita, 0), 1200000, 1e-12) && perto(A.trimestres[3].receita, 480000, 1e-12) && perto(A.trimestres.reduce((s, q) => s + q.orcAq, 0), A.base.orcAq, 1e-12));
+  t('Cenários: pessimista e otimista mudam a receita pelos percentuais', A.pessimista.receita === 960000 && A.otimista.receita === 1440000 && A.pessimista.orcAq < A.base.orcAq);
+  t('Meta que não paga fixos e lucro: inviável, sem CAC máximo', (() => { const r = BC.planoAno({ ...x, meta: 500000 }); return r.base.viavel === false && r.base.cacMax === null; })());
+  t('Sem margem ou sem ticket: incompleto, nada é calculado', (() => { const r = BC.planoAno({ ...x, margem: null, ticket: 0 }); return r.completo === false && r.faltando.includes('margem') && r.faltando.includes('ticket'); })());
+  t('Contribuição que cada campanha precisa deixar = (fixos + lucro) ÷ campanhas do ano', A.residualCampanha === 60000); }
 grupo = 'Versão aprovada';
 { const v = BC.congela({ a: 1 }, 'Rebecka', '2026-11-08', 'aprovação'); let mudou = false; try { v.foto.a = 2; mudou = v.foto.a === 2; } catch (e) {} t('Versão aprovada é imutável', !mudou && v.hash === BC.hash(JSON.stringify({ a: 1 }))); }
 
