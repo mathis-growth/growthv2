@@ -1,3 +1,6 @@
+## v0.290
+Sem mudança no banco. O baseline fica em `campanha_calculos`, com `premissas.modulo = 'planav'` e `premissas.baseline` (ano, situação, correções, apuração do custo de servir, versões aprovadas com a foto). Leituras novas: `custos_cac`, `despesas_recorrentes`, `contas_receber`, `contas_pagar`, e `vendas.data_venda`/`pessoa_id`. Só os totais vão para o módulo; nenhum dado pessoal entra nele.
+
 ## v0.289
 Sem mudança no banco.
 

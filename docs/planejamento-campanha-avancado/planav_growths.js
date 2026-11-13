@@ -1,9 +1,28 @@
-/* ================= v0.287 — Planejamento de campanha avançado (módulo em iframe; motor único com 67 testes) =================
+/* ================= Planejamento de campanha avançado (v0.287; diagnóstico e baseline na v0.290). Módulo em iframe; motor único com 67 testes =================
    Lê: produtos, funis + estrategia_etapas, campanhas, v_marketing_campanha, v_trafego_anuncio_dia, campanha_etapas/valores (presentes),
    vendas (impostos, taxas, reembolso, ofertas), campanha_ofertas. Grava: campanha_calculos (premissas.modulo = 'planav'). Sem migration. */
+/* v0.290 — Diagnóstico e baseline: contas puras (sem banco), testadas em teste_baseline.js.
+   vend: vendas {data_venda, pessoa_id, produto_id, valor_bruto, taxa_plataforma, impostos, status, reembolsada_em}; hoje: 'AAAA-MM-DD' */
+function planavBaseCalc(vend, camps, custosCac, hoje) {
+  const num = x => x == null ? 0 : Number(x) || 0, dia = s => s ? String(s).slice(0, 10) : null, T = s => Date.parse(s + 'T00:00:00Z') / 864e5, tHoje = T(hoje);
+  const vs = vend.filter(v => dia(v.data_venda)).map(v => ({ d: dia(v.data_venda), t: T(dia(v.data_venda)), p: v.pessoa_id || null, prod: v.produto_id || null, b: num(v.valor_bruto), tx: num(v.taxa_plataforma), im: num(v.impostos), re: !!(v.reembolsada_em || v.status === 'reembolsada') })).sort((a, b) => a.t - b.t);
+  const primeira = {}, compras = {}; vs.forEach(v => { if (!v.p || v.re) return; if (primeira[v.p] == null) primeira[v.p] = v.t; (compras[v.p] = compras[v.p] || []).push(v.t); });
+  const zero = () => ({ bruto: 0, vendas: 0, reembolsos: 0, reembolsado: 0, taxas: 0, impostos: 0, novos: 0, compradores: 0, midia: 0, custosAq: 0, campanhas: 0, meses: 0, porProduto: {} });
+  const soma = (filtro, mesesJanela) => { const o = zero(), ms = new Set(), cp = new Set(), nv = new Set();
+    vs.forEach(v => { if (!filtro(v.t, v.d)) return; if (v.re) { o.reembolsos++; o.reembolsado += v.b; return; } o.bruto += v.b; o.vendas++; o.taxas += v.tx; o.impostos += v.im; ms.add(v.d.slice(0, 7)); if (v.prod) o.porProduto[v.prod] = (o.porProduto[v.prod] || 0) + v.b; if (v.p) { cp.add(v.p); if (primeira[v.p] === v.t) nv.add(v.p); } });
+    camps.forEach(c => { const d = dia(c.data_inicio); if (!d || !filtro(T(d), d)) return; if (num(c.midia) > 0 || num(c.leads) > 0) o.campanhas++; o.midia += num(c.midia); });
+    custosCac.forEach(c => { const d = dia(c.competencia); if (d && filtro(T(d), d)) o.custosAq += num(c.valor); });
+    o.meses = ms.size; o.mesesJanela = mesesJanela; o.compradores = cp.size; o.novos = nv.size; return o; };
+  const anos = {}; [...new Set(vs.map(v => v.d.slice(0, 4)).concat(camps.map(c => dia(c.data_inicio)).filter(Boolean).map(d => d.slice(0, 4))))].filter(a => a <= hoje.slice(0, 4)).sort().forEach(a => { anos[a] = soma((t, d) => d.slice(0, 4) === a, a === hoje.slice(0, 4) ? Number(hoje.slice(5, 7)) : 12); });
+  const u12 = soma(t => t > tHoje - 365 && t <= tHoje, 12);
+  // recompra em 180 dias: só quem comprou pela primeira vez há 180 dias ou mais (os outros ainda não tiveram tempo)
+  let eleg = 0, rec = 0; Object.keys(primeira).forEach(p => { if (primeira[p] > tHoje - 180) return; eleg++; if (compras[p].some(t => t > primeira[p] && t <= primeira[p] + 180)) rec++; });
+  const ativos = Object.keys(compras).filter(p => compras[p].some(t => t > tHoje - 365)).length;
+  return { hoje, anos, u12, recompra: { elegiveis: eleg, recompraram: rec }, ativos, primeiraVenda: vs.length ? vs[0].d : null, ultimaVenda: vs.length ? vs[vs.length - 1].d : null, mesesComVenda: new Set(vs.filter(v => !v.re).map(v => v.d.slice(0, 7))).size };
+}
 async function planavDados(w) {
   const num = x => x == null ? 0 : Number(x) || 0, ign = () => [];
-  const [prods, funis, etapas, camps, vmc, traf, cEt, vend, cOf, calcs] = await Promise.all([
+  const [prods, funis, etapas, camps, vmc, traf, cEt, vend, cOf, calcs, cCac, desp, cRec, cPag] = await Promise.all([
     q(sb.from('produtos').select('id,nome,preco,taxa_percentual_override,taxa_fixa_override,ativo').eq('workspace_id', w).order('nome')),
     q(sb.from('funis').select('id,nome,objetivo,tipo,versao_atual,produto_id').eq('workspace_id', w).order('nome')).catch(ign),
     gcTodos(() => sb.from('estrategia_etapas').select('funil_id,ordem,nome').eq('workspace_id', w).order('ordem')).catch(ign),
@@ -11,9 +30,13 @@ async function planavDados(w) {
     q(sb.from('v_marketing_campanha').select('campanha_id,investimento,leads,vendas,clientes,faturamento').eq('workspace_id', w)).catch(ign),
     gcTodos(() => sb.from('v_trafego_anuncio_dia').select('campanha_id,canal,custo,leads,clientes').eq('workspace_id', w)).catch(ign),
     q(sb.from('campanha_etapas').select('id,campanha_id,chave').eq('workspace_id', w).ilike('chave', '%presentes%')).catch(ign),
-    gcTodos(() => sb.from('vendas').select('produto_id,campanha_id,oferta_id,valor_bruto,taxa_plataforma,impostos,reembolsada_em,status').eq('workspace_id', w)).catch(ign),
+    gcTodos(() => sb.from('vendas').select('produto_id,campanha_id,oferta_id,valor_bruto,taxa_plataforma,impostos,reembolsada_em,status,data_venda,pessoa_id').eq('workspace_id', w)).catch(ign),
     q(sb.from('campanha_ofertas').select('campanha_id,produto_id,oferta_id,nome,papel,preco,taxa_aceite,criado_em').eq('workspace_id', w).order('criado_em', { ascending: false })).catch(ign),
-    q(sb.from('campanha_calculos').select('id,nome,premissas,atualizado_em').eq('workspace_id', w).eq('premissas->>modulo', 'planav').order('atualizado_em', { ascending: false })).catch(ign)]);
+    q(sb.from('campanha_calculos').select('id,nome,premissas,atualizado_em').eq('workspace_id', w).eq('premissas->>modulo', 'planav').order('atualizado_em', { ascending: false })).catch(ign),
+    q(sb.from('custos_cac').select('valor,competencia').eq('workspace_id', w)).catch(ign),
+    q(sb.from('despesas_recorrentes').select('tipo,valor,ativo,data_fim').eq('workspace_id', w)).catch(ign),
+    gcTodos(() => sb.from('contas_receber').select('valor,status,data_recebimento,vencimento').eq('workspace_id', w)).catch(ign),
+    gcTodos(() => sb.from('contas_pagar').select('valor,status,data_pagamento,competencia').eq('workspace_id', w)).catch(ign)]);
   const etIds = cEt.map(e => e.id), valEt = etIds.length ? await gcTodos(() => sb.from('campanha_etapa_valores').select('campanha_etapa_id,valor').in('campanha_etapa_id', etIds)).catch(ign) : [];
   // presentes por campanha: a maior soma entre as etapas de presença (aula 1, 2, 3…)
   const somaEt = {}; valEt.forEach(v => { somaEt[v.campanha_etapa_id] = (somaEt[v.campanha_etapa_id] || 0) + num(v.valor); });
@@ -37,12 +60,19 @@ async function planavDados(w) {
       impostoPct: a && a.b > 0 && a.i > 0 ? a.i / a.b * 100 : null, reembolsoPct: a && a.n >= 10 ? a.r / a.n * 100 : null }; });
   const etPorFunil = {}; etapas.forEach(e => { (etPorFunil[e.funil_id] = etPorFunil[e.funil_id] || []).push(e.nome); });
   const ofertas = []; const visto = {}; cOf.forEach(o => { const k = o.produto_id + '|' + o.papel; if (visto[k] || o.papel === 'principal') return; visto[k] = 1; ofertas.push({ produto_id: o.produto_id, papel: o.papel, nome: o.nome, preco: num(o.preco), taxa_aceite: o.taxa_aceite == null ? null : num(o.taxa_aceite) }); });
-  return { ws: w, produtos, funis: funis.map(f => ({ ...f, etapas: etPorFunil[f.id] || [] })), campanhas, ofertas, rascunhos: calcs };
+  // diagnóstico e baseline: tudo agregado aqui; o módulo recebe só os totais
+  const hoje = new Date().toISOString().slice(0, 10), base = planavBaseCalc(vend, campanhas, cCac, hoje), cancel = s => /cancel/i.test(s || '');
+  const dAtiva = d => d.ativo !== false && (!d.data_fim || String(d.data_fim).slice(0, 10) >= hoje);
+  base.fixosMes = desp.filter(d => dAtiva(d) && d.tipo === 'fixa').reduce((s, d) => s + num(d.valor), 0); base.variaveisMes = desp.filter(d => dAtiva(d) && d.tipo !== 'fixa').reduce((s, d) => s + num(d.valor), 0); base.despesas = desp.filter(dAtiva).length;
+  base.aReceber = cRec.filter(c => !c.data_recebimento && !cancel(c.status)).reduce((s, c) => s + num(c.valor), 0); base.aPagar = cPag.filter(c => !c.data_pagamento && !cancel(c.status)).reduce((s, c) => s + num(c.valor), 0);
+  base.contasReceber = cRec.length; base.custosDesde = cPag.map(c => c.competencia).filter(Boolean).sort()[0] || null; base.contasPagar = cPag.length;
+  const quem = (S.user && ((S.user.user_metadata && (S.user.user_metadata.nome || S.user.user_metadata.name)) || S.user.email)) || 'você';
+  return { ws: w, quem, produtos, funis: funis.map(f => ({ ...f, etapas: etPorFunil[f.id] || [] })), campanhas, ofertas, base, rascunhos: calcs.filter(c => !(c.premissas && c.premissas.baseline)), baselines: calcs.filter(c => c.premissas && c.premissas.baseline) };
 }
 let PLANAV_MSG = null;
 async function vPlanav(m) {
   const w = S.ws;
-  m.innerHTML = `<div class="head"><div><h1>Planejamento de campanha avançado</h1><span class="muted">Da estratégia ao Growth Model da campanha: histórico do produto, margem, limites, CAC, cenários e canais.</span></div></div><div class="muted" id="pvCarrega">Carregando os dados deste cliente…</div><iframe id="pvFrame" title="Planejamento de campanha avançado" style="width:100%;border:0;min-height:900px;display:block;background:transparent"></iframe>`;
+  m.innerHTML = `<div class="head"><div><h1>Planejamento de campanha avançado</h1><span class="muted">Primeiro o diagnóstico e o baseline do negócio; depois a campanha, da estratégia ao Growth Model.</span></div></div><div class="muted" id="pvCarrega">Carregando os dados deste cliente…</div><iframe id="pvFrame" title="Planejamento de campanha avançado" style="width:100%;border:0;min-height:900px;display:block;background:transparent"></iframe>`;
   const D = await planavDados(w), fr = m.querySelector('#pvFrame');
   m.querySelector('#pvCarrega').remove();
   const dados = JSON.stringify(D).replace(/</g, '\\u003c');
@@ -52,13 +82,14 @@ async function vPlanav(m) {
   PLANAV_MSG = async e => { if (!fr.isConnected || e.source !== fr.contentWindow) return; const d = e.data || {};
     if (d.tipo === 'planav-altura') fr.style.height = Math.max(900, d.h + 20) + 'px';
     else if (d.tipo === 'planav-topo') fr.scrollIntoView({ block: 'start' });
+    else if (d.tipo === 'planav-ir' && /^[a-z]+-[a-z-]+$/.test(d.rota || '') && VIEWS[d.rota]) { S.view = d.rota; render(); }
     else if (d.tipo === 'planav-salvar') {
       if (!d.premissas || d.premissas.modulo !== 'planav') return;
       try { let id = d.id;
         if (id) await q(sb.from('campanha_calculos').update({ nome: String(d.nome || '').slice(0, 200), premissas: d.premissas, atualizado_em: new Date().toISOString() }).eq('id', id).eq('workspace_id', w));
         else { const r = await q(sb.from('campanha_calculos').insert({ workspace_id: w, campanha_id: null, nome: String(d.nome || '').slice(0, 200), premissas: d.premissas }).select('id').single()); id = r.id; }
-        fr.contentWindow.postMessage({ tipo: 'planav-salvo', id }, '*');
-      } catch (err) { fr.contentWindow.postMessage({ tipo: 'planav-salvo', id: d.id, erro: err.message || String(err) }, '*'); }
+        fr.contentWindow.postMessage({ tipo: 'planav-salvo', id, alvo: d.alvo || null }, '*');
+      } catch (err) { fr.contentWindow.postMessage({ tipo: 'planav-salvo', id: d.id, alvo: d.alvo || null, erro: err.message || String(err) }, '*'); }
     } };
   window.addEventListener('message', PLANAV_MSG);
 }

@@ -1,3 +1,15 @@
+## v0.290 — Diagnóstico e baseline
+- **Três situações**, sugeridas pelos dados e confirmadas por você: já tem histórico (6 meses ou mais com venda), já opera com pouco dado aqui, negócio do zero.
+- **Período de referência:** últimos 12 meses até hoje; ao lado, a tabela ano a ano. O ano do planejamento é o seguinte a partir de julho.
+- **Indicadores:** receita (vendas aprovadas, sem reembolsadas), margem de contribuição (receita − taxas − impostos − custo de servir), clientes novos (primeira compra da pessoa), CAC de mídia (investimento das campanhas ÷ novos), CAC total (mídia + custos de aquisição lançados ÷ novos), ticket médio, clientes ativos (compraram em 12 meses), recompra em 180 dias, reembolso, custos fixos por mês (despesas recorrentes fixas ativas), custo de servir por aluno, a receber e a pagar em aberto.
+- **Recompra em 180 dias:** só entra quem fez a primeira compra há 180 dias ou mais; conta quem comprou de novo dentro de 180 dias.
+- **Confiança:** Validado (12 de 12 meses com venda, ou 30 casos ou mais nas taxas), Parcial (falta mês ou falta um custo), Estimado (usa a sua apuração), Histórico insuficiente (menos de 30 casos), Informado por você (número digitado), Projeção (digitado em negócio do zero), Falta. Número que falta não vira zero.
+- **Custo de servir por aluno:** (custo mensal da equipe × % do tempo com alunos + outros custos de entrega) ÷ alunos atendidos por mês × meses de atendimento. É estimativa e fica marcada assim.
+- **Correção** vale só no baseline; nenhum dado do Growths é alterado.
+- **Aprovar** guarda a foto dos indicadores com versão, quem, quando, motivo e código. Mudou depois: nova versão, a anterior fica.
+- **Negócio do zero:** mostra a sobra por venda de cada produto (preço − taxas e impostos − custo de servir) como teto do CAC, marcada como projeção; sem taxa ou imposto conhecidos, usa 10% e 6% como premissa declarada.
+- **Liga com a campanha:** o custo de servir vira o suporte por aluno das campanhas cujo produto ainda não tem esse custo. Campanha sem baseline aprovado continua possível, com aviso.
+
 ## v0.289
 - **Captação de leads, passo 10:** a meta mostrada é a de leads; o aviso compara leads previstos com a meta de leads (antes comparava com a meta de vendas, que não existe nesse objetivo).
 

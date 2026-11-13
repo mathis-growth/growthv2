@@ -1,3 +1,6 @@
+## v0.290
+**Diagnóstico e baseline no Planejamento de campanha avançado.** A tela ganhou duas abas: "Diagnóstico e baseline" (a porta de entrada do planejamento do ano) e "Planejar campanha" (os 14 passos). O diagnóstico já vem preenchido com o que o Growths tem, mostra a origem, a cobertura e a confiança de cada número, conduz o que falta e guarda o baseline aprovado. O planejamento normal de Campanhas não mudou.
+
 ## v0.289
 **Planejamento avançado com a cara de Nova campanha.** O módulo agora usa o mesmo visual do assistente de Campanhas e planejamento: barras de passo no topo, corpo e rodapé com Voltar e Salvar e continuar, cores e tema (escuro ou claro) do Growths.
 

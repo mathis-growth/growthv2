@@ -1,3 +1,6 @@
+## Diagnóstico e baseline (v0.290)
+`node teste_baseline.js`: 10 de 10 (receita sem reembolsadas, janela de 12 meses, cliente novo, mídia e custos por período, recompra em 180 dias, ativos, cobertura, taxas, base vazia). Motor: 67 de 67. Com os dados do workspace Demo (leitura de produção, sem gravar): baseline preenchido, apuração do custo de servir, correção, aprovação com código, rascunho gravado (simulado), suporte chegando no passo 4 da campanha, botão que abre Importar e validar dados, 390 px sem rolagem lateral, sem erros. `index.html`: sintaxe conferida. Não rodou no Growths logado.
+
 ## Visual da Nova campanha (v0.289)
 Motor 67 de 67. Os cinco tipos de campanha no navegador, sem erro; dados reais do Demo, sem erro, com o rascunho gravado (simulado) e "✓ Rascunho salvo" no rodapé; 390 px sem rolagem lateral. `index.html`: sintaxe conferida.
 

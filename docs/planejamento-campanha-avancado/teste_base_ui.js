@@ -1,0 +1,21 @@
+const { chromium } = require('playwright');
+(async () => { const b = await chromium.launch(); const pg = await b.newPage({ viewport: { width: 1280, height: 900 } }); const errs = [];
+  pg.on('pageerror', e => errs.push('page: ' + e.message)); pg.on('console', m => m.type() === 'error' && !/ERR_TUNNEL|Failed to load resource/.test(m.text()) && errs.push('console: ' + m.text()));
+  await pg.goto('file://' + __dirname + '/teste_planav.html'); await pg.waitForTimeout(1500);
+  const fr = pg.frames().find(f => f !== pg.mainFrame()), txt = async () => (await fr.$eval('#app', e => e.innerText)).replace(/\n+/g, ' | ');
+  console.log('ABAS', await fr.$eval('#nav', e => e.innerText.replace(/\n+/g, ' | ')));
+  console.log('BASE', (await txt()).slice(0, 2600));
+  await pg.screenshot({ path: 'base1.png', fullPage: true });
+  for (const [k, v] of [['custoMes', '6000'], ['pctTempo', '50'], ['outros', '400'], ['alunos', '200']]) { await fr.fill(`[data-bserv="${k}"]`, v); await fr.dispatchEvent(`[data-bserv="${k}"]`, 'change'); }
+  await fr.fill('[data-bind="fixos"]', '18000'); await fr.dispatchEvent('[data-bind="fixos"]', 'change'); await fr.check('[data-bok="receita"]');
+  const t2 = await txt(); console.log('SERVIR', (t2.match(/R\$ [\d,.]+ por aluno por mês[^|]*/) || [''])[0], '| MARGEM', (t2.match(/Margem de contribuição[^|]*\|[^|]*\|[^|]*/) || [''])[0], '| FIXOS', (t2.match(/Custos fixos por mês[^|]*\|[^|]*\|[^|]*\|[^|]*/) || [''])[0].slice(0, 160));
+  await fr.click('[data-baprovar]'); await pg.waitForTimeout(1300); const t3 = await txt(); console.log('APROV', (t3.match(/Baseline \d+ aprovado[^|]*/) || [''])[0], '| btn disabled', await fr.$eval('[data-baprovar]', e => e.disabled));
+  console.log('GRAVADOS', await pg.evaluate(() => GRAVADOS.map(g => g[0] + ' ' + (g[1].nome || '') + ' base=' + !!(g[1].premissas && g[1].premissas.baseline) + ' v=' + ((g[1].premissas && g[1].premissas.baseline && g[1].premissas.baseline.versoes.length) || 0))));
+  console.log('salvoBase', await fr.$eval('#salvoBase', e => e.textContent));
+  await pg.screenshot({ path: 'base2.png', fullPage: true });
+  await fr.click('[data-barea="camp"]'); await fr.click('[data-ir="3"]'); const t4 = await txt(); console.log('CAMP passo 4 suporte', (t4.match(/Suporte incremental por aluno[^|]*\|[^|]*\|[^|]*/) || [''])[0]);
+  await fr.click('[data-ir="4"]'); console.log('P5', (await txt()).slice(0, 260)); await pg.waitForTimeout(1500);
+  console.log('GRAVADOS2', await pg.evaluate(() => GRAVADOS.map(g => g[0] + ' ' + (g[1].nome || '').slice(0, 40))));
+  await fr.click('[data-barea="base"]'); await fr.click('[data-birrota="cfg-importar"]').catch(() => console.log('sem botão importar')); await pg.waitForTimeout(200); console.log('ROTA', await pg.evaluate(() => window.FOI));
+  const m = await b.newPage({ viewport: { width: 390, height: 844 } }); await m.goto('file://' + __dirname + '/teste_planav.html'); await m.waitForTimeout(1500); const f2 = m.frames().find(f => f !== m.mainFrame()); console.log('mob', await f2.evaluate(() => document.documentElement.scrollWidth));
+  console.log('ERRS', errs); await b.close(); })();

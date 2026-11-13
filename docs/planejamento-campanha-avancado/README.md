@@ -17,6 +17,8 @@ Módulo do Growths desde a **v0.287** (Marketing → Planejamento de campanha av
 | `testes.js` | 67 testes. `node testes.js` sai com erro se algum falhar. |
 | `app.js`, `app_plano.js`, `bc.css`, `base.css` | Telas. |
 | `app_tipo.js` | Tipo de campanha (objetivo × modelo): cartões do passo 1, rótulos do funil e regras de cálculo de cada tipo. |
+| `app_base.js` | Diagnóstico e baseline (só no Growths): indicadores, lacunas, custo de servir, aprovação. |
+| `teste_baseline.js` | 10 testes das contas do baseline (`planavBaseCalc`). `node teste_baseline.js`. |
 | `app_real.js` | Modo Growths: monta as premissas com os dados do cliente, seletores de produto e estratégia, salvamento. |
 | `planav_growths.js` | O que entra no `index.html`: leitura dos dados (`planavDados`) e a tela (`vPlanav`). |
 | `fake_sb.js`, `teste_planav.js` | Teste do módulo com um banco de mentira (precisa de um `fixture_demo.json`, não versionado). |

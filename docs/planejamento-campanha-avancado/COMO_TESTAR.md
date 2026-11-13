@@ -13,3 +13,12 @@
 11. Em **Growth Model → Calculadora de campanha**, os planejamentos avançados não devem aparecer na lista.
 
 O que ainda não faz: levar as metas para uma campanha, cockpit dentro do módulo e TikTok no plano por canal.
+
+## Diagnóstico e baseline (v0.290)
+1. Abra **Marketing → Planejamento de campanha avançado**. A tela abre na aba **Diagnóstico e baseline**.
+2. Confira a situação sugerida e os números: receita, clientes novos e CAC devem bater com Vendas e com as campanhas.
+3. Em "Apurar o custo de servir", preencha equipe, % do tempo, outros custos e alunos: aparece o custo por aluno e a margem muda para "Estimado".
+4. Digite uma correção em qualquer indicador: ele fica "Informado por você". Apague: volta ao número do sistema.
+5. Clique em **Aprovar baseline**. A aba mostra "aprovado v1" e o rodapé "✓ Baseline salvo".
+6. Vá para **Planejar campanha**, passo 4: o suporte por aluno deve vir com o custo de servir.
+7. Saia e volte: o baseline e a campanha abrem como você deixou.

@@ -1,3 +1,10 @@
+## v0.290 — Diagnóstico e baseline no Planejamento de campanha avançado (13/11/2026)
+- Duas abas na tela: **Diagnóstico e baseline** e **Planejar campanha**.
+- O diagnóstico identifica a situação do negócio (com histórico, operando com pouco dado, do zero) e traz 13 indicadores dos últimos 12 meses, cada um com de onde vem, cobertura e confiança, mais a tabela ano a ano.
+- Dá para corrigir um número (fica marcado como informado), apurar o custo de servir por aluno e ver o que falta, com atalho para Importar e validar dados e Contas a pagar.
+- Aprovar guarda o baseline com versão, quem, quando e código. O custo de servir passa a entrar nas campanhas.
+- A campanha normal não mudou. Sem mudança no banco.
+
 ## v0.289 — Planejamento avançado com a tela de Campanhas e planejamento (08/11/2026)
 - Mesmo visual do assistente Nova campanha: barras de passo no topo (clique para ir a qualquer passo), corpo, rodapé com Voltar, "✓ Rascunho salvo" e Salvar e continuar. Cores, fontes, botões, tabelas e campos do Growths, no tema escuro ou claro.
 - Captação de leads: o passo 10 mostra a meta de leads.

@@ -1,3 +1,8 @@
+## v0.290 — Diagnóstico e baseline dentro do Planejamento avançado
+**Pedido da Rebecka (13/11):** o diagnóstico como porta de entrada do planejamento, em três situações, gerando um baseline. "A gente tem a campanha normal e tem a campanha avançada. Na avançada é que a gente vai fazer essas modificações."
+**Como ficou:** aba própria no Planejamento de campanha avançado. A campanha normal não mudou.
+**Fora, por enquanto:** ligar o baseline ao Planejamento anual (meta e trimestres); margem por produto; LTV por coorte; planejado contra realizado do ano anterior; canais mais rentáveis; saldo bancário; lançamento real do custo de servir; reaproveitar as evidências do Diagnóstico Growth; tabela própria para o baseline (hoje fica no rascunho).
+
 ## v0.289 — Planejamento avançado com a tela igual à de Campanhas e planejamento
 **Pedido da Rebecka (08/11, noite):** "pode aplicar o ajuste mas quero a tela igual a da campanha e planejamento".
 **Como ficou:** mesmo esqueleto do assistente Nova campanha (barras de passo, corpo, rodapé com Salvar e continuar e "✓ Rascunho salvo"), mesmas cores, botões, tabelas, cartões de número e campos, no tema escuro ou claro do Growths. Continua numa área da página, não numa janela por cima.
