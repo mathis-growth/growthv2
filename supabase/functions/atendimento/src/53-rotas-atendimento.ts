@@ -114,13 +114,18 @@
       throw Error('O canvas precisa ter até 60 blocos e 120 ligações.');
     const nodeIds=new Set<string>();
     for(const node of fluxo.nodes){
-      if(!node||!/^[0-9a-f-]{36}$/i.test(String(node.id||''))||nodeIds.has(node.id)||!['gatilho','mensagem','botoes','condicao','espera','fim'].includes(node.tipo))throw Error('Bloco inválido no canvas.');
+      if(!node||!/^[0-9a-f-]{36}$/i.test(String(node.id||''))||nodeIds.has(node.id)||!['gatilho','mensagem','botoes','template','condicao','espera','fim'].includes(node.tipo))throw Error('Bloco inválido no canvas.');
       nodeIds.add(node.id);
       const x=Number(node.x),y=Number(node.y);if(!Number.isFinite(x)||!Number.isFinite(y)||x<0||y<0||x>50000||y>50000)throw Error('Posição de bloco inválida.');
       if(node.tipo==='mensagem'){
         const text=String(node.data?.texto||'').trim(),url=String(node.data?.media_url||'').trim(),mediaType=String(node.data?.media_type||'');
         if(text.length>4000||(!text&&!url))throw Error('A ação precisa de texto ou mídia e aceita até 4.000 caracteres.');
         if(url&&(!/^https:\/\//i.test(url)||url.length>2000||!['imagem','video','documento'].includes(mediaType)))throw Error('URL ou tipo de mídia inválido na ação.');
+      }
+      if(node.tipo==='template'){
+        const d=node.data||{};
+        if(!/^[a-z][a-z0-9_]{0,511}$/.test(String(d.template_name||''))||!/^([a-z]{2})(_[A-Z]{2})?$/.test(String(d.idioma||''))||!Array.isArray(d.campos)||d.campos.length>20||d.campos.some((x:any)=>!['primeiro_nome','nome','telefone','email','produto','campanha','capturado_em','qualificacao','status_funil','status_cliente'].includes(x)))throw Error('Selecione um template aprovado e mapeie todas as variáveis para campos do contato.');
+        if(d.media_url&&(!/^https:\/\//i.test(String(d.media_url))||String(d.media_url).length>2000))throw Error('Informe uma URL HTTPS para a mídia do template.');
       }
       if(node.tipo==='botoes'){
         const text=String(node.data?.texto||'').trim(),buttons=Array.isArray(node.data?.buttons)?node.data.buttons.filter((x:any)=>String(x?.title||'').trim()):[];
@@ -134,7 +139,7 @@
         if(!Number.isFinite(Number(node.data?.quantidade))||Number(node.data.quantidade)<1||Number(node.data.quantidade)>max)throw Error('Tempo de espera inválido. Confira o limite da unidade selecionada.');
       }
     }
-    if(!fluxo.nodes.some((n:any)=>n.tipo==='gatilho')||!fluxo.nodes.some((n:any)=>['mensagem','botoes'].includes(n.tipo)))throw Error('O canvas precisa conter um gatilho e ao menos uma ação de mensagem.');
+    if(!fluxo.nodes.some((n:any)=>n.tipo==='gatilho')||!fluxo.nodes.some((n:any)=>['mensagem','botoes','template'].includes(n.tipo)))throw Error('O canvas precisa conter um gatilho e ao menos uma ação de mensagem.');
     for(const edge of fluxo.edges)if(!nodeIds.has(edge.origem)||!nodeIds.has(edge.destino)||edge.origem===edge.destino||!['seguir','sim','nao'].includes(edge.saida))throw Error('Ligação inválida no canvas.');
     let canais:any[]=[];
     if(canalId){
@@ -146,6 +151,20 @@
       .eq('workspace_id',ws).eq('ativo',true));
     canais=canais.filter((ch:any)=>(ch.canal==='instagram'&&ch.provedor==='zernio')||
       (ch.canal==='whatsapp'&&['zernio','evolution'].includes(ch.provedor)));
+    if(fluxo.nodes.some((n:any)=>n.tipo==='template')){
+      if(!canalId||canais[0]?.provedor!=='zernio'||canais[0]?.canal!=='whatsapp')throw Error('O bloco de template exige uma conta WhatsApp API oficial específica.');
+      const listed=await zernio(zp(),'/whatsapp/templates?accountId='+encodeURIComponent(canais[0].externo_id));
+      const approved=listed.templates||listed.data?.templates||[];
+      for(const node of fluxo.nodes.filter((n:any)=>n.tipo==='template')){
+        const tpl=approved.find((t:any)=>t.name===node.data.template_name&&t.language===node.data.idioma&&t.status==='APPROVED');
+        if(!tpl)throw Error('O template selecionado não está aprovado nesta conta.');
+        if((tpl.components||[]).some((c:any)=>{const type=String(c.type||'').toUpperCase();return type==='HEADER'?!['TEXT','IMAGE','VIDEO','DOCUMENT'].includes(String(c.format||'TEXT').toUpperCase()):!['BODY','FOOTER','BUTTONS'].includes(type)||(c.buttons||[]).some((x:any)=>!['QUICK_REPLY','URL','PHONE_NUMBER'].includes(String(x.type||'').toUpperCase()));}))throw Error('Este template contém componentes ainda não compatíveis com automações.');
+        const slots=templateSlots(tpl);
+        if(slots.length!==node.data.campos.length)throw Error('Mapeie todas as variáveis do template.');
+        const format=String(tpl.components?.find((c:any)=>String(c.type).toUpperCase()==='HEADER')?.format||'TEXT').toUpperCase();
+        if(['IMAGE','VIDEO','DOCUMENT'].includes(format)&&!node.data.media_url)throw Error('Informe a URL HTTPS da mídia para o cabeçalho do template.');
+      }
+    }
     if(ativo&&!canais.some((ch:any)=>ch.ativo&&ch.status==='conectado'))
       throw Error('Para ativar, conecte um canal compatível ao Atendimento.');
     const row:any={workspace_id:ws,nome,canal_id:canalId,gatilho_tipo:tipo,gatilho_valor:gatilho,

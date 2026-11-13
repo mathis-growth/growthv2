@@ -62,6 +62,18 @@ function fluxoCompativel(flow:any) {
   return {versao:1,nodes:[{id:trigger,tipo:'gatilho',x:40,y:190,data:{}},{id:message,tipo:'mensagem',x:390,y:190,data:{texto:String(flow.resposta||'')}}],edges:[{origem:trigger,destino:message,saida:'seguir'}]};
 }
 function aresta(fluxo:any,id:string,saida='seguir') { return fluxo.edges.find((e:any)=>e.origem===id&&e.saida===saida)?.destino||null; }
+function templateSlots(tpl:any) {
+  const parts=tpl.components||[],header=parts.find((c:any)=>String(c.type).toUpperCase()==='HEADER'),body=parts.find((c:any)=>String(c.type).toUpperCase()==='BODY'),buttons=parts.find((c:any)=>String(c.type).toUpperCase()==='BUTTONS')?.buttons||[],slots:any[]=[];
+  const add=(text:string,kind:string,index=-1)=>{const numbers=[...new Set([...String(text||'').matchAll(/\{\{(\d+)\}\}/g)].map(x=>Number(x[1])))].sort((a,b)=>a-b);if(numbers.some((n,i)=>n!==i+1))throw Error('Variáveis fora da ordem no template aprovado.');numbers.forEach(marker=>slots.push({kind,index,marker}));};
+  if(String(header?.format||'TEXT').toUpperCase()==='TEXT')add(header?.text,'header');
+  add(body?.text,'body');buttons.forEach((button:any,index:number)=>{if(String(button.type).toUpperCase()==='URL')add(button.url,'url',index);});
+  return slots;
+}
+function templateCampo(p:any,cv:any,key:string) {
+  const nome=String(p.nome||cv.nome||'').trim();
+  const value=key==='primeiro_nome'?nome.split(/\s+/)[0]:key==='nome'?nome:key==='capturado_em'&&p.capturado_em?new Date(p.capturado_em).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'}):p[key];
+  return String(value??'').trim();
+}
 async function executarFluxo(ch:any,cv:any,flow:any,run:any,estado:any) {
   const adapter=providers[ch.provedor];if(!adapter)throw new Error('Provedor indisponível para executar o fluxo.');
   const graph=estado.fluxo||fluxoCompativel(flow),nodes=graph.nodes||[],edges=graph.edges||[];
@@ -88,6 +100,46 @@ async function executarFluxo(ch:any,cv:any,flow:any,run:any,estado:any) {
       snapshot.no_id=next;
       await q(db.from('atd_automacao_execucoes').update({status:'aguardando',retomar_em:retomarEm,estado:snapshot,erro:null}).eq('id',run.id).eq('status','processando'));
       return 'aguardando';
+    }
+    if(node.tipo==='template'){
+      if(ch.provedor!=='zernio'||ch.canal!=='whatsapp'||!ch.ativo||ch.status!=='conectado')throw Error('O template exige uma conta WhatsApp API oficial conectada.');
+      const d=node.data||{},listed=await zernio(zp(),'/whatsapp/templates?accountId='+encodeURIComponent(ch.externo_id)),templates=listed.templates||listed.data?.templates||[];
+      const tpl=templates.find((t:any)=>t.name===d.template_name&&t.language===d.idioma&&t.status==='APPROVED');
+      if(!tpl)throw Error('O template deixou de estar aprovado nesta conta.');
+      const slots=templateSlots(tpl),keys=Array.isArray(d.campos)?d.campos:[];
+      if(slots.length!==keys.length)throw Error('Mapeamento de variáveis incompleto.');
+      const params=keys.map((key:string)=>templateCampo(p,cv,key));
+      if(params.some((value:string)=>!value||value.length>1024))throw Error('O contato não possui todos os dados exigidos pelo template.');
+      const parts=tpl.components||[],header=parts.find((c:any)=>String(c.type).toUpperCase()==='HEADER'),body=parts.find((c:any)=>String(c.type).toUpperCase()==='BODY'),footer=parts.find((c:any)=>String(c.type).toUpperCase()==='FOOTER'),buttons=parts.find((c:any)=>String(c.type).toUpperCase()==='BUTTONS')?.buttons||[],format=String(header?.format||'TEXT').toUpperCase(),media=String(d.media_url||'').trim();
+      if(['IMAGE','VIDEO','DOCUMENT'].includes(format)&&!media)throw Error('Falta a mídia do cabeçalho do template.');
+      const headerMedia=media?{type:format.toLowerCase(),link:media}:null;
+      if(headerMedia)urlPublica(media);
+      const components:any[]=[];
+      for(const kind of ['header','body']){
+        const selected=slots.map((s,i)=>({s,value:params[i]})).filter(x=>x.s.kind===kind);
+        if(kind==='header'&&headerMedia)components.push({type:'header',parameters:[{type:headerMedia.type,[headerMedia.type]:{link:media}}]});
+        else if(selected.length)components.push({type:kind,parameters:selected.map(x=>({type:'text',text:x.value}))});
+      }
+      slots.forEach((slot,i)=>{if(slot.kind==='url')components.push({type:'button',sub_type:'url',index:String(slot.index),parameters:[{type:'text',text:params[i]}]});});
+      let preview=String(body?.text||'');slots.forEach((slot,i)=>{if(slot.kind==='body')preview=preview.replaceAll(`{{${slot.marker}}}`,params[i]);});
+      const pending=await q(db.from('atd_mensagens').insert({workspace_id:ch.workspace_id,conversa_id:cv.id,requisicao_id:snapshot.enviadas.length?null:run.id,direcao:'enviada',texto:[String(header?.text||''),preview,String(footer?.text||''),buttons.map((button:any)=>button.text).filter(Boolean).join(' · ')].filter(Boolean).join('\n'),autor_nome:'Automação · '+flow.nome,status:'enviando'}).select('id').single());
+      if(!run.mensagem_id){await q(db.from('atd_automacao_execucoes').update({mensagem_id:pending.id}).eq('id',run.id));run.mensagem_id=pending.id;}
+      let attempted=false;
+      try{
+        const opening=String(cv.externo_id).startsWith('pending:');let result:any;
+        if(opening){
+          const participantId=String(cv.endereco||'').replace(/\D/g,'');if(participantId.length<10||participantId.length>15)throw Error('Telefone inválido para iniciar conversa oficial.');
+          attempted=true;
+          result=await zernio(zp(),'/inbox/conversations','POST',{accountId:ch.externo_id,participantId,templateName:tpl.name,templateLanguage:tpl.language,templateParams:params,...(headerMedia?{headerMedia}:{})});
+          const remote=String(result.data?.conversationId||result.conversationId||'');if(!remote)throw Error('A Zernio não confirmou a sessão da conversa.');
+          await q(db.from('atd_conversas').update({externo_id:remote}).eq('id',cv.id).eq('workspace_id',ch.workspace_id).eq('externo_id',cv.externo_id));cv.externo_id=remote;
+        }else {attempted=true;result=await zernio(zp(),'/inbox/conversations/'+encodeURIComponent(cv.externo_id)+'/messages','POST',{accountId:ch.externo_id,template:{elements:[{name:tpl.name,language:tpl.language,components}]}});}
+        const external=String(result.data?.messageId||result.messageId||'');if(!external)throw Error('A Zernio não confirmou o identificador da mensagem.');
+        await q(db.rpc('atd_confirmar_envio',{p_mensagem:pending.id,p_externo:external}));
+      }catch(e){const known=!attempted||(e instanceof ProviderError&&e.status<500&&e.status!==408),detail=known?String((e as Error).message||'Falha no envio').slice(0,220):'Envio sem confirmação. Confira a Zernio antes de reenviar.';await q(db.from('atd_mensagens').update({status:known?'falhou':'incerto',erro:detail}).eq('id',pending.id));const failure=new Error(detail);(failure as any).fluxoIncerto=!known;throw failure;}
+      snapshot.enviadas.push(node.id);snapshot.no_id=next;
+      await q(db.from('atd_automacao_execucoes').update({estado:snapshot}).eq('id',run.id).eq('status','processando'));
+      current=next;continue;
     }
     if(node.tipo==='mensagem'||node.tipo==='botoes'){
       const text=String(node.data?.texto||'').replace(/\{\{nome\}\}/gi,cv.nome||'').replace(/\{\{produto\}\}/gi,p.produto||'').replace(/\{\{campanha\}\}/gi,p.campanha||'').trim();
