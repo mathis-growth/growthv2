@@ -114,32 +114,37 @@
       throw Error('O canvas precisa ter até 60 blocos e 120 ligações.');
     const nodeIds=new Set<string>();
     for(const node of fluxo.nodes){
-      if(!node||!/^[0-9a-f-]{36}$/i.test(String(node.id||''))||nodeIds.has(node.id)||!['gatilho','mensagem','botoes','template','condicao','espera','fim'].includes(node.tipo))throw Error('Bloco inválido no canvas.');
+      if(!node||!/^[0-9a-f-]{36}$/i.test(String(node.id||''))||nodeIds.has(node.id)||!['gatilho','mensagem','botoes','template','tag','campo','campanha','formulario','email','condicao','espera','fim'].includes(node.tipo))throw Error('Bloco inválido no canvas.');
       nodeIds.add(node.id);
       const x=Number(node.x),y=Number(node.y);if(!Number.isFinite(x)||!Number.isFinite(y)||x<0||y<0||x>50000||y>50000)throw Error('Posição de bloco inválida.');
       if(node.tipo==='mensagem'){
         const text=String(node.data?.texto||'').trim(),url=String(node.data?.media_url||'').trim(),mediaType=String(node.data?.media_type||'');
         if(text.length>4000||(!text&&!url))throw Error('A ação precisa de texto ou mídia e aceita até 4.000 caracteres.');
-        if(url&&(!/^https:\/\//i.test(url)||url.length>2000||!['imagem','video','documento'].includes(mediaType)))throw Error('URL ou tipo de mídia inválido na ação.');
+        if(url&&(!/^https:\/\//i.test(url)||url.length>2000||!['imagem','video','audio','documento'].includes(mediaType)))throw Error('URL ou tipo de mídia inválido na ação.');
       }
       if(node.tipo==='template'){
         const d=node.data||{};
         if(!/^[a-z][a-z0-9_]{0,511}$/.test(String(d.template_name||''))||!/^([a-z]{2})(_[A-Z]{2})?$/.test(String(d.idioma||''))||!Array.isArray(d.campos)||d.campos.length>20||d.campos.some((x:any)=>!['primeiro_nome','nome','telefone','email','produto','campanha','capturado_em','qualificacao','status_funil','status_cliente'].includes(x)))throw Error('Selecione um template aprovado e mapeie todas as variáveis para campos do contato.');
         if(d.media_url&&(!/^https:\/\//i.test(String(d.media_url))||String(d.media_url).length>2000))throw Error('Informe uma URL HTTPS para a mídia do template.');
       }
+      if(node.tipo==='tag'&&(!['adicionar','remover'].includes(node.data?.operacao)||!String(node.data?.tag||'').trim()||String(node.data.tag).length>80))throw Error('Escolha adicionar ou remover uma tag de até 80 caracteres.');
+      if(node.tipo==='campo'&&(!/^extra:[a-z][a-z0-9_]{1,40}$/.test(String(node.data?.chave||''))||!String(node.data?.valor||'').trim()||String(node.data.valor).trim().length>500))throw Error('Selecione um campo personalizado e informe um valor de até 500 caracteres.');
+      if(['campanha','formulario'].includes(node.tipo)&&!/^[0-9a-f-]{36}$/i.test(String(node.data?.[node.tipo==='campanha'?'campanha_id':'pesquisa_id']||'')))throw Error('Selecione uma campanha ou um formulário válido.');
+      if(node.tipo==='formulario'&&(!/^https:\/\//i.test(String(node.data?.base_url||''))||String(node.data.base_url).length>500||!String(node.data?.texto||'').includes('{{link}}')||String(node.data.texto).length>1000))throw Error('Configure uma URL pública HTTPS e inclua {{link}} no convite do formulário.');
+      if(node.tipo==='email'&&(!String(node.data?.assunto||'').trim()||String(node.data.assunto).length>180||!String(node.data?.html||'').trim()||String(node.data.html).length>100000))throw Error('Informe assunto e conteúdo do e-mail.');
       if(node.tipo==='botoes'){
         const text=String(node.data?.texto||'').trim(),buttons=Array.isArray(node.data?.buttons)?node.data.buttons.filter((x:any)=>String(x?.title||'').trim()):[];
         if(!text||text.length>1024||!buttons.length||buttons.length>3)throw Error('A ação de botões precisa de texto e de 1 a 3 botões.');
         if(buttons.some((x:any)=>!['reply','url'].includes(x.kind)||String(x.title).trim().length>20||String(x.value||'').length>500))throw Error('Os botões contêm valores inválidos.');
         if(buttons.some((x:any)=>x.kind==='url'&&!/^https:\/\//i.test(String(x.value||'')))||buttons.some((x:any)=>x.kind==='url')&&buttons.length>1)throw Error('Use respostas rápidas ou apenas um botão com link HTTPS.');
       }
-      if(node.tipo==='condicao'&&!String(node.data?.valor||'').trim())throw Error('Informe o trecho de mensagem na condição.');
+      if(node.tipo==='condicao'&&(!String(node.data?.valor||'').trim()||String(node.data.valor).length>120||!['mensagem','tag','campanha'].includes(String(node.data?.campo||'mensagem'))&&!/^extra:[a-z][a-z0-9_]{1,40}$/.test(String(node.data?.campo||''))))throw Error('Configure um campo e um valor válidos na condição.');
       if(node.tipo==='espera'){
         const unit=String(node.data?.unidade||''),max=unit==='segundos'?86400:unit==='minutos'?525600:unit==='horas'?8760:unit==='dias'?365:0;
         if(!Number.isFinite(Number(node.data?.quantidade))||Number(node.data.quantidade)<1||Number(node.data.quantidade)>max)throw Error('Tempo de espera inválido. Confira o limite da unidade selecionada.');
       }
     }
-    if(!fluxo.nodes.some((n:any)=>n.tipo==='gatilho')||!fluxo.nodes.some((n:any)=>['mensagem','botoes','template'].includes(n.tipo)))throw Error('O canvas precisa conter um gatilho e ao menos uma ação de mensagem.');
+    if(!fluxo.nodes.some((n:any)=>n.tipo==='gatilho')||!fluxo.nodes.some((n:any)=>['mensagem','botoes','template','formulario','email','tag','campo','campanha'].includes(n.tipo)))throw Error('O canvas precisa conter um gatilho e ao menos uma ação.');
     for(const edge of fluxo.edges)if(!nodeIds.has(edge.origem)||!nodeIds.has(edge.destino)||edge.origem===edge.destino||!['seguir','sim','nao'].includes(edge.saida))throw Error('Ligação inválida no canvas.');
     let canais:any[]=[];
     if(canalId){
@@ -165,6 +170,12 @@
         if(['IMAGE','VIDEO','DOCUMENT'].includes(format)&&!node.data.media_url)throw Error('Informe a URL HTTPS da mídia para o cabeçalho do template.');
       }
     }
+    const formIds=[...new Set(fluxo.nodes.filter((n:any)=>n.tipo==='formulario').map((n:any)=>n.data.pesquisa_id))];
+    if(formIds.length){const forms=await q(db.from('pesquisas').select('id').eq('workspace_id',ws).eq('ativa',true).eq('aceita_link_aberto',true).in('id',formIds));if(forms.length!==formIds.length)throw Error('Escolha formulários ativos com link aberto habilitado.');}
+    const campaignIds=[...new Set(fluxo.nodes.filter((n:any)=>n.tipo==='campanha').map((n:any)=>n.data.campanha_id))];
+    if(campaignIds.length){const found=await q(db.from('campanhas').select('id').eq('workspace_id',ws).in('id',campaignIds));if(found.length!==campaignIds.length)throw Error('Selecione uma campanha deste workspace.');}
+    const customKeys=[...new Set(fluxo.nodes.filter((n:any)=>n.tipo==='campo').map((n:any)=>String(n.data.chave).slice(6)))];
+    if(customKeys.length){const found=await q(db.from('campos_personalizados').select('chave').eq('workspace_id',ws).eq('entidade','pessoas').in('chave',customKeys));if(found.length!==customKeys.length)throw Error('Selecione um campo personalizado cadastrado para pessoas.');}
     if(ativo&&!canais.some((ch:any)=>ch.ativo&&ch.status==='conectado'))
       throw Error('Para ativar, conecte um canal compatível ao Atendimento.');
     const row:any={workspace_id:ws,nome,canal_id:canalId,gatilho_tipo:tipo,gatilho_valor:gatilho,

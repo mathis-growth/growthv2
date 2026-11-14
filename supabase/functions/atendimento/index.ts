@@ -239,7 +239,7 @@ async function resumoContato(ws:string,conversaId:string) {
   let pessoaId=cv.pessoa_id;
   if(!pessoaId){const ch=await channel(cv.canal_id,ws);if(ch.canal==='whatsapp')pessoaId=await identificarPessoaPorTelefone(ws,cv.id,cv.endereco||cv.externo_id);}
   if(!pessoaId)return {pessoa:null};
-  const pessoa=await q(db.from('pessoas').select('id,nome,telefone,email,status_funil,status_cliente,qualificacao,criado_em,convertido_em,campanha_id,utm_campaign,utm_source,utm_medium,utm_content,utm_term,pagina_origem,canal_origem,extras').eq('id',pessoaId).eq('workspace_id',ws).single());
+  const pessoa=await q(db.from('pessoas').select('id,nome,telefone,email,status_funil,status_cliente,qualificacao,tags,criado_em,convertido_em,campanha_id,utm_campaign,utm_source,utm_medium,utm_content,utm_term,pagina_origem,canal_origem,extras').eq('id',pessoaId).eq('workspace_id',ws).single());
   const [toques,participacoes,alunos,vendas]=await Promise.all([
     q(db.from('pessoa_toques').select('em,campanha_id').eq('workspace_id',ws).eq('pessoa_id',pessoaId).in('tipo',['entrada','captura']).order('em').limit(1)).catch(()=>[]),
     q(db.from('campanha_participacoes').select('campanha_id,entrou_em').eq('workspace_id',ws).eq('pessoa_id',pessoaId).order('entrou_em').limit(1)).catch(()=>[]),
@@ -274,6 +274,61 @@ function templateCampo(p:any,cv:any,key:string) {
   const value=key==='primeiro_nome'?nome.split(/\s+/)[0]:key==='nome'?nome:key==='capturado_em'&&p.capturado_em?new Date(p.capturado_em).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'}):p[key];
   return String(value??'').trim();
 }
+function personalizarAcao(texto:string,p:any,cv:any) {
+  return String(texto||'').replace(/\{\{\s*(primeiro_nome|nome|email|telefone|produto|campanha)\s*\}\}/gi,(_match,key)=>templateCampo(p,cv,String(key).toLowerCase()));
+}
+function personalizarHtmlAcao(html:string,p:any,cv:any) {
+  return String(html||'').replace(/\{\{\s*(primeiro_nome|nome|email|telefone|produto|campanha)\s*\}\}/gi,(_match,key)=>htmlSeguro(templateCampo(p,cv,String(key).toLowerCase())));
+}
+async function executarAcaoCRM(ch:any,cv:any,flow:any,run:any,node:any,p:any) {
+  if(!p.id)throw Error('Vincule a conversa a um Lead/Aluno antes de alterar tags, campos ou campanha.');
+  const ws=ch.workspace_id,d=node.data||{},tipo=String(node.tipo),existing=await q(db.from('atd_automacao_acoes').select('id,status').eq('execucao_id',run.id).eq('node_id',node.id).maybeSingle());
+  if(existing?.status==='feito')return;
+  if(existing)throw Object.assign(new Error('Ação anterior sem confirmação. Confira o histórico do contato antes de repetir.'),{fluxoIncerto:true});
+  const log=await q(db.from('atd_automacao_acoes').insert({workspace_id:ws,execucao_id:run.id,node_id:node.id,pessoa_id:p.id,tipo,status:'processando'}).select('id').single());
+  let attempted=false,mutated=false,external='',summary='';
+  try{
+    if(tipo==='tag'||tipo==='campo'){
+      const key=tipo==='campo'?String(d.chave).slice(6):'',value=personalizarAcao(tipo==='tag'?d.tag:d.valor,p,cv).trim();
+      if(!value||value.length>(tipo==='tag'?80:500))throw Error('O valor da ação está vazio ou ultrapassa o limite permitido.');
+      const operation=tipo==='tag'?'tag_'+d.operacao:'campo';
+      const updated=await q(db.rpc('atd_automacao_pessoa_atualizar',{p_ws:ws,p_pessoa:p.id,p_tipo:operation,p_chave:key,p_valor:value}));
+      mutated=true;
+      p.tags=updated.tags;p.extras=updated.extras;
+      summary=tipo==='tag'?`Tag ${d.operacao==='remover'?'removida':'adicionada'}: ${value}`:`Campo ${key} preenchido: ${value}`;
+    }else if(tipo==='campanha'){
+      const campaign=await q(db.from('campanhas').select('id,nome').eq('id',d.campanha_id).eq('workspace_id',ws).single());
+      const linked=await q(db.from('campanha_participacoes').select('id').eq('campanha_id',campaign.id).eq('pessoa_id',p.id).maybeSingle());
+      if(!linked){await q(db.from('pessoa_toques').insert({workspace_id:ws,pessoa_id:p.id,tipo:'entrada',canal:'automacao',campanha_id:campaign.id,descricao:`Inscrito pela automação ${flow.nome}`,origem:'sistema'}));mutated=true;}
+      p.campanha=campaign.nome;summary=linked?`Já inscrito na campanha: ${campaign.nome}`:`Inscrito na campanha: ${campaign.nome}`;
+    }else if(tipo==='formulario'){
+      if(!ch.ativo||ch.status!=='conectado')throw Error('Canal desconectado para enviar o formulário.');
+      const form=await q(db.from('pesquisas').select('id,nome,token_aberto,ativa,aceita_link_aberto').eq('id',d.pesquisa_id).eq('workspace_id',ws).single());
+      if(!form.ativa||!form.aceita_link_aberto)throw Error('O formulário precisa estar ativo e aceitar link aberto.');
+      const url=new URL(String(d.base_url));urlPublica(url.origin);if(url.username||url.password||url.hash||url.search)throw Error('A URL do Growth não pode conter credenciais ou parâmetros.');url.searchParams.set('pesquisa',form.token_aberto);
+      const text=personalizarAcao(String(d.texto||'Responda ao formulário: {{link}}'),p,cv).replaceAll('{{link}}',url.toString()).trim();
+      if(!text)throw Error('Informe o texto do convite ao formulário.');
+      const message=await q(db.from('atd_mensagens').insert({workspace_id:ws,conversa_id:cv.id,direcao:'enviada',texto:text,autor_nome:'Automação · '+flow.nome,status:'enviando'}).select('id').single());
+      try{const cfg=ch.provedor==='evolution'?await secret(ws):{key:zp()};attempted=true;external=await providers[ch.provedor].send(cfg,ch,cv,text);await q(db.rpc('atd_confirmar_envio',{p_mensagem:message.id,p_externo:external}));}
+      catch(e){const code=Number((e as any).status||0),uncertain=attempted&&(!code||code>=500||code===408);await q(db.from('atd_mensagens').update({status:uncertain?'incerto':'falhou',erro:uncertain?'Envio sem confirmação. Confira o provedor.':String((e as Error).message).slice(0,220)}).eq('id',message.id));throw e;}
+      summary=`Formulário enviado: ${form.nome}`;
+    }else if(tipo==='email'){
+      const to=String(p.email||'').trim().toLowerCase(),key=Deno.env.get('RESEND_API_KEY')||'';
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to))throw Error('O contato não tem e-mail válido.');
+      const sender=await q(db.from('atd_email_config').select('email_remetente,status_dominio').eq('workspace_id',ws).single());
+      if(sender.status_dominio!=='verified'||!key)throw Error('Verifique o domínio de e-mail e RESEND_API_KEY deste workspace.');
+      const subject=personalizarAcao(String(d.assunto),p,cv),html=emailSanitizar(personalizarHtmlAcao(String(d.html),p,cv));
+      attempted=true;
+      const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify({from:sender.email_remetente,to,subject,html,tags:[{name:'growth_workspace',value:String(ws).slice(0,50)},{name:'growth_automation',value:String(flow.id).slice(0,50)}]})});
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok)throw Object.assign(new Error(String(result.message||result.error||'Envio recusado pelo Resend.').slice(0,220)),{status:response.status});
+      external=String(result.id||'');if(!external)throw Error('O Resend não confirmou o identificador do e-mail.');
+      summary=`E-mail enviado para ${to}: ${subject}`;
+    }
+    await q(db.from('pessoa_toques').insert({workspace_id:ws,pessoa_id:p.id,tipo:'outro',canal:tipo==='email'?'email':ch.canal,descricao:`Automação ${flow.nome}: ${summary}`,origem:'sistema',...(tipo==='campanha'?{campanha_id:d.campanha_id}:{})}));
+    await q(db.from('atd_automacao_acoes').update({status:'feito',resumo:summary,externo_id:external||null,concluido_em:new Date().toISOString()}).eq('id',log.id));
+  }catch(e){const code=Number((e as any).status||0),status=mutated||attempted&&(!code||code>=500||code===408)?'incerto':'erro';await q(db.from('atd_automacao_acoes').update({status,erro:status==='incerto'?'Ação sem confirmação. Confira o histórico antes de repetir.':String((e as Error).message||'Falha na ação').slice(0,220)}).eq('id',log.id));if(status==='incerto')(e as any).fluxoIncerto=true;throw e;}
+}
 async function executarFluxo(ch:any,cv:any,flow:any,run:any,estado:any) {
   const adapter=providers[ch.provedor];if(!adapter)throw new Error('Provedor indisponível para executar o fluxo.');
   const graph=estado.fluxo||fluxoCompativel(flow),nodes=graph.nodes||[],edges=graph.edges||[];
@@ -288,7 +343,9 @@ async function executarFluxo(ch:any,cv:any,flow:any,run:any,estado:any) {
     if(node.tipo==='fim')break;
     if(node.tipo==='condicao'){
       const value=String(node.data?.valor||'').trim().toLocaleLowerCase();
-      current=String(snapshot.entrada_texto).toLocaleLowerCase().includes(value)?aresta(graph,node.id,'sim'):aresta(graph,node.id,'nao');
+      const field=String(node.data?.campo||'mensagem');
+      const source=field==='tag'?Array.isArray(p.tags)?p.tags.join('\n'):'' :field==='campanha'?String(p.campanha||''):field.startsWith('extra:')?String(p.extras?.[field.slice(6)]??''):String(snapshot.entrada_texto);
+      current=source.toLocaleLowerCase().includes(value)?aresta(graph,node.id,'sim'):aresta(graph,node.id,'nao');
       continue;
     }
     const next=aresta(graph,node.id,'seguir');
@@ -300,6 +357,11 @@ async function executarFluxo(ch:any,cv:any,flow:any,run:any,estado:any) {
       snapshot.no_id=next;
       await q(db.from('atd_automacao_execucoes').update({status:'aguardando',retomar_em:retomarEm,estado:snapshot,erro:null}).eq('id',run.id).eq('status','processando'));
       return 'aguardando';
+    }
+    if(['tag','campo','campanha','formulario','email'].includes(node.tipo)){
+      await executarAcaoCRM(ch,cv,flow,run,node,p);
+      snapshot.no_id=next;await q(db.from('atd_automacao_execucoes').update({estado:snapshot}).eq('id',run.id).eq('status','processando'));
+      current=next;continue;
     }
     if(node.tipo==='template'){
       if(ch.provedor!=='zernio'||ch.canal!=='whatsapp'||!ch.ativo||ch.status!=='conectado')throw Error('O template exige uma conta WhatsApp API oficial conectada.');
@@ -337,6 +399,7 @@ async function executarFluxo(ch:any,cv:any,flow:any,run:any,estado:any) {
         const external=String(result.data?.messageId||result.messageId||'');if(!external)throw Error('A Zernio não confirmou o identificador da mensagem.');
         await q(db.rpc('atd_confirmar_envio',{p_mensagem:pending.id,p_externo:external}));
       }catch(e){const known=!attempted||(e instanceof ProviderError&&e.status<500&&e.status!==408),detail=known?String((e as Error).message||'Falha no envio').slice(0,220):'Envio sem confirmação. Confira a Zernio antes de reenviar.';await q(db.from('atd_mensagens').update({status:known?'falhou':'incerto',erro:detail}).eq('id',pending.id));const failure=new Error(detail);(failure as any).fluxoIncerto=!known;throw failure;}
+      if(p.id)try{await q(db.from('pessoa_toques').insert({workspace_id:ch.workspace_id,pessoa_id:p.id,tipo:'outro',canal:ch.canal,descricao:`Automação ${flow.nome}: template ${tpl.name} enviado`,origem:'sistema'}));}catch{throw Object.assign(new Error('Template enviado, mas o registro na jornada falhou. Confira o histórico.'),{fluxoIncerto:true});}
       snapshot.enviadas.push(node.id);snapshot.no_id=next;
       await q(db.from('atd_automacao_execucoes').update({estado:snapshot}).eq('id',run.id).eq('status','processando'));
       current=next;continue;
@@ -352,12 +415,12 @@ async function executarFluxo(ch:any,cv:any,flow:any,run:any,estado:any) {
       if(node.tipo==='botoes'&&(buttons.length>3||buttons.filter((b:any)=>b.kind==='url').length>1||buttons.some((b:any)=>b.kind==='url')&&buttons.length>1))throw new Error('Use até 3 respostas rápidas ou um único botão de link.');
       if(node.tipo==='botoes'&&buttons.some((b:any)=>b.kind==='url'&&!/^https:\/\//i.test(b.value)))throw new Error('O botão de link precisa de uma URL HTTPS.');
       if(node.tipo==='botoes'&&ch.canal==='instagram'&&ch.provedor!=='zernio')throw new Error('Botões no Instagram exigem conexão Zernio.');
-      if(mediaUrl&&(!/^https:\/\//i.test(mediaUrl)||!['imagem','documento','video'].includes(mediaType)))throw new Error('Configure uma URL HTTPS e o tipo de mídia.');
+      if(mediaUrl&&(!/^https:\/\//i.test(mediaUrl)||!['imagem','documento','video','audio'].includes(mediaType)))throw new Error('Configure uma URL HTTPS e o tipo de mídia.');
       let attachment:any=null;
       if(mediaUrl){
         const downloaded=await downloadPublicMedia(mediaUrl),bytes=downloaded.bytes,responseMime=downloaded.mime;
         if(responseMime.startsWith('image/')&&bytes.length>5*1024*1024)throw new Error('Imagens devem ter até 5 MB para manter compatibilidade com WhatsApp oficial.');
-        const allowed=mediaType==='imagem'?/^image\/(jpeg|png|webp|gif)$/.test(responseMime):mediaType==='video'?responseMime==='video/mp4':/^(application\/(pdf|msword|vnd\.(openxmlformats-officedocument\.(wordprocessingml\.document|spreadsheetml\.sheet|presentationml\.presentation)|ms-excel|ms-powerpoint))|text\/(plain|csv))$/.test(responseMime);
+        const allowed=mediaType==='imagem'?/^image\/(jpeg|png|webp|gif)$/.test(responseMime):mediaType==='video'?responseMime==='video/mp4':mediaType==='audio'?/^audio\/(ogg|mpeg|mp4|webm|wav)$/.test(responseMime):/^(application\/(pdf|msword|vnd\.(openxmlformats-officedocument\.(wordprocessingml\.document|spreadsheetml\.sheet|presentationml\.presentation)|ms-excel|ms-powerpoint))|text\/(plain|csv))$/.test(responseMime);
         if(!allowed)throw new Error('O formato do arquivo não corresponde ao tipo selecionado.');
         const nome=String(node.data?.media_nome||'arquivo').replace(/[\\/\r\n]/g,'_').slice(0,150),path=`${ch.workspace_id}/${run.id}/${node.id}`;
         await q(db.storage.from('atendimento').upload(path,bytes,{contentType:responseMime,upsert:true}));
@@ -380,6 +443,7 @@ async function executarFluxo(ch:any,cv:any,flow:any,run:any,estado:any) {
         await q(db.from('atd_mensagens').update({status:known?'falhou':'incerto',erro:detail}).eq('id',pending.id));
         const failure=new Error(detail);(failure as any).fluxoIncerto=!known;throw failure;
       }
+      if(p.id)try{await q(db.from('pessoa_toques').insert({workspace_id:ch.workspace_id,pessoa_id:p.id,tipo:'outro',canal:ch.canal,descricao:`Automação ${flow.nome}: ${attachment?mediaType+' enviado':node.tipo==='botoes'?'botões enviados':'mensagem enviada'}`,origem:'sistema'}));}catch{throw Object.assign(new Error('Mensagem enviada, mas o registro na jornada falhou. Confira o histórico.'),{fluxoIncerto:true});}
       snapshot.enviadas.push(node.id);snapshot.no_id=next;
       await q(db.from('atd_automacao_execucoes').update({estado:snapshot}).eq('id',run.id).eq('status','processando'));
     }
@@ -1297,32 +1361,37 @@ async function handle(req: Request, b: any) {
       throw Error('O canvas precisa ter até 60 blocos e 120 ligações.');
     const nodeIds=new Set<string>();
     for(const node of fluxo.nodes){
-      if(!node||!/^[0-9a-f-]{36}$/i.test(String(node.id||''))||nodeIds.has(node.id)||!['gatilho','mensagem','botoes','template','condicao','espera','fim'].includes(node.tipo))throw Error('Bloco inválido no canvas.');
+      if(!node||!/^[0-9a-f-]{36}$/i.test(String(node.id||''))||nodeIds.has(node.id)||!['gatilho','mensagem','botoes','template','tag','campo','campanha','formulario','email','condicao','espera','fim'].includes(node.tipo))throw Error('Bloco inválido no canvas.');
       nodeIds.add(node.id);
       const x=Number(node.x),y=Number(node.y);if(!Number.isFinite(x)||!Number.isFinite(y)||x<0||y<0||x>50000||y>50000)throw Error('Posição de bloco inválida.');
       if(node.tipo==='mensagem'){
         const text=String(node.data?.texto||'').trim(),url=String(node.data?.media_url||'').trim(),mediaType=String(node.data?.media_type||'');
         if(text.length>4000||(!text&&!url))throw Error('A ação precisa de texto ou mídia e aceita até 4.000 caracteres.');
-        if(url&&(!/^https:\/\//i.test(url)||url.length>2000||!['imagem','video','documento'].includes(mediaType)))throw Error('URL ou tipo de mídia inválido na ação.');
+        if(url&&(!/^https:\/\//i.test(url)||url.length>2000||!['imagem','video','audio','documento'].includes(mediaType)))throw Error('URL ou tipo de mídia inválido na ação.');
       }
       if(node.tipo==='template'){
         const d=node.data||{};
         if(!/^[a-z][a-z0-9_]{0,511}$/.test(String(d.template_name||''))||!/^([a-z]{2})(_[A-Z]{2})?$/.test(String(d.idioma||''))||!Array.isArray(d.campos)||d.campos.length>20||d.campos.some((x:any)=>!['primeiro_nome','nome','telefone','email','produto','campanha','capturado_em','qualificacao','status_funil','status_cliente'].includes(x)))throw Error('Selecione um template aprovado e mapeie todas as variáveis para campos do contato.');
         if(d.media_url&&(!/^https:\/\//i.test(String(d.media_url))||String(d.media_url).length>2000))throw Error('Informe uma URL HTTPS para a mídia do template.');
       }
+      if(node.tipo==='tag'&&(!['adicionar','remover'].includes(node.data?.operacao)||!String(node.data?.tag||'').trim()||String(node.data.tag).length>80))throw Error('Escolha adicionar ou remover uma tag de até 80 caracteres.');
+      if(node.tipo==='campo'&&(!/^extra:[a-z][a-z0-9_]{1,40}$/.test(String(node.data?.chave||''))||!String(node.data?.valor||'').trim()||String(node.data.valor).trim().length>500))throw Error('Selecione um campo personalizado e informe um valor de até 500 caracteres.');
+      if(['campanha','formulario'].includes(node.tipo)&&!/^[0-9a-f-]{36}$/i.test(String(node.data?.[node.tipo==='campanha'?'campanha_id':'pesquisa_id']||'')))throw Error('Selecione uma campanha ou um formulário válido.');
+      if(node.tipo==='formulario'&&(!/^https:\/\//i.test(String(node.data?.base_url||''))||String(node.data.base_url).length>500||!String(node.data?.texto||'').includes('{{link}}')||String(node.data.texto).length>1000))throw Error('Configure uma URL pública HTTPS e inclua {{link}} no convite do formulário.');
+      if(node.tipo==='email'&&(!String(node.data?.assunto||'').trim()||String(node.data.assunto).length>180||!String(node.data?.html||'').trim()||String(node.data.html).length>100000))throw Error('Informe assunto e conteúdo do e-mail.');
       if(node.tipo==='botoes'){
         const text=String(node.data?.texto||'').trim(),buttons=Array.isArray(node.data?.buttons)?node.data.buttons.filter((x:any)=>String(x?.title||'').trim()):[];
         if(!text||text.length>1024||!buttons.length||buttons.length>3)throw Error('A ação de botões precisa de texto e de 1 a 3 botões.');
         if(buttons.some((x:any)=>!['reply','url'].includes(x.kind)||String(x.title).trim().length>20||String(x.value||'').length>500))throw Error('Os botões contêm valores inválidos.');
         if(buttons.some((x:any)=>x.kind==='url'&&!/^https:\/\//i.test(String(x.value||'')))||buttons.some((x:any)=>x.kind==='url')&&buttons.length>1)throw Error('Use respostas rápidas ou apenas um botão com link HTTPS.');
       }
-      if(node.tipo==='condicao'&&!String(node.data?.valor||'').trim())throw Error('Informe o trecho de mensagem na condição.');
+      if(node.tipo==='condicao'&&(!String(node.data?.valor||'').trim()||String(node.data.valor).length>120||!['mensagem','tag','campanha'].includes(String(node.data?.campo||'mensagem'))&&!/^extra:[a-z][a-z0-9_]{1,40}$/.test(String(node.data?.campo||''))))throw Error('Configure um campo e um valor válidos na condição.');
       if(node.tipo==='espera'){
         const unit=String(node.data?.unidade||''),max=unit==='segundos'?86400:unit==='minutos'?525600:unit==='horas'?8760:unit==='dias'?365:0;
         if(!Number.isFinite(Number(node.data?.quantidade))||Number(node.data.quantidade)<1||Number(node.data.quantidade)>max)throw Error('Tempo de espera inválido. Confira o limite da unidade selecionada.');
       }
     }
-    if(!fluxo.nodes.some((n:any)=>n.tipo==='gatilho')||!fluxo.nodes.some((n:any)=>['mensagem','botoes','template'].includes(n.tipo)))throw Error('O canvas precisa conter um gatilho e ao menos uma ação de mensagem.');
+    if(!fluxo.nodes.some((n:any)=>n.tipo==='gatilho')||!fluxo.nodes.some((n:any)=>['mensagem','botoes','template','formulario','email','tag','campo','campanha'].includes(n.tipo)))throw Error('O canvas precisa conter um gatilho e ao menos uma ação.');
     for(const edge of fluxo.edges)if(!nodeIds.has(edge.origem)||!nodeIds.has(edge.destino)||edge.origem===edge.destino||!['seguir','sim','nao'].includes(edge.saida))throw Error('Ligação inválida no canvas.');
     let canais:any[]=[];
     if(canalId){
@@ -1348,6 +1417,12 @@ async function handle(req: Request, b: any) {
         if(['IMAGE','VIDEO','DOCUMENT'].includes(format)&&!node.data.media_url)throw Error('Informe a URL HTTPS da mídia para o cabeçalho do template.');
       }
     }
+    const formIds=[...new Set(fluxo.nodes.filter((n:any)=>n.tipo==='formulario').map((n:any)=>n.data.pesquisa_id))];
+    if(formIds.length){const forms=await q(db.from('pesquisas').select('id').eq('workspace_id',ws).eq('ativa',true).eq('aceita_link_aberto',true).in('id',formIds));if(forms.length!==formIds.length)throw Error('Escolha formulários ativos com link aberto habilitado.');}
+    const campaignIds=[...new Set(fluxo.nodes.filter((n:any)=>n.tipo==='campanha').map((n:any)=>n.data.campanha_id))];
+    if(campaignIds.length){const found=await q(db.from('campanhas').select('id').eq('workspace_id',ws).in('id',campaignIds));if(found.length!==campaignIds.length)throw Error('Selecione uma campanha deste workspace.');}
+    const customKeys=[...new Set(fluxo.nodes.filter((n:any)=>n.tipo==='campo').map((n:any)=>String(n.data.chave).slice(6)))];
+    if(customKeys.length){const found=await q(db.from('campos_personalizados').select('chave').eq('workspace_id',ws).eq('entidade','pessoas').in('chave',customKeys));if(found.length!==customKeys.length)throw Error('Selecione um campo personalizado cadastrado para pessoas.');}
     if(ativo&&!canais.some((ch:any)=>ch.ativo&&ch.status==='conectado'))
       throw Error('Para ativar, conecte um canal compatível ao Atendimento.');
     const row:any={workspace_id:ws,nome,canal_id:canalId,gatilho_tipo:tipo,gatilho_valor:gatilho,
