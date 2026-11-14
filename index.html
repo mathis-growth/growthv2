@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Growths</title>
-<link rel="stylesheet" href="assets/atendimento.css?v=0235">
+<link rel="stylesheet" href="assets/atendimento.css?v=0236">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13277,7 +13277,8 @@ const PAC_SEMPRE = ['cad-equipe', 'cad-funcoes', 'cockpit'];
 /* v0.108: telas que saíram do menu (aposentadas ou que viraram aba de outra) */
 const TELAS_FORA_DO_MENU = ['gro-lucro', 'gro-analise', 'gro-cenarios', 'ho-cohort', 'ho-ascensao'];
 const PAC_SEM_BANCO = '<div class="panel" style="border-left:4px solid var(--warn)"><b>Os pacotes de acesso ainda não estão no banco.</b> <span class="muted">Execute supabase/migrations/20261010230000_pacotes_acesso.sql no SQL Editor do Supabase (depois da migração de segurança) e recarregue.</span></div>';
-const telaLiberada = k => ehCasaV(k) || !S.acesso || S.acesso.has(k) || (k === 'atd-contatos' && (S.acesso.has('atd-conversas') || S.acesso.has('atd-transmissao'))) || (k === 'ho-retencao' && (S.acesso.has('ho-cohort') || S.acesso.has('ho-ascensao'))) || (k === 'ho-cg' && S.acesso.has('crm-alunos')) || (k === 'mkt-estrategias' && (S.acesso.has('mkt-camp') || S.acesso.has('cad-funis'))) || (k === 'gro-cenarios' && S.acesso.has('gro-modelo')) || PAC_SEMPRE.includes(k) || TELAS_INT.includes(k);
+const ATD_ROTAS_LEGADAS = { 'atd-envios-whatsapp':'atd-grupos-disparo', 'atd-envios-email':'atd-transmissao', 'atd-envios-oficial':'atd-transmissao', 'atd-envios-grupos':'atd-grupos-disparo', 'atd-auto-whatsapp':'atd-automacoes', 'atd-auto-instagram':'atd-automacoes', 'atd-auto-email':'atd-automacoes', 'atd-auto-oficial':'atd-automacoes' };
+const telaLiberada = k => ehCasaV(k) || !S.acesso || S.acesso.has(k) || (ATD_ROTAS_LEGADAS[k] && S.acesso.has(ATD_ROTAS_LEGADAS[k])) || (k === 'atd-contatos' && (S.acesso.has('atd-conversas') || S.acesso.has('atd-transmissao'))) || (k === 'ho-retencao' && (S.acesso.has('ho-cohort') || S.acesso.has('ho-ascensao'))) || (k === 'ho-cg' && S.acesso.has('crm-alunos')) || (k === 'mkt-estrategias' && (S.acesso.has('mkt-camp') || S.acesso.has('cad-funis'))) || (k === 'gro-cenarios' && S.acesso.has('gro-modelo')) || PAC_SEMPRE.includes(k) || TELAS_INT.includes(k);
 async function carregaAcesso() {
   S.acesso = null; S.acessoInfo = null;
   try { const a = await q(sb.rpc('acesso_workspace', { p_ws: S.ws })); S.acessoInfo = a || null; S.acesso = a && Array.isArray(a.telas) ? new Set(a.telas) : null; }
@@ -25119,7 +25120,7 @@ function modalSubtemas(t, D) {
 }
 
 </script>
-<script src="assets/atendimento.js?v=0238"></script>
+<script src="assets/atendimento.js?v=0240"></script>
 <script>
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
 if (PQ_TOKEN) vPesquisaPublica(PQ_TOKEN);
