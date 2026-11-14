@@ -7535,6 +7535,31 @@ function dgInsights(D) {
 /* const dgDeltaG → v0.153 (g153.js) */
 const dgDelta = (a, b, menorMelhor, pp) => dgDeltaG(a, b, menorMelhor, pp);
 const dgSpark = (v, w = 110, h = 34) => { if (!v || v.filter(x => x > 0).length < 2) return ''; const mx = Math.max(...v), mn = Math.min(...v), X = i => 2 + i * (w - 4) / (v.length - 1), Y = x => h - 3 - (mx === mn ? .5 : (x - mn) / (mx - mn)) * (h - 8); const pts = v.map((x, i) => `${X(i).toFixed(1)},${Y(x).toFixed(1)}`).join(' '); return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><defs><linearGradient id="sg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".35"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs><polygon points="${X(0)},${h} ${pts} ${X(v.length - 1)},${h}" fill="url(#sg)"/><polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`; };
+/* v0.294 — gráfico de linha e de barra genéricos, com grade e rótulo de eixo (mesmo visual dos gráficos do app). */
+function grLinha(valores, rotulos, cor, w = 640, h = 150, sufixo) {
+  cor = cor || 'var(--accent)'; sufixo = sufixo || '';
+  const L = 38, R = 12, T = 10, B = rotulos ? 22 : 6, n = valores.length, mx = Math.max(1, ...valores), mn = Math.min(0, ...valores);
+  const X = i => n > 1 ? L + i * (w - L - R) / (n - 1) : (L + w - R) / 2, Y = v => T + (h - T - B) * (1 - (v - mn) / ((mx - mn) || 1));
+  const grade = [0, .5, 1].map(f => `<line x1="${L}" x2="${w - R}" y1="${Y(mn + (mx - mn) * f).toFixed(1)}" y2="${Y(mn + (mx - mn) * f).toFixed(1)}" stroke="var(--line)"/><text x="${L - 6}" y="${(Y(mn + (mx - mn) * f) + 3).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--muted)">${Math.round(mn + (mx - mn) * f)}${sufixo}</text>`).join('');
+  const pts = valores.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');
+  const area = `${X(0).toFixed(1)},${Y(mn).toFixed(1)} ${pts} ${X(n - 1).toFixed(1)},${Y(mn).toFixed(1)}`;
+  const circ = valores.map((v, i) => `<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3.5" fill="${cor}"><title>${(rotulos && rotulos[i]) || i}: ${v}${sufixo}</title></circle>`).join('');
+  const labels = rotulos ? rotulos.map((r, i) => `<text x="${X(i).toFixed(1)}" y="${h - 6}" text-anchor="middle" font-size="10" fill="var(--muted)">${esc(r)}</text>`).join('') : '';
+  const gid = 'grl' + Math.random().toString(36).slice(2, 8);
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img">${grade}<defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${cor}" stop-opacity=".28"/><stop offset="1" stop-color="${cor}" stop-opacity="0"/></linearGradient></defs><polygon points="${area}" fill="url(#${gid})"/><polyline points="${pts}" fill="none" stroke="${cor}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>${circ}${labels}</svg>`;
+}
+function grBarraLinha(rotulos, barras, linha, corBarra, corLinha) {
+  corBarra = corBarra || 'var(--accent)'; corLinha = corLinha || '#fff';
+  const w = 640, h = 170, L = 40, R = linha ? 40 : 12, T = 10, B = 24, n = barras.length, bw = (w - L - R) / Math.max(1, n);
+  const mxB = Math.max(1, ...barras), mxL = linha ? Math.max(1, ...linha.filter(v => v != null)) : 1;
+  const X = i => L + i * bw + bw / 2, YB = v => T + (h - T - B) * (1 - v / mxB), YL = v => T + (h - T - B) * (1 - v / mxL);
+  const passo = n > 31 ? Math.ceil(n / 14) : 1;
+  const grade = [0, .5, 1].map(f => `<line x1="${L}" x2="${w - R}" y1="${YB(mxB * f).toFixed(1)}" y2="${YB(mxB * f).toFixed(1)}" stroke="var(--line)"/><text x="${L - 6}" y="${(YB(mxB * f) + 3).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--muted)">${Math.round(mxB * f)}</text>${linha ? `<text x="${w - R + 6}" y="${(YL(mxL * f) + 3).toFixed(1)}" font-size="10" fill="var(--muted)">${Math.round(mxL * f)}</text>` : ''}`).join('');
+  const rects = barras.map((v, i) => `<rect x="${(X(i) - bw * .32).toFixed(1)}" y="${YB(v).toFixed(1)}" width="${Math.max(1, bw * .64).toFixed(1)}" height="${Math.max(0, h - B - YB(v)).toFixed(1)}" rx="2" fill="${corBarra}" opacity=".85"><title>${esc(rotulos[i])}: ${num(v)}</title></rect>`).join('');
+  const pts = linha ? linha.map((v, i) => v == null ? '' : `${X(i).toFixed(1)},${YL(v).toFixed(1)}`).filter(Boolean).join(' ') : '';
+  const labels = rotulos.map((r, i) => i % passo === 0 ? `<text x="${X(i).toFixed(1)}" y="${h - 6}" text-anchor="middle" font-size="10" fill="var(--muted)">${esc(r)}</text>` : '').join('');
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img">${grade}${rects}${linha ? `<polyline points="${pts}" fill="none" stroke="${corLinha}" stroke-width="2"/>` : ''}${labels}</svg>`;
+}
 function dgGrafico(D) {
   const W = 700, H = 210, L = 56, R = 44, T = 12, B = 26, n = 12, mx1 = Math.max(1, ...D.serie.rec), mx2 = Math.max(1, ...D.serie.led), bw = (W - L - R) / n, X = i => L + i * bw + bw / 2, Y1 = v => T + (H - T - B) * (1 - v / mx1), Y2 = v => T + (H - T - B) * (1 - v / mx2);
   const k = v => v >= 1000 ? Math.round(v / 1000) + ' mil' : String(Math.round(v));
@@ -14846,28 +14871,34 @@ async function vUsoMathisa(m) {
   const dur = sg => { sg = Number(sg || 0); if (sg < 60) return sg + ' s'; if (sg < 3600) return Math.round(sg / 60) + ' min'; return (sg / 3600).toFixed(1).replace('.', ',') + ' h'; };
   const C = R.por_cliente || [], T = (R.por_tela || []).slice(0, 10), D = R.por_dia || [];
   const maxC = Math.max(1, ...C.map(x => x.aberturas)), maxT = Math.max(1, ...T.map(x => x.aberturas)), maxD = Math.max(1, ...D.map(x => x.aberturas));
+  const MESES = ['Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out'];
   m.innerHTML = `<div class="head"><div><h1>Uso do Growths pelos clientes</h1><span class="muted">Quem está mais ativo, o que mais usam, e a tendência da carteira toda — mesma lógica que aplicamos no app dos seus alunos, aplicada em nós mesmos.</span></div>
     <div class="acts"><select id="usoMDias">${[[7, 'Últimos 7 dias'], [30, 'Últimos 30 dias'], [90, 'Últimos 90 dias'], [365, 'Últimos 12 meses']].map(([d, l]) => `<option value="${d}"${U.dias === d ? ' selected' : ''}>${l}</option>`).join('')}</select><button class="btn" onclick="render()">Atualizar</button></div></div>
   <div class="kpis">${kpi('Clientes ativos', num(R.clientes_ativos), 'abriram alguma tela no período')}${kpi('Sessões', num(R.sessoes), 'visitas ao Growths')}${kpi('Telas abertas', num(R.aberturas_total), 'no total')}${kpi('Cliente mais ativo', C[0] ? esc(C[0].nome) : '—', C[0] ? num(C[0].aberturas) + ' aberturas' : '')}</div>
-  <div class="panel"><h2 style="margin:0 0 6px">Clientes mais ativos</h2><div class="tw"><table><thead><tr><th>Cliente</th><th style="width:26%">Aberturas</th><th class="n">Pessoas</th><th class="n">Tempo total</th><th class="n">Erros</th><th>Último acesso</th><th></th></tr></thead><tbody>
-  ${C.map(x => `<tr><td>${esc(x.nome)}</td><td><div class="bar"><i style="width:${Math.round(x.aberturas / maxC * 100)}%"></i></div> <span class="mono">${num(x.aberturas)}</span></td><td class="n">${num(x.usuarios)}</td><td class="n">${dur(x.tempo_total)}</td><td class="n">${x.erros ? '<span class="pill bad">' + num(x.erros) + '</span>' : '0'}</td><td>${dtt(x.ultimo)}</td><td><button type="button" class="btn sm" data-abrews="${x.workspace_id}">Ver uso desse cliente</button></td></tr>`).join('') || '<tr><td colspan="7" class="empty">Ainda sem registros no período.</td></tr>'}</tbody></table></div></div>
-  <div class="cols"><div class="panel"><h2 style="margin:0 0 6px">Telas mais usadas (todos os clientes)</h2><div class="tw"><table><thead><tr><th>Tela</th><th style="width:30%">Aberturas</th><th class="n">Clientes</th><th class="n">Tempo total</th></tr></thead><tbody>${T.map(x => `<tr><td>${esc(rotuloTela(x.tela))}</td><td><div class="bar"><i style="width:${Math.round(x.aberturas / maxT * 100)}%"></i></div> <span class="mono">${num(x.aberturas)}</span></td><td class="n">${num(x.clientes)}</td><td class="n">${dur(x.tempo_total)}</td></tr>`).join('') || '<tr><td colspan="4" class="empty">Sem dados.</td></tr>'}</tbody></table></div></div>
-  <div class="panel"><h2 style="margin:0 0 6px">Atividade por dia (toda a carteira)</h2>${D.map(d => `<div class="row" style="display:flex;gap:8px;align-items:center;margin:2px 0"><span class="mono" style="width:70px">${dd(d.dia).slice(0, 5)}</span><div class="bar" style="flex:1"><i style="width:${Math.round(d.aberturas / maxD * 100)}%"></i></div><span class="mono" style="width:110px;text-align:right">${num(d.aberturas)} · ${num(d.clientes)} clientes</span></div>`).join('') || '<div class="empty">Sem dados.</div>'}</div></div>
+  <div class="panel"><h2 style="margin:0 0 6px">Clientes mais ativos</h2>
+    ${C.length ? grBarraLinha(C.slice(0, 12).map(x => x.nome), C.slice(0, 12).map(x => x.aberturas)) : '<div class="empty">Ainda sem registros no período.</div>'}
+    <div class="tw"><table><thead><tr><th>Cliente</th><th class="n">Aberturas</th><th class="n">Pessoas</th><th class="n">Tempo total</th><th class="n">Erros</th><th>Último acesso</th><th></th></tr></thead><tbody>
+  ${C.map(x => `<tr><td>${esc(x.nome)}</td><td class="n mono">${num(x.aberturas)}</td><td class="n">${num(x.usuarios)}</td><td class="n">${dur(x.tempo_total)}</td><td class="n">${x.erros ? '<span class="pill bad">' + num(x.erros) + '</span>' : '0'}</td><td>${dtt(x.ultimo)}</td><td><button type="button" class="btn sm" data-abrews="${x.workspace_id}">Ver uso desse cliente</button></td></tr>`).join('') || '<tr><td colspan="7" class="empty">Ainda sem registros no período.</td></tr>'}</tbody></table></div></div>
+  <div class="panel"><h2 style="margin:0 0 6px">Telas mais usadas (todos os clientes)</h2>
+    ${T.length ? grBarraLinha(T.map(x => rotuloTela(x.tela)), T.map(x => x.aberturas)) : '<div class="empty">Sem dados.</div>'}
+    <div class="tw"><table><thead><tr><th>Tela</th><th class="n">Aberturas</th><th class="n">Clientes</th><th class="n">Tempo total</th></tr></thead><tbody>${T.map(x => `<tr><td>${esc(rotuloTela(x.tela))}</td><td class="n mono">${num(x.aberturas)}</td><td class="n">${num(x.clientes)}</td><td class="n">${dur(x.tempo_total)}</td></tr>`).join('') || '<tr><td colspan="4" class="empty">Sem dados.</td></tr>'}</tbody></table></div></div>
+  <div class="panel"><h2 style="margin:0 0 6px">Atividade por dia (toda a carteira)</h2><span class="muted peq">Barras = telas abertas · linha = clientes ativos no dia</span>
+    ${D.length ? grBarraLinha(D.map(d => dd(d.dia).slice(0, 5)), D.map(d => d.aberturas), D.map(d => d.clientes), 'var(--accent)', '#fff') : '<div class="empty">Sem dados.</div>'}</div>
   <div class="panel">
     <div class="head"><div><h2 style="margin:0 0 2px">North Star Metric e as alavancas</h2><span class="muted peq">Exemplo de referência — números ilustrativos, pra pensar o que medir. Ainda não são calculados a partir do uso real.</span></div><span class="pill warn">Exemplo</span></div>
     <div class="kpis" style="grid-template-columns:1fr">
-      <div class="kpi"><span class="muted peq">North Star Metric (exemplo)</span><b style="font-size:26px">58%</b><span class="peq muted">% de alunos que atingem o primeiro marco de resultado em 60 dias</span>${dgSpark([28, 34, 41, 47, 53, 58], 300, 46)}</div>
+      <div class="kpi"><span class="muted peq">North Star Metric (exemplo)</span><b style="font-size:26px">58%</b><span class="peq muted">% de alunos que atingem o primeiro marco de resultado em 60 dias</span>${grLinha([28, 34, 41, 47, 53, 58], MESES, 'var(--accent)', 640, 150, '%')}</div>
     </div>
     <div class="cols">
       <div class="panel" style="background:var(--surface-2);border:none">
-        <h2 style="margin:0 0 6px">Com app — uso e engajamento</h2>
-        ${[['Retenção de abertura (7 dias)', [48, 52, 55, 59, 61, 65], '65%'], ['Engajamento com o conteúdo-chave', [30, 33, 38, 44, 47, 51], '51%'], ['Alerta automático resolvido a tempo', [40, 45, 50, 55, 60, 63], '63%']]
-          .map(([l, v, atual]) => `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line)"><span class="peq">${l}</span><div style="display:flex;align-items:center;gap:10px">${dgSpark(v, 72, 28)}<b>${atual}</b></div></div>`).join('')}
+        <h2 style="margin:0 0 10px">Com app — uso e engajamento</h2>
+        <div style="display:grid;gap:14px">${[['Retenção de abertura (7 dias)', [48, 52, 55, 59, 61, 65], '65%'], ['Engajamento com o conteúdo-chave', [30, 33, 38, 44, 47, 51], '51%'], ['Alerta automático resolvido a tempo', [40, 45, 50, 55, 60, 63], '63%']]
+          .map(([l, v, atual]) => `<div><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span class="peq">${l}</span><b>${atual}</b></div>${grLinha(v, MESES, '#7fb0ff', 300, 86, '%')}</div>`).join('')}</div>
       </div>
       <div class="panel" style="background:var(--surface-2);border:none">
-        <h2 style="margin:0 0 6px">Mentoria sem app — acompanhamento humano</h2>
-        ${[['Frequência nos encontros', [62, 64, 63, 67, 70, 72], '72%'], ['Intervenção de CS a tempo', [50, 55, 58, 61, 65, 68], '68%'], ['Confirmação humana do marco', [35, 40, 44, 49, 53, 57], '57%']]
-          .map(([l, v, atual]) => `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line)"><span class="peq">${l}</span><div style="display:flex;align-items:center;gap:10px">${dgSpark(v, 72, 28)}<b>${atual}</b></div></div>`).join('')}
+        <h2 style="margin:0 0 10px">Mentoria sem app — acompanhamento humano</h2>
+        <div style="display:grid;gap:14px">${[['Frequência nos encontros', [62, 64, 63, 67, 70, 72], '72%'], ['Intervenção de CS a tempo', [50, 55, 58, 61, 65, 68], '68%'], ['Confirmação humana do marco', [35, 40, 44, 49, 53, 57], '57%']]
+          .map(([l, v, atual]) => `<div><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span class="peq">${l}</span><b>${atual}</b></div>${grLinha(v, MESES, '#f5b942', 300, 86, '%')}</div>`).join('')}</div>
       </div>
     </div>
     <span class="muted peq">A leitura: cada alavanca subindo empurra a North Star Metric pra cima. Se uma cair, é ali que se investiga antes da receita cair também. Pra isso virar número real, falta decidir a fórmula de cada alavanca e calcular a partir do uso de verdade.</span>
