@@ -1130,8 +1130,13 @@ async function handle(req: Request, b: any) {
   }
   if(b.action==='disparos-grupos-list'){
     const rows=await q(db.from('atd_disparos_grupos').select('id,nome,texto,status,iniciar_em,intervalo_segundos,total,criado_em,midia_path,midia_nome,midia_mime,grupo_campanha_id').eq('workspace_id',ws).order('criado_em',{ascending:false}).limit(50));
-    const items=rows.length?await q(db.from('atd_disparos_grupos_itens').select('campanha_id,status,erro').eq('workspace_id',ws).in('campanha_id',rows.map((x:any)=>x.id))):[];
-    for(const row of rows){const own=items.filter((i:any)=>i.campanha_id===row.id);row.enviados=own.filter((i:any)=>i.status==='enviado').length;row.falhas=own.filter((i:any)=>['erro','incerto'].includes(i.status)).length;row.pendentes=own.filter((i:any)=>i.status==='agendado').length;row.erro=own.find((i:any)=>i.erro)?.erro||null;}
+    const items=rows.length?await q(db.from('atd_disparos_grupos_itens').select('campanha_id,conversa_id,status,erro').eq('workspace_id',ws).in('campanha_id',rows.map((x:any)=>x.id))):[];
+    const firstByCampaign=new Map<string,string>();
+    for(const item of items)if(!firstByCampaign.has(item.campanha_id))firstByCampaign.set(item.campanha_id,item.conversa_id);
+    const sampleIds=[...new Set(firstByCampaign.values())];
+    const recipients=sampleIds.length?await q(db.from('atd_conversas').select('id,grupo').eq('workspace_id',ws).in('id',sampleIds)):[];
+    const groupById=new Map(recipients.map((c:any)=>[c.id,Boolean(c.grupo)]));
+    for(const row of rows){const own=items.filter((i:any)=>i.campanha_id===row.id),sample=firstByCampaign.get(row.id);row.publico=row.grupo_campanha_id?'grupos':sample&&groupById.has(sample)?(groupById.get(sample)?'grupos':'contatos'):'desconhecido';row.enviados=own.filter((i:any)=>i.status==='enviado').length;row.falhas=own.filter((i:any)=>['erro','incerto'].includes(i.status)).length;row.pendentes=own.filter((i:any)=>i.status==='agendado').length;row.erro=own.find((i:any)=>i.erro)?.erro||null;}
     return json({campanhas:rows});
   }
   if(b.action==='disparos-grupos-destinatarios'){
