@@ -7546,7 +7546,7 @@ function grLinha(valores, rotulos, cor, w = 640, h = 150, sufixo) {
   const circ = valores.map((v, i) => `<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3.5" fill="${cor}"><title>${(rotulos && rotulos[i]) || i}: ${v}${sufixo}</title></circle>`).join('');
   const labels = rotulos ? rotulos.map((r, i) => `<text x="${X(i).toFixed(1)}" y="${h - 6}" text-anchor="middle" font-size="10" fill="var(--muted)">${esc(r)}</text>`).join('') : '';
   const gid = 'grl' + Math.random().toString(36).slice(2, 8);
-  return `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img">${grade}<defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${cor}" stop-opacity=".28"/><stop offset="1" stop-color="${cor}" stop-opacity="0"/></linearGradient></defs><polygon points="${area}" fill="url(#${gid})"/><polyline points="${pts}" fill="none" stroke="${cor}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>${circ}${labels}</svg>`;
+  return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="max-width:100%;height:auto;display:block" role="img">${grade}<defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${cor}" stop-opacity=".28"/><stop offset="1" stop-color="${cor}" stop-opacity="0"/></linearGradient></defs><polygon points="${area}" fill="url(#${gid})"/><polyline points="${pts}" fill="none" stroke="${cor}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>${circ}${labels}</svg>`;
 }
 function grBarraLinha(rotulos, barras, linha, corBarra, corLinha) {
   corBarra = corBarra || 'var(--accent)'; corLinha = corLinha || '#fff';
@@ -7558,7 +7558,21 @@ function grBarraLinha(rotulos, barras, linha, corBarra, corLinha) {
   const rects = barras.map((v, i) => `<rect x="${(X(i) - bw * .32).toFixed(1)}" y="${YB(v).toFixed(1)}" width="${Math.max(1, bw * .64).toFixed(1)}" height="${Math.max(0, h - B - YB(v)).toFixed(1)}" rx="2" fill="${corBarra}" opacity=".85"><title>${esc(rotulos[i])}: ${num(v)}</title></rect>`).join('');
   const pts = linha ? linha.map((v, i) => v == null ? '' : `${X(i).toFixed(1)},${YL(v).toFixed(1)}`).filter(Boolean).join(' ') : '';
   const labels = rotulos.map((r, i) => i % passo === 0 ? `<text x="${X(i).toFixed(1)}" y="${h - 6}" text-anchor="middle" font-size="10" fill="var(--muted)">${esc(r)}</text>` : '').join('');
-  return `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img">${grade}${rects}${linha ? `<polyline points="${pts}" fill="none" stroke="${corLinha}" stroke-width="2"/>` : ''}${labels}</svg>`;
+  return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="max-width:100%;height:auto;display:block" role="img">${grade}${rects}${linha ? `<polyline points="${pts}" fill="none" stroke="${corLinha}" stroke-width="2"/>` : ''}${labels}</svg>`;
+}
+/* v0.294 — gráfico de barra horizontal (nome + barra + valor), pra ranking com nomes longos (clientes, telas), onde o de coluna espremia o rótulo. */
+function grBarraH(rotulos, valores, cor, w = 640) {
+  cor = cor || 'var(--accent)';
+  const n = valores.length, rowH = 30, L = 170, R = 54, T = 4, B = 4, h = T + B + n * rowH;
+  const mx = Math.max(1, ...valores), BW = w - L - R;
+  const Y = i => T + i * rowH + rowH / 2;
+  const trunc = s => s.length > 24 ? s.slice(0, 23) + '…' : s;
+  const grade = [.25, .5, .75, 1].map(f => `<line x1="${(L + BW * f).toFixed(1)}" x2="${(L + BW * f).toFixed(1)}" y1="${T}" y2="${h - B}" stroke="var(--line)"/>`).join('');
+  const rows = valores.map((v, i) => {
+    const bw = Math.max(1, BW * (v / mx));
+    return `<text x="${L - 10}" y="${(Y(i) + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--ink)"><title>${esc(rotulos[i])}</title>${esc(trunc(rotulos[i]))}</text><rect x="${L}" y="${(Y(i) - 8).toFixed(1)}" width="${bw.toFixed(1)}" height="16" rx="3" fill="${cor}" opacity=".85"><title>${esc(rotulos[i])}: ${num(v)}</title></rect><text x="${(L + bw + 8).toFixed(1)}" y="${(Y(i) + 4).toFixed(1)}" font-size="11" fill="var(--muted)">${num(v)}</text>`;
+  }).join('');
+  return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="max-width:100%;height:auto;display:block" role="img">${grade}${rows}</svg>`;
 }
 function dgGrafico(D) {
   const W = 700, H = 210, L = 56, R = 44, T = 12, B = 26, n = 12, mx1 = Math.max(1, ...D.serie.rec), mx2 = Math.max(1, ...D.serie.led), bw = (W - L - R) / n, X = i => L + i * bw + bw / 2, Y1 = v => T + (H - T - B) * (1 - v / mx1), Y2 = v => T + (H - T - B) * (1 - v / mx2);
@@ -14876,11 +14890,11 @@ async function vUsoMathisa(m) {
     <div class="acts"><select id="usoMDias">${[[7, 'Últimos 7 dias'], [30, 'Últimos 30 dias'], [90, 'Últimos 90 dias'], [365, 'Últimos 12 meses']].map(([d, l]) => `<option value="${d}"${U.dias === d ? ' selected' : ''}>${l}</option>`).join('')}</select><button class="btn" onclick="render()">Atualizar</button></div></div>
   <div class="kpis">${kpi('Clientes ativos', num(R.clientes_ativos), 'abriram alguma tela no período')}${kpi('Sessões', num(R.sessoes), 'visitas ao Growths')}${kpi('Telas abertas', num(R.aberturas_total), 'no total')}${kpi('Cliente mais ativo', C[0] ? esc(C[0].nome) : '—', C[0] ? num(C[0].aberturas) + ' aberturas' : '')}</div>
   <div class="panel"><h2 style="margin:0 0 6px">Clientes mais ativos</h2>
-    ${C.length ? grBarraLinha(C.slice(0, 12).map(x => x.nome), C.slice(0, 12).map(x => x.aberturas)) : '<div class="empty">Ainda sem registros no período.</div>'}
+    ${C.length ? grBarraH(C.slice(0, 12).map(x => x.nome), C.slice(0, 12).map(x => x.aberturas)) : '<div class="empty">Ainda sem registros no período.</div>'}
     <div class="tw"><table><thead><tr><th>Cliente</th><th class="n">Aberturas</th><th class="n">Pessoas</th><th class="n">Tempo total</th><th class="n">Erros</th><th>Último acesso</th><th></th></tr></thead><tbody>
   ${C.map(x => `<tr><td>${esc(x.nome)}</td><td class="n mono">${num(x.aberturas)}</td><td class="n">${num(x.usuarios)}</td><td class="n">${dur(x.tempo_total)}</td><td class="n">${x.erros ? '<span class="pill bad">' + num(x.erros) + '</span>' : '0'}</td><td>${dtt(x.ultimo)}</td><td><button type="button" class="btn sm" data-abrews="${x.workspace_id}">Ver uso desse cliente</button></td></tr>`).join('') || '<tr><td colspan="7" class="empty">Ainda sem registros no período.</td></tr>'}</tbody></table></div></div>
   <div class="panel"><h2 style="margin:0 0 6px">Telas mais usadas (todos os clientes)</h2>
-    ${T.length ? grBarraLinha(T.map(x => rotuloTela(x.tela)), T.map(x => x.aberturas)) : '<div class="empty">Sem dados.</div>'}
+    ${T.length ? grBarraH(T.map(x => rotuloTela(x.tela)), T.map(x => x.aberturas)) : '<div class="empty">Sem dados.</div>'}
     <div class="tw"><table><thead><tr><th>Tela</th><th class="n">Aberturas</th><th class="n">Clientes</th><th class="n">Tempo total</th></tr></thead><tbody>${T.map(x => `<tr><td>${esc(rotuloTela(x.tela))}</td><td class="n mono">${num(x.aberturas)}</td><td class="n">${num(x.clientes)}</td><td class="n">${dur(x.tempo_total)}</td></tr>`).join('') || '<tr><td colspan="4" class="empty">Sem dados.</td></tr>'}</tbody></table></div></div>
   <div class="panel"><h2 style="margin:0 0 6px">Atividade por dia (toda a carteira)</h2><span class="muted peq">Barras = telas abertas · linha = clientes ativos no dia</span>
     ${D.length ? grBarraLinha(D.map(d => dd(d.dia).slice(0, 5)), D.map(d => d.aberturas), D.map(d => d.clientes), 'var(--accent)', '#fff') : '<div class="empty">Sem dados.</div>'}</div>
