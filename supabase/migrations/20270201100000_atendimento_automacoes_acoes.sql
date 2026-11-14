@@ -44,8 +44,8 @@ begin
       raise exception 'Campo personalizado não encontrado.';
     end if;
     field_value := case field_kind when 'number' then to_jsonb(p_valor::numeric) when 'date' then to_jsonb(p_valor::date) else to_jsonb(p_valor) end;
-    novas_extras := jsonb_set(coalesce(atual.extras,'{}'::jsonb),array[p_chave],field_value,true);
-    update public.pessoas set extras=novas_extras where id=p_pessoa;
+    novos_extras := jsonb_set(coalesce(atual.extras,'{}'::jsonb),array[p_chave],field_value,true);
+    update public.pessoas set extras=novos_extras where id=p_pessoa;
   else raise exception 'Operação inválida.';
   end if;
   return jsonb_build_object('tags',coalesce(novas_tags,atual.tags),'extras',coalesce(novos_extras,atual.extras));
