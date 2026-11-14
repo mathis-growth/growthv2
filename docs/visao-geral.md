@@ -1,3 +1,6 @@
+## v0.293
+**Diagnóstico/baseline e Plano do ano saem da campanha.** Duas telas novas no Administrativo: "Diagnóstico e baseline" e "Plano e resultados do ano" (que reúne as duas abas das versões 0.291 e 0.292). São telas só da equipe Mathisa — o cliente não vê, em nenhum pacote. Ao cadastrar um cliente novo, a próxima tela é o Diagnóstico e baseline. "Planejamento de campanha avançado", em Marketing, fica só com a campanha em si (os 14 passos); se o baseline do ano ainda não foi aprovado, um aviso linka para a tela certa em vez de mostrar uma aba.
+
 ## v0.292
 **Resultados do ano no Planejamento de campanha avançado.** Quarta aba: os trimestres com meta, planejado nas campanhas e realizado; cada campanha com o planejado ao lado do realizado; e onde as premissas erraram. No passo 2 da campanha, o planejamento pode ser ligado a uma campanha do Growths.
 

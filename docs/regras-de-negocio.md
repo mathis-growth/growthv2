@@ -1,3 +1,9 @@
+## v0.293 — Onde cada etapa do planejamento mora
+- **Diagnóstico e baseline e Plano/resultados do ano são do negócio, não da campanha.** Ficam no Administrativo, não dependem de nenhuma campanha específica e valem para o ano inteiro. A campanha lê os dois (aprovados ou não) para aplicar limites, mas não os edita.
+- **Cliente novo:** ao ser cadastrado, a próxima tela é o Diagnóstico e baseline. Cliente que já estava na base não precisa preencher — mas a tela continua disponível, para quando quiser atualizar.
+- **Quem preenche:** a pessoa da equipe Mathisa que cadastra ou acompanha o cliente, nunca o próprio cliente logado — as duas telas são internas, em qualquer pacote de acesso.
+- **Campanha avançada sem baseline aprovado:** ainda dá para planejar a campanha (como já era), mas agora aparece um aviso com um atalho para abrir o Diagnóstico e baseline, em vez de uma aba dentro da mesma tela.
+
 ## v0.292 — Resultados do ano
 - **Ligação:** o planejamento avançado aponta para uma campanha do Growths (passo 2). A campanha continua sendo criada em Campanhas e planejamento. Sem campanha ligada, vale o mês informado.
 - **Trimestre da campanha:** pela data de início da campanha ligada; senão, pelo mês informado. Planejamento sem mês não entra em nenhum trimestre e é avisado.
