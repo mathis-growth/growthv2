@@ -18,11 +18,12 @@ function planavBaseCalc(vend, camps, custosCac, hoje) {
   // recompra em 180 dias: só quem comprou pela primeira vez há 180 dias ou mais (os outros ainda não tiveram tempo)
   let eleg = 0, rec = 0; Object.keys(primeira).forEach(p => { if (primeira[p] > tHoje - 180) return; eleg++; if (compras[p].some(t => t > primeira[p] && t <= primeira[p] + 180)) rec++; });
   const ativos = Object.keys(compras).filter(p => compras[p].some(t => t > tHoje - 365)).length;
-  return { hoje, anos, u12, recompra: { elegiveis: eleg, recompraram: rec }, ativos, primeiraVenda: vs.length ? vs[0].d : null, ultimaVenda: vs.length ? vs[vs.length - 1].d : null, mesesComVenda: new Set(vs.filter(v => !v.re).map(v => v.d.slice(0, 7))).size };
+  const porMes = {}; vs.forEach(v => { if (!v.re) porMes[v.d.slice(0, 7)] = (porMes[v.d.slice(0, 7)] || 0) + v.b; });
+  return { hoje, anos, u12, porMes, recompra: { elegiveis: eleg, recompraram: rec }, ativos, primeiraVenda: vs.length ? vs[0].d : null, ultimaVenda: vs.length ? vs[vs.length - 1].d : null, mesesComVenda: new Set(vs.filter(v => !v.re).map(v => v.d.slice(0, 7))).size };
 }
 async function planavDados(w) {
   const num = x => x == null ? 0 : Number(x) || 0, ign = () => [];
-  const [prods, funis, etapas, camps, vmc, traf, cEt, vend, cOf, calcs, cCac, desp, cRec, cPag] = await Promise.all([
+  const [prods, funis, etapas, camps, vmc, traf, cEt, vend, cOf, calcs, cCac, desp, cRec, cPag, pAno] = await Promise.all([
     q(sb.from('produtos').select('id,nome,preco,taxa_percentual_override,taxa_fixa_override,ativo').eq('workspace_id', w).order('nome')),
     q(sb.from('funis').select('id,nome,objetivo,tipo,versao_atual,produto_id').eq('workspace_id', w).order('nome')).catch(ign),
     gcTodos(() => sb.from('estrategia_etapas').select('funil_id,ordem,nome').eq('workspace_id', w).order('ordem')).catch(ign),
@@ -36,7 +37,8 @@ async function planavDados(w) {
     q(sb.from('custos_cac').select('valor,competencia').eq('workspace_id', w)).catch(ign),
     q(sb.from('despesas_recorrentes').select('tipo,valor,ativo,data_fim').eq('workspace_id', w)).catch(ign),
     gcTodos(() => sb.from('contas_receber').select('valor,status,data_recebimento,vencimento').eq('workspace_id', w)).catch(ign),
-    gcTodos(() => sb.from('contas_pagar').select('valor,status,data_pagamento,competencia').eq('workspace_id', w)).catch(ign)]);
+    gcTodos(() => sb.from('contas_pagar').select('valor,status,data_pagamento,competencia').eq('workspace_id', w)).catch(ign),
+    q(sb.from('plano_anual').select('ano,meta_receita,pct_pessimista,pct_otimista').eq('workspace_id', w)).catch(ign)]);
   const etIds = cEt.map(e => e.id), valEt = etIds.length ? await gcTodos(() => sb.from('campanha_etapa_valores').select('campanha_etapa_id,valor').in('campanha_etapa_id', etIds)).catch(ign) : [];
   // presentes por campanha: a maior soma entre as etapas de presença (aula 1, 2, 3…)
   const somaEt = {}; valEt.forEach(v => { somaEt[v.campanha_etapa_id] = (somaEt[v.campanha_etapa_id] || 0) + num(v.valor); });
@@ -67,7 +69,8 @@ async function planavDados(w) {
   base.aReceber = cRec.filter(c => !c.data_recebimento && !cancel(c.status)).reduce((s, c) => s + num(c.valor), 0); base.aPagar = cPag.filter(c => !c.data_pagamento && !cancel(c.status)).reduce((s, c) => s + num(c.valor), 0);
   base.contasReceber = cRec.length; base.custosDesde = cPag.map(c => c.competencia).filter(Boolean).sort()[0] || null; base.contasPagar = cPag.length;
   const quem = (S.user && ((S.user.user_metadata && (S.user.user_metadata.nome || S.user.user_metadata.name)) || S.user.email)) || 'você';
-  return { ws: w, quem, produtos, funis: funis.map(f => ({ ...f, etapas: etPorFunil[f.id] || [] })), campanhas, ofertas, base, rascunhos: calcs.filter(c => !(c.premissas && c.premissas.baseline)), baselines: calcs.filter(c => c.premissas && c.premissas.baseline) };
+  return { ws: w, quem, produtos, funis: funis.map(f => ({ ...f, etapas: etPorFunil[f.id] || [] })), campanhas, ofertas, base, planoAnual: pAno,
+    rascunhos: calcs.filter(c => !(c.premissas && (c.premissas.baseline || c.premissas.planoAno))), baselines: calcs.filter(c => c.premissas && c.premissas.baseline), planosAno: calcs.filter(c => c.premissas && c.premissas.planoAno) };
 }
 let PLANAV_MSG = null;
 async function vPlanav(m) {

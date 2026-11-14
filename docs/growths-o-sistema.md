@@ -15,7 +15,11 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 13/11/2026, versão 0.290 (Diagnóstico e baseline).
+**Última atualização:** 13/11/2026, versão 0.292 (Resultados do ano).
+
+**v0.292 · Resultados do ano.** O ciclo fecha: cada trimestre mostra a meta, quanto dela já está coberto por campanhas planejadas e quanto foi realizado. Cada campanha aparece com o planejado ao lado do que aconteceu (vendas, receita, mídia, CPL, CAC, conversão). E o Growths aponta quais premissas do plano costumam errar, e para que lado, sem confundir diferença com causa. É o material do próximo planejamento.
+
+**v0.291 · Plano do ano.** Depois do baseline, o Growths confronta a meta de receita com o que o negócio já mostrou: quanto sobra para investir em aquisição depois dos custos fixos e do lucro desejado, quantos clientes novos a meta pede e até quanto cada um pode custar. Se o plano só fecha com um CAC menor que o de hoje, a tela avisa e mostra as saídas. O ano é dividido em trimestres, e cada campanha já nasce sabendo o orçamento disponível e quanto precisa deixar de contribuição.
 
 **v0.290 · Diagnóstico e baseline.** Antes de planejar, o Growths mostra o retrato do negócio: receita, margem, clientes novos, CAC, ticket, recompra, custos fixos e o que há a receber e a pagar. Cada número diz de onde veio, quanto tempo de dado tem por trás e o quanto dá para confiar nele (validado, parcial, estimado, histórico insuficiente). Quem já usa o Growths recebe tudo preenchido; quem está chegando importa o histórico ou informa os números; quem está começando do zero trabalha com projeções, vendo quanto sobra por venda em cada produto. O que falta vira uma lista com o caminho para resolver, incluindo uma apuração guiada do custo de atender cada aluno. Aprovado, vira o baseline do ano.
 
@@ -267,6 +271,8 @@ A campanha é uma página com abas: dashboard, estratégia e etapas, metas, capt
   - vendas por plataforma (Hotmart, Kiwify, Eduzz…): bruto, taxas, reembolsos e o que a plataforma deve repassar;
   - quanto custou e o que trouxe cada vídeo ou criativo.
 - **Ofertas e esteira.** Oferta principal com order bumps, upsells, downsells e cross-sells. Cada item tem condição (sempre, se aceitou, se recusou), validações contra ciclos e taxa de aceite medida com o denominador certo (quem recebeu a oferta, não todos).
+- **Resultados do ano (v0.292).** Quarta aba do Planejamento de campanha avançado. Trimestres com meta, planejado e realizado; campanhas com planejado → realizado; desvio médio de CPL, conversão, ticket e CAC entre campanhas, com leitura só quando há pelo menos duas.
+- **Plano do ano (v0.291).** Segunda aba do Planejamento de campanha avançado. Meta de receita × baseline: orçamento de aquisição, clientes novos necessários, CAC máximo, receita mínima, cenários pessimista, base e otimista, trimestres e o orçamento livre para campanhas. Alimenta os passos 2 e 7 de cada campanha.
 - **Diagnóstico e baseline (v0.290).** Primeira aba do Planejamento de campanha avançado. Retrato dos últimos 12 meses e ano a ano, com origem, cobertura e confiança de cada indicador; correções marcadas como informadas; apuração do custo de servir; lista do que falta; aprovação com versão. Vale para todas as campanhas do ano.
 - **Planejamento de campanha avançado (v0.287).** Tela própria em Marketing, em 14 passos, do histórico do produto ao Growth Model da campanha. Mostra o que as últimas campanhas do produto custaram ao lado de cada limite, para não planejar um CAC de R$ 500 quando o histórico é R$ 195. A escolha do CAC vira a verba; a verba vai para três cenários e é dividida por canal, com quanto o orgânico precisa trazer para a meta. Salva como rascunho por produto e estratégia.
 - **Calculadora de campanha.** Preencha o que souber e o resto se ajusta: CPL e conversão dão o CAC, a margem-alvo dá o CAC máximo, e assim por diante. "Salvar metas na campanha" leva tudo para a campanha.

@@ -14,9 +14,11 @@ Módulo do Growths desde a **v0.287** (Marketing → Planejamento de campanha av
 |---|---|
 | `motor.js` | Motor de cálculo, funções puras (Node e navegador). Fonte única das fórmulas. |
 | `exemplo.js` | Dados fictícios do exemplo. |
-| `testes.js` | 67 testes. `node testes.js` sai com erro se algum falhar. |
+| `testes.js` | 82 testes. `node testes.js` sai com erro se algum falhar. |
 | `app.js`, `app_plano.js`, `bc.css`, `base.css` | Telas. |
 | `app_tipo.js` | Tipo de campanha (objetivo × modelo): cartões do passo 1, rótulos do funil e regras de cálculo de cada tipo. |
+| `app_res.js` | Resultados do ano (só no Growths): trimestres, planejado → realizado, aprendizado; ligação com a campanha no passo 2. |
+| `app_ano.js` | Plano do ano (só no Growths): meta × baseline, cenários, trimestres, orçamento para as campanhas. |
 | `app_base.js` | Diagnóstico e baseline (só no Growths): indicadores, lacunas, custo de servir, aprovação. |
 | `teste_baseline.js` | 10 testes das contas do baseline (`planavBaseCalc`). `node teste_baseline.js`. |
 | `app_real.js` | Modo Growths: monta as premissas com os dados do cliente, seletores de produto e estratégia, salvamento. |

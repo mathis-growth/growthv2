@@ -1,3 +1,13 @@
+## v0.292 — Resultados do ano
+**Pedido da Rebecka (13/11):** "próxima etapa" do fluxo Campanhas → Resultados → Aprendizado.
+**Como ficou:** aba "Resultados do ano" e a ligação do planejamento com uma campanha do Growths no passo 2. A campanha normal não mudou.
+**Fora, por enquanto:** criar a campanha a partir do planejamento; comparar por canal e por etapa do funil; guardar o aprendizado como documento do ano; usar os desvios para sugerir as premissas do próximo plano; plano e margem por produto; LTV por coorte.
+
+## v0.291 — Plano do ano dentro do Planejamento avançado
+**Pedido da Rebecka (13/11):** "ir pra próxima etapa" (baseline → planejamento anual → trimestres → campanhas), mantendo as mudanças na campanha avançada.
+**Como ficou:** aba "Plano do ano" no Planejamento de campanha avançado. O Planejamento anual de Campanhas e planejamento não mudou; a meta dele, quando existe, é só lida como sugestão.
+**Fora, por enquanto:** gravar a meta de volta no Planejamento anual e no Cockpit; plano por produto; planejado contra realizado do ano anterior; calendário de campanhas por trimestre; LTV por coorte.
+
 ## v0.290 — Diagnóstico e baseline dentro do Planejamento avançado
 **Pedido da Rebecka (13/11):** o diagnóstico como porta de entrada do planejamento, em três situações, gerando um baseline. "A gente tem a campanha normal e tem a campanha avançada. Na avançada é que a gente vai fazer essas modificações."
 **Como ficou:** aba própria no Planejamento de campanha avançado. A campanha normal não mudou.

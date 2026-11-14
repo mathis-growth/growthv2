@@ -1,3 +1,11 @@
+## v0.292
+- `aplica292.py` sobre a v0.291: troca o bloco do módulo. Novos: `BC.desvios` e `BC.aprendizado` no motor, `app_res.js` no módulo.
+- Sem migração.
+
+## v0.291
+- `aplica291.py` sobre a v0.290: troca o bloco do módulo. Novos: `BC.planoAno` no motor, `app_ano.js` no módulo, `porMes` em `planavBaseCalc`, leitura de `plano_anual`, `planosAno` separado dos rascunhos.
+- Sem migração.
+
 ## v0.290
 - `aplica290.py` sobre a v0.289: troca o bloco do módulo. Novos: `planavBaseCalc` (contas puras do baseline), leituras a mais em `planavDados`, mensagem `planav-ir` (abre outra tela do Growths) e `alvo` no `planav-salvar`; `app_base.js` no módulo.
 - Sem migração.

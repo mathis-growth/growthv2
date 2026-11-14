@@ -1,3 +1,24 @@
+## v0.292 — Resultados do ano
+- **Ligação:** o planejamento avançado aponta para uma campanha do Growths (passo 2). A campanha continua sendo criada em Campanhas e planejamento. Sem campanha ligada, vale o mês informado.
+- **Trimestre da campanha:** pela data de início da campanha ligada; senão, pelo mês informado. Planejamento sem mês não entra em nenhum trimestre e é avisado.
+- **Meta do trimestre:** do Plano do ano (ano do plano); em outros anos, a meta do Planejamento anual do Growths dividida por igual; sem nenhuma, só o realizado.
+- **Planejado nas campanhas:** receita do cenário base de cada planejamento avançado (vendas × preço, com bump e upsell pelo aceite). "Falta planejar" = meta − planejado, só em trimestres que não acabaram.
+- **Realizado do trimestre:** receita das vendas aprovadas, de todas as origens (não só das campanhas).
+- **Planejado → realizado por campanha:** vendas, receita, mídia, CPL (mídia ÷ leads), CAC de mídia e conversão de lead em venda. Desvio = real ÷ plano − 1. Até ±3% conta como "no plano".
+- **Onde as premissas erraram:** média do desvio de CPL, conversão, ticket e CAC entre as campanhas comparadas. Com menos de duas campanhas, não conclui. Só recomenda rever a premissa quando todas erraram para o mesmo lado. É diferença, não causa.
+
+## v0.291 — Plano do ano
+- **Ponto de partida:** a última versão aprovada do baseline; sem aprovação, os números de agora, com aviso.
+- **Meta de receita:** a do Planejamento anual do Growths para o ano, se existir; senão, receita do baseline + 20% como premissa declarada; ou a que você digitar.
+- **Orçamento de aquisição do ano** = receita × margem de contribuição − custos fixos do ano − lucro desejado.
+- **Clientes novos necessários** = meta ÷ ticket − recompra esperada (clientes ativos × taxa de recompra, uma vez no ano).
+- **CAC máximo do ano** = orçamento de aquisição ÷ clientes novos. Comparado com o CAC de referência (o CAC total do baseline, ou o digitado).
+- **Receita mínima:** a menor receita que paga custos fixos, lucro desejado e a aquisição no CAC de referência.
+- **Cenários:** pessimista e otimista mudam a receita pelos percentuais (20% por padrão, ou os do Planejamento anual).
+- **Trimestres:** pesos sugeridos pela receita de cada trimestre quando há 12 meses de histórico; senão 25% cada. Pesos digitados são redistribuídos se não somarem 100%.
+- **Para as campanhas:** planejado = orçamento de aquisição do ano; realizado = mídia das campanhas + custos de aquisição lançados no ano; comprometido = verba das campanhas aprovadas no Planejamento avançado. Contribuição mínima de cada campanha = (custos fixos do ano + lucro) ÷ campanhas previstas. Esses valores preenchem os passos 2 e 7 da campanha e não passam por cima do que for digitado lá.
+- Sem meta, margem, custos fixos ou ticket, o plano não é calculado e diz o que falta.
+
 ## v0.290 — Diagnóstico e baseline
 - **Três situações**, sugeridas pelos dados e confirmadas por você: já tem histórico (6 meses ou mais com venda), já opera com pouco dado aqui, negócio do zero.
 - **Período de referência:** últimos 12 meses até hoje; ao lado, a tabela ano a ano. O ano do planejamento é o seguinte a partir de julho.

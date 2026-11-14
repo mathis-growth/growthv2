@@ -287,6 +287,38 @@
   // duas campanhas pelo mesmo orçamento: o que sobra para a segunda depois de reservar a primeira
   const orcamentoDisponivel = (orcamento, realizado, comprometido) => Math.max(0, (val(orcamento) || 0) - (val(realizado) || 0) - (val(comprometido) || 0));
 
-  const API = { planoCampanha, verbaPeloCac, cenariosDoHistorico, CANAIS, faixa, historicoCanais, historicoFaixas, historicoOfertas, leadsParaMeta, ORIGENS, FATORES, picoResidual, valida, margem, funil, custos, resultado, bissecao, caixa, limites, cplMaxDinamico, aplicaCenario, cenarios, ltv, permiteNegativa, historico, status, projecao, congela, hash, orcamentoDisponivel, div, r2 };
+  /* ---------- 12. plano do ano: do baseline à meta, ao orçamento de aquisição e aos trimestres ---------- */
+  // x = { meta, margem (fração, antes da aquisição), fixosMes, lucro, ticket, ativos, recompra (fração), cacRef, pesos [4], pctPess, pctOtim, nCamp }
+  function planoAno(x) {
+    const obrig = ['meta', 'margem', 'fixosMes', 'ticket'], faltando = obrig.filter(k => val(x[k]) == null || (k !== 'fixosMes' && !(val(x[k]) > 0)));
+    if (faltando.length) return { completo: false, faltando };
+    const mc = val(x.margem), fixosAno = val(x.fixosMes) * 12, lucro = val(x.lucro) || 0, ticket = val(x.ticket), cacRef = val(x.cacRef), vRecBase = (val(x.ativos) || 0) * (val(x.recompra) || 0);
+    const pesosIn = (x.pesos && x.pesos.length === 4 ? x.pesos : [25, 25, 25, 25]).map(p => Math.max(0, val(p) || 0)), somaP = pesosIn.reduce((a, b) => a + b, 0) || 1, pesos = pesosIn.map(p => p / somaP);
+    const cen = R => { const contrib = R * mc, orcAq = contrib - fixosAno - lucro, vendas = R / ticket, vRec = Math.min(vendas, vRecBase), novos = vendas - vRec, cacMax = novos > 0 && orcAq > 0 ? orcAq / novos : null;
+      return { receita: R, contrib, orcAq, vendas, vendasRecompra: vRec, novos, cacMax, viavel: orcAq > 0, cabeNoCac: cacRef == null || cacMax == null ? null : cacRef <= cacMax, aquisicaoNoCacRef: cacRef == null ? null : cacRef * novos, lucroNoCacRef: cacRef == null ? null : contrib - fixosAno - cacRef * novos }; };
+    const meta = val(x.meta), base = cen(meta), den = cacRef == null ? mc : mc - cacRef / ticket;
+    // menor receita que paga fixos, lucro desejado e a aquisição no CAC de referência
+    const receitaMinima = den > 0 ? Math.max(0, (fixosAno + lucro - (cacRef || 0) * vRecBase) / den) : null;
+    return { completo: true, faltando: [], fixosAno, lucro, base, pessimista: cen(meta * (1 - (val(x.pctPess) || 0) / 100)), otimista: cen(meta * (1 + (val(x.pctOtim) || 0) / 100)), receitaMinima, pesos,
+      trimestres: pesos.map((p, i) => ({ t: i + 1, peso: p, receita: meta * p, vendas: base.vendas * p, novos: base.novos * p, orcAq: base.orcAq * p })),
+      residualCampanha: (fixosAno + lucro) / Math.max(1, val(x.nCamp) || 1) };
+  }
+
+  /* ---------- 13. planejado contra realizado e aprendizado ---------- */
+  // pl e re = { verba|midia, leads, vendas, novos, receita }; devolve cada medida com plano, real e desvio (real ÷ plano − 1)
+  function desvios(pl, re) {
+    const d = (a, b) => (a == null || b == null || !(a > 0)) ? null : b / a - 1, mk = (plano, real) => ({ plano, real, desvio: d(plano, real) });
+    const P = { midia: val(pl.midia), leads: val(pl.leads), vendas: val(pl.vendas), novos: val(pl.novos), receita: val(pl.receita) }, R = { midia: val(re.midia), leads: val(re.leads), vendas: val(re.vendas), novos: val(re.novos), receita: val(re.receita) };
+    return { midia: mk(P.midia, R.midia), leads: mk(P.leads, R.leads), vendas: mk(P.vendas, R.vendas), receita: mk(P.receita, R.receita),
+      cpl: mk(div(P.midia, P.leads), div(R.midia, R.leads)), conv: mk(div(P.vendas, P.leads), div(R.vendas, R.leads)), ticket: mk(div(P.receita, P.vendas), div(R.receita, R.vendas)), cac: mk(div(P.midia, P.novos), div(R.midia, R.novos)) };
+  }
+  // média simples do desvio de cada premissa entre campanhas; com menos de minimo campanhas, não conclui
+  function aprendizado(lista, minimo) {
+    const min = minimo || 2, o = {}; ['cpl', 'conv', 'ticket', 'cac'].forEach(k => { const v = lista.map(x => x[k] && x[k].desvio).filter(x => x != null && isFinite(x));
+      o[k] = { n: v.length, media: v.length >= min ? v.reduce((a, b) => a + b, 0) / v.length : null, suficiente: v.length >= min, mesmoSentido: v.length >= min && (v.every(x => x > 0) || v.every(x => x < 0)) }; });
+    return o;
+  }
+
+  const API = { desvios, aprendizado, planoAno, planoCampanha, verbaPeloCac, cenariosDoHistorico, CANAIS, faixa, historicoCanais, historicoFaixas, historicoOfertas, leadsParaMeta, ORIGENS, FATORES, picoResidual, valida, margem, funil, custos, resultado, bissecao, caixa, limites, cplMaxDinamico, aplicaCenario, cenarios, ltv, permiteNegativa, historico, status, projecao, congela, hash, orcamentoDisponivel, div, r2 };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else raiz.BC = API;
 })(typeof window !== 'undefined' ? window : globalThis);
