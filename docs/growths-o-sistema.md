@@ -15,7 +15,7 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 13/11/2026, versão 0.293 (Diagnóstico/baseline e Plano do ano saem da campanha).
+**Última atualização:** 14/11/2026, versão 0.294 (Uso do Growths pelos clientes, comparando todos de uma vez).
 
 **v0.293 · Diagnóstico/baseline e Plano do ano saem da campanha.** Duas telas novas no Administrativo — "Diagnóstico e baseline" e "Plano e resultados do ano" — só para a equipe Mathisa, nunca para o cliente. Cadastrar um cliente novo leva direto para o Diagnóstico e baseline. O Planejamento de campanha avançado, em Marketing, fica só com a campanha em si; se o baseline do ano não foi aprovado, um aviso linka para a tela certa em vez de mostrar uma aba.
 
@@ -249,6 +249,9 @@ Tela só da equipe Mathisa (o cliente não vê, em nenhum pacote de acesso). Ao 
 Tela só da equipe Mathisa, em duas abas:
 - **Plano do ano.** Parte do baseline e da meta de receita e mostra o orçamento de aquisição do ano, os clientes novos necessários, o CAC máximo contra o CAC de hoje e a receita mínima; três cenários (pessimista, base, otimista); trimestres com peso editável e realizado ao lado; o orçamento de aquisição livre para novas campanhas. Aprovado, alimenta sozinho os passos 2 e 7 de cada campanha avançada, sem passar por cima do que foi digitado lá.
 - **Resultados do ano.** Os mesmos trimestres, agora com o realizado: quanto da meta já está coberto por campanhas planejadas e quanto de fato aconteceu. Cada campanha com planejado → realizado (vendas, receita, mídia, CPL, CAC, conversão) e, por fim, onde as premissas do plano mais erraram — a leitura só aparece com pelo menos duas campanhas comparadas, e é diferença, não causa.
+
+### Uso do Growths pelos clientes (v0.294)
+Tela só da equipe Mathisa. Ranking de quais clientes mais usam o Growths no período escolhido (aberturas, pessoas, tempo, erros, último acesso), telas mais usadas somando toda a carteira, e a atividade por dia. Um clique em qualquer cliente abre o detalhe completo daquele workspace (a tela "Uso da plataforma", já existente desde a v0.30, em Configurações → Dados e integrações — essa continua sendo o que cada cliente/administrador vê do próprio uso). Mesma coleta de dados de sempre (tela aberta, tempo, erro), sem nenhum dado de cliente, lead ou valor.
 
 ---
 

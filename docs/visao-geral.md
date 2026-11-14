@@ -1,3 +1,6 @@
+## v0.294
+**Uso do Growths pelos clientes, comparando todos de uma vez.** Nova tela no Administrativo (só equipe interna): ranking de clientes mais ativos, telas mais usadas por toda a carteira e atividade por dia — reaproveitando o rastreio de uso que já existia desde a v0.30, só que agora somado entre clientes em vez de um workspace por vez. Dá pra clicar num cliente e abrir o detalhe completo dele. De passagem, corrigiu um bug antigo que fazia a tela "Plano e resultados do ano" abrir a campanha por engano.
+
 ## v0.293
 **Diagnóstico/baseline e Plano do ano saem da campanha.** Duas telas novas no Administrativo: "Diagnóstico e baseline" e "Plano e resultados do ano" (que reúne as duas abas das versões 0.291 e 0.292). São telas só da equipe Mathisa — o cliente não vê, em nenhum pacote. Ao cadastrar um cliente novo, a próxima tela é o Diagnóstico e baseline. "Planejamento de campanha avançado", em Marketing, fica só com a campanha em si (os 14 passos); se o baseline do ano ainda não foi aprovado, um aviso linka para a tela certa em vez de mostrar uma aba.
 

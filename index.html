@@ -1448,7 +1448,7 @@ setTimeout(() => { if ($('#login').classList.contains('hide') && $('#app').class
 const NAV = [
   { g: 'Growth Starter', flat: true, starter: true, items: [['st-dash', 'Dashboard'], ['mkt-dash', 'Aquisição'], ['mkt-midia', 'Mídia'], ['crm-vendas', 'Vendas'], ['ho-retencao', 'Retenção & Expansão'], ['cad-produtos', 'Produtos'], ['crm-alunos', 'Clientes / Alunos'], ['fin-dash', 'Financeiro'], ['st-relatorios', 'Relatórios'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['gro-ciclo', 'Experimentos']] },
   { g: 'Cockpit', flat: true, livre: true, items: [['cockpit', 'Cockpit']] },
-  { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['adm-empresa', 'Cadastro da empresa'], ['adm-baseline', 'Diagnóstico e baseline'], ['adm-plano', 'Plano e resultados do ano'], ['adm-financeiro', 'Financeiro simplificado']] },
+  { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['adm-empresa', 'Cadastro da empresa'], ['adm-baseline', 'Diagnóstico e baseline'], ['adm-plano', 'Plano e resultados do ano'], ['adm-uso', 'Uso do Growths pelos clientes'], ['adm-financeiro', 'Financeiro simplificado']] },
   { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-planav', 'Planejamento de campanha avançado'], ['mkt-estrategias', 'Estratégias (Canvas)'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários'], ['mkt-custos', 'Custos de marketing']], subs: [{ g: 'Growth\'s Content', mod: 'mkt', items: [['mkt-cont', 'Estratégia de conteúdo'], ['mkt-insta', 'Instagram']] }] },
   { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['crm-dms', 'DMs do Instagram'], ['mkt-origem', 'Leads por origem']] },
   { g: 'Customer Success', items: [['ho-dash', 'Dashboard'], ['ho-cg', 'Customer Growth'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
@@ -1776,6 +1776,7 @@ const ICO = {
   'fin-lanc': P('<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h7M9 17h7"/>'),
   'adm-plano': P('<path d="M4 20V4"/><path d="M4 6h12l-2 3 2 3H4"/><path d="M4 20h16"/>'),
   'adm-baseline': P('<circle cx="11" cy="11" r="7"/><path d="M20 20l-4.5-4.5M8 11h6M11 8v6"/>'),
+  'adm-uso': P('<path d="M4 20V4"/><path d="M8 16l3-4 3 2 4-6"/><path d="M4 20h16"/>'),
   'adm-painel': P('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
   'cad-clientes': P('<circle cx="12" cy="8" r="3.500"/><path d="M5 20v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1"/>'),
   'cad-fornecedores': P('<path d="M3 9l1-5h16l1 5"/><path d="M4 9v11h16V9"/><path d="M9 20v-6h6v6"/>'),
@@ -1832,7 +1833,7 @@ const MODULOS = [['adm', 'Administrativo', 'Painel gerencial, planejamento e cad
 const NIVEIS = [['nenhum', 'Sem acesso'], ['ler', 'Só consultar'], ['editar', 'Consultar e editar']];
 const MOD_GRUPO = { 'Growth Starter': 'adm', Administrativo: 'adm', Marketing: 'mkt', Vendas: 'vendas', RevOps: 'revops', 'Customer Success': 'revops', Financeiro: 'fin', Projetos: 'prj', Growth: 'gro', 'Configurações': 'cfg', Cadastros: 'cad' };
 const SO_ADMIN = ['cad-funcoes', 'cfg-uso', 'cad-auditoria'];
-const TELAS_INT = ['cfg-pacotes', 'cfg-estruturas', 'cfg-pastas', 'cfg-custos', 'adm-baseline', 'adm-plano'];
+const TELAS_INT = ['cfg-pacotes', 'cfg-estruturas', 'cfg-pastas', 'cfg-custos', 'adm-baseline', 'adm-plano', 'adm-uso'];
 const nivelMod = k => S.perm && S.perm.modulos ? (S.perm.modulos[k] || 'nenhum') : 'editar';
 const souAdmin = () => !S.perm || S.perm.admin !== false;
 const subsDe = g => g.subs || [];
@@ -1901,7 +1902,7 @@ $('#wsSel').onchange = e => { S.ws = S.wsBase = e.target.value; S.estSel = null;
 const VIEWS = {
   'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'ho-cg': vCustomerGrowth, 'cockpit': vCockpit, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-agentes': vPipelineAgentes, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': vConteudo, 'cfg-estruturas': vEstruturas, 'cfg-pastas': vPastasMathisa, 'cfg-custos': vCustos, 'crm-dms': vDMsCrm,
   'crm-leads': vCrmLeads, 'crm-oport': vCrmOport, 'crm-vendas': vVendas, 'crm-contratos': vContratos, 'crm-comissoes': vComissoes, 'cad-comissoes': vComissoes, 'crm-alunos': vCrmAlunos,
-  'fin-receber': vReceber,  'cfg-uso': vUso, 'fin-pagar': vPagar, 'fin-custo': vCustoOp, 'fin-lanc': vLanc, 'adm-painel': vPainel, 'adm-plano': vPlano,
+  'fin-receber': vReceber,  'cfg-uso': vUso, 'adm-uso': vUsoMathisa, 'fin-pagar': vPagar, 'fin-custo': vCustoOp, 'fin-lanc': vLanc, 'adm-painel': vPainel, 'adm-plano': vPlano,
   'cad-clientes': vClientes, 'cad-plataformas': vPlataformas, 'cad-funis': vFunis, 'mkt-estrategias': vFunis, 'cad-regras': vRegras,
   'cfg-qualidade': vQualidade, 'cfg-metricas': vMetricas157, 'cad-auditoria': vAuditoria, 'cad-duplicados': vDuplicados, 'crm-abandonos': vAbandonos, 'prj-atividades': vTodasAtividades
 };
@@ -14833,6 +14834,30 @@ async function vUso(m) {
   $('#usoDias').onchange = e => { U.dias = Number(e.target.value); render(); };
 }
 
+/* ---------- Uso do Growths pelos clientes (v0.294, só equipe interna) ----------
+   Mesma coleta da v0.30 (uso_eventos), agora somada entre todos os workspaces de cliente de uma vez,
+   pra responder "quem são os clientes mais ativos" sem precisar entrar workspace por workspace. */
+async function vUsoMathisa(m) {
+  const h = hoje(), U = S.usoM = S.usoM || { dias: 30 };
+  const ini = diaMais(h, -(U.dias - 1));
+  let R;
+  try { R = await q(sb.rpc('uso_resumo_mathisa', { p_ini: ini, p_fim: h })); }
+  catch (e) { m.innerHTML = `<div class="head"><h1>Uso do Growths pelos clientes</h1></div><div class="panel"><p>${/uso_resumo_mathisa|function|schema cache/i.test(e.message || '') ? 'Falta rodar no Supabase o arquivo <b>20270203100000_uso_resumo_mathisa.sql</b> (veja como-rodar-o-banco.md).' : esc(e.message || String(e))}</p></div>`; return; }
+  const dur = sg => { sg = Number(sg || 0); if (sg < 60) return sg + ' s'; if (sg < 3600) return Math.round(sg / 60) + ' min'; return (sg / 3600).toFixed(1).replace('.', ',') + ' h'; };
+  const C = R.por_cliente || [], T = (R.por_tela || []).slice(0, 10), D = R.por_dia || [];
+  const maxC = Math.max(1, ...C.map(x => x.aberturas)), maxT = Math.max(1, ...T.map(x => x.aberturas)), maxD = Math.max(1, ...D.map(x => x.aberturas));
+  m.innerHTML = `<div class="head"><div><h1>Uso do Growths pelos clientes</h1><span class="muted">Quem está mais ativo, o que mais usam, e a tendência da carteira toda — mesma lógica que aplicamos no app dos seus alunos, aplicada em nós mesmos.</span></div>
+    <div class="acts"><select id="usoMDias">${[[7, 'Últimos 7 dias'], [30, 'Últimos 30 dias'], [90, 'Últimos 90 dias'], [365, 'Últimos 12 meses']].map(([d, l]) => `<option value="${d}"${U.dias === d ? ' selected' : ''}>${l}</option>`).join('')}</select><button class="btn" onclick="render()">Atualizar</button></div></div>
+  <div class="kpis">${kpi('Clientes ativos', num(R.clientes_ativos), 'abriram alguma tela no período')}${kpi('Sessões', num(R.sessoes), 'visitas ao Growths')}${kpi('Telas abertas', num(R.aberturas_total), 'no total')}${kpi('Cliente mais ativo', C[0] ? esc(C[0].nome) : '—', C[0] ? num(C[0].aberturas) + ' aberturas' : '')}</div>
+  <div class="panel"><h2 style="margin:0 0 6px">Clientes mais ativos</h2><div class="tw"><table><thead><tr><th>Cliente</th><th style="width:26%">Aberturas</th><th class="n">Pessoas</th><th class="n">Tempo total</th><th class="n">Erros</th><th>Último acesso</th><th></th></tr></thead><tbody>
+  ${C.map(x => `<tr><td>${esc(x.nome)}</td><td><div class="bar"><i style="width:${Math.round(x.aberturas / maxC * 100)}%"></i></div> <span class="mono">${num(x.aberturas)}</span></td><td class="n">${num(x.usuarios)}</td><td class="n">${dur(x.tempo_total)}</td><td class="n">${x.erros ? '<span class="pill bad">' + num(x.erros) + '</span>' : '0'}</td><td>${dtt(x.ultimo)}</td><td><button type="button" class="btn sm" data-abrews="${x.workspace_id}">Ver uso desse cliente</button></td></tr>`).join('') || '<tr><td colspan="7" class="empty">Ainda sem registros no período.</td></tr>'}</tbody></table></div></div>
+  <div class="cols"><div class="panel"><h2 style="margin:0 0 6px">Telas mais usadas (todos os clientes)</h2><div class="tw"><table><thead><tr><th>Tela</th><th style="width:30%">Aberturas</th><th class="n">Clientes</th><th class="n">Tempo total</th></tr></thead><tbody>${T.map(x => `<tr><td>${esc(rotuloTela(x.tela))}</td><td><div class="bar"><i style="width:${Math.round(x.aberturas / maxT * 100)}%"></i></div> <span class="mono">${num(x.aberturas)}</span></td><td class="n">${num(x.clientes)}</td><td class="n">${dur(x.tempo_total)}</td></tr>`).join('') || '<tr><td colspan="4" class="empty">Sem dados.</td></tr>'}</tbody></table></div></div>
+  <div class="panel"><h2 style="margin:0 0 6px">Atividade por dia (toda a carteira)</h2>${D.map(d => `<div class="row" style="display:flex;gap:8px;align-items:center;margin:2px 0"><span class="mono" style="width:70px">${dd(d.dia).slice(0, 5)}</span><div class="bar" style="flex:1"><i style="width:${Math.round(d.aberturas / maxD * 100)}%"></i></div><span class="mono" style="width:110px;text-align:right">${num(d.aberturas)} · ${num(d.clientes)} clientes</span></div>`).join('') || '<div class="empty">Sem dados.</div>'}</div></div>
+  <div class="panel muted" style="font-size:12.5px">Mesma coleta de "Uso da plataforma" (por workspace), somada aqui entre todos os clientes. Clique em "Ver uso desse cliente" pra abrir o detalhe completo (telas, formulários, erros) daquele workspace específico. Só a equipe interna da Mathisa vê esta tela.</div>`;
+  $('#usoMDias').onchange = e => { U.dias = Number(e.target.value); render(); };
+  m.querySelectorAll('[data-abrews]').forEach(b => b.onclick = () => { S.ws = S.wsBase = b.dataset.abrews; S.perm = null; S.permWs = null; S.view = 'cfg-uso'; S.uso = null; render(); });
+}
+
 async function vEmpresa(m) {
   const w = S.ws, adm = souAdmin(), ws = S.workspaces.find(x => x.id === w) || {};
   const e = (await q(sb.from('empresa').select('*').eq('workspace_id', w)))[0] || {};
@@ -19590,8 +19615,6 @@ function vPlanavFabrica(modo, titulo, sub) {
 VIEWS['mkt-planav'] = vPlanavFabrica('campanha', 'Planejamento de campanha avançado', 'Com o baseline e o plano do ano já aprovados no Administrativo: da estratégia da campanha ao Growth Model.');
 VIEWS['adm-baseline'] = vPlanavFabrica('baseline', 'Diagnóstico e baseline', 'O ponto de partida do plano: o que o negócio já mostrou, com a origem e a confiança de cada número. Preenchido por você ao cadastrar o cliente; alimenta o Plano do ano e todas as campanhas.');
 VIEWS['adm-plano'] = vPlanavFabrica('planoAno', 'Plano e resultados do ano', 'A meta do ano confrontada com o baseline, os trimestres, e o que de fato aconteceu em cada campanha.');
-
-VIEWS['adm-plano'] = m => { S.view = 'mkt-camp'; S.tabMkt = 'plan'; S.campSel = null; return VIEWS['mkt-camp'](m); };
 
 /* ================= v0.213/v0.214 — Growth's Brain, incrementos 1 e 2: metas num lugar só (faturamento), avaliação no Cockpit e objetivos do ano =================
    Decisões da Rebecka (01/11): começar pelo faturamento; absorver as metas existentes aos poucos; objetivos dentro do Planejamento anual;

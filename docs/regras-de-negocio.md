@@ -1,3 +1,8 @@
+## v0.294 — Uso do Growths pelos clientes
+- **Quem vê:** só a equipe interna da Mathisa (`sou_equipe_interna`), nunca um cliente — a tela de comparação entre clientes fica em `TELAS_INT`, em nenhum pacote.
+- **Cada cliente continua vendo só o próprio uso** em `Configurações → Dados e integrações → Uso da plataforma` (sem mudança nessa regra, ela já existia desde a v0.30 e é por `eh_admin(p_ws)` daquele workspace).
+- **O que entra no ranking "clientes mais ativos":** todo workspace que não seja a própria agência (Mathisa), somado no período escolhido — sem distinção de plano/pacote.
+
 ## v0.293 — Onde cada etapa do planejamento mora
 - **Diagnóstico e baseline e Plano/resultados do ano são do negócio, não da campanha.** Ficam no Administrativo, não dependem de nenhuma campanha específica e valem para o ano inteiro. A campanha lê os dois (aprovados ou não) para aplicar limites, mas não os edita.
 - **Cliente novo:** ao ser cadastrado, a próxima tela é o Diagnóstico e baseline. Cliente que já estava na base não precisa preencher — mas a tela continua disponível, para quando quiser atualizar.

@@ -1,3 +1,9 @@
+## v0.294 — Uso do Growths pelos clientes, comparando todos de uma vez (14/11/2026)
+- **Administrativo → Uso do Growths pelos clientes** (nova, `TELAS_INT`, só equipe interna): ranking dos clientes mais ativos (aberturas, pessoas, tempo, erros, último acesso), telas mais usadas somando todos os clientes, e atividade por dia da carteira toda. Botão "Ver uso desse cliente" troca o workspace e abre o detalhe completo em Uso da plataforma (`cfg-uso`, já existente desde a v0.30, por workspace).
+- Reaproveita a coleta que já existia (`uso_eventos`, v0.30) — não precisou de instrumentação nova, só uma função nova no banco (`uso_resumo_mathisa`) somando entre workspaces de cliente (`not workspaces.agencia`), gated por `sou_equipe_interna()`.
+- **Correção:** `VIEWS['adm-plano']` tinha uma segunda atribuição antiga (de antes da v0.290, redirecionando para a aba de planejamento da campanha) que sobrescrevia silenciosamente a tela nova da v0.293. Removida — `Administrativo → Plano e resultados do ano` volta a abrir a tela certa.
+- Migration: `20270203100000_uso_resumo_mathisa.sql` (ver RODAR_v0.294.md). Mesmos testes de sempre, sem mudança no motor de planejamento.
+
 ## v0.293 — Diagnóstico/baseline e Plano do ano saem da campanha e ganham telas no Administrativo (13/11/2026)
 - **Administrativo → Diagnóstico e baseline**: a mesma tela da v0.290, agora fora da campanha. Cliente novo entra direto aqui depois de cadastrado (antes ia para o Cockpit/Dashboard do Starter); cliente antigo não precisa preencher.
 - **Administrativo → Plano e resultados do ano**: as abas "Plano do ano" (v0.291) e "Resultados do ano" (v0.292), juntas, também fora da campanha.

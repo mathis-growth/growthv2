@@ -1,3 +1,9 @@
+## v0.294
+- Edição direta em `index.html` (sem script `aplicaNNN.py` — a mudança não toca o módulo `planejamento-campanha-avancado`): nova `vUsoMathisa` (modelada em `vUso`, a de uso por workspace da v0.30), rota `adm-uso`, item de menu e ícone no Administrativo, entrada em `TELAS_INT`.
+- Nova função de banco `uso_resumo_mathisa` em `supabase/migrations/20270203100000_uso_resumo_mathisa.sql` (copiada também em `supabase/RODAR_v0.294_uso_resumo_mathisa.sql` para ela rodar manualmente).
+- **Correção encontrada e feita de passagem:** uma segunda atribuição de `VIEWS['adm-plano']`, deixada de uma versão anterior à v0.290 (redirecionava para a aba de planejamento da campanha), sobrescrevia a atribuição certa da v0.293 — por estar depois dela no arquivo. Removida.
+- Sem mudança no módulo `planejamento-campanha-avancado`; `node testes.js` e `node teste_baseline.js` continuam os mesmos.
+
 ## v0.293
 - `aplica293.py` sobre a v0.292: troca o bloco do módulo, acrescenta `adm-baseline` e `adm-plano` ao menu do Administrativo e a `TELAS_INT`, e muda o cadastro de cliente novo para abrir em `adm-baseline`. Em `bc/planav_growths.js`, `vPlanav` virou uma fábrica (`vPlanavFabrica`) que gera as três telas (`mkt-planav`, `adm-baseline`, `adm-plano`) a partir do mesmo motor, diferenciadas por `DADOS.modo`. Em `bc/app_base.js`, a barra de abas e a área inicial passam a depender de `DADOS.modo` em vez de mostrar sempre as quatro.
 - Sem migração.

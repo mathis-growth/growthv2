@@ -15,7 +15,7 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.293 · 13/11/2026 (`index.html` + `assets/atendimento.*`) |
+| **Versão da tela** | 0.294 · 14/11/2026 (`index.html` + `assets/atendimento.*`) |
 | **Atendimento (0.175)** | Código preparado; falta aplicar `supabase/migrations/20261030021541_central_atendimento.sql`, publicar a função `atendimento`, configurar canais e liberar as telas nos pacotes. [Guia](docs/atendimento.md). |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | conferido em 31/10/2026: tem tudo até a **v0.189**, inclusive as narrativas (v0.157, 39 modelos), o Growth's Content simplificado (v0.159), os subtemas (v0.160), o Customer Growth (v0.163), o Atendimento e o Diagnóstico 360° (v0.177) |
 | **Falta aplicar no banco** | `supabase/RODAR_v0.197_pesquisa_modelos.sql` (modelos de pesquisa fora da lista) e `supabase/RODAR_v0.198_plano_anual.sql` (meta do ano, com impostos e custos variáveis da v0.199) `supabase/RODAR_v0.205_go_to_market.sql` (pacote Go-to-Market e custos de marketing) `supabase/RODAR_v0.206_historico_vendas.sql` (histórico de vendas) `supabase/RODAR_v0.208_vendas_periodo.sql` (dashboard de vendas) e `supabase/RODAR_v0.209_financeiro_simplificado.sql` (Financeiro simplificado) |
@@ -34,6 +34,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.294 | 14/11/2026 | **Administrativo → Uso do Growths pelos clientes** (só equipe interna): ranking dos clientes mais ativos, telas mais usadas por toda a carteira e atividade por dia, reaproveitando a coleta que já existia desde a v0.30. Corrige uma reatribuição antiga que fazia `adm-plano` abrir a campanha em vez do Plano do ano. | `RODAR_v0.294_uso_resumo_mathisa.sql` |
 | 0.293 | 13/11/2026 | Diagnóstico/baseline e Plano e resultados do ano saem da campanha e ganham telas no **Administrativo** (só a equipe interna). Cliente novo entra direto no Diagnóstico e baseline ao ser cadastrado. Campanha avançada fica só com a campanha. | Sem mudança |
 | 0.292 | 13/11/2026 | **Planejamento avançado**: aba Resultados do ano (trimestres, planejado → realizado por campanha, onde as premissas erraram) e ligação do planejamento a uma campanha. | Sem mudança |
 | 0.291 | 13/11/2026 | **Planejamento avançado**: aba Plano do ano (meta × baseline, orçamento de aquisição, CAC máximo, cenários, trimestres; alimenta as campanhas). | Sem mudança |

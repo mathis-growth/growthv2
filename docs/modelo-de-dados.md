@@ -1,3 +1,6 @@
+## v0.294
+Uma função nova (`uso_resumo_mathisa(p_ini, p_fim)`), nenhuma tabela nova. Lê a mesma `uso_eventos` (v0.30) de sempre, agrupando por `workspace_id` em vez de filtrar por um só, e exclui workspaces com `agencia = true` (a própria Mathisa). Gated por `sou_equipe_interna()` (join de `workspace_membros` com `workspaces.agencia`), não por `eh_admin(p_ws)` como a `uso_resumo` de cada cliente. RODAR: `RODAR_v0.294_uso_resumo_mathisa.sql`.
+
 ## v0.293
 Sem mudança no banco. Mesmas tabelas e os mesmos campos de `campanha_calculos.premissas` (`baseline`, `planoAno`, e o rascunho de campanha). O que mudou foi só qual tela do Growths lê/grava cada um: `Administrativo → Diagnóstico e baseline` grava `premissas.baseline`; `Administrativo → Plano e resultados do ano` grava `premissas.planoAno` e lê os rascunhos de campanha para comparar planejado × realizado; `Marketing → Planejamento de campanha avançado` grava o rascunho da campanha (sem baseline nem planoAno) e só lê o baseline/plano já aprovados para aplicar os limites.
 

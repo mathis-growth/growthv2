@@ -1,3 +1,6 @@
+## v0.294
+Rode `RODAR_v0.294_uso_resumo_mathisa.sql` no SQL Editor do Supabase (cria a função `uso_resumo_mathisa`; aditivo, não toca tabela nenhuma). Depois publique o `index.html`. Se abrir a tela nova antes de rodar o SQL, ela mesma avisa qual arquivo falta.
+
 ## v0.293
 Sem mudança no banco. Só publicar o `index.html`.
 
