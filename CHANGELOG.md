@@ -1,3 +1,8 @@
+## v0.294.1 — Correção de escala nos gráficos novos (14/11/2026)
+- Os gráficos de linha/barra adicionados na v0.294 (`grLinha`, `grBarraLinha`) usavam `width="100%"` no SVG: quando o painel ficava mais largo que o desenho original, o texto (em unidade do viewBox) esticava junto e saía gigante/desproporcional.
+- Corrigido: SVG agora renderiza no tamanho real desenhado (`max-width:100%` só evita estourar em tela estreita, não estica pra cima).
+- "Clientes mais ativos" e "Telas mais usadas" trocaram de gráfico de coluna vertical pra **barra horizontal** (nova função `grBarraH`): nome de cliente/tela é texto variável e comprido, e no gráfico de coluna o rótulo ficava cortado pela borda do SVG. Na horizontal o nome fica ao lado da barra, truncado com "…" quando muito longo, com o nome completo no tooltip.
+
 ## v0.294 — Uso do Growths pelos clientes, comparando todos de uma vez (14/11/2026)
 - **Administrativo → Uso do Growths pelos clientes** (nova, `TELAS_INT`, só equipe interna): ranking dos clientes mais ativos (aberturas, pessoas, tempo, erros, último acesso), telas mais usadas somando todos os clientes, e atividade por dia da carteira toda. Botão "Ver uso desse cliente" troca o workspace e abre o detalhe completo em Uso da plataforma (`cfg-uso`, já existente desde a v0.30, por workspace).
 - Reaproveita a coleta que já existia (`uso_eventos`, v0.30) — não precisou de instrumentação nova, só uma função nova no banco (`uso_resumo_mathisa`) somando entre workspaces de cliente (`not workspaces.agencia`), gated por `sou_equipe_interna()`.
