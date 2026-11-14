@@ -3,7 +3,7 @@ async function handle(req: Request, b: any) {
   const { data: { user }, error } = await userDb.auth.getUser();
   if (error || !user) return json({ erro: 'Faça login novamente.' },401);
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
-  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo','disparos-grupos-list','disparos-segmentos-list','grupo-campanhas-list','grupo-campanha-grupo-info','grupos-busca-status','email-transmissao-list','email-dominios-list','email-dominio-get','email-automacoes-list'];
+  const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo','disparos-grupos-list','disparos-segmentos-list','grupo-campanhas-list','grupo-campanha-grupo-info','grupos-busca-status','email-transmissao-list','email-dominios-list','email-dominio-get','email-automacoes-list','email-modelos-list','email-modelo-get'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
   const admins = ['config','salvar-config','remover-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete','templates-mapping-save','canal-salvar','qr-share-create','email-dominio-create','email-dominio-verify','email-dominio-remetente-save'];
   if (admins.includes(b.action) && !ctx.admin) return json({ erro:'Somente administradores gerenciam conexões.' },403);
@@ -23,6 +23,21 @@ async function handle(req: Request, b: any) {
   }
   if(b.action==='email-dominio-verify'){const id=String(b.id||'').replace(/[^a-zA-Z0-9_-]/g,'');const config=await q(db.from('atd_email_config').select('resend_domain_id,email_remetente').eq('workspace_id',ws).single());if(!id||id!==config.resend_domain_id)throw new Error('Este domínio não pertence ao workspace atual.');await resendDomains('/'+encodeURIComponent(id)+'/verify','POST',{});const detail=await resendDomains('/'+encodeURIComponent(id));await q(db.from('atd_email_config').update({status_dominio:String(detail.status||'not_started'),atualizado_em:new Date().toISOString()}).eq('workspace_id',ws));detail.email_remetente=config.email_remetente;return json(detail);}
   if(b.action==='email-dominio-remetente-save'){const config=await q(db.from('atd_email_config').select('dominio').eq('workspace_id',ws).single()),from=String(b.from_email||'').trim().toLowerCase();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(from)||!from.endsWith('@'+config.dominio))throw new Error('Use um endereço dentro do domínio autenticado deste workspace.');await q(db.from('atd_email_config').update({email_remetente:from,atualizado_em:new Date().toISOString()}).eq('workspace_id',ws));return json({ok:true,email_remetente:from});}
+  if(b.action==='email-modelos-list'){
+    const modelos=await q(db.from('atd_email_modelos').select('id,nome,assunto,atualizado_em').eq('workspace_id',ws).order('atualizado_em',{ascending:false}).limit(200));
+    return json({modelos});
+  }
+  if(b.action==='email-modelo-get'){
+    const id=String(b.id||'');if(!/^[0-9a-f-]{36}$/i.test(id))throw Error('Modelo de e-mail inválido.');
+    const modelo=await q(db.from('atd_email_modelos').select('id,nome,assunto,html').eq('workspace_id',ws).eq('id',id).maybeSingle());
+    if(!modelo)throw Error('Modelo de e-mail não encontrado neste workspace.');return json({modelo});
+  }
+  if(b.action==='email-modelo-save'){
+    const nome=String(b.nome||'').trim(),assunto=String(b.assunto||'').trim(),html=emailSanitizar(String(b.html||'').trim());
+    if(!nome||nome.length>160||!assunto||assunto.length>180||!html||html.length>100000)throw Error('Informe nome, assunto e conteúdo válido para o modelo de e-mail.');
+    const modelo=await q(db.from('atd_email_modelos').insert({workspace_id:ws,nome,assunto,html,criado_por:user.id}).select('id,nome,assunto,atualizado_em').single());
+    return json({modelo});
+  }
   if(b.action==='email-transmissao-list'){
     const campanhas=await q(db.from('atd_email_campanhas').select('id,nome,inicio_em,fuso,intervalo_segundos,status,filtros,criado_em').eq('workspace_id',ws).order('criado_em',{ascending:false}).limit(30));
     const ids=campanhas.map((c:any)=>c.id);const envios=ids.length?await q(db.from('atd_email_envios').select('id,campanha_id,pessoa_id,etapa,enviar_em,email,assunto,status,erro,enviado_em').eq('workspace_id',ws).in('campanha_id',ids).order('enviar_em').limit(3000)):[];
