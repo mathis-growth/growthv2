@@ -1,3 +1,11 @@
+## v0.293 — Diagnóstico/baseline e Plano do ano saem da campanha e ganham telas no Administrativo (13/11/2026)
+- **Administrativo → Diagnóstico e baseline**: a mesma tela da v0.290, agora fora da campanha. Cliente novo entra direto aqui depois de cadastrado (antes ia para o Cockpit/Dashboard do Starter); cliente antigo não precisa preencher.
+- **Administrativo → Plano e resultados do ano**: as abas "Plano do ano" (v0.291) e "Resultados do ano" (v0.292), juntas, também fora da campanha.
+- **Tela própria da equipe:** as duas novas telas entram em `TELAS_INT` — só a equipe interna da Mathisa abre, em nenhum pacote de cliente. É quem faz o diagnóstico e o plano junto com o cliente, não o cliente direto.
+- **Marketing → Planejamento de campanha avançado** fica só com a campanha (os 14 passos de sempre). Se o baseline do ano ainda não foi aprovado, aparece um aviso com atalho para abrir o Diagnóstico e baseline — não mais uma aba dentro da mesma tela.
+- Os números continuam se alimentando pelo banco (`campanha_calculos`), não por estado compartilhado: aprovar o baseline ou o plano do ano em uma tela vale para as outras na próxima vez que abrirem.
+- Mesmo motor e mesmos 82 testes (`node testes.js` + `node teste_baseline.js`); o que mudou foi só qual aba aparece em cada tela (`DADOS.modo`), em `app_base.js`/`planav_growths.js`. Sem migration.
+
 ## v0.292 — Resultados do ano no Planejamento de campanha avançado (13/11/2026)
 - Quarta aba, **Resultados do ano**, com seletor de ano: trimestres (meta, planejado nas campanhas, falta planejar, realizado), campanhas com planejado → realizado e o desvio de cada medida, e onde as premissas erraram.
 - No passo 2 da campanha: ligar o planejamento a uma campanha do Growths, ou informar o mês.

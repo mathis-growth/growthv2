@@ -15,7 +15,9 @@
 # Growths: o sistema, explicado
 
 **Documento vivo.** Atualizado a cada entrega do Growths.
-**Última atualização:** 13/11/2026, versão 0.292 (Resultados do ano).
+**Última atualização:** 13/11/2026, versão 0.293 (Diagnóstico/baseline e Plano do ano saem da campanha).
+
+**v0.293 · Diagnóstico/baseline e Plano do ano saem da campanha.** Duas telas novas no Administrativo — "Diagnóstico e baseline" e "Plano e resultados do ano" — só para a equipe Mathisa, nunca para o cliente. Cadastrar um cliente novo leva direto para o Diagnóstico e baseline. O Planejamento de campanha avançado, em Marketing, fica só com a campanha em si; se o baseline do ano não foi aprovado, um aviso linka para a tela certa em vez de mostrar uma aba.
 
 **v0.292 · Resultados do ano.** O ciclo fecha: cada trimestre mostra a meta, quanto dela já está coberto por campanhas planejadas e quanto foi realizado. Cada campanha aparece com o planejado ao lado do que aconteceu (vendas, receita, mídia, CPL, CAC, conversão). E o Growths aponta quais premissas do plano costumam errar, e para que lado, sem confundir diferença com causa. É o material do próximo planejamento.
 
@@ -240,6 +242,14 @@ Dados da empresa, CNPJ validado e responsáveis. Inclui também:
 
 Essas escolhas valem para todas as telas e computadores.
 
+### Diagnóstico e baseline (v0.290; no Administrativo desde a v0.293)
+Tela só da equipe Mathisa (o cliente não vê, em nenhum pacote de acesso). Ao cadastrar um cliente novo, é a próxima tela — para quem já está na base, não é obrigatória, mas continua disponível para atualizar quando quiser. Retrato dos últimos 12 meses e ano a ano, com origem, cobertura e confiança de cada indicador (receita, margem, clientes novos, CAC, ticket, recompra, custos fixos, a receber e a pagar); correções marcadas como informadas; apuração do custo de servir por aluno; lista do que falta, com atalho para resolver. Aprovado, vale como o baseline do ano para o Plano do ano e para todas as campanhas.
+
+### Plano e resultados do ano (v0.291/v0.292; no Administrativo desde a v0.293)
+Tela só da equipe Mathisa, em duas abas:
+- **Plano do ano.** Parte do baseline e da meta de receita e mostra o orçamento de aquisição do ano, os clientes novos necessários, o CAC máximo contra o CAC de hoje e a receita mínima; três cenários (pessimista, base, otimista); trimestres com peso editável e realizado ao lado; o orçamento de aquisição livre para novas campanhas. Aprovado, alimenta sozinho os passos 2 e 7 de cada campanha avançada, sem passar por cima do que foi digitado lá.
+- **Resultados do ano.** Os mesmos trimestres, agora com o realizado: quanto da meta já está coberto por campanhas planejadas e quanto de fato aconteceu. Cada campanha com planejado → realizado (vendas, receita, mídia, CPL, CAC, conversão) e, por fim, onde as premissas do plano mais erraram — a leitura só aparece com pelo menos duas campanhas comparadas, e é diferença, não causa.
+
 ---
 
 ## 3. Marketing
@@ -271,10 +281,7 @@ A campanha é uma página com abas: dashboard, estratégia e etapas, metas, capt
   - vendas por plataforma (Hotmart, Kiwify, Eduzz…): bruto, taxas, reembolsos e o que a plataforma deve repassar;
   - quanto custou e o que trouxe cada vídeo ou criativo.
 - **Ofertas e esteira.** Oferta principal com order bumps, upsells, downsells e cross-sells. Cada item tem condição (sempre, se aceitou, se recusou), validações contra ciclos e taxa de aceite medida com o denominador certo (quem recebeu a oferta, não todos).
-- **Resultados do ano (v0.292).** Quarta aba do Planejamento de campanha avançado. Trimestres com meta, planejado e realizado; campanhas com planejado → realizado; desvio médio de CPL, conversão, ticket e CAC entre campanhas, com leitura só quando há pelo menos duas.
-- **Plano do ano (v0.291).** Segunda aba do Planejamento de campanha avançado. Meta de receita × baseline: orçamento de aquisição, clientes novos necessários, CAC máximo, receita mínima, cenários pessimista, base e otimista, trimestres e o orçamento livre para campanhas. Alimenta os passos 2 e 7 de cada campanha.
-- **Diagnóstico e baseline (v0.290).** Primeira aba do Planejamento de campanha avançado. Retrato dos últimos 12 meses e ano a ano, com origem, cobertura e confiança de cada indicador; correções marcadas como informadas; apuração do custo de servir; lista do que falta; aprovação com versão. Vale para todas as campanhas do ano.
-- **Planejamento de campanha avançado (v0.287).** Tela própria em Marketing, em 14 passos, do histórico do produto ao Growth Model da campanha. Mostra o que as últimas campanhas do produto custaram ao lado de cada limite, para não planejar um CAC de R$ 500 quando o histórico é R$ 195. A escolha do CAC vira a verba; a verba vai para três cenários e é dividida por canal, com quanto o orgânico precisa trazer para a meta. Salva como rascunho por produto e estratégia.
+- **Planejamento de campanha avançado (v0.287; só a campanha desde a v0.293).** Tela própria em Marketing, em 14 passos, do histórico do produto ao Growth Model da campanha. Mostra o que as últimas campanhas do produto custaram ao lado de cada limite, para não planejar um CAC de R$ 500 quando o histórico é R$ 195. A escolha do CAC vira a verba; a verba vai para três cenários e é dividida por canal, com quanto o orgânico precisa trazer para a meta. Salva como rascunho por produto e estratégia. Lê o baseline e o Plano do ano do Administrativo (v0.293) para aplicar os limites; se o baseline do ano ainda não foi aprovado, mostra um aviso com atalho para abrir o Diagnóstico e baseline, em vez de deixar planejar sem conferência.
 - **Calculadora de campanha.** Preencha o que souber e o resto se ajusta: CPL e conversão dão o CAC, a margem-alvo dá o CAC máximo, e assim por diante. "Salvar metas na campanha" leva tudo para a campanha.
 - **Financeiro simplificado** (no Go-to-Market é o único financeiro; no Growths completo, uma visão rápida ao lado do financeiro completo). O cliente lança os totais do mês, de marketing e de outros custos da operação, e os parceiros (coprodutor, afiliado, vendedor) com uma comissão geral e, se for diferente, uma % por produto. O Growths monta o DRE simplificado mês a mês, de faturamento a Resultado da operação, com % do faturamento, médias, gráfico e "para onde vai cada R$ 100 vendidos". Sem caixa, sem o que foi pago e sem lançamento contábil.
 - **Custos de marketing e Resultado de marketing** (cliente sem financeiro, pacote Go-to-Market). Custos fixos (repetem todo mês) e variáveis (lançados no fim do mês), sem detalhar a equipe; no último dia do mês o cliente recebe a atividade para lançar e, se não lançar, a Mathisa é avisada; o mês só fecha com tudo lançado. Resultado de marketing = receita − mídia − custos de marketing, sempre com o aviso de que as outras despesas da empresa não entram, com ROAS de mídia, ROAS total, CAC de mídia e CAC completo.

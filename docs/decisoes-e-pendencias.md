@@ -1,3 +1,9 @@
+## v0.293 — Diagnóstico/baseline e Plano do ano saem da campanha
+**Pedido da Rebecka (13/11):** "esse primeiro passo a passo... quando ele entra na minha base, ele é separado da campanha"; "o plano do ano também tem que estar lá dentro do administrativo"; "na campanha, essa é só parte da campanha mesmo". Perguntei e ela respondeu: Resultados do ano vai junto do Plano do ano para o Administrativo; a tela não é do cliente, é de quem cadastra o cliente (ela/equipe), então não some, só não é obrigatória para quem já está na base.
+**Como ficou:** `Administrativo → Diagnóstico e baseline` e `Administrativo → Plano e resultados do ano`, as duas em `TELAS_INT` (só a equipe Mathisa abre, em nenhum pacote de cliente). Cadastrar cliente novo leva direto para o Diagnóstico e baseline (antes ia para o Cockpit ou o Dashboard do Starter). `Marketing → Planejamento de campanha avançado` fica só com a campanha; se o baseline do ano não foi aprovado, mostra um aviso com atalho em vez de uma aba.
+**Suposição que fiz, sem confirmação dela:** cliente Growth Starter também entra no Diagnóstico e baseline ao ser cadastrado (ela não respondeu essa pergunta específica; o diagnóstico é o núcleo do Starter, então pareceu a leitura mais razoável). Se não for isso, é uma linha só para mudar (`S.view = 'adm-baseline'` no cadastro, em `index.html`).
+**Fora, por enquanto:** os itens que já estavam fora desde a v0.290/291/292 continuam fora (ver abaixo).
+
 ## v0.292 — Resultados do ano
 **Pedido da Rebecka (13/11):** "próxima etapa" do fluxo Campanhas → Resultados → Aprendizado.
 **Como ficou:** aba "Resultados do ano" e a ligação do planejamento com uma campanha do Growths no passo 2. A campanha normal não mudou.

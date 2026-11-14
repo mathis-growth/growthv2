@@ -1,3 +1,6 @@
+## v0.293
+Sem mudança no banco. Mesmas tabelas e os mesmos campos de `campanha_calculos.premissas` (`baseline`, `planoAno`, e o rascunho de campanha). O que mudou foi só qual tela do Growths lê/grava cada um: `Administrativo → Diagnóstico e baseline` grava `premissas.baseline`; `Administrativo → Plano e resultados do ano` grava `premissas.planoAno` e lê os rascunhos de campanha para comparar planejado × realizado; `Marketing → Planejamento de campanha avançado` grava o rascunho da campanha (sem baseline nem planoAno) e só lê o baseline/plano já aprovados para aplicar os limites.
+
 ## v0.292
 Sem mudança no banco. A campanha ligada (`campanha_id`) e o mês (`mes`) ficam no rascunho do planejamento, em `campanha_calculos.premissas.p`. Nenhuma tabela de campanha é alterada.
 

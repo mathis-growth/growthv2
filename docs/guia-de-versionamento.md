@@ -1,3 +1,7 @@
+## v0.293
+- `aplica293.py` sobre a v0.292: troca o bloco do módulo, acrescenta `adm-baseline` e `adm-plano` ao menu do Administrativo e a `TELAS_INT`, e muda o cadastro de cliente novo para abrir em `adm-baseline`. Em `bc/planav_growths.js`, `vPlanav` virou uma fábrica (`vPlanavFabrica`) que gera as três telas (`mkt-planav`, `adm-baseline`, `adm-plano`) a partir do mesmo motor, diferenciadas por `DADOS.modo`. Em `bc/app_base.js`, a barra de abas e a área inicial passam a depender de `DADOS.modo` em vez de mostrar sempre as quatro.
+- Sem migração.
+
 ## v0.292
 - `aplica292.py` sobre a v0.291: troca o bloco do módulo. Novos: `BC.desvios` e `BC.aprendizado` no motor, `app_res.js` no módulo.
 - Sem migração.

@@ -15,14 +15,14 @@ Este repositório é o **lugar padrão de salvar as mudanças**. Cada entrega vi
 
 | | |
 |---|---|
-| **Versão da tela** | 0.292 · 13/11/2026 (`index.html` + `assets/atendimento.*`) |
+| **Versão da tela** | 0.293 · 13/11/2026 (`index.html` + `assets/atendimento.*`) |
 | **Atendimento (0.175)** | Código preparado; falta aplicar `supabase/migrations/20261030021541_central_atendimento.sql`, publicar a função `atendimento`, configurar canais e liberar as telas nos pacotes. [Guia](docs/atendimento.md). |
 | **Banco em produção** (Supabase `yngyghlyonybvfvjcmxl`) | conferido em 31/10/2026: tem tudo até a **v0.189**, inclusive as narrativas (v0.157, 39 modelos), o Growth's Content simplificado (v0.159), os subtemas (v0.160), o Customer Growth (v0.163), o Atendimento e o Diagnóstico 360° (v0.177) |
 | **Falta aplicar no banco** | `supabase/RODAR_v0.197_pesquisa_modelos.sql` (modelos de pesquisa fora da lista) e `supabase/RODAR_v0.198_plano_anual.sql` (meta do ano, com impostos e custos variáveis da v0.199) `supabase/RODAR_v0.205_go_to_market.sql` (pacote Go-to-Market e custos de marketing) `supabase/RODAR_v0.206_historico_vendas.sql` (histórico de vendas) `supabase/RODAR_v0.208_vendas_periodo.sql` (dashboard de vendas) e `supabase/RODAR_v0.209_financeiro_simplificado.sql` (Financeiro simplificado) |
 | **Falta publicar** | a função `conexoes` (sem verificação de JWT), quando os apps do Meta e do Google existirem |
 | **Falta configurar** | app do Meta; crédito na conta da API da Anthropic (a chave `ANTHROPIC_API_KEY` está cadastrada e funciona, mas as pesquisas de 25 e 26/10 voltaram com "credit balance is too low"); o app do Google já existe (segredos conferidos em 25/10/2026): [docs/conectar-meta-e-google.md](docs/conectar-meta-e-google.md) |
 
-**Planejamento de campanha avançado** (v0.287, 08/11/2026): tela nova em Marketing. Fonte, motor e 67 testes em `docs/planejamento-campanha-avancado/`.
+**Planejamento de campanha avançado** (v0.287, 08/11/2026): tela nova em Marketing. Fonte, motor e 82 testes em `docs/planejamento-campanha-avancado/`. Desde a v0.293, o Diagnóstico/baseline e o Plano e resultados do ano moraram para o **Administrativo** (telas só da equipe interna); a campanha em Marketing ficou só com o planejamento da campanha em si.
 
 **Em desenvolvimento (branch `fix/zernio-vinculo-por-cliente`):** v0.178 — vínculo de contas Zernio por cliente em Integrações, com opção de iniciar pelo Atendimento; requer migração, publicação da Edge Function e homologação. Não está na `main` nem publicado em produção.
 
@@ -34,6 +34,7 @@ Cada linha é uma entrega. **Banco** diz se a versão mudou o banco e se já est
 
 | Versão | Data | O que mudou | Banco |
 |---|---|---|---|
+| 0.293 | 13/11/2026 | Diagnóstico/baseline e Plano e resultados do ano saem da campanha e ganham telas no **Administrativo** (só a equipe interna). Cliente novo entra direto no Diagnóstico e baseline ao ser cadastrado. Campanha avançada fica só com a campanha. | Sem mudança |
 | 0.292 | 13/11/2026 | **Planejamento avançado**: aba Resultados do ano (trimestres, planejado → realizado por campanha, onde as premissas erraram) e ligação do planejamento a uma campanha. | Sem mudança |
 | 0.291 | 13/11/2026 | **Planejamento avançado**: aba Plano do ano (meta × baseline, orçamento de aquisição, CAC máximo, cenários, trimestres; alimenta as campanhas). | Sem mudança |
 | 0.290 | 13/11/2026 | **Planejamento avançado**: aba Diagnóstico e baseline (indicadores com origem, cobertura e confiança; custo de servir; aprovação com versão). | Sem mudança |

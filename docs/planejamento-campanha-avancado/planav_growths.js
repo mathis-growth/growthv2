@@ -72,28 +72,38 @@ async function planavDados(w) {
   return { ws: w, quem, produtos, funis: funis.map(f => ({ ...f, etapas: etPorFunil[f.id] || [] })), campanhas, ofertas, base, planoAnual: pAno,
     rascunhos: calcs.filter(c => !(c.premissas && (c.premissas.baseline || c.premissas.planoAno))), baselines: calcs.filter(c => c.premissas && c.premissas.baseline), planosAno: calcs.filter(c => c.premissas && c.premissas.planoAno) };
 }
+/* v0.293 — Diagnóstico/baseline e Plano+Resultados do ano saem da campanha e ganham tela própria no Administrativo
+   (pedido da Rebecka: "esse primeiro passo... é separado da campanha"; "o plano do ano também tem que estar lá
+   dentro do administrativo"). É o MESMO motor/bundle (PLANAV_HTML) nas três telas — DADOS.modo é quem decide,
+   dentro do iframe, qual parte aparece (app_base.js). Os dados continuam no banco (campanha_calculos), então o
+   que for aprovado numa tela já alimenta as outras na próxima vez que abrirem, sem estado compartilhado em memória. */
 let PLANAV_MSG = null;
-async function vPlanav(m) {
-  const w = S.ws;
-  m.innerHTML = `<div class="head"><div><h1>Planejamento de campanha avançado</h1><span class="muted">Primeiro o diagnóstico e o baseline do negócio; depois a campanha, da estratégia ao Growth Model.</span></div></div><div class="muted" id="pvCarrega">Carregando os dados deste cliente…</div><iframe id="pvFrame" title="Planejamento de campanha avançado" style="width:100%;border:0;min-height:900px;display:block;background:transparent"></iframe>`;
-  const D = await planavDados(w), fr = m.querySelector('#pvFrame');
-  m.querySelector('#pvCarrega').remove();
-  const dados = JSON.stringify(D).replace(/</g, '\\u003c');
-  const tema = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-  fr.srcdoc = PLANAV_HTML.replace('<html lang="pt-BR">', '<html lang="pt-BR" data-theme="' + tema + '" class="growths">').replace('<script>', '<script>window.DADOS = ' + dados + ';<\/script><script>');
-  if (PLANAV_MSG) window.removeEventListener('message', PLANAV_MSG);
-  PLANAV_MSG = async e => { if (!fr.isConnected || e.source !== fr.contentWindow) return; const d = e.data || {};
-    if (d.tipo === 'planav-altura') fr.style.height = Math.max(900, d.h + 20) + 'px';
-    else if (d.tipo === 'planav-topo') fr.scrollIntoView({ block: 'start' });
-    else if (d.tipo === 'planav-ir' && /^[a-z]+-[a-z-]+$/.test(d.rota || '') && VIEWS[d.rota]) { S.view = d.rota; render(); }
-    else if (d.tipo === 'planav-salvar') {
-      if (!d.premissas || d.premissas.modulo !== 'planav') return;
-      try { let id = d.id;
-        if (id) await q(sb.from('campanha_calculos').update({ nome: String(d.nome || '').slice(0, 200), premissas: d.premissas, atualizado_em: new Date().toISOString() }).eq('id', id).eq('workspace_id', w));
-        else { const r = await q(sb.from('campanha_calculos').insert({ workspace_id: w, campanha_id: null, nome: String(d.nome || '').slice(0, 200), premissas: d.premissas }).select('id').single()); id = r.id; }
-        fr.contentWindow.postMessage({ tipo: 'planav-salvo', id, alvo: d.alvo || null }, '*');
-      } catch (err) { fr.contentWindow.postMessage({ tipo: 'planav-salvo', id: d.id, alvo: d.alvo || null, erro: err.message || String(err) }, '*'); }
-    } };
-  window.addEventListener('message', PLANAV_MSG);
+function vPlanavFabrica(modo, titulo, sub) {
+  return async function (m) {
+    const w = S.ws;
+    m.innerHTML = `<div class="head"><div><h1>${titulo}</h1><span class="muted">${sub}</span></div></div><div class="muted" id="pvCarrega">Carregando os dados deste cliente…</div><iframe id="pvFrame" title="${titulo}" style="width:100%;border:0;min-height:900px;display:block;background:transparent"></iframe>`;
+    const D = await planavDados(w); D.modo = modo;
+    const fr = m.querySelector('#pvFrame');
+    m.querySelector('#pvCarrega').remove();
+    const dados = JSON.stringify(D).replace(/</g, '\\u003c');
+    const tema = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    fr.srcdoc = PLANAV_HTML.replace('<html lang="pt-BR">', '<html lang="pt-BR" data-theme="' + tema + '" class="growths">').replace('<script>', '<script>window.DADOS = ' + dados + ';<\/script><script>');
+    if (PLANAV_MSG) window.removeEventListener('message', PLANAV_MSG);
+    PLANAV_MSG = async e => { if (!fr.isConnected || e.source !== fr.contentWindow) return; const d = e.data || {};
+      if (d.tipo === 'planav-altura') fr.style.height = Math.max(900, d.h + 20) + 'px';
+      else if (d.tipo === 'planav-topo') fr.scrollIntoView({ block: 'start' });
+      else if (d.tipo === 'planav-ir' && /^[a-z]+-[a-z-]+$/.test(d.rota || '') && VIEWS[d.rota]) { S.view = d.rota; render(); }
+      else if (d.tipo === 'planav-salvar') {
+        if (!d.premissas || d.premissas.modulo !== 'planav') return;
+        try { let id = d.id;
+          if (id) await q(sb.from('campanha_calculos').update({ nome: String(d.nome || '').slice(0, 200), premissas: d.premissas, atualizado_em: new Date().toISOString() }).eq('id', id).eq('workspace_id', w));
+          else { const r = await q(sb.from('campanha_calculos').insert({ workspace_id: w, campanha_id: null, nome: String(d.nome || '').slice(0, 200), premissas: d.premissas }).select('id').single()); id = r.id; }
+          fr.contentWindow.postMessage({ tipo: 'planav-salvo', id, alvo: d.alvo || null }, '*');
+        } catch (err) { fr.contentWindow.postMessage({ tipo: 'planav-salvo', id: d.id, alvo: d.alvo || null, erro: err.message || String(err) }, '*'); }
+      } };
+    window.addEventListener('message', PLANAV_MSG);
+  };
 }
-VIEWS['mkt-planav'] = vPlanav;
+VIEWS['mkt-planav'] = vPlanavFabrica('campanha', 'Planejamento de campanha avançado', 'Com o baseline e o plano do ano já aprovados no Administrativo: da estratégia da campanha ao Growth Model.');
+VIEWS['adm-baseline'] = vPlanavFabrica('baseline', 'Diagnóstico e baseline', 'O ponto de partida do plano: o que o negócio já mostrou, com a origem e a confiança de cada número. Preenchido por você ao cadastrar o cliente; alimenta o Plano do ano e todas as campanhas.');
+VIEWS['adm-plano'] = vPlanavFabrica('planoAno', 'Plano e resultados do ano', 'A meta do ano confrontada com o baseline, os trimestres, e o que de fato aconteceu em cada campanha.');

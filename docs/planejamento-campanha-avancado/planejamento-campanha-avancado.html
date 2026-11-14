@@ -1214,14 +1214,17 @@ document.addEventListener('change', e => { const el = e.target, n = Number(el.va
 
 /* ===== v0.290 — Diagnóstico e baseline (só no Growths): porta de entrada do planejamento =====
    Lê os totais já agregados (DADOS.base), mostra cada indicador com origem, cobertura e confiabilidade,
-   conduz as lacunas e grava o baseline aprovado em campanha_calculos (premissas.baseline). */
+   conduz as lacunas e grava o baseline aprovado em campanha_calculos (premissas.baseline).
+   v0.293 — separado do módulo de campanha: baseline e Plano/Resultados do ano agora são telas próprias
+   do Administrativo (DADOS.modo decide o que aparece; cada tela é um iframe à parte, mesmo motor). */
 if (REAL) {
   const D = window.DADOS, B = D.base || {}, anoPlano = Number(B.hoje.slice(5, 7)) >= 7 ? Number(B.hoje.slice(0, 4)) + 1 : Number(B.hoje.slice(0, 4));
+  const MODO = D.modo || 'campanha';
   const salvo = (D.baselines || []).find(r => r.premissas.baseline.ano === anoPlano) || (D.baselines || [])[0];
   const sugere = () => B.mesesComVenda >= 6 ? 'historico' : B.mesesComVenda >= 1 || (D.campanhas || []).some(c => c.leads > 0) ? 'novo' : 'zero';
   const BL = salvo ? { id: salvo.id, ...salvo.premissas.baseline } : { id: null, ano: anoPlano, situacao: sugere(), situacaoOk: false, ind: {}, servir: {}, versoes: [] };
   BL.ind = BL.ind || {}; BL.servir = BL.servir || {}; BL.versoes = BL.versoes || [];
-  ST.area = BL.versoes.length ? 'camp' : 'base';
+  ST.area = MODO === 'baseline' ? 'base' : MODO === 'planoAno' ? 'ano' : 'camp';
   const SIT = { historico: ['Já tem histórico no Growths', 'Os indicadores vêm dos dados registrados. Você confere, corrige e aprova.'], novo: ['Já opera, com pouco dado aqui', 'Importe o histórico de vendas ou informe os números. O que for digitado fica marcado como informado.'], zero: ['Negócio começando do zero', 'Não há resultado observado: tudo aqui é projeção, a partir do preço e dos custos de cada produto.'] };
   const CONF = { validado: ['ok', 'Validado'], parcial: ['warn', 'Parcial'], estimado: ['warn', 'Estimado'], insuficiente: ['bad', 'Histórico insuficiente'], informado: ['meta', 'Informado por você'], projecao: ['meta', 'Projeção'], falta: ['bad', 'Falta'] };
   const d2 = s => s ? s.slice(8, 10) + '/' + s.slice(5, 7) + '/' + s.slice(0, 4) : '—', mesAno = s => s ? s.slice(5, 7) + '/' + s.slice(0, 4) : '—';
@@ -1280,7 +1283,7 @@ if (REAL) {
     ${v ? `<p class="aviso ${mudou ? 'warn' : 'ok'}">${mudou ? `Os números mudaram desde a versão ${v.n}. Aprove de novo para registrar uma revisão.` : `Baseline ${BL.ano} aprovado: versão ${v.n}, por ${v.quem}, em ${v.quando}. Código ${v.hash}.`}</p>` : '<p class="muted">Ainda não aprovado. Aprovar guarda uma foto destes números; mudanças depois viram revisão, sem apagar a anterior.</p>'}
     ${BL.versoes.length > 1 ? `<div class="tw"><table><thead><tr><th>Versão</th><th>Quando</th><th>Quem</th><th>Motivo</th><th>Código</th></tr></thead><tbody>${BL.versoes.map(x => `<tr><td>v${x.n}</td><td>${x.quando}</td><td>${x.quem}</td><td>${x.motivo || '—'}</td><td><code>${x.hash}</code></td></tr>`).join('')}</tbody></table></div>` : ''}
     <div class="linha"><label class="campo">Motivo${v ? ' da revisão' : ' (opcional)'}<input type="text" data-bmotivo placeholder="${v ? 'ex.: importei o histórico de 2025' : 'Baseline inicial'}"></label></div>
-    </div><div class="wzf"><span class="peq muted">${L.filter(x => x.ok).length} de ${L.length} indicadores conferidos</span><span class="sp"></span><span class="salvo" id="salvoBase">${ST.salvoBase || ''}</span><button type="button" class="btn" data-barea="ano">Ir para o plano do ano</button><button type="button" class="btn pri" data-baprovar ${v && !mudou ? 'disabled' : ''}>${v ? 'Aprovar revisão' : 'Aprovar baseline'}</button></div></div>`;
+    </div><div class="wzf"><span class="peq muted">${L.filter(x => x.ok).length} de ${L.length} indicadores conferidos</span><span class="sp"></span><span class="salvo" id="salvoBase">${ST.salvoBase || ''}</span><button type="button" class="btn" data-birrota="adm-plano">Ir para o plano do ano</button><button type="button" class="btn pri" data-baprovar ${v && !mudou ? 'disabled' : ''}>${v ? 'Aprovar revisão' : 'Aprovar baseline'}</button></div></div>`;
   }
   let tB = null;
   const salvaBase = () => { clearTimeout(tB); tB = setTimeout(() => { const { id, ...b } = BL; parent.postMessage({ tipo: 'planav-salvar', alvo: 'baseline', id: BL.id || null, nome: `Baseline ${BL.ano}`, premissas: { modulo: 'planav', baseline: b } }, '*'); }, 900); };
@@ -1292,7 +1295,9 @@ if (REAL) {
   const renderTudo = () => { const ae = document.activeElement, at = ae && ae.attributes ? [...ae.attributes].find(x => /^data-b/.test(x.name)) : null, foco = at ? `[${at.name}="${at.value}"]` : null;
     if (ST.area === 'base') renderBase(); else if (ST.area === 'ano' && PV.renderAno) PV.renderAno(); else if (ST.area === 'res' && PV.renderRes) PV.renderRes(); else { aplicaBase(); if (PV.aplicaAno) PV.aplicaAno(); render0(); }
     const v = BL.versoes[BL.versoes.length - 1];
-    $('#nav').innerHTML = `<div class="areas" role="tablist"><button type="button" role="tab" data-barea="base" aria-selected="${ST.area === 'base'}">Diagnóstico e baseline <span class="st ${v ? 'ok' : 'warn'}">${v ? 'aprovado v' + v.n : 'a aprovar'}</span></button>${PV.navAno()}<button type="button" role="tab" data-barea="camp" aria-selected="${ST.area === 'camp'}">Planejar campanha</button>${PV.navRes ? PV.navRes() : ''}</div>${ST.area === 'camp' && !v ? `<p class="aviso warn" style="margin:0 0 12px">O baseline ${BL.ano} ainda não foi aprovado. Dá para planejar a campanha, mas os limites usam números não conferidos.</p>` : ''}`;
+    // v0.293: cada modo (baseline / planoAno / campanha) é uma tela própria do Growths; aqui só decide as abas visíveis dentro dela.
+    const abas = MODO === 'planoAno' ? `${PV.navAno()}${PV.navRes ? PV.navRes() : ''}` : '';
+    $('#nav').innerHTML = (abas ? `<div class="areas" role="tablist">${abas}</div>` : '') + (MODO === 'campanha' && !v ? `<p class="aviso warn" style="margin:0 0 12px">O baseline ${BL.ano} ainda não foi aprovado. <button type="button" class="btn sm" data-birrota="adm-baseline">Abrir Diagnóstico e baseline</button></p>` : '');
     if (foco && ST.area !== 'camp') { const el = document.querySelector(foco); if (el && el.type !== 'checkbox') { el.focus(); } } };
   document.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.barea) { ST.area = b.dataset.barea; window.scrollTo(0, 0); }
@@ -1357,7 +1362,7 @@ if (REAL && window.PV) {
     ${v ? `<p class="aviso ${mudou ? 'warn' : 'ok'}">${mudou ? `O plano mudou desde a versão ${v.n}. Aprove de novo para registrar a revisão.` : `Plano ${ano} aprovado: versão ${v.n}, por ${v.quem}, em ${v.quando}. Código ${v.hash}.`}</p>` : '<p class="muted">Ainda não aprovado. Aprovar guarda a foto do plano; mudanças depois viram revisão.</p>'}
     ${PA.versoes.length > 1 ? `<div class="tw"><table><thead><tr><th>Versão</th><th>Quando</th><th>Quem</th><th>Motivo</th><th class="n">Meta</th><th class="n">Orçamento de aquisição</th></tr></thead><tbody>${PA.versoes.map(z => `<tr><td>v${z.n}</td><td>${z.quando}</td><td>${z.quem}</td><td>${z.motivo || '—'}</td><td class="n">${brl(z.foto.entradas.meta)}</td><td class="n">${brl(z.foto.orcAq)}</td></tr>`).join('')}</tbody></table></div>` : ''}
     <div class="linha"><label class="campo">Motivo${v ? ' da revisão' : ' (opcional)'}<input type="text" data-bmotivoano placeholder="${v ? 'ex.: meta revista depois do 1º trimestre' : 'Plano inicial'}"></label></div>
-    </div><div class="wzf"><button type="button" class="btn" data-barea="base">Voltar ao baseline</button><span class="sp"></span><span class="salvo" id="salvoAno">${ST.salvoAno || ''}</span><button type="button" class="btn" data-barea="camp">Ir para a campanha</button><button type="button" class="btn pri" data-banoaprovar ${!A.completo || (v && !mudou) ? 'disabled' : ''}>${v ? 'Aprovar revisão' : 'Aprovar plano do ano'}</button></div></div>`;
+    </div><div class="wzf"><button type="button" class="btn" data-birrota="adm-baseline">Voltar ao baseline</button><span class="sp"></span><span class="salvo" id="salvoAno">${ST.salvoAno || ''}</span><button type="button" class="btn" data-birrota="mkt-planav">Ir para a campanha</button><button type="button" class="btn pri" data-banoaprovar ${!A.completo || (v && !mudou) ? 'disabled' : ''}>${v ? 'Aprovar revisão' : 'Aprovar plano do ano'}</button></div></div>`;
   }
   let tA = null;
   const salvaAno = () => { clearTimeout(tA); tA = setTimeout(() => { const { id, ...b } = PA; parent.postMessage({ tipo: 'planav-salvar', alvo: 'plano', id: PA.id || null, nome: `Plano do ano ${PA.ano}`, premissas: { modulo: 'planav', planoAno: b } }, '*'); }, 900); };
@@ -1417,7 +1422,7 @@ if (REAL && window.PV) {
     <h3>3. Onde as premissas erraram</h3>
     ${comp.length ? `<div class="tw"><table><thead><tr><th>Premissa</th><th class="n">Campanhas comparadas</th><th class="n">Desvio médio</th><th>Leitura</th></tr></thead><tbody>${Object.entries(NOME).map(([k, [n, menor]]) => { const a = AP[k]; return `<tr><td>${n}</td><td class="n">${a.n}</td><td class="n ${a.media == null ? '' : Math.abs(a.media) <= 0.03 ? 'c-meta' : (a.media > 0) === !menor ? 'c-ok' : 'c-bad'}">${a.media == null ? '—' : (a.media >= 0 ? '+' : '') + nf(a.media * 100, 0) + '%'}</td><td class="peq">${!a.suficiente ? 'Uma campanha só não mostra padrão: é preciso pelo menos duas.' : Math.abs(a.media) <= 0.03 ? 'Planejado e realizado andaram juntos.' : a.mesmoSentido ? `Todas as campanhas ficaram ${(a.media > 0) === !menor ? 'melhores' : 'piores'} que o plano nesta premissa: vale rever o número no próximo planejamento.` : 'Os desvios foram para lados diferentes: não há padrão.'}</td></tr>`; }).join('')}</tbody></table></div>
     <p class="peq muted">O desvio mostra a diferença entre o plano e o que aconteceu, não a causa. Antes de mudar uma premissa, confira se a oferta, o público ou o período foram os mesmos.</p>` : '<p class="muted">Ainda não há campanha com planejamento avançado e resultado para comparar. Quando um planejamento estiver ligado a uma campanha com dados, o desvio de CPL, conversão, ticket e CAC aparece aqui.</p>'}
-    </div><div class="wzf"><button type="button" class="btn" data-barea="ano">Plano do ano</button><span class="sp"></span><button type="button" class="btn pri" data-barea="camp">Planejar campanha</button></div></div>`;
+    </div><div class="wzf"><button type="button" class="btn" data-barea="ano">Plano do ano</button><span class="sp"></span><button type="button" class="btn pri" data-birrota="mkt-planav">Planejar campanha</button></div></div>`;
   }
   PV.renderRes = renderRes;
   PV.navRes = () => `<button type="button" role="tab" data-barea="res" aria-selected="${ST.area === 'res'}">Resultados do ano</button>`;
