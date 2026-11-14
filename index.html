@@ -14853,6 +14853,25 @@ async function vUsoMathisa(m) {
   ${C.map(x => `<tr><td>${esc(x.nome)}</td><td><div class="bar"><i style="width:${Math.round(x.aberturas / maxC * 100)}%"></i></div> <span class="mono">${num(x.aberturas)}</span></td><td class="n">${num(x.usuarios)}</td><td class="n">${dur(x.tempo_total)}</td><td class="n">${x.erros ? '<span class="pill bad">' + num(x.erros) + '</span>' : '0'}</td><td>${dtt(x.ultimo)}</td><td><button type="button" class="btn sm" data-abrews="${x.workspace_id}">Ver uso desse cliente</button></td></tr>`).join('') || '<tr><td colspan="7" class="empty">Ainda sem registros no período.</td></tr>'}</tbody></table></div></div>
   <div class="cols"><div class="panel"><h2 style="margin:0 0 6px">Telas mais usadas (todos os clientes)</h2><div class="tw"><table><thead><tr><th>Tela</th><th style="width:30%">Aberturas</th><th class="n">Clientes</th><th class="n">Tempo total</th></tr></thead><tbody>${T.map(x => `<tr><td>${esc(rotuloTela(x.tela))}</td><td><div class="bar"><i style="width:${Math.round(x.aberturas / maxT * 100)}%"></i></div> <span class="mono">${num(x.aberturas)}</span></td><td class="n">${num(x.clientes)}</td><td class="n">${dur(x.tempo_total)}</td></tr>`).join('') || '<tr><td colspan="4" class="empty">Sem dados.</td></tr>'}</tbody></table></div></div>
   <div class="panel"><h2 style="margin:0 0 6px">Atividade por dia (toda a carteira)</h2>${D.map(d => `<div class="row" style="display:flex;gap:8px;align-items:center;margin:2px 0"><span class="mono" style="width:70px">${dd(d.dia).slice(0, 5)}</span><div class="bar" style="flex:1"><i style="width:${Math.round(d.aberturas / maxD * 100)}%"></i></div><span class="mono" style="width:110px;text-align:right">${num(d.aberturas)} · ${num(d.clientes)} clientes</span></div>`).join('') || '<div class="empty">Sem dados.</div>'}</div></div>
+  <div class="panel">
+    <div class="head"><div><h2 style="margin:0 0 2px">North Star Metric e as alavancas</h2><span class="muted peq">Exemplo de referência — números ilustrativos, pra pensar o que medir. Ainda não são calculados a partir do uso real.</span></div><span class="pill warn">Exemplo</span></div>
+    <div class="kpis" style="grid-template-columns:1fr">
+      <div class="kpi"><span class="muted peq">North Star Metric (exemplo)</span><b style="font-size:26px">58%</b><span class="peq muted">% de alunos que atingem o primeiro marco de resultado em 60 dias</span>${dgSpark([28, 34, 41, 47, 53, 58], 300, 46)}</div>
+    </div>
+    <div class="cols">
+      <div class="panel" style="background:var(--surface-2);border:none">
+        <h2 style="margin:0 0 6px">Com app — uso e engajamento</h2>
+        ${[['Retenção de abertura (7 dias)', [48, 52, 55, 59, 61, 65], '65%'], ['Engajamento com o conteúdo-chave', [30, 33, 38, 44, 47, 51], '51%'], ['Alerta automático resolvido a tempo', [40, 45, 50, 55, 60, 63], '63%']]
+          .map(([l, v, atual]) => `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line)"><span class="peq">${l}</span><div style="display:flex;align-items:center;gap:10px">${dgSpark(v, 72, 28)}<b>${atual}</b></div></div>`).join('')}
+      </div>
+      <div class="panel" style="background:var(--surface-2);border:none">
+        <h2 style="margin:0 0 6px">Mentoria sem app — acompanhamento humano</h2>
+        ${[['Frequência nos encontros', [62, 64, 63, 67, 70, 72], '72%'], ['Intervenção de CS a tempo', [50, 55, 58, 61, 65, 68], '68%'], ['Confirmação humana do marco', [35, 40, 44, 49, 53, 57], '57%']]
+          .map(([l, v, atual]) => `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line)"><span class="peq">${l}</span><div style="display:flex;align-items:center;gap:10px">${dgSpark(v, 72, 28)}<b>${atual}</b></div></div>`).join('')}
+      </div>
+    </div>
+    <span class="muted peq">A leitura: cada alavanca subindo empurra a North Star Metric pra cima. Se uma cair, é ali que se investiga antes da receita cair também. Pra isso virar número real, falta decidir a fórmula de cada alavanca e calcular a partir do uso de verdade.</span>
+  </div>
   <div class="panel muted" style="font-size:12.5px">Mesma coleta de "Uso da plataforma" (por workspace), somada aqui entre todos os clientes. Clique em "Ver uso desse cliente" pra abrir o detalhe completo (telas, formulários, erros) daquele workspace específico. Só a equipe interna da Mathisa vê esta tela.</div>`;
   $('#usoMDias').onchange = e => { U.dias = Number(e.target.value); render(); };
   m.querySelectorAll('[data-abrews]').forEach(b => b.onclick = () => { S.ws = S.wsBase = b.dataset.abrews; S.perm = null; S.permWs = null; S.view = 'cfg-uso'; S.uso = null; render(); });
