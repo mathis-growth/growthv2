@@ -36,12 +36,12 @@ function emailAutomacaoValor(p:any,evento:any,campo:string){
   return '';
 }
 function emailAutomacaoPersonalizar(value:string,p:any,evento:any){
-  const nome=String(p.nome||'').trim(),map:Record<string,string>={nome,primeiro_nome:nome.split(/\s+/)[0]||'',email:String(p.email||''),telefone:String(p.telefone||''),produto:String(evento.produto||''),campanha:String(evento.campanha||''),pesquisa:String(evento.pesquisa||''),data_venda:String(evento.data_venda||''),valor_venda:String(evento.valor_venda||''),capturado_em:String(evento.capturado_em||'')};
-  return String(value||'').replace(/\{\{\s*(nome|primeiro_nome|email|telefone|produto|campanha|pesquisa|data_venda|valor_venda|capturado_em)\s*\}\}/gi,(_m,k)=>htmlSeguro(map[String(k).toLowerCase()]||''));
+  const nome=String(p.nome||'').trim(),captura=evento.capturado_em||p.criado_em,dataCaptura=captura?new Date(captura):null,map:Record<string,string>={nome,primeiro_nome:nome.split(/\s+/)[0]||'',email:String(p.email||''),telefone:String(p.telefone||''),produto:String(evento.produto||''),campanha:String(evento.campanha||''),pesquisa:String(evento.pesquisa||''),data_venda:String(evento.data_venda||''),valor_venda:String(evento.valor_venda||''),capturado_em:dataCaptura&&Number.isFinite(dataCaptura.getTime())?dataCaptura.toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'}):String(captura||''),qualificacao:String(p.qualificacao||''),status_funil:String(p.status_funil||''),status_cliente:String(p.status_cliente||'')};
+  return String(value||'').replace(/\{\{\s*(nome|primeiro_nome|email|telefone|produto|campanha|pesquisa|data_venda|valor_venda|capturado_em|qualificacao|status_funil|status_cliente|extra\.[a-z][a-z0-9_]{1,40})\s*\}\}/gi,(_m,k)=>{const key=String(k).toLowerCase();return htmlSeguro(key.startsWith('extra.')?String(p.extras?.[key.slice(6)]??''):map[key]||'');});
 }
 function emailAutomacaoDestino(flow:any,id:string,saida='seguir'){return flow.edges?.find((e:any)=>e.origem===id&&e.saida===saida)?.destino||null;}
 async function executarEmailAutomacao(row:any){
-  const state={...(row.estado||{})},flow=state.fluxo||{},nodes=flow.nodes||[],p=await q(db.from('pessoas').select('id,nome,email,telefone,status_funil,qualificacao,campanha_id,tags,extras').eq('id',row.pessoa_id).eq('workspace_id',row.workspace_id).single()),evento=state.evento||{};
+  const state={...(row.estado||{})},flow=state.fluxo||{},nodes=flow.nodes||[],p=await q(db.from('pessoas').select('id,nome,email,telefone,status_funil,status_cliente,qualificacao,campanha_id,tags,extras,criado_em').eq('id',row.pessoa_id).eq('workspace_id',row.workspace_id).single()),evento=state.evento||{};
   let current=state.no_id||nodes.find((n:any)=>n.tipo==='gatilho')?.id||null,steps=0,activeLog:string|null=null,attempted=false;
   try{
     while(current&&steps++<50){

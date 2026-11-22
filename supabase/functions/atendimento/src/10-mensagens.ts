@@ -33,11 +33,24 @@ async function identificarPessoaPorTelefone(ws:string,conversaId:string,endereco
   await q(db.from('atd_conversas').update({pessoa_id:encontrados[0].id}).eq('id',cv.id).eq('workspace_id',ws).is('pessoa_id',null));
   return encontrados[0].id;
 }
+async function identificarPessoaPeloInstagram(ws:string,cv:{id:string,endereco?:string|null,externo_id?:string|null}) {
+  const ids=[...new Set([cv.endereco,cv.externo_id].filter((v):v is string=>Boolean(v)))];
+  if(!ids.length)return null;
+  const sociais=await q(db.from('social_conversas').select('id,pessoa_id').eq('workspace_id',ws).in('id_externo',ids).limit(2));
+  // Uma mesma pessoa pode escrever em contas distintas; só vincula quando a origem é inequívoca.
+  if(sociais.length!==1||!sociais[0].pessoa_id)return null;
+  const pessoa=await q(db.from('pessoas').select('id').eq('id',sociais[0].pessoa_id).eq('workspace_id',ws).maybeSingle());
+  if(!pessoa)return null;
+  const atualizado=await q(db.from('atd_conversas').update({pessoa_id:pessoa.id}).eq('id',cv.id).eq('workspace_id',ws).is('pessoa_id',null).select('pessoa_id').maybeSingle());
+  if(atualizado?.pessoa_id)return atualizado.pessoa_id;
+  const atual=await q(db.from('atd_conversas').select('pessoa_id').eq('id',cv.id).eq('workspace_id',ws).maybeSingle());
+  return atual?.pessoa_id||null;
+}
 async function resumoContato(ws:string,conversaId:string) {
   const cv=await q(db.from('atd_conversas').select('id,pessoa_id,endereco,externo_id,grupo,canal_id').eq('id',conversaId).eq('workspace_id',ws).single());
   if(cv.grupo)return {pessoa:null};
   let pessoaId=cv.pessoa_id;
-  if(!pessoaId){const ch=await channel(cv.canal_id,ws);if(ch.canal==='whatsapp')pessoaId=await identificarPessoaPorTelefone(ws,cv.id,cv.endereco||cv.externo_id);}
+  if(!pessoaId){const ch=await channel(cv.canal_id,ws);if(ch.canal==='whatsapp')pessoaId=await identificarPessoaPorTelefone(ws,cv.id,cv.endereco||cv.externo_id);else if(ch.canal==='instagram')pessoaId=await identificarPessoaPeloInstagram(ws,cv);}
   if(!pessoaId)return {pessoa:null};
   const pessoa=await q(db.from('pessoas').select('id,nome,telefone,email,status_funil,status_cliente,qualificacao,tags,criado_em,convertido_em,campanha_id,utm_campaign,utm_source,utm_medium,utm_content,utm_term,pagina_origem,canal_origem,extras').eq('id',pessoaId).eq('workspace_id',ws).single());
   const [toques,participacoes,alunos,vendas]=await Promise.all([
@@ -71,14 +84,14 @@ function templateSlots(tpl:any) {
 }
 function templateCampo(p:any,cv:any,key:string) {
   const nome=String(p.nome||cv.nome||'').trim();
-  const value=key==='primeiro_nome'?nome.split(/\s+/)[0]:key==='nome'?nome:key==='capturado_em'&&p.capturado_em?new Date(p.capturado_em).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'}):p[key];
+  const value=key.startsWith('extra.')?p.extras?.[key.slice(6)]:key==='primeiro_nome'?nome.split(/\s+/)[0]:key==='nome'?nome:key==='capturado_em'&&p.capturado_em?new Date(p.capturado_em).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'}):p[key];
   return String(value??'').trim();
 }
 function personalizarAcao(texto:string,p:any,cv:any) {
-  return String(texto||'').replace(/\{\{\s*(primeiro_nome|nome|email|telefone|produto|campanha)\s*\}\}/gi,(_match,key)=>templateCampo(p,cv,String(key).toLowerCase()));
+  return String(texto||'').replace(/\{\{\s*(primeiro_nome|nome|email|telefone|produto|campanha|qualificacao|status_funil|status_cliente|capturado_em|extra\.[a-z][a-z0-9_]{1,40})\s*\}\}/gi,(_match,key)=>templateCampo(p,cv,String(key).toLowerCase()));
 }
 function personalizarHtmlAcao(html:string,p:any,cv:any) {
-  return String(html||'').replace(/\{\{\s*(primeiro_nome|nome|email|telefone|produto|campanha)\s*\}\}/gi,(_match,key)=>htmlSeguro(templateCampo(p,cv,String(key).toLowerCase())));
+  return String(html||'').replace(/\{\{\s*(primeiro_nome|nome|email|telefone|produto|campanha|qualificacao|status_funil|status_cliente|capturado_em|extra\.[a-z][a-z0-9_]{1,40})\s*\}\}/gi,(_match,key)=>htmlSeguro(templateCampo(p,cv,String(key).toLowerCase())));
 }
 async function executarAcaoCRM(ch:any,cv:any,flow:any,run:any,node:any,p:any) {
   if(!p.id)throw Error('Vincule a conversa a um Lead/Aluno antes de alterar tags, campos ou campanha.');

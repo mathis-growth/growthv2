@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Growths</title>
-<link rel="stylesheet" href="assets/atendimento.css?v=0239">
+<link rel="stylesheet" href="assets/atendimento.css?v=0240">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -132,6 +132,10 @@ label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--mute
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
 .tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:8px 14px;white-space:nowrap;flex:none;cursor:pointer;font-weight:500;color:var(--muted)}
 .tabs button.on{color:var(--accent);border-bottom-color:var(--accent)}
+.camp-secoes{gap:8px;border-bottom:0;margin-top:8px}
+.camp-secoes button{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:7px 12px}
+.camp-secoes button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.camp-abas{margin-bottom:10px}
 
 .panel{background:linear-gradient(180deg,var(--surface),var(--surface));border:1px solid var(--line);border-radius:var(--raio);padding:18px;box-shadow:0 1px 0 rgba(255,255,255,.02) inset;display:flex;flex-direction:column;gap:12px;min-width:0}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
@@ -1457,10 +1461,10 @@ const NAV = [
   { g: 'Projetos', items: [['prj-lista', 'Projetos'], ['prj-agentes', 'Pipeline dos agentes'], ['prj-minhas', 'Minhas atividades'], ['prj-atividades', 'Todas as atividades'], ['prj-modelos', 'Modelos de projeto'], ['prj-avisos', 'Avisos']] },
   { g: 'Growth', items: [['gro-diag', 'Diagnóstico Growth'], ['gro-modelo', 'Growth Model'], ['gro-pesq', 'Pesquisas'], ['gro-ciclo', 'Ciclo de Growth (Kanban)'], ['gro-result', 'Resultados e aprendizados'], ['gro-guard', 'Guardrails']] },
   { g: 'Configurações', adm: true, items: [], subs: [
-    { g: 'Dados e integrações', mod: 'cfg', items: [['cfg-importar', 'Importar e validar dados'], ['cfg-integracoes', 'Integrações'], ['cfg-uso', 'Uso da plataforma'], ['cfg-qualidade', 'Qualidade dos dados'], ['cfg-metricas', 'Dicionário de métricas']] },
+    { g: 'Dados e integrações', mod: 'cfg', items: [['cfg-importar', 'Importar e validar dados'], ['cfg-integracoes', 'Integrações'], ['cfg-leads-entrada', 'Entrada de leads'], ['cad-agentes-sistema', 'Agentes de sistema'], ['cfg-uso', 'Uso da plataforma'], ['cfg-qualidade', 'Qualidade dos dados'], ['cfg-metricas', 'Dicionário de métricas']] },
     { g: 'Pessoas e acessos', mod: 'cad', items: [['cad-equipe', 'Equipe e acessos'], ['cad-funcoes', 'Funções e permissões'], ['cad-auditoria', 'Auditoria'], ['cfg-pacotes', 'Pacotes de acesso dos clientes']] },
     { g: 'Growth\'s Content (interno)', mod: 'cfg', items: [['cfg-estruturas', 'Estruturas de roteiro e copy'], ['cfg-pastas', 'Pastas da Mathisa'], ['cfg-custos', 'Custos de IA']] },
-    { g: 'Comercial e produtos', mod: 'cad', items: [['cad-clientes', 'Clientes'], ['cad-duplicados', 'Cadastros repetidos'], ['cad-produtos', 'Produtos'], ['cad-comissoes', 'Comissões'], ['cad-plataformas', 'Plataformas'], ['cad-canais', 'Canais'], ['cad-funis', 'Estratégias e funis'], ['cad-motivos', 'Motivos de ganho e perda']] },
+    { g: 'Comercial e produtos', mod: 'cad', items: [['cad-clientes', 'Clientes'], ['cad-duplicados', 'Cadastros repetidos'], ['cad-produtos', 'Produtos'], ['cad-comissoes', 'Regras de comissão'], ['cad-plataformas', 'Plataformas'], ['cad-canais', 'Canais de aquisição'], ['cad-funis', 'Estratégias e funis'], ['cad-motivos', 'Motivos de ganho e perda']] },
     { g: 'Financeiro e contabilidade', mod: 'cad', items: [['cad-planocontas', 'Plano de contas'], ['cad-regras', 'Regras contábeis'], ['cad-impostos', 'Impostos'], ['cad-bancos', 'Contas bancárias'], ['cad-formaspag', 'Formas de pagamento'], ['cad-fornecedores', 'Fornecedores'], ['cad-centros', 'Centros de custo'], ['cad-rateio', 'Rateio de custos']] }] }
 ];
 const S = { user: null, workspaces: [], ws: null, view: (new URLSearchParams(location.search).get('v') || (new URLSearchParams(location.search).get('conexao') ? 'cfg-integracoes' : '')) || 'cockpit', abertos: {}, tabMkt: 'campanhas', ano: new Date().getFullYear(), f: { busca: '', qual: '', tipo: '' } };
@@ -1826,32 +1830,40 @@ const ICO = {
   'cad-impostos': P('<path d="M19 5L5 19"/><circle cx="7" cy="7" r="2.500"/><circle cx="17" cy="17" r="2.500"/>'),
   'cad-bancos': P('<path d="M3 10l9-6 9 6"/><path d="M5 10v8M10 10v8M14 10v8M19 10v8M3 20h18"/>')
 };
+ICO['cfg-leads-entrada'] = ICO['cfg-integracoes'];
+ICO['cad-agentes-sistema'] = ICO['cad-equipe'];
 /* ---------- Permissões por função (o banco é quem impõe; aqui só organiza a tela) ---------- */
 const MODULOS = [['adm', 'Administrativo', 'Painel gerencial, planejamento e cadastro da empresa'], ['mkt', 'Marketing', 'Campanhas, mídia paga, vídeos e conteúdo'], ['vendas', 'Vendas', 'Funil comercial, contratos e leads'],
   ['revops', 'Customer Success', 'Alunos, retenção e cohorts'], ['fin', 'Financeiro', 'Vendas e a receber, contas a pagar e lançamentos'], ['prj', 'Projetos', 'Projetos, atividades e modelos'],
   ['gro', 'Growth', 'Growth model, análise de funil, pesquisas e ciclo'], ['cfg', 'Configurações', 'Integrações e importação de dados'], ['cad', 'Cadastros', 'Produtos, fornecedores, plataformas, equipe e planos de contas']];
 const NIVEIS = [['nenhum', 'Sem acesso'], ['ler', 'Só consultar'], ['editar', 'Consultar e editar']];
 const MOD_GRUPO = { 'Growth Starter': 'adm', Administrativo: 'adm', Marketing: 'mkt', Vendas: 'vendas', RevOps: 'revops', 'Customer Success': 'revops', Financeiro: 'fin', Projetos: 'prj', Growth: 'gro', 'Configurações': 'cfg', Cadastros: 'cad' };
-const SO_ADMIN = ['cad-funcoes', 'cfg-uso', 'cad-auditoria'];
-const TELAS_INT = ['cfg-pacotes', 'cfg-estruturas', 'cfg-pastas', 'cfg-custos', 'adm-baseline', 'adm-plano', 'adm-uso'];
+const SO_ADMIN = ['cad-funcoes', 'cfg-uso', 'cad-agentes-sistema', 'cad-auditoria'];
+const TELAS_INT = ['cfg-pacotes', 'cfg-estruturas', 'cfg-pastas', 'cfg-custos', 'cad-agentes-sistema', 'adm-baseline', 'adm-plano', 'adm-uso'];
 const nivelMod = k => S.perm && S.perm.modulos ? (S.perm.modulos[k] || 'nenhum') : 'editar';
 const souAdmin = () => !S.perm || S.perm.admin !== false;
 const subsDe = g => g.subs || [];
 const itensDe = g => g.items.concat(subsDe(g).flatMap(x => x.items));
 const modSub = x => x.mod || MOD_GRUPO[x.g];
-function moduloDaView(v) { if (v === 'gro-lucro' || v === 'gro-cenarios' || v === 'gro-analise') return 'gro'; /* v0.80: procura primeiro nos grupos de verdade; o Growth Starter repete telas de outros módulos e só vale para as telas exclusivas dele */ for (const g of [...NAV.filter(x => !x.starter), ...NAV.filter(x => x.starter)]) { if (g.items.some(i => i[0] === v)) return MOD_GRUPO[g.g]; const sb_ = subsDe(g).find(x => x.items.some(i => i[0] === v)); if (sb_) return modSub(sb_); } return null; }
+function moduloDaView(v) { if (v === 'gro-lucro' || v === 'gro-cenarios' || v === 'gro-analise') return 'gro';
+  // Estratégias conserva o acesso de quem tinha apenas Cadastros → Estratégias e funis.
+  if (v === 'mkt-estrategias' && (!S.acesso || S.acesso.has('cad-funis'))) {
+    const nivel = { nenhum: 0, ler: 1, editar: 2 };
+    if (nivel[nivelMod('cad')] > nivel[nivelMod('mkt')]) return 'cad';
+  }
+  /* v0.80: procura primeiro nos grupos de verdade; o Growth Starter repete telas de outros módulos e só vale para as telas exclusivas dele */ for (const g of [...NAV.filter(x => !x.starter), ...NAV.filter(x => x.starter)]) { if (g.items.some(i => i[0] === v)) return MOD_GRUPO[g.g]; const sb_ = subsDe(g).find(x => x.items.some(i => i[0] === v)); if (sb_) return modSub(sb_); } return null; }
 function abreMenu(v) { for (const g of NAV) { if (g.starter) continue; if (itensDe(g).some(i => i[0] === v)) { S.abertos[g.g] = true; subsDe(g).forEach(x => { if (x.items.some(i => i[0] === v)) S.abertos[x.g] = true; }); } } }
 function primeiraTela() { for (const g of NAV) for (const [k] of itensDe(g)) { const mo = moduloDaView(k); if (mo && nivelMod(mo) !== 'nenhum' && !SO_ADMIN.includes(k) && telaLiberada(k) && !TELAS_INT.includes(k)) return k; } return null; }
 async function carregaPerm() { S.permWs = S.ws; try { S.perm = await q(sb.rpc('minhas_permissoes', { p_ws: S.ws })); if (!S.perm || !S.perm.modulos) S.perm = null; } catch (e) { S.perm = null; } await carregaAcesso(); }
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
 function desenhaNav() {
-  const vAt = S.view === 'gro-cenarios' ? 'gro-modelo' : S.view, btns = items => items.map(([k, l]) => `<button data-v="${k}" class="${vAt === k ? 'on' : ''}"${vAt === k ? ' aria-current="page"' : ''}>${ICO[k] || ''}<span>${l}</span></button>`).join('');
+  const vAt = S.view === 'gro-cenarios' ? 'gro-modelo' : S.view === 'mkt-estrategias' && nivelMod('mkt') === 'nenhum' ? 'cad-funis' : S.view, btns = items => items.map(([k, l]) => `<button data-v="${k}" class="${vAt === k ? 'on' : ''}"${vAt === k ? ' aria-current="page"' : ''}>${ICO[k] || ''}<span>${l}</span></button>`).join('');
   const gh = (g, cls = '') => `<button class="gt ${cls}" data-g="${g}" aria-label="${g}" title="${g}" aria-expanded="${isOpen(g)}">${ICO[g] || ''}<span class="lbl">${g}</span>${CHEV}</button>`;
   const grp = g => {
     if (!!g.starter !== ehStarter() && !(ehStarter() && g.g === 'Configurações')) return '';
     if (g.casa) return casaDe(S.wsBase) ? `<div class="grp">${gh(g.g)}${isOpen(g.g) ? `<div class="lv2">${btns(g.items)}</div>` : ''}</div>` : '';
     if (g.flat) return !g.livre && nivelMod(MOD_GRUPO[g.g]) === 'nenhum' ? '' : `<div class="grp">${btns(g.items.filter(i => telaLiberada(i[0])))}</div>`;
-    const vis = items => items.filter(i => (!SO_ADMIN.includes(i[0]) || souAdmin()) && telaLiberada(i[0]) && (!TELAS_INT.includes(i[0]) || S.interno) && (i[0] !== 'cfg-custos' || S.verCustos) && (i[0] !== 'mkt-custos' || semFin()));
+    const vis = items => items.filter(i => (!SO_ADMIN.includes(i[0]) || souAdmin()) && telaLiberada(i[0]) && (!TELAS_INT.includes(i[0]) || S.interno) && (i[0] !== 'cfg-custos' || S.verCustos) && (i[0] !== 'mkt-custos' || semFin()) && (i[0] !== 'cad-funis' || ehStarter() || nivelMod('mkt') === 'nenhum'));
     const okG = g.items.length ? nivelMod(MOD_GRUPO[g.g]) !== 'nenhum' && vis(g.items).length > 0 : false, subs = subsDe(g).filter(x => nivelMod(modSub(x)) !== 'nenhum' && vis(x.items).length);
     if (!okG && !subs.length) return '';
     return `<div class="grp${g.adm ? ' adm' : ''}">${gh(g.g)}${isOpen(g.g) ? `<div class="lv2">${(okG ? btns(vis(g.items)) : '') + subs.map(x => gh(x.g, 'sub') + (isOpen(x.g) ? `<div class="sublist">${btns(vis(x.items))}</div>` : '')).join('')}</div>` : ''}</div>`;
@@ -1948,6 +1960,7 @@ async function render() {
   const casaV = ehCasaV(S.view), casaW = casaDe(S.wsBase);
   if (casaV && !casaW) S.view = 'fin-dash';
   S.ws = casaV && casaW ? casaW.id : S.wsBase;
+  if (S.view === 'cad-funis' && !ehStarter()) { S.view = 'mkt-estrategias'; S.estConfigAberto = true; }
   navRegistra();
   desenhaNav();
   const m = $('#main');
@@ -2680,6 +2693,7 @@ async function tabCampanhas(el) {
 }
 
 const CAMP_TABS = [['visao', 'Visão por etapas'], ['dash', 'Dashboard'], ['etapas', 'Estratégia e etapas'], ['metas', 'Metas mensais'], ['resumo', 'Planejamento e metas'], ['captacao', 'Captação e metas'], ['crm', 'Funil da campanha'], ['funil', 'Análise e cohorts'], ['midia', 'Mídia paga'], ['videos', 'Vídeos e eventos'], ['leads', 'Leads e vendas'], ['links', 'Links e tracking'], ['debrief', 'Fechamento'], ['ofertas', 'Ofertas e preços']];
+const CAMP_SECOES = [['planejamento', 'Planejamento', ['etapas', 'metas', 'resumo', 'captacao', 'ofertas']], ['operacao', 'Operação', ['crm', 'midia', 'videos', 'links']], ['resultados', 'Resultados', ['dash', 'funil', 'leads']], ['fechamento', 'Fechamento', ['debrief']]];
 const ceElegivel = c => c.modelo === 'lancamento' && !!c.data_inicio;
 async function ceTudo(mk) { const r = []; for (let i = 0; i < 60; i++) { const p = await q(mk().range(i * 1000, i * 1000 + 999)); r.push(...p); if (p.length < 1000) break; } return r; }
 async function tcVisao(el, c, r, x4) {
@@ -3631,10 +3645,11 @@ async function vCampanha(m) {
   if (ceElegivel(c)) T = 'visao';
   const r = mk[0] || {}, f = funis.find(x => x.id === c.funil_id), p = prod.find(x => x.id === c.produto_id);
   const TABS = CAMP_TABS.filter(t => (t[0] !== 'metas' || c.modelo === 'perpetuo') && (t[0] !== 'visao' || ceElegivel(c))); if (!TABS.some(t => t[0] === T)) T = 'dash';
+  const secaoAtual = CAMP_SECOES.find(([, , abas]) => abas.includes(T))?.[0] || 'resultados';
   m.innerHTML = `<div class="head"><div><button class="btn sm" id="cVoltar">← Todas as campanhas</button><h1 style="margin-top:8px">${esc(c.nome)}</h1>
     <span class="muted">${pillModelo(c)} ${pillCamp(c)} · ${periodoCamp(c)} · estratégia: ${f ? esc(f.nome) + ' (' + esc(f.tipo) + ')' : '—'}${p ? ' · produto: ' + esc(p.nome) : ''}</span></div>
     <div class="acts"><label style="flex-direction:row;align-items:center;gap:6px">Status<select id="cSt">${Object.entries(CAMP_ST).map(([k, v]) => `<option value="${k}"${c.status === k ? ' selected' : ''}>${v[1]}</option>`).join('')}</select></label><button class="btn" id="cPj">Projeto${pjs.length ? ' (' + pjs.length + ')' : ''}</button><button class="btn" id="cMidia" title="Abre a Mídia paga filtrada nesta campanha, no período dela">Ver na Mídia paga</button><button class="btn" id="cEd">Editar campanha</button><button class="btn${c.status === 'rascunho' ? '' : ' pri'}" id="cFechar">${c.modelo === 'perpetuo' ? 'Fechar o ciclo' : 'Fechar a campanha'}</button></div></div>
-    <div class="tabs"${T === 'visao' ? ' hidden style="display:none"' : ''}>${T === 'visao' ? '' : TABS.map(([k, l]) => `<button data-t="${k}" class="${T === k ? 'on' : ''}">${l}</button>`).join('')}</div><div id="cBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
+    ${T === 'visao' ? '' : `<nav class="tabs camp-secoes" aria-label="Áreas da campanha">${CAMP_SECOES.map(([k, l, abas]) => `<button type="button" data-camp-secao="${k}" class="${secaoAtual === k ? 'on' : ''}" aria-current="${secaoAtual === k ? 'page' : 'false'}">${l}</button>`).join('')}</nav><nav class="tabs camp-abas" aria-label="Abas de ${CAMP_SECOES.find(x => x[0] === secaoAtual)?.[1] || 'campanha'}">${TABS.filter(([k]) => CAMP_SECOES.find(x => x[0] === secaoAtual)?.[2].includes(k)).map(([k, l]) => `<button type="button" data-t="${k}" class="${T === k ? 'on' : ''}" aria-current="${T === k ? 'page' : 'false'}">${l}</button>`).join('')}</nav>`}<div id="cBody" style="display:flex;flex-direction:column;gap:16px"></div>`;
   $('#cVoltar').onclick = () => { S.campSel = null; render(); };
   campRascunho(m, c, pjs.length);
   $('#cEd').onclick = () => formCampanha(c);
@@ -3642,7 +3657,8 @@ async function vCampanha(m) {
   $('#cFechar').onclick = () => fecharCampanha(c, r);
   $('#cPj').onclick = () => modalProjetoCampanha(c);
   $('#cSt').onchange = e => act(async () => { await q(sb.from('campanhas').update({ status: e.target.value }).eq('id', id)); render(); }, 'Status atualizado');
-  m.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { S.campTab = b.dataset.t; render(); });
+  m.querySelectorAll('[data-camp-secao]').forEach(b => b.onclick = () => { S.campTab = TABS.find(([k]) => CAMP_SECOES.find(x => x[0] === b.dataset.campSecao)?.[2].includes(k))?.[0] || T; render(); });
+  m.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { S.campTab = b.dataset.t; render(); });
   const el = $('#cBody');
   try { await ({ visao: tcVisao, dash: async (el, c) => { await vMktDashCampanha(el, c.id); await campPainel128(el, c); await estAnexaFunil(el, c); await campBurnup(el, c); }, etapas: tcEtapas, metas: tcMetas, resumo: tcResumo, crm: (el, c) => vJornada(el, c), funil: tcFunil, midia: tcMidia, videos: tcVideos, leads: tcLeads, links: tcLinks, debrief: tcFechamento, ofertas: tcOfertas, captacao: tcCaptacao }[T])(el, c, r, { funis, p }); cdLigaKpis(el, c.id); }
   catch (e) { el.innerHTML = `<div class="panel"><b>Não foi possível carregar esta aba.</b> <span class="muted">${esc(e.message || String(e))}</span></div>`; }
@@ -7909,26 +7925,52 @@ function frankGestaoLiga(root, FG, agenciaWorkspaceId) {
     catch (e) { toast(e.message || 'Falha ao revogar integração.', true); }
   });
 }
+async function frankGestaoDados() {
+  const wsAgencia = (S.workspaces || []).find(w => w.id === S.ws && w.agencia) || (S.workspaces || []).find(w => w.agencia);
+  if (!S.interno || !souAdmin() || !wsAgencia) return { wsAgencia, FG: null };
+  const r = await sb.functions.invoke('frank-growth', { body: { acao: 'integracoes_listar', agencia_workspace_id: wsAgencia.id } });
+  let detalhe = r.data?.erro;
+  try { if (!detalhe && r.error?.context?.clone) detalhe = (await r.error.context.clone().json())?.erro; } catch (_) { }
+  const FG = r.error || !r.data?.ok ? { erro: detalhe || r.error?.message || 'Não foi possível carregar as integrações do Frank.' } : r.data;
+  return { wsAgencia, FG };
+}
+function entradaLeadsDados() {
+  const nomeCliente = (S.workspaces || []).find(w => w.id === S.ws)?.nome || 'cliente';
+  const chaveCliente = nomeCliente.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/[^a-z0-9_]+/g, '_').replace(/^_+|_+$/g, '') || 'cliente';
+  return { nomeCliente, chaveCliente, scriptWordPress: ldWordPressScript(chaveCliente) };
+}
+function entradaLeadsHtml(chaveCliente) {
+  return `<div class="panel"><div class="head" style="margin:0 0 8px"><div><h2 style="margin:0">Entrada de leads</h2><span class="muted">Scripts e webhooks para formulários e plataformas externas.</span></div></div><div class="adgrid"><article class="ad" style="padding:14px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b style="font-size:16px">WordPress · Elementor</b><span class="pill neutral">Script pronto</span></div><span class="muted">Preserva UTMs e identificadores de anúncios, afiliados e vídeo no redirecionamento após o envio, inclusive em formulários de popup. Identificador deste cliente: <code>${esc(chaveCliente)}</code>.</span><div><button type="button" class="btn pri sm" id="wpScriptOpen">Ver e copiar script</button></div></article><article class="ad" style="padding:14px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b style="font-size:16px">Webhook POST · ManyChat e outros</b><span class="pill neutral">JSON / formulário</span></div><span class="muted">Receba leads enviados por outra plataforma ou formulário via requisição POST. A Edge identifica contato, campanha e URL mesmo em payloads aninhados.</span><div><button type="button" class="btn pri sm" id="ldWebhookOpen">Configurar webhook</button></div></article></div></div>`;
+}
+function entradaLeadsLiga(m, { nomeCliente, chaveCliente, scriptWordPress }) {
+  m.querySelector('#wpScriptOpen').onclick = () => {
+    const f = modal('Script WordPress · Elementor', `<p>Instale em <b>Elementor → Código personalizado</b>, com carregamento no rodapé do site. O código funciona com formulários embutidos e popups do Elementor.</p><p class="muted">O identificador <code>CLIENTE</code> já foi preenchido com o nome deste workspace: <b>${esc(nomeCliente)}</b> → <code>${esc(chaveCliente)}</code>. O script captura <code>utm_growth</code> e a URL completa de entrada, acrescentando ambos aos links da página e ao destino da ação <b>Redirect</b> do Elementor. O webhook grava a URL completa no histórico do lead para auditoria.</p><label>Script para copiar<textarea id="wpScriptText" rows="22" readonly spellcheck="false" class="mono">${esc(scriptWordPress)}</textarea></label><button type="button" class="btn pri" id="wpScriptCopy">Copiar script</button>`, null, null, true);
+    f.querySelector('#wpScriptCopy').onclick = () => iaCopia(scriptWordPress, 'Script do WordPress copiado.');
+  };
+  m.querySelector('#ldWebhookOpen').onclick = () => modalWebhookPost();
+}
+function vEntradaLeads(m) {
+  const dados = entradaLeadsDados();
+  m.innerHTML = `<div class="head"><h1>Entrada de leads</h1></div>${entradaLeadsHtml(dados.chaveCliente)}`;
+  entradaLeadsLiga(m, dados);
+}
+async function vAgentesSistema(m) {
+  const { wsAgencia, FG } = await frankGestaoDados();
+  m.innerHTML = `<div class="head"><h1>Agentes de sistema</h1></div>${wsAgencia && S.interno ? frankGestaoHtml(FG) : '<div class="panel">Nenhum workspace de agência disponível para gerenciar agentes.</div>'}`;
+  if (wsAgencia && S.interno) frankGestaoLiga(m, FG, wsAgencia.id);
+}
+VIEWS['cfg-leads-entrada'] = vEntradaLeads;
+VIEWS['cad-agentes-sistema'] = vAgentesSistema;
 async function vIntegracoes(m) {
   cxRetorno();
   const [reg, CXD, HM] = await Promise.all([q(sb.from('integracoes').select('*').eq('workspace_id', S.ws)), cxDados(), hmDados()]);
-  const wsAgencia = (S.workspaces || []).find(w => w.id === S.ws && w.agencia) || (S.workspaces || []).find(w => w.agencia);
-  let FG = null;
-  if (S.interno && wsAgencia) {
-    const r = await sb.functions.invoke('frank-growth', { body: { acao: 'integracoes_listar', agencia_workspace_id: wsAgencia.id } });
-    let detalhe = r.data?.erro;
-    try { if (!detalhe && r.error?.context?.clone) detalhe = (await r.error.context.clone().json())?.erro; } catch (_) { }
-    FG = r.error || !r.data?.ok ? { erro: detalhe || r.error?.message || 'Não foi possível carregar as integrações do Frank.' } : r.data;
-  }
+  const { wsAgencia, FG } = await frankGestaoDados();
   const R = Object.fromEntries(reg.map(r => [r.provedor, r]));
-  const nomeCliente = (S.workspaces || []).find(w => w.id === S.ws)?.nome || 'cliente';
-  const chaveCliente = nomeCliente.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/[^a-z0-9_]+/g, '_').replace(/^_+|_+$/g, '') || 'cliente';
-  const scriptWordPress = ldWordPressScript(chaveCliente);
   m.innerHTML = `<div class="head"><h1>Integrações</h1></div>
   ${cxHtml(CXD)}
   ${hmHtml(HM)}
-  ${S.interno && wsAgencia ? frankGestaoHtml(FG) : ''}
-  <div class="panel"><div class="head" style="margin:0 0 8px"><div><h2 style="margin:0">Entrada de Leads</h2><span class="muted">Scripts e webhooks para formulários e plataformas externas.</span></div></div><div class="adgrid"><article class="ad" style="padding:14px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b style="font-size:16px">WordPress · Elementor</b><span class="pill neutral">Script pronto</span></div><span class="muted">Preserva UTMs e identificadores de anúncios, afiliados e vídeo no redirecionamento após o envio, inclusive em formulários de popup. Identificador deste cliente: <code>${esc(chaveCliente)}</code>.</span><div><button type="button" class="btn pri sm" id="wpScriptOpen">Ver e copiar script</button></div></article><article class="ad" style="padding:14px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b style="font-size:16px">Webhook POST · ManyChat e outros</b><span class="pill neutral">JSON / formulário</span></div><span class="muted">Receba leads enviados por outra plataforma ou formulário via requisição POST. A Edge identifica contato, campanha e URL mesmo em payloads aninhados.</span><div><button type="button" class="btn pri sm" id="ldWebhookOpen">Configurar webhook</button></div></article></div></div>
+  ${S.interno && souAdmin() && wsAgencia ? `<div class="panel"><div class="head"><div><h2>Agentes de sistema</h2><span class="muted">${FG?.erro ? esc(FG.erro) : (FG?.integracoes || []).length + ' agente(s) cadastrado(s)'}</span></div><button type="button" class="btn sm" id="irAgentesSistema">Gerenciar agentes</button></div></div>` : ''}
+  <div class="panel"><div class="head"><div><h2>Entrada de leads</h2><span class="muted">Scripts WordPress e webhooks para formulários externos.</span></div><button type="button" class="btn sm" id="irEntradaLeads">Configurar entrada</button></div></div>
   <div class="panel"><span>Abaixo, as outras ferramentas que alimentam o Growths. <b>Meta e Google já conectam sozinhos (acima);</b> para as demais, o status serve como controle e os dados entram por lançamento, planilha ou webhook. Nunca cole senha, token ou chave de API nestes campos. Segredos ficam guardados no servidor, fora do navegador.</span></div>
   ${Object.entries(CAT_INTEG).map(([cat, nome]) => { const L = CATALOGO.filter(c => c[1] === cat); return L.length ? `<div class="panel"><h2>${nome}</h2><div class="adgrid">${L.map(([p, , desc]) => { const r = R[p], st = ST_INTEG[r ? r.status : 'desconectado']; return `<div class="ad" style="padding:12px;gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(p)}</b><span class="pill ${st[0]}">${st[1]}</span></div><span class="muted">${esc(desc)}</span>${r && r.conta_externa ? `<small class="muted">Conta: ${esc(r.conta_externa)}</small>` : ''}${r && r.ultima_sincronizacao ? `<small class="muted">Última sincronização: ${dtt(r.ultima_sincronizacao)}</small>` : ''}<div><button class="btn sm" data-i="${esc(p)}">${r ? 'Editar' : 'Configurar'}</button></div></div>`; }).join('')}</div></div>` : ''; }).join('')}`;
   m.onclick = e => {
@@ -7939,13 +7981,9 @@ async function vIntegracoes(m) {
       <label>Observação<textarea name="obs" rows="3">${esc(r.observacao || '')}</textarea></label>`,
       async d => { await q(sb.from('integracoes').upsert({ workspace_id: S.ws, provedor: p, categoria: cat, status: d.status, conta_externa: nul(d.conta), observacao: nul(d.obs) }, { onConflict: 'workspace_id,provedor' })); toast('Integração salva'); });
   };
-  if (S.interno && wsAgencia) frankGestaoLiga(m, FG, wsAgencia.id);
+  m.querySelector('#irAgentesSistema')?.addEventListener('click', () => { S.view = 'cad-agentes-sistema'; render(); });
+  m.querySelector('#irEntradaLeads').onclick = () => { S.view = 'cfg-leads-entrada'; render(); };
   hmLiga(m, HM);
-  m.querySelector('#wpScriptOpen').onclick = () => {
-    const f = modal('Script WordPress · Elementor', `<p>Instale em <b>Elementor → Código personalizado</b>, com carregamento no rodapé do site. O código funciona com formulários embutidos e popups do Elementor.</p><p class="muted">O identificador <code>CLIENTE</code> já foi preenchido com o nome deste workspace: <b>${esc(nomeCliente)}</b> → <code>${esc(chaveCliente)}</code>. O script captura <code>utm_growth</code> e a URL completa de entrada, acrescentando ambos aos links da página e ao destino da ação <b>Redirect</b> do Elementor. O webhook grava a URL completa no histórico do lead para auditoria.</p><label>Script para copiar<textarea id="wpScriptText" rows="22" readonly spellcheck="false" class="mono">${esc(scriptWordPress)}</textarea></label><button type="button" class="btn pri" id="wpScriptCopy">Copiar script</button>`, null, null, true);
-    f.querySelector('#wpScriptCopy').onclick = () => iaCopia(scriptWordPress, 'Script do WordPress copiado.');
-  };
-  m.querySelector('#ldWebhookOpen').onclick = () => modalWebhookPost();
   cxLiga(m, CXD);
 }
 
@@ -11766,22 +11804,22 @@ function estLigaTabela(el, L, tabela, abrirEd, msgRemover) {
     modal('Remover etapa', `<p>Remover <b>${esc(e.nome)}</b>? ${esc(msgRemover)}</p>`, async () => { await q(sb.from(tabela).delete().eq('id', e.id)); toast('Etapa removida'); }, 'Remover'); });
 }
 
-/* ---------- Cadastros → Estratégias e funis ---------- */
+/* ---------- Estratégias compartilhadas por Marketing e Cadastros ---------- */
 async function vFunis(m) {
   if (S.estSel) return vEstrategia(m);
   const w = S.ws;
-  const cvB = await temColuna('funis', 'categoria'), noMkt = S.view === 'mkt-estrategias', FL = S.estF = S.estF || { cat: '', st: 'ativas' };
+  const cvB = await temColuna('funis', 'categoria'), cadNivel = nivelMod('cad'), podeConfig = cadNivel !== 'nenhum' && (!S.acesso || S.acesso.has('cad-funis')), FL = S.estF = S.estF || { cat: '', st: 'ativas' };
   const [fs0, ets0, cs, pr] = await Promise.all([
     q(sb.from('funis').select('*').eq('workspace_id', w).order('nome')), q(sb.from('estrategia_etapas').select('id,funil_id').eq('workspace_id', w)).catch(() => null),
     q(sb.from('campanhas').select('id,funil_id').eq('workspace_id', w)), q(sb.from('produtos').select('id,nome').eq('workspace_id', w).order('nome'))]);
   const ets = ets0 || [], cats = [...new Set(fs0.map(f => f.categoria).filter(Boolean))].sort();
   const fs = fs0.filter(f => (!FL.cat || f.categoria === FL.cat) && (FL.st === 'todas' || (FL.st === 'ativas' ? f.ativo !== false : f.ativo === false)));
-  m.innerHTML = (ets0 ? '' : EST_SEM_BANCO) + `<div class="head"><div><h1>${noMkt ? 'Estratégias' : 'Estratégias e funis'}</h1><span class="muted">A estratégia desenha o funil de venda em fases e etapas. Cada campanha escolhe uma estratégia e recebe uma cópia das etapas.</span></div><div class="acts">${cvB ? '<button class="btn pri" id="estMapa">Criar no mapa</button><button class="btn" id="estNova">Nova a partir de modelo</button>' : '<button class="btn pri" id="estNova">Nova estratégia</button>'}</div></div>
+  m.innerHTML = (ets0 ? '' : EST_SEM_BANCO) + `<div class="head"><div><h1>Estratégias</h1><span class="muted">A estratégia desenha o funil de venda em fases e etapas. Cada campanha escolhe uma estratégia e recebe uma cópia das etapas.</span></div><div class="acts">${cvB ? '<button class="btn pri" id="estMapa">Criar no mapa</button><button class="btn" id="estNova">Nova a partir de modelo</button>' : '<button class="btn pri" id="estNova">Nova estratégia</button>'}</div></div>
     ${cvB ? `<div class="filters"><label>Categoria<select id="estFc"><option value="">Todas</option>${cats.map(c => `<option${c === FL.cat ? ' selected' : ''}>${esc(c)}</option>`).join('')}</select></label>
       <label>Situação<select id="estFs">${[['ativas', 'Em uso'], ['arquivadas', 'Arquivadas'], ['todas', 'Todas']].map(([k, l]) => `<option value="${k}"${FL.st === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label></div>` : ''}
     <div class="panel"><div class="tw"><table><thead><tr><th>Estratégia</th>${cvB ? '<th>Categoria</th>' : ''}<th>Tipo</th><th>Produto</th>${cvB ? '<th class="n">Versão</th>' : ''}<th class="n">Etapas</th><th class="n">Campanhas</th><th>Situação</th><th></th></tr></thead><tbody>
     ${fs.length ? fs.map(f => `<tr class="clk" data-est="${f.id}"><td><b>${esc(f.nome)}</b>${f.objetivo || f.descricao ? '<br><small class="muted">' + esc(f.objetivo || f.descricao) + '</small>' : ''}${cvB && f.criado_em ? '<br><small class="muted">criada em ' + dd(String(f.criado_em).slice(0, 10)) + '</small>' : ''}</td>${cvB ? `<td>${esc(f.categoria || '—')}</td>` : ''}<td>${esc(EST_TIPO[f.tipo] || f.tipo)}</td><td>${f.produto_id ? esc((pr.find(p => p.id === f.produto_id) || {}).nome || '—') : '<span class="muted">qualquer produto</span>'}</td>${cvB ? `<td class="n">${f.versao_atual ? 'v' + f.versao_atual : '<span class="muted">—</span>'}</td>` : ''}<td class="n">${ets.filter(e => e.funil_id === f.id).length}</td><td class="n">${cs.filter(c => c.funil_id === f.id).length}</td><td>${cvB && f.status === 'rascunho' ? '<span class="pill warn">rascunho</span>' : pillAtivo(f.ativo)}</td><td style="white-space:nowrap"><button class="btn sm" data-est="${f.id}">Abrir</button>${cvB ? ` <button class="btn sm" data-estdup="${f.id}">Duplicar</button>` : ''}</td></tr>`).join('') : `<tr><td colspan="${cvB ? 9 : 7}" class="empty">Nenhuma estratégia ${FL.st === 'arquivadas' ? 'arquivada' : 'ainda. Comece de um modelo pronto'}.</td></tr>`}</tbody></table></div></div>
-    ${noMkt ? '' : '<div class="panel" id="c2"></div><div class="panel" id="c3"></div>'}`;
+    ${podeConfig ? `<details class="panel" id="estConfig"${S.estConfigAberto ? ' open' : ''}><summary><b>Configurações da estratégia</b> · Etapas do Kanban e listas de grupos/API</summary><div class="panel" id="c2"></div><div class="panel" id="c3"></div></details>` : ''}`;
   if ($('#estFc')) $('#estFc').onchange = e => { FL.cat = e.target.value; render(); };
   if ($('#estFs')) $('#estFs').onchange = e => { FL.st = e.target.value; render(); };
   m.querySelectorAll('[data-estdup]').forEach(b => b.onclick = ev => { ev.stopPropagation(); estNova(pr, fs0.find(x => x.id === b.dataset.estdup)); });
@@ -11790,10 +11828,12 @@ async function vFunis(m) {
   if ($('#estMapa')) $('#estMapa').onclick = () => act(async () => { const id = crypto.randomUUID(); let n = 1; while (fs0.some(f => f.nome === CV_RASC + (n > 1 ? ' ' + n : ''))) n++;
     await q(sb.from('funis').insert({ id, workspace_id: S.ws, nome: CV_RASC + (n > 1 ? ' ' + n : ''), tipo: 'outro', status: 'rascunho', ativo: true }));
     S.estSel = id; S.estVista = 'mapa'; S.cvView = null; S.cvSel = null; render(); });
-  if (noMkt) return;
+  if (!podeConfig) return;
+  $('#estConfig').ontoggle = e => { S.estConfigAberto = e.target.open; };
   ENT.etapas_funil.titulo = 'Etapas do Kanban da jornada'; ENT.listas_funil.titulo = 'Listas (grupo, API)';
   await Promise.all([renderCad($('#c2'), 'etapas_funil'), renderCad($('#c3'), 'listas_funil')]);
   $('#c2 h2').insertAdjacentHTML('afterend', '<span class="muted" style="display:block;margin-bottom:6px">As colunas do Kanban por onde as pessoas andam. Uma etapa da estratégia pode contar quem chegou a uma delas.</span>');
+  if (cadNivel === 'ler' && !souAdmin()) $('#estConfig').querySelectorAll('button,input,select,textarea').forEach(el => { el.disabled = true; });
 }
 function estNova(pr, dup, aoCriar) {
   const raiz = aoCriar ? '#modalRoot2' : '#modalRoot', fim_ = (id, d) => { if (aoCriar) aoCriar({ id, nome: d.nome.trim(), tipo: d.tipo }); else S.estSel = id; };
@@ -11913,7 +11953,7 @@ async function tcEtapas(el, c) {
     el.innerHTML = `<div class="panel"><h2>Estratégia desta campanha</h2><p>${f ? `A campanha usa <b>${esc(f.nome)}</b>, mas ainda não copiou as etapas.` : 'Esta campanha ainda não tem estratégia.'} Escolha a estratégia para copiar o funil, etapa por etapa.</p>
       <div class="acts" style="justify-content:flex-start"><select id="ceEst">${fs.filter(x => x.ativo || x.id === c.funil_id).map(x => `<option value="${x.id}"${x.id === c.funil_id ? ' selected' : ''}>${esc(x.nome)} (${esc(EST_TIPO[x.tipo] || x.tipo)})</option>`).join('')}</select><button class="btn pri" id="ceAplica"${fs.length ? '' : ' disabled'}>Aplicar estratégia</button><button class="btn" id="ceCad">Cadastrar estratégias</button></div></div>`;
     if ($('#ceAplica')) $('#ceAplica').onclick = () => act(async () => { const n = await q(sb.rpc('campanha_aplicar_estrategia', { p_campanha: c.id, p_funil: $('#ceEst').value, p_substituir: false })); toast(n + ' etapa(s) copiada(s)'); render(); });
-    $('#ceCad').onclick = () => { S.view = 'cad-funis'; S.campSel = null; render(); };
+    $('#ceCad').onclick = () => { S.view = 'mkt-estrategias'; S.campSel = null; S.estConfigAberto = false; render(); };
     return;
   }
   const F = await q(sb.rpc('campanha_funil_etapas', { p_campanha: c.id, p_ini: P.ini, p_fim: P.fim }));
@@ -13318,8 +13358,8 @@ const PAC_SEMPRE = ['cad-equipe', 'cad-funcoes', 'cockpit'];
 /* v0.108: telas que saíram do menu (aposentadas ou que viraram aba de outra) */
 const TELAS_FORA_DO_MENU = ['gro-lucro', 'gro-analise', 'gro-cenarios', 'ho-cohort', 'ho-ascensao'];
 const PAC_SEM_BANCO = '<div class="panel" style="border-left:4px solid var(--warn)"><b>Os pacotes de acesso ainda não estão no banco.</b> <span class="muted">Execute supabase/migrations/20261010230000_pacotes_acesso.sql no SQL Editor do Supabase (depois da migração de segurança) e recarregue.</span></div>';
-const ATD_ROTAS_LEGADAS = { 'atd-envios-whatsapp':'atd-grupos-disparo', 'atd-envios-email':'atd-transmissao', 'atd-envios-oficial':'atd-transmissao', 'atd-envios-grupos':'atd-grupos-disparo', 'atd-auto-whatsapp':'atd-automacoes', 'atd-auto-instagram':'atd-automacoes', 'atd-auto-email':'atd-automacoes', 'atd-auto-oficial':'atd-automacoes' };
-const telaLiberada = k => ehCasaV(k) || !S.acesso || S.acesso.has(k) || (ATD_ROTAS_LEGADAS[k] && S.acesso.has(ATD_ROTAS_LEGADAS[k])) || (['atd-envios-email','atd-envios-oficial'].includes(k) && ['atd-conversas','atd-canais','atd-grupos-disparo'].some(t => S.acesso.has(t))) || (k === 'atd-contatos' && (S.acesso.has('atd-conversas') || S.acesso.has('atd-transmissao'))) || (k === 'ho-retencao' && (S.acesso.has('ho-cohort') || S.acesso.has('ho-ascensao'))) || (k === 'ho-cg' && S.acesso.has('crm-alunos')) || (k === 'mkt-estrategias' && (S.acesso.has('mkt-camp') || S.acesso.has('cad-funis'))) || (k === 'gro-cenarios' && S.acesso.has('gro-modelo')) || PAC_SEMPRE.includes(k) || TELAS_INT.includes(k);
+const ATD_ROTAS_LEGADAS = { 'atd-envios-whatsapp':'atd-grupos-disparo', 'atd-envios-email':'atd-transmissao', 'atd-envios-oficial':'atd-transmissao', 'atd-grupos-campanhas':'atd-grupos-disparo', 'atd-envios-grupos':'atd-grupos-disparo', 'atd-auto-whatsapp':'atd-automacoes', 'atd-auto-instagram':'atd-automacoes', 'atd-auto-email':'atd-automacoes', 'atd-auto-oficial':'atd-automacoes' };
+const telaLiberada = k => ehCasaV(k) || !S.acesso || S.acesso.has(k) || (k === 'cfg-leads-entrada' && S.acesso.has('cfg-integracoes')) || (ATD_ROTAS_LEGADAS[k] && S.acesso.has(ATD_ROTAS_LEGADAS[k])) || (['atd-envios-email','atd-envios-oficial'].includes(k) && ['atd-conversas','atd-canais','atd-grupos-disparo'].some(t => S.acesso.has(t))) || (k === 'atd-contatos' && (S.acesso.has('atd-conversas') || S.acesso.has('atd-transmissao'))) || (k === 'ho-retencao' && (S.acesso.has('ho-cohort') || S.acesso.has('ho-ascensao'))) || (k === 'ho-cg' && S.acesso.has('crm-alunos')) || (k === 'mkt-estrategias' && (S.acesso.has('mkt-camp') || S.acesso.has('cad-funis'))) || (k === 'gro-cenarios' && S.acesso.has('gro-modelo')) || PAC_SEMPRE.includes(k) || TELAS_INT.includes(k);
 async function carregaAcesso() {
   S.acesso = null; S.acessoInfo = null;
   try { const a = await q(sb.rpc('acesso_workspace', { p_ws: S.ws })); S.acessoInfo = a || null; S.acesso = a && Array.isArray(a.telas) ? new Set(a.telas) : null; }
@@ -23016,18 +23056,31 @@ async function tabDMs(el, D, C) {
   el.querySelectorAll('[data-dm]').forEach(r => r.onclick = () => dmConversa(conv.find(c => c.id === r.dataset.dm), P));
 }
 async function dmConversa(c, P) {
-  const msgs = await q(sb.from('social_mensagens').select('direcao,texto,anexos,em').eq('conversa_id', c.id).order('em').limit(500));
+  const ws = S.ws, origemView = S.view, podeAtender = nivelMod('vendas') !== 'nenhum' && telaLiberada('atd-conversas') && typeof window.atendimentoAbrirConversa === 'function';
+  const [ultimas, canais] = await Promise.all([
+    q(sb.from('social_mensagens').select('direcao,texto,anexos,em').eq('conversa_id', c.id).order('em', { ascending: false }).limit(500)),
+    podeAtender ? q(sb.from('atd_canais').select('id,nome').eq('workspace_id', ws).eq('canal', 'instagram')).catch(() => []) : Promise.resolve([])
+  ]);
+  if (S.ws !== ws || S.view !== origemView) return;
+  const msgs = ultimas.reverse(), canalIds = canais.map(x => x.id);
+  const conversaAtendimento = canalIds.length && c.id_externo ? await Promise.all([
+    q(sb.from('atd_conversas').select('id,canal_id,ultima_em').eq('workspace_id', ws).eq('externo_id', c.id_externo).in('canal_id', canalIds)).catch(() => []),
+    q(sb.from('atd_conversas').select('id,canal_id,ultima_em').eq('workspace_id', ws).eq('endereco', c.id_externo).in('canal_id', canalIds)).catch(() => [])
+  ]).then(partes => [...new Map(partes.flat().map(item => [item.id, item])).values()].sort((a, b) => (b.ultima_em || '').localeCompare(a.ultima_em || ''))) : [];
+  if (S.ws !== ws || S.view !== origemView) return;
   const p = P[c.pessoa_id];
   const f = modal(c.participante_usuario ? '@' + c.participante_usuario : (c.participante_nome || 'Conversa'), `<div class="dm-chat">${msgs.map(m => `<div class="dm-m ${m.direcao}"><span>${esc(m.texto || (m.anexos ? '(anexo)' : ''))}${m.anexos && m.texto ? ' <small>+ anexo</small>' : ''}</span><small>${new Date(m.em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' })}</small></div>`).join('') || '<p class="muted">Sem mensagens guardadas.</p>'}</div>
-    <div class="acts" style="justify-content:flex-start;margin-top:10px">${c.url ? `<a class="btn sm" href="${esc(c.url)}" target="_blank" rel="noopener">Responder no Instagram</a>` : ''}${p ? `<button type="button" class="btn sm" id="dmFicha">Abrir ${esc(p.nome)} no CRM</button>` : ''}<button type="button" class="btn sm" id="dmIgn">${c.ignorada ? 'Voltar a tratar como lead' : 'Não é lead (conversa pessoal)'}</button></div>
+    <div class="acts" style="justify-content:flex-start;margin-top:10px">${conversaAtendimento.length > 1 ? `<label>Conversa no Atendimento<select id="dmAtendimentoEscolha">${conversaAtendimento.map((item, i) => `<option value="${esc(item.id)}">${i + 1} · ${esc(canais.find(ch => ch.id === item.canal_id)?.nome || 'Instagram')} · ${item.ultima_em ? new Date(item.ultima_em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' }) : 'sem data'}</option>`).join('')}</select></label>` : ''}${conversaAtendimento.length ? '<button type="button" class="btn sm pri" id="dmAtendimento">Abrir no Atendimento</button>' : ''}${c.url ? `<a class="btn sm" href="${esc(c.url)}" target="_blank" rel="noopener">Responder no Instagram</a>` : ''}${p ? `<button type="button" class="btn sm" id="dmFicha">Abrir ${esc(p.nome)} no CRM</button>` : ''}<button type="button" class="btn sm" id="dmIgn">${c.ignorada ? 'Voltar a tratar como lead' : 'Não é lead (conversa pessoal)'}</button></div>
+    ${podeAtender && !conversaAtendimento.length ? '<small class="muted">Este histórico ainda não tem conversa correspondente no Atendimento.</small>' : ''}
     ${c.ignorada ? '' : '<small class="muted">"Não é lead" para de levar as mensagens desta conversa para o CRM. A pessoa que já entrou continua no CRM; se for o caso, exclua por lá.</small>'}`, null, 'Fechar', true);
   const box = f.querySelector('.dm-chat'); if (box) box.scrollTop = box.scrollHeight;
+  if (conversaAtendimento.length) f.querySelector('#dmAtendimento').onclick = () => { const id = f.querySelector('#dmAtendimentoEscolha')?.value || conversaAtendimento[0].id; $('#modalRoot').innerHTML = ''; window.atendimentoAbrirConversa(id); };
   if ($('#dmFicha')) $('#dmFicha').onclick = () => fichaPessoa(p.id);
   $('#dmIgn').onclick = () => act(async () => { await q(sb.from('social_conversas').update({ ignorada: !c.ignorada }).eq('id', c.id)); toast(c.ignorada ? 'Conversa volta a alimentar o CRM' : 'Conversa marcada como não é lead'); $('#modalRoot').innerHTML = ''; render(); });
 }
 async function vDMsCrm(m) {
   S.ctDm = S.ctDm || {};
-  m.innerHTML = `<div class="head"><div><h1>DMs do Instagram</h1><span class="muted">Quem escreveu para o Instagram e já está no CRM como lead. As mesmas conversas aparecem na Máquina de Conteúdo, parte Instagram.</span></div></div><div id="dmCrm" style="display:flex;flex-direction:column;gap:16px"></div>`;
+  m.innerHTML = `<div class="head"><div><h1>DMs do Instagram</h1><span class="muted">Histórico de DMs que alimenta o CRM, também disponível na Máquina de Conteúdo. Quando a conversa já existe no Atendimento, você pode abri-la por aqui.</span></div></div><div id="dmCrm" style="display:flex;flex-direction:column;gap:16px"></div>`;
   return tabDMs($('#dmCrm'), null, S.ctDm);
 }
 
@@ -25218,7 +25271,7 @@ function modalSubtemas(t, D) {
 }
 
 </script>
-<script src="assets/atendimento.js?v=0244"></script>
+<script src="assets/atendimento.js?v=0246"></script>
 <script>
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
 if (PQ_TOKEN) vPesquisaPublica(PQ_TOKEN);

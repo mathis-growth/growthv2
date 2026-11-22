@@ -233,11 +233,24 @@ async function identificarPessoaPorTelefone(ws:string,conversaId:string,endereco
   await q(db.from('atd_conversas').update({pessoa_id:encontrados[0].id}).eq('id',cv.id).eq('workspace_id',ws).is('pessoa_id',null));
   return encontrados[0].id;
 }
+async function identificarPessoaPeloInstagram(ws:string,cv:{id:string,endereco?:string|null,externo_id?:string|null}) {
+  const ids=[...new Set([cv.endereco,cv.externo_id].filter((v):v is string=>Boolean(v)))];
+  if(!ids.length)return null;
+  const sociais=await q(db.from('social_conversas').select('id,pessoa_id').eq('workspace_id',ws).in('id_externo',ids).limit(2));
+  // Uma mesma pessoa pode escrever em contas distintas; só vincula quando a origem é inequívoca.
+  if(sociais.length!==1||!sociais[0].pessoa_id)return null;
+  const pessoa=await q(db.from('pessoas').select('id').eq('id',sociais[0].pessoa_id).eq('workspace_id',ws).maybeSingle());
+  if(!pessoa)return null;
+  const atualizado=await q(db.from('atd_conversas').update({pessoa_id:pessoa.id}).eq('id',cv.id).eq('workspace_id',ws).is('pessoa_id',null).select('pessoa_id').maybeSingle());
+  if(atualizado?.pessoa_id)return atualizado.pessoa_id;
+  const atual=await q(db.from('atd_conversas').select('pessoa_id').eq('id',cv.id).eq('workspace_id',ws).maybeSingle());
+  return atual?.pessoa_id||null;
+}
 async function resumoContato(ws:string,conversaId:string) {
   const cv=await q(db.from('atd_conversas').select('id,pessoa_id,endereco,externo_id,grupo,canal_id').eq('id',conversaId).eq('workspace_id',ws).single());
   if(cv.grupo)return {pessoa:null};
   let pessoaId=cv.pessoa_id;
-  if(!pessoaId){const ch=await channel(cv.canal_id,ws);if(ch.canal==='whatsapp')pessoaId=await identificarPessoaPorTelefone(ws,cv.id,cv.endereco||cv.externo_id);}
+  if(!pessoaId){const ch=await channel(cv.canal_id,ws);if(ch.canal==='whatsapp')pessoaId=await identificarPessoaPorTelefone(ws,cv.id,cv.endereco||cv.externo_id);else if(ch.canal==='instagram')pessoaId=await identificarPessoaPeloInstagram(ws,cv);}
   if(!pessoaId)return {pessoa:null};
   const pessoa=await q(db.from('pessoas').select('id,nome,telefone,email,status_funil,status_cliente,qualificacao,tags,criado_em,convertido_em,campanha_id,utm_campaign,utm_source,utm_medium,utm_content,utm_term,pagina_origem,canal_origem,extras').eq('id',pessoaId).eq('workspace_id',ws).single());
   const [toques,participacoes,alunos,vendas]=await Promise.all([
@@ -271,14 +284,14 @@ function templateSlots(tpl:any) {
 }
 function templateCampo(p:any,cv:any,key:string) {
   const nome=String(p.nome||cv.nome||'').trim();
-  const value=key==='primeiro_nome'?nome.split(/\s+/)[0]:key==='nome'?nome:key==='capturado_em'&&p.capturado_em?new Date(p.capturado_em).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'}):p[key];
+  const value=key.startsWith('extra.')?p.extras?.[key.slice(6)]:key==='primeiro_nome'?nome.split(/\s+/)[0]:key==='nome'?nome:key==='capturado_em'&&p.capturado_em?new Date(p.capturado_em).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'}):p[key];
   return String(value??'').trim();
 }
 function personalizarAcao(texto:string,p:any,cv:any) {
-  return String(texto||'').replace(/\{\{\s*(primeiro_nome|nome|email|telefone|produto|campanha)\s*\}\}/gi,(_match,key)=>templateCampo(p,cv,String(key).toLowerCase()));
+  return String(texto||'').replace(/\{\{\s*(primeiro_nome|nome|email|telefone|produto|campanha|qualificacao|status_funil|status_cliente|capturado_em|extra\.[a-z][a-z0-9_]{1,40})\s*\}\}/gi,(_match,key)=>templateCampo(p,cv,String(key).toLowerCase()));
 }
 function personalizarHtmlAcao(html:string,p:any,cv:any) {
-  return String(html||'').replace(/\{\{\s*(primeiro_nome|nome|email|telefone|produto|campanha)\s*\}\}/gi,(_match,key)=>htmlSeguro(templateCampo(p,cv,String(key).toLowerCase())));
+  return String(html||'').replace(/\{\{\s*(primeiro_nome|nome|email|telefone|produto|campanha|qualificacao|status_funil|status_cliente|capturado_em|extra\.[a-z][a-z0-9_]{1,40})\s*\}\}/gi,(_match,key)=>htmlSeguro(templateCampo(p,cv,String(key).toLowerCase())));
 }
 async function executarAcaoCRM(ch:any,cv:any,flow:any,run:any,node:any,p:any) {
   if(!p.id)throw Error('Vincule a conversa a um Lead/Aluno antes de alterar tags, campos ou campanha.');
@@ -871,12 +884,12 @@ function emailAutomacaoValor(p:any,evento:any,campo:string){
   return '';
 }
 function emailAutomacaoPersonalizar(value:string,p:any,evento:any){
-  const nome=String(p.nome||'').trim(),map:Record<string,string>={nome,primeiro_nome:nome.split(/\s+/)[0]||'',email:String(p.email||''),telefone:String(p.telefone||''),produto:String(evento.produto||''),campanha:String(evento.campanha||''),pesquisa:String(evento.pesquisa||''),data_venda:String(evento.data_venda||''),valor_venda:String(evento.valor_venda||''),capturado_em:String(evento.capturado_em||'')};
-  return String(value||'').replace(/\{\{\s*(nome|primeiro_nome|email|telefone|produto|campanha|pesquisa|data_venda|valor_venda|capturado_em)\s*\}\}/gi,(_m,k)=>htmlSeguro(map[String(k).toLowerCase()]||''));
+  const nome=String(p.nome||'').trim(),captura=evento.capturado_em||p.criado_em,dataCaptura=captura?new Date(captura):null,map:Record<string,string>={nome,primeiro_nome:nome.split(/\s+/)[0]||'',email:String(p.email||''),telefone:String(p.telefone||''),produto:String(evento.produto||''),campanha:String(evento.campanha||''),pesquisa:String(evento.pesquisa||''),data_venda:String(evento.data_venda||''),valor_venda:String(evento.valor_venda||''),capturado_em:dataCaptura&&Number.isFinite(dataCaptura.getTime())?dataCaptura.toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'}):String(captura||''),qualificacao:String(p.qualificacao||''),status_funil:String(p.status_funil||''),status_cliente:String(p.status_cliente||'')};
+  return String(value||'').replace(/\{\{\s*(nome|primeiro_nome|email|telefone|produto|campanha|pesquisa|data_venda|valor_venda|capturado_em|qualificacao|status_funil|status_cliente|extra\.[a-z][a-z0-9_]{1,40})\s*\}\}/gi,(_m,k)=>{const key=String(k).toLowerCase();return htmlSeguro(key.startsWith('extra.')?String(p.extras?.[key.slice(6)]??''):map[key]||'');});
 }
 function emailAutomacaoDestino(flow:any,id:string,saida='seguir'){return flow.edges?.find((e:any)=>e.origem===id&&e.saida===saida)?.destino||null;}
 async function executarEmailAutomacao(row:any){
-  const state={...(row.estado||{})},flow=state.fluxo||{},nodes=flow.nodes||[],p=await q(db.from('pessoas').select('id,nome,email,telefone,status_funil,qualificacao,campanha_id,tags,extras').eq('id',row.pessoa_id).eq('workspace_id',row.workspace_id).single()),evento=state.evento||{};
+  const state={...(row.estado||{})},flow=state.fluxo||{},nodes=flow.nodes||[],p=await q(db.from('pessoas').select('id,nome,email,telefone,status_funil,status_cliente,qualificacao,campanha_id,tags,extras,criado_em').eq('id',row.pessoa_id).eq('workspace_id',row.workspace_id).single()),evento=state.evento||{};
   let current=state.no_id||nodes.find((n:any)=>n.tipo==='gatilho')?.id||null,steps=0,activeLog:string|null=null,attempted=false;
   try{
     while(current&&steps++<50){
