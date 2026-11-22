@@ -1454,7 +1454,7 @@ const NAV = [
   { g: 'Cockpit', flat: true, livre: true, items: [['cockpit', 'Cockpit']] },
   { g: 'Administrativo', items: [['adm-painel', 'Dashboard'], ['ia-perguntar', 'Pergunte ao Growths'], ['ia-alertas', 'Alertas e resumo do dia'], ['adm-empresa', 'Cadastro da empresa'], ['adm-baseline', 'Diagnóstico e baseline'], ['adm-plano', 'Plano e resultados do ano'], ['adm-uso', 'Uso do Growths pelos clientes'], ['adm-financeiro', 'Financeiro simplificado']] },
   { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-planav', 'Planejamento de campanha avançado'], ['mkt-estrategias', 'Estratégias (Canvas)'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários'], ['mkt-custos', 'Custos de marketing']], subs: [{ g: 'Growth\'s Content', mod: 'mkt', items: [['mkt-cont', 'Estratégia de conteúdo'], ['mkt-insta', 'Instagram']] }] },
-  { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['crm-dms', 'DMs do Instagram'], ['mkt-origem', 'Leads por origem']] },
+  { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['mkt-origem', 'Leads por origem']] },
   { g: 'Customer Success', items: [['ho-dash', 'Dashboard'], ['ho-cg', 'Customer Growth'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
   { g: 'Financeiro', items: [['fin-dash', 'Dashboard'], ['fin-receber', 'Contas a receber'], ['fin-pagar', 'Contas a pagar'], ['fin-custo', 'Custos e margens'], ['fin-lanc', 'Lançamentos contábeis']] },
   { g: 'Casa', casa: true, items: [['casa-dash', 'Dashboard'], ['casa-receber', 'Contas a receber'], ['casa-pagar', 'Contas a pagar'], ['casa-custo', 'Custos do mês'], ['casa-lanc', 'Lançamentos contábeis'], ['casa-bancos', 'Contas bancárias e cartões'], ['casa-planocontas', 'Plano de contas'], ['casa-fornecedores', 'Fornecedores'], ['casa-formaspag', 'Formas de pagamento'], ['casa-centros', 'Centros de custo']] },
@@ -22971,12 +22971,12 @@ function igModalImport() {
   f.elements.arq.onchange = e => { const a = e.target.files[0]; if (!a) return; const r = new FileReader(); r.onload = () => { ta.value = r.result; prev(); }; r.readAsText(a, 'utf-8'); };
 }
 
-/* ================= v0.135 MÁQUINA DE CONTEÚDO EM DUAS PARTES: ESTRATÉGIA E CANAIS; DMs DO INSTAGRAM =================
+/* ================= v0.135 MÁQUINA DE CONTEÚDO EM DUAS PARTES: ESTRATÉGIA E CANAIS =================
    Estratégia de conteúdo: tudo o que se define (ideias de todos os canais, priorização, máquina, semana, fechamento, persona,
    linha editorial e as regras de canal). Cada canal ativo (hoje, Instagram) tem a sua parte: dashboard, ideias do canal,
-   relatórios e, no Instagram, as DMs, que também entram no CRM. */
+   relatórios; as DMs operacionais ficam no Atendimento. */
 const MQ_SECOES_EST = [['kanban', 'Ideias e pautas'], ['prior', 'Priorização'], ['maquina', 'Máquina'], ['plano', 'Semana'], ['fech', 'Fechamento'], ['persona', 'Persona'], ['linhas', 'Linha editorial'], ['canais', 'Canais']];
-const MQ_SECOES_CANAL = { instagram: [['insta', 'Dashboard'], ['ideias', 'Ideias do canal'], ['rel', 'Relatórios'], ['dms', 'DMs']] };
+const MQ_SECOES_CANAL = { instagram: [['insta', 'Dashboard'], ['ideias', 'Ideias do canal'], ['rel', 'Relatórios']] };
 const mqSecoesCanal = c => MQ_SECOES_CANAL[c] || [['ideias', 'Ideias do canal'], ['rel', 'Relatórios']];
 /* ----- regras de canal: por frente, por etiqueta e quais canais a Máquina mostra ----- */
 function mqCanaisSugeridos(D, temaId, tags) {
@@ -23087,10 +23087,10 @@ async function vDMsCrm(m) {
 /* ================= v0.136 MÁQUINA DE CONTEÚDO NO MENU: ESTRATÉGIA + INSTAGRAM; DASHBOARD GERAL DOS CANAIS =================
    Menu Marketing → Máquina de Conteúdo → Estratégia de conteúdo (mkt-cont) e Instagram (mkt-insta).
    Estratégia: Dashboard dos canais (eficiência e melhores posts de cada canal), ideias, priorização, máquina, semana,
-   fechamento, persona, linha editorial e canais. Instagram: Dashboard (conta + posts), Ideias do Instagram e DMs.
+   fechamento, persona, linha editorial e canais. Instagram: Dashboard (conta + posts) e Ideias do Instagram.
    Nada de importar à mão: os números vêm da conexão do Instagram. */
 const MQ_EST = [['base', 'Base do cliente'], ['linhas', 'Linha editorial'], ['identidade', 'Identidade visual'], ['ideias', 'Baú de ideias'], ['kanban', 'Produção'], ['mais', 'Mais ferramentas']];
-const MQ_CANAL = { instagram: [['insta', 'Dashboard'], ['ideias', 'Ideias do Instagram'], ['dms', 'DMs']] };
+const MQ_CANAL = { instagram: [['insta', 'Dashboard'], ['ideias', 'Ideias do Instagram']] };
 const MQ_VIEW_CANAL = { 'mkt-insta': 'instagram' };
 const MQ_CANAL_VIEW = { instagram: 'mkt-insta' };
 async function vConteudoAbas(m) {
@@ -25271,7 +25271,7 @@ function modalSubtemas(t, D) {
 }
 
 </script>
-<script src="assets/atendimento.js?v=0247"></script>
+<script src="assets/atendimento.js?v=0248"></script>
 <script>
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
 if (PQ_TOKEN) vPesquisaPublica(PQ_TOKEN);
