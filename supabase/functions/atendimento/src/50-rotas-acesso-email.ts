@@ -1,8 +1,64 @@
+const TELAS_POR_ACAO: Record<string, string[]> = {
+  'contexto': ['atd-conversas'], 'config': ['atd-canais'], 'salvar-config': ['atd-canais'], 'remover-config': ['atd-canais'],
+  'status': ['atd-canais'], 'identidades': ['atd-canais'], 'avatar': ['atd-conversas'], 'avatars': ['atd-conversas'],
+  'channel-avatar': ['atd-canais'], 'criar-instancia': ['atd-canais'], 'conectar': ['atd-canais'], 'desativar': ['atd-canais'],
+  'excluir-instancia': ['atd-canais'], 'canal-salvar': ['atd-canais'], 'webhook': ['atd-canais'], 'zernio-contas': ['atd-canais'],
+  'zernio-vincular': ['atd-canais'], 'zernio-webhooks': ['atd-canais'], 'zernio-disponiveis': ['atd-canais'], 'zernio-conectar': ['atd-canais'],
+  'qr-share-create': ['atd-canais'], 'exibir-arquivados': ['atd-canais', 'atd-conversas'], 'sincronizar': ['atd-canais', 'atd-conversas'],
+  'templates-list': ['atd-templates', 'atd-envios-oficial', 'atd-auto-oficial', 'atd-automacoes'],
+  'templates-create': ['atd-templates'], 'templates-update': ['atd-templates'], 'templates-delete': ['atd-templates'],
+  'templates-mapping-save': ['atd-templates'], 'templates-send': ['atd-conversas', 'atd-envios-oficial'],
+  'rapidas-list': ['atd-conversas'], 'rapidas-save': ['atd-conversas'], 'rapidas-delete': ['atd-conversas'],
+  'mensagens': ['atd-conversas'], 'anexo': ['atd-conversas'], 'historico': ['atd-conversas'], 'recuperar-midia': ['atd-conversas'],
+  'enviar': ['atd-conversas'], 'nota': ['atd-conversas'], 'agendar': ['atd-conversas'], 'cancelar-agendamento': ['atd-conversas'],
+  'agendamentos-list': ['atd-conversas'], 'atualizar': ['atd-conversas'], 'arquivar-grupo': ['atd-conversas'],
+  'criar-conversa-pessoa': ['atd-conversas'], 'criar-lead': ['atd-conversas', 'atd-contatos'], 'vincular': ['atd-conversas', 'atd-contatos'],
+  'contato-resumo': ['atd-conversas', 'atd-contatos'],
+  'disparos-grupos-list': ['atd-grupos-disparo', 'atd-envios-grupos'], 'disparos-grupos-destinatarios': ['atd-grupos-disparo', 'atd-envios-grupos'],
+  'disparos-grupos-media-url': ['atd-grupos-disparo', 'atd-envios-grupos'], 'disparos-grupos-media-preparar': ['atd-grupos-disparo', 'atd-envios-grupos'],
+  'disparos-grupos-create': ['atd-grupos-disparo', 'atd-envios-grupos'], 'disparos-grupos-edit': ['atd-grupos-disparo', 'atd-envios-grupos'],
+  'disparos-grupos-cancel': ['atd-grupos-disparo', 'atd-envios-grupos'], 'disparos-segmentos-list': ['atd-grupos-disparo', 'atd-envios-grupos'],
+  'disparos-segmento-save': ['atd-grupos-disparo', 'atd-envios-grupos'], 'disparos-segmento-delete': ['atd-grupos-disparo', 'atd-envios-grupos'],
+  'grupo-campanhas-list': ['atd-grupos-disparo', 'atd-envios-grupos'], 'grupo-campanha-save': ['atd-grupos-disparo', 'atd-envios-grupos'],
+  'grupo-campanha-link-save': ['atd-grupos-disparo', 'atd-envios-grupos'], 'grupo-campanha-grupos-save': ['atd-grupos-disparo', 'atd-envios-grupos'],
+  'grupo-campanha-criar-grupo': ['atd-grupos-disparo', 'atd-envios-grupos'], 'grupo-campanha-foto-preparar': ['atd-grupos-disparo', 'atd-envios-grupos'],
+  'grupo-campanha-grupo-update': ['atd-grupos-disparo', 'atd-envios-grupos'], 'grupo-campanha-grupo-info': ['atd-grupos-disparo', 'atd-envios-grupos'],
+  'grupos-busca-status': ['atd-grupos-disparo', 'atd-envios-grupos'],
+  'email-transmissao-list': ['atd-envios-email', 'atd-transmissao'], 'email-transmissao-create': ['atd-envios-email', 'atd-transmissao'],
+  'email-transmissao-cancel': ['atd-envios-email', 'atd-transmissao'], 'email-dominios-list': ['atd-envios-email', 'atd-transmissao'],
+  'email-dominio-get': ['atd-envios-email', 'atd-transmissao'], 'email-dominio-create': ['atd-envios-email', 'atd-transmissao'],
+  'email-dominio-verify': ['atd-envios-email', 'atd-transmissao'], 'email-dominio-remetente-save': ['atd-envios-email', 'atd-transmissao'],
+  'email-modelos-list': ['atd-envios-email', 'atd-transmissao', 'atd-auto-email'], 'email-modelo-get': ['atd-envios-email', 'atd-transmissao', 'atd-auto-email'],
+  'email-modelo-save': ['atd-envios-email', 'atd-transmissao'], 'email-automacoes-list': ['atd-auto-email', 'atd-automacoes'],
+  'email-automacoes-save': ['atd-auto-email', 'atd-automacoes'], 'email-automacoes-toggle': ['atd-auto-email', 'atd-automacoes'],
+  'automacoes-list': ['atd-automacoes', 'atd-auto-whatsapp', 'atd-auto-instagram', 'atd-auto-oficial'],
+  'automacoes-execucoes': ['atd-automacoes', 'atd-auto-whatsapp', 'atd-auto-instagram', 'atd-auto-oficial'],
+  'automacoes-save': ['atd-automacoes', 'atd-auto-whatsapp', 'atd-auto-instagram', 'atd-auto-oficial'],
+  'automacoes-delete': ['atd-automacoes', 'atd-auto-whatsapp', 'atd-auto-instagram', 'atd-auto-oficial']
+};
+const TELAS_EQUIVALENTES: Record<string, string[]> = {
+  'atd-envios-email': ['atd-transmissao', 'atd-conversas', 'atd-canais', 'atd-grupos-disparo'],
+  'atd-envios-oficial': ['atd-transmissao', 'atd-conversas', 'atd-canais', 'atd-grupos-disparo'],
+  'atd-auto-whatsapp': ['atd-automacoes'], 'atd-auto-instagram': ['atd-automacoes'],
+  'atd-auto-email': ['atd-automacoes'], 'atd-auto-oficial': ['atd-automacoes'],
+  'atd-envios-grupos': ['atd-grupos-disparo'], 'atd-grupos-campanhas': ['atd-grupos-disparo'],
+  'atd-contatos': ['atd-conversas', 'atd-transmissao']
+};
+
 async function handle(req: Request, b: any) {
   const userDb = createClient(URL_SB, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: req.headers.get('authorization') || '' } }, auth: { persistSession:false } });
   const { data: { user }, error } = await userDb.auth.getUser();
   if (error || !user) return json({ erro: 'Faça login novamente.' },401);
   const ctx = await q(userDb.rpc('atd_contexto', { p_ws:b.workspace_id }));
+  const acesso = await q(userDb.rpc('acesso_workspace', { p_ws:b.workspace_id }));
+  const telasLiberadas: string[] | null = Array.isArray(acesso?.telas) ? acesso.telas : null;
+  const telasNecessarias = TELAS_POR_ACAO[b.action];
+  if (!telasNecessarias) return json({ erro:'Ação de Atendimento sem regra de acesso.' },403);
+  const telaConcedida = (tela: string): boolean => !!telasLiberadas &&
+    (telasLiberadas.includes(tela) || (TELAS_EQUIVALENTES[tela] || []).some(equivalente => telasLiberadas.includes(equivalente)));
+  if (telasLiberadas && !telasNecessarias.some(telaConcedida)) {
+    return json({ erro:'Seu perfil não tem acesso à tela necessária para esta ação.' },403);
+  }
   const read = ['contexto','config','status','mensagens','anexo','zernio-contas','identidades','avatar','avatars','channel-avatar','templates-list','rapidas-list','agendamentos-list','automacoes-list','automacoes-execucoes','contato-resumo','disparos-grupos-list','disparos-segmentos-list','grupo-campanhas-list','grupo-campanha-grupo-info','grupos-busca-status','email-transmissao-list','email-dominios-list','email-dominio-get','email-automacoes-list','email-modelos-list','email-modelo-get'];
   if (!read.includes(b.action) && !ctx.editar) return json({ erro:'Sem permissão para editar Atendimento.' },403);
   const admins = ['config','salvar-config','remover-config','criar-instancia','conectar','status','zernio-contas','zernio-vincular','zernio-webhooks','zernio-disponiveis','zernio-conectar','webhook','desativar','excluir-instancia','exibir-arquivados','templates-create','templates-update','templates-delete','templates-mapping-save','canal-salvar','qr-share-create','email-dominio-create','email-dominio-verify','email-dominio-remetente-save'];
@@ -10,7 +66,7 @@ async function handle(req: Request, b: any) {
   const ws = b.workspace_id;
   if(b.action==='email-dominios-list'){
     const config=await q(db.from('atd_email_config').select('dominio,resend_domain_id,email_remetente,status_dominio').eq('workspace_id',ws).maybeSingle());if(!config)return json({data:[]});
-    const detail=await resendDomains('/'+encodeURIComponent(config.resend_domain_id));detail.email_remetente=config.email_remetente;await q(db.from('atd_email_config').update({status_dominio:String(detail.status||config.status_dominio),atualizado_em:new Date().toISOString()}).eq('workspace_id',ws));return json({data:[detail]});
+    const detail=await resendDomains('/'+encodeURIComponent(config.resend_domain_id));detail.email_remetente=config.email_remetente;return json({data:[detail]});
   }
   if(b.action==='email-dominio-get'){const id=String(b.id||'').replace(/[^a-zA-Z0-9_-]/g,'');const config=await q(db.from('atd_email_config').select('resend_domain_id,email_remetente').eq('workspace_id',ws).single());if(!id||id!==config.resend_domain_id)throw new Error('Este domínio não pertence ao workspace atual.');const detail=await resendDomains('/'+encodeURIComponent(id));detail.email_remetente=config.email_remetente;return json(detail);}
   if(b.action==='email-dominio-create'){
