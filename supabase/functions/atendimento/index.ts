@@ -949,7 +949,7 @@ async function handle(req: Request, b: any) {
   const ws = b.workspace_id;
   if(b.action==='email-dominios-list'){
     const config=await q(db.from('atd_email_config').select('dominio,resend_domain_id,email_remetente,status_dominio').eq('workspace_id',ws).maybeSingle());if(!config)return json({data:[]});
-    const detail=await resendDomains('/'+encodeURIComponent(config.resend_domain_id));detail.email_remetente=config.email_remetente;await q(db.from('atd_email_config').update({status_dominio:String(detail.status||config.status_dominio),atualizado_em:new Date().toISOString()}).eq('workspace_id',ws));return json({data:[detail]});
+    const detail=await resendDomains('/'+encodeURIComponent(config.resend_domain_id));detail.email_remetente=config.email_remetente;return json({data:[detail]});
   }
   if(b.action==='email-dominio-get'){const id=String(b.id||'').replace(/[^a-zA-Z0-9_-]/g,'');const config=await q(db.from('atd_email_config').select('resend_domain_id,email_remetente').eq('workspace_id',ws).single());if(!id||id!==config.resend_domain_id)throw new Error('Este domínio não pertence ao workspace atual.');const detail=await resendDomains('/'+encodeURIComponent(id));detail.email_remetente=config.email_remetente;return json(detail);}
   if(b.action==='email-dominio-create'){
