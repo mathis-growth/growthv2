@@ -34,7 +34,8 @@ const TELAS_POR_ACAO: Record<string, string[]> = {
   'automacoes-list': ['atd-automacoes', 'atd-auto-whatsapp', 'atd-auto-instagram', 'atd-auto-oficial'],
   'automacoes-execucoes': ['atd-automacoes', 'atd-auto-whatsapp', 'atd-auto-instagram', 'atd-auto-oficial'],
   'automacoes-save': ['atd-automacoes', 'atd-auto-whatsapp', 'atd-auto-instagram', 'atd-auto-oficial'],
-  'automacoes-delete': ['atd-automacoes', 'atd-auto-whatsapp', 'atd-auto-instagram', 'atd-auto-oficial']
+  'automacoes-delete': ['atd-automacoes', 'atd-auto-whatsapp', 'atd-auto-instagram', 'atd-auto-oficial'],
+  'automacoes-iniciar': ['atd-automacoes', 'atd-auto-oficial']
 };
 const TELAS_EQUIVALENTES: Record<string, string[]> = {
   'atd-envios-email': ['atd-transmissao', 'atd-conversas', 'atd-canais', 'atd-grupos-disparo'],

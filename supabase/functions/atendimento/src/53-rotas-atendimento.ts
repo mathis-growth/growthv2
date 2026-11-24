@@ -95,6 +95,21 @@
       .eq('workspace_id',ws).order('executado_em',{ascending:false}).limit(30));
     return json({execucoes:runs});
   }
+  if(b.action==='automacoes-iniciar'){
+    const flowId=String(b.automacao_id||''),conversationId=String(b.conversa_id||'');
+    if(!/^[0-9a-f-]{36}$/i.test(flowId)||!/^[0-9a-f-]{36}$/i.test(conversationId))throw Error('Automação ou conversa inválida.');
+    const flow=await q(db.from('atd_automacoes').select('*').eq('workspace_id',ws).eq('id',flowId).eq('ativo',true).single());
+    if(!flow.canal_id)throw Error('Escolha um canal oficial específico na automação antes de iniciar para leads.');
+    const ch=await channel(flow.canal_id,ws);if(ch.canal!=='whatsapp'||ch.provedor!=='zernio'||ch.status!=='conectado')throw Error('A automação precisa usar um canal WhatsApp Oficial conectado.');
+    const cv=await q(db.from('atd_conversas').select('*').eq('workspace_id',ws).eq('id',conversationId).single());
+    if(cv.grupo||!cv.pessoa_id||cv.canal_id!==ch.id)throw Error('A conversa não pertence a um lead compatível com o canal da automação.');
+    const estado={fluxo:fluxoCompativel(flow),entrada_texto:'',no_id:null,enviadas:[]};
+    estado.no_id=estado.fluxo.nodes.find((n:any)=>n.tipo==='gatilho')?.id||estado.fluxo.nodes[0]?.id||null;
+    if(!estado.no_id)throw Error('O canvas da automação está vazio.');
+    const rows=await q(db.from('atd_automacao_execucoes').insert({workspace_id:ws,automacao_id:flow.id,conversa_id:cv.id,mensagem_gatilho:'manual:'+crypto.randomUUID(),status:'processando',estado}).select('id').single());
+    try{await executarFluxo(ch,cv,flow,{id:rows.id,mensagem_id:null},estado);return json({ok:true,status:'enviado'});}
+    catch(e){const erro=String((e as Error).message||'Falha ao iniciar automação.').slice(0,220),status=(e as any).fluxoIncerto?'incerto':'erro';await q(db.from('atd_automacao_execucoes').update({status,retomar_em:null,erro}).eq('id',rows.id).eq('status','processando'));return json({ok:false,status,erro},status==='incerto'?202:400);}
+  }
   if(b.action==='automacoes-save'){
     const nome=String(b.nome||'').trim(), resposta=String(b.resposta||'').trim();
     const tipo=b.gatilho_tipo==='qualquer_mensagem'?'qualquer_mensagem':'palavra_chave';
