@@ -1456,6 +1456,7 @@ const NAV = [
   { g: 'Marketing', items: [['mkt-dash', 'Dashboard'], ['mkt-camp', 'Campanhas e planejamento'], ['mkt-planav', 'Planejamento de campanha avançado'], ['mkt-estrategias', 'Estratégias (Canvas)'], ['mkt-trafego', 'Mídia paga'], ['mkt-video', 'Vídeos e webinários'], ['mkt-custos', 'Custos de marketing']], subs: [{ g: 'Growth\'s Content', mod: 'mkt', items: [['mkt-cont', 'Estratégia de conteúdo'], ['mkt-insta', 'Instagram']] }] },
   { g: 'Vendas', items: [['crm-dash', 'Dashboard'], ['crm-leads', 'Funil comercial'], ['crm-oport', 'Oportunidades'], ['crm-vendas', 'Vendas'], ['crm-contratos', 'Contratos'], ['crm-comissoes', 'Comissões'], ['crm-abandonos', 'Abandono de checkout'], ['mkt-origem', 'Leads por origem']] },
   { g: 'Customer Success', items: [['ho-dash', 'Dashboard'], ['ho-cg', 'Customer Growth'], ['ho-retencao', 'Retenção & Expansão'], ['crm-alunos', 'Alunos']] },
+  { g: 'Comunidade', items: [['com-comunidades', 'Comunidades']] },
   { g: 'Financeiro', items: [['fin-dash', 'Dashboard'], ['fin-receber', 'Contas a receber'], ['fin-pagar', 'Contas a pagar'], ['fin-custo', 'Custos e margens'], ['fin-lanc', 'Lançamentos contábeis']] },
   { g: 'Casa', casa: true, items: [['casa-dash', 'Dashboard'], ['casa-receber', 'Contas a receber'], ['casa-pagar', 'Contas a pagar'], ['casa-custo', 'Custos do mês'], ['casa-lanc', 'Lançamentos contábeis'], ['casa-bancos', 'Contas bancárias e cartões'], ['casa-planocontas', 'Plano de contas'], ['casa-fornecedores', 'Fornecedores'], ['casa-formaspag', 'Formas de pagamento'], ['casa-centros', 'Centros de custo']] },
   { g: 'Projetos', items: [['prj-lista', 'Projetos'], ['prj-agentes', 'Pipeline dos agentes'], ['prj-minhas', 'Minhas atividades'], ['prj-atividades', 'Todas as atividades'], ['prj-modelos', 'Modelos de projeto'], ['prj-avisos', 'Avisos']] },
@@ -1832,12 +1833,13 @@ const ICO = {
 };
 ICO['cfg-leads-entrada'] = ICO['cfg-integracoes'];
 ICO['cad-agentes-sistema'] = ICO['cad-equipe'];
+ICO['Comunidade'] = ICO['ho-cg'];
 /* ---------- Permissões por função (o banco é quem impõe; aqui só organiza a tela) ---------- */
 const MODULOS = [['adm', 'Administrativo', 'Painel gerencial, planejamento e cadastro da empresa'], ['mkt', 'Marketing', 'Campanhas, mídia paga, vídeos e conteúdo'], ['vendas', 'Vendas', 'Funil comercial, contratos e leads'],
   ['revops', 'Customer Success', 'Alunos, retenção e cohorts'], ['fin', 'Financeiro', 'Vendas e a receber, contas a pagar e lançamentos'], ['prj', 'Projetos', 'Projetos, atividades e modelos'],
   ['gro', 'Growth', 'Growth model, análise de funil, pesquisas e ciclo'], ['cfg', 'Configurações', 'Integrações e importação de dados'], ['cad', 'Cadastros', 'Produtos, fornecedores, plataformas, equipe e planos de contas']];
 const NIVEIS = [['nenhum', 'Sem acesso'], ['ler', 'Só consultar'], ['editar', 'Consultar e editar']];
-const MOD_GRUPO = { 'Growth Starter': 'adm', Administrativo: 'adm', Marketing: 'mkt', Vendas: 'vendas', RevOps: 'revops', 'Customer Success': 'revops', Financeiro: 'fin', Projetos: 'prj', Growth: 'gro', 'Configurações': 'cfg', Cadastros: 'cad' };
+const MOD_GRUPO = { 'Growth Starter': 'adm', Administrativo: 'adm', Marketing: 'mkt', Vendas: 'vendas', RevOps: 'revops', 'Customer Success': 'revops', Comunidade: 'revops', Financeiro: 'fin', Projetos: 'prj', Growth: 'gro', 'Configurações': 'cfg', Cadastros: 'cad' };
 const SO_ADMIN = ['cad-funcoes', 'cfg-uso', 'cad-agentes-sistema', 'cad-auditoria'];
 const TELAS_INT = ['cfg-pacotes', 'cfg-estruturas', 'cfg-pastas', 'cfg-custos', 'cad-agentes-sistema', 'adm-baseline', 'adm-plano', 'adm-uso'];
 const nivelMod = k => S.perm && S.perm.modulos ? (S.perm.modulos[k] || 'nenhum') : 'editar';
@@ -1913,7 +1915,7 @@ $('#wsSel').onchange = e => { S.ws = S.wsBase = e.target.value; S.estSel = null;
 
 const VIEWS = {
   'mkt-dash': vMktDash, 'mkt-midia': m => { if (!ehStarter()) S.view = 'mkt-trafego'; return vTrafego(m); }, 'ia-perguntar': vPerguntar, 'ia-alertas': vAlertas, 'mkt-trafego': vTrafego, 'mkt-origem': vOrigem, 'mkt-video': vVideo, 'ho-dash': vHeavyOps, 'ho-cohort': m => { S.view = 'ho-retencao'; S.rxAba = 'coortes'; return vRetencao(m); }, 'ho-ascensao': m => { S.view = 'ho-retencao'; S.rxAba = 'recompra'; return vRetencao(m); }, 'ho-retencao': vRetencao, 'ho-cg': vCustomerGrowth, 'cockpit': vCockpit, 'adm-empresa': vEmpresa, 'cad-funcoes': vFuncoes, 'cad-rateio': vRateio, 'cad-equipe': vEquipe, 'prj-lista': vProjetos, 'prj-agentes': vPipelineAgentes, 'prj-minhas': vMinhas, 'prj-modelos': vModelos, 'prj-avisos': vAvisos, 'gro-diag': vGrowthDiag, 'gro-modelo': m => gmAbas(m, 'gro-modelo', vGrowthModelo), 'gro-lucro': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-cenarios': m => gmAbas(m, 'gro-cenarios', vGmCenarios), 'cfg-pacotes': vPacotes, 'gro-analise': m => { S.view = 'gro-modelo'; return gmAbas(m, 'gro-modelo', vGrowthModelo); }, 'gro-pesq': vPesquisas, 'gro-ciclo': vGrowthCiclo, 'gro-guard': vGuardrails, 'gro-result': vResultados, 'crm-dash': vCrmDash, 'fin-dash': vFinDash, 'cfg-integracoes': vIntegracoes, 'mkt-camp': vMktCamp, 'adm-dash': m => { S.view = 'adm-painel'; return vPainel(m); }, 'st-dash': vPainel, 'st-relatorios': vRelatorios, 'cfg-importar': vImportar, 'mkt-cont': vConteudo, 'mkt-insta': vConteudo, 'cfg-estruturas': vEstruturas, 'cfg-pastas': vPastasMathisa, 'cfg-custos': vCustos,
-  'crm-leads': vCrmLeads, 'crm-oport': vCrmOport, 'crm-vendas': vVendas, 'crm-contratos': vContratos, 'crm-comissoes': vComissoes, 'cad-comissoes': vComissoes, 'crm-alunos': vCrmAlunos,
+  'crm-leads': vCrmLeads, 'crm-oport': vCrmOport, 'crm-vendas': vVendas, 'crm-contratos': vContratos, 'crm-comissoes': vComissoes, 'cad-comissoes': vComissoes, 'crm-alunos': vCrmAlunos, 'com-comunidades': m => window.comunidadeAdmin(m),
   'fin-receber': vReceber,  'cfg-uso': vUso, 'adm-uso': vUsoMathisa, 'fin-pagar': vPagar, 'fin-custo': vCustoOp, 'fin-lanc': vLanc, 'adm-painel': vPainel, 'adm-plano': vPlano,
   'cad-clientes': vClientes, 'cad-plataformas': vPlataformas, 'cad-funis': vFunis, 'mkt-estrategias': vFunis, 'cad-regras': vRegras,
   'cfg-qualidade': vQualidade, 'cfg-metricas': vMetricas157, 'cad-auditoria': vAuditoria, 'cad-duplicados': vDuplicados, 'crm-abandonos': vAbandonos, 'prj-atividades': vTodasAtividades
@@ -25214,6 +25216,7 @@ function modalSubtemas(t, D) {
 }
 
 </script>
+<script src="assets/comunidade.js?v=1"></script>
 <script src="assets/atendimento.js?v=0248"></script>
 <script>
 const PQ_TOKEN = new URLSearchParams(location.search).get('pesquisa');
