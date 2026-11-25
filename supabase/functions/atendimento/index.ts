@@ -57,8 +57,15 @@ export function zernioMensagem(p: any) {
   if (!conversationId || !messageId) return null;
   const received = p.event === 'message.received';
   const sender = m.sender || p.sender || {};
+  const metadata = m.metadata || p.metadata || {};
+  const buttonReply = m.buttonReply || m.button_reply || m.quickReply || m.quick_reply || m.interactive?.button_reply || m.interactive?.buttonReply || metadata.buttonReply || metadata.button_reply || metadata;
+  const buttonId = buttonReply?.id || buttonReply?.payload || buttonReply?.buttonId || buttonReply?.button_id || metadata.interactiveId || '';
+  const buttonTitle = buttonReply?.title || buttonReply?.text || buttonReply?.label || m.buttonTitle || metadata.interactiveTitle || '';
+  const plainText = typeof m.text === 'string' ? m.text : typeof m.message === 'string' ? m.message : typeof m.content === 'string' ? m.content : '';
+  const replyText = String(plainText || buttonTitle || buttonId || '');
   return { conversa: { id: conversationId, nome: c.participantName || c.participantUsername || (received ? sender.name : undefined), endereco: c.participantId || (received ? sender.id : undefined), grupo: false },
-    mensagem: { id: messageId, direcao: received ? 'recebida' : 'enviada', texto: m.text || m.message || m.content || '',
+    mensagem: { id: messageId, direcao: received ? 'recebida' : 'enviada', texto: replyText,
+      ...(received && (buttonId || buttonTitle || metadata.interactiveType) ? { resposta_botao: { id: String(buttonId || ''), title: String(buttonTitle || plainText || ''), tipo: String(metadata.interactiveType || '') } } : {}),
       participante: sender.id, autor_nome: sender.name, em: m.createdAt || m.sentAt || p.timestamp,
       status: received ? 'recebida' : 'enviada',
       anexos: (m.attachments || []).map((a: any) => ({
@@ -275,6 +282,11 @@ function fluxoCompativel(flow:any) {
   return {versao:1,nodes:[{id:trigger,tipo:'gatilho',x:40,y:190,data:{}},{id:message,tipo:'mensagem',x:390,y:190,data:{texto:String(flow.resposta||'')}}],edges:[{origem:trigger,destino:message,saida:'seguir'}]};
 }
 function aresta(fluxo:any,id:string,saida='seguir') { return fluxo.edges.find((e:any)=>e.origem===id&&e.saida===saida)?.destino||null; }
+function textoChaveBotao(value:any) { return String(value||'').trim().toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+function respostaBotaoDaMensagem(mensagem:any) {
+  const reply=mensagem?.resposta_botao||{};
+  return { id:String(reply.id||''), title:String(reply.title||mensagem?.texto||''), type:String(reply.tipo||'') };
+}
 function templateSlots(tpl:any) {
   const parts=tpl.components||[],header=parts.find((c:any)=>String(c.type).toUpperCase()==='HEADER'),body=parts.find((c:any)=>String(c.type).toUpperCase()==='BODY'),buttons=parts.find((c:any)=>String(c.type).toUpperCase()==='BUTTONS')?.buttons||[],slots:any[]=[];
   const add=(text:string,kind:string,index=-1)=>{const numbers=[...new Set([...String(text||'').matchAll(/\{\{(\d+)\}\}/g)].map(x=>Number(x[1])))].sort((a,b)=>a-b);if(numbers.some((n,i)=>n!==i+1))throw Error('Variáveis fora da ordem no template aprovado.');numbers.forEach(marker=>slots.push({kind,index,marker}));};
@@ -414,6 +426,14 @@ async function executarFluxo(ch:any,cv:any,flow:any,run:any,estado:any) {
       }catch(e){const known=!attempted||(e instanceof ProviderError&&e.status<500&&e.status!==408),detail=known?String((e as Error).message||'Falha no envio').slice(0,220):'Envio sem confirmação. Confira a Zernio antes de reenviar.';await q(db.from('atd_mensagens').update({status:known?'falhou':'incerto',erro:detail}).eq('id',pending.id));const failure=new Error(detail);(failure as any).fluxoIncerto=!known;throw failure;}
       if(p.id)try{await q(db.from('pessoa_toques').insert({workspace_id:ch.workspace_id,pessoa_id:p.id,tipo:'outro',canal:ch.canal,descricao:`Automação ${flow.nome}: template ${tpl.name} enviado`,origem:'sistema'}));}catch{throw Object.assign(new Error('Template enviado, mas o registro na jornada falhou. Confira o histórico.'),{fluxoIncerto:true});}
       snapshot.enviadas.push(node.id);snapshot.no_id=next;
+      const quickReplies=buttons.map((button:any,index:number)=>({button,index})).filter((item:any)=>String(item.button.type||'').toUpperCase()==='QUICK_REPLY');
+      const routed=quickReplies.filter((item:any)=>aresta(graph,node.id,'resposta:'+item.index));
+      if(routed.length){
+        snapshot.no_id=null;
+        snapshot.aguardando_botao={node_id:node.id,opcoes:quickReplies.map((item:any)=>({index:item.index,id:String(item.button.id||item.button.payload||''),title:String(item.button.text||'').trim()}))};
+        await q(db.from('atd_automacao_execucoes').update({status:'aguardando',retomar_em:null,estado:snapshot,erro:null}).eq('id',run.id).eq('status','processando'));
+        return 'aguardando_resposta';
+      }
       await q(db.from('atd_automacao_execucoes').update({estado:snapshot}).eq('id',run.id).eq('status','processando'));
       current=next;continue;
     }
@@ -470,6 +490,25 @@ async function executarAutomacoes(ch:any,conversaId:string,mensagem:any) {
   if(!conversaId||mensagem?.direcao!=='recebida'||!mensagem?.id)return;
   const automacoes=await q(db.from('atd_automacoes').select('*').eq('workspace_id',ch.workspace_id).eq('ativo',true));
   const cv=await q(db.from('atd_conversas').select('*').eq('id',conversaId).eq('workspace_id',ch.workspace_id).single());if(cv.grupo)return;
+  const reply=respostaBotaoDaMensagem(mensagem);
+  if(reply.id||reply.title){
+    const waiting=await q(db.from('atd_automacao_execucoes').select('id,automacao_id,estado').eq('workspace_id',ch.workspace_id).eq('conversa_id',cv.id).eq('status','aguardando').is('retomar_em',null).order('executado_em',{ascending:false}).limit(20));
+    for(const run of waiting){
+      const flow=automacoes.find((item:any)=>item.id===run.automacao_id&&(!item.canal_id||item.canal_id===ch.id));if(!flow)continue;
+      const state=run.estado||{},pending=state.aguardando_botao,graph=state.fluxo;
+      if(!pending||!graph)continue;
+      const option=(pending.opcoes||[]).find((item:any)=>(reply.id&&(String(item.id||'')===reply.id||String(item.index)===reply.id||('resposta:'+item.index)===reply.id))||(reply.title&&textoChaveBotao(item.title)===textoChaveBotao(reply.title)));
+      if(!option)continue;
+      const destination=aresta(graph,pending.node_id,'resposta:'+option.index),claimed=await q(db.from('atd_automacao_execucoes').update({status:'processando',retomar_em:null}).eq('id',run.id).eq('status','aguardando').select('id'));
+      if(!claimed?.length)continue;
+      const resumed={...state,entrada_texto:String(mensagem.texto||reply.title),no_id:destination||null};delete resumed.aguardando_botao;
+      if(!destination){await q(db.from('atd_automacao_execucoes').update({status:'enviado',estado:{...resumed,no_id:null},erro:null}).eq('id',run.id).eq('status','processando'));return;}
+      try{await executarFluxo(ch,cv,flow,run,resumed);}
+      catch(e){const message=String((e as Error).message||'Falha no fluxo').slice(0,220),status=(e as any).fluxoIncerto?'incerto':'erro';await q(db.from('atd_automacao_execucoes').update({status,retomar_em:null,erro:message}).eq('id',run.id).eq('status','processando'));console.error('atd automacao retomada falhou',flow.id,status);}
+      return;
+    }
+    if(reply.type)return;
+  }
   for(const flow of automacoes){
     if(flow.canal_id&&flow.canal_id!==ch.id)continue;
     const keyword=String(flow.gatilho_valor||'').trim().toLocaleLowerCase();
@@ -1497,7 +1536,13 @@ async function handle(req: Request, b: any) {
       }
     }
     if(!fluxo.nodes.some((n:any)=>n.tipo==='gatilho')||!fluxo.nodes.some((n:any)=>['mensagem','botoes','template','formulario','email','tag','campo','campanha'].includes(n.tipo)))throw Error('O canvas precisa conter um gatilho e ao menos uma ação.');
-    for(const edge of fluxo.edges)if(!nodeIds.has(edge.origem)||!nodeIds.has(edge.destino)||edge.origem===edge.destino||!['seguir','sim','nao'].includes(edge.saida))throw Error('Ligação inválida no canvas.');
+    const seenEdges=new Set<string>();
+    for(const edge of fluxo.edges){
+      const branch=String(edge.saida||'');
+      if(!nodeIds.has(edge.origem)||!nodeIds.has(edge.destino)||edge.origem===edge.destino||!(['seguir','sim','nao'].includes(branch)||/^resposta:\d{1,2}$/.test(branch)))throw Error('Ligação inválida no canvas.');
+      if(/^resposta:\d{1,2}$/.test(branch)&&fluxo.nodes.find((n:any)=>n.id===edge.origem)?.tipo!=='template')throw Error('A saída de resposta rápida precisa partir de um bloco de template.');
+      const key=edge.origem+'|'+branch;if(seenEdges.has(key))throw Error('Cada saída do bloco pode apontar para apenas um destino.');seenEdges.add(key);
+    }
     let canais:any[]=[];
     if(canalId){
       const ch=await channel(canalId,ws);canais=[ch];
@@ -1511,15 +1556,25 @@ async function handle(req: Request, b: any) {
     if(fluxo.nodes.some((n:any)=>n.tipo==='template')){
       if(!canalId||canais[0]?.provedor!=='zernio'||canais[0]?.canal!=='whatsapp')throw Error('O bloco de template exige uma conta WhatsApp API oficial específica.');
       const listed=await zernio(zp(),'/whatsapp/templates?accountId='+encodeURIComponent(canais[0].externo_id));
-      const approved=listed.templates||listed.data?.templates||[];
+      const approved=listed.templates||listed.data?.templates||[],approvedByNode=new Map<string,any>();
       for(const node of fluxo.nodes.filter((n:any)=>n.tipo==='template')){
         const tpl=approved.find((t:any)=>t.name===node.data.template_name&&t.language===node.data.idioma&&t.status==='APPROVED');
         if(!tpl)throw Error('O template selecionado não está aprovado nesta conta.');
+        approvedByNode.set(node.id,tpl);
         if((tpl.components||[]).some((c:any)=>{const type=String(c.type||'').toUpperCase();return type==='HEADER'?!['TEXT','IMAGE','VIDEO','DOCUMENT'].includes(String(c.format||'TEXT').toUpperCase()):!['BODY','FOOTER','BUTTONS'].includes(type)||(c.buttons||[]).some((x:any)=>!['QUICK_REPLY','URL','PHONE_NUMBER'].includes(String(x.type||'').toUpperCase()));}))throw Error('Este template contém componentes ainda não compatíveis com automações.');
         const slots=templateSlots(tpl);
         if(slots.length!==node.data.campos.length)throw Error('Mapeie todas as variáveis do template.');
         const format=String(tpl.components?.find((c:any)=>String(c.type).toUpperCase()==='HEADER')?.format||'TEXT').toUpperCase();
         if(['IMAGE','VIDEO','DOCUMENT'].includes(format)&&!node.data.media_url)throw Error('Informe a URL HTTPS da mídia para o cabeçalho do template.');
+      }
+      for(const edge of fluxo.edges){
+        const match=String(edge.saida||'').match(/^resposta:(\d{1,2})$/);if(!match)continue;
+        const source=fluxo.nodes.find((n:any)=>n.id===edge.origem),tpl=approvedByNode.get(edge.origem),index=Number(match[1]);
+        const buttons=tpl?.components?.find((c:any)=>String(c.type).toUpperCase()==='BUTTONS')?.buttons||[];
+        if(source?.tipo!=='template'||String(buttons[index]?.type||'').toUpperCase()!=='QUICK_REPLY')throw Error('A saída precisa apontar para uma resposta rápida existente no template aprovado.');
+      }
+      for(const edge of fluxo.edges.filter((e:any)=>/^resposta:\d{1,2}$/.test(String(e.saida||'')))){
+        if(fluxo.edges.some((candidate:any)=>candidate.origem===edge.origem&&candidate.saida==='seguir'))throw Error('Templates com respostas rápidas devem usar as saídas individuais dos botões.');
       }
     }
     const formIds=[...new Set(fluxo.nodes.filter((n:any)=>n.tipo==='formulario').map((n:any)=>n.data.pesquisa_id))];

@@ -75,6 +75,11 @@ function fluxoCompativel(flow:any) {
   return {versao:1,nodes:[{id:trigger,tipo:'gatilho',x:40,y:190,data:{}},{id:message,tipo:'mensagem',x:390,y:190,data:{texto:String(flow.resposta||'')}}],edges:[{origem:trigger,destino:message,saida:'seguir'}]};
 }
 function aresta(fluxo:any,id:string,saida='seguir') { return fluxo.edges.find((e:any)=>e.origem===id&&e.saida===saida)?.destino||null; }
+function textoChaveBotao(value:any) { return String(value||'').trim().toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+function respostaBotaoDaMensagem(mensagem:any) {
+  const reply=mensagem?.resposta_botao||{};
+  return { id:String(reply.id||''), title:String(reply.title||mensagem?.texto||''), type:String(reply.tipo||'') };
+}
 function templateSlots(tpl:any) {
   const parts=tpl.components||[],header=parts.find((c:any)=>String(c.type).toUpperCase()==='HEADER'),body=parts.find((c:any)=>String(c.type).toUpperCase()==='BODY'),buttons=parts.find((c:any)=>String(c.type).toUpperCase()==='BUTTONS')?.buttons||[],slots:any[]=[];
   const add=(text:string,kind:string,index=-1)=>{const numbers=[...new Set([...String(text||'').matchAll(/\{\{(\d+)\}\}/g)].map(x=>Number(x[1])))].sort((a,b)=>a-b);if(numbers.some((n,i)=>n!==i+1))throw Error('Variáveis fora da ordem no template aprovado.');numbers.forEach(marker=>slots.push({kind,index,marker}));};
@@ -214,6 +219,14 @@ async function executarFluxo(ch:any,cv:any,flow:any,run:any,estado:any) {
       }catch(e){const known=!attempted||(e instanceof ProviderError&&e.status<500&&e.status!==408),detail=known?String((e as Error).message||'Falha no envio').slice(0,220):'Envio sem confirmação. Confira a Zernio antes de reenviar.';await q(db.from('atd_mensagens').update({status:known?'falhou':'incerto',erro:detail}).eq('id',pending.id));const failure=new Error(detail);(failure as any).fluxoIncerto=!known;throw failure;}
       if(p.id)try{await q(db.from('pessoa_toques').insert({workspace_id:ch.workspace_id,pessoa_id:p.id,tipo:'outro',canal:ch.canal,descricao:`Automação ${flow.nome}: template ${tpl.name} enviado`,origem:'sistema'}));}catch{throw Object.assign(new Error('Template enviado, mas o registro na jornada falhou. Confira o histórico.'),{fluxoIncerto:true});}
       snapshot.enviadas.push(node.id);snapshot.no_id=next;
+      const quickReplies=buttons.map((button:any,index:number)=>({button,index})).filter((item:any)=>String(item.button.type||'').toUpperCase()==='QUICK_REPLY');
+      const routed=quickReplies.filter((item:any)=>aresta(graph,node.id,'resposta:'+item.index));
+      if(routed.length){
+        snapshot.no_id=null;
+        snapshot.aguardando_botao={node_id:node.id,opcoes:quickReplies.map((item:any)=>({index:item.index,id:String(item.button.id||item.button.payload||''),title:String(item.button.text||'').trim()}))};
+        await q(db.from('atd_automacao_execucoes').update({status:'aguardando',retomar_em:null,estado:snapshot,erro:null}).eq('id',run.id).eq('status','processando'));
+        return 'aguardando_resposta';
+      }
       await q(db.from('atd_automacao_execucoes').update({estado:snapshot}).eq('id',run.id).eq('status','processando'));
       current=next;continue;
     }
@@ -270,6 +283,25 @@ async function executarAutomacoes(ch:any,conversaId:string,mensagem:any) {
   if(!conversaId||mensagem?.direcao!=='recebida'||!mensagem?.id)return;
   const automacoes=await q(db.from('atd_automacoes').select('*').eq('workspace_id',ch.workspace_id).eq('ativo',true));
   const cv=await q(db.from('atd_conversas').select('*').eq('id',conversaId).eq('workspace_id',ch.workspace_id).single());if(cv.grupo)return;
+  const reply=respostaBotaoDaMensagem(mensagem);
+  if(reply.id||reply.title){
+    const waiting=await q(db.from('atd_automacao_execucoes').select('id,automacao_id,estado').eq('workspace_id',ch.workspace_id).eq('conversa_id',cv.id).eq('status','aguardando').is('retomar_em',null).order('executado_em',{ascending:false}).limit(20));
+    for(const run of waiting){
+      const flow=automacoes.find((item:any)=>item.id===run.automacao_id&&(!item.canal_id||item.canal_id===ch.id));if(!flow)continue;
+      const state=run.estado||{},pending=state.aguardando_botao,graph=state.fluxo;
+      if(!pending||!graph)continue;
+      const option=(pending.opcoes||[]).find((item:any)=>(reply.id&&(String(item.id||'')===reply.id||String(item.index)===reply.id||('resposta:'+item.index)===reply.id))||(reply.title&&textoChaveBotao(item.title)===textoChaveBotao(reply.title)));
+      if(!option)continue;
+      const destination=aresta(graph,pending.node_id,'resposta:'+option.index),claimed=await q(db.from('atd_automacao_execucoes').update({status:'processando',retomar_em:null}).eq('id',run.id).eq('status','aguardando').select('id'));
+      if(!claimed?.length)continue;
+      const resumed={...state,entrada_texto:String(mensagem.texto||reply.title),no_id:destination||null};delete resumed.aguardando_botao;
+      if(!destination){await q(db.from('atd_automacao_execucoes').update({status:'enviado',estado:{...resumed,no_id:null},erro:null}).eq('id',run.id).eq('status','processando'));return;}
+      try{await executarFluxo(ch,cv,flow,run,resumed);}
+      catch(e){const message=String((e as Error).message||'Falha no fluxo').slice(0,220),status=(e as any).fluxoIncerto?'incerto':'erro';await q(db.from('atd_automacao_execucoes').update({status,retomar_em:null,erro:message}).eq('id',run.id).eq('status','processando'));console.error('atd automacao retomada falhou',flow.id,status);}
+      return;
+    }
+    if(reply.type)return;
+  }
   for(const flow of automacoes){
     if(flow.canal_id&&flow.canal_id!==ch.id)continue;
     const keyword=String(flow.gatilho_valor||'').trim().toLocaleLowerCase();

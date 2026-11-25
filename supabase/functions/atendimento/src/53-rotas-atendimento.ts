@@ -160,7 +160,13 @@
       }
     }
     if(!fluxo.nodes.some((n:any)=>n.tipo==='gatilho')||!fluxo.nodes.some((n:any)=>['mensagem','botoes','template','formulario','email','tag','campo','campanha'].includes(n.tipo)))throw Error('O canvas precisa conter um gatilho e ao menos uma ação.');
-    for(const edge of fluxo.edges)if(!nodeIds.has(edge.origem)||!nodeIds.has(edge.destino)||edge.origem===edge.destino||!['seguir','sim','nao'].includes(edge.saida))throw Error('Ligação inválida no canvas.');
+    const seenEdges=new Set<string>();
+    for(const edge of fluxo.edges){
+      const branch=String(edge.saida||'');
+      if(!nodeIds.has(edge.origem)||!nodeIds.has(edge.destino)||edge.origem===edge.destino||!(['seguir','sim','nao'].includes(branch)||/^resposta:\d{1,2}$/.test(branch)))throw Error('Ligação inválida no canvas.');
+      if(/^resposta:\d{1,2}$/.test(branch)&&fluxo.nodes.find((n:any)=>n.id===edge.origem)?.tipo!=='template')throw Error('A saída de resposta rápida precisa partir de um bloco de template.');
+      const key=edge.origem+'|'+branch;if(seenEdges.has(key))throw Error('Cada saída do bloco pode apontar para apenas um destino.');seenEdges.add(key);
+    }
     let canais:any[]=[];
     if(canalId){
       const ch=await channel(canalId,ws);canais=[ch];
@@ -174,15 +180,25 @@
     if(fluxo.nodes.some((n:any)=>n.tipo==='template')){
       if(!canalId||canais[0]?.provedor!=='zernio'||canais[0]?.canal!=='whatsapp')throw Error('O bloco de template exige uma conta WhatsApp API oficial específica.');
       const listed=await zernio(zp(),'/whatsapp/templates?accountId='+encodeURIComponent(canais[0].externo_id));
-      const approved=listed.templates||listed.data?.templates||[];
+      const approved=listed.templates||listed.data?.templates||[],approvedByNode=new Map<string,any>();
       for(const node of fluxo.nodes.filter((n:any)=>n.tipo==='template')){
         const tpl=approved.find((t:any)=>t.name===node.data.template_name&&t.language===node.data.idioma&&t.status==='APPROVED');
         if(!tpl)throw Error('O template selecionado não está aprovado nesta conta.');
+        approvedByNode.set(node.id,tpl);
         if((tpl.components||[]).some((c:any)=>{const type=String(c.type||'').toUpperCase();return type==='HEADER'?!['TEXT','IMAGE','VIDEO','DOCUMENT'].includes(String(c.format||'TEXT').toUpperCase()):!['BODY','FOOTER','BUTTONS'].includes(type)||(c.buttons||[]).some((x:any)=>!['QUICK_REPLY','URL','PHONE_NUMBER'].includes(String(x.type||'').toUpperCase()));}))throw Error('Este template contém componentes ainda não compatíveis com automações.');
         const slots=templateSlots(tpl);
         if(slots.length!==node.data.campos.length)throw Error('Mapeie todas as variáveis do template.');
         const format=String(tpl.components?.find((c:any)=>String(c.type).toUpperCase()==='HEADER')?.format||'TEXT').toUpperCase();
         if(['IMAGE','VIDEO','DOCUMENT'].includes(format)&&!node.data.media_url)throw Error('Informe a URL HTTPS da mídia para o cabeçalho do template.');
+      }
+      for(const edge of fluxo.edges){
+        const match=String(edge.saida||'').match(/^resposta:(\d{1,2})$/);if(!match)continue;
+        const source=fluxo.nodes.find((n:any)=>n.id===edge.origem),tpl=approvedByNode.get(edge.origem),index=Number(match[1]);
+        const buttons=tpl?.components?.find((c:any)=>String(c.type).toUpperCase()==='BUTTONS')?.buttons||[];
+        if(source?.tipo!=='template'||String(buttons[index]?.type||'').toUpperCase()!=='QUICK_REPLY')throw Error('A saída precisa apontar para uma resposta rápida existente no template aprovado.');
+      }
+      for(const edge of fluxo.edges.filter((e:any)=>/^resposta:\d{1,2}$/.test(String(e.saida||'')))){
+        if(fluxo.edges.some((candidate:any)=>candidate.origem===edge.origem&&candidate.saida==='seguir'))throw Error('Templates com respostas rápidas devem usar as saídas individuais dos botões.');
       }
     }
     const formIds=[...new Set(fluxo.nodes.filter((n:any)=>n.tipo==='formulario').map((n:any)=>n.data.pesquisa_id))];

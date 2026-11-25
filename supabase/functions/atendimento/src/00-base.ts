@@ -57,8 +57,15 @@ export function zernioMensagem(p: any) {
   if (!conversationId || !messageId) return null;
   const received = p.event === 'message.received';
   const sender = m.sender || p.sender || {};
+  const metadata = m.metadata || p.metadata || {};
+  const buttonReply = m.buttonReply || m.button_reply || m.quickReply || m.quick_reply || m.interactive?.button_reply || m.interactive?.buttonReply || metadata.buttonReply || metadata.button_reply || metadata;
+  const buttonId = buttonReply?.id || buttonReply?.payload || buttonReply?.buttonId || buttonReply?.button_id || metadata.interactiveId || '';
+  const buttonTitle = buttonReply?.title || buttonReply?.text || buttonReply?.label || m.buttonTitle || metadata.interactiveTitle || '';
+  const plainText = typeof m.text === 'string' ? m.text : typeof m.message === 'string' ? m.message : typeof m.content === 'string' ? m.content : '';
+  const replyText = String(plainText || buttonTitle || buttonId || '');
   return { conversa: { id: conversationId, nome: c.participantName || c.participantUsername || (received ? sender.name : undefined), endereco: c.participantId || (received ? sender.id : undefined), grupo: false },
-    mensagem: { id: messageId, direcao: received ? 'recebida' : 'enviada', texto: m.text || m.message || m.content || '',
+    mensagem: { id: messageId, direcao: received ? 'recebida' : 'enviada', texto: replyText,
+      ...(received && (buttonId || buttonTitle || metadata.interactiveType) ? { resposta_botao: { id: String(buttonId || ''), title: String(buttonTitle || plainText || ''), tipo: String(metadata.interactiveType || '') } } : {}),
       participante: sender.id, autor_nome: sender.name, em: m.createdAt || m.sentAt || p.timestamp,
       status: received ? 'recebida' : 'enviada',
       anexos: (m.attachments || []).map((a: any) => ({
